@@ -1,11 +1,10 @@
-# Sistema de Control de Mantenimiento de Equipos 🇨🇴
+# Sistema de Control de Mantenimiento de Equipos
 
 ![Dashboard del Sistema](dashboard.png)
 
 [![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
 [![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
-[![Colombia](https://img.shields.io/badge/Localización-Colombia-yellow?style=for-the-badge)](https://fakerphp.github.io)
 
 Este es un sistema web robusto desarrollado en Laravel para la gestión integral de mantenimientos técnicos, equipos y clientes. Ideal para talleres de soporte técnico o departamentos de TI, con una interfaz moderna y optimizada.
 
@@ -19,46 +18,62 @@ Este es un sistema web robusto desarrollado en Laravel para la gestión integral
 - **Seguridad**: Sistema de roles (Administrador/Técnico) y control de acceso por middleware.
 - **Localización**: Configurado para el contexto de Colombia (moneda, formatos y datos de prueba locales).
 
-## 🛠️ Tecnologías Utilizadas
+## 🛠️ Tecnologías y Librerías
 
 - **Backend**: Laravel 13 (PHP 8.3+)
 - **Base de Datos**: MySQL / MariaDB
 - **Frontend**: Blade, CSS Vanilla (Premium Design), FontAwesome
-- **Reportes**: Laravel Excel, DomPDF
-- **Datos de Prueba**: Faker (es_CO)
+- **Generación de PDF**: `barryvdh/laravel-dompdf`
+- **Gestión de Excel**: `maatwebsite/excel`
+- **Datos de Prueba**: Datos de pruebas locales Colombia (es_CO)
 
-## 📦 Instalación
+## 📋 Requisitos del Sistema
 
-Sigue estos pasos para poner el proyecto en marcha:
+Antes de instalar, asegúrate de tener:
+- **Servidor Local**: XAMPP, WAMP o Laragon (con MySQL corriendo).
+- **PHP**: Versión 8.2 o superior.
+- **Composer**: Para la gestión de dependencias de PHP.
+- **Node.js & NPM**: Para compilar los estilos y scripts.
+
+## 📦 Guía de Instalación
+
+Sigue estos pasos detallados para poner el proyecto en marcha:
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone https://github.com/tu-usuario/control-mantenimiento-equipos.git
-   cd control-mantenimiento-equipos
+   git clone https://github.com/JohanVelez22/Control-Mantenimiento.git
+   cd Control-Mantenimiento
    ```
 
-2. **Instalar dependencias:**
+2. **Instalar dependencias de PHP:**
    ```bash
    composer install
+   ```
+
+3. **Instalar dependencias de Frontend:**
+   ```bash
    npm install && npm run build
    ```
 
-3. **Configurar el entorno:**
-   Copia el archivo `.env.example` a `.env` y configura tus credenciales de base de datos.
+4. **Configurar el entorno:**
+   * Crea una base de datos vacía en tu gestor (ej. `mantenimiento_db`).
+   * Copia el archivo `.env.example` a `.env`.
+   * Abre `.env` y configura el nombre de tu base de datos, usuario y contraseña.
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
 
 4. **Inicialización Automática (Recomendado):**
-   He creado un comando especial que se encarga de crear la base de datos, ejecutar migraciones y cargar datos de prueba localizados para Colombia:
+   He creado un comando especial que se encarga de crear la base de datos, ejecutar migraciones y cargar datos de prueba para Colombia:
    ```bash
    php artisan db:setup
    ```
 
 ## 🔐 Credenciales de Acceso (Pruebas)
 
-- **Administrador:** `admin@example.com` / `Admin123*`
+- **Administrador:** `admin@example.com`
+- **Contraseña:** `Admin123*`
 - **Técnico:** (Generados aleatoriamente por el comando setup)
 
 ## 📁 Estructura de Comandos Especiales
@@ -69,4 +84,4 @@ He incluido comandos personalizados para facilitar la puesta en marcha y manteni
 - `composer db:setup`: Alias rápido del comando anterior para una inicialización en un solo paso.
 
 ---
-*Desarrollado con ❤️ para la gestión técnica eficiente.*
+*Desarrollado por Johan Velez y Santiago Zapata*
