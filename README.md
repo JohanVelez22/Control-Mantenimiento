@@ -1,58 +1,72 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistema de Control de Mantenimiento de Equipos 🇨🇴
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Dashboard del Sistema](dashboard.png)
 
-## About Laravel
+[![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
+[![Colombia](https://img.shields.io/badge/Localización-Colombia-yellow?style=for-the-badge)](https://fakerphp.github.io)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Este es un sistema web robusto desarrollado en Laravel para la gestión integral de mantenimientos técnicos, equipos y clientes. Ideal para talleres de soporte técnico o departamentos de TI, con una interfaz moderna y optimizada.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Características Principales
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Gestión de Clientes**: Registro detallado de clientes con múltiples equipos asociados.
+- **Control de Inventario**: Seguimiento de equipos por marca, modelo y número de serie.
+- **Mantenimientos Técnicos**: Registro de servicios (Preventivo/Correctivo), tipo de reparación (Hardware/Software) y costos redondeados.
+- **Dashboard Estadístico**: Métricas en tiempo real sobre costos totales, estados de órdenes y navegación inteligente.
+- **Reportes Avanzados**: Filtros dinámicos por fechas, clientes y técnicos con exportación a **PDF** y **Excel**.
+- **Seguridad**: Sistema de roles (Administrador/Técnico) y control de acceso por middleware.
+- **Localización**: Configurado para el contexto de Colombia (moneda, formatos y datos de prueba locales).
 
-## Learning Laravel
+## 🛠️ Tecnologías Utilizadas
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Backend**: Laravel 13 (PHP 8.3+)
+- **Base de Datos**: MySQL / MariaDB
+- **Frontend**: Blade, CSS Vanilla (Premium Design), FontAwesome
+- **Reportes**: Laravel Excel, DomPDF
+- **Datos de Prueba**: Faker (es_CO)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📦 Instalación
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Sigue estos pasos para poner el proyecto en marcha:
 
-## Agentic Development
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/tu-usuario/control-mantenimiento-equipos.git
+   cd control-mantenimiento-equipos
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+2. **Instalar dependencias:**
+   ```bash
+   composer install
+   npm install && npm run build
+   ```
 
-```bash
-composer require laravel/boost --dev
+3. **Configurar el entorno:**
+   Copia el archivo `.env.example` a `.env` y configura tus credenciales de base de datos.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-php artisan boost:install
-```
+4. **Inicialización Automática (Recomendado):**
+   He creado un comando especial que se encarga de crear la base de datos, ejecutar migraciones y cargar datos de prueba localizados para Colombia:
+   ```bash
+   php artisan db:setup
+   ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## 🔐 Credenciales de Acceso (Pruebas)
 
-## Contributing
+- **Administrador:** `admin@example.com` / `Admin123*`
+- **Técnico:** (Generados aleatoriamente por el comando setup)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📁 Estructura de Comandos Especiales
 
-## Code of Conduct
+He incluido comandos personalizados para facilitar la puesta en marcha y mantenimiento:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- `php artisan db:setup`: Inicializa todo el sistema desde cero (Base de datos + Tablas + Datos de prueba realistas).
+- `composer db:setup`: Alias rápido del comando anterior para una inicialización en un solo paso.
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Desarrollado con ❤️ para la gestión técnica eficiente.*

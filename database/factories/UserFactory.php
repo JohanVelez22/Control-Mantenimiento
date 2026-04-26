@@ -24,11 +24,23 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $apellidos = ['Vargas', 'Ríos', 'Mendoza', 'Soto', 'Pineda', 'Giraldo', 'Holguín', 'Castaño', 'Henao', 'Agudelo'];
+        $nombres = ['Esteban', 'Javier', 'Adriana', 'Liliana', 'Mauricio', 'Rodrigo', 'Camila', 'Ximena', 'Santiago', 'Nicolas'];
+        
+        $firstName = fake()->randomElement($nombres);
+        $lastName = fake()->randomElement($apellidos);
+        $fullName = $firstName . ' ' . $lastName;
+        
+        // Generar un email basado en el nombre (ej: esteban.vargas@example.com)
+        $email = strtolower($firstName . '.' . $lastName) . fake()->numberBetween(10, 99) . '@example.com';
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => $fullName,
+            'email' => $email,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'role' => 'tecnico', // Por defecto los usuarios creados son técnicos
+            'active' => 1,       // Por defecto activos
             'remember_token' => Str::random(10),
         ];
     }
