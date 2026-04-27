@@ -26,11 +26,15 @@ class EquipoFactory extends Factory
 
         $tipo = fake()->randomKey($equipos);
         $marcaModelo = fake()->randomElement($equipos[$tipo]);
+        
+        $partes = explode(' ', $marcaModelo, 2);
+        $marca = $partes[0];
+        $modelo = $partes[1] ?? $partes[0];
 
         return [
             'nombre' => $tipo,
-            'marca' => explode(' ', $marcaModelo)[0],
-            'modelo' => $marcaModelo,
+            'marca' => $marca,
+            'modelo' => $modelo,
             'serie' => fake()->unique()->bothify('??###???'),
             'observacion' => fake()->randomElement([
                 'Equipo en buen estado general.',
