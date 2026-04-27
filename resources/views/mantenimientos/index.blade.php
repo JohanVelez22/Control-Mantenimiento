@@ -25,6 +25,7 @@
     window.addEventListener('load', centerAnchor);
     window.addEventListener('hashchange', centerAnchor);
 </script>
+
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold">Órdenes de Mantenimiento</h2>
@@ -69,7 +70,14 @@
                             {{ $m->id_orden }}
                         </a>
                     </td>
-                    <td class="p-3 border dark:border-gray-600">{{ $m->equipo->nombre ?? '-' }}</td>
+                    <td class="p-3 border dark:border-gray-600">
+                        <div class="flex flex-col items-center">
+                            <span>{{ $m->equipo->nombre ?? '-' }}</span>
+                            <div class="text-[12px] text-gray-400 italic leading-tight">
+                                {{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}
+                            </div>
+                        </div>
+                    </td>
                     <td class="p-3 border dark:border-gray-600">{{ $m->tecnico->nombre ?? '-' }}</td>
                     <td class="p-3 border dark:border-gray-600">{{ $m->tipo }}</td>
                     <td class="p-3 border dark:border-gray-600">{{ $m->reparacion }}</td>
