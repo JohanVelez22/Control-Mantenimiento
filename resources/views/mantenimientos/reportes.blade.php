@@ -111,32 +111,32 @@
 
     <!-- Tabla con Datos Independientes -->
     <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse border dark:border-gray-700">
-            <thead class="bg-gray-100 dark:bg-gray-800 text-center text-[12px] font-bold uppercase">
+        <table class="w-full text-left border-collapse border border-gray-300 dark:border-gray-500">
+            <thead class="bg-gray-100 dark:bg-gray-700 text-center text-[12px] font-bold uppercase">
                 <tr>
-                    <th class="p-3 border dark:border-gray-700">Orden</th>
-                    <th class="p-3 border dark:border-gray-700">Cliente</th>
-                    <th class="p-3 border dark:border-gray-700">Equipo</th>
-                    <th class="p-3 border dark:border-gray-700">Técnico</th>
-                    <th class="p-3 border dark:border-gray-700">Tipo</th>
-                    <th class="p-3 border dark:border-gray-700">Reparación</th>
-                    <th class="p-3 border dark:border-gray-700">Costo</th>
-                    <th class="p-3 border dark:border-gray-700">Entrada</th>
-                    <th class="p-3 border dark:border-gray-700 text-center">Salida</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Orden</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Cliente</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Equipo</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Técnico</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Tipo</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Reparación</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Costo</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Entrada</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500 text-center">Salida</th>
                 </tr>
             </thead>
             <tbody class="text-center text-sm">
                 @forelse($mantenimientos as $m)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 border-b dark:border-gray-700 transition">
-                    <td class="p-3 font-bold whitespace-nowrap">
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 border-b border-gray-300 dark:border-gray-500 transition">
+                    <td class="p-3 font-bold whitespace-nowrap border border-gray-300 dark:border-gray-500">
                         <a href="{{ route('mantenimientos.index') }}#mantenimiento-{{ $m->id }}" class="text-blue-600 hover:text-blue-800 hover:underline no-print-link">
                             {{ $m->id_orden }}
                         </a>
                     </td>
-                    <td class="p-3 font-semibold">{{ $m->equipo->cliente->nombre ?? 'N/A' }}</td>
+                    <td class="p-3 font-semibold border border-gray-300 dark:border-gray-500">{{ $m->equipo->cliente->nombre ?? 'N/A' }}</td>
                     
                     <!-- Columna Equipo: Nombre arriba, Marca/Modelo abajo -->
-                    <td class="p-3">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <div class="font-medium">{{ $m->equipo->nombre ?? 'N/A' }}</div>
                         <div class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
                             ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
@@ -146,26 +146,26 @@
                         </div>
                     </td>
 
-                    <td class="p-3">{{ $m->tecnico->nombre ?? 'N/A' }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tecnico->nombre ?? 'N/A' }}</td>
                     
                     <!-- Columna Tipo con Colores (Azul/Verde) -->
-                    <td class="p-3">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <span class="px-2 py-1 rounded text-[11px] font-bold uppercase 
                             {{ $m->tipo == 'preventivo' 
-                                ? 'bg-green-100 text-white-700 dark:bg-green-900 dark:text-white-200' 
-                                : 'bg-sky-100 text-white-700 dark:bg-sky-900 dark:text-white-200' }}">
+                                ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200' 
+                                : 'bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-200' }}">
                             {{ $m->tipo }}
                         </span>
                     </td>
 
-                    <td class="p-3 capitalize">{{ $m->reparacion }}</td>
-                    <td class="p-3 font-bold text-green-600">${{ number_format($m->costo, 2) }}</td>
-                    <td class="p-3 text-gray-600 dark:text-gray-400">
+                    <td class="p-3 capitalize border border-gray-300 dark:border-gray-500">{{ $m->reparacion }}</td>
+                    <td class="p-3 font-bold text-green-600 border border-gray-300 dark:border-gray-500">${{ number_format($m->costo, 2) }}</td>
+                    <td class="p-3 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-500">
                         {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}
                     </td>
                     
                     <!-- Salida Centrada -->
-                    <td class="p-3 text-center font-semibold {{ $m->fecha_salida ? 'text-gray-700 dark:text-gray-300' : 'text-gray-400 italic' }}">
+                    <td class="p-3 text-center font-semibold border border-gray-300 dark:border-gray-500 {{ $m->fecha_salida ? 'text-gray-700 dark:text-gray-300' : 'text-gray-400 italic' }}">
                         {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}
                     </td>
                 </tr>
@@ -176,10 +176,10 @@
             @if($mantenimientos->count() > 0)
             <tfoot class="bg-gray-100 dark:bg-gray-800 font-bold text-center">
                 <tr>
-                    <td class="p-3 border dark:border-gray-700">Total: {{ $mantenimientos->count() }}</td>
-                    <td colspan="5" class="p-3 border dark:border-gray-700 text-right uppercase text-xs">Totales Filtrados:</td>
-                    <td class="p-3 border dark:border-gray-700 text-green-600">${{ number_format($mantenimientos->sum('costo'), 2) }}</td>
-                    <td colspan="2" class="p-3 border dark:border-gray-700"></td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">Total: {{ $mantenimientos->count() }}</td>
+                    <td colspan="5" class="p-3 border border-gray-300 dark:border-gray-500 text-right uppercase text-xs">Totales Filtrados:</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500 text-green-600">${{ number_format($mantenimientos->sum('costo'), 2) }}</td>
+                    <td colspan="2" class="p-3 border border-gray-300 dark:border-gray-500"></td>
                 </tr>
             </tfoot>
             @endif

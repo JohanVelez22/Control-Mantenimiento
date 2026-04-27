@@ -23,31 +23,31 @@
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-200 dark:bg-gray-700 text-center">
                 <tr>
-                    <th class="p-3 border dark:border-gray-600">ID</th>
-                    <th class="p-3 border dark:border-gray-600">Nombre</th>
-                    <th class="p-3 border dark:border-gray-600">Email</th>
-                    <th class="p-3 border dark:border-gray-600">Rol</th>
-                    <th class="p-3 border dark:border-gray-600">Estado</th>
-                    <th class="p-3 border dark:border-gray-600">Creado</th>
-                    <th class="p-3 border dark:border-gray-600">Acciones</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">ID</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Nombre</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Email</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Rol</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Estado</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Creado</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($users as $u)
                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
-                    <td class="p-3 border dark:border-gray-600">{{ $u->id }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $u->name }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $u->email }}</td>
-                    <td class="p-3 border dark:border-gray-600">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $u->id }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $u->name }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $u->email }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <span class="capitalize">{{ $u->role }}</span>
                     </td>
-                    <td class="p-3 border dark:border-gray-600">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <span class="px-2 py-1 rounded text-white text-xs {{ $u->active ? 'bg-green-500' : 'bg-gray-500' }}">
                             {{ $u->active ? 'Activo' : 'Inactivo' }}
                         </span>
                     </td>
-                    <td class="p-3 border dark:border-gray-600">{{ $u->created_at->format('d/m/Y') }}</td>
-                    <td class="p-3 border dark:border-gray-600">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $u->created_at->format('d/m/Y') }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <a href="{{ route('usuarios.edit', $u->id) }}" class="text-yellow-500 hover:underline mr-3 font-medium">Editar</a>
                         
                         @if($u->id !== auth()->id())

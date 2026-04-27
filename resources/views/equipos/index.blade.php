@@ -17,25 +17,37 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-200 dark:bg-gray-700 text-center">
-                    <th class="p-3 border dark:border-gray-600">ID</th>
-                    <th class="p-3 border dark:border-gray-600">Equipo</th>
-                    <th class="p-3 border dark:border-gray-600">Serie</th>
-                    <th class="p-3 border dark:border-gray-600">Cliente</th>
-                    <th class="p-3 border dark:border-gray-600">Observación</th>
-                    <th class="p-3 border dark:border-gray-600">Usuario</th>
-                    <th class="p-3 border dark:border-gray-600">Acciones</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">ID</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Equipo</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Serie</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Cliente</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Observación</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Usuario</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($equipos as $equipo)
                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
-                    <td class="p-3 border dark:border-gray-600">{{ $equipo->id }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $equipo->nombre }} ({{ $equipo->marca }} {{ $equipo->modelo }})</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $equipo->serie }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $equipo->cliente->nombre ?? '-' }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $equipo->observacion ?? '-' }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $equipo->user->name ?? '-' }}</td>
-                    <td class="p-3 border dark:border-gray-600">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $equipo->id }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span class="font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                                {{ $equipo->nombre }}
+                            </span>
+                            <span class="font-bold text-[14px] text-gray-400 italic whitespace-nowrap">
+                                ({{ $equipo->marca }} {{ $equipo->modelo }})
+                            </span>
+                            <span class="font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                                {{ $equipo->serie }}
+                            </span>
+                        </div>
+                    </td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $equipo->serie }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $equipo->cliente->nombre ?? '-' }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $equipo->observacion ?? '-' }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $equipo->user->name ?? '-' }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
                         @if(auth()->user()->role === 'admin')
                             <a href="{{ route('equipos.edit', $equipo->id) }}" class="text-yellow-500 hover:underline mr-2">Editar</a>
                             <form action="{{ route('equipos.destroy', $equipo->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este equipo?');">

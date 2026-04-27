@@ -17,27 +17,27 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-200 dark:bg-gray-700 text-center">
-                    <th class="p-3 border dark:border-gray-600">ID</th>
-                    <th class="p-3 border dark:border-gray-600">Nombre</th>
-                    <th class="p-3 border dark:border-gray-600">Identificación</th>
-                    <th class="p-3 border dark:border-gray-600">Especialidad</th>
-                    <th class="p-3 border dark:border-gray-600">Móvil</th>
-                    <th class="p-3 border dark:border-gray-600">Email</th>
-                    <th class="p-3 border dark:border-gray-600">Dirección</th>
-                    <th class="p-3 border dark:border-gray-600">Acciones</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">ID</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Nombre</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Identificación</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Especialidad</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Móvil</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Email</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Dirección</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($tecnicos as $tecnico)
                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
-                    <td class="p-3 border dark:border-gray-600">{{ $tecnico->id }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $tecnico->nombre }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $tecnico->identificacion }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $tecnico->especialidad }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $tecnico->movil }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $tecnico->email ?? '-' }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $tecnico->direccion ?? '-' }}</td>
-                    <td class="p-3 border dark:border-gray-600">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->id }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->nombre }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->identificacion }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->especialidad }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->movil }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->email ?? '-' }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->direccion ?? '-' }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
                         @if(auth()->user()->role === 'admin')
                             <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="text-yellow-500 hover:underline mr-2">Editar</a>
                             <form action="{{ route('tecnicos.destroy', $tecnico->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este técnico?');">

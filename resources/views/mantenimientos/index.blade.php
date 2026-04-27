@@ -48,29 +48,29 @@
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-200 dark:bg-gray-700 text-center">
                 <tr>
-                    <th class="p-3 border dark:border-gray-600">Orden</th>
-                    <th class="p-3 border dark:border-gray-600">Equipo</th>
-                    <th class="p-3 border dark:border-gray-600">Técnico</th>
-                    <th class="p-3 border dark:border-gray-600">Tipo</th>
-                    <th class="p-3 border dark:border-gray-600">Reparación</th>
-                    <th class="p-3 border dark:border-gray-600">Observación</th>
-                    <th class="p-3 border dark:border-gray-600">Costo</th>
-                    <th class="p-3 border dark:border-gray-600">Estado</th>
-                    <th class="p-3 border dark:border-gray-600">Entrada</th>
-                    <th class="p-3 border dark:border-gray-600">Salida</th>
-                    <th class="p-3 border dark:border-gray-600">Usuario</th>
-                    <th class="p-3 border dark:border-gray-600">Acciones</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Orden</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Equipo</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Técnico</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Tipo</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Reparación</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Observación</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Costo</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Estado</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Entrada</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Salida</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Usuario</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($mantenimientos as $m)
                 <tr id="mantenimiento-{{ $m->id }}" class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
-                    <td class="p-3 border dark:border-gray-600 whitespace-nowrap font-bold text-center">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap font-bold text-center">
                         <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 hover:text-blue-800 hover:underline">
                             {{ $m->id_orden }}
                         </a>
                     </td>
-                    <td class="p-3 border dark:border-gray-600">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <div class="flex flex-col items-center gap-0">
                             <span class="text-gray-900 dark:text-gray-100 whitespace-nowrap">
                                 {{ $m->equipo->nombre ?? '-' }}
@@ -83,12 +83,12 @@
                             </span>
                         </div>
                     </td>
-                    <td class="p-3 border dark:border-gray-600">{{ $m->tecnico->nombre ?? '-' }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $m->tipo }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $m->reparacion }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $m->descripcion ?? '-' }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ number_format($m->costo, 2, '.', ',') }}</td>
-                    <td class="p-3 border dark:border-gray-600">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tecnico->nombre ?? '-' }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tipo }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->reparacion }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->descripcion ?? '-' }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ number_format($m->costo, 2, '.', ',') }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
                         @php
                             $bgEstado = $m->estado === 'pendiente' ? 'bg-yellow-500' : 'bg-green-500';
                         @endphp
@@ -96,10 +96,10 @@
                             {{ ucfirst($m->estado) }}
                         </span>
                     </td>
-                    <td class="p-3 border dark:border-gray-600 whitespace-nowrap">{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
-                    <td class="p-3 border dark:border-gray-600 whitespace-nowrap">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '-' }}</td>
-                    <td class="p-3 border dark:border-gray-600">{{ $m->user->name ?? '-' }}</td>
-                    <td class="p-3 border dark:border-gray-600">
+                    <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap">{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '-' }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->user->name ?? '-' }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
                         @if(auth()->user()->role === 'admin')
                             <a href="{{ route('mantenimientos.edit', $m->id) }}" class="text-yellow-500 hover:underline mr-2">Editar</a>
                             <form action="{{ route('mantenimientos.destroy', $m->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar orden?');">

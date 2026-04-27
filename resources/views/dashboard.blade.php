@@ -44,13 +44,13 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-200 dark:bg-gray-700 text-xs uppercase">
-                    <th class="p-3 text-center border border-gray-300 dark:border-white-700">Orden</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-white-700">Equipo</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-white-700">Costo</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-white-700">Estado</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-white-700">Entrada</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-white-700">Días</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-white-700">Salida</th>
+                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Orden</th>
+                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Equipo</th>
+                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Costo</th>
+                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Estado</th>
+                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Entrada</th>
+                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Días</th>
+                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Salida</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
@@ -62,14 +62,15 @@
                         : \Carbon\Carbon::now()->startOfDay();
                     $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
                 @endphp
-                    <td class="p-3 text-center font-bold whitespace-nowrap">
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    <td class="p-3 text-center font-bold whitespace-nowrap border border-gray-300 dark:border-gray-500">
                         <a href="{{ route('mantenimientos.index') }}#mantenimiento-{{ $m->id }}" class="text-blue-600 hover:text-blue-800 hover:underline no-print-link">
                             {{ $m->id_orden }}
                         </a>
                     </td>
                     
                     {{-- Celda de Equipo: Nombre al lado de Marca/Modelo --}}
-                    <td class="p-3 text-center">
+                    <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
                         <div class="flex items-baseline justify-center gap-1">
                             <span class="font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
                                 {{ $m->equipo->nombre ?? '-' }}
@@ -83,25 +84,25 @@
                         </div>
                     </td>
 
-                    <td class="p-3 text-center font-bold text-green-600">
+                    <td class="p-3 text-center font-bold text-green-600 border border-gray-300 dark:border-gray-500">
                         ${{ number_format($m->costo, 2) }}
                     </td>
 
-                    <td class="p-3 text-center">
+                    <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
                         <span class="px-2 py-1 rounded text-[11px] font-bold text-white {{ $m->estado == 'terminado' ? 'bg-green-500' : 'bg-yellow-500' }}">
                             {{ strtoupper($m->estado) }}
                         </span>
                     </td>
 
-                    <td class="p-3 text-center whitespace-nowrap">{{ $fechaEntrada->format('d/m/Y') }}</td>
+                    <td class="p-3 text-center whitespace-nowrap border border-gray-300 dark:border-gray-500">{{ $fechaEntrada->format('d/m/Y') }}</td>
                     
-                    <td class="p-3 text-center font-bold">
+                    <td class="p-3 text-center font-bold border border-gray-300 dark:border-gray-500">
                         <span class="{{ !$m->fecha_salida && $diasTranscurridos > 3 ? 'text-red-500' : 'text-gray-600 dark:text-gray-400' }}">
                             {{ $diasTranscurridos }}
                         </span>
                     </td>
 
-                    <td class="p-3 text-center whitespace-nowrap {{ $m->fecha_salida ? 'font-semibold text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }}">
+                    <td class="p-3 text-center whitespace-nowrap border border-gray-300 dark:border-gray-500 {{ $m->fecha_salida ? 'font-semibold text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }}">
                         {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'En proceso' }}
                     </td>
                 </tr>

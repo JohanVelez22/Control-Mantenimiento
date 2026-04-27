@@ -22,6 +22,14 @@ class Mantenimiento extends Model
         'user_id'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'fecha_entrada' => 'date',
+            'fecha_salida' => 'date',
+        ];
+    }
+
     public function equipo()
     {
         return $this->belongsTo(Equipo::class);

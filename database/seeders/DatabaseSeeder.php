@@ -25,22 +25,22 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // 2. Crear Usuarios con rol técnico
-        User::factory(5)->create(['role' => 'tecnico']);
+        // 2. Crear Usuarios con rol técnico (3 técnicos)
+        User::factory(3)->create(['role' => 'tecnico']);
 
         // 3. Crear Clientes
         $clientes = Cliente::factory(10)->create();
 
         // 4. Crear Técnicos (entidades de mantenimiento)
-        $tecnicos = Tecnico::factory(5)->create();
+        $tecnicos = Tecnico::factory(3)->create();
 
         // Obtener usuarios para asignar
         $users = User::all();
 
         // 5. Crear Equipos asociados a clientes y usuarios
-        $equipos = Equipo::factory(20)->recycle($clientes)->recycle($users)->create();
+        $equipos = Equipo::factory(10)->recycle($clientes)->recycle($users)->create();
 
         // 6. Crear Mantenimientos asociados a equipos, técnicos y usuarios
-        Mantenimiento::factory(30)->recycle($equipos)->recycle($tecnicos)->recycle($users)->create();
+        Mantenimiento::factory(15)->recycle($equipos)->recycle($tecnicos)->recycle($users)->create();
     }
 }
