@@ -39,7 +39,7 @@
 <body>
     <div class="header">
         <h1>REPORTE DE MANTENIMIENTOS</h1>
-        <p>Generado el: {{ date('d/m/Y H:i') }}</p>
+        <p>Generado el: {{ date('d/m/Y h:i A') }}</p>
     </div>
 
     <table>
