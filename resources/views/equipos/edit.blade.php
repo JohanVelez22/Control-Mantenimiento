@@ -13,7 +13,7 @@
                 <select name="cliente_id" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
                     @foreach($clientes as $cliente)
                         <option value="{{ $cliente->id }}" {{ old('cliente_id', $equipo->cliente_id) == $cliente->id ? 'selected' : '' }}>
-                            {{ $cliente->nombre }} - {{ $cliente->identificacion }}
+                            {{ $cliente->nombre }} ({{ $cliente->identificacion }})
                         </option>
                     @endforeach
                 </select>

@@ -29,7 +29,7 @@
             <select name="cliente_id" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
                 <option value="todos">Todos los clientes</option>
                 @foreach($clientes as $c)
-                    <option value="{{ $c->id }}" {{ request('cliente_id') == $c->id ? 'selected' : '' }}>{{ $c->nombre }}</option>
+                    <option value="{{ $c->id }}" {{ request('cliente_id') == $c->id ? 'selected' : '' }}>{{ $c->nombre }} ({{ $c->identificacion }})</option>
                 @endforeach
             </select>
         </div>
@@ -38,7 +38,7 @@
             <select name="equipo_id" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
                 <option value="todos">Todos los equipos</option>
                 @foreach($equipos as $e)
-                    <option value="{{ $e->id }}" {{ request('equipo_id') == $e->id ? 'selected' : '' }}>{{ $e->nombre }}</option>
+                    <option value="{{ $e->id }}" {{ request('equipo_id') == $e->id ? 'selected' : '' }}>{{ $e->nombre }} ({{ $e->modelo}}) {{ $e->serie }}</option>
                 @endforeach
             </select>
         </div>
@@ -84,6 +84,24 @@
                 <option value="hardware" {{ request('reparacion') == 'hardware' ? 'selected' : '' }}>Hardware</option>
             </select>
         </div>
+        <div>
+            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Estado</label>
+            <select name="estado" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+                <option value="todos">Todos</option>
+                <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+                <option value="terminado" {{ request('estado') == 'terminado' ? 'selected' : '' }}>Terminado</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Costo Mínimo</label>
+            <input type="text" id="min_cost_visual" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" value="{{ request('min_cost') ? number_format(request('min_cost'), 0, ',', '.') : '' }}" placeholder="0">
+            <input type="hidden" name="min_cost" id="min_cost" value="{{ request('min_cost') }}">
+        </div>
+        <div>
+            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Costo Máximo</label>
+            <input type="text" id="max_cost_visual" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" value="{{ request('max_cost') ? number_format(request('max_cost'), 0, ',', '.') : '' }}" placeholder="0">
+            <input type="hidden" name="max_cost" id="max_cost" value="{{ request('max_cost') }}">
+        </div>
 
         <div class="lg:col-span-4 flex justify-end gap-2">
             <a href="{{ route('mantenimientos.reportes') }}" class="bg-gray-400 text-white font-bold py-2 px-6 rounded text-sm">Limpiar</a>
@@ -120,8 +138,11 @@
                     <!-- Columna Equipo: Nombre arriba, Marca/Modelo abajo -->
                     <td class="p-3">
                         <div class="font-medium">{{ $m->equipo->nombre ?? 'N/A' }}</div>
-                        <div class="text-[12px] text-gray-400 italic">
-                            {{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}
+                        <div class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
+                            ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
+                            <span class="not-italic text-gray-900 dark:text-gray-100 font-medium text-[13.5px]">
+                                {{ $m->equipo->serie ?? '' }}
+                            </span>
                         </div>
                     </td>
 
@@ -152,6 +173,16 @@
                 <tr><td colspan="9" class="p-8 text-center text-gray-500 italic bg-gray-50 dark:bg-gray-800">No hay registros con los filtros actuales.</td></tr>
                 @endforelse
             </tbody>
+            @if($mantenimientos->count() > 0)
+            <tfoot class="bg-gray-100 dark:bg-gray-800 font-bold text-center">
+                <tr>
+                    <td class="p-3 border dark:border-gray-700">Total: {{ $mantenimientos->count() }}</td>
+                    <td colspan="5" class="p-3 border dark:border-gray-700 text-right uppercase text-xs">Totales Filtrados:</td>
+                    <td class="p-3 border dark:border-gray-700 text-green-600">${{ number_format($mantenimientos->sum('costo'), 2) }}</td>
+                    <td colspan="2" class="p-3 border dark:border-gray-700"></td>
+                </tr>
+            </tfoot>
+            @endif
         </table>
     </div>
 </div>
@@ -168,4 +199,23 @@
     h2 { text-align: center !important; font-size: 18pt !important; margin-bottom: 20px !important; }
 }
 </style>
+<script>
+    function formatInput(visualId, realId) {
+        const inputVisual = document.getElementById(visualId);
+        const inputReal = document.getElementById(realId);
+
+        inputVisual.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, "");
+            if (value !== "") {
+                inputReal.value = value;
+                e.target.value = new Intl.NumberFormat('es-CO').format(value);
+            } else {
+                inputReal.value = "";
+            }
+        });
+    }
+
+    formatInput('min_cost_visual', 'min_cost');
+    formatInput('max_cost_visual', 'max_cost');
+</script>
 @endsection

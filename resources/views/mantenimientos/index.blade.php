@@ -71,11 +71,16 @@
                         </a>
                     </td>
                     <td class="p-3 border dark:border-gray-600">
-                        <div class="flex flex-col items-center">
-                            <span>{{ $m->equipo->nombre ?? '-' }}</span>
-                            <div class="text-[12px] text-gray-400 italic leading-tight">
-                                {{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}
-                            </div>
+                        <div class="flex flex-col items-center gap-0">
+                            <span class="text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                                {{ $m->equipo->nombre ?? '-' }}
+                            </span>
+                            <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
+                                ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }})
+                            </span>
+                            <span class="text-gray-900 dark:text-gray-100 text-[13.5px] whitespace-nowrap">
+                                {{ $m->equipo->serie ?? '' }}
+                            </span>
                         </div>
                     </td>
                     <td class="p-3 border dark:border-gray-600">{{ $m->tecnico->nombre ?? '-' }}</td>

@@ -19,8 +19,10 @@ class DashboardController extends Controller
         $totalEquipos = Equipo::count();
         $totalMantenimientos = Mantenimiento::count();
 
-        // Cálculo del costo total acumulado sumando la columna 'costo' de todos los mantenimientos
-        $totalCosto = Mantenimiento::sum('costo');
+        // Cálculo del costo total acumulado sumando la columna 'costo' solo de órdenes terminadas con fecha de salida
+        $totalCosto = Mantenimiento::where('estado', 'terminado')
+            ->whereNotNull('fecha_salida')
+            ->sum('costo');
         $totalCostoFormateado = number_format($totalCosto, 2, '.', ',');
 
         // Mantenimientos recientes

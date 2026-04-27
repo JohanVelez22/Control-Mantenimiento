@@ -44,8 +44,9 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-200 dark:bg-gray-700 text-xs uppercase">
-                    <th class="p-3 border border-gray-300 dark:border-white-700">Orden</th>
-                    <th class="p-3 border border-gray-300 dark:border-white-700">Equipo</th>
+                    <th class="p-3 text-center border border-gray-300 dark:border-white-700">Orden</th>
+                    <th class="p-3 text-center border border-gray-300 dark:border-white-700">Equipo</th>
+                    <th class="p-3 text-center border border-gray-300 dark:border-white-700">Costo</th>
                     <th class="p-3 text-center border border-gray-300 dark:border-white-700">Estado</th>
                     <th class="p-3 text-center border border-gray-300 dark:border-white-700">Entrada</th>
                     <th class="p-3 text-center border border-gray-300 dark:border-white-700">Días</th>
@@ -61,22 +62,29 @@
                         : \Carbon\Carbon::now()->startOfDay();
                     $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
                 @endphp
-                    <td class="p-3 font-bold whitespace-nowrap">
+                    <td class="p-3 text-center font-bold whitespace-nowrap">
                         <a href="{{ route('mantenimientos.index') }}#mantenimiento-{{ $m->id }}" class="text-blue-600 hover:text-blue-800 hover:underline no-print-link">
                             {{ $m->id_orden }}
                         </a>
                     </td>
                     
                     {{-- Celda de Equipo: Nombre al lado de Marca/Modelo --}}
-                    <td class="p-3">
-                        <div class="flex items-baseline gap-1">
+                    <td class="p-3 text-center">
+                        <div class="flex items-baseline justify-center gap-1">
                             <span class="font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
                                 {{ $m->equipo->nombre ?? '-' }}
                             </span>
-                            <span class="font-medium text-gray-900 dark:text-gray-100">
-                                {{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}
+                            <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
+                                ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }})
+                            </span>
+                            <span class="font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                                {{ $m->equipo->serie ?? '' }}
                             </span>
                         </div>
+                    </td>
+
+                    <td class="p-3 text-center font-bold text-green-600">
+                        ${{ number_format($m->costo, 2) }}
                     </td>
 
                     <td class="p-3 text-center">

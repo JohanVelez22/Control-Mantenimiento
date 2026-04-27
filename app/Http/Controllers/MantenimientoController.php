@@ -47,6 +47,9 @@ class MantenimientoController extends Controller
         if ($request->filled('user_id') && $request->user_id !== 'todos') $query->where('user_id', $request->user_id);
         if ($request->filled('tipo') && $request->tipo !== 'todos') $query->where('tipo', $request->tipo);
         if ($request->filled('reparacion') && $request->reparacion !== 'todos') $query->where('reparacion', $request->reparacion);
+        if ($request->filled('estado') && $request->estado !== 'todos') $query->where('estado', $request->estado);
+        if ($request->filled('min_cost')) $query->where('costo', '>=', $request->min_cost);
+        if ($request->filled('max_cost')) $query->where('costo', '<=', $request->max_cost);
 
         $mantenimientos = $query->orderBy('id', 'desc')->get();
 

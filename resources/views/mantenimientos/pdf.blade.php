@@ -62,10 +62,13 @@
                 <td>{{ $m->equipo->cliente->nombre ?? 'N/A' }}</td>
                 <td>
                     <div>{{ $m->equipo->nombre ?? 'N/A' }}</div>
-                    <div class="marca-modelo">{{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}</div>
+                    <div class="marca-modelo">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - {{ $m->equipo->serie ?? '' }}</div>
                 </td>
                 <td>{{ $m->tecnico->nombre ?? 'N/A' }}</td>
-                <td>{{ ucfirst($m->tipo) }}</td>
+                <td>
+                    <div>{{ ucfirst($m->tipo) }}</div>
+                    <div style="font-size: 8px; color: #666; font-style: italic;">({{ ucfirst($m->reparacion) }})</div>
+                </td>
                 <td>${{ number_format($m->costo, 2) }}</td>
                 <td>{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
                 <td>{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}</td>
