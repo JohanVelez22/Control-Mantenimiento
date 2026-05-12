@@ -24,6 +24,7 @@
             <thead class="bg-gray-200 dark:bg-gray-700 text-center">
                 <tr>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">ID</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Foto</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Nombre</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Email</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Rol</th>
@@ -36,6 +37,13 @@
                 @foreach($users as $u)
                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $u->id }}</td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500 text-center">
+                        @if($u->photo)
+                            <img src="{{ asset('storage/' . $u->photo) }}" width="40" height="40" class="rounded-full object-cover mx-auto">
+                        @else
+                            <span class="text-gray-400 text-xs">Sin foto</span>
+                        @endif
+                    </td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $u->name }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $u->email }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">

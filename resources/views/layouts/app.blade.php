@@ -45,6 +45,9 @@
 
         <!-- Derecha: Usuario, Modo Oscuro y Logout -->
         <div class="flex items-center space-x-4">
+            @if(auth()->user()->photo)
+                <img src="{{ asset('storage/' . auth()->user()->photo) }}" width="32" height="32" class="rounded-full object-cover border border-gray-300 dark:border-gray-600">
+            @endif
             <span class="text-sm hidden sm:inline-block">Bienvenido, {{ auth()->user()->name }} ({{ ucfirst(auth()->user()->role) }})</span>
             
             <!-- Botón Modo Oscuro -->

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('password');
             // Añadimos el campo rol, por defecto será 'invitado' por seguridad
             $table->enum('role', ['admin', 'tecnico', 'invitado'])->default('invitado');
+            $table->string('photo')->nullable();
             $table->boolean('active')->default(true); 
             $table->rememberToken();
             $table->timestamps();

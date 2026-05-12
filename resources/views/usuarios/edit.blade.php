@@ -4,7 +4,7 @@
 <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
     <h2 class="text-2xl font-bold mb-6">Editar Usuario: {{ $user->name }}</h2>
 
-    <form method="POST" action="{{ route('usuarios.update', $user->id) }}">
+    <form method="POST" action="{{ route('usuarios.update', $user->id) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -30,6 +30,19 @@
                 <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Administrador</option>
                 <option value="invitado" {{ old('role', $user->role) == 'invitado' ? 'selected' : '' }}>Invitado</option>
             </select>
+        </div>
+
+        {{-- Foto de Perfil --}}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-2">Foto de Perfil</label>
+            @if($user->photo)
+                <div class="mb-3">
+                    <img src="{{ asset('storage/' . $user->photo) }}" width="100" height="100" class="rounded-full object-cover border-2 border-gray-300 dark:border-gray-600">
+                </div>
+            @endif
+            <input type="file" name="photo" accept="image/*" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('photo') border-red-500 @enderror">
+            <p class="text-xs text-gray-500 mt-1">Selecciona una imagen para actualizar tu foto actual.</p>
+            @error('photo') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
         </div>
 
         {{-- Estado (IMPORTANTE: name="active") --}}

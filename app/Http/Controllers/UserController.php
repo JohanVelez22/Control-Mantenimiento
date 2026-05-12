@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -27,15 +28,22 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed'],
             'role' => 'required|in:admin,tecnico,invitado',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        User::create([
+        $data = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'active' => $request->boolean('active'), // Captura correctamente el estado
-        ]);
+        ];
+
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('users', 'public');
+        }
+
+        User::create($data);
 
         return redirect()->route('usuarios.index')->with('success', 'Usuario creado correctamente.');
     }
@@ -51,6 +59,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $usuario->id,
             'role' => 'required|in:admin,tecnico,invitado',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($request->filled('password') || $request->filled('password_confirmation')) {
@@ -58,6 +67,13 @@ class UserController extends Controller
                 'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed']
             ]);
             $usuario->password = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('photo')) {
+            if ($usuario->photo && Storage::disk('public')->exists($usuario->photo)) {
+                Storage::disk('public')->delete($usuario->photo);
+            }
+            $usuario->photo = $request->file('photo')->store('users', 'public');
         }
 
         $usuario->name = $request->name;
