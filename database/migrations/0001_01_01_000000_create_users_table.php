@@ -14,8 +14,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            // Añadimos el campo rol, por defecto será 'tecnico' por seguridad
-            $table->enum('role', ['admin', 'tecnico'])->default('tecnico');
+            // Añadimos el campo rol, por defecto será 'invitado' por seguridad
+            $table->enum('role', ['admin', 'tecnico', 'invitado'])->default('invitado');
             $table->boolean('active')->default(true); 
             $table->rememberToken();
             $table->timestamps();

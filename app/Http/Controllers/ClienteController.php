@@ -18,12 +18,19 @@ class ClienteController extends Controller
     // Mostrar formulario de creación (Accesible para Admin y Técnico)
     public function create()
     {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('clientes.index')->with('error', 'No tienes permisos para crear.');
+        }
         return view('clientes.create');
     }
 
     // Guardar nuevo cliente (Accesible para Admin y Técnico)
     public function store(Request $request)
     {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('clientes.index')->with('error', 'No tienes permisos para crear.');
+        }
+
         $request->validate([
             'nombre' => 'required|string|max:255',
             'identificacion' => 'required|string|max:50|unique:clientes',
@@ -40,7 +47,7 @@ class ClienteController extends Controller
     // Mostrar formulario de edición (SOLO ADMIN)
     public function edit(Cliente $cliente)
     {
-        if (Auth::user()->role !== 'admin') {
+        if (Auth::user()->role === 'invitado') {
             return redirect()->route('clientes.index')->with('error', 'No tienes permisos para editar.');
         }
         return view('clientes.edit', compact('cliente'));
@@ -49,7 +56,7 @@ class ClienteController extends Controller
     // Actualizar cliente (SOLO ADMIN)
     public function update(Request $request, Cliente $cliente)
     {
-        if (Auth::user()->role !== 'admin') {
+        if (Auth::user()->role === 'invitado') {
             return redirect()->route('clientes.index')->with('error', 'No tienes permisos para actualizar.');
         }
 

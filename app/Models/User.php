@@ -44,4 +44,10 @@ class User extends Authenticatable
     {
         return $this->role === 'tecnico';
     }
+
+    // Método helper para verificar si es invitado
+    public function isInvitado()
+    {
+        return $this->role === 'invitado';
+    }
 }

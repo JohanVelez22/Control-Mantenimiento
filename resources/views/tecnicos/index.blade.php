@@ -4,7 +4,9 @@
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold">Listado de Técnicos</h2>
-        <a href="{{ route('tecnicos.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">+ Nuevo Técnico</a>
+        @if(!auth()->user()->isInvitado())
+            <a href="{{ route('tecnicos.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">+ Nuevo Técnico</a>
+        @endif
     </div>
 
     @if(session('success'))
@@ -38,13 +40,15 @@
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->email ?? '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->direccion ?? '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        @if(auth()->user()->role === 'admin')
+                        @if(!auth()->user()->isInvitado())
                             <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="text-yellow-500 hover:underline mr-2">Editar</a>
-                            <form action="{{ route('tecnicos.destroy', $tecnico->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este técnico?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:underline">Eliminar</button>
-                            </form>
+                            @if(auth()->user()->isAdmin())
+                                <form action="{{ route('tecnicos.destroy', $tecnico->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este técnico?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:underline">Eliminar</button>
+                                </form>
+                            @endif
                         @else
                             <span class="text-gray-500 text-sm">Lectura</span>
                         @endif

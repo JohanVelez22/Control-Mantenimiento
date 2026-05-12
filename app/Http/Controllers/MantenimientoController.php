@@ -67,6 +67,9 @@ class MantenimientoController extends Controller
 
     public function create()
     {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para crear.');
+        }
         $equipos = Equipo::all();
         $tecnicos = Tecnico::all();
         return view('mantenimientos.create', compact('equipos', 'tecnicos'));
@@ -78,6 +81,10 @@ class MantenimientoController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para crear.');
+        }
+
         $request->validate([
             'fecha_entrada' => 'required|date',
             'tipo' => 'required|in:preventivo,correctivo',
@@ -103,8 +110,8 @@ class MantenimientoController extends Controller
 
     public function edit(Mantenimiento $mantenimiento)
     {
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('mantenimientos.index')->with('error', 'Solo el administrador puede editar.');
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para editar.');
         }
         $equipos = Equipo::all();
         $tecnicos = Tecnico::all();
@@ -113,7 +120,9 @@ class MantenimientoController extends Controller
 
     public function update(Request $request, Mantenimiento $mantenimiento)
     {
-        if (Auth::user()->role !== 'admin') return redirect()->route('mantenimientos.index');
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para actualizar.');
+        }
         
         $request->validate([
             'fecha_entrada' => 'required|date',

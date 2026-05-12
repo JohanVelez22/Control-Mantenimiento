@@ -20,7 +20,7 @@
         }
     </script>
 </head>
-<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
 
     <!-- Navegación -->
     @auth
@@ -176,5 +176,30 @@
             });
         });
     </script>
+    <!-- Inactivity Timeout Script -->
+    @auth
+    <script>
+        (function() {
+            let time;
+            const timeout = 180000; // 3 minutos
+
+            function logout() {
+                const logoutForm = document.querySelector('form[action="{{ route('logout') }}"]');
+                if (logoutForm) logoutForm.submit();
+            }
+
+            function resetTimer() {
+                clearTimeout(time);
+                time = setTimeout(logout, timeout);
+            }
+
+            window.onload = resetTimer;
+            document.onmousemove = resetTimer;
+            document.onkeypress = resetTimer;
+            document.onscroll = resetTimer;
+            document.onclick = resetTimer;
+        })();
+    </script>
+    @endauth
 </body>
 </html>

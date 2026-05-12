@@ -18,12 +18,19 @@ class EquipoController extends Controller
 
     public function create()
     {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('equipos.index')->with('error', 'No tienes permisos para crear.');
+        }
         $clientes = Cliente::orderBy('nombre', 'asc')->get();
         return view('equipos.create', compact('clientes'));
     }
 
     public function store(Request $request)
     {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('equipos.index')->with('error', 'No tienes permisos para crear.');
+        }
+
         $request->validate([
             'nombre' => 'required|string|max:255',
             'marca' => 'required|string|max:255',
@@ -45,7 +52,7 @@ class EquipoController extends Controller
 
     public function edit(Equipo $equipo)
     {
-        if (Auth::user()->role !== 'admin') {
+        if (Auth::user()->role === 'invitado') {
             return redirect()->route('equipos.index')->with('error', 'No tienes permisos para editar.');
         }
         
@@ -55,7 +62,7 @@ class EquipoController extends Controller
 
     public function update(Request $request, Equipo $equipo)
     {
-        if (Auth::user()->role !== 'admin') {
+        if (Auth::user()->role === 'invitado') {
             return redirect()->route('equipos.index')->with('error', 'No tienes permisos para actualizar.');
         }
 

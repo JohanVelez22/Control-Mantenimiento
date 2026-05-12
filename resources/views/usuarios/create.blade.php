@@ -27,6 +27,7 @@
             <select name="role" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
                 <option value="tecnico" {{ old('role') == 'tecnico' ? 'selected' : '' }}>Técnico</option>
                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrador</option>
+                <option value="invitado" {{ old('role') == 'invitado' ? 'selected' : '' }}>Invitado</option>
             </select>
         </div>
 

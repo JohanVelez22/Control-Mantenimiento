@@ -1,5 +1,7 @@
 {
     "$schema": "https://www.schemastore.org/package.json",
+    "name": "control-mantenimiento",
+    "description": "Control de mantenimientos y equipos",
     "private": true,
     "type": "module",
     "scripts": {

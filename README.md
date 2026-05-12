@@ -15,8 +15,18 @@ Este es un sistema web robusto desarrollado en Laravel para la gestión integral
 - **Mantenimientos Técnicos**: Registro de servicios (Preventivo/Correctivo), tipo de reparación (Hardware/Software) y costos redondeados.
 - **Dashboard Estadístico**: Métricas en tiempo real sobre costos totales, estados de órdenes y navegación inteligente.
 - **Reportes Avanzados**: Filtros dinámicos por fechas, clientes y técnicos con exportación a **PDF** y **Excel**.
-- **Seguridad**: Sistema de roles (Administrador/Técnico) y control de acceso por middleware.
 - **Localización**: Configurado para el contexto de Colombia (moneda, formatos y datos de prueba locales).
+
+## 🛡️ Seguridad y Control de Acceso (NUEVO)
+
+El sistema cuenta con medidas de seguridad de nivel empresarial:
+
+- **Sistema de 3 Roles**: 
+  - `Administrador`: Acceso total, incluyendo eliminación de registros y gestión de usuarios.
+  - `Técnico`: Capacidad para crear y editar registros, pero sin permisos de eliminación.
+  - `Invitado`: Acceso exclusivamente de visualización (Solo lectura).
+- **Protección BFCache**: Previene que usuarios deslogueados puedan usar el botón "Atrás" del navegador para ver páginas cacheadas.
+- **Cierre por Inactividad**: El sistema expulsa automáticamente a los usuarios tras 3 minutos de inactividad por seguridad.
 
 ## 🛠️ Tecnologías y Librerías
 
@@ -25,7 +35,6 @@ Este es un sistema web robusto desarrollado en Laravel para la gestión integral
 - **Frontend**: Blade, CSS Vanilla (Premium Design), FontAwesome
 - **Generación de PDF**: `barryvdh/laravel-dompdf`
 - **Gestión de Excel**: `maatwebsite/excel`
-- **Datos de Prueba**: Datos de pruebas locales Colombia (es_CO)
 
 ## 📋 Requisitos del Sistema
 
@@ -56,32 +65,29 @@ Sigue estos pasos detallados para poner el proyecto en marcha:
    ```
 
 4. **Configurar el entorno:**
-   * Crea una base de datos vacía en tu gestor (ej. `mantenimiento_db`).
+   * Crea una base de datos vacía en tu gestor MySQL (ej. `mantenimiento_equipos`).
    * Copia el archivo `.env.example` a `.env`.
-   * Abre `.env` y configura el nombre de tu base de datos, usuario y contraseña.
+   * Abre `.env` y verifica/configura tus credenciales de base de datos.
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
 
-4. **Inicialización Automática (Recomendado):**
-   He creado un comando especial que se encarga de crear la base de datos, ejecutar migraciones y cargar datos de prueba para Colombia:
+5. **Inicialización Automática (Recomendado):**
+   He creado un comando especial que se encarga de ejecutar migraciones y cargar datos de prueba reales:
    ```bash
    php artisan db:setup
+   # (O alternativamente: composer db:setup)
    ```
 
 ## 🔐 Credenciales de Acceso (Pruebas)
 
+Al ejecutar la instalación automática, se creará un usuario administrador base:
+
 - **Administrador:** `admin@example.com`
 - **Contraseña:** `Admin123*`
-- **Técnico:** (Generados aleatoriamente por el comando setup)
 
-## 📁 Estructura de Comandos Especiales
-
-He incluido comandos personalizados para facilitar la puesta en marcha y mantenimiento:
-
-- `php artisan db:setup`: Inicializa todo el sistema desde cero (Base de datos + Tablas + Datos de prueba realistas).
-- `composer db:setup`: Alias rápido del comando anterior para una inicialización en un solo paso.
+> **Nota:** Si un usuario intenta registrarse como Administrador desde la pantalla pública, deberá conocer la clave de autorización definida en la variable de entorno `ADMIN_REGISTRATION_PASSWORD`. De lo contrario, se le asignará el rol de Técnico.
 
 ---
 *Desarrollado por Johan Velez y Santiago Zapata*

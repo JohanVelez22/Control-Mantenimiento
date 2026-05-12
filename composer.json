@@ -1,9 +1,15 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "johanvelez22/control-mantenimiento",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Sistema integral para el control de mantenimientos, técnicos y clientes.",
+    "authors": [
+        {
+            "name": "Johan Velez",
+            "email": "contacto@example.com"
+        }
+    ],
+    "keywords": ["laravel", "mantenimiento", "equipos"],
     "license": "MIT",
     "require": {
         "php": "^8.3",

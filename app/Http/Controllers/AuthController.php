@@ -57,15 +57,15 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed'],
             'admin_password' => 'nullable|string',
-            'role' => 'required|in:admin,tecnico',
+            'role' => 'required|in:admin,tecnico,invitado',
         ]);
 
         $rolSolicitado = $request->input('role');
         $claveAutorizacion = env('ADMIN_REGISTRATION_PASSWORD', 'Control2026*'); 
 
-        $asignado = 'tecnico';
-        if ($rolSolicitado === 'admin' && $request->input('admin_password') === $claveAutorizacion) {
-            $asignado = 'admin';
+        $asignado = $rolSolicitado;
+        if ($rolSolicitado === 'admin' && $request->input('admin_password') !== $claveAutorizacion) {
+            $asignado = 'tecnico'; // fallback de seguridad si la clave de admin es incorrecta
         }
 
         // Crear usuario con 'active' en true por defecto

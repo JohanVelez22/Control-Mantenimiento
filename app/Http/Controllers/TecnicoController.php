@@ -16,11 +16,18 @@ class TecnicoController extends Controller
 
     public function create()
     {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('tecnicos.index')->with('error', 'No tienes permisos para crear.');
+        }
         return view('tecnicos.create');
     }
 
     public function store(Request $request)
     {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('tecnicos.index')->with('error', 'No tienes permisos para crear.');
+        }
+
         $request->validate([
             'nombre' => 'required|string|max:255',
             'identificacion' => 'required|string|max:50|unique:tecnicos',
@@ -37,7 +44,7 @@ class TecnicoController extends Controller
 
     public function edit(Tecnico $tecnico)
     {
-        if (Auth::user()->role !== 'admin') {
+        if (Auth::user()->role === 'invitado') {
             return redirect()->route('tecnicos.index')->with('error', 'No tienes permisos para editar.');
         }
         
@@ -46,7 +53,7 @@ class TecnicoController extends Controller
 
     public function update(Request $request, Tecnico $tecnico)
     {
-        if (Auth::user()->role !== 'admin') {
+        if (Auth::user()->role === 'invitado') {
             return redirect()->route('tecnicos.index')->with('error', 'No tienes permisos para actualizar.');
         }
 

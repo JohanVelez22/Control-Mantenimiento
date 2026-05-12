@@ -30,7 +30,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // Rutas protegidas (autenticados)
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->group(function () {
     
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

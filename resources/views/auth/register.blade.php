@@ -19,7 +19,8 @@
         <div class="mb-4">
             <label class="block text-sm font-medium mb-2">Rol en el Sistema</label>
             <select name="role" id="role" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
-                <option value="tecnico" selected>Técnico</option>
+                <option value="invitado" selected>Invitado</option>
+                <option value="tecnico">Técnico</option>
                 <option value="admin">Administrador</option>
             </select>
         </div>
