@@ -51,13 +51,13 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-200 dark:bg-gray-700 text-center">
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">ID</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Nombre</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Identificación</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Móvil</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Email</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Dirección</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Acciones</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">ID</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Nombre</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Identificación</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Móvil</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Email</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Dirección</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
                 </tr>
             </thead>
             <tbody>

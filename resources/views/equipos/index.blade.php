@@ -52,13 +52,13 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-200 dark:bg-gray-700 text-center">
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">ID</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Equipo</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Serie</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Cliente</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Observación</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Usuario</th>
-                    <th class="p-3 border border-gray-400 dark:border-gray-500">Acciones</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">ID</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Equipo</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Serie</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Cliente</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Observación</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Usuario</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
                 </tr>
             </thead>
             <tbody>
