@@ -158,5 +158,8 @@
             </tbody>
         </table>
     </div>
+    <div class="mt-4">
+        {{ $mantenimientos->appends(request()->query())->links() }}
+    </div>
 </div>
 @endsection

@@ -66,5 +66,8 @@
             </tbody>
         </table>
     </div>
+    <div class="mt-4">
+        {{ $clientes->appends(request()->query())->links() }}
+    </div>
 </div>
 @endsection

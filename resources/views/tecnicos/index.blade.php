@@ -76,5 +76,8 @@
             </tbody>
         </table>
     </div>
+    <div class="mt-4">
+        {{ $tecnicos->appends(request()->query())->links() }}
+    </div>
 </div>
 @endsection

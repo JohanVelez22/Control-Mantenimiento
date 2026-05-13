@@ -21,7 +21,7 @@ class MantenimientoController extends Controller
      */
     public function index()
     {
-        $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user'])->orderBy('id', 'desc')->get();
+        $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user'])->orderBy('id', 'desc')->paginate(10);
         return view('mantenimientos.index', compact('mantenimientos'));
     }
 
@@ -56,11 +56,17 @@ class MantenimientoController extends Controller
         if ($request->filled('min_cost')) $query->where('costo', '>=', $request->min_cost);
         if ($request->filled('max_cost')) $query->where('costo', '<=', $request->max_cost);
 
-        $mantenimientos = $query->orderBy('id', 'desc')->get();
+        // Lógica de exportación o paginación según el botón presionado
+        if ($request->get('export') == 'excel') {
+            $mantenimientos = $query->orderBy('id', 'desc')->get();
+            return Excel::download(new MantenimientosExport($mantenimientos), 'reporte.xlsx');
+        }
+        if ($request->get('export') == 'pdf') {
+            $mantenimientos = $query->orderBy('id', 'desc')->get();
+            return Pdf::loadView('mantenimientos.pdf', compact('mantenimientos'))->download('reporte.pdf');
+        }
 
-        // Lógica de exportación según el botón presionado
-        if ($request->get('export') == 'excel') return Excel::download(new MantenimientosExport($mantenimientos), 'reporte.xlsx');
-        if ($request->get('export') == 'pdf') return Pdf::loadView('mantenimientos.pdf', compact('mantenimientos'))->download('reporte.pdf');
+        $mantenimientos = $query->orderBy('id', 'desc')->paginate(10);
 
         $clientes = Cliente::all();
         $equipos = Equipo::all();

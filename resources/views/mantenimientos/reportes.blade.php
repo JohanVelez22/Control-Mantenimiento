@@ -189,6 +189,9 @@
             @endif
         </table>
     </div>
+    <div class="mt-4 no-print">
+        {{ $mantenimientos->appends(request()->query())->links() }}
+    </div>
 </div>
 
 <style>

@@ -11,7 +11,7 @@ class ClienteController extends Controller
     // Mostrar lista de clientes (Accesible para Admin y Técnico)
     public function index()
     {
-        $clientes = Cliente::orderBy('id', 'desc')->get();
+        $clientes = Cliente::orderBy('id', 'desc')->paginate(10);
         return view('clientes.index', compact('clientes'));
     }
 

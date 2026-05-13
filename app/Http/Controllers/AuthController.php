@@ -64,12 +64,11 @@ class AuthController extends Controller
         $secretAdmin = env('ROLE_PROMOTE_ADMIN_SECRET', 'Admin2026*');
         $secretTecnico = env('ROLE_PROMOTE_TECNICO_SECRET', 'Tecny2026*');
 
-        $asignado = $rolSolicitado;
         if ($rolSolicitado === 'admin' && $request->input('admin_password') !== $secretAdmin) {
-            $asignado = 'invitado';
+            return back()->withErrors(['admin_password' => 'La clave de autorización es incorrecta para el rol de Administrador.'])->withInput();
         }
         if ($rolSolicitado === 'tecnico' && $request->input('admin_password') !== $secretTecnico) {
-            $asignado = 'invitado';
+            return back()->withErrors(['admin_password' => 'La clave de autorización es incorrecta para el rol de Técnico.'])->withInput();
         }
 
         // Crear usuario con 'active' en true por defecto
@@ -77,7 +76,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $asignado,
+            'role' => $rolSolicitado,
             'active' => true, 
         ]);
 

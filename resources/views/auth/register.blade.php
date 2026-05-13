@@ -43,8 +43,12 @@
 
         <div class="mb-4" id="auth-key-wrap">
             <label class="block text-sm font-medium mb-2">Clave de autorización <span class="text-gray-500 dark:text-gray-400 font-normal">(solo Administrador o Técnico)</span></label>
-            <input type="password" name="admin_password" id="admin_password" autocomplete="off" placeholder="Invitado: dejar vacío" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Los roles invitado no requieren esta clave.</p>
+            <input type="password" name="admin_password" id="admin_password" autocomplete="off" placeholder="Invitado: dejar vacío" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 @error('admin_password') border-red-500 @enderror">
+            @error('admin_password')
+                <p class="text-xs text-red-500 mt-1 font-semibold">{{ $message }}</p>
+            @else
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Los roles invitado no requieren esta clave.</p>
+            @enderror
         </div>
 
         <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Registrarse</button>
