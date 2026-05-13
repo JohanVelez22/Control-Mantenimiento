@@ -96,7 +96,7 @@
                             <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">
                                 {{ $m->equipo->nombre ?? '-' }}
                             </span>
-                            <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
+                            <span class="font-bold text-[14px] text-gray-400 italic whitespace-nowrap">
                                 ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }})
                             </span>
                             <span class="text-gray-900 dark:text-gray-100 text-[13.5px] whitespace-nowrap">
@@ -109,7 +109,7 @@
                             <span class="text-gray-900 dark:text-gray-100 font-bold group-hover:underline">
                                 {{ $m->equipo->cliente->nombre ?? '-' }}
                             </span>
-                            <span class="font-bold text-[13px] text-gray-400 italic">
+                            <span class="font-bold text-[14px] text-gray-400 italic">
                                 {{ $m->equipo->cliente->identificacion ?? '-' }}
                             </span>
                             {{-- Espacio extra para nivelar con la columna equipo --}}
@@ -119,8 +119,8 @@
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tecnico->nombre ?? '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <div class="flex flex-col items-center gap-0">
-                            <span class="text-gray-900 dark:text-gray-100 font-medium capitalize">{{ $m->tipo }}</span>
-                            <span class="text-[13px] text-gray-400 italic font-bold capitalize">({{ $m->reparacion }})</span>
+                            <span class="text-gray-900 dark:text-gray-100 font-bold capitalize">{{ $m->tipo }}</span>
+                            <span class="text-[15px] text-gray-400 italic font-bold capitalize">({{ $m->reparacion }})</span>
                         </div>
                     </td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->descripcion ?? '-' }}</td>
