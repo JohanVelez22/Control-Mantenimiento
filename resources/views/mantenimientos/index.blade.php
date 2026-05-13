@@ -92,8 +92,8 @@
                         </a>
                     </td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <a href="{{ route('equipos.index', ['search' => $m->equipo->serie ?? '']) }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group" title="Ver detalles del equipo">
-                            <span class="text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap group-hover:underline">
+                        <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group" title="Ver en tabla de equipos">
+                            <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">
                                 {{ $m->equipo->nombre ?? '-' }}
                             </span>
                             <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">

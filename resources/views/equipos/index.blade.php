@@ -1,21 +1,39 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    /* Fila resaltada al llegar por ancla (#equipo-id) */
+    tr:target {
+        background-color: rgba(59, 130, 246, 0.2) !important;
+        outline: 2px solid #3b82f6;
+    }
+</style>
+
+<script>
+    function centerAnchor() {
+        const hash = window.location.hash;
+        if (!hash) return;
+        function scrollToRow() {
+            const target = document.querySelector(hash);
+            if (!target) return false;
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return true;
+        }
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                if (!scrollToRow()) {
+                    setTimeout(scrollToRow, 50);
+                    setTimeout(scrollToRow, 200);
+                }
+            });
+        });
+    }
+    window.addEventListener('load', centerAnchor);
+</script>
+
 <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+    <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold">Listado de Equipos</h2>
-        
-        <form action="{{ route('equipos.index') }}" method="GET" class="flex items-center gap-2 w-full md:w-auto">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, Marca, Serie..." class="p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm w-full md:w-64">
-            <button type="submit" class="bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all text-sm">
-                🔍
-            </button>
-            @if(request('search'))
-                <a href="{{ route('equipos.index') }}" class="bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all text-sm">
-                    ❌
-                </a>
-            @endif
-        </form>
 
         @if(!auth()->user()->isInvitado())
             <a href="{{ route('equipos.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
@@ -45,7 +63,7 @@
             </thead>
             <tbody>
                 @foreach($equipos as $equipo)
-                <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
+                <tr id="equipo-{{ $equipo->id }}" class="scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $equipo->id }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <div class="flex items-baseline justify-center gap-1">

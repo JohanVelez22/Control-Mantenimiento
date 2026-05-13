@@ -9,21 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class EquipoController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Equipo::with(['cliente', 'user']);
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nombre', 'like', "%{$search}%")
-                  ->orWhere('marca', 'like', "%{$search}%")
-                  ->orWhere('modelo', 'like', "%{$search}%")
-                  ->orWhere('serie', 'like', "%{$search}%");
-            });
-        }
-
-        $equipos = $query->orderBy('id', 'desc')->paginate(10);
+        // Cargamos 'cliente' y 'user' para mostrar quién registró el equipo
+        $equipos = Equipo::with(['cliente', 'user'])->orderBy('id', 'desc')->paginate(10);
         return view('equipos.index', compact('equipos'));
     }
 

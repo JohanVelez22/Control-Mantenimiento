@@ -1,6 +1,36 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    /* Fila resaltada al llegar por ancla (#cliente-id) */
+    tr:target {
+        background-color: rgba(59, 130, 246, 0.2) !important;
+        outline: 2px solid #3b82f6;
+    }
+</style>
+
+<script>
+    function centerAnchor() {
+        const hash = window.location.hash;
+        if (!hash) return;
+        function scrollToRow() {
+            const target = document.querySelector(hash);
+            if (!target) return false;
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return true;
+        }
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                if (!scrollToRow()) {
+                    setTimeout(scrollToRow, 50);
+                    setTimeout(scrollToRow, 200);
+                }
+            });
+        });
+    }
+    window.addEventListener('load', centerAnchor);
+</script>
+
 <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold">Listado de Clientes</h2>
@@ -32,7 +62,7 @@
             </thead>
             <tbody>
                 @foreach($clientes as $cliente)
-                <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
+                <tr id="cliente-{{ $cliente->id }}" class="scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->id }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->nombre }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->identificacion }}</td>
