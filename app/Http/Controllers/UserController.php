@@ -81,19 +81,8 @@ class UserController extends Controller
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // Solo el administrador requiere contraseña de autorización para cambiar roles/estado
+        // El administrador puede cambiar roles y estados directamente
         if (auth()->user()->role === 'admin') {
-            $secretAdmin = env('ROLE_PROMOTE_ADMIN_SECRET', 'Admin2026*');
-            $secretTecnico = env('ROLE_PROMOTE_TECNICO_SECRET', 'Tecny2026*');
-
-            if ($request->role === 'admin' && $request->admin_password !== $secretAdmin) {
-                return back()->withErrors(['admin_password' => 'Contraseña de autorización incorrecta para el rol de Administrador.'])->withInput();
-            }
-
-            if ($request->role === 'tecnico' && $request->admin_password !== $secretTecnico) {
-                return back()->withErrors(['admin_password' => 'Contraseña de autorización incorrecta para el rol de Técnico.'])->withInput();
-            }
-            
             $usuario->role = $request->role;
             $usuario->active = $request->boolean('active');
         }
