@@ -23,11 +23,18 @@ class UserController extends Controller
 
     public function create()
     {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('usuarios.index')->with('error', 'Solo el administrador puede crear usuarios.');
+        }
         return view('usuarios.create');
     }
 
     public function store(Request $request)
     {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('usuarios.index')->with('error', 'Solo el administrador puede crear usuarios.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -55,11 +62,18 @@ class UserController extends Controller
 
     public function edit(User $usuario)
     {
+        if (auth()->user()->role !== 'admin' && auth()->id() !== $usuario->id) {
+            return redirect()->route('usuarios.index')->with('error', 'Solo puedes editar tu propio perfil.');
+        }
         return view('usuarios.edit', ['user' => $usuario]);
     }
 
     public function update(Request $request, User $usuario)
     {
+        if (auth()->user()->role !== 'admin' && auth()->id() !== $usuario->id) {
+            return redirect()->route('usuarios.index')->with('error', 'Solo puedes editar tu propio perfil.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $usuario->id,
@@ -67,16 +81,21 @@ class UserController extends Controller
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // Opcional: define en .env ROLE_PROMOTE_ADMIN_SECRET y ROLE_PROMOTE_TECNICO_SECRET (mismos valores por defecto si no existen).
-        $secretAdmin = env('ROLE_PROMOTE_ADMIN_SECRET', 'Admin2026*');
-        $secretTecnico = env('ROLE_PROMOTE_TECNICO_SECRET', 'Tecny2026*');
+        // Solo el administrador requiere contraseña de autorización para cambiar roles/estado
+        if (auth()->user()->role === 'admin') {
+            $secretAdmin = env('ROLE_PROMOTE_ADMIN_SECRET', 'Admin2026*');
+            $secretTecnico = env('ROLE_PROMOTE_TECNICO_SECRET', 'Tecny2026*');
 
-        if ($request->role === 'admin' && $request->admin_password !== $secretAdmin) {
-            return back()->withErrors(['admin_password' => 'Contraseña de autorización incorrecta para el rol de Administrador.'])->withInput();
-        }
+            if ($request->role === 'admin' && $request->admin_password !== $secretAdmin) {
+                return back()->withErrors(['admin_password' => 'Contraseña de autorización incorrecta para el rol de Administrador.'])->withInput();
+            }
 
-        if ($request->role === 'tecnico' && $request->admin_password !== $secretTecnico) {
-            return back()->withErrors(['admin_password' => 'Contraseña de autorización incorrecta para el rol de Técnico.'])->withInput();
+            if ($request->role === 'tecnico' && $request->admin_password !== $secretTecnico) {
+                return back()->withErrors(['admin_password' => 'Contraseña de autorización incorrecta para el rol de Técnico.'])->withInput();
+            }
+            
+            $usuario->role = $request->role;
+            $usuario->active = $request->boolean('active');
         }
 
         if ($request->filled('password') || $request->filled('password_confirmation')) {
@@ -95,8 +114,6 @@ class UserController extends Controller
 
         $usuario->name = $request->name;
         $usuario->email = $request->email;
-        $usuario->role = $request->role;
-        $usuario->active = $request->boolean('active'); 
 
         $usuario->save();
 
@@ -105,6 +122,10 @@ class UserController extends Controller
 
     public function destroy(User $usuario)
     {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('usuarios.index')->with('error', 'Solo el administrador puede eliminar usuarios.');
+        }
+
         if ($usuario->id === auth()->id()) {
             return redirect()->route('usuarios.index')->with('error', 'No puedes eliminar tu propia cuenta.');
         }
@@ -117,6 +138,10 @@ class UserController extends Controller
      */
     public function changePassword(Request $request, User $usuario)
     {
+        if (auth()->user()->role !== 'admin' && auth()->id() !== $usuario->id) {
+            return redirect()->route('usuarios.index')->with('error', 'Solo puedes cambiar tu propia contraseña.');
+        }
+
         $request->validate([
             'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed'],
         ]);

@@ -48,8 +48,8 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('tecnicos', TecnicoController::class);
     Route::resource('mantenimientos', MantenimientoController::class);
 
-    // Módulo de Usuarios (SOLO ADMIN)
-    Route::middleware(['role:admin'])->group(function () {
+    // Módulo de Usuarios (ADMIN y TÉCNICO)
+    Route::middleware(['role:admin,tecnico'])->group(function () {
     Route::resource('usuarios', UserController::class);
     Route::post('usuarios/{usuario}/change-password', [UserController::class, 'changePassword'])->name('usuarios.change-password');
     });

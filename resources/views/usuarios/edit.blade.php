@@ -23,6 +23,7 @@
         </div>
 
         {{-- Rol --}}
+        @if(auth()->user()->isAdmin())
         <div class="mb-4">
             <label class="block text-sm font-medium mb-2">Rol del Sistema</label>
             <select name="role" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -31,6 +32,9 @@
                 <option value="invitado" {{ old('role', $user->role) == 'invitado' ? 'selected' : '' }}>Invitado</option>
             </select>
         </div>
+        @else
+        <input type="hidden" name="role" value="{{ $user->role }}">
+        @endif
 
         {{-- Foto de Perfil --}}
         <div class="mb-4">
@@ -46,6 +50,7 @@
         </div>
 
         {{-- Estado (IMPORTANTE: name="active") --}}
+        @if(auth()->user()->isAdmin())
         <div class="mb-4">
             <label class="block text-sm font-medium mb-2">Estado de la Cuenta</label>
             <select name="active" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -53,6 +58,9 @@
                 <option value="0" {{ !old('active', $user->active) ? 'selected' : '' }}>Inactivo (Bloquear acceso)</option>
             </select>
         </div>
+        @else
+        <input type="hidden" name="active" value="{{ $user->active }}">
+        @endif
 
         <hr class="my-6 border-gray-200 dark:border-gray-700">
 
@@ -77,11 +85,13 @@
         <hr class="my-6 border-gray-200 dark:border-gray-700">
 
         {{-- Contraseña de Autorización --}}
+        @if(auth()->user()->isAdmin())
         <div class="mb-4">
-            <label class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Contraseña de Autorización (Admin/Técnico)</label>
-            <input type="password" name="admin_password" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded px-3 py-2" placeholder="Requerida para estos roles">
+            <label class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Contraseña de Autorización (Admin)</label>
+            <input type="password" name="admin_password" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded px-3 py-2" placeholder="Requerida para confirmar los cambios de rol/estado">
             @error('admin_password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
         </div>
+        @endif
 
         <div class="flex justify-end gap-4 mt-6">
             <a href="{{ route('usuarios.index') }}" class="w-1/2 text-center bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-gray-500/20">Cancelar</a>

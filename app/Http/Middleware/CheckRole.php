@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckRole
 {
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
         // 1. Verificamos si el usuario está desactivado
         if (Auth::check() && !Auth::user()->active) {
@@ -22,7 +22,7 @@ class CheckRole
         }
 
         // 2. Verificamos el rol
-        if (!Auth::check() || Auth::user()->role !== $role) {
+        if (!Auth::check() || !in_array(Auth::user()->role, $roles)) {
             return redirect()->route('dashboard')->with('error', 'No tienes permisos para acceder a esta sección.');
         }
 

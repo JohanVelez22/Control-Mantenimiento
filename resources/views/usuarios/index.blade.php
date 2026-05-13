@@ -4,9 +4,11 @@
 <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold">Listado de Usuarios</h2>
+        @if(auth()->user()->isAdmin())
         <a href="{{ route('usuarios.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
             ➕ Nuevo Usuario
         </a>
+        @endif
     </div>
 
     @if(session('success'))
@@ -59,11 +61,17 @@
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $u->created_at->format('d/m/Y') }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <div class="flex justify-center items-center gap-2 flex-wrap">
+                            @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
                             <a href="{{ route('usuarios.edit', $u->id) }}" class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20 text-sm">
                                 ✏️ Editar
                             </a>
+                            @else
+                            <span class="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-1 text-sm cursor-default" title="Solo lectura">
+                                👁️ <span class="hidden md:inline">Lectura</span>
+                            </span>
+                            @endif
                             
-                            @if($u->id !== auth()->id())
+                            @if(auth()->user()->isAdmin() && $u->id !== auth()->id())
                             <form action="{{ route('usuarios.destroy', $u->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar usuario?');">
                                 @csrf
                                 @method('DELETE')
