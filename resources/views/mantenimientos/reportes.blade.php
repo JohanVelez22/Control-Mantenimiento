@@ -146,13 +146,15 @@
                     
                     <!-- Columna Equipo: Nombre arriba, Marca/Modelo abajo -->
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <div class="font-medium">{{ $m->equipo->nombre ?? 'N/A' }}</div>
-                        <div class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
-                            ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
-                            <span class="not-italic text-gray-900 dark:text-gray-100 font-medium text-[13.5px]">
-                                {{ $m->equipo->serie ?? '' }}
-                            </span>
-                        </div>
+                        <a href="{{ route('equipos.index', ['search' => $m->equipo->serie ?? '']) }}" class="hover:opacity-75 transition-opacity group no-print-link" title="Ver detalles del equipo">
+                            <div class="font-bold text-blue-600 dark:text-blue-400 group-hover:underline">{{ $m->equipo->nombre ?? 'N/A' }}</div>
+                            <div class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
+                                ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
+                                <span class="not-italic text-gray-900 dark:text-gray-100 font-medium text-[13.5px]">
+                                    {{ $m->equipo->serie ?? '' }}
+                                </span>
+                            </div>
+                        </a>
                     </td>
 
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tecnico->nombre ?? 'N/A' }}</td>

@@ -92,8 +92,8 @@
                         </a>
                     </td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <div class="flex flex-col items-center gap-0">
-                            <span class="text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                        <a href="{{ route('equipos.index', ['search' => $m->equipo->serie ?? '']) }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group" title="Ver detalles del equipo">
+                            <span class="text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap group-hover:underline">
                                 {{ $m->equipo->nombre ?? '-' }}
                             </span>
                             <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
@@ -102,7 +102,7 @@
                             <span class="text-gray-900 dark:text-gray-100 text-[13.5px] whitespace-nowrap">
                                 {{ $m->equipo->serie ?? '' }}
                             </span>
-                        </div>
+                        </a>
                     </td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tecnico->nombre ?? '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tipo }}</td>
