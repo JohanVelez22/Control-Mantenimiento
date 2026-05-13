@@ -70,17 +70,16 @@
             <thead class="bg-gray-200 dark:bg-gray-700 text-center">
                 <tr>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Orden</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Equipo</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Cliente</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Técnico</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Tipo</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Reparación</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Observación</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Costo</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Estado</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Entrada</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Salida</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Usuario</th>
+                    <th class="p-2 border border-gray-300 dark:border-gray-500 text-xs">Información (Equipo/Cliente)</th>
+                    <th class="p-2 border border-gray-300 dark:border-gray-500 text-xs">Téc.</th>
+                    <th class="p-2 border border-gray-300 dark:border-gray-500 text-xs">Tipo</th>
+                    <th class="p-2 border border-gray-300 dark:border-gray-500 text-xs">Rep.</th>
+                    <th class="p-2 border border-gray-300 dark:border-gray-500 text-xs max-w-[120px]">Obs.</th>
+                    <th class="p-2 border border-gray-300 dark:border-gray-500 text-xs">Costo</th>
+                    <th class="p-2 border border-gray-300 dark:border-gray-500 text-xs">Estado</th>
+                    <th class="p-2 border border-gray-300 dark:border-gray-500 text-xs">Ent.</th>
+                    <th class="p-2 border border-gray-300 dark:border-gray-500 text-xs">Sal.</th>
+                    <th class="p-2 border border-gray-300 dark:border-gray-500 text-xs">User</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
                 </tr>
             </thead>
@@ -92,45 +91,49 @@
                             {{ $m->id_orden }}
                         </a>
                     </td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">
+                    <td class="p-2 border border-gray-300 dark:border-gray-500 min-w-[150px]">
+                        {{-- Link Equipo --}}
                         <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group" title="Ver en tabla de equipos">
-                            <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">
+                            <span class="text-gray-900 dark:text-gray-100 font-bold text-xs whitespace-nowrap group-hover:underline">
                                 {{ $m->equipo->nombre ?? '-' }}
                             </span>
-                            <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
+                            <span class="font-bold text-[10px] text-gray-400 italic whitespace-nowrap">
                                 ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }})
                             </span>
-                            <span class="text-gray-900 dark:text-gray-100 text-[13.5px] whitespace-nowrap">
-                                {{ $m->equipo->serie ?? '' }}
-                            </span>
                         </a>
-                    </td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">
+                        <hr class="my-1 border-gray-200 dark:border-gray-700">
+                        {{-- Link Cliente --}}
                         <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group" title="Ver en tabla de clientes">
-                            <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">
+                            <span class="text-gray-900 dark:text-gray-100 font-bold text-[11px] whitespace-nowrap group-hover:underline">
                                 {{ $m->equipo->cliente->nombre ?? '-' }}
                             </span>
-                            <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
+                            <span class="font-bold text-[10px] text-gray-400 italic whitespace-nowrap">
                                 {{ $m->equipo->cliente->identificacion ?? '-' }}
                             </span>
                         </a>
                     </td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tecnico->nombre ?? '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tipo }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->reparacion }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->descripcion ?? '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ number_format($m->costo, 2, '.', ',') }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">
+                    <td class="p-2 border border-gray-300 dark:border-gray-500 text-xs">{{ $m->tecnico->nombre ?? '-' }}</td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-500 text-[11px] capitalize">{{ $m->tipo }}</td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-500 text-[11px] capitalize">{{ $m->reparacion }}</td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-500 text-[10.5px] max-w-[110px] truncate" title="{{ $m->descripcion }}">
+                        {{ $m->descripcion ?? '-' }}
+                    </td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-500 text-xs font-bold text-green-600">${{ number_format($m->costo, 0) }}</td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-500">
                         @php
                             $bgEstado = $m->estado === 'pendiente' ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/30' : 'bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30';
                         @endphp
-                        <span class="px-2 py-1 rounded-md text-sm backdrop-blur-sm font-semibold border {{ $bgEstado }}">
+                        <span class="px-2 py-0.5 rounded-md text-[9.5px] backdrop-blur-sm font-semibold border {{ $bgEstado }}">
                             {{ ucfirst($m->estado) }}
                         </span>
                     </td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap">{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->user->name ?? '-' }}</td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-500 text-[10px] whitespace-nowrap">
+                        {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/y') }}
+                    </td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-500 text-[10px] whitespace-nowrap">
+                        {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/y') : '-' }}
+                    </td>
+                    <td class="p-2 border border-gray-300 dark:border-gray-500 text-[10px]">{{ $m->user->name ?? '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <div class="flex justify-center items-center gap-2 flex-wrap">
                             @if($m->estado === 'terminado' && $m->fecha_salida)
