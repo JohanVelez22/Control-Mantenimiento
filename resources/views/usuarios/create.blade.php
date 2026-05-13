@@ -50,12 +50,7 @@
             </ul>
         </div>
 
-        {{-- Contraseña de Autorización (quien crea el usuario) --}}
-        <div class="mb-4">
-            <label class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Contraseña de Autorización (Admin/Técnico)</label>
-            <input type="password" name="admin_password" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded px-3 py-2" placeholder="Requerida para estos roles">
-            @error('admin_password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-        </div>
+
 
         {{-- Confirmar Contraseña --}}
         <div class="mb-4">
