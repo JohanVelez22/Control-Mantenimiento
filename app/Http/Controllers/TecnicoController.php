@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tecnico;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class TecnicoController extends Controller
 {
@@ -12,6 +13,11 @@ class TecnicoController extends Controller
     {
         $tecnicos = Tecnico::orderBy('id', 'desc')->get();
         return view('tecnicos.index', compact('tecnicos'));
+    }
+
+    public function show(Tecnico $tecnico)
+    {
+        return redirect()->route('tecnicos.edit', $tecnico);
     }
 
     public function create()
@@ -34,10 +40,17 @@ class TecnicoController extends Controller
             'especialidad' => 'required|string|max:255',
             'movil' => 'required|string|max:20',
             'email' => 'nullable|email|max:255',
-            'direccion' => 'nullable|string'
+            'direccion' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        Tecnico::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('tecnicos', 'public');
+        }
+
+        Tecnico::create($data);
 
         return redirect()->route('tecnicos.index')->with('success', 'Técnico registrado correctamente.');
     }
@@ -63,10 +76,20 @@ class TecnicoController extends Controller
             'especialidad' => 'required|string|max:255',
             'movil' => 'required|string|max:20',
             'email' => 'nullable|email|max:255',
-            'direccion' => 'nullable|string'
+            'direccion' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $tecnico->update($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('photo')) {
+            if ($tecnico->photo && Storage::disk('public')->exists($tecnico->photo)) {
+                Storage::disk('public')->delete($tecnico->photo);
+            }
+            $data['photo'] = $request->file('photo')->store('tecnicos', 'public');
+        }
+
+        $tecnico->update($data);
 
         return redirect()->route('tecnicos.index')->with('success', 'Técnico actualizado correctamente.');
     }

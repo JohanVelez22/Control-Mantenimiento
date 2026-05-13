@@ -16,6 +16,11 @@ class UserController extends Controller
         return view('usuarios.index', compact('users'));
     }
 
+    public function show(User $usuario)
+    {
+        return redirect()->route('usuarios.edit', $usuario);
+    }
+
     public function create()
     {
         return view('usuarios.create');
@@ -62,6 +67,18 @@ class UserController extends Controller
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
+        // Opcional: define en .env ROLE_PROMOTE_ADMIN_SECRET y ROLE_PROMOTE_TECNICO_SECRET (mismos valores por defecto si no existen).
+        $secretAdmin = env('ROLE_PROMOTE_ADMIN_SECRET', 'Admin2026*');
+        $secretTecnico = env('ROLE_PROMOTE_TECNICO_SECRET', 'Tecny2026*');
+
+        if ($request->role === 'admin' && $request->admin_password !== $secretAdmin) {
+            return back()->withErrors(['admin_password' => 'Contraseña de autorización incorrecta para el rol de Administrador.'])->withInput();
+        }
+
+        if ($request->role === 'tecnico' && $request->admin_password !== $secretTecnico) {
+            return back()->withErrors(['admin_password' => 'Contraseña de autorización incorrecta para el rol de Técnico.'])->withInput();
+        }
+
         if ($request->filled('password') || $request->filled('password_confirmation')) {
             $request->validate([
                 'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed']
@@ -93,5 +110,20 @@ class UserController extends Controller
         }
         $usuario->delete();
         return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado.');
+    }
+
+    /**
+     * Cambia solo la contraseña de un usuario (ruta dedicada; útil para integraciones o formularios separados).
+     */
+    public function changePassword(Request $request, User $usuario)
+    {
+        $request->validate([
+            'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed'],
+        ]);
+
+        $usuario->password = Hash::make($request->password);
+        $usuario->save();
+
+        return redirect()->route('usuarios.edit', $usuario)->with('success', 'Contraseña actualizada correctamente.');
     }
 }

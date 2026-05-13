@@ -15,7 +15,8 @@ class Tecnico extends Model
         'especialidad',
         'movil',
         'email',
-        'direccion'
+        'direccion',
+        'photo'
     ];
 
     // Relación: Un técnico puede tener muchos mantenimientos (Lo usaremos en la siguiente fase)

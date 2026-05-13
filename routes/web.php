@@ -37,10 +37,10 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/export', [DashboardController::class, 'export'])->name('dashboard.export');
 
     // Nueva Ruta de Reportes Independiente
     Route::get('/reportes', [MantenimientoController::class, 'reportes'])->name('mantenimientos.reportes');
+    Route::get('/mantenimientos/{mantenimiento}/factura', [MantenimientoController::class, 'factura'])->name('mantenimientos.factura');
 
     // Módulos generales
     Route::resource('clientes', ClienteController::class);

@@ -1,10 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold">Listado de Usuarios</h2>
-        <a href="{{ route('usuarios.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">+ Nuevo Usuario</a>
+        <a href="{{ route('usuarios.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
+            ➕ Nuevo Usuario
+        </a>
     </div>
 
     @if(session('success'))
@@ -50,21 +52,27 @@
                         <span class="capitalize">{{ $u->role }}</span>
                     </td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <span class="px-2 py-1 rounded text-white text-xs {{ $u->active ? 'bg-green-500' : 'bg-gray-500' }}">
+                        <span class="px-2 py-1 rounded-md text-xs font-semibold backdrop-blur-sm border {{ $u->active ? 'bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/30' }}">
                             {{ $u->active ? 'Activo' : 'Inactivo' }}
                         </span>
                     </td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $u->created_at->format('d/m/Y') }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <a href="{{ route('usuarios.edit', $u->id) }}" class="text-yellow-500 hover:underline mr-3 font-medium">Editar</a>
-                        
-                        @if($u->id !== auth()->id())
-                        <form action="{{ route('usuarios.destroy', $u->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este usuario?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-500 hover:underline font-medium">Eliminar</button>
-                        </form>
-                        @endif
+                        <div class="flex justify-center items-center gap-2 flex-wrap">
+                            <a href="{{ route('usuarios.edit', $u->id) }}" class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20 text-sm">
+                                ✏️ Editar
+                            </a>
+                            
+                            @if($u->id !== auth()->id())
+                            <form action="{{ route('usuarios.destroy', $u->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar usuario?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-red-500/20 text-sm">
+                                    🗑️ Borrar
+                                </button>
+                            </form>
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @endforeach

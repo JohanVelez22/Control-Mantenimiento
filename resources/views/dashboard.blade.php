@@ -15,19 +15,19 @@
 </style>
 
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-600 border-l-4 border-l-blue-500">
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-blue-500 dark:border-l-sky-400">
         <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">💻 Total de Equipos</div>
         <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $totalEquipos ?? 0 }}</div>
     </div>
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-600 border-l-4 border-l-emerald-500">
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-emerald-500 dark:border-l-emerald-400">
         <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">🔧 Mantenimientos</div>
         <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $totalMantenimientos ?? 0 }}</div>
     </div>
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-600 border-l-4 border-l-amber-500">
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-amber-500 dark:border-l-amber-400">
         <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">⏳ Pendientes</div>
         <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $stats['pendientes'] ?? 0 }}</div>
     </div>
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-600 border-l-4 border-l-violet-500">
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-violet-500 dark:border-l-violet-400">
         <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">✅ Terminados</div>
         <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $stats['terminados'] ?? 0 }}</div>
     </div>
@@ -35,7 +35,7 @@
 
 <!-- Carrusel de Gráficos -->
 <h3 class="text-lg font-bold mb-3 text-gray-700 dark:text-gray-300 flex items-center gap-2">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+    <span class="text-xl leading-none shrink-0" aria-hidden="true">📆</span>
     Análisis Visual de Rendimiento
 </h3>
 <div class="mb-8 relative overflow-hidden rounded-2xl shadow-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 group" id="statsCarouselContainer">
@@ -82,26 +82,14 @@
             </div>
         </div>
 
-        <!-- Slide 3: Ingresos por día (últimos 7) + total acumulado -->
+        <!-- Slide 3: Ingresos por día (últimos 7) -->
         <div class="w-1/4 p-6 flex flex-col bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900" style="height: 420px;">
-            <div class="px-4 mb-4 space-y-3">
-                <div class="flex flex-wrap items-start justify-between gap-2">
-                    <div class="min-w-0">
-                        <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Ingresos por día</h4>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Órdenes terminadas: suma de costo por fecha de salida</p>
-                    </div>
-                    <span class="text-xs font-bold px-3 py-1.5 bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200 rounded-full shadow-sm shrink-0">7 días</span>
+            <div class="flex justify-between items-center mb-6 px-4">
+                <div>
+                    <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Ingresos por día</h4>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Órdenes terminadas: suma de costo por fecha de salida</p>
                 </div>
-                <div class="flex flex-wrap gap-6 pt-3 border-t border-gray-200 dark:border-gray-700">
-                    <div>
-                        <p class="text-[10px] font-bold uppercase text-gray-500 dark:text-gray-400 tracking-wide">Total acumulado</p>
-                        <p class="text-lg font-black text-teal-600 dark:text-teal-400">${{ $totalCostoFormateado ?? '0.00' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-bold uppercase text-gray-500 dark:text-gray-400 tracking-wide">Hoy</p>
-                        <p class="text-lg font-black text-blue-600 dark:text-blue-400">${{ $totalCostoDiaFormateado ?? '0.00' }}</p>
-                    </div>
-                </div>
+                <span class="text-xs font-bold px-3 py-1.5 bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200 rounded-full shadow-sm">Útimos 7 días</span>
             </div>
             <div class="w-full flex-grow relative px-2 pb-8">
                 <canvas id="ingresosChart"></canvas>
@@ -124,9 +112,25 @@
 
     </div>
 
-    <!-- Controles -->
-    <button id="btnPrev" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 dark:bg-gray-700/10 hover:bg-white/40 dark:hover:bg-gray-700/40 text-gray-800 dark:text-white w-10 h-10 rounded-full flex items-center justify-center shadow backdrop-blur-md transition-all duration-300 z-10 opacity-0 group-hover:opacity-100 hover:scale-110"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg></button>
-    <button id="btnNext" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 dark:bg-gray-700/10 hover:bg-white/40 dark:hover:bg-gray-700/40 text-gray-800 dark:text-white w-10 h-10 rounded-full flex items-center justify-center shadow backdrop-blur-md transition-all duration-300 z-10 opacity-0 group-hover:opacity-100 hover:scale-110"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></button>
+    <!-- Controles: fondo muy suave para no tapar los gráficos -->
+    <button type="button" id="btnPrev" aria-label="Anterior" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10 border border-gray-200/40 dark:border-gray-500/30 bg-white/25 dark:bg-gray-900/25 backdrop-blur-[2px] text-gray-700/45 dark:text-gray-100/45 shadow-sm opacity-30 transition-all duration-300 group-hover:opacity-55 hover:!opacity-85 hover:bg-white/40 dark:hover:bg-gray-800/45 hover:text-gray-900 dark:hover:text-white hover:scale-105">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+    </button>
+    <button type="button" id="btnNext" aria-label="Siguiente" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10 border border-gray-200/40 dark:border-gray-500/30 bg-white/25 dark:bg-gray-900/25 backdrop-blur-[2px] text-gray-700/45 dark:text-gray-100/45 shadow-sm opacity-30 transition-all duration-300 group-hover:opacity-55 hover:!opacity-85 hover:bg-white/40 dark:hover:bg-gray-800/45 hover:text-gray-900 dark:hover:text-white hover:scale-105">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+    </button>
+</div>
+
+<!-- Tarjetas de ingresos (resumen rápido bajo el carrusel) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-green-500 dark:border-l-green-400">
+        <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">💰 Costo Acumulado (Histórico)</div>
+        <div class="text-2xl font-bold text-green-600 dark:text-green-400">${{ $totalCostoFormateado ?? '0.00' }}</div>
+    </div>
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-blue-500 dark:border-l-sky-400">
+        <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">💵 Ingresos del Día (Hoy)</div>
+        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">${{ $totalCostoDiaFormateado ?? '0.00' }}</div>
+    </div>
 </div>
 
 <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-gray-200 dark:border-gray-600 rounded-2xl p-6">
@@ -271,6 +275,14 @@
         // --- LÓGICA DE GRÁFICOS (CHART.JS) MEJORADA ---
         Chart.defaults.font.family = "'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
         Chart.defaults.color = '#6B7280'; // gray-500
+
+        // Custom positioner to ensure tooltips follow the cursor instead of centering on arcs
+        Chart.Tooltip.positioners.cursorCustom = function(elements, eventPosition) {
+            return {
+                x: eventPosition.x,
+                y: eventPosition.y
+            };
+        };
         
         const chartData = @json($chartData);
         const stats = @json($stats);
@@ -335,6 +347,7 @@
                             labels: { usePointStyle: true, padding: 20, font: { weight: 'bold' } }
                         },
                         tooltip: {
+                            position: 'cursorCustom',
                             backgroundColor: 'rgba(17, 24, 39, 0.9)',
                             titleFont: { size: 14 },
                             bodyFont: { size: 13 },
@@ -359,36 +372,33 @@
             });
         }
 
-        // Plugin para poner texto en el centro de la Dona
+        // Texto central de la dona: debe dibujarse DESPUÉS de los segmentos (no en beforeDraw) para que no quede tapado.
         const centerTextPlugin = {
             id: 'centerText',
-            beforeDraw: function(chart) {
+            afterDraw: function(chart) {
                 if (chart.config.type !== 'doughnut') return;
-                var width = chart.width,
-                    height = chart.height,
-                    ctx = chart.ctx;
+                const width = chart.width;
+                const height = chart.height;
+                const ctx = chart.ctx;
+                const isDark = document.documentElement.classList.contains('dark');
 
-                ctx.restore();
-                var fontSize = (height / 120).toFixed(2);
-                ctx.font = "bold " + fontSize + "em sans-serif";
-                ctx.textBaseline = "middle";
-                ctx.fillStyle = document.documentElement.classList.contains('dark') ? '#E5E7EB' : '#1F2937';
-
-                var total = chart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                var text = total.toString(),
-                    textX = Math.round((width - ctx.measureText(text).width) / 2),
-                    textY = height / 2 - 10;
-
-                ctx.fillText(text, textX, textY);
-
-                ctx.font = "600 " + (fontSize / 2.5).toFixed(2) + "em sans-serif";
-                ctx.fillStyle = '#6B7280';
-                var text2 = "Órdenes Totales",
-                    text2X = Math.round((width - ctx.measureText(text2).width) / 2),
-                    text2Y = height / 2 + 15;
-                
-                ctx.fillText(text2, text2X, text2Y);
                 ctx.save();
+                const fontSize = (height / 120).toFixed(2);
+                ctx.font = 'bold ' + fontSize + 'em sans-serif';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
+
+                const total = chart.config.data.datasets[0].data.reduce(function (a, b) { return a + b; }, 0);
+                const text = total.toString();
+                const textY = height / 2 - 10;
+                ctx.fillText(text, Math.round((width - ctx.measureText(text).width) / 2), textY);
+
+                ctx.font = '600 ' + (fontSize / 2.5).toFixed(2) + 'em sans-serif';
+                ctx.fillStyle = isDark ? '#d1d5db' : '#4b5563';
+                const text2 = 'Órdenes Totales';
+                const text2Y = height / 2 + 15;
+                ctx.fillText(text2, Math.round((width - ctx.measureText(text2).width) / 2), text2Y);
+                ctx.restore();
             }
         };
 
@@ -406,7 +416,7 @@
             gradPendiente.addColorStop(0, 'rgba(245, 158, 11, 0.7)');
             gradPendiente.addColorStop(1, 'rgba(245, 158, 11, 0.1)');
 
-            new Chart(ctxPie, {
+            const pieChart = new Chart(ctxPie, {
                 type: 'doughnut',
                 plugins: [centerTextPlugin],
                 data: {
@@ -432,6 +442,7 @@
                             labels: { usePointStyle: true, padding: 15, font: { weight: 'bold', size: 12 } }
                         },
                         tooltip: {
+                            position: 'cursorCustom',
                             backgroundColor: 'rgba(17, 24, 39, 0.9)',
                             bodyFont: { size: 14, weight: 'bold' },
                             padding: 12,
@@ -451,43 +462,75 @@
                     animation: { animateScale: true, animateRotate: true }
                 }
             });
+
+            // Al cambiar claro/oscuro el canvas no se redibuja solo: forzar actualización del gráfico circular
+            if (typeof MutationObserver !== 'undefined') {
+                new MutationObserver(function () {
+                    pieChart.update('none');
+                }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+            }
         }
 
         const canvasIngresos = document.getElementById('ingresosChart');
         if (canvasIngresos) {
             const ctxIng = canvasIngresos.getContext('2d');
             const gradientTeal = ctxIng.createLinearGradient(0, 0, 0, 400);
-            gradientTeal.addColorStop(0, 'rgba(20, 184, 166, 0.85)');
+            gradientTeal.addColorStop(0, 'rgba(20, 184, 166, 0.85)'); // green/teal
             gradientTeal.addColorStop(1, 'rgba(20, 184, 166, 0.12)');
+
+            const gradientBlueIng = ctxIng.createLinearGradient(0, 0, 0, 400);
+            gradientBlueIng.addColorStop(0, 'rgba(59, 130, 246, 0.85)'); // blue
+            gradientBlueIng.addColorStop(1, 'rgba(59, 130, 246, 0.12)');
+
+            const ingresosAcumuladosData = (chartData && chartData.ingresosAcumulados) ? chartData.ingresosAcumulados : [];
 
             new Chart(ctxIng, {
                 type: 'bar',
                 data: {
                     labels: chartData.labels,
-                    datasets: [{
-                        label: 'Ingresos del día',
-                        data: ingresosData,
-                        backgroundColor: gradientTeal,
-                        borderColor: 'rgb(13, 148, 136)',
-                        borderWidth: 2,
-                        borderRadius: 6,
-                        borderSkipped: false,
-                        barPercentage: 0.55,
-                        categoryPercentage: 0.85
-                    }]
+                    datasets: [
+                        {
+                            label: 'Ingresos Acumulados',
+                            data: ingresosAcumuladosData,
+                            backgroundColor: gradientTeal,
+                            borderColor: 'rgb(13, 148, 136)',
+                            borderWidth: 2,
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.55,
+                            categoryPercentage: 0.85
+                        },
+                        {
+                            label: 'Ingresos del Día',
+                            data: ingresosData,
+                            backgroundColor: gradientBlueIng,
+                            borderColor: 'rgb(59, 130, 246)',
+                            borderWidth: 2,
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barPercentage: 0.55,
+                            categoryPercentage: 0.85
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: false },
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: { usePointStyle: true, padding: 15, font: { weight: 'bold' } }
+                        },
                         tooltip: {
+                            position: 'cursorCustom',
                             backgroundColor: 'rgba(17, 24, 39, 0.9)',
                             padding: 12,
                             cornerRadius: 8,
+                            usePointStyle: true,
                             callbacks: {
                                 label: function(ctx) {
-                                    return formatMoneyEs(ctx.parsed.y);
+                                    return ctx.dataset.label + ': ' + formatMoneyEs(ctx.parsed.y);
                                 }
                             }
                         }
@@ -556,6 +599,7 @@
                             labels: { usePointStyle: true, padding: 15, font: { weight: 'bold' } }
                         },
                         tooltip: {
+                            position: 'cursorCustom',
                             backgroundColor: 'rgba(17, 24, 39, 0.9)',
                             bodyFont: { size: 14 },
                             padding: 12,

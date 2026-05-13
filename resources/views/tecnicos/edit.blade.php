@@ -4,7 +4,7 @@
 <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
     <h2 class="text-2xl font-bold mb-6">Editar Técnico</h2>
     
-    <form method="POST" action="{{ route('tecnicos.update', $tecnico->id) }}">
+    <form method="POST" action="{{ route('tecnicos.update', $tecnico->id) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -44,9 +44,21 @@
             <textarea name="direccion" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">{{ old('direccion', $tecnico->direccion) }}</textarea>
         </div>
 
-        <div class="flex justify-end gap-2">
-            <a href="{{ route('tecnicos.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Cancelar</a>
-            <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">Actualizar Técnico</button>
+        <div class="mb-6">
+            <label class="block text-sm font-medium mb-2">Foto del Técnico</label>
+            @if($tecnico->photo)
+                <div class="mb-3">
+                    <img src="{{ asset('storage/' . $tecnico->photo) }}" width="100" height="100" class="rounded-full object-cover border-2 border-gray-300 dark:border-gray-600">
+                </div>
+            @endif
+            <input type="file" name="photo" accept="image/*" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 @error('photo') border-red-500 @enderror">
+            <p class="text-xs text-gray-500 mt-1">Sube una nueva imagen para actualizar la foto.</p>
+            @error('photo') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+        </div>
+
+        <div class="flex justify-end gap-4 mt-6">
+            <a href="{{ route('tecnicos.index') }}" class="w-1/2 text-center bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-gray-500/20">Cancelar</a>
+            <button type="submit" class="w-1/2 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20">Actualizar Técnico</button>
         </div>
     </form>
 </div>

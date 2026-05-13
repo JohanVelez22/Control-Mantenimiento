@@ -15,6 +15,11 @@ class ClienteController extends Controller
         return view('clientes.index', compact('clientes'));
     }
 
+    public function show(Cliente $cliente)
+    {
+        return redirect()->route('clientes.edit', $cliente);
+    }
+
     // Mostrar formulario de creación (Accesible para Admin y Técnico)
     public function create()
     {

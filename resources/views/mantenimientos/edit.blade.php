@@ -37,12 +37,12 @@
 
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-2">Fecha Entrada</label>
-                <input type="date" name="fecha_entrada" value="{{ old('fecha_entrada', $mantenimiento->fecha_entrada) }}" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+                <input type="date" name="fecha_entrada" value="{{ old('fecha_entrada', $mantenimiento->fecha_entrada ? \Carbon\Carbon::parse($mantenimiento->fecha_entrada)->format('Y-m-d') : '') }}" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
             </div>
 
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-2">Fecha Salida</label>
-                <input type="date" name="fecha_salida" value="{{ old('fecha_salida', $mantenimiento->fecha_salida) }}" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+                <input type="date" name="fecha_salida" value="{{ old('fecha_salida', $mantenimiento->fecha_salida ? \Carbon\Carbon::parse($mantenimiento->fecha_salida)->format('Y-m-d') : '') }}" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
             </div>
 
             <div class="mb-4">
@@ -83,9 +83,9 @@
             </div>
         </div>
 
-        <div class="flex justify-end gap-2">
-            <a href="{{ route('mantenimientos.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Cancelar</a>
-            <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">Actualizar</button>
+        <div class="flex justify-end gap-4 mt-6">
+            <a href="{{ route('mantenimientos.index') }}" class="w-1/2 text-center bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-gray-500/20">Cancelar</a>
+            <button type="submit" class="w-1/2 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20">Actualizar</button>
         </div>
     </form>
 </div>

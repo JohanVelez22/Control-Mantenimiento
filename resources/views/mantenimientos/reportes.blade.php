@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-white dark:bg-gray-900 rounded-lg shadow p-6 mb-6">
+<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6 mb-6">
     
     <!-- Encabezado y Botones -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -10,13 +10,13 @@
         </div>
         
         <div class="flex flex-wrap gap-2 no-print">
-            <button onclick="window.print()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2 shadow transition">
+            <button type="button" onclick="window.print()" class="inline-flex items-center gap-2 bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-gray-500/20">
                 <span>🖨️</span> Imprimir
             </button>
-            <a href="{{ route('mantenimientos.reportes', array_merge(request()->all(), ['export' => 'excel'])) }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2 shadow transition">
+            <a href="{{ route('mantenimientos.reportes', array_merge(request()->all(), ['export' => 'excel'])) }}" class="inline-flex items-center gap-2 bg-green-500/20 text-green-700 dark:text-green-400 border border-green-500/30 hover:bg-green-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-green-500/20">
                 <span>📊</span> Excel
             </a>
-            <a href="{{ route('mantenimientos.reportes', array_merge(request()->all(), ['export' => 'pdf'])) }}" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2 shadow transition">
+            <a href="{{ route('mantenimientos.reportes', array_merge(request()->all(), ['export' => 'pdf'])) }}" class="inline-flex items-center gap-2 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-red-500/20">
                 <span>📄</span> PDF
             </a>
         </div>
@@ -103,15 +103,19 @@
             <input type="hidden" name="max_cost" id="max_cost" value="{{ request('max_cost') }}">
         </div>
 
-        <div class="lg:col-span-4 flex justify-end gap-2">
-            <a href="{{ route('mantenimientos.reportes') }}" class="bg-gray-400 text-white font-bold py-2 px-6 rounded text-sm">Limpiar</a>
-            <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-6 rounded text-sm shadow">Filtrar Reporte</button>
+        <div class="lg:col-span-4 flex justify-end gap-2 mt-2">
+            <a href="{{ route('mantenimientos.reportes') }}" class="inline-flex items-center justify-center gap-2 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20">
+                <span>🧹</span> Limpiar
+            </a>
+            <button type="submit" class="inline-flex items-center justify-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
+                <span>🔍</span> Filtrar Reporte
+            </button>
         </div>
     </form>
 
-    <!-- Tabla con Datos Independientes -->
+    <!-- Tabla con Datos Independientes (vista en pantalla: como antes; impresión: clase reportes-tabla-imprimir) -->
     <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse border border-gray-300 dark:border-gray-500">
+        <table class="reportes-tabla-imprimir w-full text-left border-collapse border border-gray-300 dark:border-gray-500">
             <thead class="bg-gray-100 dark:bg-gray-700 text-center text-[12px] font-bold uppercase">
                 <tr>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Orden</th>
@@ -127,7 +131,7 @@
             </thead>
             <tbody class="text-center text-sm">
                 @forelse($mantenimientos as $m)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 border-b border-gray-300 dark:border-gray-500 transition">
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition border-b border-gray-300 dark:border-gray-500">
                     <td class="p-3 font-bold whitespace-nowrap border border-gray-300 dark:border-gray-500">
                         <a href="{{ route('mantenimientos.index') }}#mantenimiento-{{ $m->id }}" class="text-blue-600 hover:text-blue-800 hover:underline no-print-link">
                             {{ $m->id_orden }}
@@ -150,10 +154,10 @@
                     
                     <!-- Columna Tipo con Colores (Azul/Verde) -->
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <span class="px-2 py-1 rounded text-[11px] font-bold uppercase 
+                        <span class="px-2 py-1 rounded-md text-[11px] font-bold uppercase backdrop-blur-sm border 
                             {{ $m->tipo == 'preventivo' 
-                                ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200' 
-                                : 'bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-200' }}">
+                                ? 'bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30' 
+                                : 'bg-sky-500/20 text-sky-700 dark:text-sky-400 border-sky-500/30' }}">
                             {{ $m->tipo }}
                         </span>
                     </td>
@@ -188,15 +192,91 @@
 </div>
 
 <style>
+/* Solo al usar "Imprimir" (window.print): cuadrícula uniforme; en pantalla no cambia el aspecto Tailwind */
 @media print {
     .no-print, nav, aside, header, footer, form, button { display: none !important; }
     a:not(.no-print-link) { display: none !important; }
-    .no-print-link { color: black !important; text-decoration: none !important; cursor: default !important; }
-    body { background: white !important; color: black !important; margin: 1cm !important; padding: 0 !important; }
+    .no-print-link { color: #000 !important; text-decoration: none !important; cursor: default !important; }
+    body { background: #fff !important; color: #000 !important; margin: 12mm !important; padding: 0 !important; }
     .shadow, .rounded-lg { box-shadow: none !important; border: none !important; }
-    table { width: 100% !important; border: 1px solid #000 !important; font-size: 8pt !important; border-collapse: collapse !important; }
-    th, td { border: 1px solid #000 !important; padding: 4px !important; }
-    h2 { text-align: center !important; font-size: 18pt !important; margin-bottom: 20px !important; }
+
+    .reportes-tabla-imprimir {
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        font-size: 8pt !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .reportes-tabla-imprimir thead { display: table-header-group !important; }
+    .reportes-tabla-imprimir tfoot { display: table-footer-group !important; }
+
+    .reportes-tabla-imprimir th,
+    .reportes-tabla-imprimir td {
+        border-style: solid !important;
+        border-color: #000 !important;
+        border-width: 0 1px 1px 0 !important;
+        padding: 5px 4px !important;
+        background: #fff !important;
+        color: #000 !important;
+        vertical-align: middle !important;
+        overflow: visible !important;
+    }
+
+    /* Texto legible al imprimir (evita serial “invisible” por clases dark: en fondo blanco) */
+    .reportes-tabla-imprimir th *,
+    .reportes-tabla-imprimir td * {
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+    }
+
+    /* Columna Equipo (3): permitir salto de línea para que salga marca/modelo y serial completo */
+    .reportes-tabla-imprimir tbody td:nth-child(3),
+    .reportes-tabla-imprimir tbody td:nth-child(3) div {
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    /* Columna Tipo (5): evitar recorte del badge correctivo/preventivo */
+    .reportes-tabla-imprimir tbody td:nth-child(5) {
+        white-space: normal !important;
+        vertical-align: middle !important;
+    }
+    .reportes-tabla-imprimir tbody td:nth-child(5) span {
+        display: inline-block !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 2px 5px !important;
+        margin: 0 !important;
+        font-size: 7pt !important;
+        line-height: 1.2 !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        border: 1px solid #000 !important;
+        border-radius: 2px !important;
+        background: #eee !important;
+        backdrop-filter: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .reportes-tabla-imprimir th:first-child,
+    .reportes-tabla-imprimir td:first-child {
+        border-left-width: 1px !important;
+    }
+
+    .reportes-tabla-imprimir thead tr th {
+        border-top-width: 1px !important;
+        background: #e8e8e8 !important;
+    }
+
+    .reportes-tabla-imprimir tbody tr {
+        page-break-inside: avoid !important;
+    }
+
+    h2 { text-align: center !important; font-size: 16pt !important; margin-bottom: 12px !important; color: #000 !important; }
 }
 </style>
 <script>

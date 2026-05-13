@@ -16,6 +16,11 @@ class EquipoController extends Controller
         return view('equipos.index', compact('equipos'));
     }
 
+    public function show(Equipo $equipo)
+    {
+        return redirect()->route('equipos.edit', $equipo);
+    }
+
     public function create()
     {
         if (Auth::user()->role === 'invitado') {

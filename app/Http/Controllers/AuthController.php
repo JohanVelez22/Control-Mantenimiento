@@ -61,11 +61,15 @@ class AuthController extends Controller
         ]);
 
         $rolSolicitado = $request->input('role');
-        $claveAutorizacion = env('ADMIN_REGISTRATION_PASSWORD', 'Control2026*'); 
+        $secretAdmin = env('ROLE_PROMOTE_ADMIN_SECRET', 'Admin2026*');
+        $secretTecnico = env('ROLE_PROMOTE_TECNICO_SECRET', 'Tecny2026*');
 
         $asignado = $rolSolicitado;
-        if ($rolSolicitado === 'admin' && $request->input('admin_password') !== $claveAutorizacion) {
-            $asignado = 'tecnico'; // fallback de seguridad si la clave de admin es incorrecta
+        if ($rolSolicitado === 'admin' && $request->input('admin_password') !== $secretAdmin) {
+            $asignado = 'invitado';
+        }
+        if ($rolSolicitado === 'tecnico' && $request->input('admin_password') !== $secretTecnico) {
+            $asignado = 'invitado';
         }
 
         // Crear usuario con 'active' en true por defecto

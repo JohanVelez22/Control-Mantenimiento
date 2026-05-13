@@ -1,11 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold">Listado de Equipos</h2>
         @if(!auth()->user()->isInvitado())
-            <a href="{{ route('equipos.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">+ Nuevo Equipo</a>
+            <a href="{{ route('equipos.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
+                ➕ Nuevo Equipo
+            </a>
         @endif
     </div>
 
@@ -50,18 +52,26 @@
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $equipo->observacion ?? '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $equipo->user->name ?? '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        @if(!auth()->user()->isInvitado())
-                            <a href="{{ route('equipos.edit', $equipo->id) }}" class="text-yellow-500 hover:underline mr-2">Editar</a>
-                            @if(auth()->user()->isAdmin())
-                                <form action="{{ route('equipos.destroy', $equipo->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar este equipo?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:underline">Eliminar</button>
-                                </form>
+                        <div class="flex justify-center items-center gap-2 flex-wrap">
+                            @if(!auth()->user()->isInvitado())
+                                <a href="{{ route('equipos.edit', $equipo->id) }}" class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20 text-sm">
+                                    ✏️ Editar
+                                </a>
+                                @if(auth()->user()->isAdmin())
+                                    <form action="{{ route('equipos.destroy', $equipo->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar equipo?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-red-500/20 text-sm">
+                                            🗑️ Borrar
+                                        </button>
+                                    </form>
+                                @endif
+                            @else
+                                <span class="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-1 text-sm cursor-default" title="Solo lectura">
+                                    👁️ <span class="hidden md:inline">Lectura</span>
+                                </span>
                             @endif
-                        @else
-                            <span class="text-gray-500 text-sm">Lectura</span>
-                        @endif
+                        </div>
                     </td>
                 </tr>
                 @endforeach

@@ -23,7 +23,7 @@
 ## 3. Requisitos Funcionales
 
 ### 3.1 Autenticación y Seguridad
-- **Registro de Usuarios:** Permite elegir rol (Técnico/Admin). El rol Admin requiere una clave de autorización secreta (`ADMIN_REGISTRATION_PASSWORD`). (la contraseña es: Control2026*)
+- **Registro de Usuarios:** Permite elegir rol (Invitado / Técnico / Administrador). Los roles **Técnico** y **Administrador** requieren la clave configurada en `ROLE_PROMOTE_TECNICO_SECRET` o `ROLE_PROMOTE_ADMIN_SECRET` (con valores por defecto en código si las variables están vacías). **Invitado** no requiere clave.
 - **Validación de Contraseñas:** Mínimo 8 caracteres, al menos una mayúscula, una minúscula y un número.
 - **Estado de Usuario:** Los usuarios pueden ser desactivados por un Admin, impidiéndoles el acceso al sistema.
 - **Middleware:** Protección de rutas según el rol y estado de autenticación.

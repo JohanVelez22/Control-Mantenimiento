@@ -25,6 +25,11 @@ class MantenimientoController extends Controller
         return view('mantenimientos.index', compact('mantenimientos'));
     }
 
+    public function show(Mantenimiento $mantenimiento)
+    {
+        return redirect()->route('mantenimientos.edit', $mantenimiento);
+    }
+
     /**
      * Módulo de reportes con filtros dinámicos.
      * Permite filtrar por fechas, clientes, equipos, técnicos y estados.
@@ -146,5 +151,22 @@ class MantenimientoController extends Controller
         }
         $mantenimiento->delete();
         return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento eliminado.');
+    }
+
+    public function factura(Mantenimiento $mantenimiento)
+    {
+        if (!$mantenimiento->fecha_salida) {
+            return redirect()
+                ->route('mantenimientos.index')
+                ->with('error', 'No se puede generar la factura sin fecha de salida. Registre la salida de la orden e inténtelo de nuevo.');
+        }
+
+        $mantenimiento->load(['equipo.cliente', 'tecnico', 'user']);
+        
+        $pdf = Pdf::loadView('mantenimientos.factura', compact('mantenimiento'));
+        // Tamaño POS 80mm = ~226.77 pt de ancho. Largo dinámico pero pondremos un valor alto o [0,0,226.77,600]
+        $pdf->setPaper([0, 0, 226.77, 800], 'portrait');
+        
+        return $pdf->stream('factura_' . $mantenimiento->id_orden . '.pdf');
     }
 }

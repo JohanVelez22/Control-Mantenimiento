@@ -6,32 +6,30 @@
     <style>
         body { font-family: 'Helvetica', sans-serif; font-size: 9px; color: #333; }
         .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #444; padding-bottom: 10px; }
-        
-        /* Aumentamos un poco el tamaño de "Generado el..." */
         .header p { font-size: 12px; margin-top: 5px; }
 
-        table { width: 100%; border-collapse: collapse; }
-        th { 
-            background-color: #4a5568; 
-            color: white; 
-            padding: 6px; 
-            text-transform: uppercase; 
-            text-align: center; /* Centra títulos */
+        table { width: 100%; border-collapse: collapse; border: 1px solid #94a3b8; }
+        th {
+            background-color: #4A5568;
+            color: white;
+            padding: 6px;
+            text-transform: uppercase;
+            text-align: center;
+            border: 1px solid #404040;
         }
-        td { 
-            border: 1px solid #ddd; 
-            padding: 5px; 
-            vertical-align: middle; 
-            text-align: center; /* Centra todo el contenido, incluyendo el costo */
+        td {
+            border: 1px solid #94a3b8;
+            padding: 5px;
+            vertical-align: middle;
+            text-align: center;
         }
-        .marca-modelo { font-size: 9px; color: #666 }
-        
-        /* Aumentamos el tamaño del footer y totales */
-        .footer { 
-            margin-top: 20px; 
-            text-align: right; 
-            font-style: italic; 
-            font-size: 11px; 
+        .marca-modelo { font-size: 9px; color: #666; }
+
+        .footer {
+            margin-top: 20px;
+            text-align: right;
+            font-style: italic;
+            font-size: 11px;
             font-weight: bold;
         }
     </style>

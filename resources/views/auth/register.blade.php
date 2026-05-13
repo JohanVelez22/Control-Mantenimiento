@@ -41,9 +41,10 @@
             <p id="req-match" class="mt-1 text-sm text-red-500 hidden">Las contraseñas no coinciden</p>
         </div>
 
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-2">Contraseña de Autorización Admin</label>
-            <input type="password" name="admin_password" placeholder="Si desea ser admin, introduce la clave" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+        <div class="mb-4" id="auth-key-wrap">
+            <label class="block text-sm font-medium mb-2">Clave de autorización <span class="text-gray-500 dark:text-gray-400 font-normal">(solo Administrador o Técnico)</span></label>
+            <input type="password" name="admin_password" id="admin_password" autocomplete="off" placeholder="Invitado: dejar vacío" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Los roles invitado no requieren esta clave.</p>
         </div>
 
         <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Registrarse</button>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
+<div class="max-w-2xl mx-auto bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/50 p-8">
     <h2 class="text-2xl font-bold mb-6">Editar Usuario: {{ $user->name }}</h2>
 
     <form method="POST" action="{{ route('usuarios.update', $user->id) }}" enctype="multipart/form-data">
@@ -58,7 +58,7 @@
 
         {{-- Password --}}
         <div class="mb-4">
-            <label class="block text-sm font-medium mb-2 text-gray-500">Cambiar Contraseña (opcional)</label>
+            <label class="block text-sm font-medium mb-2 text-gray-500">Cambiar Contraseña del Usuario (opcional)</label>
             <input type="password" id="password" name="password" placeholder="Dejar en blanco para no cambiar" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white @error('password') border-red-500 @enderror">
             <ul id="password-requirements" class="mt-2 text-sm text-gray-500 dark:text-gray-400 space-y-1 hidden">
                 <li id="req-length" class="flex items-center"><span class="mr-2">✗</span> Mínimo 8 caracteres</li>
@@ -74,9 +74,18 @@
             <p id="req-match" class="mt-1 text-sm text-red-500 hidden">Las contraseñas no coinciden</p>
         </div>
 
-        <div class="flex justify-end gap-2">
-            <a href="{{ route('usuarios.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition">Cancelar</a>
-            <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition shadow">
+        <hr class="my-6 border-gray-200 dark:border-gray-700">
+
+        {{-- Contraseña de Autorización --}}
+        <div class="mb-4">
+            <label class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Contraseña de Autorización (Admin/Técnico)</label>
+            <input type="password" name="admin_password" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded px-3 py-2" placeholder="Requerida para estos roles">
+            @error('admin_password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+        </div>
+
+        <div class="flex justify-end gap-4 mt-6">
+            <a href="{{ route('usuarios.index') }}" class="w-1/2 text-center bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-gray-500/20">Cancelar</a>
+            <button type="submit" class="w-1/2 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20">
                 Actualizar Usuario
             </button>
         </div>

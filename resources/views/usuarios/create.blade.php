@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
+<div class="max-w-2xl mx-auto bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/50 p-8">
     <h2 class="text-2xl font-bold mb-6">Nuevo Usuario</h2>
 
     <form method="POST" action="{{ route('usuarios.store') }}" enctype="multipart/form-data">
@@ -38,9 +38,9 @@
             @error('photo') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
         </div>
 
-        {{-- Contraseña --}}
+        {{-- Contraseña (para el usuario a crear) --}}
         <div class="mb-4">
-            <label class="block text-sm font-medium mb-2">Contraseña</label>
+            <label class="block text-sm font-medium mb-2">Contraseña del Nuevo Usuario</label>
             <input type="password" id="password" name="password" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 @error('password') border-red-500 @enderror">
             @error('password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             <ul id="password-requirements" class="mt-2 text-sm text-gray-500 dark:text-gray-400 space-y-1 hidden">
@@ -48,6 +48,13 @@
                 <li id="req-case" class="flex items-center"><span class="mr-2">✗</span> Mayúsculas y minúsculas</li>
                 <li id="req-number" class="flex items-center"><span class="mr-2">✗</span> Al menos un número</li>
             </ul>
+        </div>
+
+        {{-- Contraseña de Autorización (quien crea el usuario) --}}
+        <div class="mb-4">
+            <label class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Contraseña de Autorización (Admin/Técnico)</label>
+            <input type="password" name="admin_password" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded px-3 py-2" placeholder="Requerida para estos roles">
+            @error('admin_password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
         </div>
 
         {{-- Confirmar Contraseña --}}
@@ -63,11 +70,11 @@
             <label for="active" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Activar usuario inmediatamente</label>
         </div>
 
-        <div class="flex gap-4">
-            <a href="{{ route('usuarios.index') }}" class="w-1/2 text-center bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded shadow">
+        <div class="flex gap-4 mt-6">
+            <a href="{{ route('usuarios.index') }}" class="w-1/2 text-center bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-gray-500/20">
                 Cancelar
             </a>
-            <button type="submit" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow">
+            <button type="submit" class="w-1/2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
                 Crear Usuario
             </button>
         </div>

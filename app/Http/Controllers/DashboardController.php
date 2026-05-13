@@ -50,6 +50,7 @@ class DashboardController extends Controller
         $dataMantenimientos = [];
         
         $dataIngresos = [];
+        $dataIngresosAcumulados = [];
         for ($i = 0; $i < 7; $i++) {
             $date = \Carbon\Carbon::today()->subDays(6 - $i);
             $labels[] = $date->format('d/m');
@@ -58,6 +59,10 @@ class DashboardController extends Controller
             $dataIngresos[] = (float) Mantenimiento::where('estado', 'terminado')
                 ->whereNotNull('fecha_salida')
                 ->whereDate('fecha_salida', $date)
+                ->sum('costo');
+            $dataIngresosAcumulados[] = (float) Mantenimiento::where('estado', 'terminado')
+                ->whereNotNull('fecha_salida')
+                ->whereDate('fecha_salida', '<=', $date)
                 ->sum('costo');
         }
 
@@ -74,6 +79,7 @@ class DashboardController extends Controller
             'equipos' => $dataEquipos,
             'mantenimientos' => $dataMantenimientos,
             'ingresos' => $dataIngresos,
+            'ingresosAcumulados' => $dataIngresosAcumulados,
             'topTecnicosLabels' => $topTecnicos->pluck('nombre')->toArray(),
             'topTecnicosData' => $topTecnicos->pluck('terminados_count')->toArray(),
             'topTecnicosRecibidosData' => $topTecnicos->pluck('recibidos_count')->toArray(),
@@ -128,51 +134,4 @@ class DashboardController extends Controller
         ));
     }
 
-    public function export(Request $request)
-    {
-        // Lógica de exportación (CSV) basada en filtros
-        $query = Mantenimiento::with(['equipo','tecnico','user'])->newQuery();
-        if ($request->filled('fecha_from')) $query->whereDate('fecha_entrada', '>=', $request->fecha_from);
-        if ($request->filled('fecha_to')) $query->whereDate('fecha_entrada', '<=', $request->fecha_to);
-        if ($request->filled('cliente_id')) {
-            $query->whereHas('equipo', function($q) use ($request){
-                $q->where('cliente_id', $request->cliente_id);
-            });
-        }
-        if ($request->filled('tecnico_id')) $query->where('tecnico_id', $request->tecnico_id);
-        if ($request->filled('tipo')) $query->where('tipo', $request->tipo);
-        if ($request->filled('reparacion')) $query->where('reparacion', $request->reparacion);
-        if ($request->filled('min_cost')) $query->where('costo', '>=', $request->min_cost);
-        if ($request->filled('max_cost')) $query->where('costo', '<=', $request->max_cost);
-
-        $mantenimientos = $query->orderBy('id','desc')->get();
-
-        // Genera CSV (mantén la lógica existente o ajusta para formato deseado)
-        $lines = [];
-        $header = ['Orden','Equipo','Técnico','Tipo','Reparacion','Descripcion','Costo','Estado','Fecha Entrada','Fecha Salida'];
-        $lines[] = implode(',', $header);
-
-        foreach ($mantenimientos as $m) {
-            $line = [
-                $m->id_orden,
-                $m->equipo ? $m->equipo->nombre : '',
-                $m->tecnico ? $m->tecnico->nombre : '',
-                $m->tipo,
-                $m->reparacion,
-                '"' . str_replace('"','\"',$m->descripcion) . '"',
-                number_format($m->costo, 2, '.', ','),
-                $m->estado,
-                $m->fecha_entrada,
-                $m->fecha_salida ?? ''
-            ];
-            $lines[] = implode(',', $line);
-        }
-
-        $csv = implode("\n", $lines);
-        $filename = 'mantenimientos_export_'.date('Ymd_His').'.csv';
-
-        return response($csv)
-            ->header('Content-Type', 'text/csv')
-            ->header('Content-Disposition', "attachment; filename=\"$filename\"");
-    }
 }

@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-    /* Efecto para resaltar la fila cuando se llega por un enlace de anclaje */
+    /* Fila resaltada al llegar por ancla (#mantenimiento-id) */
     tr:target {
         background-color: rgba(59, 130, 246, 0.2) !important;
         outline: 2px solid #3b82f6;
@@ -10,27 +10,46 @@
 </style>
 
 <script>
-    // Función para centrar el elemento del anclaje en la pantalla
     function centerAnchor() {
         const hash = window.location.hash;
-        if (hash) {
+        if (!hash) return;
+
+        function scrollToRow() {
             const target = document.querySelector(hash);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+            if (!target) return false;
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return true;
         }
+
+        // El navegador aplica el salto al fragmento antes que el layout final; reintentar centra bien la fila
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                if (!scrollToRow()) {
+                    setTimeout(scrollToRow, 50);
+                    setTimeout(scrollToRow, 200);
+                }
+            });
+        });
     }
 
-    // Ejecutar al cargar la página y cuando cambie el anclaje
-    window.addEventListener('load', centerAnchor);
+    document.addEventListener('DOMContentLoaded', centerAnchor);
+    window.addEventListener('load', function () {
+        centerAnchor();
+        setTimeout(centerAnchor, 100);
+    });
     window.addEventListener('hashchange', centerAnchor);
+    window.addEventListener('pageshow', function (e) {
+        if (e.persisted) centerAnchor();
+    });
 </script>
 
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold">Órdenes de Mantenimiento</h2>
         @if(!auth()->user()->isInvitado())
-            <a href="{{ route('mantenimientos.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">+ Nueva Orden</a>
+            <a href="{{ route('mantenimientos.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
+                ➕ Nueva Orden
+            </a>
         @endif
     </div>
 
@@ -66,7 +85,7 @@
             </thead>
             <tbody>
                 @foreach($mantenimientos as $m)
-                <tr id="mantenimiento-{{ $m->id }}" class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
+                <tr id="mantenimiento-{{ $m->id }}" class="scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
                     <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap font-bold text-center">
                         <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 hover:text-blue-800 hover:underline">
                             {{ $m->id_orden }}
@@ -92,9 +111,9 @@
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ number_format($m->costo, 2, '.', ',') }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
                         @php
-                            $bgEstado = $m->estado === 'pendiente' ? 'bg-yellow-500' : 'bg-green-500';
+                            $bgEstado = $m->estado === 'pendiente' ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/30' : 'bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30';
                         @endphp
-                        <span class="px-2 py-1 rounded text-white text-sm {{ $bgEstado }}">
+                        <span class="px-2 py-1 rounded-md text-sm backdrop-blur-sm font-semibold border {{ $bgEstado }}">
                             {{ ucfirst($m->estado) }}
                         </span>
                     </td>
@@ -102,18 +121,37 @@
                     <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->user->name ?? '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        @if(!auth()->user()->isInvitado())
-                            <a href="{{ route('mantenimientos.edit', $m->id) }}" class="text-yellow-500 hover:underline mr-2">Editar</a>
-                            @if(auth()->user()->isAdmin())
-                                <form action="{{ route('mantenimientos.destroy', $m->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar orden?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:underline">Eliminar</button>
-                                </form>
+                        <div class="flex justify-center items-center gap-2 flex-wrap">
+                            @if($m->estado === 'terminado' && $m->fecha_salida)
+                                <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="inline-flex items-center gap-1 bg-green-500/20 text-green-700 dark:text-green-400 border border-green-500/30 hover:bg-green-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-green-500/20 text-sm" title="Factura POS (requiere fecha de salida)">
+                                    🖨️ <span class="hidden md:inline">Factura</span>
+                                </a>
+                            @elseif($m->estado === 'terminado')
+                                <span class="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-1 text-sm cursor-default" title="Agregue fecha de salida para generar la factura">
+                                    🖨️ <span class="hidden md:inline">Factura</span>
+                                </span>
                             @endif
-                        @else
-                            <span class="text-gray-500 text-sm">Lectura</span>
-                        @endif
+
+                            @if(!auth()->user()->isInvitado())
+                                <a href="{{ route('mantenimientos.edit', $m->id) }}" class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20 text-sm">
+                                    ✏️ <span class="hidden md:inline">Editar</span>
+                                </a>
+
+                                @if(auth()->user()->isAdmin())
+                                    <form action="{{ route('mantenimientos.destroy', $m->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar mantenimiento?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-red-500/20 text-sm">
+                                            🗑️ <span class="hidden md:inline">Borrar</span>
+                                        </button>
+                                    </form>
+                                @endif
+                            @else
+                                <span class="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-1 text-sm cursor-default" title="Solo lectura">
+                                    👁️ <span class="hidden md:inline">Lectura</span>
+                                </span>
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @endforeach
