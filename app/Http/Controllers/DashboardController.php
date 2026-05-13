@@ -89,36 +89,6 @@ class DashboardController extends Controller
         $clientes = Cliente::orderBy('nombre')->get();
         $tecnicos = Tecnico::orderBy('nombre')->get();
 
-        // Filtros (persistidos)
-        $filters = [
-            'fecha_from' => $request->get('fecha_from'),
-            'fecha_to' => $request->get('fecha_to'),
-            'cliente_id' => $request->get('cliente_id'),
-            'tecnico_id' => $request->get('tecnico_id'),
-            'tipo' => $request->get('tipo'),
-            'reparacion' => $request->get('reparacion'),
-            'min_cost' => $request->get('min_cost'),
-            'max_cost' => $request->get('max_cost'),
-        ];
-
-        // Construcción de mantenimientos filtrados para la vista embebida
-        $mantenimientosQuery = Mantenimiento::with(['equipo','tecnico','user'])->newQuery();
-
-        if ($filters['fecha_from']) $mantenimientosQuery->whereDate('fecha_entrada', '>=', $filters['fecha_from']);
-        if ($filters['fecha_to']) $mantenimientosQuery->whereDate('fecha_entrada', '<=', $filters['fecha_to']);
-        if ($filters['cliente_id']) {
-            $mantenimientosQuery->whereHas('equipo', function($q) use ($filters) {
-                $q->where('cliente_id', $filters['cliente_id']);
-            });
-        }
-        if ($filters['tecnico_id']) $mantenimientosQuery->where('tecnico_id', $filters['tecnico_id']);
-        if ($filters['tipo']) $mantenimientosQuery->where('tipo', $filters['tipo']);
-        if ($filters['reparacion']) $mantenimientosQuery->where('reparacion', $filters['reparacion']);
-        if ($filters['min_cost']) $mantenimientosQuery->where('costo', '>=', $filters['min_cost']);
-        if ($filters['max_cost']) $mantenimientosQuery->where('costo', '<=', $filters['max_cost']);
-
-        $mantenimientos = $mantenimientosQuery->orderBy('id','desc')->get();
-
         return view('dashboard', compact(
             'totalEquipos',
             'totalMantenimientos',
@@ -127,8 +97,6 @@ class DashboardController extends Controller
             'chartData',
             'clientes',
             'tecnicos',
-            'mantenimientos',
-            'filters',
             'totalCostoFormateado',
             'totalCostoDiaFormateado'
         ));
