@@ -119,8 +119,8 @@
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tecnico->nombre ?? '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <div class="flex flex-col items-center gap-0">
-                            <span class="text-gray-900 dark:text-gray-100 font-medium">{{ $m->tipo }}</span>
-                            <span class="text-[13px] text-gray-400 italic font-bold">({{ $m->reparacion }})</span>
+                            <span class="text-gray-900 dark:text-gray-100 font-medium capitalize">{{ $m->tipo }}</span>
+                            <span class="text-[13px] text-gray-400 italic font-bold capitalize">({{ $m->reparacion }})</span>
                         </div>
                     </td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->descripcion ?? '-' }}</td>
