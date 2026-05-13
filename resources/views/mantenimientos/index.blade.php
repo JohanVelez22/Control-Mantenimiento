@@ -69,18 +69,18 @@
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-200 dark:bg-gray-700 text-center">
                 <tr>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Orden</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Equipo</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Cliente</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Técnico</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Tipo / Rep.</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Observación</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Costo</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Estado</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Entrada</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Salida</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Usuario</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Orden</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Equipo</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Cliente</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Técnico</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Tipo / Rep.</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Observación</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Costo</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Estado</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Entrada</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Salida</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Usuario</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Acciones</th>
                 </tr>
             </thead>
             <tbody>

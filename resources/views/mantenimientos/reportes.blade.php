@@ -123,15 +123,15 @@
         <table class="reportes-tabla-imprimir w-full text-left border-collapse border border-gray-300 dark:border-gray-500">
             <thead class="bg-gray-100 dark:bg-gray-700 text-center text-[12px] font-bold uppercase">
                 <tr>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Orden</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Cliente</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Equipo</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Técnico</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Tipo</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Reparación</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Costo</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Entrada</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500 text-center">Salida</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Orden</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Cliente</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Equipo</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Técnico</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Tipo</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Reparación</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Costo</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500">Entrada</th>
+                    <th class="p-3 border border-gray-400 dark:border-gray-500 text-center">Salida</th>
                 </tr>
             </thead>
             <tbody class="text-center text-sm">

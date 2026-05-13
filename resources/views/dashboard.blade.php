@@ -139,13 +139,13 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-200 dark:bg-gray-700 text-xs uppercase">
-                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Orden</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Equipo</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Costo</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Estado</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Entrada</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Días</th>
-                    <th class="p-3 text-center border border-gray-300 dark:border-gray-500">Salida</th>
+                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Orden</th>
+                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Equipo</th>
+                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Costo</th>
+                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Estado</th>
+                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Entrada</th>
+                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Días</th>
+                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Salida</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
@@ -164,19 +164,16 @@
                         </a>
                     </td>
                     
-                    {{-- Celda de Equipo: Nombre al lado de Marca/Modelo --}}
+                    {{-- Celda de Equipo: Nombre al lado de Marca/Modelo con Vínculo --}}
                     <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
-                        <div class="flex items-baseline justify-center gap-1">
-                            <span class="font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                        <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
+                            <span class="font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap group-hover:underline">
                                 {{ $m->equipo->nombre ?? '-' }}
                             </span>
                             <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
                                 ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }})
                             </span>
-                            <span class="font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
-                                {{ $m->equipo->serie ?? '' }}
-                            </span>
-                        </div>
+                        </a>
                     </td>
 
                     <td class="p-3 text-center font-bold text-green-600 border border-gray-300 dark:border-gray-500">
