@@ -103,6 +103,11 @@
             <input type="hidden" name="max_cost" id="max_cost" value="{{ request('max_cost') }}">
         </div>
 
+        <div>
+            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Búsqueda Rápida (Tiempo Real)</label>
+            <input type="text" name="search" id="real_time_search" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" value="{{ request('search') }}" placeholder="Orden, Cliente, Equipo...">
+        </div>
+
         <div class="lg:col-span-4 flex justify-end gap-2 mt-2">
             <a href="{{ route('mantenimientos.reportes') }}" class="inline-flex items-center justify-center gap-2 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20">
                 <span>🧹</span> Limpiar
@@ -300,5 +305,18 @@
 
     formatInput('min_cost_visual', 'min_cost');
     formatInput('max_cost_visual', 'max_cost');
+
+    // Filtrado en tiempo real de la tabla (Cliente-side)
+    document.getElementById('real_time_search').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('.reportes-tabla-imprimir tbody tr');
+
+        rows.forEach(row => {
+            if (row.cells.length > 1) { // Evitar la fila de "No hay registros"
+                let text = row.innerText.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            }
+        });
+    });
 </script>
 @endsection

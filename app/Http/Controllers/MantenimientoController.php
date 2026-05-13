@@ -56,6 +56,23 @@ class MantenimientoController extends Controller
         if ($request->filled('min_cost')) $query->where('costo', '>=', $request->min_cost);
         if ($request->filled('max_cost')) $query->where('costo', '<=', $request->max_cost);
 
+        // Búsqueda general
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('id_orden', 'like', "%{$search}%")
+                  ->orWhereHas('equipo', function($q2) use ($search) {
+                      $q2->where('nombre', 'like', "%{$search}%")
+                         ->orWhere('marca', 'like', "%{$search}%")
+                         ->orWhere('modelo', 'like', "%{$search}%")
+                         ->orWhere('serie', 'like', "%{$search}%")
+                         ->orWhereHas('cliente', function($q3) use ($search) {
+                             $q3->where('nombre', 'like', "%{$search}%");
+                         });
+                  });
+            });
+        }
+
         // Lógica de exportación o paginación según el botón presionado
         if ($request->get('export') == 'excel') {
             $mantenimientos = $query->orderBy('id', 'desc')->get();
