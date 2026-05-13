@@ -71,6 +71,7 @@
                 <tr>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Orden</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Equipo</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Cliente</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Técnico</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Tipo</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Reparación</th>
@@ -101,6 +102,16 @@
                             </span>
                             <span class="text-gray-900 dark:text-gray-100 text-[13.5px] whitespace-nowrap">
                                 {{ $m->equipo->serie ?? '' }}
+                            </span>
+                        </a>
+                    </td>
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
+                        <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group" title="Ver en tabla de clientes">
+                            <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">
+                                {{ $m->equipo->cliente->nombre ?? '-' }}
+                            </span>
+                            <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
+                                {{ $m->equipo->cliente->identificacion ?? '-' }}
                             </span>
                         </a>
                     </td>

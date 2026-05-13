@@ -142,9 +142,14 @@
                             {{ $m->id_orden }}
                         </a>
                     </td>
-                    <td class="p-3 font-semibold border border-gray-300 dark:border-gray-500">
-                        <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="hover:underline text-gray-900 dark:text-gray-100 no-print-link" title="Ver en tabla de clientes">
-                            {{ $m->equipo->cliente->nombre ?? 'N/A' }}
+                    <td class="p-3 border border-gray-300 dark:border-gray-500">
+                        <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de clientes">
+                            <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">
+                                {{ $m->equipo->cliente->nombre ?? 'N/A' }}
+                            </span>
+                            <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
+                                {{ $m->equipo->cliente->identificacion ?? '-' }}
+                            </span>
                         </a>
                     </td>
                     
