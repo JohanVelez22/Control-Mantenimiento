@@ -41,8 +41,13 @@
         @endif
     </div>
 
+    <!-- Búsqueda Rápida -->
+    <div class="mb-4">
+        <input type="text" id="search-clientes" placeholder="🔍 Buscar en tabla..." class="w-full md:w-80 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl py-2 px-4 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+    </div>
+
     <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+        <table id="tabla-clientes" class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-200 dark:bg-gray-700 text-center">
                     <th class="p-3 border border-gray-300 dark:border-gray-500">ID</th>
@@ -109,4 +114,5 @@
         {{ $clientes->appends(request()->query())->links() }}
     </div>
 </div>
+<script>document.addEventListener('DOMContentLoaded', () => filterTable('search-clientes', 'tabla-clientes'));</script>
 @endsection

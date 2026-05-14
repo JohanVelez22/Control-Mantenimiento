@@ -114,6 +114,20 @@
 
     <!-- Scripts -->
     <script>
+        // --- BÚSQUEDA RÁPIDA EN TABLAS (cliente-side) ---
+        function filterTable(inputId, tableId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            input.addEventListener('keyup', function() {
+                const filter = this.value.toLowerCase().trim();
+                const rows = document.querySelectorAll('#' + tableId + ' tbody tr');
+                rows.forEach(row => {
+                    if (row.cells.length <= 1) return; // fila empty-state
+                    row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+                });
+            });
+        }
+
         // --- SISTEMA DE TOASTS ---
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
