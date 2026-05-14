@@ -61,6 +61,7 @@
         <div class="mb-6">
             <label class="block text-sm font-medium mb-2">Contraseña</label>
             <input type="password" name="password" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+            @error('password') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
         </div>
 
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

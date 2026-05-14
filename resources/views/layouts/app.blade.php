@@ -369,7 +369,7 @@
                     });
                     if (!isValid) {
                         e.preventDefault();
-                        showToast('Por favor revise que todos los campos esten digitados y correctos', 'error');
+                        showToast('Faltan campos por llenar o tienen formato incorrecto. Revisa los mensajes en rojo.', 'error');
                     }
                 });
             });

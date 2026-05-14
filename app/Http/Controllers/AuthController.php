@@ -24,23 +24,33 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        // Intentar login: las credenciales deben coincidir y 'active' debe ser true (1)
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1])) {
-            $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
-        }
-
-        // Si falla, verificamos si es porque el usuario existe pero está desactivado
+        // 1. Buscar si el usuario existe
         $user = User::where('email', $request->email)->first();
-        if ($user && !$user->active) {
+
+        if (!$user) {
             return back()->withErrors([
-                'email' => 'Tu cuenta ha sido desactivada por el administrador.',
+                'email' => 'No existe ninguna cuenta registrada con este correo electrónico.',
             ])->onlyInput('email');
         }
 
-        return back()->withErrors([
-            'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
-        ])->onlyInput('email');
+        // 2. Verificar si está activo
+        if (!$user->active) {
+            return back()->withErrors([
+                'email' => 'Tu cuenta ha sido desactivada por el administrador del sistema.',
+            ])->onlyInput('email');
+        }
+
+        // 3. Verificar contraseña
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'password' => 'La contraseña ingresada es incorrecta.',
+            ])->onlyInput('email');
+        }
+
+        // 4. Si todo está bien, iniciar sesión
+        Auth::login($user);
+        $request->session()->regenerate();
+        return redirect()->intended('/dashboard');
     }
 
     // Muestra la vista de registro
