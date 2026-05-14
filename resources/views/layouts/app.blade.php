@@ -43,12 +43,12 @@
             </div>
         </div>
 
-        <!-- Derecha: Usuario, Modo Oscuro y Logout -->
-        <div class="flex items-center space-x-4">
+        <!-- Derecha: Usuario, Modo Oscuro, Logout y Hamburguesa -->
+        <div class="flex items-center space-x-3">
             @if(auth()->user()->photo)
                 <img src="{{ asset('storage/' . auth()->user()->photo) }}" width="32" height="32" class="rounded-full object-cover border border-gray-300 dark:border-gray-600">
             @endif
-            <span class="text-sm hidden xl:inline-block">Bienvenido, {{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
+            <span class="text-sm hidden xl:inline-block">Bienvenido, {{ auth()->user()->name }} ({{ ucfirst(auth()->user()->role) }})</span>
             
             <!-- Botón Modo Oscuro -->
             <button type="button" id="theme-toggle" class="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg focus:outline-none" aria-label="Cambiar tema claro u oscuro">
@@ -59,8 +59,27 @@
                 @csrf
                 <button type="submit" class="bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-red-500/20">Salir</button>
             </form>
+
+            <!-- Botón Hamburguesa (solo móvil/tablet) -->
+            <button type="button" id="mobile-menu-btn" class="lg:hidden p-2 bg-gray-200 dark:bg-gray-700 rounded-lg focus:outline-none" aria-label="Abrir menú">
+                <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
         </div>
     </nav>
+
+    <!-- Menú móvil desplegable -->
+    <div id="mobile-menu" class="lg:hidden hidden bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 shadow-md sticky top-[73px] z-40">
+        <div class="flex flex-col p-4 space-y-1">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">⚙️ Dashboard</a>
+            <a href="{{ route('clientes.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">👤 Clientes</a>
+            <a href="{{ route('equipos.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">🖥️ Equipos</a>
+            <a href="{{ route('tecnicos.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">🛠️ Técnicos</a>
+            <a href="{{ route('mantenimientos.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">📋 Mantenimientos</a>
+            <a href="{{ route('mantenimientos.reportes') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">📈 Reportes</a>
+            <a href="{{ route('usuarios.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">👨🏻‍💻 Usuarios</a>
+        </div>
+    </div>
     @endauth
 
     <!-- Contenido Principal -->
@@ -70,6 +89,28 @@
 
     <!-- Contenedor de Toasts -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div id="delete-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
+        <!-- Overlay -->
+        <div id="delete-modal-overlay" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <!-- Tarjeta -->
+        <div class="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-white/20 dark:border-gray-700/50 rounded-2xl shadow-2xl p-6 max-w-sm w-full transform transition-all duration-300 scale-95 opacity-0" id="delete-modal-card">
+            <div class="text-center">
+                <div class="text-5xl mb-4">🗑️</div>
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">¿Confirmar eliminación?</h3>
+                <p id="delete-modal-message" class="text-gray-500 dark:text-gray-400 text-sm mb-6">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="flex gap-3">
+                <button type="button" id="delete-modal-cancel" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
+                    Cancelar
+                </button>
+                <button type="button" id="delete-modal-confirm" class="flex-1 px-4 py-2 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-all shadow-lg shadow-red-500/30">
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script>
@@ -148,10 +189,88 @@
             });
         }
 
+        // --- MENÚ MÓVIL (HAMBURGUESA) ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const iconMenu = document.getElementById('icon-menu');
+            const iconClose = document.getElementById('icon-close');
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    const isOpen = !mobileMenu.classList.contains('hidden');
+                    mobileMenu.classList.toggle('hidden');
+                    iconMenu.classList.toggle('hidden', !isOpen);
+                    iconClose.classList.toggle('hidden', isOpen);
+                });
+
+                // Cerrar menú al hacer click en un enlace
+                mobileMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                        iconMenu.classList.remove('hidden');
+                        iconClose.classList.add('hidden');
+                    });
+                });
+            }
+        });
+
+        // --- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ---
+        let _deleteFormPending = null;
+
+        function confirmDelete(form, message) {
+            _deleteFormPending = form;
+            const modal = document.getElementById('delete-modal');
+            const card = document.getElementById('delete-modal-card');
+            document.getElementById('delete-modal-message').textContent = message || 'Esta acción no se puede deshacer.';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            requestAnimationFrame(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            });
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('delete-modal');
+            const card = document.getElementById('delete-modal-card');
+            card.classList.add('scale-95', 'opacity-0');
+            card.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                _deleteFormPending = null;
+            }, 200);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('delete-modal-cancel').addEventListener('click', closeDeleteModal);
+            document.getElementById('delete-modal-overlay').addEventListener('click', closeDeleteModal);
+            document.getElementById('delete-modal-confirm').addEventListener('click', function() {
+                if (_deleteFormPending) {
+                    _deleteFormPending.setAttribute('data-confirmed', 'true');
+                    _deleteFormPending.submit();
+                }
+            });
+        });
+
         // --- VALIDACIÓN DE FORMULARIOS ---
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('form').forEach(form => {
+                // Ignorar formulario de logout
                 if(form.action && form.action.includes('logout')) return;
+
+                // Interceptar formularios con data-confirm-delete
+                if (form.dataset.confirmDelete) {
+                    form.addEventListener('submit', function(e) {
+                        if (!form.getAttribute('data-confirmed')) {
+                            e.preventDefault();
+                            confirmDelete(form, form.dataset.confirmDelete);
+                        }
+                    });
+                    return;
+                }
+
                 form.setAttribute('novalidate', true);
                 form.addEventListener('submit', function(e) {
                     let isValid = true;

@@ -70,7 +70,7 @@
                                     ✏️ Editar
                                 </a>
                                 @if(auth()->user()->isAdmin())
-                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Seguro que deseas eliminar este cliente?');">
+                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar al cliente '{{ $cliente->nombre }}'? Esta acción no se puede deshacer.">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-red-500/20 text-sm">
