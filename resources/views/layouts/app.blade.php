@@ -19,6 +19,12 @@
             document.documentElement.classList.remove('dark')
         }
     </script>
+    <style>
+        .search-input:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 min-h-screen">
 

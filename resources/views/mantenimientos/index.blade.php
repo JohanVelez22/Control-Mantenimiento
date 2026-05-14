@@ -47,7 +47,7 @@
     <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
         <h2 class="text-2xl font-bold">Órdenes de Mantenimiento</h2>
         <div class="flex flex-wrap items-center gap-2">
-            <input type="text" id="search-mantenimientos" placeholder="🔍 Buscar..." class="bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus:outline-none w-48">
+            <input type="text" id="search-mantenimientos" placeholder="🔍 Buscar..." class="search-input bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus:outline-none w-48">
             @if(!auth()->user()->isInvitado())
                 <a href="{{ route('mantenimientos.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
                     ➕ Nueva Orden
