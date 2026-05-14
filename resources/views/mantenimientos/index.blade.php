@@ -53,17 +53,6 @@
         @endif
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
-            {{ session('error') }}
-        </div>
-    @endif
 
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
