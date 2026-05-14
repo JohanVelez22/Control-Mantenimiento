@@ -21,10 +21,12 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Rutas de invitados (no autenticados) — solo login
+// Rutas de invitados (no autenticados)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/registro', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/registro', [AuthController::class, 'register']);
 });
 
 // Rutas protegidas (autenticados)
