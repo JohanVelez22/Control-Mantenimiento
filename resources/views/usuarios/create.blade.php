@@ -141,7 +141,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!isLengthValid || !isCaseValid || !isNumberValid || !isMatchValid) {
                 e.preventDefault(); // Stop submission
                 requirementsList.classList.remove('hidden'); // Ensure requirements are visible
-                alert('Por favor, asegúrate de cumplir con todos los requisitos antes de guardar.');
+                if (typeof showToast === 'function') {
+                    showToast('Por favor, asegúrate de cumplir con todos los requisitos antes de guardar.', 'error');
+                } else {
+                    alert('Por favor, asegúrate de cumplir con todos los requisitos antes de guardar.');
+                }
             }
         });
     }

@@ -363,7 +363,13 @@
                             el.classList.add('border-red-500');
                             const errorMsg = document.createElement('p');
                             errorMsg.className = 'custom-error-msg text-red-500 text-xs mt-1 font-semibold';
-                            errorMsg.textContent = el.validity.valueMissing ? 'Obligatorio' : el.validationMessage;
+                            let customMessage = el.validationMessage;
+                            if (el.validity.valueMissing) {
+                                customMessage = 'Obligatorio';
+                            } else if (el.type === 'email' && el.validity.typeMismatch) {
+                                customMessage = 'Introduzca una dirección de correo válida';
+                            }
+                            errorMsg.textContent = customMessage;
                             el.parentNode.insertBefore(errorMsg, el.nextSibling);
                         }
                     });

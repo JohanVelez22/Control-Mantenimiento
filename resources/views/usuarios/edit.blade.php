@@ -174,13 +174,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     requirementsList.classList.remove('hidden');
                     
                     if (val.length === 0 && confVal.length > 0) {
-                        alert('Debes ingresar una nueva contraseña si deseas usar el campo de confirmación.');
+                        if (typeof showToast === 'function') showToast('Debes ingresar una nueva contraseña si deseas usar el campo de confirmación.', 'error'); else alert('Debes ingresar una nueva contraseña si deseas usar el campo de confirmación.');
                         passwordInput.focus();
                     } else if (!isMatchValid) {
-                        alert('Las contraseñas no coinciden.');
+                        if (typeof showToast === 'function') showToast('Las contraseñas no coinciden.', 'error'); else alert('Las contraseñas no coinciden.');
                         confirmInput.focus();
                     } else {
-                        alert('La nueva contraseña no cumple con los requisitos de seguridad (8 caracteres, mayúsculas y números).');
+                        if (typeof showToast === 'function') showToast('La nueva contraseña no cumple con los requisitos.', 'error'); else alert('La nueva contraseña no cumple con los requisitos.');
                         passwordInput.focus();
                     }
                 }
