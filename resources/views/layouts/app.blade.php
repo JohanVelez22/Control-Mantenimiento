@@ -24,6 +24,13 @@
             outline: none !important;
             box-shadow: none !important;
         }
+
+        /* Transición suave al cambiar de modo claro/oscuro */
+        body, nav, main, header, footer,
+        table, thead, tbody, tfoot, tr, th, td,
+        div, span, a, button, input, select, textarea, label, p, h1, h2, h3, h4, h5 {
+            transition: background-color 0.3s ease, color 0.2s ease, border-color 0.25s ease !important;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 min-h-screen">
