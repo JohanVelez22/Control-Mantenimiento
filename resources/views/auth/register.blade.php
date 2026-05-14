@@ -170,7 +170,11 @@
           if (!isLengthValid || !isCaseValid || !isNumberValid || !isMatchValid) {
               e.preventDefault(); // Stop submission
               requirementsList.classList.remove('hidden'); // Ensure requirements are visible
-              alert('Por favor, asegúrate de cumplir con todos los requisitos de la contraseña antes de registrarte.');
+              if (typeof showToast === 'function') {
+                  showToast('Por favor, asegúrate de cumplir con todos los requisitos de la contraseña antes de registrarte.', 'error');
+              } else {
+                  alert('Por favor, asegúrate de cumplir con todos los requisitos de la contraseña antes de registrarte.');
+              }
           }
       });
   }
