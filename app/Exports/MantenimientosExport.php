@@ -30,11 +30,11 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
                 $sheet = $event->sheet->getDelegate();
                 
                 // Centrar y combinar título (Fila 1)
-                $sheet->mergeCells('A1:L1');
+                $sheet->mergeCells('A1:M1');
                 $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 
                 // Centrar y combinar fecha (Fila 2)
-                $sheet->mergeCells('A2:L2');
+                $sheet->mergeCells('A2:M2');
                 $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
                 $lastRow = $sheet->getHighestRow();
@@ -46,11 +46,11 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
                 // Escribir el total de registros bajo la columna "Orden" (Columna A)
                 $sheet->setCellValue("A{$footerRow}", "Total: {$totalRegistros}");
                 
-                // Escribir el costo total bajo la columna "Costo" (Columna J)
-                $sheet->setCellValue("J{$footerRow}", "Total: $" . number_format($costoTotal, 2));
+                // Escribir el costo total bajo la columna "Costo" (Columna K)
+                $sheet->setCellValue("K{$footerRow}", "Total: $" . number_format($costoTotal, 2));
 
                 // Estilo para los totales
-                $sheet->getStyle("A{$footerRow}:J{$footerRow}")->applyFromArray([
+                $sheet->getStyle("A{$footerRow}:K{$footerRow}")->applyFromArray([
                     'font' => [
                         'bold' => true,
                         'size' => 11
@@ -58,7 +58,7 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
                 ]);
 
                 // Alineación a la derecha para el costo total
-                $sheet->getStyle("J{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("K{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             },
         ];
     }
@@ -95,6 +95,7 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
             [
                 'Orden', 
                 'Cliente', 
+                'Identificación',
                 'Equipo', 
                 'Marca',  
                 'Modelo', 
@@ -114,6 +115,7 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
         return [
             $m->id_orden,
             $m->equipo->cliente->nombre ?? 'N/A',
+            $m->equipo->cliente->identificacion ?? '-',
             $m->equipo->nombre ?? 'N/A',
             $m->equipo->marca ?? 'N/A',  
             $m->equipo->modelo ?? 'N/A', 

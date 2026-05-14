@@ -57,7 +57,10 @@
             @foreach($mantenimientos as $m)
             <tr>
                 <td><strong>{{ $m->id_orden }}</strong></td>
-                <td>{{ $m->equipo->cliente->nombre ?? 'N/A' }}</td>
+                <td>
+                    <div>{{ $m->equipo->cliente->nombre ?? 'N/A' }}</div>
+                    <div style="font-size: 8px; color: #666;">ID: {{ $m->equipo->cliente->identificacion ?? '-' }}</div>
+                </td>
                 <td>
                     <div>{{ $m->equipo->nombre ?? 'N/A' }}</div>
                     <div class="marca-modelo">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - {{ $m->equipo->serie ?? '' }}</div>
