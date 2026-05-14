@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="light">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,15 +11,19 @@
             darkMode: 'class',
         }
     </script>
-    <!-- Script para evitar el parpadeo (FOUC) al cargar el modo oscuro -->
+    <!-- Anti-FOUC: aplicar tema y bloquear transiciones antes del primer render -->
     <script>
+        document.documentElement.classList.add('preload');
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
-            document.documentElement.classList.remove('dark')
+            document.documentElement.classList.remove('dark');
         }
     </script>
     <style>
+        /* Bloquear transiciones en carga inicial para evitar flash */
+        .preload * { transition: none !important; }
+
         .search-input:focus {
             outline: none !important;
             box-shadow: none !important;
@@ -30,6 +34,29 @@
         table, thead, tbody, tfoot, tr, th, td,
         div, span, a, button, input, select, textarea, label, p, h1, h2, h3, h4, h5 {
             transition: background-color 0.3s ease, color 0.2s ease, border-color 0.25s ease !important;
+        }
+
+        /* Animación de entrada de página */
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .page-enter {
+            animation: pageFadeIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Barra de progreso de navegación */
+        #nav-progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+            z-index: 9999;
+            border-radius: 0 3px 3px 0;
+            box-shadow: 0 0 10px rgba(99,102,241,0.7);
+            transition: width 0.35s ease;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -95,8 +122,11 @@
     </div>
     @endauth
 
+    <!-- Barra de progreso de navegación -->
+    <div id="nav-progress"></div>
+
     <!-- Contenido Principal -->
-    <main class="container mx-auto p-4 mt-4">
+    <main id="page-main" class="container mx-auto p-4 mt-4">
         @yield('content')
     </main>
 
@@ -210,9 +240,7 @@
 
         @if($errors->any())
             document.addEventListener('DOMContentLoaded', () => {
-                @foreach($errors->all() as $error)
-                    showToast("{{ $error }}", 'error');
-                @endforeach
+                showToast("Se encontraron errores en el formulario, por favor revíselos.", 'error');
             });
         @endif
 
@@ -341,7 +369,7 @@
                     });
                     if (!isValid) {
                         e.preventDefault();
-                        showToast('Por favor revisa que todo esté correcto', 'error');
+                        showToast('Por favor revise que todos los campos esten digitados y correctos', 'error');
                     }
                 });
             });
