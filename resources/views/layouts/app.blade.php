@@ -43,24 +43,12 @@
             </div>
         </div>
 
-        <!-- Centro: Buscador Global -->
-        <div class="flex-grow max-w-md hidden sm:block">
-            <form action="{{ route('mantenimientos.reportes') }}" method="GET" class="relative group">
-                <input type="text" name="search" placeholder="Buscar Orden o Cliente..." 
-                    class="w-full bg-gray-100 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 pl-10 pr-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm group-hover:border-gray-300 dark:group-hover:border-gray-500"
-                    value="{{ request('search') }}">
-                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    🔍
-                </div>
-            </form>
-        </div>
-
         <!-- Derecha: Usuario, Modo Oscuro y Logout -->
         <div class="flex items-center space-x-4">
             @if(auth()->user()->photo)
                 <img src="{{ asset('storage/' . auth()->user()->photo) }}" width="32" height="32" class="rounded-full object-cover border border-gray-300 dark:border-gray-600">
             @endif
-            <span class="text-sm hidden xl:inline-block">Bienvenido, {{ auth()->user()->name }}</span>
+            <span class="text-sm hidden xl:inline-block">Bienvenido, {{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
             
             <!-- Botón Modo Oscuro -->
             <button type="button" id="theme-toggle" class="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg focus:outline-none" aria-label="Cambiar tema claro u oscuro">
