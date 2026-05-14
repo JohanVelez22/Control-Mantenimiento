@@ -32,18 +32,16 @@
 </script>
 
 <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
         <h2 class="text-2xl font-bold">Listado de Clientes</h2>
-        @if(!auth()->user()->isInvitado())
-            <a href="{{ route('clientes.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
-                ➕ Nuevo Cliente
-            </a>
-        @endif
-    </div>
-
-    <!-- Búsqueda Rápida -->
-    <div class="mb-4">
-        <input type="text" id="search-clientes" placeholder="🔍 Buscar en tabla..." class="w-full md:w-80 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl py-2 px-4 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+        <div class="flex flex-wrap items-center gap-2">
+            <input type="text" id="search-clientes" placeholder="🔍 Buscar..." class="bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 w-48">
+            @if(!auth()->user()->isInvitado())
+                <a href="{{ route('clientes.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
+                    ➕ Nuevo Cliente
+                </a>
+            @endif
+        </div>
     </div>
 
     <div class="overflow-x-auto">
