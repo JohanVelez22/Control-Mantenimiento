@@ -9,28 +9,6 @@
     }
 </style>
 
-<script>
-    function centerAnchor() {
-        const hash = window.location.hash;
-        if (!hash) return;
-        function scrollToRow() {
-            const target = document.querySelector(hash);
-            if (!target) return false;
-            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return true;
-        }
-        requestAnimationFrame(function () {
-            requestAnimationFrame(function () {
-                if (!scrollToRow()) {
-                    setTimeout(scrollToRow, 50);
-                    setTimeout(scrollToRow, 200);
-                }
-            });
-        });
-    }
-    window.addEventListener('load', centerAnchor);
-</script>
-
 <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
     <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
         <h2 class="text-2xl font-bold">Listado de Equipos</h2>

@@ -85,10 +85,10 @@ class MantenimientoController extends Controller
 
         $mantenimientos = $query->orderBy('id', 'desc')->paginate(10);
 
-        $clientes = Cliente::all();
-        $equipos = Equipo::all();
-        $tecnicos = Tecnico::all();
-        $usuarios = User::all();
+        $clientes = Cliente::orderBy('nombre')->get(['id', 'nombre', 'identificacion']);
+        $equipos  = Equipo::orderBy('nombre')->get(['id', 'nombre', 'modelo', 'serie']);
+        $tecnicos = Tecnico::orderBy('nombre')->get(['id', 'nombre']);
+        $usuarios = User::orderBy('name')->get(['id', 'name']);
 
         return view('mantenimientos.reportes', compact('mantenimientos', 'clientes', 'equipos', 'tecnicos', 'usuarios'));
     }

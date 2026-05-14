@@ -141,6 +141,30 @@
             });
         }
 
+        // --- SCROLL SUAVE A FILA POR ANCLA (centralizado) ---
+        function centerAnchor() {
+            const hash = window.location.hash;
+            if (!hash) return;
+            function scrollToRow() {
+                const target = document.querySelector(hash);
+                if (!target) return false;
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return true;
+            }
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    if (!scrollToRow()) {
+                        setTimeout(scrollToRow, 50);
+                        setTimeout(scrollToRow, 200);
+                    }
+                });
+            });
+        }
+        document.addEventListener('DOMContentLoaded', centerAnchor);
+        window.addEventListener('load', function() { centerAnchor(); setTimeout(centerAnchor, 100); });
+        window.addEventListener('hashchange', centerAnchor);
+        window.addEventListener('pageshow', function(e) { if (e.persisted) centerAnchor(); });
+
         // --- SISTEMA DE TOASTS ---
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -317,7 +341,7 @@
                     });
                     if (!isValid) {
                         e.preventDefault();
-                        showToast('Por favor corrige los errores del formulario', 'error');
+                        showToast('Por favor revisa que todo esté correcto', 'error');
                     }
                 });
             });
