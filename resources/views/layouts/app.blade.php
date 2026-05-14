@@ -24,16 +24,16 @@
 
     <!-- Navegación -->
     @auth
-    <nav class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 p-4 flex justify-between items-center sticky top-0 z-50">
+    <nav class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 p-4 flex flex-wrap justify-between items-center sticky top-0 z-50 gap-4">
         
         <!-- Izquierda: Logo y Menú Principal -->
         <div class="flex items-center space-x-6">
-            <div class="text-xl font-bold">
+            <div class="text-xl font-bold whitespace-nowrap">
                 <a href="{{ route('dashboard') }}">⚙️ Control Mantenimientos</a>
             </div>
             
             <!-- Enlaces del menú -->
-            <div class="hidden md:flex space-x-4">
+            <div class="hidden lg:flex space-x-4">
                 <a href="{{ route('clientes.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">👤 Clientes</a>
                 <a href="{{ route('equipos.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">🖥️ Equipos</a>
                 <a href="{{ route('tecnicos.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">🛠️ Técnicos</a>
@@ -43,12 +43,24 @@
             </div>
         </div>
 
+        <!-- Centro: Buscador Global -->
+        <div class="flex-grow max-w-md hidden sm:block">
+            <form action="{{ route('mantenimientos.reportes') }}" method="GET" class="relative group">
+                <input type="text" name="search" placeholder="Buscar Orden o Cliente..." 
+                    class="w-full bg-gray-100 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl py-2 pl-10 pr-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm group-hover:border-gray-300 dark:group-hover:border-gray-500"
+                    value="{{ request('search') }}">
+                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    🔍
+                </div>
+            </form>
+        </div>
+
         <!-- Derecha: Usuario, Modo Oscuro y Logout -->
         <div class="flex items-center space-x-4">
             @if(auth()->user()->photo)
                 <img src="{{ asset('storage/' . auth()->user()->photo) }}" width="32" height="32" class="rounded-full object-cover border border-gray-300 dark:border-gray-600">
             @endif
-            <span class="text-sm hidden sm:inline-block">Bienvenido, {{ auth()->user()->name }} ({{ ucfirst(auth()->user()->role) }})</span>
+            <span class="text-sm hidden xl:inline-block">Bienvenido, {{ auth()->user()->name }}</span>
             
             <!-- Botón Modo Oscuro -->
             <button type="button" id="theme-toggle" class="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg focus:outline-none" aria-label="Cambiar tema claro u oscuro">
@@ -65,29 +77,67 @@
 
     <!-- Contenido Principal -->
     <main class="container mx-auto p-4 mt-4">
-        <!-- Mensajes de Error Globales -->
-        @if(session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                {{ session('error') }}
-            </div>
-        @endif
-
-        @if ($errors->any() && !request()->routeIs('*.create', '*.edit', 'login', 'register'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                <ul class="list-disc pl-5">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        
         @yield('content')
     </main>
 
-    <!-- Lógica del botón de Modo Oscuro -->
+    <!-- Contenedor de Toasts -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- Scripts -->
     <script>
-        var themeToggleBtn = document.getElementById('theme-toggle');
+        // --- SISTEMA DE TOASTS ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' 
+                ? 'bg-green-500/90 border-green-400 text-white' 
+                : (type === 'error' ? 'bg-red-500/90 border-red-400 text-white' : 'bg-blue-500/90 border-blue-400 text-white');
+            
+            const icon = type === 'success' ? '✅' : (type === 'error' ? '⚠️' : 'ℹ️');
+
+            toast.className = `${bgClass} backdrop-blur-md border rounded-2xl shadow-2xl p-4 flex items-center gap-3 transition-all duration-500 transform translate-y-10 opacity-0 pointer-events-auto`;
+            toast.innerHTML = `
+                <span class="text-xl">${icon}</span>
+                <div class="flex-grow">
+                    <p class="text-sm font-bold">${message}</p>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white transition-colors">✕</button>
+            `;
+
+            container.appendChild(toast);
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            });
+
+            // Auto-remove
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 500);
+            }, 5000);
+        }
+
+        // Detectar mensajes de Laravel
+        @if(session('success'))
+            document.addEventListener('DOMContentLoaded', () => showToast("{{ session('success') }}", 'success'));
+        @endif
+
+        @if(session('error'))
+            document.addEventListener('DOMContentLoaded', () => showToast("{{ session('error') }}", 'error'));
+        @endif
+
+        @if($errors->any())
+            document.addEventListener('DOMContentLoaded', () => {
+                @foreach($errors->all() as $error)
+                    showToast("{{ $error }}", 'error');
+                @endforeach
+            });
+        @endif
+
+        // --- LÓGICA MODO OSCURO ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
         if(themeToggleBtn) {
             themeToggleBtn.addEventListener('click', function() {
                 if (localStorage.getItem('color-theme')) {
@@ -109,100 +159,51 @@
                 }
             });
         }
-    </script>
-    <!-- Global Form Validation Script -->
-    <script>
+
+        // --- VALIDACIÓN DE FORMULARIOS ---
         document.addEventListener('DOMContentLoaded', function() {
-            var forms = document.querySelectorAll('form');
-            
-            forms.forEach(function(form) {
-                // Ignore logout form
+            document.querySelectorAll('form').forEach(form => {
                 if(form.action && form.action.includes('logout')) return;
-
-                // Disable default browser validation tooltips
                 form.setAttribute('novalidate', true);
-
-                form.addEventListener('submit', function(event) {
-                    var isValid = true;
-                    var elements = form.querySelectorAll('input, select, textarea');
-                    
-                    elements.forEach(function(el) {
-                        // Limpiar errores previos
-                        var prevError = el.nextElementSibling;
-                        if (prevError && prevError.classList.contains('custom-error-msg')) {
-                            prevError.remove();
-                        }
+                form.addEventListener('submit', function(e) {
+                    let isValid = true;
+                    form.querySelectorAll('input, select, textarea').forEach(el => {
+                        const prevError = el.nextElementSibling;
+                        if (prevError && prevError.classList.contains('custom-error-msg')) prevError.remove();
                         el.classList.remove('border-red-500');
 
-                        // Si el campo es inválido según el HTML5
                         if (!el.checkValidity()) {
                             isValid = false;
                             el.classList.add('border-red-500');
-                            
-                            var errorMsg = document.createElement('p');
-                            errorMsg.classList.add('custom-error-msg', 'text-red-500', 'text-xs', 'mt-1');
-                            
-                            if (el.validity.valueMissing) {
-                                errorMsg.textContent = 'Este campo es obligatorio.';
-                            } else if (el.validity.typeMismatch) {
-                                if (el.type === 'email') errorMsg.textContent = 'Ingresa un correo electrónico válido.';
-                                else errorMsg.textContent = 'Formato no válido.';
-                            } else if (el.validity.tooShort) {
-                                errorMsg.textContent = 'El texto es muy corto.';
-                            } else {
-                                errorMsg.textContent = el.validationMessage;
-                            }
-                            
-                            // Insertar debajo del campo
+                            const errorMsg = document.createElement('p');
+                            errorMsg.className = 'custom-error-msg text-red-500 text-xs mt-1 font-semibold';
+                            errorMsg.textContent = el.validity.valueMissing ? 'Obligatorio' : el.validationMessage;
                             el.parentNode.insertBefore(errorMsg, el.nextSibling);
                         }
                     });
-
                     if (!isValid) {
-                        event.preventDefault(); // Detener recarga de la página
+                        e.preventDefault();
+                        showToast('Por favor corrige los errores del formulario', 'error');
                     }
-                });
-
-                // Remover error al escribir
-                var elements = form.querySelectorAll('input, select, textarea');
-                elements.forEach(function(el) {
-                    el.addEventListener('input', function() {
-                        if (el.checkValidity()) {
-                            el.classList.remove('border-red-500');
-                            var prevError = el.nextElementSibling;
-                            if (prevError && prevError.classList.contains('custom-error-msg')) {
-                                prevError.remove();
-                            }
-                        }
-                    });
                 });
             });
         });
-    </script>
-    <!-- Inactivity Timeout Script -->
-    @auth
-    <script>
+
+        // --- TIMEOUT DE INACTIVIDAD ---
+        @auth
         (function() {
             let time;
-            const timeout = 180000; // 3 minutos
-
-            function logout() {
-                const logoutForm = document.querySelector('form[action="{{ route('logout') }}"]');
-                if (logoutForm) logoutForm.submit();
-            }
-
             function resetTimer() {
                 clearTimeout(time);
-                time = setTimeout(logout, timeout);
+                time = setTimeout(() => {
+                    const logoutForm = document.querySelector('form[action="{{ route('logout') }}"]');
+                    if (logoutForm) logoutForm.submit();
+                }, 180000); // 3 minutos
             }
-
             window.onload = resetTimer;
-            document.onmousemove = resetTimer;
-            document.onkeypress = resetTimer;
-            document.onscroll = resetTimer;
-            document.onclick = resetTimer;
+            ['mousemove', 'keypress', 'scroll', 'click'].forEach(e => window.addEventListener(e, resetTimer));
         })();
+        @endauth
     </script>
-    @endauth
 </body>
 </html>

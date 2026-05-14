@@ -41,12 +41,6 @@
         @endif
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
@@ -61,7 +55,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($clientes as $cliente)
+                @forelse($clientes as $cliente)
                 <tr id="cliente-{{ $cliente->id }}" class="scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->id }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->nombre }}</td>
@@ -92,7 +86,22 @@
                         </div>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="7" class="p-12 text-center">
+                        <div class="flex flex-col items-center justify-center space-y-4">
+                            <div class="text-6xl">👤</div>
+                            <h3 class="text-xl font-bold text-gray-700 dark:text-gray-300">No hay clientes registrados</h3>
+                            <p class="text-gray-500 dark:text-gray-400 max-w-xs mx-auto">Registra a tu primer cliente para comenzar a gestionar sus equipos y mantenimientos.</p>
+                            @if(!auth()->user()->isInvitado())
+                                <a href="{{ route('clientes.create') }}" class="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/30">
+                                    ➕ Registrar Primer Cliente
+                                </a>
+                            @endif
+                        </div>
+                    </td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

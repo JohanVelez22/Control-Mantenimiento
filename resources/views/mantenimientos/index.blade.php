@@ -84,7 +84,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($mantenimientos as $m)
+                @forelse($mantenimientos as $m)
                 <tr id="mantenimiento-{{ $m->id }}" class="scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
                     <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap font-bold text-center">
                         <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 hover:text-blue-800 hover:underline">
@@ -170,7 +170,22 @@
                         </div>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="12" class="p-12 text-center">
+                        <div class="flex flex-col items-center justify-center space-y-4">
+                            <div class="text-6xl">🔍</div>
+                            <h3 class="text-xl font-bold text-gray-700 dark:text-gray-300">No se encontraron mantenimientos</h3>
+                            <p class="text-gray-500 dark:text-gray-400 max-w-xs mx-auto">Parece que aún no hay registros o el filtro no arrojó resultados.</p>
+                            @if(!auth()->user()->isInvitado())
+                                <a href="{{ route('mantenimientos.create') }}" class="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/30">
+                                    ➕ Crear Primera Orden
+                                </a>
+                            @endif
+                        </div>
+                    </td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

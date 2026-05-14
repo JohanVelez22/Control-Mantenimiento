@@ -59,7 +59,7 @@
                 <td><strong>{{ $m->id_orden }}</strong></td>
                 <td>
                     <div>{{ $m->equipo->cliente->nombre ?? 'N/A' }}</div>
-                    <div style="font-size: 8px; color: #666;">ID: {{ $m->equipo->cliente->identificacion ?? '-' }}</div>
+                    <div style="font-size: 8px; color: #666;">{{ $m->equipo->cliente->identificacion ?? '-' }}</div>
                 </td>
                 <td>
                     <div>{{ $m->equipo->nombre ?? 'N/A' }}</div>

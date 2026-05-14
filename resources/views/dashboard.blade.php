@@ -149,7 +149,7 @@
                 </tr>
             </thead>
             <tbody class="text-sm">
-                @foreach($recentMant ?? [] as $m)
+                @forelse($recentMant ?? [] as $m)
                 @php
                     $fechaEntrada = \Carbon\Carbon::parse($m->fecha_entrada)->startOfDay();
                     $fechaFin = $m->fecha_salida 
@@ -198,7 +198,14 @@
                         {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'En proceso' }}
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="7" class="p-8 text-center text-gray-500 dark:text-gray-400">
+                        No hay mantenimientos registrados recientemente.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
             </tbody>
         </table>
     </div>
