@@ -80,7 +80,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-red-500/20 text-sm">
-                                            🗑️ Borrar
+                                            🗑️ Eliminar
                                         </button>
                                     </form>
                                 @endif
