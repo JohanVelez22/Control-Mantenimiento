@@ -33,7 +33,7 @@
         body, nav, main, header, footer,
         table, thead, tbody, tfoot, tr, th, td,
         div, span, a, button, input, select, textarea, label, p, h1, h2, h3, h4, h5 {
-            transition: background-color 0.3s ease, color 0.2s ease, border-color 0.25s ease !important;
+            transition: background-color 0.3s ease, color 0.2s ease, border-color 0.25s ease;
         }
 
         /* Animación de entrada de página */

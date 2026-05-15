@@ -49,7 +49,7 @@
     </div>
 
     <!-- Contenedor Deslizante -->
-    <div class="flex transition-transform duration-1000 ease-in-out" id="carouselTrack" style="width: 400%;">
+    <div class="flex" id="carouselTrack" style="width: 400%; transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1) !important;">
         
         <!-- Slide 1: Gráfico de Barras (Tendencia 7 Días) -->
         <div class="w-1/4 p-6 flex flex-col bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900" style="height: 420px;">
