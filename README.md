@@ -8,6 +8,8 @@
 
 Aplicación web para gestionar clientes, equipos, técnicos y órdenes de mantenimiento (preventivo/correctivo), con dashboard, reportes filtrables, exportación a Excel y PDF, y factura térmica en PDF.
 
+**🎯 VERSIÓN DE PRESENTACIÓN**: Esta rama/versión contiene la estructura estable del proyecto optimizada para entornos locales como **ServBay/Laragon**, lista para mostrar a clientes antes de implementar módulos empresariales adicionales.
+
 ---
 
 ## Tabla de contenidos
@@ -136,7 +138,7 @@ El layout principal (`layouts/app.blade.php`) carga **Tailwind CSS vía CDN** pa
    php artisan db:setup
    ```
 
-   Equivale a asegurar la base (MySQL) o el archivo SQLite y ejecutar `migrate:fresh --seed`.
+   **✨ Comando personalizado automatizado:** Este comando leerá tu `.env`, se conectará a tu servidor local (ej. MariaDB en ServBay), creará la base de datos automáticamente si no existe y ejecutará un `migrate:fresh --seed`. Es la forma más rápida de instalar el sistema.
 
 4. **Enlace de almacenamiento** (si usas fotos de usuarios o técnicos)
 
@@ -190,6 +192,8 @@ Incluye una prueba de rutas que verifica que la raíz `/` redirige al invitado a
 - **Registro / roles**: claves `ROLE_PROMOTE_ADMIN_SECRET` y `ROLE_PROMOTE_TECNICO_SECRET` (fallbacks documentados); sin `Control2026*`.
 - **HTTP**: métodos `show` que redirigen a `edit` donde aplica; `UserController::changePassword` para `POST usuarios/{id}/change-password`.
 - **Limpieza de Código**: Revisión integral para eliminar código innecesario, archivos inactivos y asegurar que todas las funcionalidades operen correctamente sin redundancias.
+- **Entorno Local (ServBay/Laragon)**: Integración perfecta y documentada (`instrucciones_servbay.md`) para inicializar el proyecto usando el motor MariaDB por defecto de ServBay usando `php artisan db:setup`.
+- **Navegación y Paginación**: Solución inteligente de paginación implementada en `MantenimientoController@index` (con el parámetro `?locate=id`) que calcula matemáticamente la página correcta y asegura que al pulsar una orden desde Reportes o el Dashboard el usuario sea redirigido a la página exacta donde se encuentra la fila de la orden, saltándose las limitaciones del frontend.
 - **`.env.example`**: variables `ROLE_PROMOTE_*` documentadas.
 
 ---
