@@ -31,8 +31,9 @@ class UserFactory extends Factory
         $lastName = fake()->randomElement($apellidos);
         $fullName = $firstName . ' ' . $lastName;
         
-        // Generar un email basado en el nombre (ej: esteban.vargas@example.com)
-        $email = strtolower($firstName . '.' . $lastName) . fake()->numberBetween(10, 99) . '@example.com';
+        // Generar un email basado en el nombre sin acentos (ej: esteban.vargas@example.com)
+        $emailName = Str::ascii($firstName . '.' . $lastName);
+        $email = strtolower($emailName) . fake()->numberBetween(10, 99) . '@example.com';
 
         return [
             'name' => $fullName,
