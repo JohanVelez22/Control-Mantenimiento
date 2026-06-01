@@ -19,8 +19,16 @@ class MantenimientoController extends Controller
      * Muestra la lista de todos los mantenimientos registrados.
      * Carga las relaciones (equipo, cliente, técnico, usuario) para evitar múltiples consultas a la DB.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->has('locate')) {
+            $id = $request->locate;
+            // Calcular la página asumiendo orden descendente por ID
+            $position = Mantenimiento::where('id', '>=', $id)->count();
+            $page = ceil($position / 10) ?: 1;
+            return redirect()->route('mantenimientos.index', ['page' => $page])->withFragment('mantenimiento-' . $id);
+        }
+
         $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user'])->orderBy('id', 'desc')->paginate(10);
         return view('mantenimientos.index', compact('mantenimientos'));
     }

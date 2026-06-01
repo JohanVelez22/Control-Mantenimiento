@@ -159,7 +159,7 @@
                 @endphp
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                     <td class="p-3 text-center font-bold whitespace-nowrap border border-gray-300 dark:border-gray-500">
-                        <a href="{{ route('mantenimientos.index') }}#mantenimiento-{{ $m->id }}" class="text-blue-600 hover:text-blue-800 hover:underline no-print-link">
+                        <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 hover:text-blue-800 hover:underline no-print-link">
                             {{ $m->id_orden }}
                         </a>
                     </td>
