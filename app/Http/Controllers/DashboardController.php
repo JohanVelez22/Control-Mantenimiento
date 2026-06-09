@@ -20,29 +20,32 @@ class DashboardController extends Controller
         $totalEquipos = Equipo::count();
         $totalMantenimientos = Mantenimiento::count();
 
-        // Cálculo del costo total acumulado sumando la columna 'costo' solo de órdenes terminadas con fecha de salida
-        $totalCosto = Mantenimiento::where('estado', 'terminado')
-            ->whereNotNull('fecha_salida')
-            ->sum('costo');
-        $totalCostoFormateado = number_format($totalCosto, 2, '.', ',');
+        // Caja: ingresos, egresos y saldo actual del histórico
+        $cajaIngresos = \App\Models\MovimientoCaja::where('tipo_movimiento', 'ingreso')->sum('monto');
+        $cajaEgresos = \App\Models\MovimientoCaja::where('tipo_movimiento', 'egreso')->sum('monto');
+        $cajaSaldoActual = $cajaIngresos - $cajaEgresos;
 
-        // Cálculo del costo del día (Hoy)
-        $totalCostoDia = Mantenimiento::where('estado', 'terminado')
-            ->whereNotNull('fecha_salida')
-            ->whereDate('fecha_salida', Carbon::today())
-            ->sum('costo');
-        $totalCostoDiaFormateado = number_format($totalCostoDia, 2, '.', ',');
+        // Caja: ingresos del día (Hoy)
+        $cajaIngresosDia = \App\Models\MovimientoCaja::where('tipo_movimiento', 'ingreso')
+            ->whereDate('fecha', Carbon::today())
+            ->sum('monto');
 
-        // Mantenimientos recientes
-        $recentMant = Mantenimiento::with(['equipo', 'tecnico', 'user'])
+        // Formateo para la vista
+        $totalCostoFormateado = number_format($cajaSaldoActual, 2, '.', ',');
+        $totalCostoDiaFormateado = number_format($cajaIngresosDia, 2, '.', ',');
+
+        // Mantenimientos recientes (incluye abonos para calcular saldos pendientes)
+        $recentMant = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user', 'abonos'])
             ->orderBy('id', 'desc')
             ->take(5)
             ->get();
 
-        // Estados
+        // Estados Mantenimientos
         $stats = [
             'pendientes' => Mantenimiento::where('estado', 'pendiente')->count(),
             'terminados' => Mantenimiento::where('estado', 'terminado')->count(),
+            'stock_bajo' => \App\Models\Stock::where('cantidad', '<=', 5)->count(),
+            'electronica_pendientes' => \App\Models\Electronica::where('estado', 'pendiente')->count(),
         ];
 
         // --- Gráficos de los últimos 7 días: 3 queries agrupadas en lugar de 28 ---
@@ -61,13 +64,11 @@ class DashboardController extends Controller
             ->groupBy('fecha')
             ->pluck('total', 'fecha');
 
-        // 1 query: ingresos por día de salida (solo terminados)
-        $ingresosPorDia = Mantenimiento::where('estado', 'terminado')
-            ->whereNotNull('fecha_salida')
-            ->whereBetween('fecha_salida', [$startDate, $endDate])
-            ->selectRaw('DATE(fecha_salida) as fecha, SUM(costo) as total')
-            ->groupBy('fecha')
-            ->pluck('total', 'fecha');
+        // 1 query: ingresos por caja (ingresos - egresos) de los últimos 7 días
+        $cajaMovs = \App\Models\MovimientoCaja::whereBetween('fecha', [$startDate, $endDate])
+            ->selectRaw("DATE(fecha) as fecha, tipo_movimiento, SUM(monto) as total")
+            ->groupBy('fecha', 'tipo_movimiento')
+            ->get();
 
         // Construir arrays para Chart.js en PHP (sin queries adicionales)
         $labels = [];
@@ -75,7 +76,13 @@ class DashboardController extends Controller
         $dataMantenimientos = [];
         $dataIngresos = [];
         $dataIngresosAcumulados = [];
-        $acumulado = 0;
+
+        // Para el acumulado debemos partir del saldo histórico ANTES de los 7 días
+        $saldoAnterior = \App\Models\MovimientoCaja::where('fecha', '<', $startDate)
+            ->selectRaw("SUM(CASE WHEN tipo_movimiento='ingreso' THEN monto ELSE -monto END) as saldo")
+            ->value('saldo') ?? 0;
+            
+        $acumulado = $saldoAnterior;
 
         for ($i = 0; $i < 7; $i++) {
             $date = Carbon::today()->subDays(6 - $i);
@@ -83,9 +90,13 @@ class DashboardController extends Controller
             $labels[]             = $date->format('d/m');
             $dataEquipos[]        = (int)   ($equiposPorDia[$key]  ?? 0);
             $dataMantenimientos[] = (int)   ($mantPorDia[$key]     ?? 0);
-            $ingresoDia           = (float) ($ingresosPorDia[$key] ?? 0);
-            $dataIngresos[]       = $ingresoDia;
-            $acumulado           += $ingresoDia;
+            
+            $ingresoDia = $cajaMovs->where('fecha', $key)->where('tipo_movimiento', 'ingreso')->sum('total');
+            $egresoDia = $cajaMovs->where('fecha', $key)->where('tipo_movimiento', 'egreso')->sum('total');
+            $saldoDia = $ingresoDia - $egresoDia;
+
+            $dataIngresos[]       = $saldoDia;
+            $acumulado           += $saldoDia;
             $dataIngresosAcumulados[] = $acumulado;
         }
 

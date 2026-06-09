@@ -14,22 +14,26 @@
 }
 </style>
 
-<div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
     <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-blue-500 dark:border-l-sky-400">
-        <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">💻 Total de Equipos</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase">💻 Equipos</div>
         <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $totalEquipos ?? 0 }}</div>
     </div>
     <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-emerald-500 dark:border-l-emerald-400">
-        <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">🔧 Mantenimientos</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase">🔧 Órdenes</div>
         <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $totalMantenimientos ?? 0 }}</div>
     </div>
     <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-amber-500 dark:border-l-amber-400">
-        <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">⏳ Pendientes</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase">⏳ Pendientes (Mant)</div>
         <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $stats['pendientes'] ?? 0 }}</div>
     </div>
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-violet-500 dark:border-l-violet-400">
-        <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">✅ Terminados</div>
-        <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $stats['terminados'] ?? 0 }}</div>
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-red-500 dark:border-l-red-400">
+        <div class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase">📦 Stock Bajo (<5)</div>
+        <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $stats['stock_bajo'] ?? 0 }}</div>
+    </div>
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-purple-500 dark:border-l-purple-400">
+        <div class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase">⚡ Electrónica Pend.</div>
+        <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $stats['electronica_pendientes'] ?? 0 }}</div>
     </div>
 </div>
 
@@ -124,11 +128,11 @@
 <!-- Tarjetas de ingresos (resumen rápido bajo el carrusel) -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
     <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-green-500 dark:border-l-green-400">
-        <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">💰 Costo Acumulado (Histórico)</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">💰 Saldo en Caja (Histórico)</div>
         <div class="text-2xl font-bold text-green-600 dark:text-green-400">${{ $totalCostoFormateado ?? '0.00' }}</div>
     </div>
     <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl rounded-2xl p-4 border-t border-r border-b border-gray-200 dark:border-gray-500 border-l-[5px] border-l-blue-500 dark:border-l-sky-400">
-        <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">💵 Ingresos del Día (Hoy)</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase">💵 Ingresos a Caja (Hoy)</div>
         <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">${{ $totalCostoDiaFormateado ?? '0.00' }}</div>
     </div>
 </div>
@@ -176,8 +180,14 @@
                         </a>
                     </td>
 
-                    <td class="p-3 text-center font-bold text-green-600 border border-gray-300 dark:border-gray-500">
-                        ${{ number_format($m->costo, 2) }}
+                    <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
+                        <div class="flex flex-col items-center gap-1">
+                            <span class="font-bold text-blue-600">${{ number_format($m->costo, 0, ',', '.') }}</span>
+                            @if($m->total_abonado > 0)
+                                <span class="text-[11px] font-semibold text-green-600">Abonado: ${{ number_format($m->total_abonado, 0, ',', '.') }}</span>
+                                <span class="text-[11px] font-semibold text-red-500">Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }}</span>
+                            @endif
+                        </div>
                     </td>
 
                     <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
