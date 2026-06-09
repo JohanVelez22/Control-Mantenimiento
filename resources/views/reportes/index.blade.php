@@ -3,6 +3,11 @@
 @section('title', 'Informes y Reportes')
 
 @section('content')
+<div class="flex gap-4 mb-6 no-print">
+    <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
+    <a href="{{ route('reportes.index') }}" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💰 Informes Financieros</a>
+</div>
+
 <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
     <div>
         <h1 class="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-2">
@@ -22,8 +27,17 @@
                 <option value="{{ $i }}" {{ $anio == $i ? 'selected' : '' }}>{{ $i }}</option>
             @endfor
         </select>
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors" title="Filtrar">
             🔍 Filtrar
+        </button>
+        <button type="button" onclick="window.print()" class="bg-gray-500 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors ml-2" title="Imprimir Reporte">
+            🖨️
+        </button>
+        <button type="submit" name="export" value="pdf" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition-colors" title="Exportar a PDF">
+            📄
+        </button>
+        <button type="submit" name="export" value="excel" class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg transition-colors" title="Exportar a Excel">
+            📊
         </button>
     </form>
 </div>

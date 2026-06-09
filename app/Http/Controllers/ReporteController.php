@@ -73,6 +73,16 @@ class ReporteController extends Controller
             'egresos_consignacion' => (clone $acumuladoQuery)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto'),
         ];
 
+        // Lógica de exportación según el botón presionado
+        if ($request->get('export') == 'excel') {
+            $transaccionesParaExportar = $queryDetallado->get();
+            return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportesFinancierosExport($transaccionesParaExportar), 'reporte_financiero.xlsx');
+        }
+        if ($request->get('export') == 'pdf') {
+            $transaccionesParaExportar = $queryDetallado->get();
+            return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes.pdf', compact('transaccionesParaExportar', 'acumulado', 'operaciones', 'mes', 'anio'))->download('reporte_financiero.pdf');
+        }
+
         return view('reportes.index', compact('transacciones', 'acumulado', 'operaciones', 'mes', 'anio'));
     }
 }
