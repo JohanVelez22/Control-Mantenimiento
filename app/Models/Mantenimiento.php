@@ -44,4 +44,21 @@ class Mantenimiento extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function abonos()
+    {
+        return $this->hasMany(Abono::class);
+    }
+
+    /** Total abonado */
+    public function getTotalAbonadoAttribute(): float
+    {
+        return (float) $this->abonos->sum('monto');
+    }
+
+    /** Saldo pendiente */
+    public function getSaldoPendienteAttribute(): float
+    {
+        return max(0, (float) $this->costo - $this->total_abonado);
+    }
 }

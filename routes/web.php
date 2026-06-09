@@ -56,10 +56,22 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('electronicas', App\Http\Controllers\ElectronicaController::class);
     Route::resource('mantenimientos', MantenimientoController::class);
 
-    // Módulo de Caja
     Route::resource('caja', App\Http\Controllers\MovimientoCajaController::class)->except(['show']);
-    Route::get('caja/{movimiento}/print', [App\Http\Controllers\MovimientoCajaController::class, 'print'])->name('caja.print');
-    Route::post('caja/concepto', [App\Http\Controllers\MovimientoCajaController::class, 'storeConcepto'])->name('caja.concepto.store');
+    Route::get('caja/{movimiento}/print',     [App\Http\Controllers\MovimientoCajaController::class, 'print'])->name('caja.print');
+    Route::post('caja/{movimiento}/duplicate', [App\Http\Controllers\MovimientoCajaController::class, 'duplicate'])->name('caja.duplicate');
+    Route::post('caja/concepto',              [App\Http\Controllers\MovimientoCajaController::class, 'storeConcepto'])->name('caja.concepto.store');
+
+    // Duplicar mantenimiento
+    Route::post('mantenimientos/{mantenimiento}/duplicate', [MantenimientoController::class, 'duplicate'])->name('mantenimientos.duplicate');
+
+    // Abonos (anidados bajo mantenimiento)
+    Route::post('mantenimientos/{mantenimiento}/abonos', [App\Http\Controllers\AbonoController::class, 'store'])->name('abonos.store');
+    Route::delete('abonos/{abono}',                      [App\Http\Controllers\AbonoController::class, 'destroy'])->name('abonos.destroy');
+
+    // Cierre de Caja
+    Route::get('cierre',              [App\Http\Controllers\CierreCajaController::class, 'index'])->name('cierre.index');
+    Route::post('cierre',             [App\Http\Controllers\CierreCajaController::class, 'store'])->name('cierre.store');
+    Route::delete('cierre/{cierre}',  [App\Http\Controllers\CierreCajaController::class, 'destroy'])->name('cierre.destroy');
 
     // Módulo de Usuarios (ADMIN y TÉCNICO)
     Route::middleware(['role:admin,tecnico'])->group(function () {

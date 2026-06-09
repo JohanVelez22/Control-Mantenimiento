@@ -177,4 +177,16 @@ class MovimientoCajaController extends Controller
         $concepto = ConceptoCaja::create(['nombre' => trim($request->nombre)]);
         return response()->json(['id' => $concepto->id, 'nombre' => $concepto->nombre]);
     }
+
+    /** Duplicar un movimiento de caja (copia con fecha hoy) */
+    public function duplicate(MovimientoCaja $movimiento)
+    {
+        $nuevo = $movimiento->replicate();
+        $nuevo->fecha   = now()->toDateString();
+        $nuevo->user_id = auth()->id();
+        $nuevo->save();
+
+        return redirect()->route('caja.edit', $nuevo)
+                         ->with('success', 'Movimiento duplicado. Revisa y actualiza los datos antes de guardar.');
+    }
 }

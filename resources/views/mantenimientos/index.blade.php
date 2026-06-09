@@ -95,6 +95,11 @@
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->user->name ?? '-' }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <div class="flex justify-center items-center gap-2 flex-wrap">
+                            {{-- Ver Detalle (con abonos) --}}
+                            <a href="{{ route('mantenimientos.show', $m->id) }}" class="inline-flex items-center gap-1 bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all text-sm" title="Ver detalle y abonos">
+                                👁️ <span class="hidden md:inline">Ver</span>
+                            </a>
+
                             @if($m->estado === 'terminado' && $m->fecha_salida)
                                 <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="inline-flex items-center gap-1 bg-green-500/20 text-green-700 dark:text-green-400 border border-green-500/30 hover:bg-green-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-green-500/20 text-sm" title="Factura POS (requiere fecha de salida)">
                                     🖨️ <span class="hidden md:inline">Factura</span>
@@ -110,6 +115,13 @@
                                     ✏️ <span class="hidden md:inline">Editar</span>
                                 </a>
 
+                                <form action="{{ route('mantenimientos.duplicate', $m->id) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center gap-1 bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all text-sm" title="Duplicar orden">
+                                        📋 <span class="hidden md:inline">Duplicar</span>
+                                    </button>
+                                </form>
+
                                 @if(auth()->user()->isAdmin())
                                     <form action="{{ route('mantenimientos.destroy', $m->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar la orden '{{ $m->id_orden }}'? Esta acción no se puede deshacer.">
                                         @csrf
@@ -119,10 +131,6 @@
                                         </button>
                                     </form>
                                 @endif
-                            @else
-                                <span class="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-1 text-sm cursor-default" title="Solo lectura">
-                                    👁️ <span class="hidden md:inline">Lectura</span>
-                                </span>
                             @endif
                         </div>
                     </td>

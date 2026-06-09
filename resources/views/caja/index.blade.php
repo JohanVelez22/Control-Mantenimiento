@@ -144,6 +144,12 @@
                                        class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm">
                                         ✏️
                                     </a>
+                                    <form action="{{ route('caja.duplicate', $m->id) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center gap-1 bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm" title="Duplicar movimiento">
+                                            📋
+                                        </button>
+                                    </form>
                                     <button type="button"
                                             onclick="openPwdModal('{{ route('caja.destroy', $m->id) }}')"
                                             class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm">

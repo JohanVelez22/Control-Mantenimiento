@@ -35,7 +35,30 @@ class MantenimientoController extends Controller
 
     public function show(Mantenimiento $mantenimiento)
     {
-        return redirect()->route('mantenimientos.edit', $mantenimiento);
+        $mantenimiento->load(['equipo.cliente', 'tecnico', 'user', 'abonos.user']);
+        return view('mantenimientos.show', compact('mantenimiento'));
+    }
+
+    /** Duplicar un mantenimiento existente como nuevo borrador */
+    public function duplicate(Mantenimiento $mantenimiento)
+    {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('mantenimientos.index')->with('error', 'Sin permisos para duplicar.');
+        }
+
+        $ultimo = Mantenimiento::orderByDesc('id')->first();
+        $siguiente = $ultimo ? intval(preg_replace('/[^0-9]/', '', $ultimo->id_orden)) + 1 : 1;
+
+        $nuevo = $mantenimiento->replicate();
+        $nuevo->id_orden     = 'ORD-' . $siguiente;
+        $nuevo->fecha_entrada = now()->toDateString();
+        $nuevo->fecha_salida  = null;
+        $nuevo->estado        = 'pendiente';
+        $nuevo->user_id       = Auth::id();
+        $nuevo->save();
+
+        return redirect()->route('mantenimientos.edit', $nuevo)
+                         ->with('success', "Mantenimiento duplicado como {$nuevo->id_orden}. Revisa y guarda los cambios.");
     }
 
     /**
