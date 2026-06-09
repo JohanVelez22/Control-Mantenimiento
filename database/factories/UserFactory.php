@@ -27,13 +27,14 @@ class UserFactory extends Factory
         $apellidos = ['Vargas', 'Ríos', 'Mendoza', 'Soto', 'Pineda', 'Giraldo', 'Holguín', 'Castaño', 'Henao', 'Agudelo'];
         $nombres = ['Esteban', 'Javier', 'Adriana', 'Liliana', 'Mauricio', 'Rodrigo', 'Camila', 'Ximena', 'Santiago', 'Nicolas'];
         
-        $firstName = fake()->randomElement($nombres);
-        $lastName = fake()->randomElement($apellidos);
+        $faker = \Faker\Factory::create('es_ES');
+        $firstName = $faker->randomElement($nombres);
+        $lastName = $faker->randomElement($apellidos);
         $fullName = $firstName . ' ' . $lastName;
         
         // Generar un email basado en el nombre sin acentos (ej: esteban.vargas@example.com)
         $emailName = Str::ascii($firstName . '.' . $lastName);
-        $email = strtolower($emailName) . fake()->numberBetween(10, 99) . '@example.com';
+        $email = strtolower($emailName) . $faker->numberBetween(10, 99) . '@example.com';
 
         return [
             'name' => $fullName,

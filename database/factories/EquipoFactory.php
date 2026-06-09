@@ -24,19 +24,21 @@ class EquipoFactory extends Factory
             'All in One' => ['Lenovo IdeaCentre', 'HP Laserjet Pro', 'Dell Optiplex', 'Acer Aspire'],
         ];
 
-        $tipo = fake()->randomKey($equipos);
-        $marcaModelo = fake()->randomElement($equipos[$tipo]);
+        $faker = \Faker\Factory::create('es_ES');
+        $tipo = $faker->randomKey($equipos);
+        $marcaModelo = $faker->randomElement($equipos[$tipo]);
         
-        $partes = explode(' ', $marcaModelo, 2);
-        $marca = $partes[0];
-        $modelo = $partes[1] ?? $partes[0];
+        $marcas = explode(' ', $marcaModelo);
+        $marca = $marcas[0];
+        $modelo = isset($marcas[1]) ? $marcas[1] : 'Genérico';
 
         return [
+            'cliente_id' => Cliente::factory(), // Esto se sobreescribirá en el seeder
             'nombre' => $tipo,
             'marca' => $marca,
             'modelo' => $modelo,
-            'serie' => fake()->unique()->bothify('??###???'),
-            'observacion' => fake()->randomElement([
+            'serie' => $faker->unique()->bothify('??###???'),
+            'observacion' => $faker->randomElement([
                 'Equipo en buen estado general.',
                 'Presenta desgaste en la carcasa.',
                 'Uso corporativo intenso.',

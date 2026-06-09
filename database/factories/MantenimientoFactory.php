@@ -20,7 +20,8 @@ class MantenimientoFactory extends Factory
      */
     public function definition(): array
     {
-        $reparacion = fake()->randomElement(['software', 'hardware']);
+        $faker = \Faker\Factory::create('es_ES');
+        $reparacion = $faker->randomElement(['software', 'hardware']);
         
         $descripciones = [
             'software' => [
@@ -42,13 +43,13 @@ class MantenimientoFactory extends Factory
 
         return [
             'id_orden' => 'ORD-' . self::$orderNumber++,
-            'fecha_entrada' => fake()->dateTimeBetween('-1 month', 'now'),
-            'fecha_salida' => fake()->optional()->dateTimeBetween('now', '+1 week'),
-            'tipo' => fake()->randomElement(['preventivo', 'correctivo']),
+            'fecha_entrada' => $faker->dateTimeBetween('-1 month', 'now'),
+            'fecha_salida' => $faker->optional()->dateTimeBetween('now', '+1 week'),
+            'tipo' => $faker->randomElement(['preventivo', 'correctivo']),
             'reparacion' => $reparacion,
-            'descripcion' => fake()->randomElement($descripciones[$reparacion]),
-            'costo' => fake()->numberBetween(10, 90) * 5000, // Genera múltiplos de 5.000 entre 50k y 450k
-            'estado' => fake()->randomElement(['pendiente', 'terminado']),
+            'descripcion' => $faker->randomElement($descripciones[$reparacion]),
+            'costo' => $faker->numberBetween(10, 90) * 5000, // Genera múltiplos de 5.000 entre 50k y 450k
+            'estado' => $faker->randomElement(['pendiente', 'terminado']),
             'equipo_id' => Equipo::factory(),
             'tecnico_id' => Tecnico::factory(),
             'user_id' => User::factory(),

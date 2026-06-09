@@ -47,6 +47,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('equipos', EquipoController::class);
     Route::resource('tecnicos', TecnicoController::class);
     Route::resource('mantenimientos', MantenimientoController::class);
+    Route::resource('stocks', App\Http\Controllers\StockController::class);
 
     // Módulo de Usuarios (ADMIN y TÉCNICO)
     Route::middleware(['role:admin,tecnico'])->group(function () {

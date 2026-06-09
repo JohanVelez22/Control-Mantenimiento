@@ -19,28 +19,29 @@ class ClienteFactory extends Factory
         $apellidos = ['Rodríguez', 'Martínez', 'García', 'Gómez', 'López', 'González', 'Hernández', 'Sánchez', 'Pérez', 'Vásquez', 'Vélez', 'Restrepo', 'Jaramillo', 'Osorio', 'Montoya', 'Castrillón', 'Gaviria', 'Uribe', 'Zuluaga', 'Echeverri'];
         $nombres = ['Juan', 'María', 'José', 'Ana', 'Carlos', 'Sandra', 'Luis', 'Claudia', 'Diego', 'Martha', 'Andrés', 'Gloria', 'Jorge', 'Diana', 'Sergio', 'Paula', 'Mateo', 'Valentina', 'Alejandro', 'Daniela'];
         
-        $nombre = fake()->randomElement($nombres);
-        $apellido1 = fake()->randomElement($apellidos);
-        $apellido2 = fake()->randomElement($apellidos);
-        $nombreCompleto = "$nombre $apellido1 $apellido2";
+        $faker = \Faker\Factory::create('es_ES');
+        $nombre = $faker->randomElement($nombres);
+        $apellido1 = $faker->randomElement($apellidos);
+        $apellido2 = $faker->randomElement($apellidos);
+        $nombreCompleto = $nombre . ' ' . $apellido1 . ' ' . $apellido2;
         
         $ciudades = ['Pereira', 'Dosquebradas', 'Santa Rosa', 'Cartago', 'Marsella'];
         $direcciones = [
-            'Calle ' . fake()->numberBetween(1, 100) . ' # ' . fake()->numberBetween(1, 50) . '-' . fake()->numberBetween(1, 99),
-            'Carrera ' . fake()->numberBetween(1, 80) . ' # ' . fake()->numberBetween(1, 120) . '-' . fake()->numberBetween(1, 60),
-            'Diagonal ' . fake()->numberBetween(1, 40) . ' # ' . fake()->numberBetween(1, 30) . '-' . fake()->numberBetween(1, 20),
-            'Avenida ' . fake()->numberBetween(10, 60) . ' con Calle ' . fake()->numberBetween(1, 90),
+            'Calle ' . $faker->numberBetween(1, 100) . ' # ' . $faker->numberBetween(1, 50) . '-' . $faker->numberBetween(1, 99),
+            'Carrera ' . $faker->numberBetween(1, 80) . ' # ' . $faker->numberBetween(1, 120) . '-' . $faker->numberBetween(1, 60),
+            'Diagonal ' . $faker->numberBetween(1, 40) . ' # ' . $faker->numberBetween(1, 30) . '-' . $faker->numberBetween(1, 20),
+            'Avenida ' . $faker->numberBetween(10, 60) . ' con Calle ' . $faker->numberBetween(1, 90),
         ];
 
-        // Crear un email coherente con el nombre (ej: juan.rodriguez@gmail.com)
-        $email = Str::lower(Str::ascii($nombre)) . '.' . Str::lower(Str::ascii($apellido1)) . fake()->numberBetween(1, 99) . '@' . fake()->freeEmailDomain();
+        // Generar email más realista
+        $email = Str::lower(Str::ascii($nombre)) . '.' . Str::lower(Str::ascii($apellido1)) . $faker->numberBetween(1, 99) . '@' . $faker->freeEmailDomain();
 
         return [
             'nombre' => $nombreCompleto,
-            'identificacion' => fake()->unique()->numerify('10########'), // Cédula de 10 dígitos
-            'movil' => '3' . fake()->numerify('#########'), // Celular colombiano
+            'identificacion' => $faker->unique()->numerify('10########'), // Cédula de 10 dígitos
+            'movil' => '3' . $faker->numerify('#########'), // Celular colombiano
             'email' => $email,
-            'direccion' => fake()->randomElement($direcciones) . ', ' . fake()->randomElement($ciudades),
+            'direccion' => $faker->randomElement($direcciones) . ', ' . $faker->randomElement($ciudades),
         ];
     }
 }
