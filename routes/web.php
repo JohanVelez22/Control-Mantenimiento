@@ -56,6 +56,11 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('electronicas', App\Http\Controllers\ElectronicaController::class);
     Route::resource('mantenimientos', MantenimientoController::class);
 
+    // Módulo de Caja
+    Route::resource('caja', App\Http\Controllers\MovimientoCajaController::class)->except(['show']);
+    Route::get('caja/{movimiento}/print', [App\Http\Controllers\MovimientoCajaController::class, 'print'])->name('caja.print');
+    Route::post('caja/concepto', [App\Http\Controllers\MovimientoCajaController::class, 'storeConcepto'])->name('caja.concepto.store');
+
     // Módulo de Usuarios (ADMIN y TÉCNICO)
     Route::middleware(['role:admin,tecnico'])->group(function () {
     Route::resource('usuarios', UserController::class);
