@@ -172,10 +172,31 @@
             font-size: 7pt;
             letter-spacing: 0.06em;
         }
+
+        /* Marcas de agua para impresión */
+        .watermark-container { position: relative; }
+        .watermark-container.anulado::after {
+            content: "ANULADO";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 5rem;
+            font-weight: 900;
+            color: rgba(239, 68, 68, 0.15); /* text-red-500 muy transparente */
+            z-index: 1000;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        @media print {
+            .watermark-container.anulado::after {
+                color: rgba(200, 0, 0, 0.2) !important;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="ticket">
+    <div class="ticket watermark-container {{ $mantenimiento->estado === 'anulado' ? 'anulado' : '' }}">
         <header class="brand">
             <p class="brand-name">Taller De Soporte</p>
             <p class="brand-tag">Servicio Tecnico Especializado</p>

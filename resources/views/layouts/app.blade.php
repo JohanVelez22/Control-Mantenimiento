@@ -45,6 +45,29 @@
             animation: pageFadeIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
+        /* Marcas de agua para impresión */
+        .watermark-container { position: relative; }
+        .watermark-container.anulado::after {
+            content: "ANULADO";
+            position: fixed; /* For print it stays centered on the page */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(239, 68, 68, 0.15); /* text-red-500 muy transparente */
+            z-index: 1000;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        @media print {
+            .watermark-container.anulado::after {
+                color: rgba(200, 0, 0, 0.2) !important;
+                /* En impresión a veces es mejor absolute relative al body o pagina */
+                position: absolute;
+            }
+        }
+
         /* Barra de progreso de navegación */
         #nav-progress {
             position: fixed;

@@ -189,4 +189,25 @@ class MovimientoCajaController extends Controller
         return redirect()->route('caja.edit', $nuevo)
                          ->with('success', 'Movimiento duplicado. Revisa y actualiza los datos antes de guardar.');
     }
+
+    public function anular(Request $request, MovimientoCaja $movimiento)
+    {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->back()->with('error', 'No tienes permisos para anular.');
+        }
+
+        $request->validate([
+            'password_confirm' => 'required'
+        ]);
+
+        $adminPassword = \App\Models\User::where('role', 'admin')->value('password');
+        if (!\Hash::check($request->password_confirm, Auth::user()->password) && 
+            !\Hash::check($request->password_confirm, $adminPassword)) {
+            return redirect()->back()->with('error', 'Contraseña incorrecta.');
+        }
+
+        $movimiento->update(['estado' => 'anulado']);
+
+        return redirect()->back()->with('success', 'Movimiento anulado correctamente. Los valores han sido revertidos de la caja.');
+    }
 }

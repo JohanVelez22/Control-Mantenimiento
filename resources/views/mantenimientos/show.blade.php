@@ -8,9 +8,15 @@
             <div class="flex items-center gap-3">
                 <a href="{{ route('mantenimientos.index') }}" class="text-gray-500 hover:text-blue-500">⬅️ Volver</a>
                 <h2 class="text-2xl font-bold">📋 {{ $mantenimiento->id_orden }}</h2>
-                <span class="inline-flex px-3 py-1 rounded-xl text-sm font-bold {{ $mantenimiento->estado === 'terminado' ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300' }}">
-                    {{ $mantenimiento->estado === 'terminado' ? '✅ Terminado' : '⏳ Pendiente' }}
-                </span>
+                @if($mantenimiento->estado === 'anulado')
+                    <span class="inline-flex px-3 py-1 rounded-xl text-sm font-bold bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300">
+                        🚫 Anulado
+                    </span>
+                @else
+                    <span class="inline-flex px-3 py-1 rounded-xl text-sm font-bold {{ $mantenimiento->estado === 'terminado' ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300' }}">
+                        {{ $mantenimiento->estado === 'terminado' ? '✅ Terminado' : '⏳ Pendiente' }}
+                    </span>
+                @endif
             </div>
             @if(!auth()->user()->isInvitado())
             <div class="flex gap-2 flex-wrap">
@@ -59,7 +65,7 @@
         <h3 class="text-xl font-bold mb-4">💳 Abonos / Pagos Parciales</h3>
 
         {{-- Formulario nuevo abono --}}
-        @if(!auth()->user()->isInvitado())
+        @if(!auth()->user()->isInvitado() && $mantenimiento->estado !== 'anulado')
         <form action="{{ route('abonos.store', $mantenimiento) }}" method="POST" class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 mb-5 space-y-3">
             @csrf
             <h4 class="font-semibold text-sm text-gray-700 dark:text-gray-300">Registrar nuevo abono</h4>
@@ -91,6 +97,10 @@
                 ➕ Registrar Abono
             </button>
         </form>
+        @elseif($mantenimiento->estado === 'anulado')
+        <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-5">
+            <p class="text-sm font-semibold text-red-600 dark:text-red-400 text-center">No se pueden agregar abonos a una orden anulada.</p>
+        </div>
         @endif
 
         {{-- Listado de abonos --}}

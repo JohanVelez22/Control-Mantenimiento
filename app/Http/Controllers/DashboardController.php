@@ -21,12 +21,13 @@ class DashboardController extends Controller
         $totalMantenimientos = Mantenimiento::count();
 
         // Caja: ingresos, egresos y saldo actual del histórico
-        $cajaIngresos = \App\Models\MovimientoCaja::where('tipo_movimiento', 'ingreso')->sum('monto');
-        $cajaEgresos = \App\Models\MovimientoCaja::where('tipo_movimiento', 'egreso')->sum('monto');
+        $cajaIngresos = \App\Models\MovimientoCaja::where('estado', 'activo')->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $cajaEgresos = \App\Models\MovimientoCaja::where('estado', 'activo')->where('tipo_movimiento', 'egreso')->sum('monto');
         $cajaSaldoActual = $cajaIngresos - $cajaEgresos;
 
         // Caja: ingresos del día (Hoy)
-        $cajaIngresosDia = \App\Models\MovimientoCaja::where('tipo_movimiento', 'ingreso')
+        $cajaIngresosDia = \App\Models\MovimientoCaja::where('estado', 'activo')
+            ->where('tipo_movimiento', 'ingreso')
             ->whereDate('fecha', Carbon::today())
             ->sum('monto');
 
@@ -65,7 +66,8 @@ class DashboardController extends Controller
             ->pluck('total', 'fecha');
 
         // 1 query: ingresos por caja (ingresos - egresos) de los últimos 7 días
-        $cajaMovs = \App\Models\MovimientoCaja::whereBetween('fecha', [$startDate, $endDate])
+        $cajaMovs = \App\Models\MovimientoCaja::where('estado', 'activo')
+            ->whereBetween('fecha', [$startDate, $endDate])
             ->selectRaw("DATE(fecha) as fecha, tipo_movimiento, SUM(monto) as total")
             ->groupBy('fecha', 'tipo_movimiento')
             ->get();
@@ -78,7 +80,8 @@ class DashboardController extends Controller
         $dataIngresosAcumulados = [];
 
         // Para el acumulado debemos partir del saldo histórico ANTES de los 7 días
-        $saldoAnterior = \App\Models\MovimientoCaja::where('fecha', '<', $startDate)
+        $saldoAnterior = \App\Models\MovimientoCaja::where('estado', 'activo')
+            ->where('fecha', '<', $startDate)
             ->selectRaw("SUM(CASE WHEN tipo_movimiento='ingreso' THEN monto ELSE -monto END) as saldo")
             ->value('saldo') ?? 0;
             

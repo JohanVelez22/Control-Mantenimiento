@@ -223,4 +223,30 @@ class MantenimientoController extends Controller
         
         return $pdf->stream('factura_' . $mantenimiento->id_orden . '.pdf');
     }
+
+    public function anular(Request $request, Mantenimiento $mantenimiento)
+    {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->back()->with('error', 'No tienes permisos para anular.');
+        }
+
+        $request->validate([
+            'password_confirm' => 'required'
+        ]);
+
+        $adminPassword = \App\Models\User::where('role', 'admin')->value('password');
+        if (!\Hash::check($request->password_confirm, Auth::user()->password) && 
+            !\Hash::check($request->password_confirm, $adminPassword)) {
+            return redirect()->back()->with('error', 'Contraseña incorrecta.');
+        }
+
+        // Al anular, se establece el estado a 'anulado'
+        $mantenimiento->update(['estado' => 'anulado']);
+
+        // NOTA: Si se implementa una relación pivot (Mantenimiento_Stock) en el futuro,
+        // aquí iteraríamos sobre los repuestos y haríamos increment() en la tabla stocks
+        // Ejemplo: foreach($mantenimiento->stocks as $stock) { $stock->increment('cantidad', $stock->pivot->cantidad); }
+
+        return redirect()->back()->with('success', 'Mantenimiento anulado correctamente. La transacción y stock asociados (si aplica) han sido revertidos.');
+    }
 }

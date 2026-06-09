@@ -120,11 +120,32 @@
         .btn-print:hover { background: #1d4ed8; }
         .btn-back  { background: #e5e7eb; color: #374151; text-decoration: none; display: inline-flex; align-items: center; }
         .btn-back:hover { background: #d1d5db; }
+
+        /* Marcas de agua para impresión */
+        .watermark-container { position: relative; }
+        .watermark-container.anulado::after {
+            content: "ANULADO";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 5rem;
+            font-weight: 900;
+            color: rgba(239, 68, 68, 0.15); /* text-red-500 muy transparente */
+            z-index: 1000;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        @media print {
+            .watermark-container.anulado::after {
+                color: rgba(200, 0, 0, 0.2) !important;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="ticket">
+<div class="ticket watermark-container {{ $movimiento->estado === 'anulado' ? 'anulado' : '' }}">
     {{-- Header --}}
     <div class="ticket-header">
         <div class="company">⚙️ {{ config('app.name') }}</div>

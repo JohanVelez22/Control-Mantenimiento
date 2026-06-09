@@ -59,10 +59,12 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('caja', App\Http\Controllers\MovimientoCajaController::class)->except(['show']);
     Route::get('caja/{movimiento}/print',     [App\Http\Controllers\MovimientoCajaController::class, 'print'])->name('caja.print');
     Route::post('caja/{movimiento}/duplicate', [App\Http\Controllers\MovimientoCajaController::class, 'duplicate'])->name('caja.duplicate');
+    Route::post('caja/{movimiento}/anular',   [App\Http\Controllers\MovimientoCajaController::class, 'anular'])->name('caja.anular');
     Route::post('caja/concepto',              [App\Http\Controllers\MovimientoCajaController::class, 'storeConcepto'])->name('caja.concepto.store');
 
-    // Duplicar mantenimiento
+    // Mantenimiento extra actions
     Route::post('mantenimientos/{mantenimiento}/duplicate', [MantenimientoController::class, 'duplicate'])->name('mantenimientos.duplicate');
+    Route::post('mantenimientos/{mantenimiento}/anular',    [MantenimientoController::class, 'anular'])->name('mantenimientos.anular');
 
     // Abonos (anidados bajo mantenimiento)
     Route::post('mantenimientos/{mantenimiento}/abonos', [App\Http\Controllers\AbonoController::class, 'store'])->name('abonos.store');

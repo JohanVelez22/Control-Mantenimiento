@@ -24,6 +24,29 @@
     </div>
 </div>
 
+{{-- Modal de contraseña para anular --}}
+<div id="pwd-anular-modal" class="fixed inset-0 z-[300] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border border-orange-300/40 dark:border-orange-700/50 rounded-2xl shadow-2xl p-6 max-w-sm w-full">
+        <div class="text-center mb-4">
+            <div class="text-5xl mb-2">🚫</div>
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Confirmar anulación</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa tu contraseña para anular este registro.</p>
+        </div>
+        <form id="anular-pwd-form" method="POST" class="space-y-4">
+            @csrf
+            <div>
+                <input type="password" name="password_confirm" id="pwd-anular-input" required placeholder="Contraseña..."
+                       class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 transition-all">
+            </div>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeAnularModal()" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-semibold hover:bg-gray-300 transition-all">Cancelar</button>
+                <button type="submit" class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-xl font-semibold hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/30">Anular</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="space-y-4">
     {{-- Tarjetas de totales --}}
     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -117,9 +140,15 @@
                         </td>
                         <td class="p-3 block md:table-cell flex justify-between border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
                             <span class="md:hidden font-bold text-gray-500">Tipo:</span>
-                            <span class="inline-flex px-2 py-0.5 rounded-lg text-xs font-bold {{ $m->tipo_movimiento === 'ingreso' ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300' }}">
-                                {{ $m->tipo_movimiento === 'ingreso' ? '📈 Ingreso' : '📉 Egreso' }}
-                            </span>
+                            @if($m->estado === 'anulado')
+                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400 border border-red-500/30 font-bold shadow-sm" title="Anulado">
+                                    🚫
+                                </span>
+                            @else
+                                <span class="inline-flex px-2 py-0.5 rounded-lg text-xs font-bold {{ $m->tipo_movimiento === 'ingreso' ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300' }}">
+                                    {{ $m->tipo_movimiento === 'ingreso' ? '📈 Ingreso' : '📉 Egreso' }}
+                                </span>
+                            @endif
                         </td>
                         <td class="p-3 block md:table-cell flex justify-between border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
                             <span class="md:hidden font-bold text-gray-500">Pago:</span>
@@ -150,6 +179,13 @@
                                             📋
                                         </button>
                                     </form>
+                                    @if($m->estado !== 'anulado')
+                                        <button type="button"
+                                                onclick="openAnularModal('{{ route('caja.anular', $m->id) }}')"
+                                                class="inline-flex items-center gap-1 bg-orange-500/20 text-orange-700 dark:text-orange-400 border border-orange-500/30 hover:bg-orange-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm" title="Anular movimiento">
+                                            🚫
+                                        </button>
+                                    @endif
                                     <button type="button"
                                             onclick="openPwdModal('{{ route('caja.destroy', $m->id) }}')"
                                             class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm">
@@ -195,7 +231,26 @@
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
-    // Cerrar con ESC
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePwdModal(); });
+
+    function openAnularModal(actionUrl) {
+        const modal = document.getElementById('pwd-anular-modal');
+        document.getElementById('anular-pwd-form').action = actionUrl;
+        document.getElementById('pwd-anular-input').value = '';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => document.getElementById('pwd-anular-input').focus(), 100);
+    }
+    function closeAnularModal() {
+        const modal = document.getElementById('pwd-anular-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    document.addEventListener('keydown', e => { 
+        if (e.key === 'Escape') {
+            closePwdModal();
+            closeAnularModal();
+        }
+    });
 </script>
 @endsection
