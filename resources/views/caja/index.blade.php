@@ -122,24 +122,24 @@
                 </thead>
                 <tbody class="block md:table-row-group">
                     @forelse($movimientos as $m)
-                    <tr class="bg-white dark:bg-gray-800 md:bg-transparent md:hover:bg-gray-100 md:dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 md:border-none rounded-xl md:rounded-none mb-4 md:mb-0 block md:table-row shadow-sm md:shadow-none transition-colors">
-                        <td class="p-3 block md:table-cell flex justify-between border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            <span class="md:hidden font-bold text-gray-500">Fecha:</span>
+                    <tr class="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500 md:border-none rounded-xl md:rounded-none mb-4 md:mb-0">
+                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
+                            
                             <span class="text-sm">{{ $m->fecha->format('d/m/Y') }}</span>
                         </td>
-                        <td class="p-3 block md:table-cell flex justify-between border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500">
-                            <span class="md:hidden font-bold text-gray-500">Persona:</span>
+                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500">
+                            
                             <span>
                                 <span class="font-semibold">{{ $m->persona }}</span>
                                 @if($m->empresa) <br><span class="text-xs text-gray-500">{{ $m->empresa }}</span> @endif
                             </span>
                         </td>
-                        <td class="p-3 block md:table-cell flex justify-between border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            <span class="md:hidden font-bold text-gray-500">Concepto:</span>
+                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
+                            
                             <span class="text-sm">{{ $m->concepto->nombre }}</span>
                         </td>
-                        <td class="p-3 block md:table-cell flex justify-between border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            <span class="md:hidden font-bold text-gray-500">Tipo:</span>
+                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
+                            
                             @if($m->estado === 'anulado')
                                 <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400 border border-red-500/30 font-bold shadow-sm" title="Anulado">
                                     🚫
@@ -150,14 +150,14 @@
                                 </span>
                             @endif
                         </td>
-                        <td class="p-3 block md:table-cell flex justify-between border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            <span class="md:hidden font-bold text-gray-500">Pago:</span>
+                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
+                            
                             <span class="inline-flex px-2 py-0.5 rounded-lg text-xs font-bold {{ $m->tipo_pago === 'efectivo' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' : 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300' }}">
                                 {{ $m->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Consignación' }}
                             </span>
                         </td>
-                        <td class="p-3 block md:table-cell flex justify-between border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            <span class="md:hidden font-bold text-gray-500">Monto:</span>
+                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
+                            
                             <span class="font-black text-lg {{ $m->tipo_movimiento === 'ingreso' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                                 {{ $m->tipo_movimiento === 'ingreso' ? '+' : '-' }}${{ number_format($m->monto, 0, ',', '.') }}
                             </span>
@@ -254,4 +254,8 @@
     });
 </script>
 @endsection
+
+
+
+
 

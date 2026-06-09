@@ -100,3 +100,5 @@
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-usuarios', 'tabla-usuarios'));</script>
 @endsection
 
+
+

@@ -81,8 +81,9 @@
                 overflow: hidden;
             }
             .responsive-table td {
-                display: flex;
-                justify-content: space-between;
+                display: grid;
+                grid-template-columns: minmax(100px, 35%) 1fr;
+                gap: 1rem;
                 align-items: center;
                 text-align: right;
                 padding: 0.75rem 1rem !important;
@@ -94,7 +95,6 @@
                 font-weight: 700;
                 text-align: left;
                 color: #6b7280;
-                margin-right: 1rem;
             }
             html.dark .responsive-table td::before { color: #9ca3af; }
         }
@@ -511,3 +511,4 @@
     </script>
 </body>
 </html>
+

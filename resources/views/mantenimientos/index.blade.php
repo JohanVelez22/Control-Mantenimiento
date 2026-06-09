@@ -59,13 +59,13 @@
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Estado</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Entrada</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Salida</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Usuario</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Registrado por</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($mantenimientos as $m)
-                <tr id="mantenimiento-{{ $m->id }}" class="scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
+                <tr id="mantenimiento-{{ $m->id }}" class="bg-white dark:bg-gray-800 scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
                     <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap font-bold text-center">
                         <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 hover:text-blue-800 hover:underline">
                             {{ $m->id_orden }}
@@ -213,4 +213,6 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAnularModal(); });
 </script>
 @endsection
+
+
 

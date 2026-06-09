@@ -31,13 +31,13 @@
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Serie</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Cliente</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Observación</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Usuario</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500">Registrado por</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($equipos as $equipo)
-                <tr id="equipo-{{ $equipo->id }}" class="scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
+                <tr id="equipo-{{ $equipo->id }}" class="bg-white dark:bg-gray-800 scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $equipo->id }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">
                         <div class="flex items-baseline justify-center gap-1">
@@ -104,4 +104,6 @@
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-equipos', 'tabla-equipos'));</script>
 @endsection
+
+
 

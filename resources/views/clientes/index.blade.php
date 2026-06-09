@@ -37,7 +37,7 @@
             </thead>
             <tbody>
                 @forelse($clientes as $cliente)
-                <tr id="cliente-{{ $cliente->id }}" class="scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
+                <tr id="cliente-{{ $cliente->id }}" class="bg-white dark:bg-gray-800 scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->id }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->nombre }}</td>
                     <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->identificacion }}</td>
@@ -92,4 +92,6 @@
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-clientes', 'tabla-clientes'));</script>
 @endsection
+
+
 

@@ -127,12 +127,12 @@
                         <th class="p-3 border-b border-gray-300 dark:border-gray-600 text-center font-bold">Tipo</th>
                         <th class="p-3 border-b border-gray-300 dark:border-gray-600 text-center font-bold">Pago</th>
                         <th class="p-3 border-b border-gray-300 dark:border-gray-600 text-center font-bold">Monto</th>
-                        <th class="p-3 border-b border-gray-300 dark:border-gray-600 text-center font-bold">Usuario</th>
+                        <th class="p-3 border-b border-gray-300 dark:border-gray-600 text-center font-bold">Registrado por</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($transacciones as $tx)
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-200 dark:border-gray-700 last:border-0">
+                    <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-200 dark:border-gray-700 last:border-0">
                         <td class="p-3 text-center text-sm font-semibold whitespace-nowrap">{{ \Carbon\Carbon::parse($tx->fecha)->format('d/m/Y') }}</td>
                         <td class="p-3 text-sm">
                             <span class="font-bold">{{ $tx->concepto->nombre ?? 'N/A' }}</span>
@@ -173,3 +173,5 @@
 
 </div>
 @endsection
+
+

@@ -95,3 +95,5 @@
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-tecnicos', 'tabla-tecnicos'));</script>
 @endsection
 
+
+

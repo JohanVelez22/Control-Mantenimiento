@@ -30,7 +30,7 @@
 
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-2">Teléfono Móvil</label>
-                <input type="text" name="movil" value="{{ old('movil', $tecnico->movil) }}" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+                <input type="tel" pattern="[\d\+\-\s\(\)]+" name="movil" value="{{ old('movil', $tecnico->movil) }}" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
             </div>
 
             <div class="mb-4 md:col-span-2">
@@ -63,3 +63,5 @@
     </form>
 </div>
 @endsection
+
+
