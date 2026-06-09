@@ -38,6 +38,12 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Descartar alerta de electrónica (llamado por JS)
+    Route::post('/electronicas/dismiss-alert', function () {
+        session()->forget('alertas_electronica');
+        return response()->noContent();
+    })->name('electronicas.dismiss-alert');
+
     // Nueva Ruta de Reportes Independiente
     Route::get('/reportes', [MantenimientoController::class, 'reportes'])->name('mantenimientos.reportes');
     Route::get('/mantenimientos/{mantenimiento}/factura', [MantenimientoController::class, 'factura'])->name('mantenimientos.factura');
@@ -46,8 +52,9 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('clientes', ClienteController::class);
     Route::resource('equipos', EquipoController::class);
     Route::resource('tecnicos', TecnicoController::class);
-    Route::resource('mantenimientos', MantenimientoController::class);
     Route::resource('stocks', App\Http\Controllers\StockController::class);
+    Route::resource('electronicas', App\Http\Controllers\ElectronicaController::class);
+    Route::resource('mantenimientos', MantenimientoController::class);
 
     // Módulo de Usuarios (ADMIN y TÉCNICO)
     Route::middleware(['role:admin,tecnico'])->group(function () {

@@ -70,16 +70,17 @@
         <div class="flex items-center space-x-6">
             <div class="text-xl font-bold whitespace-nowrap">
                 <a href="{{ route('dashboard') }}">⚙️ Control Mantenimientos</a>
-            </div>
-             <!-- Enlaces del menú -->
-            <div class="hidden lg:flex space-x-4">
+                    <!-- Enlaces del menú -->
+             <div class="hidden lg:flex space-x-4">
                 <a href="{{ route('clientes.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">👤 Clientes</a>
                 <a href="{{ route('equipos.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">🖥️ Equipos</a>
                 <a href="{{ route('tecnicos.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">🛠️ Técnicos</a>
                 <a href="{{ route('stocks.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">📦 Inventario</a>
+                <a href="{{ route('electronicas.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-purple-500 font-medium">⚡ Electrónica</a>
                 <a href="{{ route('mantenimientos.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">📋 Mantenimientos</a>
                 <a href="{{ route('mantenimientos.reportes') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">📈 Reportes</a>
                 <a href="{{ route('usuarios.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">👨🏻‍💻 Usuarios</a>
+            </div>👨🏻‍💻 Usuarios</a>
             </div>
         </div>
 
@@ -116,6 +117,7 @@
             <a href="{{ route('equipos.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">🖥️ Equipos</a>
             <a href="{{ route('tecnicos.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">🛠️ Técnicos</a>
             <a href="{{ route('stocks.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">📦 Inventario</a>
+            <a href="{{ route('electronicas.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-purple-500/10 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-all">⚡ Electrónica</a>
             <a href="{{ route('mantenimientos.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">📋 Mantenimientos</a>
             <a href="{{ route('mantenimientos.reportes') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">📈 Reportes</a>
             <a href="{{ route('usuarios.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">👨🏻‍💻 Usuarios</a>
@@ -133,6 +135,47 @@
 
     <!-- Contenedor de Toasts -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- Modal de Alertas de Electrónica (al iniciar sesión) -->
+    @if(session('alertas_electronica'))
+    <div id="elec-alert-modal" class="fixed inset-0 z-[300] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border border-purple-300/40 dark:border-purple-700/50 rounded-2xl shadow-2xl p-6 max-w-lg w-full max-h-[80vh] flex flex-col">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">⚡</span>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Resumen de Electrónica</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ count(session('alertas_electronica')) }} registro(s) activos al iniciar sesión</p>
+                </div>
+            </div>
+            <div class="overflow-y-auto flex-1 space-y-2 pr-1">
+                @foreach(session('alertas_electronica') as $alerta)
+                <div class="flex items-center justify-between gap-3 p-3 rounded-xl {{ $alerta['estado'] === 'pendiente' ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/40' : 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700/40' }}">
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-sm text-gray-800 dark:text-white truncate">{{ $alerta['id_orden'] }} — {{ $alerta['cliente'] }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $alerta['dispositivo'] }}</p>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="block text-xs font-semibold px-2 py-0.5 rounded-lg {{ $alerta['estado'] === 'pendiente' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' : 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' }}">
+                            {{ $alerta['estado'] === 'pendiente' ? '⏳ Pendiente' : '✅ Terminado' }}
+                        </span>
+                        <span class="block text-xs mt-1 font-bold {{ $alerta['dias'] > 14 ? 'text-red-600' : ($alerta['dias'] > 7 ? 'text-yellow-600' : 'text-gray-500') }}">
+                            {{ $alerta['dias'] }} días
+                        </span>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <a href="{{ route('electronicas.index') }}" class="text-purple-600 dark:text-purple-400 hover:underline text-sm font-semibold">Ver módulo completo →</a>
+                <button onclick="document.getElementById('elec-alert-modal').remove(); fetch('{{ route('electronicas.dismiss-alert') }}', {method:'POST', headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});" class="px-5 py-2 bg-purple-500 text-white rounded-xl font-bold hover:bg-purple-600 shadow-lg shadow-purple-500/30 transition-all text-sm">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+    {{ session()->forget('alertas_electronica') }}
+    @endif
 
     <!-- Modal de Confirmación de Eliminación -->
     <div id="delete-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">

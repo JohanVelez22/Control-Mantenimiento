@@ -50,6 +50,26 @@ class AuthController extends Controller
         // 4. Si todo está bien, iniciar sesión
         Auth::login($user);
         $request->session()->regenerate();
+
+        // 5. Construir alertas de electrónica
+        $alertasElectronica = \App\Models\Electronica::whereIn('estado', ['pendiente', 'terminado'])
+            ->orderByRaw("CASE WHEN estado = 'pendiente' THEN 0 ELSE 1 END")
+            ->orderBy('fecha_entrada')
+            ->get()
+            ->map(function ($e) {
+                return [
+                    'id_orden'   => $e->id_orden,
+                    'cliente'    => $e->cliente,
+                    'dispositivo'=> $e->dispositivo,
+                    'estado'     => $e->estado,
+                    'dias'       => $e->dias_transcurridos,
+                ];
+            })->toArray();
+
+        if (count($alertasElectronica) > 0) {
+            $request->session()->put('alertas_electronica', $alertasElectronica);
+        }
+
         return redirect()->intended('/dashboard');
     }
 
