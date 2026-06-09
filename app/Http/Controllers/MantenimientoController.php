@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Exports\MantenimientosExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MantenimientoController extends Controller
 {
@@ -166,8 +168,16 @@ class MantenimientoController extends Controller
         $validated['id_orden'] = 'ORD-' . $siguiente;
         $validated['user_id'] = Auth::id();
 
-        Mantenimiento::create($validated);
-        return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento registrado correctamente.');
+        try {
+            DB::beginTransaction();
+            Mantenimiento::create($validated);
+            DB::commit();
+            return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento registrado correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error registrando mantenimiento: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al registrar el mantenimiento. Intente nuevamente.')->withInput();
+        }
     }
 
     public function edit(Mantenimiento $mantenimiento)
@@ -198,8 +208,16 @@ class MantenimientoController extends Controller
             'tecnico_id' => 'required|exists:tecnicos,id',
         ]);
 
-        $mantenimiento->update($validated);
-        return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento actualizado.');
+        try {
+            DB::beginTransaction();
+            $mantenimiento->update($validated);
+            DB::commit();
+            return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento actualizado.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error actualizando mantenimiento: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar el mantenimiento. Intente nuevamente.')->withInput();
+        }
     }
 
     public function destroy(Mantenimiento $mantenimiento)
@@ -207,8 +225,16 @@ class MantenimientoController extends Controller
         if (Auth::user()->role !== 'admin') {
             return redirect()->route('mantenimientos.index')->with('error', 'Solo el administrador puede eliminar.');
         }
-        $mantenimiento->delete();
-        return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento eliminado.');
+        try {
+            DB::beginTransaction();
+            $mantenimiento->delete();
+            DB::commit();
+            return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento eliminado.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error eliminando mantenimiento: ' . $e->getMessage());
+            return redirect()->route('mantenimientos.index')->with('error', 'Error al eliminar el mantenimiento.');
+        }
     }
 
     public function factura(Mantenimiento $mantenimiento)
@@ -244,14 +270,21 @@ class MantenimientoController extends Controller
             return redirect()->back()->with('error', 'Contraseña incorrecta.');
         }
 
-        // Al anular, se establece el estado a 'anulado'
-        $mantenimiento->update(['estado' => 'anulado']);
+        try {
+            DB::beginTransaction();
+            // Al anular, se establece el estado a 'anulado'
+            $mantenimiento->update(['estado' => 'anulado']);
 
-        // Revertir stock si se implementa relación pivot
-        foreach ($mantenimiento->stocks as $stock) {
-            \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
+            // Revertir stock si se implementa relación pivot
+            foreach ($mantenimiento->stocks as $stock) {
+                \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
+            }
+            DB::commit();
+            return redirect()->back()->with('success', 'Mantenimiento anulado correctamente. La transacción y stock asociados (si aplica) han sido revertidos.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error anulando mantenimiento: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al anular el mantenimiento.');
         }
-
-        return redirect()->back()->with('success', 'Mantenimiento anulado correctamente. La transacción y stock asociados (si aplica) han sido revertidos.');
     }
 }

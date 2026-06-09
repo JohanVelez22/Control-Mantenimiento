@@ -147,7 +147,7 @@
                     <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Equipos</span>
                 </a>
 
-                <a href="{{ route('tecnicos.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-orange-50 hover:text-orange-600 dark:hover:bg-orange-900/30 dark:hover:text-orange-400 font-bold transition-all {{ request()->request->routeIs('tecnicos.*') ? 'bg-orange-50 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' : '' }}" title="Técnicos">
+                <a href="{{ route('tecnicos.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-orange-50 hover:text-orange-600 dark:hover:bg-orange-900/30 dark:hover:text-orange-400 font-bold transition-all {{ request()->routeIs('tecnicos.*') ? 'bg-orange-50 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' : '' }}" title="Técnicos">
                     <span class="text-2xl flex-shrink-0">🛠️</span>
                     <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Técnicos</span>
                 </a>

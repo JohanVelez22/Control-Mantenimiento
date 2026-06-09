@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\MovimientoCaja;
 use App\Models\ConceptoCaja;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MovimientoCajaController extends Controller
 {
@@ -82,23 +84,31 @@ class MovimientoCajaController extends Controller
             'descripcion'     => 'nullable|string',
         ]);
 
-        // Si ingresaron un nuevo concepto, crearlo o encontrar el existente
-        if (!empty($validated['nuevo_concepto'])) {
-            $concepto = ConceptoCaja::firstOrCreate(['nombre' => trim($validated['nuevo_concepto'])]);
-            $validated['concepto_id'] = $concepto->id;
+        try {
+            DB::beginTransaction();
+            // Si ingresaron un nuevo concepto, crearlo o encontrar el existente
+            if (!empty($validated['nuevo_concepto'])) {
+                $concepto = ConceptoCaja::firstOrCreate(['nombre' => trim($validated['nuevo_concepto'])]);
+                $validated['concepto_id'] = $concepto->id;
+            }
+
+            $validated['user_id'] = auth()->id();
+            unset($validated['nuevo_concepto']);
+
+            $movimiento = MovimientoCaja::create($validated);
+            DB::commit();
+
+            // Redirigir a la vista de impresión si se solicitó
+            if ($request->has('print_after')) {
+                return redirect()->route('caja.print', $movimiento->id);
+            }
+
+            return redirect()->route('caja.index')->with('success', 'Movimiento registrado correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error guardando movimiento de caja: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al guardar el movimiento de caja.')->withInput();
         }
-
-        $validated['user_id'] = auth()->id();
-        unset($validated['nuevo_concepto']);
-
-        $movimiento = MovimientoCaja::create($validated);
-
-        // Redirigir a la vista de impresión si se solicitó
-        if ($request->has('print_after')) {
-            return redirect()->route('caja.print', $movimiento->id);
-        }
-
-        return redirect()->route('caja.index')->with('success', 'Movimiento registrado correctamente.');
     }
 
     public function edit(MovimientoCaja $movimiento)
@@ -121,15 +131,23 @@ class MovimientoCajaController extends Controller
             'descripcion'     => 'nullable|string',
         ]);
 
-        if (!empty($validated['nuevo_concepto'])) {
-            $concepto = ConceptoCaja::firstOrCreate(['nombre' => trim($validated['nuevo_concepto'])]);
-            $validated['concepto_id'] = $concepto->id;
+        try {
+            DB::beginTransaction();
+            if (!empty($validated['nuevo_concepto'])) {
+                $concepto = ConceptoCaja::firstOrCreate(['nombre' => trim($validated['nuevo_concepto'])]);
+                $validated['concepto_id'] = $concepto->id;
+            }
+
+            unset($validated['nuevo_concepto']);
+            $movimiento->update($validated);
+            DB::commit();
+
+            return redirect()->route('caja.index')->with('success', 'Movimiento actualizado correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error actualizando movimiento de caja: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar el movimiento de caja.')->withInput();
         }
-
-        unset($validated['nuevo_concepto']);
-        $movimiento->update($validated);
-
-        return redirect()->route('caja.index')->with('success', 'Movimiento actualizado correctamente.');
     }
 
     /**
@@ -155,8 +173,16 @@ class MovimientoCajaController extends Controller
             return back()->with('error', 'Contraseña incorrecta. No se eliminó el registro.');
         }
 
-        $movimiento->delete();
-        return redirect()->route('caja.index')->with('success', 'Movimiento eliminado correctamente.');
+        try {
+            DB::beginTransaction();
+            $movimiento->delete();
+            DB::commit();
+            return redirect()->route('caja.index')->with('success', 'Movimiento eliminado correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error eliminando movimiento de caja: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al eliminar el movimiento de caja.');
+        }
     }
 
     /**
@@ -206,8 +232,15 @@ class MovimientoCajaController extends Controller
             return redirect()->back()->with('error', 'Contraseña incorrecta.');
         }
 
-        $movimiento->update(['estado' => 'anulado']);
-
-        return redirect()->back()->with('success', 'Movimiento anulado correctamente. Los valores han sido revertidos de la caja.');
+        try {
+            DB::beginTransaction();
+            $movimiento->update(['estado' => 'anulado']);
+            DB::commit();
+            return redirect()->back()->with('success', 'Movimiento anulado correctamente. Los valores han sido revertidos de la caja.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error anulando movimiento de caja: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al anular el movimiento de caja.');
+        }
     }
 }
