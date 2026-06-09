@@ -33,4 +33,11 @@ class Stock extends Model
             }
         });
     }
+
+    public function mantenimientos()
+    {
+        return $this->belongsToMany(Mantenimiento::class)
+                    ->withPivot('cantidad', 'precio_unitario')
+                    ->withTimestamps();
+    }
 }

@@ -50,6 +50,13 @@ class Mantenimiento extends Model
         return $this->hasMany(Abono::class);
     }
 
+    public function stocks()
+    {
+        return $this->belongsToMany(Stock::class)
+                    ->withPivot('cantidad', 'precio_unitario')
+                    ->withTimestamps();
+    }
+
     /** Total abonado */
     public function getTotalAbonadoAttribute(): float
     {

@@ -60,6 +60,71 @@
         </div>
     </div>
 
+    {{-- Panel de Repuestos Utilizados (Stock) --}}
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
+        <h3 class="text-xl font-bold mb-4">📦 Repuestos / Insumos Utilizados</h3>
+
+        @if(!auth()->user()->isInvitado() && $mantenimiento->estado !== 'anulado')
+        <form action="{{ route('mantenimientos.stocks.store', $mantenimiento) }}" method="POST" class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 mb-5 space-y-3">
+            @csrf
+            <h4 class="font-semibold text-sm text-gray-700 dark:text-gray-300">Añadir repuesto al mantenimiento</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Buscar repuesto en stock *</label>
+                    <select name="stock_id" required class="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 transition-all">
+                        <option value="">-- Seleccione un repuesto --</option>
+                        @foreach($stocks_disponibles as $stock)
+                            <option value="{{ $stock->id }}">{{ $stock->producto }} (Disp: {{ $stock->cantidad }} | Venta: ${{ number_format($stock->precio_venta, 2) }})</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Cantidad *</label>
+                    <div class="flex gap-2">
+                        <input type="number" name="cantidad" required min="1" value="1"
+                               class="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 transition-all">
+                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 shadow-lg shadow-blue-500/30 transition-all text-sm whitespace-nowrap">
+                            ➕ Añadir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        @elseif($mantenimiento->estado === 'anulado')
+        <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-5">
+            <p class="text-sm font-semibold text-red-600 dark:text-red-400 text-center">No se pueden agregar repuestos a una orden anulada.</p>
+        </div>
+        @endif
+
+        {{-- Listado de repuestos --}}
+        @if($mantenimiento->stocks->isEmpty())
+            <p class="text-center text-gray-400 py-4">No hay repuestos registrados en este mantenimiento.</p>
+        @else
+        <div class="space-y-2">
+            @foreach($mantenimiento->stocks as $repuesto)
+            <div class="flex flex-col sm:flex-row justify-between items-center bg-gray-100 dark:bg-gray-700/40 p-3 rounded-xl border border-gray-200 dark:border-gray-600/50 hover:bg-gray-200 dark:hover:bg-gray-700/80 transition-colors">
+                <div class="text-center sm:text-left mb-2 sm:mb-0">
+                    <p class="font-bold text-sm text-gray-800 dark:text-gray-100">{{ $repuesto->producto }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                        Cantidad: {{ $repuesto->pivot->cantidad }} x ${{ number_format($repuesto->pivot->precio_unitario, 2) }} = <span class="font-bold text-blue-600 dark:text-blue-400">${{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 2) }}</span>
+                    </p>
+                </div>
+                
+                @if(auth()->user()->role === 'admin' && $mantenimiento->estado !== 'anulado')
+                <form action="{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}" method="POST" class="inline-block"
+                      onsubmit="return confirm('¿Seguro que deseas eliminar este repuesto? Se descontará del costo de la orden y volverá al inventario.');">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/40 p-2 rounded-lg transition-colors" title="Eliminar y devolver al stock">
+                        🗑️ Eliminar
+                    </button>
+                </form>
+                @endif
+            </div>
+            @endforeach
+        </div>
+        @endif
+    </div>
+
     {{-- Panel de Abonos --}}
     <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
         <h3 class="text-xl font-bold mb-4">💳 Abonos / Pagos Parciales</h3>

@@ -45,7 +45,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     })->name('electronicas.dismiss-alert');
 
     // Nueva Ruta de Reportes Independiente
-    Route::get('/reportes', [MantenimientoController::class, 'reportes'])->name('mantenimientos.reportes');
+    Route::get('/reportes', [App\Http\Controllers\ReporteController::class, 'index'])->name('reportes.index');
     Route::get('/mantenimientos/{mantenimiento}/factura', [MantenimientoController::class, 'factura'])->name('mantenimientos.factura');
 
     // Módulos generales
@@ -69,6 +69,10 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     // Abonos (anidados bajo mantenimiento)
     Route::post('mantenimientos/{mantenimiento}/abonos', [App\Http\Controllers\AbonoController::class, 'store'])->name('abonos.store');
     Route::delete('abonos/{abono}',                      [App\Http\Controllers\AbonoController::class, 'destroy'])->name('abonos.destroy');
+
+    // Repuestos de stock (anidados bajo mantenimiento)
+    Route::post('mantenimientos/{mantenimiento}/stocks', [App\Http\Controllers\MantenimientoStockController::class, 'store'])->name('mantenimientos.stocks.store');
+    Route::delete('mantenimientos/{mantenimiento}/stocks/{stock_id}', [App\Http\Controllers\MantenimientoStockController::class, 'destroy'])->name('mantenimientos.stocks.destroy');
 
     // Cierre de Caja
     Route::get('cierre',              [App\Http\Controllers\CierreCajaController::class, 'index'])->name('cierre.index');

@@ -35,8 +35,9 @@ class MantenimientoController extends Controller
 
     public function show(Mantenimiento $mantenimiento)
     {
-        $mantenimiento->load(['equipo.cliente', 'tecnico', 'user', 'abonos.user']);
-        return view('mantenimientos.show', compact('mantenimiento'));
+        $mantenimiento->load(['equipo.cliente', 'tecnico', 'user', 'abonos.user', 'stocks']);
+        $stocks_disponibles = \App\Models\Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
+        return view('mantenimientos.show', compact('mantenimiento', 'stocks_disponibles'));
     }
 
     /** Duplicar un mantenimiento existente como nuevo borrador */
@@ -244,9 +245,10 @@ class MantenimientoController extends Controller
         // Al anular, se establece el estado a 'anulado'
         $mantenimiento->update(['estado' => 'anulado']);
 
-        // NOTA: Si se implementa una relación pivot (Mantenimiento_Stock) en el futuro,
-        // aquí iteraríamos sobre los repuestos y haríamos increment() en la tabla stocks
-        // Ejemplo: foreach($mantenimiento->stocks as $stock) { $stock->increment('cantidad', $stock->pivot->cantidad); }
+        // Revertir stock si se implementa relación pivot
+        foreach ($mantenimiento->stocks as $stock) {
+            \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
+        }
 
         return redirect()->back()->with('success', 'Mantenimiento anulado correctamente. La transacción y stock asociados (si aplica) han sido revertidos.');
     }
