@@ -68,6 +68,37 @@
             }
         }
 
+        /* Tablas Responsive: Tarjetas en móvil */
+        @media (max-width: 767px) {
+            .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td {
+                display: block; width: 100%;
+            }
+            .responsive-table thead { display: none; }
+            .responsive-table tr {
+                margin-bottom: 1rem;
+                border: 1px solid rgba(156, 163, 175, 0.3);
+                border-radius: 0.75rem;
+                overflow: hidden;
+            }
+            .responsive-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+                padding: 0.75rem 1rem !important;
+                border-bottom: 1px solid rgba(156, 163, 175, 0.2);
+            }
+            .responsive-table td:last-child { border-bottom: none; }
+            .responsive-table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                text-align: left;
+                color: #6b7280;
+                margin-right: 1rem;
+            }
+            html.dark .responsive-table td::before { color: #9ca3af; }
+        }
+
         /* Barra de progreso de navegación */
         #nav-progress {
             position: fixed;
@@ -467,6 +498,17 @@
             ['mousemove', 'keypress', 'scroll', 'click'].forEach(e => window.addEventListener(e, resetTimer));
         })();
         @endauth
+        // --- RESPONSIVE TABLE: Inyectar data-label a cada celda ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.responsive-table').forEach(table => {
+                const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.innerText.trim());
+                table.querySelectorAll('tbody tr').forEach(row => {
+                    Array.from(row.querySelectorAll('td')).forEach((td, idx) => {
+                        if (headers[idx]) td.setAttribute('data-label', headers[idx]);
+                    });
+                });
+            });
+        });
     </script>
 </body>
 </html>

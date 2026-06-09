@@ -104,6 +104,9 @@ class ElectronicaController extends Controller
 
     public function destroy(Electronica $electronica)
     {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('electronicas.index')->with('error', 'Solo el administrador puede eliminar.');
+        }
         $electronica->delete();
         return redirect()->route('electronicas.index')
                          ->with('success', 'Registro electrónico eliminado.');

@@ -46,7 +46,7 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table id="tabla-mantenimientos" class="w-full text-left border-collapse">
+        <table id="tabla-mantenimientos" class="w-full text-left border-collapse responsive-table">
             <thead class="bg-gray-200 dark:bg-gray-700 text-center">
                 <tr>
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Orden</th>
@@ -213,3 +213,4 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAnularModal(); });
 </script>
 @endsection
+

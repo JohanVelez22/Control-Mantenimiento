@@ -36,21 +36,18 @@ class EquipoController extends Controller
             return redirect()->route('equipos.index')->with('error', 'No tienes permisos para crear.');
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'marca' => 'required|string|max:255',
             'modelo' => 'required|string|max:255',
             'serie' => 'required|string|max:255|unique:equipos',
-            // Eliminado: validación de estado
             'cliente_id' => 'required|exists:clientes,id',
-            'observacion' => 'nullable|string'
+            'observacion' => 'nullable|string|max:1000'
         ]);
 
-        // Preparamos los datos y asignamos el usuario logueado automáticamente
-        $data = $request->all();
-        $data['user_id'] = Auth::id();
+        $validated['user_id'] = Auth::id();
 
-        Equipo::create($data);
+        Equipo::create($validated);
 
         return redirect()->route('equipos.index')->with('success', 'Equipo registrado correctamente.');
     }
@@ -71,17 +68,16 @@ class EquipoController extends Controller
             return redirect()->route('equipos.index')->with('error', 'No tienes permisos para actualizar.');
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'marca' => 'required|string|max:255',
             'modelo' => 'required|string|max:255',
             'serie' => 'required|string|max:255|unique:equipos,serie,' . $equipo->id,
-            // Eliminado: validación de estado
             'cliente_id' => 'required|exists:clientes,id',
-            'observacion' => 'nullable|string'
+            'observacion' => 'nullable|string|max:1000'
         ]);
 
-        $equipo->update($request->all());
+        $equipo->update($validated);
 
         return redirect()->route('equipos.index')->with('success', 'Equipo actualizado correctamente.');
     }

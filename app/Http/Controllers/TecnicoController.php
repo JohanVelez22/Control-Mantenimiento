@@ -34,23 +34,21 @@ class TecnicoController extends Controller
             return redirect()->route('tecnicos.index')->with('error', 'No tienes permisos para crear.');
         }
 
-        $request->validate([
-            'nombre' => 'required|string|max:255',
+        $validated = $request->validate([
+            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:255',
             'identificacion' => 'required|string|max:50|unique:tecnicos',
             'especialidad' => 'required|string|max:255',
-            'movil' => 'required|string|max:20',
+            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:20',
             'email' => 'nullable|email|max:255',
-            'direccion' => 'nullable|string',
+            'direccion' => 'nullable|string|max:500',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $data = $request->all();
-
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('tecnicos', 'public');
+            $validated['photo'] = $request->file('photo')->store('tecnicos', 'public');
         }
 
-        Tecnico::create($data);
+        Tecnico::create($validated);
 
         return redirect()->route('tecnicos.index')->with('success', 'Técnico registrado correctamente.');
     }
@@ -70,26 +68,24 @@ class TecnicoController extends Controller
             return redirect()->route('tecnicos.index')->with('error', 'No tienes permisos para actualizar.');
         }
 
-        $request->validate([
-            'nombre' => 'required|string|max:255',
+        $validated = $request->validate([
+            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:255',
             'identificacion' => 'required|string|max:50|unique:tecnicos,identificacion,' . $tecnico->id,
             'especialidad' => 'required|string|max:255',
-            'movil' => 'required|string|max:20',
+            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:20',
             'email' => 'nullable|email|max:255',
-            'direccion' => 'nullable|string',
+            'direccion' => 'nullable|string|max:500',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
-
-        $data = $request->all();
 
         if ($request->hasFile('photo')) {
             if ($tecnico->photo && Storage::disk('public')->exists($tecnico->photo)) {
                 Storage::disk('public')->delete($tecnico->photo);
             }
-            $data['photo'] = $request->file('photo')->store('tecnicos', 'public');
+            $validated['photo'] = $request->file('photo')->store('tecnicos', 'public');
         }
 
-        $tecnico->update($data);
+        $tecnico->update($validated);
 
         return redirect()->route('tecnicos.index')->with('success', 'Técnico actualizado correctamente.');
     }

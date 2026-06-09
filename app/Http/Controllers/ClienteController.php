@@ -36,15 +36,15 @@ class ClienteController extends Controller
             return redirect()->route('clientes.index')->with('error', 'No tienes permisos para crear.');
         }
 
-        $request->validate([
-            'nombre' => 'required|string|max:255',
+        $validated = $request->validate([
+            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:255',
             'identificacion' => 'required|string|max:50|unique:clientes',
-            'movil' => 'required|string|max:20',
+            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:20',
             'email' => 'nullable|email|max:255',
-            'direccion' => 'nullable|string'
+            'direccion' => 'nullable|string|max:500'
         ]);
 
-        Cliente::create($request->all());
+        Cliente::create($validated);
 
         return redirect()->route('clientes.index')->with('success', 'Cliente registrado correctamente.');
     }
@@ -65,15 +65,15 @@ class ClienteController extends Controller
             return redirect()->route('clientes.index')->with('error', 'No tienes permisos para actualizar.');
         }
 
-        $request->validate([
-            'nombre' => 'required|string|max:255',
+        $validated = $request->validate([
+            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:255',
             'identificacion' => 'required|string|max:50|unique:clientes,identificacion,' . $cliente->id,
-            'movil' => 'required|string|max:20',
+            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:20',
             'email' => 'nullable|email|max:255',
-            'direccion' => 'nullable|string'
+            'direccion' => 'nullable|string|max:500'
         ]);
 
-        $cliente->update($request->all());
+        $cliente->update($validated);
 
         return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
     }

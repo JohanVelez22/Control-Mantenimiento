@@ -108,7 +108,7 @@
 
         {{-- Tabla adaptable --}}
         <div class="w-full">
-            <table class="w-full text-left border-collapse block md:table">
+            <table class="w-full text-left border-collapse block md:table responsive-table">
                 <thead class="hidden md:table-header-group">
                     <tr class="bg-gray-200 dark:bg-gray-700 text-center">
                         <th class="p-3 border border-gray-300 dark:border-gray-500">Fecha</th>
@@ -254,3 +254,4 @@
     });
 </script>
 @endsection
+

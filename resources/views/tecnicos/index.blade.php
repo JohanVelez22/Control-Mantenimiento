@@ -15,7 +15,7 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table id="tabla-tecnicos" class="w-full text-left border-collapse">
+        <table id="tabla-tecnicos" class="w-full text-left border-collapse responsive-table">
             <thead>
                 <tr class="bg-gray-200 dark:bg-gray-700 text-center">
                     <th class="p-3 border border-gray-300 dark:border-gray-500">ID</th>
@@ -94,3 +94,4 @@
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-tecnicos', 'tabla-tecnicos'));</script>
 @endsection
+

@@ -25,7 +25,7 @@
 
     <!-- Tabla adaptable: horizontal en desktop, vertical (tarjeta) en móvil -->
     <div class="w-full">
-        <table class="w-full text-left border-collapse block md:table">
+        <table class="w-full text-left border-collapse block md:table responsive-table">
             <thead class="hidden md:table-header-group">
                 <tr class="bg-gray-200 dark:bg-gray-700 text-center block md:table-row">
                     <th class="p-3 border border-gray-300 dark:border-gray-500">Orden</th>
@@ -113,3 +113,4 @@
     <div class="mt-4">{{ $electronicas->appends(request()->query())->links() }}</div>
 </div>
 @endsection
+

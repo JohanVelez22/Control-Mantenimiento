@@ -36,8 +36,8 @@ class MovimientoCajaController extends Controller
 
         $movimientos = $query->orderBy('fecha', 'desc')->orderBy('id', 'desc')->paginate(15);
 
-        // Totales del período filtrado (sin paginar)
-        $totalesQuery = MovimientoCaja::query();
+        // Totales del período filtrado (sin paginar) — EXCLUYE anulados
+        $totalesQuery = MovimientoCaja::where('estado', 'activo');
         if ($request->filled('tipo_movimiento')) $totalesQuery->where('tipo_movimiento', $request->tipo_movimiento);
         if ($request->filled('tipo_pago'))       $totalesQuery->where('tipo_pago', $request->tipo_pago);
         if ($request->filled('fecha_desde'))     $totalesQuery->whereDate('fecha', '>=', $request->fecha_desde);

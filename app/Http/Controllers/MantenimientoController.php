@@ -29,7 +29,7 @@ class MantenimientoController extends Controller
             return redirect()->route('mantenimientos.index', ['page' => $page])->withFragment('mantenimiento-' . $id);
         }
 
-        $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user'])->orderBy('id', 'desc')->paginate(10);
+        $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user', 'abonos'])->orderBy('id', 'desc')->paginate(10);
         return view('mantenimientos.index', compact('mantenimientos'));
     }
 
@@ -144,11 +144,12 @@ class MantenimientoController extends Controller
             return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para crear.');
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'fecha_entrada' => 'required|date',
+            'fecha_salida'  => 'nullable|date|after_or_equal:fecha_entrada',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
-            'descripcion' => 'required|string',
+            'descripcion' => 'required|string|max:2000',
             'costo' => 'required|numeric|min:0',
             'estado' => 'required|in:pendiente,terminado',
             'equipo_id' => 'required|exists:equipos,id',
@@ -159,11 +160,10 @@ class MantenimientoController extends Controller
         $ultimo = Mantenimiento::orderByDesc('id')->first();
         $siguiente = $ultimo ? intval(preg_replace('/[^0-9]/', '', $ultimo->id_orden)) + 1 : 1;
         
-        $data = $request->all();
-        $data['id_orden'] = 'ORD-' . $siguiente;
-        $data['user_id'] = Auth::id(); // Asigna el usuario que está logueado actualmente
+        $validated['id_orden'] = 'ORD-' . $siguiente;
+        $validated['user_id'] = Auth::id();
 
-        Mantenimiento::create($data);
+        Mantenimiento::create($validated);
         return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento registrado correctamente.');
     }
 
@@ -183,18 +183,19 @@ class MantenimientoController extends Controller
             return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para actualizar.');
         }
         
-        $request->validate([
+        $validated = $request->validate([
             'fecha_entrada' => 'required|date',
+            'fecha_salida'  => 'nullable|date|after_or_equal:fecha_entrada',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
-            'descripcion' => 'required|string',
+            'descripcion' => 'required|string|max:2000',
             'costo' => 'required|numeric|min:0',
             'estado' => 'required|in:pendiente,terminado',
             'equipo_id' => 'required|exists:equipos,id',
             'tecnico_id' => 'required|exists:tecnicos,id',
         ]);
 
-        $mantenimiento->update($request->all());
+        $mantenimiento->update($validated);
         return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento actualizado.');
     }
 
