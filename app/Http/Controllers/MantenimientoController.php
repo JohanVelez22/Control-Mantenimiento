@@ -33,42 +33,7 @@ class MantenimientoController extends Controller
         return view('mantenimientos.index', compact('mantenimientos'));
     }
 
-    /**
-     * Módulo de reportes con filtros dinámicos.
-     * Permite filtrar por fechas, clientes, equipos, técnicos y estados.
-     */
-    public function reportes(Request $request)
-    {
-        $query = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user']);
 
-        // Aplicación de filtros según los parámetros recibidos en el request
-        if ($request->filled('fecha_desde')) $query->whereDate('fecha_entrada', '>=', $request->fecha_desde);
-        if ($request->filled('fecha_hasta')) $query->whereDate('fecha_entrada', '<=', $request->fecha_hasta);
-        
-        // Filtro complejo: Buscar mantenimientos de equipos que pertenecen a un cliente específico
-        if ($request->filled('cliente_id') && $request->cliente_id !== 'todos') {
-            $query->whereHas('equipo', function($q) use ($request) { $q->where('cliente_id', $request->cliente_id); });
-        }
-        
-        if ($request->filled('equipo_id') && $request->equipo_id !== 'todos') $query->where('equipo_id', $request->equipo_id);
-        if ($request->filled('tecnico_id') && $request->tecnico_id !== 'todos') $query->where('tecnico_id', $request->tecnico_id);
-        if ($request->filled('user_id') && $request->user_id !== 'todos') $query->where('user_id', $request->user_id);
-        if ($request->filled('tipo') && $request->tipo !== 'todos') $query->where('tipo', $request->tipo);
-        if ($request->filled('reparacion') && $request->reparacion !== 'todos') $query->where('reparacion', $request->reparacion);
-
-        $mantenimientos = $query->orderBy('id', 'desc')->get();
-
-        // Lógica de exportación según el botón presionado
-        if ($request->get('export') == 'excel') return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\MantenimientosExport($mantenimientos), 'reporte_mantenimientos.xlsx');
-        if ($request->get('export') == 'pdf') return \Barryvdh\DomPDF\Facade\Pdf::loadView('mantenimientos.pdf', compact('mantenimientos'))->download('reporte_mantenimientos.pdf');
-
-        $clientes = \App\Models\Cliente::all();
-        $equipos = \App\Models\Equipo::all();
-        $tecnicos = \App\Models\Tecnico::all();
-        $usuarios = \App\Models\User::all();
-
-        return view('mantenimientos.reportes', compact('mantenimientos', 'clientes', 'equipos', 'tecnicos', 'usuarios'));
-    }
 
     public function show(Mantenimiento $mantenimiento)
     {

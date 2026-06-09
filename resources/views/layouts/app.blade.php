@@ -114,81 +114,132 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 min-h-screen">
+<body class="flex bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 min-h-screen">
 
-    <!-- Navegación -->
     @auth
-    <nav class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 p-4 flex flex-wrap justify-between items-center sticky top-0 z-50 gap-4">
+    <!-- Estructura Principal con Sidebar -->
+    <div class="flex flex-col lg:flex-row min-h-screen">
         
-        <!-- Izquierda: Logo y Menú Principal -->
-        <div class="flex items-center space-x-6">
-            <div class="text-xl font-bold whitespace-nowrap">
-                <a href="{{ route('dashboard') }}">⚙️ Control Mantenimientos</a>
-                    <!-- Enlaces del menú -->
-             <div class="hidden lg:flex space-x-4">
-                <a href="{{ route('clientes.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">👤 Clientes</a>
-                <a href="{{ route('equipos.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">🖥️ Equipos</a>
-                <a href="{{ route('tecnicos.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">🛠️ Técnicos</a>
-                <a href="{{ route('stocks.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">📦 Inventario</a>
-                <a href="{{ route('caja.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-green-500 font-medium">💰 Caja</a>
-                <a href="{{ route('cierre.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-teal-500 font-medium">📊 Cierre</a>
-                <a href="{{ route('electronicas.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-purple-500 font-medium">⚡ Electrónica</a>
-                <a href="{{ route('mantenimientos.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">📋 Mantenimientos</a>
-                <a href="{{ route('reportes.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">📈 Reportes</a>
-                <a href="{{ route('usuarios.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 font-medium">👨🏻‍💻 Usuarios</a>
+        <!-- Sidebar Izquierdo (Vertical) -->
+        <aside class="w-64 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border-r border-gray-200/50 dark:border-gray-700/50 hidden lg:flex flex-col flex-shrink-0 sticky top-0 h-screen overflow-y-auto no-print">
+            <div class="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+                <a href="{{ route('dashboard') }}" class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                    ⚙️ <span class="tracking-tight">Control Mant.</span>
+                </a>
             </div>
-        </div>
+            <nav class="flex-1 px-4 py-6 space-y-1">
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-all">
+                    <span class="text-xl">📊</span> Dashboard
+                </a>
+                <a href="{{ route('clientes.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-all">
+                    <span class="text-xl">👤</span> Clientes
+                </a>
+                <a href="{{ route('equipos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-all">
+                    <span class="text-xl">🖥️</span> Equipos
+                </a>
+                <a href="{{ route('tecnicos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-all">
+                    <span class="text-xl">🛠️</span> Técnicos
+                </a>
+                <a href="{{ route('stocks.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-all">
+                    <span class="text-xl">📦</span> Inventario
+                </a>
+                <a href="{{ route('caja.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 font-bold transition-all">
+                    <span class="text-xl">💰</span> Caja
+                </a>
+                <a href="{{ route('cierre.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-600 dark:hover:text-teal-400 font-bold transition-all">
+                    <span class="text-xl">📈</span> Cierre
+                </a>
+                <a href="{{ route('electronicas.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 font-bold transition-all">
+                    <span class="text-xl">⚡</span> Electrónica
+                </a>
+                <a href="{{ route('mantenimientos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-all">
+                    <span class="text-xl">📋</span> Órdenes
+                </a>
+                <a href="{{ route('reportes.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-all">
+                    <span class="text-xl">📊</span> Reportes
+                </a>
+                <a href="{{ route('usuarios.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 font-bold transition-all">
+                    <span class="text-xl">👨🏻‍💻</span> Usuarios
+                </a>
+            </nav>
+        </aside>
 
-        <!-- Derecha: Usuario, Modo Oscuro, Logout y Hamburguesa -->
-        <div class="flex items-center space-x-3">
-            @if(auth()->user()->photo)
-                <img src="{{ asset('storage/' . auth()->user()->photo) }}" width="32" height="32" class="rounded-full object-cover border border-gray-300 dark:border-gray-600">
-            @endif
-            <span class="text-sm hidden xl:inline-block">Bienvenido, {{ auth()->user()->name }} ({{ ucfirst(auth()->user()->role) }})</span>
+        <!-- Contenedor Derecho (Topbar + Contenido) -->
+        <div class="flex-1 flex flex-col min-w-0">
             
-            <!-- Botón Modo Oscuro -->
-            <button type="button" id="theme-toggle" class="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg focus:outline-none" aria-label="Cambiar tema claro u oscuro">
-                🌓
-            </button>
+            <!-- Topbar (Accesos Rápidos Horizontales y Perfil) -->
+            <header class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 p-4 flex justify-between items-center sticky top-0 z-40 no-print">
+                <div class="flex items-center gap-4">
+                    <!-- Logo móvil -->
+                    <div class="lg:hidden text-lg font-bold">
+                        <a href="{{ route('dashboard') }}">⚙️ Control Mant.</a>
+                    </div>
+                    
+                    <!-- Cajones con símbolos (Acceso rápido horizontal) -->
+                    <div class="hidden md:flex items-center gap-2">
+                        <a href="{{ route('mantenimientos.create') }}" class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg font-bold hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors text-sm shadow-sm">
+                            <span>➕</span> Orden
+                        </a>
+                        <a href="{{ route('caja.create') }}" class="flex items-center gap-1.5 px-3 py-1.5 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 rounded-lg font-bold hover:bg-green-200 dark:hover:bg-green-800/50 transition-colors text-sm shadow-sm">
+                            <span>💵</span> Ingreso/Gasto
+                        </a>
+                        <a href="{{ route('cierre.index') }}" class="flex items-center gap-1.5 px-3 py-1.5 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 rounded-lg font-bold hover:bg-purple-200 dark:hover:bg-purple-800/50 transition-colors text-sm shadow-sm">
+                            <span>📊</span> Arqueo
+                        </a>
+                    </div>
+                </div>
 
-            <form action="{{ route('logout') }}" method="POST" class="m-0">
-                @csrf
-                <button type="submit" class="bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-red-500/20">Salir</button>
-            </form>
+                <div class="flex items-center space-x-3">
+                    @if(auth()->user()->photo)
+                        <img src="{{ asset('storage/' . auth()->user()->photo) }}" width="32" height="32" class="rounded-full object-cover border border-gray-300 dark:border-gray-600">
+                    @endif
+                    <span class="text-sm hidden sm:inline-block font-semibold">Hola, {{ auth()->user()->name }}</span>
+                    
+                    <!-- Botón Modo Oscuro -->
+                    <button type="button" id="theme-toggle" class="p-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl focus:outline-none transition-colors" aria-label="Cambiar tema">
+                        🌓
+                    </button>
 
-            <!-- Botón Hamburguesa (solo móvil/tablet) -->
-            <button type="button" id="mobile-menu-btn" class="lg:hidden p-2 bg-gray-200 dark:bg-gray-700 rounded-lg focus:outline-none" aria-label="Abrir menú">
-                <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-        </div>
-    </nav>
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                        @csrf
+                        <button type="submit" class="bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-xl px-4 py-2 font-bold transition-all text-sm">Salir</button>
+                    </form>
 
-    <!-- Menú móvil desplegable -->
-    <div id="mobile-menu" class="lg:hidden hidden bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 shadow-md sticky top-[73px] z-40">
-        <div class="flex flex-col p-4 space-y-1">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">⚙️ Dashboard</a>
-            <a href="{{ route('clientes.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">👤 Clientes</a>
-            <a href="{{ route('equipos.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">🖥️ Equipos</a>
-            <a href="{{ route('tecnicos.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">🛠️ Técnicos</a>
-            <a href="{{ route('stocks.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">📦 Inventario</a>
-            <a href="{{ route('caja.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-green-500/10 hover:text-green-600 dark:hover:text-green-400 font-medium transition-all">💰 Caja</a>
-            <a href="{{ route('cierre.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-teal-500/10 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-all">📊 Cierre</a>
-            <a href="{{ route('electronicas.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-purple-500/10 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-all">⚡ Electrónica</a>
-            <a href="{{ route('mantenimientos.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">📋 Mantenimientos</a>
-            <a href="{{ route('reportes.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">📈 Reportes</a>
-            <a href="{{ route('usuarios.index') }}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all">👨🏻‍💻 Usuarios</a>
+                    <!-- Botón Hamburguesa móvil -->
+                    <button type="button" id="mobile-menu-btn" class="lg:hidden p-2 bg-gray-100 dark:bg-gray-700 rounded-xl focus:outline-none ml-2">
+                        <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Menú móvil desplegable -->
+            <div id="mobile-menu" class="lg:hidden hidden bg-white dark:bg-gray-800 border-b border-gray-200/50 dark:border-gray-700/50 shadow-md sticky top-[73px] z-40 no-print">
+                <div class="flex flex-col p-4 space-y-1">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">📊 Dashboard</a>
+                    <a href="{{ route('clientes.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">👤 Clientes</a>
+                    <a href="{{ route('equipos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">🖥️ Equipos</a>
+                    <a href="{{ route('tecnicos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">🛠️ Técnicos</a>
+                    <a href="{{ route('stocks.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">📦 Inventario</a>
+                    <a href="{{ route('caja.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">💰 Caja</a>
+                    <a href="{{ route('cierre.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">📈 Cierre</a>
+                    <a href="{{ route('electronicas.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">⚡ Electrónica</a>
+                    <a href="{{ route('mantenimientos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">📋 Órdenes</a>
+                    <a href="{{ route('reportes.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">📊 Reportes</a>
+                    <a href="{{ route('usuarios.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">👨🏻‍💻 Usuarios</a>
+                </div>
+            </div>
+
+            <!-- Barra de progreso de navegación -->
+            <div id="nav-progress" class="no-print"></div>
+
+            <!-- Contenido Principal -->
+            <main id="page-main" class="p-4 sm:p-6 lg:p-8 flex-1">
+                @yield('content')
+            </main>
         </div>
     </div>
     @endauth
-
-    <!-- Barra de progreso de navegación -->
-    <div id="nav-progress"></div>
-
-    <!-- Contenido Principal -->
-    <main id="page-main" class="container mx-auto p-4 mt-4">
-        @yield('content')
-    </main>
 
     <!-- Contenedor de Toasts -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
@@ -511,4 +562,5 @@
     </script>
 </body>
 </html>
+
 

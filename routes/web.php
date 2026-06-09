@@ -44,8 +44,10 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
         return response()->noContent();
     })->name('electronicas.dismiss-alert');
 
-    // Nueva Ruta de Reportes Independiente
+    // Rutas de Reportes
+    Route::get('/mantenimientos-reportes', [MantenimientoController::class, 'reportes'])->name('mantenimientos.reportes');
     Route::get('/reportes', [App\Http\Controllers\ReporteController::class, 'index'])->name('reportes.index');
+    
     Route::get('/mantenimientos/{mantenimiento}/factura', [MantenimientoController::class, 'factura'])->name('mantenimientos.factura');
 
     // Módulos generales
