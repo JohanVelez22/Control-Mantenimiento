@@ -1,164 +1,166 @@
 @extends('layouts.app')
-
 @section('content')
 <style>
     /* Fila resaltada al llegar por ancla (#mantenimiento-id) */
     tr:target {
+        background-color: rgba(59, 130, 246, 0.1) !important;
+        outline: 2px solid rgba(59, 130, 246, 0.5);
+        outline-offset: -2px;
+    }
+    .dark tr:target {
         background-color: rgba(59, 130, 246, 0.2) !important;
-        outline: 2px solid #3b82f6;
     }
 </style>
 
 {{-- Modal de contraseña para anular --}}
-<div id="pwd-anular-modal" class="fixed inset-0 z-[300] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-    <div class="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border border-orange-300/40 dark:border-orange-700/50 rounded-2xl shadow-2xl p-6 max-w-sm w-full">
-        <div class="text-center mb-4">
-            <div class="text-5xl mb-2">🚫</div>
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Confirmar anulación</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa tu contraseña para anular este registro.</p>
+<div id="pwd-anular-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+    <div class="ts-modal-card scale-95 opacity-0" id="pwd-anular-card">
+        <div class="p-6">
+            <div class="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4">
+                🚫
+            </div>
+            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Anulación</h3>
+            <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+                Ingresa tu contraseña para anular esta orden. Se mantendrá el historial pero se marcará como anulada.
+            </p>
+            <form id="anular-pwd-form" method="POST" class="space-y-4">
+                @csrf
+                <div>
+                    <input type="password" name="password_confirm" id="pwd-anular-input" required placeholder="Contraseña..." class="glass-input text-center tracking-widest text-lg focus:ring-orange-500">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeAnularModal()" class="flex-1 btn-ghost justify-center">Cancelar</button>
+                    <button type="submit" class="flex-1 text-center justify-center font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 py-2.5 rounded-xl shadow-[0_4px_14px_rgba(249,115,22,0.4)] transition-all">Anular Orden</button>
+                </div>
+            </form>
         </div>
-        <form id="anular-pwd-form" method="POST" class="space-y-4">
-            @csrf
-            <div>
-                <input type="password" name="password_confirm" id="pwd-anular-input" required placeholder="Contraseña..."
-                       class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 transition-all">
-            </div>
-            <div class="flex gap-3">
-                <button type="button" onclick="closeAnularModal()" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-semibold hover:bg-gray-300 transition-all">Cancelar</button>
-                <button type="submit" class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-xl font-semibold hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/30">Anular</button>
-            </div>
-        </form>
     </div>
 </div>
 
-<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
-    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-        <h2 class="text-2xl font-bold">Órdenes de Mantenimiento</h2>
-        <div class="flex flex-wrap items-center gap-2">
-            <input type="text" id="search-mantenimientos" placeholder="🔍 Buscar..." class="search-input bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus:outline-none w-48">
+<div class="glass-card p-6 md:p-8">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+        <div>
+            <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
+                <span class="text-3xl">🔧</span> Órdenes de Mantenimiento
+            </h2>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Gestiona los mantenimientos de equipos de los clientes</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <div class="relative">
+                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+                <input type="text" id="search-mantenimientos" placeholder="Buscar orden..." class="glass-input pl-9 w-48 sm:w-64 text-sm">
+            </div>
             @if(!auth()->user()->isInvitado())
-                <a href="{{ route('mantenimientos.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
+                <a href="{{ route('mantenimientos.create') }}" class="btn-primary shadow-blue-500/30 text-sm">
                     ➕ Nueva Orden
                 </a>
             @endif
         </div>
     </div>
 
-    <div class="overflow-x-auto">
-        <table id="tabla-mantenimientos" class="w-full text-left border-collapse responsive-table">
-            <thead class="bg-gray-200 dark:bg-gray-700 text-center">
+    <div class="overflow-x-auto rounded-2xl border border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-md">
+        <table id="tabla-mantenimientos" class="ts-table">
+            <thead>
                 <tr>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Orden</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Equipo</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Cliente</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Técnico</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Tipo / Rep.</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Observación</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Costo</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Estado</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Entrada</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Salida</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Registrado por</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
+                    <th class="w-20 text-center">Orden</th>
+                    <th>Equipo</th>
+                    <th>Cliente</th>
+                    <th class="text-center">Técnico</th>
+                    <th class="text-center">Tipo</th>
+                    <th>Observación</th>
+                    <th class="text-right">Costo</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center w-24">Entrada</th>
+                    <th class="text-center w-24">Salida</th>
+                    <th class="text-center w-32">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($mantenimientos as $m)
-                <tr id="mantenimiento-{{ $m->id }}" class="bg-white dark:bg-gray-800 scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
-                    <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap font-bold text-center">
-                        <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 hover:text-blue-800 hover:underline">
+                <tr id="mantenimiento-{{ $m->id }}" class="{{ $m->estado === 'anulado' ? 'row-anulado' : '' }}">
+                    <td class="text-center font-bold">
+                        <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
                             {{ $m->id_orden }}
                         </a>
                     </td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group" title="Ver en tabla de equipos">
-                            <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">
+                    
+                    <td>
+                        <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group block hover:bg-gray-50 dark:hover:bg-gray-800/50 p-1.5 -ml-1.5 rounded-lg transition-colors" title="Ver en tabla de equipos">
+                            <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                                 {{ $m->equipo->nombre ?? '-' }}
-                            </span>
-                            <span class="font-bold text-[14px] text-gray-400 italic whitespace-nowrap">
-                                ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }})
-                            </span>
-                            <span class="text-gray-900 dark:text-gray-100 text-[13.5px] whitespace-nowrap">
+                            </div>
+                            <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+                                {{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}
+                            </div>
+                            <div class="text-[10px] text-gray-400">
                                 {{ $m->equipo->serie ?? '' }}
-                            </span>
+                            </div>
                         </a>
                     </td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500 max-w-[150px]">
-                        <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group text-center" title="Ver en tabla de clientes">
-                            <span class="text-gray-900 dark:text-gray-100 font-bold group-hover:underline">
+                    
+                    <td>
+                        <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="group block hover:bg-gray-50 dark:hover:bg-gray-800/50 p-1.5 -ml-1.5 rounded-lg transition-colors" title="Ver en tabla de clientes">
+                            <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                                 {{ $m->equipo->cliente->nombre ?? '-' }}
-                            </span>
-                            <span class="font-bold text-[14px] text-gray-400 italic">
+                            </div>
+                            <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
                                 {{ $m->equipo->cliente->identificacion ?? '-' }}
-                            </span>
-                            {{-- Espacio extra para nivelar con la columna equipo --}}
-                            <span class="text-[13.5px] select-none opacity-0">.</span>
+                            </div>
                         </a>
                     </td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->tecnico->nombre ?? '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <div class="flex flex-col items-center gap-0">
-                            <span class="text-gray-900 dark:text-gray-100 font-bold capitalize">{{ $m->tipo }}</span>
-                            <span class="text-[15px] text-gray-400 italic font-bold capitalize">({{ $m->reparacion }})</span>
-                        </div>
+                    
+                    <td class="text-center font-medium text-sm">{{ $m->tecnico->nombre ?? '-' }}</td>
+                    
+                    <td class="text-center">
+                        <div class="font-bold text-slate-800 dark:text-white capitalize text-sm">{{ $m->tipo }}</div>
+                        <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">{{ $m->reparacion }}</div>
                     </td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->descripcion ?? '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ number_format($m->costo, 2, '.', ',') }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">
+                    
+                    <td class="text-sm text-gray-600 dark:text-gray-400 max-w-[200px] truncate" title="{{ $m->descripcion ?? '-' }}">
+                        {{ $m->descripcion ?? '-' }}
+                    </td>
+                    
+                    <td class="text-right font-black text-blue-600 dark:text-cyan-400">
+                        ${{ number_format($m->costo, 0, ',', '.') }}
+                    </td>
+                    
+                    <td class="text-center">
                         @if($m->estado === 'anulado')
-                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400 border border-red-500/30 font-bold shadow-sm" title="Anulado">
-                                🚫
-                            </span>
+                            <span class="pill pill-anulado" title="Anulado">🚫 Anulado</span>
                         @else
-                            @php
-                                $bgEstado = $m->estado === 'pendiente' ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/30' : 'bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30';
-                            @endphp
-                            <span class="px-2 py-1 rounded-md text-sm backdrop-blur-sm font-semibold border {{ $bgEstado }}">
+                            <span class="pill {{ $m->estado === 'terminado' ? 'pill-done' : 'pill-pending' }}">
                                 {{ ucfirst($m->estado) }}
                             </span>
                         @endif
                     </td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap">{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500 whitespace-nowrap">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $m->user->name ?? '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <div class="flex justify-center items-center gap-2 flex-wrap">
-                            {{-- Ver Detalle (con abonos) --}}
-                            <a href="{{ route('mantenimientos.show', $m->id) }}" class="inline-flex items-center gap-1 bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all text-sm" title="Ver detalle y abonos">
-                                👁️ <span class="hidden md:inline">Ver</span>
-                            </a>
-
+                    
+                    <td class="text-center font-medium text-sm">{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
+                    
+                    <td class="text-center font-medium text-sm {{ $m->fecha_salida ? 'text-slate-800 dark:text-white' : 'text-gray-400 italic' }}">
+                        {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '-' }}
+                    </td>
+                    
+                    <td class="text-center">
+                        <div class="flex justify-center gap-1.5 flex-wrap">
+                            <a href="{{ route('mantenimientos.show', $m->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Ver detalle">👁️</a>
+                            
                             @if($m->estado === 'terminado' && $m->fecha_salida)
-                                <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="inline-flex items-center gap-1 bg-green-500/20 text-green-700 dark:text-green-400 border border-green-500/30 hover:bg-green-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-green-500/20 text-sm" title="Factura POS (requiere fecha de salida)">
-                                    🖨️ <span class="hidden md:inline">Factura</span>
-                                </a>
+                                <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 hover:text-green-700 hover:bg-green-50/50" title="Factura POS">🖨️</a>
                             @elseif($m->estado === 'terminado')
-                                <span class="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-1 text-sm cursor-default" title="Agregue fecha de salida para generar la factura">
-                                    🖨️ <span class="hidden md:inline">Factura</span>
-                                </span>
+                                <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
                             @endif
 
                             @if(!auth()->user()->isInvitado())
-                                <a href="{{ route('mantenimientos.edit', $m->id) }}" class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20 text-sm">
-                                    ✏️ <span class="hidden md:inline">Editar</span>
-                                </a>
-
-
+                                <a href="{{ route('mantenimientos.edit', $m->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
 
                                 @if($m->estado !== 'anulado')
-                                    <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}')" class="inline-flex items-center gap-1 bg-orange-500/20 text-orange-700 dark:text-orange-400 border border-orange-500/30 hover:bg-orange-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all text-sm" title="Anular orden">
-                                        🚫 <span class="hidden md:inline">Anular</span>
-                                    </button>
+                                    <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs text-orange-600 border-orange-500/20 hover:bg-orange-500/10" title="Anular orden">🚫</button>
                                 @endif
 
                                 @if(auth()->user()->isAdmin())
-                                    <form action="{{ route('mantenimientos.destroy', $m->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar la orden '{{ $m->id_orden }}'? Esta acción no se puede deshacer.">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-red-500/20 text-sm">
-                                            🗑️ <span class="hidden md:inline">Eliminar</span>
-                                        </button>
+                                    <form action="{{ route('mantenimientos.destroy', $m->id) }}" method="POST" class="inline" data-confirm-delete="¿Eliminar definitivamente la orden '{{ $m->id_orden }}'?">
+                                        @csrf @method('DELETE')
+                                        <button class="btn-danger px-2.5 py-1.5 text-xs" title="Eliminar">🗑️</button>
                                     </form>
                                 @endif
                             @endif
@@ -167,13 +169,13 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="12" class="p-12 text-center">
-                        <div class="flex flex-col items-center justify-center space-y-4">
-                            <div class="text-6xl">🔍</div>
-                            <h3 class="text-xl font-bold text-gray-700 dark:text-gray-300">No se encontraron mantenimientos</h3>
-                            <p class="text-gray-500 dark:text-gray-400 max-w-xs mx-auto">Parece que aún no hay registros o el filtro no arrojó resultados.</p>
+                    <td colspan="11" class="p-16 text-center">
+                        <div class="flex flex-col items-center justify-center gap-3">
+                            <div class="text-6xl drop-shadow-md mb-2">🔧</div>
+                            <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin mantenimientos registrados</h3>
+                            <p class="text-gray-500 font-medium max-w-sm mb-4">Registra la primera orden de mantenimiento de un equipo.</p>
                             @if(!auth()->user()->isInvitado())
-                                <a href="{{ route('mantenimientos.create') }}" class="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/30">
+                                <a href="{{ route('mantenimientos.create') }}" class="btn-primary">
                                     ➕ Crear Primera Orden
                                 </a>
                             @endif
@@ -184,30 +186,41 @@
             </tbody>
         </table>
     </div>
-    <div class="mt-4">
+    <div class="mt-6 flex justify-end">
         {{ $mantenimientos->appends(request()->query())->links() }}
     </div>
 </div>
+
 <script>
-    document.addEventListener('DOMContentLoaded', () => filterTable('search-mantenimientos', 'tabla-mantenimientos'));
+    document.addEventListener('DOMContentLoaded', () => {
+        if(typeof filterTable === 'function') {
+            filterTable('search-mantenimientos', 'tabla-mantenimientos');
+        }
+    });
 
     function openAnularModal(actionUrl) {
         const modal = document.getElementById('pwd-anular-modal');
+        const card = document.getElementById('pwd-anular-card');
         document.getElementById('anular-pwd-form').action = actionUrl;
         document.getElementById('pwd-anular-input').value = '';
         modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        setTimeout(() => document.getElementById('pwd-anular-input').focus(), 100);
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            card.classList.remove('scale-95', 'opacity-0');
+            document.getElementById('pwd-anular-input').focus();
+        }, 10);
     }
+    
     function closeAnularModal() {
         const modal = document.getElementById('pwd-anular-modal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+        const card = document.getElementById('pwd-anular-card');
+        modal.classList.add('opacity-0');
+        card.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 300);
     }
-    // Cerrar con ESC
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAnularModal(); });
+    
+    document.addEventListener('keydown', e => { 
+        if (e.key === 'Escape') closeAnularModal(); 
+    });
 </script>
 @endsection
-
-
-

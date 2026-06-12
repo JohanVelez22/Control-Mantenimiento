@@ -22,5 +22,10 @@ class Cliente extends Model
     {
         return $this->hasMany(Equipo::class);
     }
-    
+
+    /** Facturas de venta asociadas a este cliente (polimórfico) */
+    public function facturas()
+    {
+        return $this->morphMany(Factura::class, 'facturable');
+    }
 }

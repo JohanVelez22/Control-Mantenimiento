@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Stock extends Model
 {
@@ -10,34 +13,72 @@ class Stock extends Model
         'codigo',
         'producto',
         'cantidad',
-        'proveedor',
+        'proveedor',       // Campo texto legado (aún existe)
+        'proveedor_id',    // FK formal
         'precio_compra',
         'utilidad',
         'precio_venta',
         'precio_tecnico',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::saving(function ($stock) {
-            // Si el precio de venta es 0 o no se proporciona, se calcula automáticamente
+        static::saving(function (Stock $stock): void {
+            // Auto-calcular precio de venta si no se provee
             if (empty($stock->precio_venta) || $stock->precio_venta == 0) {
-                $stock->precio_venta = $stock->precio_compra + ($stock->precio_compra * ($stock->utilidad / 100));
+                $stock->precio_venta = $stock->precio_compra
+                    + ($stock->precio_compra * ($stock->utilidad / 100));
             }
 
-            // Si el precio técnico es 0 o no se proporciona, por defecto será el precio de compra o aplicar un margen menor
+            // Auto-calcular precio técnico si no se provee
             if (empty($stock->precio_tecnico) || $stock->precio_tecnico == 0) {
-                // Por defecto, le pondremos un margen técnico menor (mitad de utilidad) o igual al costo.
-                // Como regla, si no dicen el margen, sumaremos la mitad del margen al tecnico.
-                $stock->precio_tecnico = $stock->precio_compra + ($stock->precio_compra * (($stock->utilidad / 2) / 100));
+                $stock->precio_tecnico = $stock->precio_compra
+                    + ($stock->precio_compra * (($stock->utilidad / 2) / 100));
             }
         });
     }
 
-    public function mantenimientos()
+    // ─── Relaciones ───────────────────────────────────────────────
+
+    public function proveedor(): BelongsTo
+    {
+        return $this->belongsTo(Proveedor::class);
+    }
+
+    public function mantenimientos(): BelongsToMany
     {
         return $this->belongsToMany(Mantenimiento::class)
                     ->withPivot('cantidad', 'precio_unitario')
                     ->withTimestamps();
+    }
+
+    public function facturaItems(): HasMany
+    {
+        return $this->hasMany(FacturaItem::class);
+    }
+
+    // ─── Helpers ─────────────────────────────────────────────────
+
+    /** Verifica que haya stock suficiente */
+    public function tieneDisponible(int $cantidad): bool
+    {
+        return $this->cantidad >= $cantidad;
+    }
+
+    /** Incrementa el stock de forma atómica */
+    public function incrementarStock(int $cantidad): void
+    {
+        $this->increment('cantidad', $cantidad);
+    }
+
+    /** Decrementa el stock de forma atómica (lanza excepción si no hay suficiente) */
+    public function decrementarStock(int $cantidad): void
+    {
+        if (!$this->tieneDisponible($cantidad)) {
+            throw new \DomainException(
+                "Stock insuficiente para '{$this->producto}'. Disponible: {$this->cantidad}, solicitado: {$cantidad}."
+            );
+        }
+        $this->decrement('cantidad', $cantidad);
     }
 }

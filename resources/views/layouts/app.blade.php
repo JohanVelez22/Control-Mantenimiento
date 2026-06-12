@@ -1,277 +1,220 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="preload">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Mantenimiento</title>
-    <!-- Usamos Tailwind via CDN para ejecución rápida -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tecni Systemas — ERP</title>
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ts: {
+                            blue: '#2563EB',
+                            bluedark: '#1D4ED8',
+                            cyan: '#06B6D4',
+                            slate: '#0F172A',
+                        }
+                    }
+                }
+            }
         }
     </script>
-    <!-- Anti-FOUC: aplicar tema y bloquear transiciones antes del primer render -->
+    
+    <!-- CSS Propio (Liquid Glass) -->
+    <link rel="stylesheet" href="{{ asset('css/glass.css') }}">
+    
+    <!-- Lógica de Tema Temprana para evitar Flash de Contenido No Estilizado (FOUC) -->
     <script>
-        document.documentElement.classList.add('preload');
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
+        window.addEventListener('load', () => {
+            document.documentElement.classList.remove('preload');
+        });
     </script>
-    <style>
-        /* Bloquear transiciones en carga inicial para evitar flash */
-        .preload * { transition: none !important; }
-
-        .search-input:focus {
-            outline: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Transición suave al cambiar de modo claro/oscuro */
-        body, nav, main, header, footer,
-        table, thead, tbody, tfoot, tr, th, td,
-        div, span, a, button, input, select, textarea, label, p, h1, h2, h3, h4, h5 {
-            transition: background-color 0.3s ease, color 0.2s ease, border-color 0.25s ease;
-        }
-
-        /* Animación de entrada de página */
-        @keyframes pageFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        .page-enter {
-            animation: pageFadeIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        /* Marcas de agua para impresión */
-        .watermark-container { position: relative; }
-        .watermark-container.anulado::after {
-            content: "ANULADO";
-            position: fixed; /* For print it stays centered on the page */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 8rem;
-            font-weight: 900;
-            color: rgba(239, 68, 68, 0.15); /* text-red-500 muy transparente */
-            z-index: 1000;
-            pointer-events: none;
-            white-space: nowrap;
-        }
-        @media print {
-            .watermark-container.anulado::after {
-                color: rgba(200, 0, 0, 0.2) !important;
-                /* En impresión a veces es mejor absolute relative al body o pagina */
-                position: absolute;
-            }
-        }
-
-        /* Tablas Responsive: Tarjetas en móvil */
-        @media (max-width: 767px) {
-            .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td {
-                display: block; width: 100%;
-            }
-            .responsive-table thead { display: none; }
-            .responsive-table tr {
-                margin-bottom: 1rem;
-                border: 1px solid rgba(156, 163, 175, 0.3);
-                border-radius: 0.75rem;
-                overflow: hidden;
-            }
-            .responsive-table td {
-                display: grid;
-                grid-template-columns: minmax(100px, 35%) 1fr;
-                gap: 1rem;
-                align-items: center;
-                text-align: right;
-                padding: 0.75rem 1rem !important;
-                border-bottom: 1px solid rgba(156, 163, 175, 0.2);
-            }
-            .responsive-table td:last-child { border-bottom: none; }
-            .responsive-table td::before {
-                content: attr(data-label);
-                font-weight: 700;
-                text-align: left;
-                color: #6b7280;
-            }
-            html.dark .responsive-table td::before { color: #9ca3af; }
-        }
-
-        /* Barra de progreso de navegación */
-        #nav-progress {
-            position: fixed;
-            top: 0; left: 0;
-            height: 3px;
-            width: 0%;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
-            z-index: 9999;
-            border-radius: 0 3px 3px 0;
-            box-shadow: 0 0 10px rgba(99,102,241,0.7);
-            transition: width 0.35s ease;
-            pointer-events: none;
-        }
-    </style>
 </head>
-<body class="flex bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 min-h-screen">
+<body class="ts-bg text-gray-800 dark:text-gray-100 overflow-x-hidden antialiased">
 
     @auth
-    <!-- Estructura Principal con Sidebar -->
-    <div class="flex flex-col lg:flex-row min-h-screen w-full">
+    <!-- Envoltura Principal -->
+    <div class="flex min-h-screen">
         
-        <!-- Sidebar Izquierdo Premium (Mini-sidebar expandible) -->
-        <aside class="group w-20 hover:w-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-2xl border-r border-gray-200/50 dark:border-gray-700/50 hidden lg:flex flex-col flex-shrink-0 sticky top-0 h-screen overflow-hidden transition-all duration-300 ease-in-out no-print z-50">
-            <!-- Header Logo -->
-            <div class="h-20 flex items-center justify-center border-b border-gray-200/50 dark:border-gray-800 flex-shrink-0">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 overflow-hidden text-gray-800 dark:text-white group-hover:px-6 w-full justify-center group-hover:justify-start transition-all">
-                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    <span class="text-xl font-black tracking-tight whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Control Mant.</span>
+        <!-- SIDEBAR DE VIDRIO (Fijo) -->
+        <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col">
+            <!-- Brand / Logo -->
+            <div class="h-20 flex items-center justify-center border-b border-gray-200/40 dark:border-white/5 shrink-0 px-3 relative">
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 w-full justify-center group-hover:justify-start transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-black text-xl shadow-[0_4px_12px_rgba(37,99,235,0.4)] shrink-0 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-white/20 transform -translate-y-full hover:translate-y-0 transition-transform"></div>
+                        T
+                    </div>
+                    <div class="nav-label flex flex-col justify-center">
+                        <span class="text-base font-black tracking-tight leading-tight text-slate-800 dark:text-white">TECNI</span>
+                        <span class="text-[10px] font-bold tracking-widest text-blue-600 dark:text-cyan-400 uppercase">Systemas</span>
+                    </div>
                 </a>
             </div>
-            
-            <!-- Menú Links -->
-            <nav class="flex-1 py-6 flex flex-col gap-2 overflow-y-auto overflow-x-hidden scrollbar-hide px-3">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 font-bold transition-all relative {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : '' }}" title="Dashboard">
-                    <span class="text-2xl flex-shrink-0">⚙️</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Dashboard</span>
-                </a>
+
+            <!-- Navegación -->
+            <nav class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide py-4 px-2 space-y-1">
                 
-                <a href="{{ route('clientes.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 font-bold transition-all {{ request()->routeIs('clientes.*') ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400' : '' }}" title="Clientes">
-                    <span class="text-2xl flex-shrink-0">👤</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Clientes</span>
+                <!-- GRUPO: PRINCIPAL -->
+                <div class="nav-group-label">General</div>
+                
+                <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}" title="Dashboard">
+                    <div class="nav-icon">📊</div>
+                    <span class="nav-label">Dashboard</span>
                 </a>
 
-                <a href="{{ route('equipos.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-cyan-50 hover:text-cyan-600 dark:hover:bg-cyan-900/30 dark:hover:text-cyan-400 font-bold transition-all {{ request()->routeIs('equipos.*') ? 'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400' : '' }}" title="Equipos">
-                    <span class="text-2xl flex-shrink-0">🖥️</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Equipos</span>
+                <!-- GRUPO: OPERATIVO -->
+                <div class="mt-4 nav-group-label">Motor Operativo</div>
+                
+                <a href="{{ route('mantenimientos.index') }}" class="nav-item {{ request()->routeIs('mantenimientos.*') ? 'active' : '' }}" title="Mantenimientos">
+                    <div class="nav-icon relative">
+                        📋
+                        <!-- Badge dinámico de pendientes (Ejemplo estático, luego dinámico) -->
+                        <span class="nav-badge">3</span>
+                    </div>
+                    <span class="nav-label">Mantenimientos</span>
                 </a>
 
-                <a href="{{ route('tecnicos.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-orange-50 hover:text-orange-600 dark:hover:bg-orange-900/30 dark:hover:text-orange-400 font-bold transition-all {{ request()->routeIs('tecnicos.*') ? 'bg-orange-50 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' : '' }}" title="Técnicos">
-                    <span class="text-2xl flex-shrink-0">🛠️</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Técnicos</span>
+                <a href="{{ route('electronicas.index') }}" class="nav-item {{ request()->routeIs('electronicas.*') ? 'active' : '' }}" title="Servicio Técnico">
+                    <div class="nav-icon">⚡</div>
+                    <span class="nav-label">Serv. Técnico</span>
                 </a>
 
-                <a href="{{ route('stocks.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-amber-50 hover:text-amber-600 dark:hover:bg-amber-900/30 dark:hover:text-amber-400 font-bold transition-all {{ request()->routeIs('stocks.*') ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' : '' }}" title="Inventario">
-                    <span class="text-2xl flex-shrink-0">📦</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Inventario</span>
+                <!-- GRUPO: INVENTARIO Y SUMINISTRO -->
+                <div class="mt-4 nav-group-label">Logística</div>
+                
+                <a href="{{ route('stocks.index') }}" class="nav-item {{ request()->routeIs('stocks.*') ? 'active' : '' }}" title="Control de Stock">
+                    <div class="nav-icon">📦</div>
+                    <span class="nav-label">Control Stock</span>
                 </a>
 
-                <a href="{{ route('caja.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-900/30 dark:hover:text-emerald-400 font-bold transition-all {{ request()->routeIs('caja.*') ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : '' }}" title="Caja Fuerte">
-                    <span class="text-2xl flex-shrink-0">💰</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Caja</span>
+                <a href="{{ route('inventario.facturas') }}" class="nav-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}" title="Compra y Venta">
+                    <div class="nav-icon">🧾</div>
+                    <span class="nav-label">Operaciones (C/V)</span>
                 </a>
 
-                <a href="{{ route('cierre.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-teal-50 hover:text-teal-600 dark:hover:bg-teal-900/30 dark:hover:text-teal-400 font-bold transition-all {{ request()->routeIs('cierre.*') ? 'bg-teal-50 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400' : '' }}" title="Cierre de Caja">
-                    <span class="text-2xl flex-shrink-0">📈</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Cierre</span>
+                <!-- GRUPO: TERCEROS -->
+                <div class="mt-4 nav-group-label">Directorio</div>
+                
+                <a href="{{ route('clientes.index') }}" class="nav-item {{ request()->routeIs('clientes.*') ? 'active' : '' }}" title="Clientes">
+                    <div class="nav-icon">👤</div>
+                    <span class="nav-label">Clientes</span>
                 </a>
 
-                <a href="{{ route('electronicas.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-purple-50 hover:text-purple-600 dark:hover:bg-purple-900/30 dark:hover:text-purple-400 font-bold transition-all {{ request()->routeIs('electronicas.*') ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' : '' }}" title="Electrónica">
-                    <span class="text-2xl flex-shrink-0">⚡</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Electrónica</span>
+                <a href="{{ route('proveedores.index') }}" class="nav-item {{ request()->routeIs('proveedores.*') ? 'active' : '' }}" title="Proveedores">
+                    <div class="nav-icon">🏭</div>
+                    <span class="nav-label">Proveedores</span>
                 </a>
 
-                <div class="h-px bg-gray-200 dark:bg-gray-800 my-2"></div>
-
-                <a href="{{ route('mantenimientos.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 font-bold transition-all {{ request()->routeIs('mantenimientos.*') ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : '' }}" title="Órdenes de Mantenimiento">
-                    <span class="text-2xl flex-shrink-0">📋</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Órdenes</span>
+                <a href="{{ route('tecnicos.index') }}" class="nav-item {{ request()->routeIs('tecnicos.*') ? 'active' : '' }}" title="Personal">
+                    <div class="nav-icon">🛠️</div>
+                    <span class="nav-label">Técnicos</span>
                 </a>
 
-                <a href="{{ route('reportes.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-900/30 dark:hover:text-rose-400 font-bold transition-all {{ request()->routeIs('reportes.*') ? 'bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400' : '' }}" title="Reportes">
-                    <span class="text-2xl flex-shrink-0">📊</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Reportes</span>
+                <!-- GRUPO: FINANCIERO Y AUDITORÍA -->
+                <div class="mt-4 nav-group-label">Caja & Auditoría</div>
+                
+                <a href="{{ route('caja.index') }}" class="nav-item {{ request()->routeIs('caja.*') ? 'active' : '' }}" title="Caja Fuerte">
+                    <div class="nav-icon">💵</div>
+                    <span class="nav-label">Caja (Ing/Egr)</span>
                 </a>
 
-                <a href="{{ route('usuarios.index') }}" class="flex items-center gap-4 px-3 py-3 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-slate-50 hover:text-slate-600 dark:hover:bg-slate-800/50 dark:hover:text-slate-300 font-bold transition-all {{ request()->routeIs('usuarios.*') ? 'bg-slate-50 text-slate-600 dark:bg-slate-800/50 dark:text-slate-300' : '' }}" title="Usuarios">
-                    <span class="text-2xl flex-shrink-0">👨🏻‍💻</span>
-                    <span class="whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">Usuarios</span>
+                <a href="{{ route('cierre.index') }}" class="nav-item {{ request()->routeIs('cierre.*') ? 'active' : '' }}" title="Cierre Diario">
+                    <div class="nav-icon">🔒</div>
+                    <span class="nav-label">Arqueo / Cierre</span>
+                </a>
+
+                <a href="{{ route('reportes.index') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}" title="Informes Operativos">
+                    <div class="nav-icon">📈</div>
+                    <span class="nav-label">Inf. Operativos</span>
+                </a>
+
+                <a href="{{ route('reportes.financiero.acumulado') }}" class="nav-item {{ request()->routeIs('reportes.financiero.*') ? 'active' : '' }}" title="Informes Financieros">
+                    <div class="nav-icon">💹</div>
+                    <span class="nav-label">Inf. Financieros</span>
+                </a>
+
+                <a href="{{ route('usuarios.index') }}" class="nav-item {{ request()->routeIs('usuarios.*') ? 'active' : '' }}" title="Usuarios del Sistema">
+                    <div class="nav-icon">👨🏻‍💻</div>
+                    <span class="nav-label">Seguridad</span>
                 </a>
             </nav>
+            
+            <!-- User Mini Profile (Fondo) -->
+            <div class="p-3 border-t border-gray-200/40 dark:border-white/5">
+                <form action="{{ route('logout') }}" method="POST" class="m-0 w-full">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-center gap-2 p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-xl transition-colors font-bold text-sm" title="Cerrar Sesión">
+                        <span>🚪</span>
+                        <span class="nav-label">Cerrar Sesión</span>
+                    </button>
+                </form>
+            </div>
         </aside>
 
-        <!-- Contenedor Derecho (Topbar + Contenido) -->
-        <div class="flex-1 flex flex-col min-w-0">
+        <!-- CONTENEDOR PRINCIPAL (Margen dinámico según sidebar) -->
+        <div class="flex-1 flex flex-col min-w-0 transition-all duration-300" style="margin-left: var(--sidebar-w);">
             
-            <!-- Topbar (Accesos Rápidos Horizontales y Perfil) -->
-            <header class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 p-4 flex justify-between items-center sticky top-0 z-40 no-print">
-                <div class="flex items-center gap-4">
-                    <!-- Logo móvil -->
-                    <div class="lg:hidden text-lg font-bold">
-                        <a href="{{ route('dashboard') }}">⚙️ Control Mant.</a>
-                    </div>
-                    
-                    <!-- Cajones con símbolos (Acceso rápido horizontal) -->
-                    <div class="hidden md:flex items-center gap-2">
-                        <a href="{{ route('mantenimientos.create') }}" class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg font-bold hover:bg-blue-200 dark:hover:bg-blue-800/50 transition-colors text-sm shadow-sm">
-                            <span>➕</span> Orden
-                        </a>
-                        <a href="{{ route('caja.create') }}" class="flex items-center gap-1.5 px-3 py-1.5 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 rounded-lg font-bold hover:bg-green-200 dark:hover:bg-green-800/50 transition-colors text-sm shadow-sm">
-                            <span>💵</span> Ingreso/Gasto
-                        </a>
-                        <a href="{{ route('cierre.index') }}" class="flex items-center gap-1.5 px-3 py-1.5 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 rounded-lg font-bold hover:bg-purple-200 dark:hover:bg-purple-800/50 transition-colors text-sm shadow-sm">
-                            <span>📊</span> Arqueo
-                        </a>
+            <!-- TOPBAR DE VIDRIO -->
+            <header id="ts-topbar" class="h-16 px-4 md:px-6 flex items-center justify-between no-print">
+                <!-- Izquierda: Toggle móvil y Título de vista actual -->
+                <div class="flex items-center gap-3">
+                    <button class="lg:hidden p-2 bg-gray-100/50 dark:bg-gray-800/50 rounded-xl" onclick="toggleMobileSidebar()">
+                        ☰
+                    </button>
+                    <!-- Search global (placeholder) -->
+                    <div class="hidden md:flex items-center glass px-3 py-1.5 rounded-full text-sm w-64 border focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+                        <span class="text-gray-400 mr-2">🔍</span>
+                        <input type="text" placeholder="Buscar orden, cliente..." class="bg-transparent border-none outline-none w-full text-gray-700 dark:text-gray-200 placeholder-gray-400">
                     </div>
                 </div>
 
-                <div class="flex items-center space-x-3">
-                    @if(auth()->user()->photo)
-                        <img src="{{ asset('storage/' . auth()->user()->photo) }}" width="32" height="32" class="rounded-full object-cover border border-gray-300 dark:border-gray-600">
-                    @endif
-                    <span class="text-sm hidden sm:inline-block font-semibold">Hola, {{ auth()->user()->name }}</span>
-                    
-                    <!-- Notificaciones de Electrónica -->
-                    @php
-                        $alertasPendientes = \App\Models\Electronica::where('estado', 'pendiente')->get();
-                    @endphp
-                    <button type="button" onclick="openElecAlertModal()" class="relative p-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl focus:outline-none transition-colors" title="Notificaciones de Electrónica">
-                        🔔
-                        @if($alertasPendientes->count() > 0)
-                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow">{{ $alertasPendientes->count() }}</span>
+                <!-- Derecha: Acciones rápidas y Perfil -->
+                <div class="flex items-center gap-3">
+                    <!-- Botones rápidos (Ocultos en móvil) -->
+                    <div class="hidden sm:flex gap-2 mr-2">
+                        <a href="{{ route('mantenimientos.create') }}" class="btn-ghost" title="Nueva Orden">➕ Orden</a>
+                        <a href="{{ route('inventario.venta.create') }}" class="btn-ghost" title="Nueva Venta">🛒 Venta</a>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700">
+                        <span class="dark:hidden">🌙</span>
+                        <span class="hidden dark:block">☀️</span>
+                    </button>
+
+                    <!-- Avatar de Usuario -->
+                    <div class="flex items-center gap-2 pl-3 border-l border-gray-300 dark:border-gray-700">
+                        <div class="flex flex-col text-right hidden md:block">
+                            <span class="text-sm font-bold text-slate-800 dark:text-white leading-tight">{{ auth()->user()->name }}</span>
+                            <span class="text-[10px] text-blue-600 dark:text-cyan-400 uppercase font-bold">{{ auth()->user()->role ?? 'Admin' }}</span>
+                        </div>
+                        @if(auth()->user()->photo)
+                            <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Avatar" class="w-9 h-9 rounded-xl object-cover border border-white/20 shadow-sm">
+                        @else
+                            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-white font-bold shadow-sm">
+                                {{ substr(auth()->user()->name, 0, 1) }}
+                            </div>
                         @endif
-                    </button>
-
-                    <!-- Botón Modo Oscuro -->
-                    <button type="button" id="theme-toggle" class="p-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl focus:outline-none transition-colors" aria-label="Cambiar tema">
-                        🌓
-                    </button>
-
-                    <form action="{{ route('logout') }}" method="POST" class="m-0">
-                        @csrf
-                        <button type="submit" class="bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-xl px-4 py-2 font-bold transition-all text-sm">Salir</button>
-                    </form>
-
-                    <!-- Botón Hamburguesa móvil -->
-                    <button type="button" id="mobile-menu-btn" class="lg:hidden p-2 bg-gray-100 dark:bg-gray-700 rounded-xl focus:outline-none ml-2">
-                        <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                        <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
+                    </div>
                 </div>
             </header>
 
-            <div id="mobile-menu" class="lg:hidden hidden bg-white dark:bg-gray-800 border-b border-gray-200/50 dark:border-gray-700/50 shadow-md sticky top-[73px] z-40 no-print">
-                <div class="flex flex-col p-4 space-y-1">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">⚙️ Dashboard</a>
-                    <a href="{{ route('clientes.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">👤 Clientes</a>
-                    <a href="{{ route('equipos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">🖥️ Equipos</a>
-                    <a href="{{ route('tecnicos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">🛠️ Técnicos</a>
-                    <a href="{{ route('stocks.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">📦 Inventario</a>
-                    <a href="{{ route('caja.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">💰 Caja</a>
-                    <a href="{{ route('cierre.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">📊 Cierre</a>
-                    <a href="{{ route('electronicas.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">⚡ Electrónica</a>
-                    <a href="{{ route('mantenimientos.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">📋 Órdenes</a>
-                    <a href="{{ route('reportes.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">📈 Reportes</a>
-                    <a href="{{ route('usuarios.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-bold transition-all">👨🏻‍💻 Usuarios</a>
-                </div>
-            </div>
-
-            <!-- Barra de progreso de navegación -->
+            <!-- Barra de progreso superior -->
             <div id="nav-progress" class="no-print"></div>
 
-            <!-- Contenido Principal -->
-            <main id="page-main" class="p-4 sm:p-6 lg:p-8 flex-1">
+            <!-- CONTENIDO DINÁMICO -->
+            <main id="ts-main" class="flex-1 p-4 sm:p-6 lg:p-8 page-enter relative z-10">
                 @yield('content')
             </main>
         </div>
@@ -279,355 +222,172 @@
     @endauth
 
     @guest
-        <div class="flex-1 flex items-center justify-center w-full pt-0 pb-56">
+        <div class="min-h-screen flex items-center justify-center p-4 page-enter">
             @yield('content')
         </div>
     @endguest
 
-    <!-- Contenedor de Toasts -->
-    <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+    <!-- CONTENEDOR DE TOASTS (Notificaciones Glass) -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[999] flex flex-col gap-3 pointer-events-none w-full max-w-sm"></div>
 
-    @auth
-    <!-- Modal de Alertas de Electrónica -->
-    @php
-        $showAuto = session('alertas_electronica') ? 'true' : 'false';
-    @endphp
-    <div id="elec-alert-modal" class="{{ session('alertas_electronica') ? 'flex' : 'hidden' }} fixed inset-0 z-[300] items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeElecAlertModal()"></div>
-        <div class="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border border-purple-300/40 dark:border-purple-700/50 rounded-2xl shadow-2xl p-6 max-w-lg w-full max-h-[80vh] flex flex-col transform transition-all duration-300">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="text-3xl">⚡</span>
-                <div>
-                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Resumen de Electrónica</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $alertasPendientes->count() }} registro(s) activos</p>
+    <!-- MODAL DE CONFIRMACIÓN DE ALERTA/ELIMINACIÓN (Liquid Glass) -->
+    <div id="ts-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+        <div class="ts-modal-card scale-95 opacity-0" id="ts-modal-card">
+            <div class="p-6">
+                <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
+                    ⚠️
                 </div>
-                <button type="button" onclick="closeElecAlertModal()" class="ml-auto text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-xl font-bold">&times;</button>
-            </div>
-            <div class="overflow-y-auto flex-1 space-y-2 pr-1">
-                @forelse($alertasPendientes as $alerta)
-                @php
-                    $dias = $alerta->dias_transcurridos;
-                @endphp
-                <div class="flex items-center justify-between gap-3 p-3 rounded-xl {{ $alerta->estado === 'pendiente' ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/40' : 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700/40' }}">
-                    <div class="flex-1 min-w-0">
-                        <p class="font-bold text-sm text-gray-800 dark:text-white truncate">{{ $alerta->id_orden }} &mdash; {{ $alerta->cliente }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $alerta->dispositivo }} {{ $alerta->marca ? '| '.$alerta->marca : '' }}</p>
-                    </div>
-                    <div class="text-right shrink-0">
-                        <span class="block text-xs font-semibold px-2 py-0.5 rounded-lg {{ $alerta->estado === 'pendiente' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' : 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' }}">
-                            {{ $alerta->estado === 'pendiente' ? '⏳ Pendiente' : '✅ Terminado' }}
-                        </span>
-                        <span class="block text-xs mt-1 font-bold {{ $dias > 14 ? 'text-red-600' : ($dias > 7 ? 'text-yellow-600' : 'text-gray-500') }}">
-                            {{ $dias }} días
-                        </span>
-                    </div>
+                <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2" id="ts-modal-title">¿Estás seguro?</h3>
+                <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-8" id="ts-modal-msg">
+                    Esta acción es irreversible y afectará los registros contables vinculados.
+                </p>
+                
+                <div class="flex gap-3">
+                    <button type="button" onclick="closeTsModal()" class="flex-1 btn-ghost justify-center">
+                        Cancelar
+                    </button>
+                    <button type="button" id="ts-modal-confirm" class="flex-1 btn-danger justify-center font-bold">
+                        Confirmar
+                    </button>
                 </div>
-                @empty
-                <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No hay dispositivos electrónicos pendientes.</p>
-                @endforelse
-            </div>
-            <div class="mt-4 flex justify-between items-center">
-                <a href="{{ route('electronicas.index') }}" class="text-purple-600 dark:text-purple-400 hover:underline text-sm font-semibold">Ver módulo completo →</a>
-                <button onclick="closeElecAlertModal()" class="px-5 py-2 bg-purple-500 text-white rounded-xl font-bold hover:bg-purple-600 shadow-lg shadow-purple-500/30 transition-all text-sm">
-                    Cerrar
-                </button>
-            </div>
-        </div>
-    </div>
-    {{ session()->forget('alertas_electronica') }}
-    @endauth
-
-    <!-- Modal de Confirmación de Eliminación -->
-    <div id="delete-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
-        <!-- Overlay -->
-        <div id="delete-modal-overlay" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
-        <!-- Tarjeta -->
-        <div class="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-white/20 dark:border-gray-700/50 rounded-2xl shadow-2xl p-6 max-w-sm w-full transform transition-all duration-300 scale-95 opacity-0" id="delete-modal-card">
-            <div class="text-center">
-                <div class="text-5xl mb-4">🗑️</div>
-                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">¿Confirmar eliminación?</h3>
-                <p id="delete-modal-message" class="text-gray-500 dark:text-gray-400 text-sm mb-6">Esta acción no se puede deshacer.</p>
-            </div>
-            <div class="flex gap-3">
-                <button type="button" id="delete-modal-cancel" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
-                    Cancelar
-                </button>
-                <button type="button" id="delete-modal-confirm" class="flex-1 px-4 py-2 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-all shadow-lg shadow-red-500/30">
-                    Eliminar
-                </button>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- SCRIPTS CORE -->
     <script>
-        // --- BÚSQUEDA RÁPIDA EN TABLAS (cliente-side) ---
-        function filterTable(inputId, tableId) {
-            const input = document.getElementById(inputId);
-            if (!input) return;
-            input.addEventListener('keyup', function() {
-                const filter = this.value.toLowerCase().trim();
-                const rows = document.querySelectorAll('#' + tableId + ' tbody tr');
-                rows.forEach(row => {
-                    if (row.cells.length <= 1) return; // fila empty-state
-                    row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
-                });
+        // ─── TEMA CLARO/OSCURO ──────────────────────────────────────────
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                if (document.documentElement.classList.contains('dark')) {
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    localStorage.setItem('color-theme', 'light');
+                }
             });
         }
 
-        // --- SCROLL SUAVE A FILA POR ANCLA (centralizado) ---
-        function centerAnchor() {
-            const hash = window.location.hash;
-            if (!hash) return;
-            function scrollToRow() {
-                const target = document.querySelector(hash);
-                if (!target) return false;
-                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                return true;
-            }
-            requestAnimationFrame(function() {
-                requestAnimationFrame(function() {
-                    if (!scrollToRow()) {
-                        setTimeout(scrollToRow, 50);
-                        setTimeout(scrollToRow, 200);
-                    }
-                });
-            });
-        }
-        document.addEventListener('DOMContentLoaded', centerAnchor);
-        window.addEventListener('load', function() { centerAnchor(); setTimeout(centerAnchor, 100); });
-        window.addEventListener('hashchange', centerAnchor);
-        window.addEventListener('pageshow', function(e) { if (e.persisted) centerAnchor(); });
-
-        // --- SISTEMA DE TOASTS ---
+        // ─── TOAST NOTIFICATIONS (Glass) ──────────────────────────────
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             
-            const bgClass = type === 'success' 
-                ? 'bg-green-500/90 border-green-400 text-white' 
-                : (type === 'error' ? 'bg-red-500/90 border-red-400 text-white' : 'bg-blue-500/90 border-blue-400 text-white');
-            
-            const icon = type === 'success' ? '✅' : (type === 'error' ? '⚠️' : 'ℹ️');
+            // Colores basados en el tipo
+            const isError = type === 'error' || type === 'danger';
+            const bgStr = isError 
+                ? 'bg-red-500/90 dark:bg-red-900/80 border-red-500/50' 
+                : 'bg-emerald-500/90 dark:bg-emerald-900/80 border-emerald-500/50';
+            const icon = isError ? '⚠️' : '✅';
 
-            toast.className = `${bgClass} backdrop-blur-md border rounded-2xl shadow-2xl p-4 flex items-center gap-3 transition-all duration-500 transform translate-y-10 opacity-0 pointer-events-auto`;
+            toast.className = `flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl text-white transform transition-all duration-400 translate-y-12 opacity-0 pointer-events-auto ${bgStr}`;
             toast.innerHTML = `
-                <span class="text-xl">${icon}</span>
-                <div class="flex-grow">
-                    <p class="text-sm font-bold">${message}</p>
-                </div>
-                <button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white transition-colors">✕</button>
+                <span class="text-2xl drop-shadow-md">${icon}</span>
+                <p class="text-sm font-bold leading-tight flex-1">${message}</p>
+                <button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white transition-colors text-lg focus:outline-none">&times;</button>
             `;
 
             container.appendChild(toast);
 
-            // Trigger animation
             requestAnimationFrame(() => {
-                toast.classList.remove('translate-y-10', 'opacity-0');
+                requestAnimationFrame(() => {
+                    toast.classList.remove('translate-y-12', 'opacity-0');
+                });
             });
 
-            // Auto-remove
             setTimeout(() => {
-                toast.classList.add('translate-y-10', 'opacity-0');
-                setTimeout(() => toast.remove(), 500);
-            }, 5000);
+                toast.classList.add('translate-y-8', 'opacity-0');
+                setTimeout(() => toast.remove(), 400);
+            }, 4500);
         }
 
-        // Detectar mensajes de Laravel
-        @if(session('success'))
-            document.addEventListener('DOMContentLoaded', () => showToast("{{ session('success') }}", 'success'));
-        @endif
+        // Leer sesiones de Laravel
+        @if(session('success')) showToast("{{ session('success') }}", 'success'); @endif
+        @if(session('error')) showToast("{{ session('error') }}", 'error'); @endif
+        @if($errors->any()) showToast("Verifica los campos obligatorios del formulario.", 'error'); @endif
 
-        @if(session('error'))
-            document.addEventListener('DOMContentLoaded', () => showToast("{{ session('error') }}", 'error'));
-        @endif
-
-        @if($errors->any())
-            document.addEventListener('DOMContentLoaded', () => {
-                showToast("Se encontraron errores en el formulario, por favor revíselos.", 'error');
-            });
-        @endif
-
-        // --- LÓGICA MODO OSCURO ---
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        if(themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', function() {
-                if (localStorage.getItem('color-theme')) {
-                    if (localStorage.getItem('color-theme') === 'light') {
-                        document.documentElement.classList.add('dark');
-                        localStorage.setItem('color-theme', 'dark');
-                    } else {
-                        document.documentElement.classList.remove('dark');
-                        localStorage.setItem('color-theme', 'light');
-                    }
-                } else {
-                    if (document.documentElement.classList.contains('dark')) {
-                        document.documentElement.classList.remove('dark');
-                        localStorage.setItem('color-theme', 'light');
-                    } else {
-                        document.documentElement.classList.add('dark');
-                        localStorage.setItem('color-theme', 'dark');
-                    }
-                }
-            });
-        }
-
-        // --- MENÚ MÓVIL (HAMBURGUESA) ---
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const iconMenu = document.getElementById('icon-menu');
-            const iconClose = document.getElementById('icon-close');
-
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', function() {
-                    const isOpen = !mobileMenu.classList.contains('hidden');
-                    mobileMenu.classList.toggle('hidden');
-                    iconMenu.classList.toggle('hidden', !isOpen);
-                    iconClose.classList.toggle('hidden', isOpen);
-                });
-
-                // Cerrar menú al hacer click en un enlace
-                mobileMenu.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', () => {
-                        mobileMenu.classList.add('hidden');
-                        iconMenu.classList.remove('hidden');
-                        iconClose.classList.add('hidden');
-                    });
-                });
-            }
-        });
-
-        // --- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ---
-        let _deleteFormPending = null;
+        // ─── MODAL GLOBAL DE CONFIRMACIÓN ─────────────────────────────
+        let _pendingForm = null;
 
         function confirmDelete(form, message) {
-            _deleteFormPending = form;
-            const modal = document.getElementById('delete-modal');
-            const card = document.getElementById('delete-modal-card');
-            document.getElementById('delete-modal-message').textContent = message || 'Esta acción no se puede deshacer.';
+            _pendingForm = form;
+            const modal = document.getElementById('ts-modal');
+            const card = document.getElementById('ts-modal-card');
+            
+            if(message) document.getElementById('ts-modal-msg').innerText = message;
+
             modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            requestAnimationFrame(() => {
+            // Timeout pequeño para permitir display:flex antes de animar
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
                 card.classList.remove('scale-95', 'opacity-0');
-                card.classList.add('scale-100', 'opacity-100');
-            });
+            }, 10);
         }
 
-        function closeDeleteModal() {
-            const modal = document.getElementById('delete-modal');
-            const card = document.getElementById('delete-modal-card');
+        function closeTsModal() {
+            const modal = document.getElementById('ts-modal');
+            const card = document.getElementById('ts-modal-card');
+            
+            modal.classList.add('opacity-0');
             card.classList.add('scale-95', 'opacity-0');
-            card.classList.remove('scale-100', 'opacity-100');
+            
             setTimeout(() => {
                 modal.classList.add('hidden');
-                modal.classList.remove('flex');
-                _deleteFormPending = null;
-            }, 200);
+                _pendingForm = null;
+            }, 300);
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('delete-modal-cancel').addEventListener('click', closeDeleteModal);
-            document.getElementById('delete-modal-overlay').addEventListener('click', closeDeleteModal);
-            document.getElementById('delete-modal-confirm').addEventListener('click', function() {
-                if (_deleteFormPending) {
-                    _deleteFormPending.setAttribute('data-confirmed', 'true');
-                    _deleteFormPending.submit();
-                }
-            });
+        document.getElementById('ts-modal-confirm')?.addEventListener('click', () => {
+            if (_pendingForm) {
+                _pendingForm.setAttribute('data-confirmed', 'true');
+                _pendingForm.submit();
+            }
         });
 
-        // --- VALIDACIÓN DE FORMULARIOS ---
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('form').forEach(form => {
-                // Ignorar formulario de logout
-                if(form.action && form.action.includes('logout')) return;
-
-                // Interceptar formularios con data-confirm-delete
-                if (form.dataset.confirmDelete) {
-                    form.addEventListener('submit', function(e) {
-                        if (!form.getAttribute('data-confirmed')) {
-                            e.preventDefault();
-                            confirmDelete(form, form.dataset.confirmDelete);
-                        }
-                    });
-                    return;
-                }
-
-                form.setAttribute('novalidate', true);
+        // Interceptar formularios con confirmación
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form[data-confirm-delete]').forEach(form => {
                 form.addEventListener('submit', function(e) {
-                    let isValid = true;
-                    form.querySelectorAll('input, select, textarea').forEach(el => {
-                        const prevError = el.nextElementSibling;
-                        if (prevError && prevError.classList.contains('custom-error-msg')) prevError.remove();
-                        el.classList.remove('border-red-500');
-
-                        if (!el.checkValidity()) {
-                            isValid = false;
-                            el.classList.add('border-red-500');
-                            const errorMsg = document.createElement('p');
-                            errorMsg.className = 'custom-error-msg text-red-500 text-xs mt-1 font-semibold';
-                            let customMessage = el.validationMessage;
-                            if (el.validity.valueMissing) {
-                                customMessage = 'Obligatorio';
-                            } else if (el.type === 'email' && el.validity.typeMismatch) {
-                                customMessage = 'Introduzca una dirección de correo válida';
-                            }
-                            errorMsg.textContent = customMessage;
-                            el.parentNode.insertBefore(errorMsg, el.nextSibling);
-                        }
-                    });
-                    if (!isValid) {
+                    if (!this.getAttribute('data-confirmed')) {
                         e.preventDefault();
-                        showToast('Faltan campos por llenar o tienen formato incorrecto. Revisa los mensajes en rojo.', 'error');
+                        confirmDelete(this, this.dataset.confirmDelete);
                     }
                 });
             });
         });
 
-        // --- TIMEOUT DE INACTIVIDAD ---
-        @auth
-        (function() {
-            let time;
-            function resetTimer() {
-                clearTimeout(time);
-                time = setTimeout(() => {
-                    const logoutForm = document.querySelector('form[action="{{ route('logout') }}"]');
-                    if (logoutForm) logoutForm.submit();
-                }, 10800000); // 3 horas (en ms)
+        // ─── SIDEBAR MÓVIL TOGGLE ─────────────────────────────────────
+        function toggleMobileSidebar() {
+            const sb = document.getElementById('ts-sidebar');
+            // En móvil, el sidebar está en position: fixed, z-index alto.
+            // Si no tiene clases para móvil, las añadimos.
+            if(!sb.classList.contains('mobile-active')) {
+                sb.style.transform = 'translateX(0)';
+                sb.classList.add('mobile-active');
+            } else {
+                sb.style.transform = 'translateX(-100%)';
+                sb.classList.remove('mobile-active');
             }
-            window.onload = resetTimer;
-            ['mousemove', 'keypress', 'scroll', 'click'].forEach(e => window.addEventListener(e, resetTimer));
-        })();
-        @endauth
-        // --- RESPONSIVE TABLE: Inyectar data-label a cada celda ---
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.responsive-table').forEach(table => {
-                const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.innerText.trim());
-                table.querySelectorAll('tbody tr').forEach(row => {
-                    Array.from(row.querySelectorAll('td')).forEach((td, idx) => {
-                        if (headers[idx]) td.setAttribute('data-label', headers[idx]);
-                    });
-                });
-            });
-        });
+        }
 
-        function openElecAlertModal() {
-            const modal = document.getElementById('elec-alert-modal');
-            if(modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+        // Lógica CSS inline para móvil
+        const mediaQuery = window.matchMedia('(max-width: 1024px)');
+        function handleMobileChanges(e) {
+            const sb = document.getElementById('ts-sidebar');
+            if (e.matches) {
+                sb.style.transform = 'translateX(-100%)';
+                sb.classList.remove('hover:expanded');
+                sb.style.width = '260px'; // Forzar ancho completo al mostrarse en móvil
+            } else {
+                sb.style.transform = 'translateX(0)';
+                sb.classList.add('hover:expanded');
+                sb.style.width = ''; // Limpiar inline
             }
         }
-        function closeElecAlertModal() {
-            const modal = document.getElementById('elec-alert-modal');
-            if(modal) {
-                modal.classList.remove('flex');
-                modal.classList.add('hidden');
-            }
-        }
+        mediaQuery.addListener(handleMobileChanges);
+        handleMobileChanges(mediaQuery);
+
     </script>
 </body>
 </html>
-
-

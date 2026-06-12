@@ -1,151 +1,113 @@
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
     {{-- Buscar cliente o proveedor --}}
-    <div class="md:col-span-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 rounded-xl">
-        <label class="block text-sm font-semibold text-blue-700 dark:text-blue-300 mb-2">🔍 Buscar Cliente / Proveedor (Opcional)</label>
+    <div class="md:col-span-2 p-4 bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-500/20 rounded-2xl">
+        <label class="field-label flex items-center gap-2"><span>🔍</span> Buscar Cliente / Proveedor (Opcional)</label>
         <div class="flex gap-2">
-            <input type="text" id="cliente_busqueda" placeholder="Buscar por nombre o cédula..."
-                   class="flex-1 bg-white dark:bg-gray-700 border border-blue-300 dark:border-blue-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm">
-            <button type="button" onclick="buscarClienteCaja()" class="px-4 py-2 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 transition-all text-sm">Buscar</button>
-            <button type="button" onclick="limpiarClienteCaja()" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-300 transition-all text-sm">✕</button>
+            <input type="text" id="cliente_busqueda" placeholder="Buscar por nombre o cédula..." class="glass-input flex-1">
+            <button type="button" onclick="buscarClienteCaja()" class="btn-primary shadow-indigo-500/30 bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 border-none">Buscar</button>
+            <button type="button" onclick="limpiarClienteCaja()" class="btn-ghost px-3">✕</button>
         </div>
-        <div id="cliente_resultados" class="mt-2 hidden space-y-1 max-h-40 overflow-y-auto"></div>
-        <p class="text-xs text-blue-500 dark:text-blue-400 mt-1">Selecciona un cliente para autocompletar los campos. También puedes escribir directamente abajo.</p>
+        <div id="cliente_resultados" class="mt-2 hidden space-y-1 max-h-40 overflow-y-auto glass-card p-2 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-lg"></div>
+        <p class="text-[11px] font-medium text-indigo-500/80 dark:text-indigo-400/80 mt-2">Selecciona un cliente para autocompletar los campos. También puedes escribir directamente abajo.</p>
     </div>
 
     {{-- Empresa o Persona (uno de los dos) --}}
     <div class="md:col-span-2">
-        <p class="text-xs font-semibold text-amber-700 dark:text-amber-400 mb-2">⚠️ Rellena al menos uno: <strong>Empresa</strong> o <strong>Persona</strong>.</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-2 bg-amber-50 dark:bg-amber-900/20 inline-block px-3 py-1 rounded-full border border-amber-200 dark:border-amber-700/50">⚠️ Rellena al menos uno: <strong>Empresa</strong> o <strong>Persona</strong></p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">🏢 Empresa (Opcional)</label>
-                <input type="text" name="empresa" id="caja_empresa" value="{{ old('empresa', $movimiento->empresa ?? '') }}"
-                       placeholder="Nombre de la empresa..." class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                <label class="field-label flex items-center gap-2"><span>🏢</span> Empresa (Opcional)</label>
+                <input type="text" name="empresa" id="caja_empresa" value="{{ old('empresa', $movimiento->empresa ?? '') }}" placeholder="Nombre de la empresa..." class="glass-input">
             </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">👤 Persona (Opcional)</label>
-                <input type="text" name="persona" id="caja_persona" value="{{ old('persona', $movimiento->persona ?? '') }}"
-                       placeholder="Nombre de quien paga/recibe..." class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
-                @error('persona') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                <label class="field-label flex items-center gap-2"><span>👤</span> Persona (Opcional)</label>
+                <input type="text" name="persona" id="caja_persona" value="{{ old('persona', $movimiento->persona ?? '') }}" placeholder="Nombre de quien paga/recibe..." class="glass-input">
+                @error('persona') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
         </div>
     </div>
 
     {{-- Fecha --}}
     <div>
-        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Fecha *</label>
-        <input type="date" name="fecha" required
-               value="{{ old('fecha', isset($movimiento) ? $movimiento->fecha->format('Y-m-d') : date('Y-m-d')) }}"
-               class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
-        @error('fecha') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        <label class="field-label">Fecha *</label>
+        <input type="date" name="fecha" required value="{{ old('fecha', isset($movimiento) ? $movimiento->fecha->format('Y-m-d') : date('Y-m-d')) }}" class="glass-input">
+        @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
     </div>
 
     {{-- Tipo de Movimiento --}}
     <div>
-        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Tipo de Movimiento *</label>
+        <label class="field-label">Tipo de Movimiento *</label>
         <div class="flex gap-3 mt-1">
-            <label class="flex-1 flex items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all
-                {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso'
-                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                    : 'border-gray-200 dark:border-gray-600 hover:border-green-300' }}">
-                <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso"
-                       {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'checked' : '' }}
-                       class="accent-green-500">
-                <span class="font-bold text-green-700 dark:text-green-400">📈 Ingreso</span>
+            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+                <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
+                <span class="font-bold {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">📈 Ingreso</span>
             </label>
-            <label class="flex-1 flex items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all
-                {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso'
-                    ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                    : 'border-gray-200 dark:border-gray-600 hover:border-red-300' }}">
-                <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso"
-                       {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'checked' : '' }}
-                       class="accent-red-500">
-                <span class="font-bold text-red-700 dark:text-red-400">📉 Egreso</span>
+            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+                <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso" {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'checked' : '' }} class="accent-red-500 w-4 h-4">
+                <span class="font-bold {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'text-red-700 dark:text-red-400' : 'text-slate-600 dark:text-slate-400' }}">📉 Egreso</span>
             </label>
         </div>
-        @error('tipo_movimiento') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        @error('tipo_movimiento') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
     </div>
 
     {{-- Tipo de Pago --}}
     <div>
-        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Tipo de Pago *</label>
+        <label class="field-label">Tipo de Pago *</label>
         <div class="flex gap-3 mt-1">
-            <label class="flex-1 flex items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all
-                {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo'
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-200 dark:border-gray-600 hover:border-blue-300' }}">
-                <input type="radio" name="tipo_pago" value="efectivo" required
-                       {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'checked' : '' }}
-                       class="accent-blue-500">
-                <span class="font-bold text-blue-700 dark:text-blue-400">💵 Efectivo</span>
+            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+                <input type="radio" name="tipo_pago" value="efectivo" required {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'checked' : '' }} class="accent-blue-500 w-4 h-4">
+                <span class="font-bold {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400' }}">💵 Efectivo</span>
             </label>
-            <label class="flex-1 flex items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all
-                {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion'
-                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                    : 'border-gray-200 dark:border-gray-600 hover:border-purple-300' }}">
-                <input type="radio" name="tipo_pago" value="consignacion"
-                       {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'checked' : '' }}
-                       class="accent-purple-500">
-                <span class="font-bold text-purple-700 dark:text-purple-400">🏦 Consignación</span>
+            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'border-purple-500 bg-purple-50/50 dark:bg-purple-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+                <input type="radio" name="tipo_pago" value="consignacion" {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'checked' : '' }} class="accent-purple-500 w-4 h-4">
+                <span class="font-bold {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'text-purple-700 dark:text-purple-400' : 'text-slate-600 dark:text-slate-400' }}">🏦 Banco</span>
             </label>
         </div>
-        @error('tipo_pago') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        @error('tipo_pago') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
     </div>
 
     {{-- Monto --}}
     <div>
-        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Monto ($) *</label>
-        <input type="text" id="monto_visual" required
-               value="{{ old('monto', isset($movimiento) ? number_format($movimiento->monto, 0, ',', '.') : '') }}"
-               placeholder="0" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg font-bold">
+        <label class="field-label">Monto ($) *</label>
+        <input type="text" id="monto_visual" required value="{{ old('monto', isset($movimiento) ? number_format($movimiento->monto, 0, ',', '.') : '') }}" placeholder="0" class="glass-input text-2xl font-black text-right py-3">
         <input type="hidden" name="monto" id="monto_real" value="{{ old('monto', $movimiento->monto ?? '') }}">
-        @error('monto') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        @error('monto') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
     </div>
 
     {{-- Concepto --}}
     <div class="md:col-span-2">
-        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Concepto *</label>
+        <label class="field-label">Concepto *</label>
         <div class="flex gap-2">
-            <select name="concepto_id" id="concepto_select" class="flex-1 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+            <select name="concepto_id" id="concepto_select" class="glass-input flex-1">
                 <option value="">-- Seleccionar concepto --</option>
                 @foreach($conceptos as $c)
-                    <option value="{{ $c->id }}"
-                        {{ old('concepto_id', $movimiento->concepto_id ?? '') == $c->id ? 'selected' : '' }}>
+                    <option value="{{ $c->id }}" {{ old('concepto_id', $movimiento->concepto_id ?? '') == $c->id ? 'selected' : '' }}>
                         {{ $c->nombre }}
                     </option>
                 @endforeach
-                <option value="__nuevo__">✏️ Crear nuevo concepto...</option>
+                <option value="__nuevo__" class="font-bold text-blue-600">✏️ Crear nuevo concepto...</option>
             </select>
         </div>
         {{-- Campo oculto para nuevo concepto --}}
-        <div id="nuevo-concepto-box" class="mt-2 hidden">
+        <div id="nuevo-concepto-box" class="mt-3 hidden p-4 rounded-xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-700/30">
+            <label class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-2 block">Crear Nuevo Concepto</label>
             <div class="flex gap-2">
-                <input type="text" id="nuevo_concepto_input" name="nuevo_concepto"
-                       placeholder="Nombre del nuevo concepto..."
-                       class="flex-1 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
-                <button type="button" onclick="crearConcepto()"
-                        class="px-4 py-2 bg-green-500 text-white rounded-xl font-bold hover:bg-green-600 transition-all text-sm">
-                    Agregar
-                </button>
-                <button type="button" onclick="cancelarNuevoConcepto()"
-                        class="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-300 transition-all text-sm">
-                    ✕
-                </button>
+                <input type="text" id="nuevo_concepto_input" name="nuevo_concepto" placeholder="Nombre del nuevo concepto..." class="glass-input flex-1">
+                <button type="button" onclick="crearConcepto()" class="btn-primary shadow-blue-500/30 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 border-none">Agregar</button>
+                <button type="button" onclick="cancelarNuevoConcepto()" class="btn-ghost px-3">✕</button>
             </div>
-            <p id="concepto-status" class="text-xs mt-1 text-gray-500"></p>
+            <p id="concepto-status" class="text-xs mt-2 font-medium"></p>
         </div>
-        @error('concepto_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        @error('concepto_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
     </div>
 
     {{-- Descripción --}}
     <div class="md:col-span-2">
-        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Descripción (Opcional)</label>
-        <textarea name="descripcion" rows="2" placeholder="Detalles adicionales del movimiento..."
-                  class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">{{ old('descripcion', $movimiento->descripcion ?? '') }}</textarea>
+        <label class="field-label">Descripción (Opcional)</label>
+        <textarea name="descripcion" rows="2" placeholder="Detalles adicionales del movimiento..." class="glass-input resize-y">{{ old('descripcion', $movimiento->descripcion ?? '') }}</textarea>
     </div>
 </div>
-
-
 
 <script>
     // Mostrar/ocultar campo de nuevo concepto
@@ -174,6 +136,32 @@
                 inputReal.value = "";
             }
         });
+        
+        // Colores dinámicos al cambiar tipo
+        inputVisual.addEventListener('keyup', updateAmountColor);
+        document.querySelectorAll('input[name="tipo_movimiento"]').forEach(r => {
+            r.addEventListener('change', updateAmountColor);
+        });
+        
+        function updateAmountColor() {
+            const isIngreso = document.getElementById('tipo_ingreso').checked;
+            const isEgreso = document.getElementById('tipo_egreso').checked;
+            
+            if (inputVisual.value.trim() !== '' && inputVisual.value !== '0') {
+                if (isIngreso) {
+                    inputVisual.classList.remove('text-red-600', 'dark:text-red-400');
+                    inputVisual.classList.add('text-emerald-600', 'dark:text-emerald-400');
+                } else if (isEgreso) {
+                    inputVisual.classList.remove('text-emerald-600', 'dark:text-emerald-400');
+                    inputVisual.classList.add('text-red-600', 'dark:text-red-400');
+                }
+            } else {
+                inputVisual.classList.remove('text-emerald-600', 'dark:text-emerald-400', 'text-red-600', 'dark:text-red-400');
+            }
+        }
+        
+        // Trigger initial
+        updateAmountColor();
     }
     formatInput('monto_visual', 'monto_real');
 
@@ -199,13 +187,13 @@
         );
 
         if (encontrados.length === 0) {
-            resultadosDiv.innerHTML = '<p class="text-xs text-gray-500 py-2">Sin resultados.</p>';
+            resultadosDiv.innerHTML = '<p class="text-xs font-semibold text-gray-500 py-2 text-center">No se encontraron resultados.</p>';
         } else {
             encontrados.forEach(c => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = 'w-full text-left px-3 py-2 text-sm bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 border border-gray-200 dark:border-gray-600 rounded-lg transition-colors';
-                btn.innerHTML = `<span class="font-bold text-gray-800 dark:text-white">${c.nombre}</span> <span class="text-xs text-gray-500">| ${c.identificacion || ''} | ${c.movil || ''}</span>`;
+                btn.className = 'w-full text-left px-3 py-2 text-sm bg-transparent hover:bg-indigo-50/50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors border-b border-gray-100 dark:border-white/5 last:border-0';
+                btn.innerHTML = `<div class="font-bold text-slate-800 dark:text-white">${c.nombre}</div> <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">${c.identificacion || 'N/A'} • ${c.movil || 'N/A'}</div>`;
                 btn.onclick = () => seleccionarClienteCaja(c);
                 resultadosDiv.appendChild(btn);
             });
@@ -242,8 +230,8 @@
         const nombre = input.value.trim();
         if (!nombre) return;
 
-        status.textContent = 'Creando...';
-        status.className = 'text-xs mt-1 text-gray-500';
+        status.textContent = 'Creando concepto...';
+        status.className = 'text-xs mt-2 font-bold text-blue-500 animate-pulse';
 
         try {
             const res = await fetch('{{ route('caja.concepto.store') }}', {
@@ -258,7 +246,7 @@
             if (!res.ok) {
                 const err = await res.json();
                 status.textContent = err.message || 'Error al crear concepto.';
-                status.className = 'text-xs mt-1 text-red-500';
+                status.className = 'text-xs mt-2 font-bold text-red-500';
                 return;
             }
 
@@ -275,14 +263,19 @@
             input.value = '';
 
             cancelarNuevoConcepto();
-            status.textContent = `✅ Concepto "${data.nombre}" creado y seleccionado.`;
-            status.className = 'text-xs mt-1 text-green-600';
-            setTimeout(() => { status.textContent = ''; }, 3000);
+            
+            // Mostrar toast de éxito global si existe
+            if(typeof showToast === 'function') {
+                showToast(`Concepto "${data.nombre}" creado exitosamente`, 'success');
+            } else {
+                status.textContent = `✅ Concepto "${data.nombre}" creado y seleccionado.`;
+                status.className = 'text-xs mt-2 font-bold text-emerald-500';
+                setTimeout(() => { status.textContent = ''; }, 3000);
+            }
 
         } catch (e) {
-            status.textContent = 'Error de conexión.';
-            status.className = 'text-xs mt-1 text-red-500';
+            status.textContent = 'Error de conexión. Inténtalo de nuevo.';
+            status.className = 'text-xs mt-2 font-bold text-red-500';
         }
     }
 </script>
-

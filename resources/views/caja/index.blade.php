@@ -1,84 +1,102 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- Modal de contraseña para eliminar --}}
-<div id="pwd-modal" class="fixed inset-0 z-[300] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-    <div class="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border border-red-300/40 dark:border-red-700/50 rounded-2xl shadow-2xl p-6 max-w-sm w-full">
-        <div class="text-center mb-4">
-            <div class="text-5xl mb-2">🔒</div>
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Confirmar eliminación</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa tu contraseña o la del administrador para continuar.</p>
+{{-- Modal de contraseña para eliminar (Liquid Glass) --}}
+<div id="pwd-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+    <div class="ts-modal-card scale-95 opacity-0" id="pwd-modal-card">
+        <div class="p-6">
+            <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
+                🔒
+            </div>
+            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Eliminación</h3>
+            <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+                Ingresa tu contraseña de administrador para continuar. Esta acción borrará el registro de la base de datos.
+            </p>
+            <form id="delete-pwd-form" method="POST" class="space-y-4">
+                @csrf @method('DELETE')
+                <div>
+                    <input type="password" name="password_confirm" id="pwd-input" required placeholder="Contraseña..." class="glass-input text-center tracking-widest text-lg">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closePwdModal()" class="flex-1 btn-ghost justify-center">Cancelar</button>
+                    <button type="submit" class="flex-1 btn-danger justify-center font-bold">Eliminar</button>
+                </div>
+            </form>
         </div>
-        <form id="delete-pwd-form" method="POST" class="space-y-4">
-            @csrf @method('DELETE')
-            <div>
-                <input type="password" name="password_confirm" id="pwd-input" required placeholder="Contraseña..."
-                       class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-red-500 transition-all">
-            </div>
-            <div class="flex gap-3">
-                <button type="button" onclick="closePwdModal()" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-semibold hover:bg-gray-300 transition-all">Cancelar</button>
-                <button type="submit" class="flex-1 px-4 py-2 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-all shadow-lg shadow-red-500/30">Eliminar</button>
-            </div>
-        </form>
     </div>
 </div>
 
-{{-- Modal de contraseña para anular --}}
-<div id="pwd-anular-modal" class="fixed inset-0 z-[300] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-    <div class="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border border-orange-300/40 dark:border-orange-700/50 rounded-2xl shadow-2xl p-6 max-w-sm w-full">
-        <div class="text-center mb-4">
-            <div class="text-5xl mb-2">🚫</div>
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Confirmar anulación</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa tu contraseña para anular este registro.</p>
+{{-- Modal de contraseña para anular (Liquid Glass) --}}
+<div id="pwd-anular-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+    <div class="ts-modal-card scale-95 opacity-0" id="pwd-anular-card">
+        <div class="p-6">
+            <div class="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4">
+                🚫
+            </div>
+            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Anulación</h3>
+            <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+                Ingresa tu contraseña para anular este registro. Se mantendrá el historial pero no afectará saldos.
+            </p>
+            <form id="anular-pwd-form" method="POST" class="space-y-4">
+                @csrf
+                <div>
+                    <input type="password" name="password_confirm" id="pwd-anular-input" required placeholder="Contraseña..." class="glass-input text-center tracking-widest text-lg focus:ring-orange-500">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeAnularModal()" class="flex-1 btn-ghost justify-center">Cancelar</button>
+                    <button type="submit" class="flex-1 text-center justify-center font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 py-2.5 rounded-xl shadow-[0_4px_14px_rgba(249,115,22,0.4)] transition-all">Anular</button>
+                </div>
+            </form>
         </div>
-        <form id="anular-pwd-form" method="POST" class="space-y-4">
-            @csrf
-            <div>
-                <input type="password" name="password_confirm" id="pwd-anular-input" required placeholder="Contraseña..."
-                       class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 transition-all">
-            </div>
-            <div class="flex gap-3">
-                <button type="button" onclick="closeAnularModal()" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-semibold hover:bg-gray-300 transition-all">Cancelar</button>
-                <button type="submit" class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-xl font-semibold hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/30">Anular</button>
-            </div>
-        </form>
     </div>
 </div>
 
-<div class="space-y-4">
-    {{-- Tarjetas de totales --}}
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-        <div class="col-span-2 md:col-span-1 bg-green-500/10 border border-green-500/30 rounded-2xl p-4 text-center">
-            <p class="text-xs font-semibold text-green-700 dark:text-green-400 mb-1">📈 Ingresos</p>
-            <p class="text-xl font-black text-green-700 dark:text-green-300">${{ number_format($totales['ingresos'], 0, ',', '.') }}</p>
+<div class="space-y-6">
+    {{-- Tarjetas de totales Glassmorphism --}}
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group">
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
+            <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5"><span class="text-lg">📈</span> Ingresos</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['ingresos'], 0, ',', '.') }}</p>
         </div>
-        <div class="col-span-2 md:col-span-1 bg-red-500/10 border border-red-500/30 rounded-2xl p-4 text-center">
-            <p class="text-xs font-semibold text-red-700 dark:text-red-400 mb-1">📉 Egresos</p>
-            <p class="text-xl font-black text-red-700 dark:text-red-300">${{ number_format($totales['egresos'], 0, ',', '.') }}</p>
+        
+        <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group">
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-500/20 rounded-full blur-2xl group-hover:bg-red-500/30 transition-all"></div>
+            <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5"><span class="text-lg">📉</span> Egresos</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['egresos'], 0, ',', '.') }}</p>
         </div>
-        <div class="col-span-2 md:col-span-1 bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4 text-center">
-            <p class="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-1">💵 Efectivo</p>
-            <p class="text-xl font-black text-blue-700 dark:text-blue-300">${{ number_format($totales['efectivo'], 0, ',', '.') }}</p>
+        
+        <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group">
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
+            <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5"><span class="text-lg">💵</span> Efectivo</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['efectivo'], 0, ',', '.') }}</p>
         </div>
-        <div class="col-span-2 md:col-span-1 bg-purple-500/10 border border-purple-500/30 rounded-2xl p-4 text-center">
-            <p class="text-xs font-semibold text-purple-700 dark:text-purple-400 mb-1">🏦 Consignación</p>
-            <p class="text-xl font-black text-purple-700 dark:text-purple-300">${{ number_format($totales['consignacion'], 0, ',', '.') }}</p>
+        
+        <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group">
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/30 transition-all"></div>
+            <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5"><span class="text-lg">🏦</span> Banco/Consig.</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['consignacion'], 0, ',', '.') }}</p>
         </div>
-        <div class="col-span-2 md:col-span-1 rounded-2xl p-4 text-center {{ $totales['saldo'] >= 0 ? 'bg-teal-500/10 border border-teal-500/30' : 'bg-orange-500/10 border border-orange-500/30' }}">
-            <p class="text-xs font-semibold {{ $totales['saldo'] >= 0 ? 'text-teal-700 dark:text-teal-400' : 'text-orange-700 dark:text-orange-400' }} mb-1">⚖️ Saldo</p>
-            <p class="text-xl font-black {{ $totales['saldo'] >= 0 ? 'text-teal-700 dark:text-teal-300' : 'text-orange-700 dark:text-orange-300' }}">${{ number_format($totales['saldo'], 0, ',', '.') }}</p>
+        
+        <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group border-2 {{ $totales['saldo'] >= 0 ? 'border-teal-500/40 bg-teal-500/5 dark:bg-teal-900/10' : 'border-orange-500/40 bg-orange-500/5 dark:bg-orange-900/10' }} col-span-2 lg:col-span-1">
+            <div class="absolute -right-6 -top-6 w-32 h-32 {{ $totales['saldo'] >= 0 ? 'bg-teal-500/30' : 'bg-orange-500/30' }} rounded-full blur-3xl group-hover:scale-110 transition-all"></div>
+            <p class="text-xs font-bold {{ $totales['saldo'] >= 0 ? 'text-teal-700 dark:text-teal-400' : 'text-orange-700 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5"><span class="text-lg">⚖️</span> Saldo General</p>
+            <p class="text-3xl font-black {{ $totales['saldo'] >= 0 ? 'text-teal-700 dark:text-teal-400' : 'text-orange-700 dark:text-orange-400' }} z-10">${{ number_format($totales['saldo'], 0, ',', '.') }}</p>
         </div>
     </div>
 
     {{-- Panel principal --}}
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
-        <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-            <h2 class="text-2xl font-bold">💰 Movimientos de Caja</h2>
+    <div class="glass-card p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+            <div>
+                <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
+                    <span class="text-3xl">💰</span> Movimientos de Caja
+                </h2>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Gestión de ingresos, egresos y flujo de efectivo</p>
+            </div>
             <div class="flex flex-wrap items-center gap-2">
                 @if(!auth()->user()->isInvitado())
-                    <a href="{{ route('caja.create') }}" class="inline-flex items-center gap-2 bg-green-500/20 text-green-700 dark:text-green-300 border border-green-500/30 hover:bg-green-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all">
+                    <a href="{{ route('caja.create') }}" class="btn-primary shadow-emerald-500/30 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-none text-base px-5">
                         ➕ Nuevo Movimiento
                     </a>
                 @endif
@@ -86,119 +104,99 @@
         </div>
 
         {{-- Filtros --}}
-        <form action="{{ route('caja.index') }}" method="GET" class="flex flex-wrap gap-2 mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="🔍 Persona o empresa..." class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 w-40">
-            <select name="tipo_movimiento" class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-1.5 text-sm focus:outline-none">
+        <form action="{{ route('caja.index') }}" method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-4 bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm">
+            <div class="relative">
+                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Persona o empresa..." class="glass-input pl-9 w-40 sm:w-48 text-sm">
+            </div>
+            <select name="tipo_movimiento" class="glass-input w-auto text-sm font-semibold">
                 <option value="">Todos los tipos</option>
                 <option value="ingreso" {{ request('tipo_movimiento') === 'ingreso' ? 'selected' : '' }}>📈 Ingreso</option>
                 <option value="egreso"  {{ request('tipo_movimiento') === 'egreso'  ? 'selected' : '' }}>📉 Egreso</option>
             </select>
-            <select name="tipo_pago" class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-1.5 text-sm focus:outline-none">
+            <select name="tipo_pago" class="glass-input w-auto text-sm font-semibold">
                 <option value="">Todos los pagos</option>
                 <option value="efectivo"     {{ request('tipo_pago') === 'efectivo'     ? 'selected' : '' }}>💵 Efectivo</option>
                 <option value="consignacion" {{ request('tipo_pago') === 'consignacion' ? 'selected' : '' }}>🏦 Consignación</option>
             </select>
-            <input type="date" name="fecha_desde" value="{{ request('fecha_desde') }}" class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-1.5 text-sm focus:outline-none">
-            <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta') }}" class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-1.5 text-sm focus:outline-none">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-1.5 rounded-xl text-sm font-semibold hover:bg-blue-600 transition-all">Filtrar</button>
+            <div class="flex items-center gap-2">
+                <input type="date" name="fecha_desde" value="{{ request('fecha_desde') }}" class="glass-input w-auto text-sm">
+                <span class="text-gray-400 text-sm">a</span>
+                <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta') }}" class="glass-input w-auto text-sm">
+            </div>
+            <button type="submit" class="btn-primary py-2 px-4 shadow-blue-500/20 text-sm">Filtrar</button>
             @if(request()->anyFilled(['search','tipo_movimiento','tipo_pago','fecha_desde','fecha_hasta']))
-                <a href="{{ route('caja.index') }}" class="bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-1.5 rounded-xl text-sm font-semibold hover:bg-gray-300 transition-all">✕ Limpiar</a>
+                <a href="{{ route('caja.index') }}" class="btn-ghost text-sm">Limpiar</a>
             @endif
         </form>
 
         {{-- Tabla adaptable --}}
-        <div class="w-full">
-            <table class="w-full text-left border-collapse block md:table responsive-table">
-                <thead class="hidden md:table-header-group">
-                    <tr class="bg-gray-200 dark:bg-gray-700 text-center">
-                        <th class="p-3 border border-gray-300 dark:border-gray-500">Fecha</th>
-                        <th class="p-3 border border-gray-300 dark:border-gray-500">Persona / Empresa</th>
-                        <th class="p-3 border border-gray-300 dark:border-gray-500">Concepto</th>
-                        <th class="p-3 border border-gray-300 dark:border-gray-500">Tipo</th>
-                        <th class="p-3 border border-gray-300 dark:border-gray-500">Pago</th>
-                        <th class="p-3 border border-gray-300 dark:border-gray-500">Monto</th>
-                        <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
+        <div class="overflow-x-auto rounded-2xl border border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-md">
+            <table class="ts-table responsive-table w-full">
+                <thead>
+                    <tr>
+                        <th class="text-center">Fecha</th>
+                        <th>Persona / Empresa</th>
+                        <th>Concepto</th>
+                        <th class="text-center">Tipo</th>
+                        <th class="text-center">Pago</th>
+                        <th class="text-right">Monto</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="block md:table-row-group">
+                <tbody>
                     @forelse($movimientos as $m)
-                    <tr class="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500 md:border-none rounded-xl md:rounded-none mb-4 md:mb-0">
-                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            
-                            <span class="text-sm">{{ $m->fecha->format('d/m/Y') }}</span>
+                    <tr class="{{ $m->estado === 'anulado' ? 'row-anulado' : '' }}">
+                        <td data-label="Fecha:" class="text-center font-medium">{{ $m->fecha->format('d/m/Y') }}</td>
+                        <td data-label="Entidad:" class="font-bold text-slate-800 dark:text-white leading-tight">
+                            {{ $m->persona }}
+                            @if($m->empresa) <div class="text-xs text-gray-500 font-semibold mt-0.5">{{ $m->empresa }}</div> @endif
                         </td>
-                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500">
-                            
-                            <span>
-                                <span class="font-semibold">{{ $m->persona }}</span>
-                                @if($m->empresa) <br><span class="text-xs text-gray-500">{{ $m->empresa }}</span> @endif
-                            </span>
+                        <td data-label="Concepto:" class="font-medium">
+                            {{ $m->concepto->nombre }}
                         </td>
-                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            
-                            <span class="text-sm">{{ $m->concepto->nombre }}</span>
-                        </td>
-                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            
+                        <td data-label="Tipo:" class="text-center">
                             @if($m->estado === 'anulado')
-                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400 border border-red-500/30 font-bold shadow-sm" title="Anulado">
-                                    🚫
-                                </span>
+                                <span class="pill pill-anulado" title="Anulado">🚫 Anulado</span>
                             @else
-                                <span class="inline-flex px-2 py-0.5 rounded-lg text-xs font-bold {{ $m->tipo_movimiento === 'ingreso' ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300' }}">
+                                <span class="pill {{ $m->tipo_movimiento === 'ingreso' ? 'pill-done' : 'pill-egreso' }}">
                                     {{ $m->tipo_movimiento === 'ingreso' ? '📈 Ingreso' : '📉 Egreso' }}
                                 </span>
                             @endif
                         </td>
-                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            
-                            <span class="inline-flex px-2 py-0.5 rounded-lg text-xs font-bold {{ $m->tipo_pago === 'efectivo' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' : 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300' }}">
-                                {{ $m->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Consignación' }}
+                        <td data-label="Pago:" class="text-center">
+                            <span class="pill {{ $m->tipo_pago === 'efectivo' ? 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-opacity-20' : 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-opacity-20' }}">
+                                {{ $m->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Banco' }}
                             </span>
                         </td>
-                        <td class="p-3 border-b border-gray-100 dark:border-gray-700 md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            
-                            <span class="font-black text-lg {{ $m->tipo_movimiento === 'ingreso' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-                                {{ $m->tipo_movimiento === 'ingreso' ? '+' : '-' }}${{ number_format($m->monto, 0, ',', '.') }}
-                            </span>
+                        <td data-label="Monto:" class="text-right font-black text-lg {{ $m->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
+                            {{ $m->tipo_movimiento === 'ingreso' ? '+' : '-' }}${{ number_format($m->monto, 0, ',', '.') }}
                         </td>
-                        <td class="p-3 block md:table-cell bg-gray-50 dark:bg-gray-800/50 md:bg-transparent md:border md:border-gray-300 md:dark:border-gray-500 md:text-center">
-                            <div class="flex justify-end md:justify-center gap-2 flex-wrap">
-                                <a href="{{ route('caja.print', $m->id) }}" target="_blank"
-                                   class="inline-flex items-center gap-1 bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm">
-                                    🖨️
-                                </a>
+                        <td data-label="Acciones:" class="text-center">
+                            <div class="flex justify-end md:justify-center gap-2">
+                                <a href="{{ route('caja.print', $m->id) }}" target="_blank" class="btn-ghost px-3 py-1.5 text-xs" title="Imprimir">🖨️</a>
                                 @if(!auth()->user()->isInvitado())
-                                    <a href="{{ route('caja.edit', $m->id) }}"
-                                       class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm">
-                                        ✏️
-                                    </a>
+                                    <a href="{{ route('caja.edit', $m->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Editar">✏️</a>
 
                                     @if($m->estado !== 'anulado')
-                                        <button type="button"
-                                                onclick="openAnularModal('{{ route('caja.anular', $m->id) }}')"
-                                                class="inline-flex items-center gap-1 bg-orange-500/20 text-orange-700 dark:text-orange-400 border border-orange-500/30 hover:bg-orange-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm" title="Anular movimiento">
-                                            🚫
-                                        </button>
+                                        <button type="button" onclick="openAnularModal('{{ route('caja.anular', $m->id) }}')" class="btn-ghost px-3 py-1.5 text-xs text-orange-600 border-orange-500/20 hover:bg-orange-500/10" title="Anular movimiento">🚫</button>
                                     @endif
-                                    <button type="button"
-                                            onclick="openPwdModal('{{ route('caja.destroy', $m->id) }}')"
-                                            class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm">
-                                        🗑️
-                                    </button>
+                                    <button type="button" onclick="openPwdModal('{{ route('caja.destroy', $m->id) }}')" class="btn-danger px-3 py-1.5 text-xs" title="Eliminar definitivamente">🗑️</button>
                                 @endif
                             </div>
                         </td>
                     </tr>
                     @empty
-                    <tr class="block md:table-row">
-                        <td colspan="7" class="p-12 text-center block md:table-cell">
-                            <div class="flex flex-col items-center justify-center space-y-4">
-                                <div class="text-6xl">💰</div>
-                                <h3 class="text-xl font-bold text-gray-700 dark:text-gray-300">Sin movimientos registrados</h3>
-                                <p class="text-gray-500 dark:text-gray-400 max-w-xs mx-auto">Registra el primer ingreso o egreso de caja.</p>
+                    <tr>
+                        <td colspan="7" class="p-16 text-center">
+                            <div class="flex flex-col items-center justify-center gap-3">
+                                <div class="text-6xl drop-shadow-md mb-2">💰</div>
+                                <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin movimientos registrados</h3>
+                                <p class="text-gray-500 font-medium max-w-sm mb-4">Registra el primer ingreso o egreso de caja para comenzar el control de flujo.</p>
                                 @if(!auth()->user()->isInvitado())
-                                    <a href="{{ route('caja.create') }}" class="inline-flex items-center gap-2 bg-green-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-green-600 transition-all shadow-lg shadow-green-500/30">➕ Nuevo Movimiento</a>
+                                    <a href="{{ route('caja.create') }}" class="btn-primary bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-none shadow-emerald-500/30">
+                                        ➕ Nuevo Movimiento
+                                    </a>
                                 @endif
                             </div>
                         </td>
@@ -208,37 +206,53 @@
             </table>
         </div>
 
-        <div class="mt-4">{{ $movimientos->appends(request()->query())->links() }}</div>
+        <div class="mt-6 flex justify-end">
+            {{ $movimientos->appends(request()->query())->links() }}
+        </div>
     </div>
 </div>
 
 <script>
     function openPwdModal(actionUrl) {
         const modal = document.getElementById('pwd-modal');
+        const card = document.getElementById('pwd-modal-card');
         document.getElementById('delete-pwd-form').action = actionUrl;
         document.getElementById('pwd-input').value = '';
         modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        setTimeout(() => document.getElementById('pwd-input').focus(), 100);
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            card.classList.remove('scale-95', 'opacity-0');
+            document.getElementById('pwd-input').focus();
+        }, 10);
     }
+    
     function closePwdModal() {
         const modal = document.getElementById('pwd-modal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+        const card = document.getElementById('pwd-modal-card');
+        modal.classList.add('opacity-0');
+        card.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 300);
     }
 
     function openAnularModal(actionUrl) {
         const modal = document.getElementById('pwd-anular-modal');
+        const card = document.getElementById('pwd-anular-card');
         document.getElementById('anular-pwd-form').action = actionUrl;
         document.getElementById('pwd-anular-input').value = '';
         modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        setTimeout(() => document.getElementById('pwd-anular-input').focus(), 100);
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            card.classList.remove('scale-95', 'opacity-0');
+            document.getElementById('pwd-anular-input').focus();
+        }, 10);
     }
+    
     function closeAnularModal() {
         const modal = document.getElementById('pwd-anular-modal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+        const card = document.getElementById('pwd-anular-card');
+        modal.classList.add('opacity-0');
+        card.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 300);
     }
 
     document.addEventListener('keydown', e => { 
@@ -249,8 +263,3 @@
     });
 </script>
 @endsection
-
-
-
-
-
