@@ -80,6 +80,7 @@
                         <div class="flex justify-end md:justify-center gap-2 flex-wrap">
                             @if(!auth()->user()->isInvitado())
                                 <a href="{{ route('electronicas.edit', $e->id) }}" class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm">✏️ Editar</a>
+                                <a href="{{ route('electronicas.factura', $e->id) }}" target="_blank" class="inline-flex items-center gap-1 bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 rounded-xl px-3 py-1 font-semibold transition-all text-sm">🖨️ Factura</a>
                                 @if(auth()->user()->isAdmin())
                                     <form action="{{ route('electronicas.destroy', $e->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar el registro {{ $e->id_orden }}?">
                                         @csrf @method('DELETE')

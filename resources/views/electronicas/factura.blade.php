@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Factura POS — {{ $mantenimiento->id_orden }}</title>
+    <title>Factura POS — {{ $electronica->id_orden }}</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -183,7 +183,7 @@
             transform: translate(-50%, -50%) rotate(-45deg);
             font-size: 5rem;
             font-weight: 900;
-            color: rgba(239, 68, 68, 0.15); /* text-red-500 muy transparente */
+            color: rgba(239, 68, 68, 0.15);
             z-index: 1000;
             pointer-events: none;
             white-space: nowrap;
@@ -196,10 +196,10 @@
     </style>
 </head>
 <body>
-    <div class="ticket watermark-container {{ $mantenimiento->estado === 'anulado' ? 'anulado' : '' }}">
+    <div class="ticket watermark-container {{ $electronica->estado === 'anulado' ? 'anulado' : '' }}">
         <header class="brand">
             <p class="brand-name">Taller De Soporte</p>
-            <p class="brand-tag">Servicio Tecnico Especializado</p>
+            <p class="brand-tag">Servicio Técnico Especializado</p>
             <div class="brand-meta">
                 <p>NIT: 900.123.456-7</p>
                 <p>Tel: +57 300 000 0000</p>
@@ -208,8 +208,8 @@
         </header>
 
         <div class="ticket-order-bar">
-            <span class="lbl">TICKET Nº</span>
-            <span class="ord">{{ $mantenimiento->id_orden }}</span>
+            <span class="lbl">ORDEN Nº</span>
+            <span class="ord">{{ $electronica->id_orden }}</span>
         </div>
 
         <table class="meta-table">
@@ -219,15 +219,15 @@
             </tr>
             <tr>
                 <td>Estado</td>
-                <td style="text-transform: uppercase; font-weight: 700;">{{ $mantenimiento->estado }}</td>
+                <td style="text-transform: uppercase; font-weight: 700;">{{ $electronica->estado }}</td>
             </tr>
             <tr>
                 <td>Ingreso</td>
-                <td>{{ $mantenimiento->fecha_entrada ? \Carbon\Carbon::parse($mantenimiento->fecha_entrada)->format('d/m/Y') : '—' }}</td>
+                <td>{{ $electronica->fecha_entrada ? \Carbon\Carbon::parse($electronica->fecha_entrada)->format('d/m/Y') : '—' }}</td>
             </tr>
             <tr>
                 <td>Salida</td>
-                <td>{{ $mantenimiento->fecha_salida ? \Carbon\Carbon::parse($mantenimiento->fecha_salida)->format('d/m/Y') : '—' }}</td>
+                <td>{{ $electronica->fecha_salida ? \Carbon\Carbon::parse($electronica->fecha_salida)->format('d/m/Y') : '—' }}</td>
             </tr>
         </table>
 
@@ -235,95 +235,47 @@
         <table class="meta-table">
             <tr>
                 <td>Cliente</td>
-                <td>{{ $mantenimiento->equipo->cliente->nombre ?? 'N/A' }}</td>
+                <td>{{ $electronica->cliente ?? 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Técnico</td>
-                <td>{{ $mantenimiento->tecnico->nombre ?? 'N/A' }}</td>
+                <td>{{ $electronica->tecnico->nombre ?? 'N/A' }}</td>
             </tr>
         </table>
 
         <p class="section-title">Detalle del servicio</p>
         <div class="detail-box">
-            <p><span class="k">Equipo:</span> {{ $mantenimiento->equipo->nombre ?? 'N/A' }}</p>
-            <p><span class="k">Marca / modelo:</span> {{ trim(($mantenimiento->equipo->marca ?? '') . ' ' . ($mantenimiento->equipo->modelo ?? '')) ?: '—' }}</p>
-            <p><span class="k">Serie (S/N):</span> {{ $mantenimiento->equipo->serie ?? 'N/A' }}</p>
+            <p><span class="k">Dispositivo:</span> {{ $electronica->dispositivo ?? 'N/A' }}</p>
+            <p><span class="k">Marca / modelo:</span> {{ trim($electronica->marca ?? '—') }}</p>
             <p style="margin-top: 6px; padding-top: 6px; border-top: 1px dotted #999; white-space: nowrap;">
-                <span class="k">Servicio:</span> {{ strtoupper($mantenimiento->tipo) }} — {{ strtoupper($mantenimiento->reparacion) }}
+                <span class="k">Servicio:</span> {{ strtoupper($electronica->tipo) }}
             </p>
         </div>
 
         <div class="obs-wrap">
-            <p class="obs-title">Observaciones</p>
-            <p class="obs-text">{{ \Illuminate\Support\Str::upper($mantenimiento->descripcion ?: 'Sin observaciones adicionales.') }}</p>
+            <p class="obs-title">Descripción Problema</p>
+            <p class="obs-text">{{ \Illuminate\Support\Str::upper($electronica->descripcion_problema ?: 'Sin descripción.') }}</p>
         </div>
-
-        @if($mantenimiento->stocks->count() > 0)
-        <p class="section-title">Repuestos / Insumos</p>
-        <table style="width:100%; font-size:7.5pt; margin-bottom:10px; border-collapse: collapse;">
-            <tr style="border-bottom: 1px dashed #666; font-weight: bold;">
-                <td style="padding-bottom:3px; width:15%;">Cant</td>
-                <td style="padding-bottom:3px;">Artículo</td>
-                <td style="text-align:right; padding-bottom:3px; width:30%;">Total</td>
-            </tr>
-            @foreach($mantenimiento->stocks as $stock)
-            <tr>
-                <td style="padding: 3px 0;">{{ $stock->pivot->cantidad }}</td>
-                <td style="padding: 3px 0;">{{ $stock->producto }}</td>
-                <td style="text-align:right; padding: 3px 0;">${{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
-            </tr>
-            @endforeach
-        </table>
-        @endif
-
-        @if($mantenimiento->abonos->count() > 0)
-        <p class="section-title">Abonos Recibidos</p>
-        <table style="width:100%; font-size:7.5pt; margin-bottom:10px; border-collapse: collapse;">
-            <tr style="border-bottom: 1px dashed #666; font-weight: bold;">
-                <td style="padding-bottom:3px; width:30%;">Fecha</td>
-                <td style="padding-bottom:3px;">Método</td>
-                <td style="text-align:right; padding-bottom:3px; width:30%;">Monto</td>
-            </tr>
-            @foreach($mantenimiento->abonos->sortBy('fecha') as $abono)
-            <tr>
-                <td style="padding: 3px 0;">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/y') }}</td>
-                <td style="padding: 3px 0;">{{ ucfirst($abono->tipo_pago) }}</td>
-                <td style="text-align:right; padding: 3px 0;">${{ number_format($abono->monto, 0, ',', '.') }}</td>
-            </tr>
-            @endforeach
-        </table>
-        @endif
 
         <div class="total-wrap">
             <table>
                 <tr>
-                    <td>TOTAL SERVICIO</td>
-                    <td>${{ number_format($mantenimiento->costo, 0, ',', '.') }}</td>
+                    <td>TOTAL A PAGAR</td>
+                    <td>${{ number_format($electronica->costo, 0, ',', '.') }}</td>
                 </tr>
-                @if($mantenimiento->abonos->count() > 0)
-                <tr>
-                    <td style="font-size: 8.5pt; font-weight:600; padding-top:6px; color:#555;">TOTAL ABONADO</td>
-                    <td style="font-size: 9pt; font-weight:600; padding-top:6px; color:#555;">- ${{ number_format($mantenimiento->total_abonado, 0, ',', '.') }}</td>
-                </tr>
-                <tr>
-                    <td style="padding-top:6px; font-size:11pt;">SALDO PENDIENTE</td>
-                    <td style="padding-top:6px; font-size:12pt; {{ $mantenimiento->saldo_pendiente == 0 ? 'color:green;' : 'color:#c00;' }}">${{ number_format($mantenimiento->saldo_pendiente, 0, ',', '.') }}</td>
-                </tr>
-                @endif
             </table>
         </div>
 
         <div class="code-block">
             <div class="code-bars">||||||||||||||||||||||</div>
-            <p class="code-id">{{ $mantenimiento->id_orden }}</p>
+            <p class="code-id">{{ $electronica->id_orden }}</p>
         </div>
 
         <footer class="footer">
-            <p>Registrado por: <strong>{{ $mantenimiento->user->name ?? 'Sistema' }}</strong></p>
+            <p>Registrado por: <strong>{{ $electronica->user->name ?? 'Sistema' }}</strong></p>
             <p class="thanks">Gracias por preferirnos</p>
             <p>Conserve este comprobante para garantías o reclamos (válido según políticas del taller).</p>
         </footer>
     </div>
 </body>
 </html>
-

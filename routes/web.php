@@ -46,6 +46,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
 
     // Rutas de Reportes
     Route::get('/mantenimientos-reportes', [MantenimientoController::class, 'reportes'])->name('mantenimientos.reportes');
+    Route::get('/electronicas-reportes', [App\Http\Controllers\ElectronicaController::class, 'reportes'])->name('electronicas.reportes');
     Route::get('/reportes', [App\Http\Controllers\ReporteController::class, 'index'])->name('reportes.index');
     
     Route::get('/mantenimientos/{mantenimiento}/factura', [MantenimientoController::class, 'factura'])->name('mantenimientos.factura');
@@ -56,6 +57,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('tecnicos', TecnicoController::class);
     Route::resource('stocks', App\Http\Controllers\StockController::class);
     Route::resource('electronicas', App\Http\Controllers\ElectronicaController::class);
+    Route::get('electronicas/{electronica}/factura', [App\Http\Controllers\ElectronicaController::class, 'factura'])->name('electronicas.factura');
     Route::resource('mantenimientos', MantenimientoController::class);
 
     Route::resource('caja', App\Http\Controllers\MovimientoCajaController::class)->except(['show']);

@@ -100,17 +100,19 @@
             </div>
         </div>
 
-        <!-- Slide 4: Ranking de Técnicos -->
+        <!-- Slide 4: Estadísticas Electrónica -->
         <div class="w-1/4 p-6 flex flex-col bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900" style="height: 420px;">
-            <div class="flex justify-between items-center mb-6 px-4">
+            <div class="flex justify-between items-center mb-2 px-4">
                 <div>
-                    <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Top Técnicos</h4>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Técnicos con mayor cantidad de equipos terminados</p>
+                    <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">⚡ Electrónica</h4>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Estado actual de órdenes de electrónica</p>
                 </div>
-                <span class="text-xs font-bold px-3 py-1.5 bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 rounded-full shadow-sm">Global</span>
+                <a href="{{ route('electronicas.index') }}" class="text-xs font-bold px-3 py-1.5 bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 rounded-full shadow-sm hover:bg-purple-200 dark:hover:bg-purple-800/50 transition-colors">Ver todo</a>
             </div>
-            <div class="w-full flex-grow relative px-2 pb-6">
-                <canvas id="topTechChart"></canvas>
+            <div class="w-full flex-grow relative flex justify-center items-center pb-8">
+                <div style="height: 250px; width: 250px; position: relative;">
+                    <canvas id="elecSlideDonut"></canvas>
+                </div>
             </div>
         </div>
 
@@ -138,93 +140,211 @@
 </div>
 
 <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-gray-200 dark:border-gray-600 rounded-2xl p-6">
-    <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Mantenimientos Recientes</h3>
-    <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="bg-gray-200 dark:bg-gray-700 text-xs uppercase">
-                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Orden</th>
-                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Equipo</th>
-                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Costo</th>
-                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Estado</th>
-                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Entrada</th>
-                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Días</th>
-                    <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Salida</th>
-                </tr>
-            </thead>
-            <tbody class="text-sm">
-                @forelse($recentMant ?? [] as $m)
-                @php
-                    $fechaEntrada = \Carbon\Carbon::parse($m->fecha_entrada)->startOfDay();
-                    $fechaFin = $m->fecha_salida 
-                        ? \Carbon\Carbon::parse($m->fecha_salida)->startOfDay() 
-                        : \Carbon\Carbon::now()->startOfDay();
-                    $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
-                @endphp
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                    <td class="p-3 text-center font-bold whitespace-nowrap border border-gray-300 dark:border-gray-500">
-                        <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 hover:text-blue-800 hover:underline no-print-link">
-                            {{ $m->id_orden }}
-                        </a>
-                    </td>
-                    
-                    {{-- Celda de Equipo: Nombre al lado de Marca/Modelo con Vínculo --}}
-                    <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
-                        <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
-                            <span class="font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap group-hover:underline">
-                                {{ $m->equipo->nombre ?? '-' }}
-                            </span>
-                            <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
-                                ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }})
-                            </span>
-                        </a>
-                    </td>
 
-                    <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
-                        <div class="flex flex-col items-center gap-1">
-                            <span class="font-bold text-blue-600">${{ number_format($m->costo, 0, ',', '.') }}</span>
-                            @if($m->total_abonado > 0)
-                                <span class="text-[11px] font-semibold text-green-600">Abonado: ${{ number_format($m->total_abonado, 0, ',', '.') }}</span>
-                                <span class="text-[11px] font-semibold text-red-500">Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }}</span>
-                            @endif
-                        </div>
-                    </td>
-
-                    <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
-                        <span class="px-2 py-1 rounded-md text-[11px] font-bold backdrop-blur-sm border {{ $m->estado == 'terminado' ? 'bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30' : 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/30' }}">
-                            {{ strtoupper($m->estado) }}
-                        </span>
-                    </td>
-
-                    <td class="p-3 text-center whitespace-nowrap border border-gray-300 dark:border-gray-500">{{ $fechaEntrada->format('d/m/Y') }}</td>
-                    
-                    <td class="p-3 text-center font-bold border border-gray-300 dark:border-gray-500">
-                        <span class="{{ !$m->fecha_salida && $diasTranscurridos > 3 ? 'text-red-500' : 'text-gray-600 dark:text-gray-400' }}">
-                            {{ $diasTranscurridos }}
-                        </span>
-                    </td>
-
-                    <td class="p-3 text-center whitespace-nowrap border border-gray-300 dark:border-gray-500 {{ $m->fecha_salida ? 'font-semibold text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }}">
-                        {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'En proceso' }}
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="p-8 text-center text-gray-500 dark:text-gray-400">
-                        No hay mantenimientos registrados recientemente.
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-            </tbody>
-        </table>
+    {{-- Tabs --}}
+    <div class="flex items-center gap-1 mb-5 border-b border-gray-200 dark:border-gray-600">
+        <button type="button" onclick="switchDashTab('mant')" id="tabBtnMant"
+            class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] border-blue-600 text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20">
+            🔧 Mantenimientos
+        </button>
+        <button type="button" onclick="switchDashTab('elec')" id="tabBtnElec"
+            class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] border-transparent text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10">
+            ⚡ Electrónica
+        </button>
     </div>
-    <div class="mt-4 text-right">
-        <a href="{{ route('mantenimientos.reportes') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
-            📈 Ver reporte detallado →
-        </a>
+
+    {{-- ═══════════════ TAB: Mantenimientos ═══════════════ --}}
+    <div id="tabPanelMant">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-200 dark:bg-gray-700 text-xs uppercase">
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Orden</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Equipo</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Costo</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Estado</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Entrada</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Días</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Salida</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    @forelse($recentMant ?? [] as $m)
+                    @php
+                        $fechaEntrada = \Carbon\Carbon::parse($m->fecha_entrada)->startOfDay();
+                        $fechaFin = $m->fecha_salida 
+                            ? \Carbon\Carbon::parse($m->fecha_salida)->startOfDay() 
+                            : \Carbon\Carbon::now()->startOfDay();
+                        $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
+                    @endphp
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                        <td class="p-3 text-center font-bold whitespace-nowrap border border-gray-300 dark:border-gray-500">
+                            <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 hover:text-blue-800 hover:underline no-print-link">
+                                {{ $m->id_orden }}
+                            </a>
+                        </td>
+                        
+                        <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
+                            <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
+                                <span class="font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap group-hover:underline">
+                                    {{ $m->equipo->nombre ?? '-' }}
+                                </span>
+                                <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
+                                    ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }})
+                                </span>
+                            </a>
+                        </td>
+
+                        <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
+                            <div class="flex flex-col items-center gap-1">
+                                <span class="font-bold text-blue-600">${{ number_format($m->costo, 0, ',', '.') }}</span>
+                                @if($m->total_abonado > 0)
+                                    <span class="text-[11px] font-semibold text-green-600">Abonado: ${{ number_format($m->total_abonado, 0, ',', '.') }}</span>
+                                    <span class="text-[11px] font-semibold text-red-500">Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }}</span>
+                                @endif
+                            </div>
+                        </td>
+
+                        <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
+                            <span class="px-2 py-1 rounded-md text-[11px] font-bold backdrop-blur-sm border {{ $m->estado == 'terminado' ? 'bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30' : 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/30' }}">
+                                {{ strtoupper($m->estado) }}
+                            </span>
+                        </td>
+
+                        <td class="p-3 text-center whitespace-nowrap border border-gray-300 dark:border-gray-500">{{ $fechaEntrada->format('d/m/Y') }}</td>
+                        
+                        <td class="p-3 text-center font-bold border border-gray-300 dark:border-gray-500">
+                            <span class="{{ !$m->fecha_salida && $diasTranscurridos > 3 ? 'text-red-500' : 'text-gray-600 dark:text-gray-400' }}">
+                                {{ $diasTranscurridos }}
+                            </span>
+                        </td>
+
+                        <td class="p-3 text-center whitespace-nowrap border border-gray-300 dark:border-gray-500 {{ $m->fecha_salida ? 'font-semibold text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }}">
+                            {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'En proceso' }}
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-gray-500 dark:text-gray-400">
+                            No hay mantenimientos registrados recientemente.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4 text-right">
+            <a href="{{ route('mantenimientos.reportes') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
+                📈 Ver reporte detallado →
+            </a>
+        </div>
     </div>
+
+    {{-- ═══════════════ TAB: Electrónica ═══════════════ --}}
+    <div id="tabPanelElec" class="hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-purple-100 dark:bg-purple-900/40 text-xs uppercase">
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Orden</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Cliente</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Dispositivo</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Tipo</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Costo</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Estado</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Técnico</th>
+                        <th class="p-3 text-center border border-gray-400 dark:border-gray-500">Días</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    @forelse($recentElec ?? [] as $e)
+                    <tr class="hover:bg-purple-50/40 dark:hover:bg-purple-900/20 transition">
+                        <td class="p-3 text-center font-bold whitespace-nowrap border border-gray-300 dark:border-gray-500">
+                            <a href="{{ route('electronicas.index') }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 hover:underline">
+                                {{ $e->id_orden }}
+                            </a>
+                        </td>
+
+                        <td class="p-3 text-center border border-gray-300 dark:border-gray-500 font-semibold text-gray-800 dark:text-gray-200">
+                            {{ $e->cliente }}
+                        </td>
+
+                        <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
+                            <div class="flex flex-col items-center">
+                                <span class="font-bold text-gray-900 dark:text-gray-100">{{ $e->dispositivo }}</span>
+                                @if($e->marca)
+                                    <span class="text-[11px] text-gray-400 italic">{{ $e->marca }}</span>
+                                @endif
+                            </div>
+                        </td>
+
+                        <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
+                            <span class="px-2 py-1 rounded-md text-[11px] font-bold backdrop-blur-sm border {{ $e->tipo === 'correctivo' ? 'bg-sky-500/20 text-sky-700 dark:text-sky-300 border-sky-500/30' : 'bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border-indigo-500/30' }}">
+                                {{ strtoupper($e->tipo) }}
+                            </span>
+                        </td>
+
+                        <td class="p-3 text-center border border-gray-300 dark:border-gray-500 font-bold text-blue-600 dark:text-blue-400">
+                            ${{ number_format($e->costo, 0, ',', '.') }}
+                        </td>
+
+                        <td class="p-3 text-center border border-gray-300 dark:border-gray-500">
+                            <span class="px-2 py-1 rounded-md text-[11px] font-bold backdrop-blur-sm border {{ $e->estado == 'terminado' ? 'bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30' : 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/30' }}">
+                                {{ strtoupper($e->estado) }}
+                            </span>
+                        </td>
+
+                        <td class="p-3 text-center border border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-300">
+                            {{ $e->tecnico->nombre ?? '—' }}
+                        </td>
+
+                        <td class="p-3 text-center font-bold border border-gray-300 dark:border-gray-500">
+                            <span class="{{ $e->estado !== 'terminado' && $e->dias_transcurridos > 3 ? 'text-red-500' : 'text-gray-600 dark:text-gray-400' }}">
+                                {{ $e->dias_transcurridos }}
+                            </span>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="8" class="p-8 text-center text-gray-500 dark:text-gray-400">
+                            No hay órdenes de electrónica registradas recientemente.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4 text-right">
+            <a href="{{ route('electronicas.reportes') }}" class="inline-flex items-center gap-2 bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/30 hover:bg-purple-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-purple-500/20">
+                📈 Ver reporte detallado →
+            </a>
+        </div>
+    </div>
+
 </div>
+
+{{-- Script para cambio de tabs --}}
+<script>
+function switchDashTab(tab) {
+    // Panels
+    document.getElementById('tabPanelMant').classList.toggle('hidden', tab !== 'mant');
+    document.getElementById('tabPanelElec').classList.toggle('hidden', tab !== 'elec');
+    // Buttons
+    const btnMant = document.getElementById('tabBtnMant');
+    const btnElec = document.getElementById('tabBtnElec');
+    const activeClasses = 'border-b-[3px] text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 border-blue-600';
+    const activeClassesPurple = 'border-b-[3px] text-purple-700 dark:text-purple-300 bg-purple-50/60 dark:bg-purple-900/20 border-purple-600';
+    const inactiveClasses = 'border-b-[3px] border-transparent text-gray-500 dark:text-gray-400';
+
+    if (tab === 'mant') {
+        btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + activeClasses;
+        btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + inactiveClasses + ' hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10';
+    } else {
+        btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + activeClassesPurple;
+        btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + inactiveClasses + ' hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50/40 dark:hover:bg-blue-900/10';
+    }
+}
+</script>
 
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -304,7 +424,7 @@
 
         function formatMoneyEs(value) {
             const n = Number(value) || 0;
-            return '$' + n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return '$' + n.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
         }
 
         // Configurar gradientes para el gráfico de barras
@@ -553,7 +673,8 @@
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                callback: function(v) { return '$' + Number(v).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+                                precision: 0,
+                                callback: function(v) { return '$' + Number(v).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
                             },
                             grid: { borderDash: [4, 4], color: 'rgba(156, 163, 175, 0.2)', drawBorder: false }
                         },
@@ -566,75 +687,148 @@
             });
         }
 
-        // Slide 4: Ranking de Técnicos (Gráfico de Barras Horizontales)
-        const canvasTopTech = document.getElementById('topTechChart');
-        if (canvasTopTech) {
-            const ctxTopTech = canvasTopTech.getContext('2d');
-            const gradientPurple = ctxTopTech.createLinearGradient(400, 0, 0, 0);
-            gradientPurple.addColorStop(0, 'rgba(139, 92, 246, 0.7)'); // solid purple
-            gradientPurple.addColorStop(1, 'rgba(139, 92, 246, 0.1)'); // transparent purple
-            
-            const gradientBlue = ctxTopTech.createLinearGradient(400, 0, 0, 0);
-            gradientBlue.addColorStop(0, 'rgba(59, 130, 246, 0.7)'); // solid blue
-            gradientBlue.addColorStop(1, 'rgba(59, 130, 246, 0.1)'); // transparent blue
+        // Slide 4: Dona Electrónica (Pendientes vs Terminados)
+        const canvasSlideDonut = document.getElementById('elecSlideDonut');
+        if (canvasSlideDonut) {
+            const ctxSD = canvasSlideDonut.getContext('2d');
+            const gPendS = ctxSD.createLinearGradient(0, 0, 0, 220);
+            gPendS.addColorStop(0, 'rgba(245, 158, 11, 0.9)');
+            gPendS.addColorStop(1, 'rgba(245, 158, 11, 0.3)');
+            const gTermS = ctxSD.createLinearGradient(0, 0, 0, 220);
+            gTermS.addColorStop(0, 'rgba(16, 185, 129, 0.9)');
+            gTermS.addColorStop(1, 'rgba(16, 185, 129, 0.3)');
 
-            new Chart(ctxTopTech, {
-                type: 'bar',
+            const slideCenterPlugin = {
+                id: 'elecSlideCenter',
+                afterDraw(chart) {
+                    if (chart.config.type !== 'doughnut') return;
+                    const { ctx, chartArea } = chart;
+                    if (!chartArea) return;
+                    const centerX = (chartArea.left + chartArea.right) / 2;
+                    const centerY = (chartArea.top + chartArea.bottom) / 2;
+                    const isDark = document.documentElement.classList.contains('dark');
+                    ctx.save();
+                    const total = chart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                    ctx.textBaseline = 'middle';
+                    ctx.textAlign = 'center';
+                    // Label arriba
+                    ctx.font = '600 0.7em sans-serif';
+                    ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
+                    ctx.fillText('Total Órdenes', centerX, centerY - 12);
+                    // Número grande centrado
+                    ctx.font = 'bold 2.2em sans-serif';
+                    ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
+                    ctx.fillText(total, centerX, centerY + 16);
+                    ctx.restore();
+                }
+            };
+
+            const slideDonut = new Chart(ctxSD, {
+                type: 'doughnut',
+                plugins: [slideCenterPlugin],
                 data: {
-                    labels: chartData.topTecnicosLabels,
-                    datasets: [
-                        {
-                            label: 'Equipos Recibidos',
-                            data: chartData.topTecnicosRecibidosData,
-                            backgroundColor: gradientBlue,
-                            borderColor: 'rgb(59, 130, 246)',
-                            borderWidth: 2,
-                            borderRadius: 6,
-                            borderSkipped: false
-                        },
-                        {
-                            label: 'Equipos Terminados',
-                            data: chartData.topTecnicosData,
-                            backgroundColor: gradientPurple,
-                            borderColor: 'rgb(139, 92, 246)',
-                            borderWidth: 2,
-                            borderRadius: 6,
-                            borderSkipped: false
-                        }
-                    ]
+                    labels: ['Pendientes', 'Terminados'],
+                    datasets: [{
+                        data: [{{ $chartData['electronicaPendientes'] }}, {{ $chartData['electronicaTerminados'] }}],
+                        backgroundColor: [gPendS, gTermS],
+                        hoverBackgroundColor: ['rgba(245,158,11,1)', 'rgba(16,185,129,1)'],
+                        borderWidth: 0
+                    }]
                 },
                 options: {
-                    indexAxis: 'y', // Hace que el gráfico de barras sea horizontal
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { 
-                            position: 'top',
-                            labels: { usePointStyle: true, padding: 15, font: { weight: 'bold' } }
+                    cutout: '68%',
+                    layout: { padding: 6 },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { usePointStyle: true, padding: 14, font: { weight: 'bold', size: 12 } }
                         },
                         tooltip: {
                             position: 'cursorCustom',
-                            backgroundColor: 'rgba(17, 24, 39, 0.9)',
-                            bodyFont: { size: 14 },
-                            padding: 12,
-                            cornerRadius: 8,
-                            usePointStyle: true
+                            backgroundColor: 'rgba(17,24,39,0.9)',
+                            bodyFont: { size: 13, weight: 'bold' },
+                            padding: 10, cornerRadius: 8, usePointStyle: true,
+                            callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + ' órdenes' }
                         }
                     },
-                    scales: { 
-                        x: { 
-                            beginAtZero: true, 
-                            ticks: { precision: 0 },
-                            grid: { borderDash: [4, 4], color: 'rgba(156, 163, 175, 0.2)', drawBorder: false }
-                        },
-                        y: {
-                            grid: { display: false, drawBorder: false },
-                            ticks: { font: { weight: 'bold' } }
-                        }
-                    }
+                    animation: { animateScale: true, animateRotate: true }
                 }
             });
+            if (typeof MutationObserver !== 'undefined') {
+                new MutationObserver(() => slideDonut.update('none'))
+                    .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+            }
         }
+
+        // Tab Electrónica: Dona Pendientes vs Terminados
+        const canvasTabDonut = document.getElementById('elecTabDonut');
+        if (canvasTabDonut) {
+            const ctxDonut = canvasTabDonut.getContext('2d');
+            const gPend = ctxDonut.createLinearGradient(0, 0, 0, 170);
+            gPend.addColorStop(0, 'rgba(245, 158, 11, 0.85)');
+            gPend.addColorStop(1, 'rgba(245, 158, 11, 0.25)');
+            const gTerm = ctxDonut.createLinearGradient(0, 0, 0, 170);
+            gTerm.addColorStop(0, 'rgba(16, 185, 129, 0.85)');
+            gTerm.addColorStop(1, 'rgba(16, 185, 129, 0.25)');
+
+            const centerPlugin = {
+                id: 'elecTabCenter',
+                afterDraw(chart) {
+                    if (chart.config.type !== 'doughnut') return;
+                    const { width, height, ctx } = chart;
+                    const isDark = document.documentElement.classList.contains('dark');
+                    ctx.save();
+                    const total = chart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                    ctx.font = 'bold 1.6em sans-serif';
+                    ctx.textBaseline = 'middle';
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
+                    ctx.fillText(total, width / 2, height / 2 - 8);
+                    ctx.font = '600 0.65em sans-serif';
+                    ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
+                    ctx.fillText('Total', width / 2, height / 2 + 14);
+                    ctx.restore();
+                }
+            };
+
+            const tabDonut = new Chart(ctxDonut, {
+                type: 'doughnut',
+                plugins: [centerPlugin],
+                data: {
+                    labels: ['Pendientes', 'Terminados'],
+                    datasets: [{
+                        data: [{{ $chartData['electronicaPendientes'] }}, {{ $chartData['electronicaTerminados'] }}],
+                        backgroundColor: [gPend, gTerm],
+                        hoverBackgroundColor: ['rgba(245,158,11,1)', 'rgba(16,185,129,1)'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '68%',
+                    layout: { padding: 4 },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 8, font: { weight: 'bold', size: 11 } } },
+                        tooltip: {
+                            backgroundColor: 'rgba(17,24,39,0.9)',
+                            bodyFont: { size: 13, weight: 'bold' },
+                            padding: 10, cornerRadius: 8, usePointStyle: true,
+                            callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + ' órdenes' }
+                        }
+                    },
+                    animation: { animateScale: true, animateRotate: true }
+                }
+            });
+            // Dark mode reactivity
+            if (typeof MutationObserver !== 'undefined') {
+                new MutationObserver(() => tabDonut.update('none'))
+                    .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+            }
+        }
+
     });
 </script>
 @endsection

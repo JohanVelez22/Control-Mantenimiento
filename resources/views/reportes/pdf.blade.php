@@ -38,7 +38,7 @@
             <tr>
                 <th>Ingresos Totales</th>
                 <th>Egresos Totales</th>
-                <th>Costos de Mantenimiento</th>
+                <th>Facturación Total</th>
                 <th>Utilidad Neta</th>
             </tr>
         </thead>
@@ -46,7 +46,7 @@
             <tr>
                 <td class="text-green">${{ number_format($acumulado['ingresos'], 2) }}</td>
                 <td class="text-red">${{ number_format($acumulado['egresos'], 2) }}</td>
-                <td>${{ number_format($acumulado['costos_operativos'], 2) }}</td>
+                <td>${{ number_format($acumulado['facturado_total'], 2) }}</td>
                 <td class="font-bold ${{ $acumulado['utilidad_neta'] >= 0 ? 'text-green' : 'text-red' }}">
                     ${{ number_format($acumulado['utilidad_neta'], 2) }}
                 </td>

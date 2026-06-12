@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Equipo;
 use App\Models\Mantenimiento;
+use App\Models\Electronica;
 use App\Models\Tecnico;
 use Carbon\Carbon;
 
@@ -32,8 +33,8 @@ class DashboardController extends Controller
             ->sum('monto');
 
         // Formateo para la vista
-        $totalCostoFormateado = number_format($cajaSaldoActual, 2, '.', ',');
-        $totalCostoDiaFormateado = number_format($cajaIngresosDia, 2, '.', ',');
+        $totalCostoFormateado = number_format($cajaSaldoActual, 0, ',', '.');
+        $totalCostoDiaFormateado = number_format($cajaIngresosDia, 0, ',', '.');
 
         // Mantenimientos recientes (incluye abonos para calcular saldos pendientes)
         $recentMant = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user', 'abonos'])
@@ -103,13 +104,22 @@ class DashboardController extends Controller
             $dataIngresosAcumulados[] = $acumulado;
         }
 
-        // Top Técnicos (2 queries con withCount)
-        $topTecnicos = Tecnico::withCount([
-            'mantenimientos as terminados_count' => function ($query) {
-                $query->where('estado', 'terminado');
-            },
-            'mantenimientos as recibidos_count'
-        ])->orderBy('terminados_count', 'desc')->take(5)->get();
+        // Estadísticas de Electrónica para el slide del dashboard
+        $electronicaPendientes  = Electronica::where('estado', 'pendiente')->count();
+        $electronicaTerminados  = Electronica::where('estado', 'terminado')->count();
+        $electronicaCorrectivos = Electronica::where('tipo', 'correctivo')->count();
+        $electronicaPreventivos = Electronica::where('tipo', 'preventivo')->count();
+        // 5 más recientes (cualquier estado) para la tabla del dashboard
+        $recentElec = Electronica::with('tecnico')
+            ->orderBy('id', 'desc')
+            ->take(5)
+            ->get();
+        // Pendientes más antiguos para el slide del carrusel
+        $electronicaRecientes = Electronica::with('tecnico')
+            ->where('estado', 'pendiente')
+            ->orderBy('fecha_entrada', 'asc')
+            ->take(5)
+            ->get();
 
         $chartData = [
             'labels'                  => $labels,
@@ -117,10 +127,15 @@ class DashboardController extends Controller
             'mantenimientos'          => $dataMantenimientos,
             'ingresos'                => $dataIngresos,
             'ingresosAcumulados'      => $dataIngresosAcumulados,
-            'topTecnicosLabels'       => $topTecnicos->pluck('nombre')->toArray(),
-            'topTecnicosData'         => $topTecnicos->pluck('terminados_count')->toArray(),
-            'topTecnicosRecibidosData'=> $topTecnicos->pluck('recibidos_count')->toArray(),
+            // Datos para el slide 4: resumen electrónica
+            'electronicaPendientes'   => $electronicaPendientes,
+            'electronicaTerminados'   => $electronicaTerminados,
+            'electronicaCorrectivos'  => $electronicaCorrectivos,
+            'electronicaPreventivos'  => $electronicaPreventivos,
         ];
+
+        // Pasar los recientes por separado para el blade
+        $electronicaRecientes = $electronicaRecientes;
 
         // Listas para selects (solo columnas necesarias)
         $clientes = Cliente::orderBy('nombre')->get(['id', 'nombre']);
@@ -130,12 +145,14 @@ class DashboardController extends Controller
             'totalEquipos',
             'totalMantenimientos',
             'recentMant',
+            'recentElec',
             'stats',
             'chartData',
             'clientes',
             'tecnicos',
             'totalCostoFormateado',
-            'totalCostoDiaFormateado'
+            'totalCostoDiaFormateado',
+            'electronicaRecientes'
         ));
     }
 

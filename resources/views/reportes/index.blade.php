@@ -6,6 +6,7 @@
 <div class="flex gap-4 mb-6 no-print">
     <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
     <a href="{{ route('reportes.index') }}" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💰 Informes Financieros</a>
+    <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Módulo Electrónica</a>
 </div>
 
 <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -57,8 +58,8 @@
                 <p class="text-2xl font-black text-red-700 dark:text-red-300">${{ number_format($acumulado['egresos'], 0, ',', '.') }}</p>
             </div>
             <div class="bg-blue-500/10 border border-blue-500/30 p-4 rounded-xl text-center">
-                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">Costos de Mantenimiento</p>
-                <p class="text-2xl font-black text-blue-700 dark:text-blue-300">${{ number_format($acumulado['costos_operativos'], 0, ',', '.') }}</p>
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">Facturación Total</p>
+                <p class="text-2xl font-black text-blue-700 dark:text-blue-300">${{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</p>
             </div>
             <div class="{{ $acumulado['utilidad_neta'] >= 0 ? 'bg-teal-500/10 border-teal-500/30' : 'bg-red-500/10 border-red-500/30' }} border p-4 rounded-xl text-center">
                 <p class="text-xs font-bold {{ $acumulado['utilidad_neta'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600 dark:text-red-400' }} mb-1">Utilidad / Saldo Neta</p>

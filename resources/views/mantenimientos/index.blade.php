@@ -144,12 +144,7 @@
                                     ✏️ <span class="hidden md:inline">Editar</span>
                                 </a>
 
-                                <form action="{{ route('mantenimientos.duplicate', $m->id) }}" method="POST" class="inline-block">
-                                    @csrf
-                                    <button type="submit" class="inline-flex items-center gap-1 bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all text-sm" title="Duplicar orden">
-                                        📋 <span class="hidden md:inline">Duplicar</span>
-                                    </button>
-                                </form>
+
 
                                 @if($m->estado !== 'anulado')
                                     <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}')" class="inline-flex items-center gap-1 bg-orange-500/20 text-orange-700 dark:text-orange-400 border border-orange-500/30 hover:bg-orange-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all text-sm" title="Anular orden">

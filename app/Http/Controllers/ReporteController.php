@@ -43,11 +43,18 @@ class ReporteController extends Controller
         $egresos_mes = (clone $acumuladoQuery)->where('tipo_movimiento', 'egreso')->sum('monto');
         $saldo_mes = $ingresos_mes - $egresos_mes;
 
-        // Costos de mantenimientos del mes
-        $costo_mantenimientos = Mantenimiento::where('estado', '!=', 'anulado')
+        // Facturación Total (Mantenimientos + Electrónica) - Lo que se ha cobrado o se debe cobrar
+        $facturado_mantenimientos = Mantenimiento::where('estado', '!=', 'anulado')
             ->whereMonth('fecha_entrada', $mes)
             ->whereYear('fecha_entrada', $anio)
             ->sum('costo');
+
+        $facturado_electronica = \App\Models\Electronica::where('estado', '!=', 'anulado')
+            ->whereMonth('fecha_entrada', $mes)
+            ->whereYear('fecha_entrada', $anio)
+            ->sum('costo');
+
+        $facturado_total = $facturado_mantenimientos + $facturado_electronica;
 
         // Inventario valorizado
         $costo_inventario = Stock::sum(\DB::raw('cantidad * precio_compra'));
@@ -57,8 +64,8 @@ class ReporteController extends Controller
             'ingresos' => $ingresos_mes,
             'egresos' => $egresos_mes,
             'saldo' => $saldo_mes,
-            'costos_operativos' => $costo_mantenimientos,
-            'utilidad_neta' => $saldo_mes - $costo_mantenimientos,
+            'facturado_total' => $facturado_total,
+            'utilidad_neta' => $saldo_mes, // La utilidad en caja es simplemente ingresos - egresos. Lo facturado es independiente.
             'inventario_costo' => $costo_inventario,
             'inventario_utilidad_esperada' => $utilidad_esperada,
         ];

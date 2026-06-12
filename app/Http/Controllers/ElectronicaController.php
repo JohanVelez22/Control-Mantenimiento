@@ -111,4 +111,40 @@ class ElectronicaController extends Controller
         return redirect()->route('electronicas.index')
                          ->with('success', 'Registro electrónico eliminado.');
     }
+
+    public function factura(Electronica $electronica)
+    {
+        return view('electronicas.factura', compact('electronica'));
+    }
+
+    public function reportes(Request $request)
+    {
+        $query = Electronica::query();
+
+        if ($request->filled('fecha_inicio')) {
+            $query->whereDate('fecha_entrada', '>=', $request->fecha_inicio);
+        }
+        if ($request->filled('fecha_fin')) {
+            $query->whereDate('fecha_entrada', '<=', $request->fecha_fin);
+        }
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+        if ($request->filled('tecnico_id')) {
+            $query->where('tecnico_id', $request->tecnico_id);
+        }
+
+        $totales = [
+            'cantidad' => (clone $query)->count(),
+            'costo'    => (clone $query)->sum('costo'),
+        ];
+
+        $registros = $query->with(['tecnico', 'user'])->orderBy('fecha_entrada', 'desc')->paginate(15);
+        $tecnicos = Tecnico::orderBy('nombre')->get();
+
+        return view('electronicas.reportes', compact('registros', 'totales', 'tecnicos'));
+    }
 }

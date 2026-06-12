@@ -29,8 +29,9 @@
 
     <!-- Precio Compra -->
     <div>
-        <label for="precio_compra" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Precio Compra ($) *</label>
-        <input type="number" step="0.01" name="precio_compra" id="precio_compra" value="{{ old('precio_compra', $stock->precio_compra ?? 0) }}" required min="0" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+        <label for="precio_compra_visual" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Precio Compra ($) *</label>
+        <input type="text" id="precio_compra_visual" value="{{ old('precio_compra', isset($stock) ? number_format($stock->precio_compra, 0, '', '') : 0) }}" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+        <input type="hidden" name="precio_compra" id="precio_compra_real" value="{{ old('precio_compra', isset($stock) ? intval($stock->precio_compra) : 0) }}">
         @error('precio_compra') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
     </div>
 
@@ -43,16 +44,47 @@
 
     <!-- Precio Venta -->
     <div>
-        <label for="precio_venta" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Precio Venta (Manual) ($)</label>
-        <input type="number" step="0.01" name="precio_venta" id="precio_venta" value="{{ old('precio_venta', $stock->precio_venta ?? '') }}" min="0" placeholder="Se calcula auto si se deja vacío" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+        <label for="precio_venta_visual" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Precio Venta (Manual) ($)</label>
+        <input type="text" id="precio_venta_visual" value="{{ old('precio_venta', isset($stock) && $stock->precio_venta ? number_format($stock->precio_venta, 0, '', '') : '') }}" placeholder="Se calcula auto si se deja vacío" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+        <input type="hidden" name="precio_venta" id="precio_venta_real" value="{{ old('precio_venta', isset($stock) && $stock->precio_venta ? intval($stock->precio_venta) : '') }}">
         @error('precio_venta') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
     </div>
 
     <!-- Precio Técnico -->
     <div>
-        <label for="precio_tecnico" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Precio Técnico (Manual) ($)</label>
-        <input type="number" step="0.01" name="precio_tecnico" id="precio_tecnico" value="{{ old('precio_tecnico', $stock->precio_tecnico ?? '') }}" min="0" placeholder="Se calcula auto si se deja vacío" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+        <label for="precio_tecnico_visual" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Precio Técnico (Manual) ($)</label>
+        <input type="text" id="precio_tecnico_visual" value="{{ old('precio_tecnico', isset($stock) && $stock->precio_tecnico ? number_format($stock->precio_tecnico, 0, '', '') : '') }}" placeholder="Se calcula auto si se deja vacío" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+        <input type="hidden" name="precio_tecnico" id="precio_tecnico_real" value="{{ old('precio_tecnico', isset($stock) && $stock->precio_tecnico ? intval($stock->precio_tecnico) : '') }}">
         @error('precio_tecnico') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
     </div>
 </div>
+
+<script>
+    // Formateador de monto
+    function formatInput(visualId, realId) {
+        const inputVisual = document.getElementById(visualId);
+        const inputReal = document.getElementById(realId);
+
+        if(!inputVisual || !inputReal) return;
+
+        // Init visual
+        if (inputReal.value) {
+            inputVisual.value = new Intl.NumberFormat('es-CO').format(inputReal.value);
+        }
+
+        inputVisual.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, "");
+            if (value !== "") {
+                inputReal.value = value;
+                e.target.value = new Intl.NumberFormat('es-CO').format(value);
+            } else {
+                inputReal.value = "";
+            }
+        });
+    }
+
+    formatInput('precio_compra_visual', 'precio_compra_real');
+    formatInput('precio_venta_visual', 'precio_venta_real');
+    formatInput('precio_tecnico_visual', 'precio_tecnico_real');
+</script>
 

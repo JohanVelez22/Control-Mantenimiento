@@ -21,10 +21,7 @@
             @if(!auth()->user()->isInvitado())
             <div class="flex gap-2 flex-wrap">
                 <a href="{{ route('mantenimientos.edit', $mantenimiento) }}" class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 rounded-xl px-3 py-2 font-semibold transition-all text-sm">✏️ Editar</a>
-                <form action="{{ route('mantenimientos.duplicate', $mantenimiento) }}" method="POST" class="inline">
-                    @csrf
-                    <button type="submit" class="inline-flex items-center gap-1 bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-500/30 hover:bg-blue-500/40 rounded-xl px-3 py-2 font-semibold transition-all text-sm">📋 Duplicar</button>
-                </form>
+
                 @if($mantenimiento->fecha_salida)
                 <a href="{{ route('mantenimientos.factura', $mantenimiento) }}" target="_blank" class="inline-flex items-center gap-1 bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 rounded-xl px-3 py-2 font-semibold transition-all text-sm">🖨️ Factura</a>
                 @endif
@@ -137,8 +134,9 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 mb-1">Monto ($) *</label>
-                    <input type="number" step="0.01" name="monto" required min="0.01" placeholder="0.00"
+                    <input type="text" id="abono_monto_visual" required placeholder="0"
                            class="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 transition-all">
+                    <input type="hidden" name="monto" id="abono_monto_real">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 mb-1">Fecha *</label>
@@ -195,5 +193,30 @@
         @endif
     </div>
 </div>
+
+<script>
+    const abonoVisual = document.getElementById('abono_monto_visual');
+    const abonoReal = document.getElementById('abono_monto_real');
+
+    if (abonoVisual && abonoReal) {
+        abonoVisual.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, "");
+            if (value !== "") {
+                abonoReal.value = value;
+                e.target.value = new Intl.NumberFormat('es-CO').format(value);
+            } else {
+                abonoReal.value = "";
+            }
+        });
+        
+        // Validation before submit for the Abono form
+        const formAbono = abonoVisual.closest('form');
+        if (formAbono) {
+            formAbono.addEventListener('submit', function() {
+                if(abonoReal.value === "") abonoReal.value = 0;
+            });
+        }
+    }
+</script>
 @endsection
 

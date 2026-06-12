@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Models\MovimientoCaja;
 use App\Models\ConceptoCaja;
 use App\Models\User;
@@ -74,7 +75,7 @@ class MovimientoCajaController extends Controller
     {
         $validated = $request->validate([
             'empresa'         => 'nullable|string|max:255',
-            'persona'         => 'required|string|max:255',
+            'persona'         => 'nullable|string|max:255',
             'fecha'           => 'required|date',
             'concepto_id'     => 'required_without:nuevo_concepto|nullable|exists:concepto_cajas,id',
             'nuevo_concepto'  => 'required_without:concepto_id|nullable|string|max:255',
@@ -83,6 +84,11 @@ class MovimientoCajaController extends Controller
             'monto'           => 'required|numeric|min:0.01',
             'descripcion'     => 'nullable|string',
         ]);
+
+        // Validar que al menos empresa o persona esté presente
+        if (empty($validated['empresa']) && empty($validated['persona'])) {
+            return back()->withErrors(['persona' => 'Debe indicar al menos un nombre de persona o empresa.'])->withInput();
+        }
 
         try {
             DB::beginTransaction();
@@ -121,7 +127,7 @@ class MovimientoCajaController extends Controller
     {
         $validated = $request->validate([
             'empresa'         => 'nullable|string|max:255',
-            'persona'         => 'required|string|max:255',
+            'persona'         => 'nullable|string|max:255',
             'fecha'           => 'required|date',
             'concepto_id'     => 'required_without:nuevo_concepto|nullable|exists:concepto_cajas,id',
             'nuevo_concepto'  => 'required_without:concepto_id|nullable|string|max:255',
@@ -130,6 +136,11 @@ class MovimientoCajaController extends Controller
             'monto'           => 'required|numeric|min:0.01',
             'descripcion'     => 'nullable|string',
         ]);
+
+        // Validar que al menos empresa o persona esté presente
+        if (empty($validated['empresa']) && empty($validated['persona'])) {
+            return back()->withErrors(['persona' => 'Debe indicar al menos un nombre de persona o empresa.'])->withInput();
+        }
 
         try {
             DB::beginTransaction();
@@ -218,7 +229,7 @@ class MovimientoCajaController extends Controller
 
     public function anular(Request $request, MovimientoCaja $movimiento)
     {
-        if (Auth::user()->role === 'invitado') {
+        if (auth()->user()->role === 'invitado') {
             return redirect()->back()->with('error', 'No tienes permisos para anular.');
         }
 
@@ -226,9 +237,14 @@ class MovimientoCajaController extends Controller
             'password_confirm' => 'required'
         ]);
 
-        $adminPassword = \App\Models\User::where('role', 'admin')->value('password');
-        if (!\Hash::check($request->password_confirm, Auth::user()->password) && 
-            !\Hash::check($request->password_confirm, $adminPassword)) {
+        $currentUser = auth()->user();
+        $ok = Hash::check($request->password_confirm, $currentUser->password);
+        if (!$ok) {
+            $adminPassword = User::where('role', 'admin')->value('password');
+            $ok = $adminPassword && Hash::check($request->password_confirm, $adminPassword);
+        }
+
+        if (!$ok) {
             return redirect()->back()->with('error', 'Contraseña incorrecta.');
         }
 
@@ -236,7 +252,7 @@ class MovimientoCajaController extends Controller
             DB::beginTransaction();
             $movimiento->update(['estado' => 'anulado']);
             DB::commit();
-            return redirect()->back()->with('success', 'Movimiento anulado correctamente. Los valores han sido revertidos de la caja.');
+            return redirect()->back()->with('success', 'Movimiento anulado correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error anulando movimiento de caja: ' . $e->getMessage());

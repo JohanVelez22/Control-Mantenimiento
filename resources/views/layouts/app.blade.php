@@ -118,7 +118,7 @@
 
     @auth
     <!-- Estructura Principal con Sidebar -->
-    <div class="flex flex-col lg:flex-row min-h-screen">
+    <div class="flex flex-col lg:flex-row min-h-screen w-full">
         
         <!-- Sidebar Izquierdo Premium (Mini-sidebar expandible) -->
         <aside class="group w-20 hover:w-64 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-2xl border-r border-gray-200/50 dark:border-gray-700/50 hidden lg:flex flex-col flex-shrink-0 sticky top-0 h-screen overflow-hidden transition-all duration-300 ease-in-out no-print z-50">
@@ -222,6 +222,17 @@
                     @endif
                     <span class="text-sm hidden sm:inline-block font-semibold">Hola, {{ auth()->user()->name }}</span>
                     
+                    <!-- Notificaciones de Electrónica -->
+                    @php
+                        $alertasPendientes = \App\Models\Electronica::where('estado', 'pendiente')->get();
+                    @endphp
+                    <button type="button" onclick="openElecAlertModal()" class="relative p-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl focus:outline-none transition-colors" title="Notificaciones de Electrónica">
+                        🔔
+                        @if($alertasPendientes->count() > 0)
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow">{{ $alertasPendientes->count() }}</span>
+                        @endif
+                    </button>
+
                     <!-- Botón Modo Oscuro -->
                     <button type="button" id="theme-toggle" class="p-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl focus:outline-none transition-colors" aria-label="Cambiar tema">
                         🌓
@@ -267,49 +278,64 @@
     </div>
     @endauth
 
+    @guest
+        <div class="flex-1 flex items-center justify-center w-full pt-0 pb-56">
+            @yield('content')
+        </div>
+    @endguest
+
     <!-- Contenedor de Toasts -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
 
-    <!-- Modal de Alertas de Electrónica (al iniciar sesión) -->
-    @if(session('alertas_electronica'))
-    <div id="elec-alert-modal" class="fixed inset-0 z-[300] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border border-purple-300/40 dark:border-purple-700/50 rounded-2xl shadow-2xl p-6 max-w-lg w-full max-h-[80vh] flex flex-col">
+    @auth
+    <!-- Modal de Alertas de Electrónica -->
+    @php
+        $showAuto = session('alertas_electronica') ? 'true' : 'false';
+    @endphp
+    <div id="elec-alert-modal" class="{{ session('alertas_electronica') ? 'flex' : 'hidden' }} fixed inset-0 z-[300] items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeElecAlertModal()"></div>
+        <div class="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border border-purple-300/40 dark:border-purple-700/50 rounded-2xl shadow-2xl p-6 max-w-lg w-full max-h-[80vh] flex flex-col transform transition-all duration-300">
             <div class="flex items-center gap-3 mb-4">
                 <span class="text-3xl">⚡</span>
                 <div>
                     <h3 class="text-lg font-bold text-gray-800 dark:text-white">Resumen de Electrónica</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ count(session('alertas_electronica')) }} registro(s) activos al iniciar sesión</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $alertasPendientes->count() }} registro(s) activos</p>
                 </div>
+                <button type="button" onclick="closeElecAlertModal()" class="ml-auto text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-xl font-bold">&times;</button>
             </div>
             <div class="overflow-y-auto flex-1 space-y-2 pr-1">
-                @foreach(session('alertas_electronica') as $alerta)
-                <div class="flex items-center justify-between gap-3 p-3 rounded-xl {{ $alerta['estado'] === 'pendiente' ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/40' : 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700/40' }}">
+                @forelse($alertasPendientes as $alerta)
+                @php
+                    $dias = $alerta->dias_transcurridos;
+                @endphp
+                <div class="flex items-center justify-between gap-3 p-3 rounded-xl {{ $alerta->estado === 'pendiente' ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/40' : 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700/40' }}">
                     <div class="flex-1 min-w-0">
-                        <p class="font-bold text-sm text-gray-800 dark:text-white truncate">{{ $alerta['id_orden'] }} — {{ $alerta['cliente'] }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $alerta['dispositivo'] }}</p>
+                        <p class="font-bold text-sm text-gray-800 dark:text-white truncate">{{ $alerta->id_orden }} &mdash; {{ $alerta->cliente }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $alerta->dispositivo }} {{ $alerta->marca ? '| '.$alerta->marca : '' }}</p>
                     </div>
                     <div class="text-right shrink-0">
-                        <span class="block text-xs font-semibold px-2 py-0.5 rounded-lg {{ $alerta['estado'] === 'pendiente' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' : 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' }}">
-                            {{ $alerta['estado'] === 'pendiente' ? '⏳ Pendiente' : '✅ Terminado' }}
+                        <span class="block text-xs font-semibold px-2 py-0.5 rounded-lg {{ $alerta->estado === 'pendiente' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' : 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' }}">
+                            {{ $alerta->estado === 'pendiente' ? '⏳ Pendiente' : '✅ Terminado' }}
                         </span>
-                        <span class="block text-xs mt-1 font-bold {{ $alerta['dias'] > 14 ? 'text-red-600' : ($alerta['dias'] > 7 ? 'text-yellow-600' : 'text-gray-500') }}">
-                            {{ $alerta['dias'] }} días
+                        <span class="block text-xs mt-1 font-bold {{ $dias > 14 ? 'text-red-600' : ($dias > 7 ? 'text-yellow-600' : 'text-gray-500') }}">
+                            {{ $dias }} días
                         </span>
                     </div>
                 </div>
-                @endforeach
+                @empty
+                <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No hay dispositivos electrónicos pendientes.</p>
+                @endforelse
             </div>
             <div class="mt-4 flex justify-between items-center">
                 <a href="{{ route('electronicas.index') }}" class="text-purple-600 dark:text-purple-400 hover:underline text-sm font-semibold">Ver módulo completo →</a>
-                <button onclick="document.getElementById('elec-alert-modal').remove(); fetch('{{ route('electronicas.dismiss-alert') }}', {method:'POST', headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}});" class="px-5 py-2 bg-purple-500 text-white rounded-xl font-bold hover:bg-purple-600 shadow-lg shadow-purple-500/30 transition-all text-sm">
-                    Entendido
+                <button onclick="closeElecAlertModal()" class="px-5 py-2 bg-purple-500 text-white rounded-xl font-bold hover:bg-purple-600 shadow-lg shadow-purple-500/30 transition-all text-sm">
+                    Cerrar
                 </button>
             </div>
         </div>
     </div>
     {{ session()->forget('alertas_electronica') }}
-    @endif
+    @endauth
 
     <!-- Modal de Confirmación de Eliminación -->
     <div id="delete-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4">
@@ -585,6 +611,21 @@
                 });
             });
         });
+
+        function openElecAlertModal() {
+            const modal = document.getElementById('elec-alert-modal');
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+        function closeElecAlertModal() {
+            const modal = document.getElementById('elec-alert-modal');
+            if(modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        }
     </script>
 </body>
 </html>

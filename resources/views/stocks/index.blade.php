@@ -33,6 +33,7 @@
                     <th class="p-3 border border-gray-300 dark:border-gray-500 block md:table-cell">Producto</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500 block md:table-cell">Cant.</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500 block md:table-cell">P. Compra</th>
+                    <th class="p-3 border border-gray-300 dark:border-gray-500 block md:table-cell">Utilidad</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500 block md:table-cell">P. Venta</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500 block md:table-cell">P. Técnico</th>
                     <th class="p-3 border border-gray-300 dark:border-gray-500 block md:table-cell">Acciones</th>
@@ -62,6 +63,25 @@
                     <td class="p-3 md:border border-gray-300 dark:border-gray-500 block md:table-cell flex justify-between items-center md:text-center border-b border-gray-100 dark:border-gray-700 md:border-b-0">
                         <span class="md:hidden font-bold text-gray-500 dark:text-gray-400">P. Compra:</span>
                         <span>${{ number_format($stock->precio_compra, 0, ',', '.') }}</span>
+                    </td>
+
+                    @php
+                        $utilidadPesos = $stock->precio_venta - $stock->precio_compra;
+                        $utilidadPct   = $stock->utilidad ?? 0;
+                    @endphp
+                    <td class="p-3 md:border border-gray-300 dark:border-gray-500 block md:table-cell flex justify-between items-center md:text-center border-b border-gray-100 dark:border-gray-700 md:border-b-0">
+                        <span class="md:hidden font-bold text-gray-500 dark:text-gray-400">Utilidad:</span>
+                        <div class="flex flex-col items-center gap-1" title="Margen sobre precio de compra: si compras a ${{ number_format($stock->precio_compra,0,',','.') }} y aplicas {{ number_format($utilidadPct,0) }}%, vendes a ${{ number_format($stock->precio_venta,0,',','.') }}">
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 whitespace-nowrap">
+                                💹 +{{ number_format($utilidadPct, 0) }}%
+                            </span>
+                            <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                                +${{ number_format($utilidadPesos, 0, ',', '.') }}/u
+                            </span>
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 whitespace-nowrap leading-tight">
+                                margen s/compra
+                            </span>
+                        </div>
                     </td>
 
                     <td class="p-3 md:border border-gray-300 dark:border-gray-500 block md:table-cell flex justify-between items-center md:text-center border-b border-gray-100 dark:border-gray-700 md:border-b-0">
@@ -97,7 +117,7 @@
                 </tr>
                 @empty
                 <tr class="block md:table-row">
-                    <td colspan="7" class="p-12 text-center block md:table-cell">
+                    <td colspan="8" class="p-12 text-center block md:table-cell">
                         <div class="flex flex-col items-center justify-center space-y-4">
                             <div class="text-6xl">📦</div>
                             <h3 class="text-xl font-bold text-gray-700 dark:text-gray-300">Inventario Vacío</h3>

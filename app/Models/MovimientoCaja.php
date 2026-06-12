@@ -15,6 +15,7 @@ class MovimientoCaja extends Model
         'tipo_pago',
         'monto',
         'descripcion',
+        'estado',
         'user_id',
     ];
 
