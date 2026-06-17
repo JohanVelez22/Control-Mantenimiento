@@ -26,7 +26,7 @@
     </script>
     
     <!-- CSS Propio (Liquid Glass) -->
-    <link rel="stylesheet" href="{{ asset('css/glass.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ time() }}">
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         .font-logo { font-family: 'Michroma', sans-serif; }
