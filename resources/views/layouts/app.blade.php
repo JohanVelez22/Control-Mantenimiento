@@ -475,12 +475,13 @@
                 monthSelectorType: "static" // Convierte el feo select nativo en texto elegante
             });
 
-            // 2. Tom Select para selects con clase glass-input (con buscador habilitado)
+            // 2. Tom Select para selects con clase glass-input
             document.querySelectorAll("select.glass-input").forEach((el) => {
-                if (!el.classList.contains('tomselected') && !el.classList.contains('no-search')) {
+                if (!el.classList.contains('tomselected')) {
                     let defaultPlaceholder = el.getAttribute('data-placeholder');
+                    let isNoSearch = el.classList.contains('no-search');
                     
-                    // Si no tiene placeholder explícito, usa la primera opción vacía o un texto genérico
+                    // Si no tiene placeholder explícito, usa la primera opción vacía
                     if (!defaultPlaceholder && el.options.length > 0 && el.options[0].value === "") {
                         defaultPlaceholder = el.options[0].text;
                     } else if (!defaultPlaceholder) {
@@ -489,9 +490,10 @@
 
                     new TomSelect(el, {
                         create: false,
-                        maxOptions: 100, // Aumentado para clientes grandes
+                        maxOptions: 100,
                         dropdownParent: 'body',
-                        placeholder: defaultPlaceholder
+                        placeholder: defaultPlaceholder,
+                        controlInput: isNoSearch ? null : undefined
                     });
                 }
             });
