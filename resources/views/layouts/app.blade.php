@@ -54,7 +54,7 @@
         <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col">
             <!-- Brand / Logo -->
             <div class="h-16 flex items-center justify-center border-b border-gray-200/40 dark:border-white/5 shrink-0 px-6 relative transition-all duration-300">
-                <span class="text-[14px] font-semibold tracking-[0.15em] text-[#06B6D4] uppercase font-logo text-center w-full">NAVEGACIÓN</span>
+                <span class="text-[11px] font-semibold tracking-[0.15em] text-[#06B6D4] uppercase font-logo text-center w-full">NAVEGACIÓN</span>
             </div>
 
             <!-- Navegación -->
@@ -116,7 +116,7 @@
             </aside>
 
         <!-- CONTENEDOR PRINCIPAL (Margen dinámico según sidebar) -->
-        <div class="flex-1 flex flex-col min-w-0 transition-all duration-300" style="margin-left: var(--sidebar-w);">
+        <div id="main-wrapper" class="flex-1 flex flex-col min-w-0 transition-all duration-300">
             
             <!-- TOPBAR DE VIDRIO -->
             <header id="ts-topbar" class="h-16 px-4 md:px-6 flex items-center justify-between no-print">
