@@ -27,10 +27,9 @@
     
     <!-- CSS Propio (Liquid Glass) -->
     <link rel="stylesheet" href="{{ asset('css/glass.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Outfit', sans-serif; }
-        .font-outfit { font-family: 'Outfit', sans-serif; }
+        .font-logo { font-family: 'Michroma', sans-serif; }
     </style>
     
     <!-- Lógica de Tema Temprana para evitar Flash de Contenido No Estilizado (FOUC) -->
@@ -55,8 +54,8 @@
         <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col">
             <!-- Brand / Logo -->
             <div class="h-20 flex items-center justify-center expanded:justify-start border-b border-gray-200/40 dark:border-white/5 shrink-0 px-6 relative transition-all duration-300">
-                <span class="text-[12px] font-black tracking-[0.2em] text-[#06B6D4] uppercase opacity-0 group-[.expanded]:opacity-100 transition-opacity duration-300 font-outfit">NAVEGACIÓN</span>
-                <span class="text-[11px] font-black text-[#2563EB] uppercase group-[.expanded]:hidden font-outfit">NAV</span>
+                <span class="text-[12px] font-black tracking-[0.2em] text-[#06B6D4] uppercase opacity-0 group-[.expanded]:opacity-100 transition-opacity duration-300 font-logo">NAVEGACIÓN</span>
+                <span class="text-[11px] font-black text-[#2563EB] uppercase group-[.expanded]:hidden font-logo">NAV</span>
             </div>
 
             <!-- Navegación -->
@@ -65,29 +64,9 @@
                     <span class="nav-icon">📊</span>
                     <span class="nav-label">Dashboard</span>
                 </a>
-                <a href="{{ route('clientes.index') }}" class="nav-item {{ request()->routeIs('clientes.*') ? 'active' : '' }}" title="Clientes">
-                    <span class="nav-icon">👤</span>
-                    <span class="nav-label">Clientes</span>
-                </a>
                 <a href="{{ route('equipos.index') }}" class="nav-item {{ request()->routeIs('equipos.*') ? 'active' : '' }}" title="Equipos">
                     <span class="nav-icon">🖥️</span>
                     <span class="nav-label">Equipos</span>
-                </a>
-                <a href="{{ route('proveedores.index') }}" class="nav-item {{ request()->routeIs('proveedores.*') ? 'active' : '' }}" title="Proveedores">
-                    <span class="nav-icon">🏭</span>
-                    <span class="nav-label">Proveedores</span>
-                </a>
-                <a href="{{ route('tecnicos.index') }}" class="nav-item {{ request()->routeIs('tecnicos.*') ? 'active' : '' }}" title="Técnicos">
-                    <span class="nav-icon">🛠️</span>
-                    <span class="nav-label">Técnicos</span>
-                </a>
-                <a href="{{ route('stocks.index') }}" class="nav-item {{ request()->routeIs('stocks.*') ? 'active' : '' }}" title="Control Stock">
-                    <span class="nav-icon">📦</span>
-                    <span class="nav-label">Control Stock</span>
-                </a>
-                <a href="{{ route('inventario.facturas') }}" class="nav-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}" title="Operaciones (C/V)">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-label">Operaciones (C/V)</span>
                 </a>
                 <a href="{{ route('mantenimientos.index') }}" class="nav-item {{ request()->routeIs('mantenimientos.*') ? 'active' : '' }}" title="Mantenimientos">
                     <span class="nav-icon">⚙️</span>
@@ -97,17 +76,45 @@
                     <span class="nav-icon">⚡</span>
                     <span class="nav-label">Electrónica</span>
                 </a>
-                <a href="{{ route('caja.index') }}" class="nav-item {{ request()->routeIs('caja.*') ? 'active' : '' }}" title="Caja (Ing/Egr)">
+                <a href="{{ route('stocks.index') }}" class="nav-item {{ request()->routeIs('stocks.*') ? 'active' : '' }}" title="Control Stock">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Control Stock</span>
+                </a>
+                <a href="{{ route('inventario.facturas') }}" class="nav-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}" title="Compra y Venta">
+                    <span class="nav-icon">🧾</span>
+                    <span class="nav-label">Compra y Venta</span>
+                </a>
+                <a href="{{ route('clientes.index') }}" class="nav-item {{ request()->routeIs('clientes.*') ? 'active' : '' }}" title="Clientes">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">Clientes</span>
+                </a>
+                <a href="{{ route('proveedores.index') }}" class="nav-item {{ request()->routeIs('proveedores.*') ? 'active' : '' }}" title="Proveedores">
+                    <span class="nav-icon">🏭</span>
+                    <span class="nav-label">Proveedores</span>
+                </a>
+                <a href="{{ route('tecnicos.index') }}" class="nav-item {{ request()->routeIs('tecnicos.*') ? 'active' : '' }}" title="Personal">
+                    <span class="nav-icon">🛠️</span>
+                    <span class="nav-label">Personal</span>
+                </a>
+                <a href="{{ route('caja.index') }}" class="nav-item {{ request()->routeIs('caja.*') ? 'active' : '' }}" title="Caja Fuerte">
                     <span class="nav-icon">💵</span>
-                    <span class="nav-label">Caja (Ing/Egr)</span>
+                    <span class="nav-label">Caja Fuerte</span>
                 </a>
-                <a href="{{ route('cierre.index') }}" class="nav-item {{ request()->routeIs('cierre.*') ? 'active' : '' }}" title="Arqueo / Cierre">
+                <a href="{{ route('cierre.index') }}" class="nav-item {{ request()->routeIs('cierre.*') ? 'active' : '' }}" title="Cierre Diario">
                     <span class="nav-icon">🔒</span>
-                    <span class="nav-label">Arqueo / Cierre</span>
+                    <span class="nav-label">Cierre Diario</span>
                 </a>
-                <a href="{{ route('reportes.index') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}" title="Info Operativos">
+                <a href="{{ route('reportes.index') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}" title="Informes Operativos">
                     <span class="nav-icon">📈</span>
-                    <span class="nav-label">Info Operativos</span>
+                    <span class="nav-label">Informes Operativos</span>
+                </a>
+                <a href="{{ route('reportes.financiero.acumulado') }}" class="nav-item {{ request()->routeIs('reportes.financiero.*') ? 'active' : '' }}" title="Informes Financieros">
+                    <span class="nav-icon">💹</span>
+                    <span class="nav-label">Informes Financieros</span>
+                </a>
+                <a href="{{ route('usuarios.index') }}" class="nav-item {{ request()->routeIs('usuarios.*') ? 'active' : '' }}" title="Usuarios del Sistema">
+                    <span class="nav-icon">👨🏻‍💻</span>
+                    <span class="nav-label">Usuarios del Sistema</span>
                 </a>
                 <a href="{{ route('configuracion.index') }}" class="nav-item {{ request()->routeIs('configuracion.*') ? 'active' : '' }}" title="Empresa">
                     <span class="nav-icon">🏢</span>
@@ -141,7 +148,7 @@
 
                 <!-- Centro: Logo Centrado -->
                 <div class="flex-1 max-w-xl mx-4 hidden md:flex justify-center items-center">
-                    <a href="{{ route('dashboard') }}" class="text-[26px] font-black tracking-widest hover:scale-105 transition-transform duration-300 font-outfit">
+                    <a href="{{ route('dashboard') }}" class="text-[26px] font-black tracking-widest hover:scale-105 transition-transform duration-300 font-logo">
                         <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span><span class="text-slate-800 dark:text-white">SYSTEMAS</span>
                     </a>
                 </div>
@@ -158,9 +165,9 @@
                                 {{ substr(auth()->user()->name, 0, 1) }}
                             </div>
                         @endif
-                        <div class="flex flex-col text-left hidden md:block ml-2">
-                            <span class="text-sm font-bold text-slate-800 dark:text-white leading-tight font-outfit">{{ auth()->check() ? auth()->user()->name : 'Invitado' }}</span>
-                            <span class="text-[10px] text-blue-600 dark:text-blue-400 uppercase font-bold">{{ auth()->check() ? auth()->user()->role ?? 'Admin' : 'Invitado' }}</span>
+                        <div class="hidden md:flex flex-col text-left ml-2">
+                            <span class="text-sm font-bold text-slate-800 dark:text-white leading-none">{{ auth()->check() ? auth()->user()->name : 'Invitado' }}</span>
+                            <span class="text-[10px] text-[#06B6D4] uppercase font-bold mt-1">{{ auth()->check() ? auth()->user()->role ?? 'Admin' : 'Invitado' }}</span>
                         </div>
                     </a>
 
@@ -511,13 +518,6 @@
             });
         });
     </script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const tableContainer = document.querySelector('.table-responsive, .overflow-x-auto, table');
-        if (tableContainer) {
-            tableContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    });
-</script>
+
 </body>
 </html>
