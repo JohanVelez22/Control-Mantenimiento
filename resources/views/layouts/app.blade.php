@@ -47,106 +47,67 @@
     <div class="flex min-h-screen">
         
         <!-- SIDEBAR DE VIDRIO (Fijo) -->
-        <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col">
+        <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col shrink-0 relative bg-[#0B1121] border-r border-white/5 transition-all duration-300 z-30 shadow-[4px_0_24px_rgba(0,0,0,0.2)] w-[70px] expanded:w-[280px]">
             <!-- Brand / Logo -->
-            <div class="h-20 flex items-center justify-center border-b border-gray-200/40 dark:border-white/5 shrink-0 px-3 relative">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 w-full justify-center group-hover:justify-start transition-all">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-black text-xl shadow-[0_4px_12px_rgba(37,99,235,0.4)] shrink-0 relative overflow-hidden">
-                        <div class="absolute inset-0 bg-white/20 transform -translate-y-full hover:translate-y-0 transition-transform"></div>
-                        T
-                    </div>
-                    <div class="nav-label flex flex-col justify-center">
-                        <span class="text-base font-black tracking-tight leading-tight text-slate-800 dark:text-white">TECNI</span>
-                        <span class="text-[10px] font-bold tracking-widest text-blue-600 dark:text-cyan-400 uppercase">Systemas</span>
-                    </div>
-                </a>
+            <div class="h-20 flex items-center justify-center expanded:justify-start border-b border-white/5 shrink-0 px-6 relative transition-all duration-300">
+                <span class="text-[11px] font-black tracking-[0.2em] text-[#2563EB] uppercase opacity-0 group-[.expanded]:opacity-100 transition-opacity duration-300">NAVEGACIÓN</span>
+                <span class="text-[11px] font-black text-[#2563EB] uppercase group-[.expanded]:hidden">NAV</span>
+            </div>
             </div>
 
             <!-- Navegación -->
             <nav class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide py-4 px-2 space-y-1">
-                
-                <!-- GRUPO: PRINCIPAL -->
-                <div class="nav-group-label">General</div>
-                
                 <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}" title="Dashboard">
                     <div class="nav-icon">📊</div>
                     <span class="nav-label">Dashboard</span>
                 </a>
-
-                <!-- GRUPO: OPERATIVO -->
-                <div class="mt-4 nav-group-label">Motor Operativo</div>
-                
-                <a href="{{ route('mantenimientos.index') }}" class="nav-item {{ request()->routeIs('mantenimientos.*') ? 'active' : '' }}" title="Mantenimientos">
-                    <div class="nav-icon relative">
-                        📋
-                        <!-- Badge dinámico de pendientes (Ejemplo estático, luego dinámico) -->
-                        <span class="nav-badge">3</span>
-                    </div>
-                    <span class="nav-label">Mantenimientos</span>
-                </a>
-
-                <a href="{{ route('electronicas.index') }}" class="nav-item {{ request()->routeIs('electronicas.*') ? 'active' : '' }}" title="Servicio Técnico">
-                    <div class="nav-icon">⚡</div>
-                    <span class="nav-label">Serv. Técnico</span>
-                </a>
-
-                <!-- GRUPO: INVENTARIO Y SUMINISTRO -->
-                <div class="mt-4 nav-group-label">Logística</div>
-                
-                <a href="{{ route('stocks.index') }}" class="nav-item {{ request()->routeIs('stocks.*') ? 'active' : '' }}" title="Control de Stock">
-                    <div class="nav-icon">📦</div>
-                    <span class="nav-label">Control Stock</span>
-                </a>
-
-                <a href="{{ route('inventario.facturas') }}" class="nav-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}" title="Compra y Venta">
-                    <div class="nav-icon">🧾</div>
-                    <span class="nav-label">Operaciones (C/V)</span>
-                </a>
-
-                <!-- GRUPO: TERCEROS -->
-                <div class="mt-4 nav-group-label">Directorio</div>
-                
                 <a href="{{ route('clientes.index') }}" class="nav-item {{ request()->routeIs('clientes.*') ? 'active' : '' }}" title="Clientes">
                     <div class="nav-icon">👤</div>
                     <span class="nav-label">Clientes</span>
                 </a>
-
+                <a href="{{ route('equipos.index') }}" class="nav-item {{ request()->routeIs('equipos.*') ? 'active' : '' }}" title="Equipos">
+                    <div class="nav-icon">🖥️</div>
+                    <span class="nav-label">Equipos</span>
+                </a>
                 <a href="{{ route('proveedores.index') }}" class="nav-item {{ request()->routeIs('proveedores.*') ? 'active' : '' }}" title="Proveedores">
                     <div class="nav-icon">🏭</div>
                     <span class="nav-label">Proveedores</span>
                 </a>
-
-                <a href="{{ route('tecnicos.index') }}" class="nav-item {{ request()->routeIs('tecnicos.*') ? 'active' : '' }}" title="Personal">
+                <a href="{{ route('tecnicos.index') }}" class="nav-item {{ request()->routeIs('tecnicos.*') ? 'active' : '' }}" title="Técnicos">
                     <div class="nav-icon">🛠️</div>
                     <span class="nav-label">Técnicos</span>
                 </a>
-
-                <!-- GRUPO: FINANCIERO Y AUDITORÍA -->
-                <div class="mt-4 nav-group-label">Caja & Auditoría</div>
-                
-                <a href="{{ route('caja.index') }}" class="nav-item {{ request()->routeIs('caja.*') ? 'active' : '' }}" title="Caja Fuerte">
+                <a href="{{ route('stocks.index') }}" class="nav-item {{ request()->routeIs('stocks.*') ? 'active' : '' }}" title="Control Stock">
+                    <div class="nav-icon">📦</div>
+                    <span class="nav-label">Control Stock</span>
+                </a>
+                <a href="{{ route('inventario.facturas') }}" class="nav-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}" title="Operaciones (C/V)">
+                    <div class="nav-icon">📄</div>
+                    <span class="nav-label">Operaciones (C/V)</span>
+                </a>
+                <a href="{{ route('mantenimientos.index') }}" class="nav-item {{ request()->routeIs('mantenimientos.*') ? 'active' : '' }}" title="Mantenimientos">
+                    <div class="nav-icon">⚙️</div>
+                    <span class="nav-label">Mantenimientos</span>
+                </a>
+                <a href="{{ route('electronicas.index') }}" class="nav-item {{ request()->routeIs('electronicas.*') ? 'active' : '' }}" title="Electrónica">
+                    <div class="nav-icon">⚡</div>
+                    <span class="nav-label">Electrónica</span>
+                </a>
+                <a href="{{ route('caja.index') }}" class="nav-item {{ request()->routeIs('caja.*') ? 'active' : '' }}" title="Caja (Ing/Egr)">
                     <div class="nav-icon">💵</div>
                     <span class="nav-label">Caja (Ing/Egr)</span>
                 </a>
-
-                <a href="{{ route('cierre.index') }}" class="nav-item {{ request()->routeIs('cierre.*') ? 'active' : '' }}" title="Cierre Diario">
+                <a href="{{ route('cierre.index') }}" class="nav-item {{ request()->routeIs('cierre.*') ? 'active' : '' }}" title="Arqueo / Cierre">
                     <div class="nav-icon">🔒</div>
                     <span class="nav-label">Arqueo / Cierre</span>
                 </a>
-
-                <a href="{{ route('reportes.index') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}" title="Informes Operativos">
+                <a href="{{ route('reportes.index') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}" title="Info Operativos">
                     <div class="nav-icon">📈</div>
-                    <span class="nav-label">Inf. Operativos</span>
+                    <span class="nav-label">Info Operativos</span>
                 </a>
-
-                <a href="{{ route('reportes.financiero.acumulado') }}" class="nav-item {{ request()->routeIs('reportes.financiero.*') ? 'active' : '' }}" title="Informes Financieros">
-                    <div class="nav-icon">💹</div>
-                    <span class="nav-label">Inf. Financieros</span>
-                </a>
-
-                <a href="{{ route('usuarios.index') }}" class="nav-item {{ request()->routeIs('usuarios.*') ? 'active' : '' }}" title="Usuarios del Sistema">
-                    <div class="nav-icon">👨🏻‍💻</div>
-                    <span class="nav-label">Seguridad</span>
+                <a href="{{ route('configuracion.index') }}" class="nav-item {{ request()->routeIs('configuracion.*') ? 'active' : '' }}" title="Empresa">
+                    <div class="nav-icon">🏢</div>
+                    <span class="nav-label">Empresa</span>
                 </a>
             </nav>
             
