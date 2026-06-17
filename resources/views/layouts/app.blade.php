@@ -133,17 +133,21 @@
         <div class="flex-1 flex flex-col min-w-0 transition-all duration-300" style="margin-left: var(--sidebar-w);">
             
             <!-- TOPBAR DE VIDRIO -->
-            <header id="ts-topbar" class="h-16 px-4 md:px-6 flex items-center justify-between no-print">
-                <!-- Izquierda: Toggle móvil y Título de vista actual -->
+            <header id="ts-topbar" class="h-20 px-4 md:px-6 flex items-center justify-between no-print bg-[#0B1121] border-b border-white/5">
+                <!-- Izquierda: Toggle móvil -->
                 <div class="flex items-center gap-3">
-                    <button class="lg:hidden p-2 bg-gray-100/50 dark:bg-gray-800/50 rounded-xl" onclick="toggleMobileSidebar()">
-                        ☰
+                    <button class="lg:hidden p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-colors" onclick="toggleMobileSidebar()">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
                     </button>
-                    <!-- Search global (placeholder) -->
-                    <div class="hidden md:flex items-center glass px-3 py-1.5 rounded-full text-sm w-64 border focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
-                        <span class="text-gray-400 mr-2">🔍</span>
-                        <input type="text" placeholder="Buscar orden, cliente..." class="bg-transparent border-none outline-none w-full text-gray-700 dark:text-gray-200 placeholder-gray-400">
-                    </div>
+                </div>
+
+                <!-- Centro: Logo Centrado -->
+                <div class="flex-1 max-w-xl mx-4 hidden md:flex justify-center items-center">
+                    <a href="{{ route('dashboard') }}" class="text-[26px] font-black tracking-widest hover:scale-105 transition-transform duration-300">
+                        <span class="text-[#2563EB]">TECNI</span><span class="text-white">SYSTEMAS</span>
+                    </a>
                 </div>
 
                 <!-- Derecha: Perfil e Iconos -->
@@ -151,16 +155,16 @@
                     
                     <!-- Avatar de Usuario (Clickeable hacia Usuarios) -->
                     <a href="{{ route('usuarios.index') }}" class="flex items-center gap-2 pr-4 border-r border-white/10 hover:opacity-80 transition-opacity mr-2">
-                        @if(auth()->user()->photo)
+                        @if(auth()->check() && auth()->user()->photo)
                             <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Avatar" class="w-10 h-10 rounded-xl object-cover border-2 border-white/10">
-                        @else
+                        @elseif(auth()->check())
                             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg">
                                 {{ substr(auth()->user()->name, 0, 1) }}
                             </div>
                         @endif
                         <div class="flex flex-col text-left hidden md:block ml-2">
-                            <span class="text-sm font-bold text-white leading-tight">{{ auth()->user()->name }}</span>
-                            <span class="text-[10px] text-blue-400 uppercase font-bold">{{ auth()->user()->role ?? 'Admin' }}</span>
+                            <span class="text-sm font-bold text-white leading-tight">{{ auth()->check() ? auth()->user()->name : 'Invitado' }}</span>
+                            <span class="text-[10px] text-blue-400 uppercase font-bold">{{ auth()->check() ? auth()->user()->role ?? 'Admin' : 'Invitado' }}</span>
                         </div>
                     </a>
 
