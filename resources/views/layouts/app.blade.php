@@ -155,13 +155,13 @@
 
                     <!-- Notification Bell -->
                     <div class="relative">
-                        <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1e293b]/30 border border-gray-600/30 hover:bg-gray-700/50 transition-colors group text-lg" onclick="document.getElementById('notif-dropdown').classList.toggle('hidden')">
+                        <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg" onclick="document.getElementById('notif-dropdown').classList.toggle('hidden')">
                             🔔
                         </button>
                     </div>
 
                     <!-- Theme Toggle -->
-                    <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1e293b]/30 border border-gray-600/30 hover:bg-gray-700/50 transition-colors group text-lg">
+                    <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg">
                         <span class="dark:hidden">☀️</span>
                         <span class="hidden dark:inline">🌙</span>
                     </button>
