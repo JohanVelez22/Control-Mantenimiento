@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="{{ asset('css/glass.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Outfit', sans-serif !important; background-color: #0A0F1C !important; }
+        
         .nav-item.active { background: linear-gradient(135deg, rgba(37,99,235,0.15) 0%, rgba(37,99,235,0.05) 100%); color: #60A5FA; border-left: 3px solid #3B82F6; font-weight: 700; }
         .nav-label { font-family: 'Outfit', sans-serif !important; }
     </style>
@@ -53,7 +53,7 @@
     <div class="flex min-h-screen">
         
         <!-- SIDEBAR DE VIDRIO (Fijo) -->
-        <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col shrink-0 relative bg-[#0B1121] border-r border-white/5 transition-all duration-300 z-30 shadow-[4px_0_24px_rgba(0,0,0,0.2)] w-[70px] expanded:w-[280px]">
+        <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col" style="background-color: #0B1121;">
             <!-- Brand / Logo -->
             <div class="h-20 flex items-center justify-center expanded:justify-start border-b border-white/5 shrink-0 px-6 relative transition-all duration-300">
                 <span class="text-[12px] font-black tracking-[0.2em] text-[#06B6D4] uppercase opacity-0 group-[.expanded]:opacity-100 transition-opacity duration-300">NAVEGACIÓN</span>
