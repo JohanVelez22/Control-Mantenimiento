@@ -54,7 +54,7 @@
         <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col">
             <!-- Brand / Logo -->
             <div class="h-20 flex items-center justify-center expanded:justify-start border-b border-gray-200/40 dark:border-white/5 shrink-0 px-6 relative transition-all duration-300">
-                <span class="text-[12px] font-black tracking-[0.2em] text-[#06B6D4] uppercase opacity-0 group-[.expanded]:opacity-100 transition-opacity duration-300 font-logo">NAVEGACIÓN</span>
+                <span class="text-[13px] font-normal tracking-widest text-[#06B6D4] uppercase opacity-0 group-[.expanded]:opacity-100 transition-opacity duration-300 font-logo">NAVEGACIÓN</span>
                 <span class="text-[11px] font-black text-[#2563EB] uppercase group-[.expanded]:hidden font-logo">NAV</span>
             </div>
 
@@ -64,9 +64,29 @@
                     <span class="nav-icon">📊</span>
                     <span class="nav-label">Dashboard</span>
                 </a>
+                <a href="{{ route('clientes.index') }}" class="nav-item {{ request()->routeIs('clientes.*') ? 'active' : '' }}" title="Clientes">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">Clientes</span>
+                </a>
                 <a href="{{ route('equipos.index') }}" class="nav-item {{ request()->routeIs('equipos.*') ? 'active' : '' }}" title="Equipos">
                     <span class="nav-icon">🖥️</span>
                     <span class="nav-label">Equipos</span>
+                </a>
+                <a href="{{ route('proveedores.index') }}" class="nav-item {{ request()->routeIs('proveedores.*') ? 'active' : '' }}" title="Proveedores">
+                    <span class="nav-icon">🏭</span>
+                    <span class="nav-label">Proveedores</span>
+                </a>
+                <a href="{{ route('tecnicos.index') }}" class="nav-item {{ request()->routeIs('tecnicos.*') ? 'active' : '' }}" title="Técnicos">
+                    <span class="nav-icon">🛠️</span>
+                    <span class="nav-label">Técnicos</span>
+                </a>
+                <a href="{{ route('stocks.index') }}" class="nav-item {{ request()->routeIs('stocks.*') ? 'active' : '' }}" title="Control Stock">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Control Stock</span>
+                </a>
+                <a href="{{ route('inventario.facturas') }}" class="nav-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}" title="Operaciones (C/V)">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-label">Operaciones (C/V)</span>
                 </a>
                 <a href="{{ route('mantenimientos.index') }}" class="nav-item {{ request()->routeIs('mantenimientos.*') ? 'active' : '' }}" title="Mantenimientos">
                     <span class="nav-icon">⚙️</span>
@@ -76,45 +96,17 @@
                     <span class="nav-icon">⚡</span>
                     <span class="nav-label">Electrónica</span>
                 </a>
-                <a href="{{ route('stocks.index') }}" class="nav-item {{ request()->routeIs('stocks.*') ? 'active' : '' }}" title="Control Stock">
-                    <span class="nav-icon">📦</span>
-                    <span class="nav-label">Control Stock</span>
-                </a>
-                <a href="{{ route('inventario.facturas') }}" class="nav-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}" title="Compra y Venta">
-                    <span class="nav-icon">🧾</span>
-                    <span class="nav-label">Compra y Venta</span>
-                </a>
-                <a href="{{ route('clientes.index') }}" class="nav-item {{ request()->routeIs('clientes.*') ? 'active' : '' }}" title="Clientes">
-                    <span class="nav-icon">👤</span>
-                    <span class="nav-label">Clientes</span>
-                </a>
-                <a href="{{ route('proveedores.index') }}" class="nav-item {{ request()->routeIs('proveedores.*') ? 'active' : '' }}" title="Proveedores">
-                    <span class="nav-icon">🏭</span>
-                    <span class="nav-label">Proveedores</span>
-                </a>
-                <a href="{{ route('tecnicos.index') }}" class="nav-item {{ request()->routeIs('tecnicos.*') ? 'active' : '' }}" title="Personal">
-                    <span class="nav-icon">🛠️</span>
-                    <span class="nav-label">Personal</span>
-                </a>
-                <a href="{{ route('caja.index') }}" class="nav-item {{ request()->routeIs('caja.*') ? 'active' : '' }}" title="Caja Fuerte">
+                <a href="{{ route('caja.index') }}" class="nav-item {{ request()->routeIs('caja.*') ? 'active' : '' }}" title="Caja (Ing/Egr)">
                     <span class="nav-icon">💵</span>
-                    <span class="nav-label">Caja Fuerte</span>
+                    <span class="nav-label">Caja (Ing/Egr)</span>
                 </a>
-                <a href="{{ route('cierre.index') }}" class="nav-item {{ request()->routeIs('cierre.*') ? 'active' : '' }}" title="Cierre Diario">
+                <a href="{{ route('cierre.index') }}" class="nav-item {{ request()->routeIs('cierre.*') ? 'active' : '' }}" title="Arqueo / Cierre">
                     <span class="nav-icon">🔒</span>
-                    <span class="nav-label">Cierre Diario</span>
+                    <span class="nav-label">Arqueo / Cierre</span>
                 </a>
-                <a href="{{ route('reportes.index') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}" title="Informes Operativos">
+                <a href="{{ route('reportes.index') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}" title="Info Operativos">
                     <span class="nav-icon">📈</span>
-                    <span class="nav-label">Informes Operativos</span>
-                </a>
-                <a href="{{ route('reportes.financiero.acumulado') }}" class="nav-item {{ request()->routeIs('reportes.financiero.*') ? 'active' : '' }}" title="Informes Financieros">
-                    <span class="nav-icon">💹</span>
-                    <span class="nav-label">Informes Financieros</span>
-                </a>
-                <a href="{{ route('usuarios.index') }}" class="nav-item {{ request()->routeIs('usuarios.*') ? 'active' : '' }}" title="Usuarios del Sistema">
-                    <span class="nav-icon">👨🏻‍💻</span>
-                    <span class="nav-label">Usuarios del Sistema</span>
+                    <span class="nav-label">Info Operativos</span>
                 </a>
                 <a href="{{ route('configuracion.index') }}" class="nav-item {{ request()->routeIs('configuracion.*') ? 'active' : '' }}" title="Empresa">
                     <span class="nav-icon">🏢</span>
@@ -122,17 +114,7 @@
                 </a>
             </nav>
             
-            <!-- User Mini Profile (Fondo) -->
-            <div class="p-3 border-t border-gray-200/40 dark:border-white/5">
-                <form action="{{ route('logout') }}" method="POST" class="m-0 w-full">
-                    @csrf
-                    <button type="submit" class="w-full flex items-center justify-center gap-2 p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-xl transition-colors font-bold text-sm" title="Cerrar Sesión">
-                        <span>🚪</span>
-                        <span class="nav-label">Cerrar Sesión</span>
-                    </button>
-                </form>
-            </div>
-        </aside>
+            </aside>
 
         <!-- CONTENEDOR PRINCIPAL (Margen dinámico según sidebar) -->
         <div class="flex-1 flex flex-col min-w-0 transition-all duration-300" style="margin-left: var(--sidebar-w);">
@@ -174,27 +156,21 @@
 
                     <!-- Notification Bell -->
                     <div class="relative">
-                        <button class="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-colors group">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-yellow-500 group-hover:scale-110 transition-transform">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                            </svg>
+                        <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1e293b]/30 border border-gray-600/30 hover:bg-gray-700/50 transition-colors group text-lg" onclick="document.getElementById('notif-dropdown').classList.toggle('hidden')">
+                            🔔
                         </button>
                     </div>
 
                     <!-- Theme Toggle -->
-                    <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-colors group">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-yellow-500 group-hover:scale-110 transition-transform">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                        </svg>
+                    <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1e293b]/30 border border-gray-600/30 hover:bg-gray-700/50 transition-colors group text-lg">
+                        🌞
                     </button>
                     
                     <!-- Logout -->
                     <form action="{{ route('logout') }}" method="POST" class="m-0 pl-1">
                         @csrf
-                        <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-red-50 hover:border-red-200 dark:hover:bg-red-500/20 dark:hover:border-red-500/30 transition-all group" title="Cerrar Sesión">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                            </svg>
+                        <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all group text-lg" title="Cerrar Sesión">
+                            🚪
                         </button>
                     </form>
                 </div>
