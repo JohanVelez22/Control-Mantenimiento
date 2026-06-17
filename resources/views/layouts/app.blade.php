@@ -53,7 +53,7 @@
         <!-- SIDEBAR DE VIDRIO (Fijo) -->
         <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col">
             <!-- Brand / Logo -->
-            <div class="h-16 flex items-center justify-center border-b border-gray-200/40 dark:border-white/5 shrink-0 px-6 relative transition-all duration-300">
+            <div class="h-16 flex items-center justify-center border-b border-gray-200/40 dark:border-white/5 shrink-0 px-6 relative transition-all duration-150">
                 <span class="text-[11px] font-semibold tracking-[0.15em] text-[#06B6D4] uppercase font-logo text-center w-full">NAVEGACIÓN</span>
             </div>
 
@@ -116,7 +116,7 @@
             </aside>
 
         <!-- CONTENEDOR PRINCIPAL (Margen dinámico según sidebar) -->
-        <div id="main-wrapper" class="flex-1 flex flex-col min-w-0 transition-all duration-300">
+        <div id="main-wrapper" class="flex-1 flex flex-col min-w-0 transition-all duration-150">
             
             <!-- TOPBAR DE VIDRIO -->
             <header id="ts-topbar" class="h-16 px-4 md:px-6 flex items-center justify-between no-print">
@@ -396,7 +396,7 @@
     @if(session('alertas_pendientes') && count(session('alertas_pendientes')) > 0)
     <!-- Modal de Notificaciones Pendientes al Iniciar Sesión -->
     <div id="ts-notif-modal" class="ts-modal-overlay opacity-0 transition-opacity duration-300 z-[200]">
-        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 md:p-8 flex flex-col items-center text-center transition-all duration-300">
+        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 md:p-8 flex flex-col items-center text-center transition-all duration-150">
             <div class="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center mb-4">
                 <span class="text-3xl">🔔</span>
             </div>

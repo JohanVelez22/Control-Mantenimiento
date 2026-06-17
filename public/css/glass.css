@@ -102,7 +102,7 @@ html.dark .glass-card {
   backdrop-filter: blur(28px) saturate(200%);
   -webkit-backdrop-filter: blur(28px) saturate(200%);
   box-shadow: 4px 0 20px rgba(37,99,235,0.08);
-  transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  transition: width 0.15s ease-out, background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
   overflow: hidden;
   position: fixed;
   top: 0; left: 0;
@@ -867,7 +867,7 @@ html.dark .ts-modal-card {
   background: linear-gradient(90deg, #2563EB, #06B6D4, #8B5CF6);
   z-index: 9999; border-radius: 0 3px 3px 0;
   box-shadow: 0 0 12px rgba(37,99,235,0.60);
-  transition: width 0.35s ease; pointer-events: none;
+  transition: width 0.15s ease; pointer-events: none;
 }
 
 /* ─── Scrollbar ──────────────────────────────────────────────────── */
