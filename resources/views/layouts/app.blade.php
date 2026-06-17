@@ -25,7 +25,11 @@
         }
     </script>
     
-    <!-- CSS Propio (Liquid Glass) -->
+    <!-- CSS Librerías: Flatpickr + TomSelect (NECESARIOS para que funcionen) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
+    
+    <!-- CSS Propio (Liquid Glass) - va DESPUÉS para sobreescribir estilos base -->
     <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ time() }}">
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -472,7 +476,8 @@
                 altFormat: "d/m/Y",
                 altInputClass: "glass-input",
                 disableMobile: true,
-                monthSelectorType: "static" // Convierte el feo select nativo en texto elegante
+                monthSelectorType: "static",
+                appendTo: document.body  // Evita desborde dentro de contenedores con overflow
             });
 
             // 2. Tom Select para selects con clase glass-input
@@ -493,7 +498,16 @@
                         maxOptions: 100,
                         dropdownParent: 'body',
                         placeholder: defaultPlaceholder,
-                        controlInput: isNoSearch ? null : undefined
+                        controlInput: isNoSearch ? null : undefined,
+                        allowEmptyOption: true,
+                        render: {
+                            option: function(data, escape) {
+                                return '<div class="ts-option-item">' + escape(data.text) + '</div>';
+                            },
+                            item: function(data, escape) {
+                                return '<div class="ts-item-display">' + escape(data.text) + '</div>';
+                            }
+                        }
                     });
                 }
             });
