@@ -45,7 +45,9 @@ class DashboardController extends Controller
         // Estados Mantenimientos
         $stats = [
             'pendientes' => Mantenimiento::where('estado', 'pendiente')->count(),
-            'terminados' => Mantenimiento::where('estado', 'terminado')->count(),
+            'en_proceso' => Mantenimiento::where('estado', 'en_proceso')->count(),
+            'reparados'  => Mantenimiento::where('estado', 'reparado')->count(),
+            'terminados' => Mantenimiento::whereIn('estado', ['terminado', 'entregado'])->count(),
             'stock_bajo' => \App\Models\Stock::where('cantidad', '<=', 5)->count(),
             'electronica_pendientes' => \App\Models\Electronica::where('estado', 'pendiente')->count(),
         ];
@@ -110,12 +112,12 @@ class DashboardController extends Controller
         $electronicaCorrectivos = Electronica::where('tipo', 'correctivo')->count();
         $electronicaPreventivos = Electronica::where('tipo', 'preventivo')->count();
         // 5 más recientes (cualquier estado) para la tabla del dashboard
-        $recentElec = Electronica::with('tecnico')
+        $recentElec = Electronica::with(['tecnico', 'equipo.cliente'])
             ->orderBy('id', 'desc')
             ->take(5)
             ->get();
         // Pendientes más antiguos para el slide del carrusel
-        $electronicaRecientes = Electronica::with('tecnico')
+        $electronicaRecientes = Electronica::with(['tecnico', 'equipo.cliente'])
             ->where('estado', 'pendiente')
             ->orderBy('fecha_entrada', 'asc')
             ->take(5)

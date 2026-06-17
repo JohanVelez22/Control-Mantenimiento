@@ -5,7 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Electronica;
 use App\Models\Tecnico;
+use App\Models\Equipo;
+use App\Models\Cliente;
+use App\Models\User;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ElectronicasExport;
 
 class ElectronicaController extends Controller
 {
@@ -24,9 +30,15 @@ class ElectronicaController extends Controller
         if ($request->filled('search')) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {
-                $q->where('cliente', 'like', "%{$s}%")
-                  ->orWhere('dispositivo', 'like', "%{$s}%")
-                  ->orWhere('id_orden', 'like', "%{$s}%");
+                $q->whereHas('equipo', function ($q2) use ($s) {
+                    $q2->where('nombre', 'like', "%{$s}%")
+                       ->orWhere('marca', 'like', "%{$s}%")
+                       ->orWhere('modelo', 'like', "%{$s}%")
+                       ->orWhere('serie', 'like', "%{$s}%")
+                       ->orWhereHas('cliente', function ($q3) use ($s) {
+                           $q3->where('nombre', 'like', "%{$s}%");
+                       });
+                })->orWhere('id_orden', 'like', "%{$s}%");
             });
         }
 
@@ -42,21 +54,20 @@ class ElectronicaController extends Controller
     public function create()
     {
         $tecnicos = Tecnico::orderBy('nombre')->get();
+        $equipos = Equipo::with('cliente')->orderBy('nombre')->get();
         $nextOrden = self::nextOrdenId();
-        return view('electronicas.create', compact('tecnicos', 'nextOrden'));
+        return view('electronicas.create', compact('tecnicos', 'equipos', 'nextOrden'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'id_orden'             => 'nullable|string|unique:electronicas,id_orden',
-            'cliente'              => 'required|string|max:255',
-            'dispositivo'          => 'required|string|max:255',
-            'marca'                => 'nullable|string|max:255',
+            'equipo_id'            => 'required|exists:equipos,id',
             'descripcion_problema' => 'required|string',
             'tipo'                 => 'required|in:preventivo,correctivo',
             'costo'                => 'required|numeric|min:0',
-            'estado'               => 'required|in:pendiente,terminado',
+            'estado'               => 'required|in:pendiente,terminado,anulado',
             'fecha_entrada'        => 'required|date',
             'fecha_salida'         => 'nullable|date|after_or_equal:fecha_entrada',
             'tecnico_id'           => 'required|exists:tecnicos,id',
@@ -74,23 +85,29 @@ class ElectronicaController extends Controller
                          ->with('success', "Registro electrónico {$validated['id_orden']} creado correctamente.");
     }
 
+    public function show(Electronica $electronica)
+    {
+        $electronica->load(['equipo.cliente', 'tecnico', 'user', 'stocks', 'abonos']);
+        $stocks_disponibles = \App\Models\Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
+        return view('electronicas.show', compact('electronica', 'stocks_disponibles'));
+    }
+
     public function edit(Electronica $electronica)
     {
         $tecnicos = Tecnico::orderBy('nombre')->get();
-        return view('electronicas.edit', compact('electronica', 'tecnicos'));
+        $equipos = Equipo::with('cliente')->orderBy('nombre')->get();
+        return view('electronicas.edit', compact('electronica', 'tecnicos', 'equipos'));
     }
 
     public function update(Request $request, Electronica $electronica)
     {
         $validated = $request->validate([
             'id_orden'             => 'nullable|string|unique:electronicas,id_orden,' . $electronica->id,
-            'cliente'              => 'required|string|max:255',
-            'dispositivo'          => 'required|string|max:255',
-            'marca'                => 'nullable|string|max:255',
+            'equipo_id'            => 'required|exists:equipos,id',
             'descripcion_problema' => 'required|string',
             'tipo'                 => 'required|in:preventivo,correctivo',
             'costo'                => 'required|numeric|min:0',
-            'estado'               => 'required|in:pendiente,terminado',
+            'estado'               => 'required|in:pendiente,terminado,anulado',
             'fecha_entrada'        => 'required|date',
             'fecha_salida'         => 'nullable|date|after_or_equal:fecha_entrada',
             'tecnico_id'           => 'required|exists:tecnicos,id',
@@ -112,6 +129,34 @@ class ElectronicaController extends Controller
                          ->with('success', 'Registro electrónico eliminado.');
     }
 
+    public function anular(Request $request, Electronica $electronica)
+    {
+        if (auth()->user()->role === 'invitado') {
+            return redirect()->back()->with('error', 'No tienes permisos para anular.');
+        }
+
+        $request->validate([
+            'password_confirm' => 'required'
+        ]);
+
+        $adminPassword = \App\Models\User::where('role', 'admin')->value('password');
+        if (!\Hash::check($request->password_confirm, auth()->user()->password) && 
+            !\Hash::check($request->password_confirm, $adminPassword)) {
+            return redirect()->back()->with('error', 'Contraseña incorrecta.');
+        }
+
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+            $electronica->update(['estado' => 'anulado']);
+            \Illuminate\Support\Facades\DB::commit();
+            return redirect()->back()->with('success', 'Registro electrónico anulado correctamente.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Error anulando electrónica: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al anular.');
+        }
+    }
+
     public function factura(Electronica $electronica)
     {
         return view('electronicas.factura', compact('electronica'));
@@ -127,14 +172,48 @@ class ElectronicaController extends Controller
         if ($request->filled('fecha_fin')) {
             $query->whereDate('fecha_entrada', '<=', $request->fecha_fin);
         }
-        if ($request->filled('estado')) {
+        if ($request->filled('estado') && $request->estado !== 'todos') {
             $query->where('estado', $request->estado);
         }
-        if ($request->filled('tipo')) {
+        if ($request->filled('tipo') && $request->tipo !== 'todos') {
             $query->where('tipo', $request->tipo);
         }
-        if ($request->filled('tecnico_id')) {
+        if ($request->filled('tecnico_id') && $request->tecnico_id !== 'todos') {
             $query->where('tecnico_id', $request->tecnico_id);
+        }
+        if ($request->filled('user_id') && $request->user_id !== 'todos') {
+            $query->where('user_id', $request->user_id);
+        }
+        if ($request->filled('equipo_id') && $request->equipo_id !== 'todos') {
+            $query->where('equipo_id', $request->equipo_id);
+        }
+        if ($request->filled('cliente_id') && $request->cliente_id !== 'todos') {
+            $query->whereHas('equipo', function($q) use ($request) {
+                $q->where('cliente_id', $request->cliente_id);
+            });
+        }
+        if ($request->filled('min_cost')) {
+            $query->where('costo', '>=', $request->min_cost);
+        }
+        if ($request->filled('max_cost')) {
+            $query->where('costo', '<=', $request->max_cost);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('id_orden', 'like', "%{$search}%")
+                  ->orWhereHas('equipo', function($q2) use ($search) {
+                      $q2->where('nombre', 'like', "%{$search}%")
+                         ->orWhere('marca', 'like', "%{$search}%")
+                         ->orWhere('modelo', 'like', "%{$search}%")
+                         ->orWhere('serie', 'like', "%{$search}%")
+                         ->orWhereHas('cliente', function($q3) use ($search) {
+                             $q3->where('nombre', 'like', "%{$search}%")
+                                ->orWhere('identificacion', 'like', "%{$search}%");
+                         });
+                  });
+            });
         }
 
         $totales = [
@@ -142,9 +221,22 @@ class ElectronicaController extends Controller
             'costo'    => (clone $query)->sum('costo'),
         ];
 
-        $registros = $query->with(['tecnico', 'user'])->orderBy('fecha_entrada', 'desc')->paginate(15);
-        $tecnicos = Tecnico::orderBy('nombre')->get();
+        if ($request->get('export') == 'excel') {
+            $electronicas = $query->orderBy('fecha_entrada', 'desc')->get();
+            return Excel::download(new ElectronicasExport($electronicas), 'reporte_electronica.xlsx');
+        }
 
-        return view('electronicas.reportes', compact('registros', 'totales', 'tecnicos'));
+        if ($request->get('export') == 'pdf') {
+            $electronicas = $query->orderBy('fecha_entrada', 'desc')->get();
+            return Pdf::loadView('electronicas.pdf', compact('electronicas'))->download('reporte_electronica.pdf');
+        }
+
+        $registros = $query->with(['tecnico', 'user', 'equipo.cliente'])->orderBy('fecha_entrada', 'desc')->paginate(10);
+        $tecnicos = Tecnico::orderBy('nombre')->get(['id', 'nombre']);
+        $clientes = Cliente::orderBy('nombre')->get(['id', 'nombre', 'identificacion']);
+        $equipos  = Equipo::orderBy('nombre')->get(['id', 'nombre', 'modelo', 'serie']);
+        $usuarios = User::orderBy('name')->get(['id', 'name']);
+
+        return view('electronicas.reportes', compact('registros', 'totales', 'tecnicos', 'clientes', 'equipos', 'usuarios'));
     }
 }

@@ -12,9 +12,7 @@ class Electronica extends Model
 
     protected $fillable = [
         'id_orden',
-        'cliente',
-        'dispositivo',
-        'marca',
+        'equipo_id',
         'descripcion_problema',
         'tipo',
         'costo',
@@ -42,6 +40,21 @@ class Electronica extends Model
         return (int) $this->fecha_entrada->diffInDays($fin);
     }
 
+    public function getTotalAbonadoAttribute()
+    {
+        return $this->abonos()->sum('monto');
+    }
+
+    public function getSaldoPendienteAttribute()
+    {
+        return max(0, $this->costo - $this->total_abonado);
+    }
+
+    public function equipo()
+    {
+        return $this->belongsTo(Equipo::class);
+    }
+
     public function tecnico()
     {
         return $this->belongsTo(Tecnico::class);
@@ -50,5 +63,17 @@ class Electronica extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function stocks()
+    {
+        return $this->belongsToMany(Stock::class, 'electronica_stock')
+                    ->withPivot('cantidad', 'precio_unitario')
+                    ->withTimestamps();
+    }
+
+    public function abonos()
+    {
+        return $this->hasMany(Abono::class);
     }
 }

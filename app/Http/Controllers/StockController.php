@@ -10,13 +10,15 @@ class StockController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Stock::query();
+        $query = Stock::with('proveedor');
 
         if ($request->has('search')) {
             $search = $request->search;
             $query->where('producto', 'like', "%{$search}%")
                   ->orWhere('codigo', 'like', "%{$search}%")
-                  ->orWhere('proveedor', 'like', "%{$search}%");
+                  ->orWhereHas('proveedor', function($q2) use ($search) {
+                      $q2->where('nombre_razon_social', 'like', "%{$search}%");
+                  });
         }
 
         $stocks = $query->orderBy('id', 'desc')->paginate(10);
@@ -29,7 +31,8 @@ class StockController extends Controller
         if (auth()->user()->role === 'invitado') {
             return redirect()->route('stocks.index')->with('error', 'No tienes permisos para crear.');
         }
-        return view('stocks.create');
+        $proveedores = \App\Models\Proveedor::all();
+        return view('stocks.create', compact('proveedores'));
     }
 
     public function store(Request $request)
@@ -39,14 +42,14 @@ class StockController extends Controller
         }
 
         $validated = $request->validate([
-            'codigo' => 'nullable|string|max:100|unique:stocks,codigo',
-            'producto' => 'required|string|max:255',
+            'codigo' => 'nullable|string|max:50|unique:stocks,codigo',
+            'producto' => 'required|string|max:80',
             'cantidad' => 'required|integer|min:0',
-            'proveedor' => 'nullable|string|max:255',
-            'precio_compra' => 'required|numeric|min:0',
+            'proveedor_id' => 'required|integer|exists:proveedores,id',
+            'precio_compra' => 'required|numeric|min:0|decimal:0,2',
             'utilidad' => 'required|numeric|min:0|max:100',
-            'precio_venta' => 'nullable|numeric|min:0',
-            'precio_tecnico' => 'nullable|numeric|min:0',
+            'precio_venta' => 'nullable|numeric|min:0|decimal:0,2',
+            'precio_tecnico' => 'nullable|numeric|min:0|decimal:0,2',
         ]);
 
         Stock::create($validated);
@@ -59,7 +62,8 @@ class StockController extends Controller
         if (auth()->user()->role === 'invitado') {
             return redirect()->route('stocks.index')->with('error', 'No tienes permisos para editar.');
         }
-        return view('stocks.edit', compact('stock'));
+        $proveedores = \App\Models\Proveedor::all();
+        return view('stocks.edit', compact('stock', 'proveedores'));
     }
 
     public function update(Request $request, Stock $stock)
@@ -69,14 +73,14 @@ class StockController extends Controller
         }
 
         $validated = $request->validate([
-            'codigo' => 'nullable|string|max:100|unique:stocks,codigo,' . $stock->id,
-            'producto' => 'required|string|max:255',
+            'codigo' => 'nullable|string|max:50|unique:stocks,codigo,' . $stock->id,
+            'producto' => 'required|string|max:80',
             'cantidad' => 'required|integer|min:0',
-            'proveedor' => 'nullable|string|max:255',
-            'precio_compra' => 'required|numeric|min:0',
+            'proveedor_id' => 'required|integer|exists:proveedores,id',
+            'precio_compra' => 'required|numeric|min:0|decimal:0,2',
             'utilidad' => 'required|numeric|min:0|max:100',
-            'precio_venta' => 'nullable|numeric|min:0',
-            'precio_tecnico' => 'nullable|numeric|min:0',
+            'precio_venta' => 'nullable|numeric|min:0|decimal:0,2',
+            'precio_tecnico' => 'nullable|numeric|min:0|decimal:0,2',
         ]);
 
         // Si se editó la compra o utilidad y se dejaron en blanco la venta, se resetearán a 0 para que el boot los recalcule.
@@ -93,7 +97,15 @@ class StockController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('stocks.index')->with('error', 'Solo el administrador puede eliminar.');
         }
-        $stock->delete();
-        return redirect()->route('stocks.index')->with('success', 'Producto eliminado del inventario.');
+        
+        try {
+            $stock->delete();
+            return redirect()->route('stocks.index')->with('success', 'Producto eliminado del inventario.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->route('stocks.index')->with('error', 'No se puede eliminar este producto porque está asociado a facturas o reparaciones existentes.');
+            }
+            return redirect()->route('stocks.index')->with('error', 'Error al eliminar el producto.');
+        }
     }
 }

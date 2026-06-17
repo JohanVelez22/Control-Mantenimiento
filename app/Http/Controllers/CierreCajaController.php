@@ -12,7 +12,7 @@ class CierreCajaController extends Controller
 {
     public function index()
     {
-        $cierres = CierreCaja::with('user')->orderBy('fecha', 'desc')->paginate(20);
+        $cierres = CierreCaja::with('user')->orderBy('fecha', 'desc')->paginate(10);
 
         // Pre-calcular datos del día actual (aún no cerrado)
         $hoy = now()->toDateString();

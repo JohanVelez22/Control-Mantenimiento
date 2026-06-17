@@ -2,93 +2,101 @@
 
 @section('content')
 <style>
-    /* Fila resaltada al llegar por ancla (#cliente-id) */
-    tr:target {
-        background-color: rgba(59, 130, 246, 0.2) !important;
-        outline: 2px solid #3b82f6;
-    }
+ /* Fila resaltada al llegar por ancla (#cliente-id) */
+ tr:target {
+ background-color: rgba(59, 130, 246, 0.2) !important;
+ outline: 2px solid #3b82f6;
+ }
 </style>
 
-<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
-    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-        <h2 class="text-2xl font-bold">Listado de Clientes</h2>
-        <div class="flex flex-wrap items-center gap-2">
-            <input type="text" id="search-clientes" placeholder="🔍 Buscar..." class="search-input bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus:outline-none w-48">
-            @if(!auth()->user()->isInvitado())
-                <a href="{{ route('clientes.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
-                    ➕ Nuevo Cliente
-                </a>
-            @endif
-        </div>
-    </div>
+<div class="glass-card p-6">
+ <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+ <div>
+ <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
+ <span class="text-3xl">👤</span> Clientes
+ </h2>
+ <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Gestiona el directorio de tus clientes corporativos y personales</p>
+ </div>
+ <div class="flex flex-wrap items-center gap-2">
+  <div class="relative">
+  <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
+  <input type="text" id="search-clientes" placeholder="Buscar cliente..." class="glass-input pl-9 w-48 sm:w-64">
+  </div>
+ @if(!auth()->user()->isInvitado())
+ <a href="{{ route('clientes.create') }}" class="btn-primary">
+ ➕ Nuevo Cliente
+ </a>
+ @endif
+ </div>
+ </div>
 
-    <div class="overflow-x-auto">
-        <table id="tabla-clientes" class="w-full text-left border-collapse responsive-table">
-            <thead>
-                <tr class="bg-gray-200 dark:bg-gray-700 text-center">
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">ID</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Nombre</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Identificación</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Móvil</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Email</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Dirección</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($clientes as $cliente)
-                <tr id="cliente-{{ $cliente->id }}" class="bg-white dark:bg-gray-800 scroll-mt-[6.5rem] hover:bg-gray-100 dark:hover:bg-gray-700 text-center transition-colors duration-500">
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->id }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->nombre }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->identificacion }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->movil }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->email ?? '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $cliente->direccion ?? '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <div class="flex justify-center items-center gap-2 flex-wrap">
-                            @if(!auth()->user()->isInvitado())
-                                <a href="{{ route('clientes.edit', $cliente->id) }}" class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20 text-sm">
-                                    ✏️ Editar
-                                </a>
-                                @if(auth()->user()->isAdmin())
-                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar al cliente '{{ $cliente->nombre }}'? Esta acción no se puede deshacer.">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-red-500/20 text-sm">
-                                            🗑️ Eliminar
-                                        </button>
-                                    </form>
-                                @endif
-                            @else
-                                <span class="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-1 text-sm cursor-default" title="Solo lectura">
-                                    👁️ <span class="hidden md:inline">Lectura</span>
-                                </span>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="p-12 text-center">
-                        <div class="flex flex-col items-center justify-center space-y-4">
-                            <div class="text-6xl">👤</div>
-                            <h3 class="text-xl font-bold text-gray-700 dark:text-gray-300">No hay clientes registrados</h3>
-                            <p class="text-gray-500 dark:text-gray-400 max-w-xs mx-auto">Registra a tu primer cliente para comenzar a gestionar sus equipos y mantenimientos.</p>
-                            @if(!auth()->user()->isInvitado())
-                                <a href="{{ route('clientes.create') }}" class="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/30">
-                                    ➕ Registrar Primer Cliente
-                                </a>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-    <div class="mt-4">
-        {{ $clientes->appends(request()->query())->links() }}
-    </div>
+ <div class="overflow-x-auto pb-2">
+ <table id="tabla-clientes" class="ts-table responsive-table">
+ <thead>
+ <tr>
+ <th class="w-16 text-center">ID</th>
+ <th>Nombre</th>
+ <th>Identificación</th>
+ <th>Móvil</th>
+ <th>Email</th>
+ <th>Dirección</th>
+ <th class="text-center w-32">Acciones</th>
+ </tr>
+ </thead>
+ <tbody>
+ @forelse($clientes as $cliente)
+ <tr id="cliente-{{ $cliente->id }}" class="scroll-mt-[6.5rem]">
+ <td class="text-center font-bold text-slate-800 dark:text-white">{{ $cliente->id }}</td>
+ <td class="font-bold text-slate-800 dark:text-white">{{ $cliente->nombre }}</td>
+ <td class="font-mono text-gray-600 dark:text-gray-300">{{ $cliente->identificacion }}</td>
+ <td class="font-mono">{{ $cliente->movil }}</td>
+ <td>{{ $cliente->email ?? '-' }}</td>
+ <td>{{ $cliente->direccion ?? '-' }}</td>
+ <td class="text-center">
+ <div class="flex justify-center items-center gap-1 flex-wrap">
+ @if(!auth()->user()->isInvitado())
+ <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">
+ ✏️
+ </a>
+ @if(auth()->user()->isAdmin())
+ <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar al cliente '{{ $cliente->nombre }}'? Esta acción no se puede deshacer.">
+ @csrf
+ @method('DELETE')
+ <button type="submit" class="btn-danger px-2.5 py-1.5 text-xs" title="Eliminar">
+ 🗑️
+ </button>
+ </form>
+ @endif
+ @else
+ <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed" title="Solo lectura">
+ 👁️ Lectura
+ </span>
+ @endif
+ </div>
+ </td>
+ </tr>
+ @empty
+ <tr>
+ <td colspan="7" class="p-16 text-center">
+ <div class="flex flex-col items-center gap-3">
+ <div class="text-6xl drop-shadow-md mb-2">👤</div>
+ <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin clientes registrados</h3>
+ <p class="text-gray-500 font-medium max-w-sm mb-4">Registra a tu primer cliente para comenzar a gestionar sus equipos y mantenimientos.</p>
+ @if(!auth()->user()->isInvitado())
+ <a href="{{ route('clientes.create') }}" class="btn-primary">
+ ➕ Registrar Primer Cliente
+ </a>
+ @endif
+ </div>
+ </td>
+ </tr>
+ @endforelse
+ </tbody>
+ </table>
+ </div>
+ <div class="mt-6 flex justify-end">
+ {{ $clientes->appends(request()->query())->links() }}
+ </div>
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-clientes', 'tabla-clientes'));</script>
 @endsection

@@ -35,11 +35,11 @@ class TecnicoController extends Controller
         }
 
         $validated = $request->validate([
-            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:255',
-            'identificacion' => 'required|string|max:50|unique:tecnicos',
-            'especialidad' => 'required|string|max:255',
-            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:20',
-            'email' => 'nullable|email|max:255',
+            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:80',
+            'identificacion' => 'required|string|max:30|unique:tecnicos',
+            'especialidad' => 'required|string|max:80',
+            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
+            'email' => 'nullable|email|max:100',
             'direccion' => 'nullable|string|max:500',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
@@ -69,11 +69,11 @@ class TecnicoController extends Controller
         }
 
         $validated = $request->validate([
-            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:255',
-            'identificacion' => 'required|string|max:50|unique:tecnicos,identificacion,' . $tecnico->id,
-            'especialidad' => 'required|string|max:255',
-            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:20',
-            'email' => 'nullable|email|max:255',
+            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:80',
+            'identificacion' => 'required|string|max:30|unique:tecnicos,identificacion,' . $tecnico->id,
+            'especialidad' => 'required|string|max:80',
+            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
+            'email' => 'nullable|email|max:100',
             'direccion' => 'nullable|string|max:500',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);

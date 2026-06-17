@@ -14,6 +14,7 @@ class MovimientoCaja extends Model
         'tipo_movimiento',
         'tipo_pago',
         'monto',
+        'monto_total',
         'descripcion',
         'estado',
         'user_id',
@@ -22,6 +23,14 @@ class MovimientoCaja extends Model
     protected function casts(): array
     {
         return ['fecha' => 'date'];
+    }
+
+    public function getSaldoPendienteAttribute()
+    {
+        if ($this->monto_total && $this->monto_total > $this->monto) {
+            return $this->monto_total - $this->monto;
+        }
+        return 0;
     }
 
     public function concepto()

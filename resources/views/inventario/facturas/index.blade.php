@@ -1,128 +1,219 @@
 @extends('layouts.app')
+
 @section('content')
-<div class="glass-card p-6 md:p-8">
-    <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
-        <div>
-            <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
-                <span class="text-3xl">🧾</span> Facturas de Inventario
-            </h2>
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Historial de compras y ventas de artículos</p>
-        </div>
-        <div class="flex flex-wrap gap-3">
-            @if(!auth()->user()->isInvitado())
-            <a href="{{ route('inventario.compra.create') }}" class="btn-primary shadow-orange-500/30 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border-none">
-                📦 Nueva Compra
-            </a>
-            <a href="{{ route('inventario.venta.create') }}" class="btn-primary shadow-emerald-500/30 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-none">
-                🛒 Nueva Venta
-            </a>
-            @endif
-        </div>
-    </div>
 
-    {{-- Filtros --}}
-    <form method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-4 bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm">
-        <select name="tipo" class="glass-input w-auto font-semibold">
-            <option value="">Todos los tipos</option>
-            <option value="compra" {{ request('tipo') === 'compra' ? 'selected' : '' }}>📦 Compras</option>
-            <option value="venta"  {{ request('tipo') === 'venta'  ? 'selected' : '' }}>🛒 Ventas</option>
-        </select>
-        <select name="estado" class="glass-input w-auto font-semibold">
-            <option value="">Todos los estados</option>
-            <option value="emitida"        {{ request('estado') === 'emitida'        ? 'selected' : '' }}>✅ Emitida</option>
-            <option value="pendiente_pago" {{ request('estado') === 'pendiente_pago' ? 'selected' : '' }}>⏳ Pendiente</option>
-            <option value="anulada"        {{ request('estado') === 'anulada'        ? 'selected' : '' }}>🚫 Anulada</option>
-        </select>
-        <div class="flex items-center gap-2">
-            <input type="date" name="fecha_desde" value="{{ request('fecha_desde') }}" class="glass-input w-auto text-sm">
-            <span class="text-gray-400 text-sm">a</span>
-            <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta') }}" class="glass-input w-auto text-sm">
-        </div>
-        <button type="submit" class="btn-primary py-2 px-4 shadow-blue-500/20 text-sm">Filtrar</button>
-        <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-sm">Limpiar</a>
-    </form>
 
-    <div class="overflow-x-auto rounded-2xl border border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-md">
-        <table class="ts-table">
-            <thead>
-                <tr>
-                    <th class="text-center">Número</th>
-                    <th class="text-center">Tipo</th>
-                    <th>Entidad (Cliente/Prov.)</th>
-                    <th class="text-center">Fecha</th>
-                    <th class="text-right">Total</th>
-                    <th class="text-right">Pagado</th>
-                    <th class="text-center">Estado</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($facturas as $f)
-                <tr class="{{ $f->estado === 'anulada' ? 'row-anulado' : '' }}">
-                    <td class="text-center font-mono font-bold text-sm text-slate-700 dark:text-slate-300">{{ $f->numero_factura }}</td>
-                    <td class="text-center">
-                        <span class="pill {{ $f->tipo_movimiento === 'compra' ? 'bg-orange-100 text-orange-800 border-orange-200' : 'bg-emerald-100 text-emerald-800 border-emerald-200' }} dark:bg-opacity-20 dark:border-opacity-30">
-                            {{ $f->tipo_movimiento === 'compra' ? '📦 Compra' : '🛒 Venta' }}
-                        </span>
-                    </td>
-                    <td class="font-bold text-slate-800 dark:text-white">
-                        {{ $f->facturable->nombre_razon_social ?? $f->facturable->nombre ?? '—' }}
-                    </td>
-                    <td class="text-center font-medium">{{ $f->fecha->format('d/m/Y') }}</td>
-                    <td class="text-right font-black text-slate-800 dark:text-white text-base">
-                        ${{ number_format($f->total_documento, 0, ',', '.') }}
-                    </td>
-                    <td class="text-right">
-                        <span class="font-bold text-sm {{ $f->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
-                            ${{ number_format($f->total_pagado, 0, ',', '.') }}
-                        </span>
-                        @if($f->saldo_pendiente > 0 && $f->estado !== 'anulada')
-                            <div class="text-[10px] text-red-500 uppercase tracking-tight mt-0.5 font-bold">Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}</div>
-                        @endif
-                    </td>
-                    <td class="text-center">
-                        @php
-                            $stClass = 'pill-pending';
-                            if($f->estado === 'emitida') $stClass = 'pill-done';
-                            if($f->estado === 'anulada') $stClass = 'pill-anulado';
-                            
-                            $label = ucfirst(str_replace('_', ' ', $f->estado));
-                            if($f->estado === 'pendiente_pago') $label = 'Pendiente';
-                        @endphp
-                        <span class="pill {{ $stClass }}">
-                            {{ $label }}
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <div class="flex justify-center gap-2">
-                            <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Ver Detalles">👁️ Ver</a>
-                            <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost px-3 py-1.5 text-xs" title="Imprimir">🖨️</a>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="8" class="p-16 text-center">
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="text-6xl drop-shadow-md mb-2">🧾</div>
-                            <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin facturas registradas</h3>
-                            <p class="text-gray-500 font-medium max-w-sm mb-4">No se han realizado compras ni ventas de inventario.</p>
-                            @if(!auth()->user()->isInvitado())
-                            <div class="flex gap-3 justify-center">
-                                <a href="{{ route('inventario.compra.create') }}" class="btn-primary bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border-none shadow-orange-500/30">📦 Comprar</a>
-                                <a href="{{ route('inventario.venta.create') }}"  class="btn-primary bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-none shadow-emerald-500/30">🛒 Vender</a>
-                            </div>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-    
-    <div class="mt-6 flex justify-end">
-        {{ $facturas->appends(request()->query())->links() }}
-    </div>
+
+<div class="glass-card p-6">
+ <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+ <div>
+ <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
+ <span class="text-3xl">🧾</span> Facturas de Inventario
+ </h2>
+ <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Historial de compras y ventas de artículos</p>
+ </div>
+ <div class="flex flex-wrap gap-3">
+ @if(!auth()->user()->isInvitado())
+ <a href="{{ route('inventario.compra.create') }}" class="btn-compra" style="padding: 9px 18px; font-size: 13px;">
+ 📦 Nueva Compra
+ </a>
+ <a href="{{ route('inventario.venta.create') }}" class="btn-venta" style="padding: 9px 18px; font-size: 13px;">
+ 🛒 Nueva Venta
+ </a>
+ @endif
+ </div>
+ </div>
+
+ {{-- Filtros --}}
+ <form method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-4 bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm">
+ <select name="tipo" class="glass-input w-48 font-semibold">
+ <option value="">Todos los tipos</option>
+ <option value="compra" {{ request('tipo') === 'compra' ? 'selected' : '' }}>📦 Compras</option>
+ <option value="venta" {{ request('tipo') === 'venta' ? 'selected' : '' }}>🛒 Ventas</option>
+ </select>
+ <select name="estado" class="glass-input w-48 font-semibold">
+ <option value="">Todos los estados</option>
+ <option value="emitida" {{ request('estado') === 'emitida' ? 'selected' : '' }}>✅ Emitida</option>
+ <option value="pendiente_pago" {{ request('estado') === 'pendiente_pago' ? 'selected' : '' }}>⏳ Pendiente</option>
+ <option value="anulada" {{ request('estado') === 'anulada' ? 'selected' : '' }}>🚫 Anulada</option>
+ </select>
+ <div class="flex items-center gap-2">
+ <input type="date" name="fecha_desde" value="{{ request('fecha_desde', date('Y-m-01')) }}" class="glass-input w-44">
+ <span class="text-gray-400 text-sm">a</span>
+ <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta', date('Y-m-d')) }}" class="glass-input w-44">
+ </div>
+ <button type="submit" class="btn-primary py-2 px-4 text-sm">🌪️ Filtrar</button>
+ <a href="{{ route('inventario.facturas') }}" class="btn-clean text-sm">🧹 Limpiar</a>
+ </form>
+
+ <div class="overflow-x-auto pb-2">
+ <table class="ts-table">
+ <thead>
+ <tr>
+ <th class="text-center">Número</th>
+ <th class="text-center">Tipo</th>
+ <th>Entidad (Cliente/Prov.)</th>
+ <th class="text-center">Fecha</th>
+ <th class="text-right">Total</th>
+ <th class="text-right">Pagado</th>
+ <th class="text-center">Estado</th>
+ <th class="text-center">Acciones</th>
+ </tr>
+ </thead>
+ <tbody>
+ @forelse($facturas as $f)
+ <tr class="{{ $f->estado === 'anulada' ? 'row-anulado' : '' }}">
+ <td class="text-center font-mono font-bold text-sm text-slate-700 dark:text-slate-300">{{ $f->numero_factura }}</td>
+ <td class="text-center">
+ <span class="pill {{ $f->tipo_movimiento === 'compra' ? 'pill-pending' : 'pill-done' }}">
+ {{ $f->tipo_movimiento === 'compra' ? '📦 Compra' : '🛒 Venta' }}
+ </span>
+ </td>
+ <td class="font-bold text-slate-800 dark:text-white">
+ {{ $f->facturable->nombre_razon_social ?? $f->facturable->nombre ?? '—' }}
+ </td>
+ <td class="text-center font-medium">{{ $f->fecha->format('d/m/Y') }}</td>
+ <td class="text-right font-black text-slate-800 dark:text-white text-base">
+ ${{ number_format($f->total_documento, 0, ',', '.') }}
+ </td>
+ <td class="text-right">
+ <span class="font-bold text-sm {{ $f->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
+ ${{ number_format($f->total_pagado, 0, ',', '.') }}
+ </span>
+ @if($f->saldo_pendiente > 0 && $f->estado !== 'anulada')
+ <div class="text-[10px] text-red-500 uppercase tracking-tight mt-0.5 font-bold">Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}</div>
+ @endif
+ </td>
+ <td class="text-center">
+ @php
+ $stClass = 'pill-pending';
+ if($f->estado === 'emitida') $stClass = 'pill-done';
+ if($f->estado === 'anulada') $stClass = 'pill-anulado';
+ 
+ $label = ucfirst(str_replace('_', ' ', $f->estado));
+ if($f->estado === 'pendiente_pago') $label = 'Pendiente';
+ @endphp
+ <span class="pill {{ $stClass }}">
+ {{ $label }}
+ </span>
+ </td>
+ <td class="text-center">
+ <div class="flex justify-center md:justify-end gap-1.5 flex-wrap">
+ <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Ver Detalles">👁️</a>
+ <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs" title="Imprimir">🖨️</a>
+ 
+ @if(!auth()->user()->isInvitado())
+ <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600 border-yellow-500/20 hover:bg-yellow-500/10" title="Editar">✏️</a>
+ 
+ @if($f->estado !== 'anulada')
+ <form action="{{ route('inventario.facturas.anular', $f->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Seguro que deseas anular esta factura? El inventario se revertirá.');">
+ @csrf
+ <button type="submit" class="btn-ghost px-2.5 py-1.5 text-xs text-orange-600 border-orange-500/20 hover:bg-orange-500/10" title="Anular">🚫</button>
+ </form>
+ @endif
+
+ @if(auth()->user()->isAdmin())
+ <form id="delete-form-{{$f->id}}" action="{{ route('inventario.facturas.destroy', $f->id) }}" method="POST" class="hidden">
+ @csrf
+ @method('DELETE')
+ <input type="hidden" name="password_confirm" id="pwd-hidden-{{$f->id}}">
+ </form>
+ <button type="button" onclick="openPwdModal('{{$f->id}}')" class="btn-danger px-2.5 py-1.5 text-xs" title="Eliminar definitivamente">🗑️</button>
+ @endif
+ @endif
+ </div>
+ </td>
+ </tr>
+ @empty
+ <tr>
+ <td colspan="8" class="p-16 text-center">
+ <div class="flex flex-col items-center gap-3">
+ <div class="text-6xl drop-shadow-md mb-2">🧾</div>
+ <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin facturas registradas</h3>
+ <p class="text-gray-500 font-medium max-w-sm mb-4">No se han realizado compras ni ventas de inventario.</p>
+ @if(!auth()->user()->isInvitado())
+ <div class="flex gap-3 justify-center">
+ <a href="{{ route('inventario.compra.create') }}" class="btn-compra" style="padding: 9px 18px; font-size: 13px;">📦 Comprar</a>
+ <a href="{{ route('inventario.venta.create') }}" class="btn-venta" style="padding: 9px 18px; font-size: 13px;">🛒 Vender</a>
+ </div>
+ @endif
+ </div>
+ </td>
+ </tr>
+ @endforelse
+ </tbody>
+ </table>
+ </div>
+ 
+ <div class="mt-6 flex justify-end">
+ {{ $facturas->appends(request()->query())->links() }}
+ </div>
 </div>
+
+<!-- Modal para pedir Contraseña (ELIMINAR DEFINITIVO) -->
+<div id="pwd-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+ <div class="ts-modal-card scale-95 opacity-0" id="pwd-modal-card">
+ <div class="p-6">
+ <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
+ 🗑️
+ </div>
+ <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Factura</h3>
+ <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+ Esta acción eliminará los registros de caja vinculados y revertirá el inventario de manera forzada. 
+ Ingresa tu contraseña de administrador para confirmar.
+ </p>
+ 
+ <div class="mb-6">
+ <input type="password" id="pwd-input" required placeholder="Contraseña de administrador..." class="glass-input w-full text-center tracking-widest text-lg py-3" onkeypress="if(event.key === 'Enter') confirmPwdModal()">
+ </div>
+ 
+ <div class="flex gap-3">
+ <button type="button" onclick="closePwdModal()" class="flex-1 btn-ghost justify-center">
+ Cancelar
+ </button>
+ <button type="button" onclick="confirmPwdModal()" class="flex-1 btn-danger justify-center font-bold">
+ Eliminar
+ </button>
+ </div>
+ </div>
+ </div>
+</div>
+
+<script>
+ let currentDeleteId = null;
+
+ function openPwdModal(id) {
+ currentDeleteId = id;
+ const modal = document.getElementById('pwd-modal');
+ const card = document.getElementById('pwd-modal-card');
+ document.getElementById('pwd-input').value = '';
+ modal.classList.remove('hidden');
+ setTimeout(() => {
+ modal.classList.remove('opacity-0');
+ card.classList.remove('scale-95', 'opacity-0');
+ document.getElementById('pwd-input').focus();
+ }, 10);
+ }
+ 
+ function confirmPwdModal() {
+ const pwd = document.getElementById('pwd-input').value;
+ if(!pwd) {
+ alert('Por favor ingresa la contraseña.');
+ return;
+ }
+ document.getElementById('pwd-hidden-' + currentDeleteId).value = pwd;
+ document.getElementById('delete-form-' + currentDeleteId).submit();
+ }
+
+ function closePwdModal() {
+ const modal = document.getElementById('pwd-modal');
+ const card = document.getElementById('pwd-modal-card');
+ modal.classList.add('opacity-0');
+ card.classList.add('scale-95', 'opacity-0');
+ setTimeout(() => {
+ modal.classList.add('hidden');
+ currentDeleteId = null;
+ }, 300);
+ }
+</script>
 @endsection

@@ -37,10 +37,10 @@ class ClienteController extends Controller
         }
 
         $validated = $request->validate([
-            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:255',
-            'identificacion' => 'required|string|max:50|unique:clientes',
-            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:20',
-            'email' => 'nullable|email|max:255',
+            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:80',
+            'identificacion' => 'required|string|max:30|unique:clientes',
+            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
+            'email' => 'nullable|email|max:100',
             'direccion' => 'nullable|string|max:500'
         ]);
 
@@ -66,10 +66,10 @@ class ClienteController extends Controller
         }
 
         $validated = $request->validate([
-            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:255',
-            'identificacion' => 'required|string|max:50|unique:clientes,identificacion,' . $cliente->id,
-            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:20',
-            'email' => 'nullable|email|max:255',
+            'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:80',
+            'identificacion' => 'required|string|max:30|unique:clientes,identificacion,' . $cliente->id,
+            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
+            'email' => 'nullable|email|max:100',
             'direccion' => 'nullable|string|max:500'
         ]);
 

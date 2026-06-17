@@ -37,12 +37,12 @@ class EquipoController extends Controller
         }
 
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'marca' => 'required|string|max:255',
-            'modelo' => 'required|string|max:255',
-            'serie' => 'required|string|max:255|unique:equipos',
-            'cliente_id' => 'required|exists:clientes,id',
-            'observacion' => 'nullable|string|max:1000'
+            'nombre' => 'required|string|max:80',
+            'marca' => 'required|string|max:80',
+            'modelo' => 'required|string|max:80',
+            'serie' => 'required|string|max:80|unique:equipos',
+            'cliente_id' => 'required|integer|exists:clientes,id',
+            'observacion' => 'nullable|string|max:500'
         ]);
 
         $validated['user_id'] = Auth::id();
@@ -69,12 +69,12 @@ class EquipoController extends Controller
         }
 
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'marca' => 'required|string|max:255',
-            'modelo' => 'required|string|max:255',
-            'serie' => 'required|string|max:255|unique:equipos,serie,' . $equipo->id,
-            'cliente_id' => 'required|exists:clientes,id',
-            'observacion' => 'nullable|string|max:1000'
+            'nombre' => 'required|string|max:80',
+            'marca' => 'required|string|max:80',
+            'modelo' => 'required|string|max:80',
+            'serie' => 'required|string|max:80|unique:equipos,serie,' . $equipo->id,
+            'cliente_id' => 'required|integer|exists:clientes,id',
+            'observacion' => 'nullable|string|max:500'
         ]);
 
         $equipo->update($validated);

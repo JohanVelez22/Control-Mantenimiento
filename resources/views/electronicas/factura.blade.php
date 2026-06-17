@@ -1,281 +1,95 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Factura POS — {{ $electronica->id_orden }}</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: DejaVu Sans, Helvetica, Arial, sans-serif;
-            font-size: 8.5pt;
-            line-height: 1.35;
-            margin: 0;
-            padding: 10px 8px 14px;
-            color: #111;
-            background: #fff;
-        }
-        .ticket { max-width: 100%; margin: 0 auto; }
+@extends('layouts.print')
 
-        .brand {
-            text-align: center;
-            padding-bottom: 10px;
-            margin-bottom: 8px;
-            border-bottom: 2px solid #111;
-        }
-        .brand-name {
-            margin: 0;
-            font-size: 11pt;
-            font-weight: 800;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
-        .brand-tag {
-            margin: 4px 0 0;
-            font-size: 7.5pt;
-            font-weight: 600;
-            color: #333;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-        .brand-meta {
-            margin: 8px 0 0;
-            font-size: 7pt;
-            color: #444;
-            line-height: 1.45;
-        }
-        .brand-meta p { margin: 1px 0; }
+@section('title', 'Factura ' . $electronica->id_orden)
 
-        /* TICKET Nº y orden en una sola línea (misma fila) */
-        .ticket-order-bar {
-            display: table;
-            width: 100%;
-            margin: 10px 0 8px;
-            padding: 8px 6px;
-            background: #f3f4f6;
-            border: 1px solid #111;
-            border-radius: 2px;
-        }
-        .ticket-order-bar .lbl {
-            display: table-cell;
-            vertical-align: middle;
-            white-space: nowrap;
-            font-weight: 700;
-            font-size: 8pt;
-            letter-spacing: 0.06em;
-            width: 1%;
-            padding-right: 6px;
-        }
-        .ticket-order-bar .ord {
-            display: table-cell;
-            vertical-align: middle;
-            text-align: right;
-            font-weight: 800;
-            font-size: 12pt;
-            letter-spacing: 0.04em;
-        }
+@section('watermark_class', $electronica->estado === 'anulado' ? 'anulado' : '')
 
-        .meta-table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 7.5pt; }
-        .meta-table td { padding: 3px 0; vertical-align: top; }
-        .meta-table td:first-child {
-            font-weight: 700;
-            width: 38%;
-            color: #222;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
-        .meta-table td:last-child { text-align: right; }
+@section('doc_title', 'ORDEN DE ELECTRÓNICA - ' . $electronica->id_orden)
 
-        .section-title {
-            text-align: center;
-            font-size: 7.5pt;
-            font-weight: 800;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin: 12px 0 6px;
-            padding: 4px 0;
-            border-top: 1px dashed #333;
-            border-bottom: 1px dashed #333;
-        }
-
-        .detail-box {
-            border: 1px solid #333;
-            padding: 8px 6px;
-            margin: 6px 0 10px;
-            background: #fafafa;
-        }
-        .detail-box p { margin: 0 0 5px; font-size: 7.5pt; }
-        .detail-box p:last-child { margin-bottom: 0; }
-        .detail-box .k { font-weight: 700; }
-
-        /* Observaciones: centrado y mayúsculas */
-        .obs-wrap {
-            margin: 12px 0 10px;
-            padding: 10px 6px;
-            border: 1px dashed #333;
-            text-align: center;
-        }
-        .obs-title {
-            font-size: 7.5pt;
-            font-weight: 800;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin: 0 0 8px;
-            color: #111;
-        }
-        .obs-text {
-            margin: 0;
-            font-size: 7.5pt;
-            line-height: 1.45;
-            text-transform: uppercase;
-            text-align: center;
-            color: #222;
-        }
-
-        .total-wrap {
-            margin: 12px 0 10px;
-            padding: 10px 8px;
-            border-top: 2px solid #111;
-            border-bottom: 2px solid #111;
-            color: #111;
-        }
-        .total-wrap table { width: 100%; border-collapse: collapse; }
-        .total-wrap td { font-size: 10pt; font-weight: 800; padding: 0; }
-        .total-wrap td:last-child { text-align: right; font-size: 11pt; }
-
-        .code-block {
-            text-align: center;
-            margin: 10px 0 6px;
-            padding-top: 6px;
-            border-top: 1px dashed #666;
-        }
-        .code-bars {
-            font-family: DejaVu Sans Mono, Courier New, monospace;
-            font-size: 16pt;
-            letter-spacing: 0;
-            line-height: 1;
-            color: #111;
-        }
-        .code-id { margin: 4px 0 0; font-size: 7.5pt; letter-spacing: 0.15em; font-weight: 600; }
-
-        .footer {
-            text-align: center;
-            font-size: 6.5pt;
-            color: #444;
-            line-height: 1.45;
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px solid #ccc;
-        }
-        .footer .thanks {
-            margin: 6px 0 4px;
-            font-weight: 800;
-            font-size: 7pt;
-            letter-spacing: 0.06em;
-        }
-
-        /* Marcas de agua para impresión */
-        .watermark-container { position: relative; }
-        .watermark-container.anulado::after {
-            content: "ANULADO";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 5rem;
-            font-weight: 900;
-            color: rgba(239, 68, 68, 0.15);
-            z-index: 1000;
-            pointer-events: none;
-            white-space: nowrap;
-        }
-        @media print {
-            .watermark-container.anulado::after {
-                color: rgba(200, 0, 0, 0.2) !important;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="ticket watermark-container {{ $electronica->estado === 'anulado' ? 'anulado' : '' }}">
-        <header class="brand">
-            <p class="brand-name">Taller De Soporte</p>
-            <p class="brand-tag">Servicio Técnico Especializado</p>
-            <div class="brand-meta">
-                <p>NIT: 900.123.456-7</p>
-                <p>Tel: +57 300 000 0000</p>
-                <p>Dir: Calle Falsa 123, Local 4</p>
-            </div>
-        </header>
-
-        <div class="ticket-order-bar">
-            <span class="lbl">ORDEN Nº</span>
-            <span class="ord">{{ $electronica->id_orden }}</span>
-        </div>
-
-        <table class="meta-table">
-            <tr>
-                <td>Emisión</td>
-                <td>{{ now()->format('d/m/Y h:i A') }}</td>
-            </tr>
-            <tr>
-                <td>Estado</td>
-                <td style="text-transform: uppercase; font-weight: 700;">{{ $electronica->estado }}</td>
-            </tr>
-            <tr>
-                <td>Ingreso</td>
-                <td>{{ $electronica->fecha_entrada ? \Carbon\Carbon::parse($electronica->fecha_entrada)->format('d/m/Y') : '—' }}</td>
-            </tr>
-            <tr>
-                <td>Salida</td>
-                <td>{{ $electronica->fecha_salida ? \Carbon\Carbon::parse($electronica->fecha_salida)->format('d/m/Y') : '—' }}</td>
-            </tr>
-        </table>
-
-        <p class="section-title">Datos del cliente</p>
-        <table class="meta-table">
-            <tr>
-                <td>Cliente</td>
-                <td>{{ $electronica->cliente ?? 'N/A' }}</td>
-            </tr>
-            <tr>
-                <td>Técnico</td>
-                <td>{{ $electronica->tecnico->nombre ?? 'N/A' }}</td>
-            </tr>
-        </table>
-
-        <p class="section-title">Detalle del servicio</p>
-        <div class="detail-box">
-            <p><span class="k">Dispositivo:</span> {{ $electronica->dispositivo ?? 'N/A' }}</p>
-            <p><span class="k">Marca / modelo:</span> {{ trim($electronica->marca ?? '—') }}</p>
-            <p style="margin-top: 6px; padding-top: 6px; border-top: 1px dotted #999; white-space: nowrap;">
-                <span class="k">Servicio:</span> {{ strtoupper($electronica->tipo) }}
-            </p>
-        </div>
-
-        <div class="obs-wrap">
-            <p class="obs-title">Descripción Problema</p>
-            <p class="obs-text">{{ \Illuminate\Support\Str::upper($electronica->descripcion_problema ?: 'Sin descripción.') }}</p>
-        </div>
-
-        <div class="total-wrap">
-            <table>
-                <tr>
-                    <td>TOTAL A PAGAR</td>
-                    <td>${{ number_format($electronica->costo, 0, ',', '.') }}</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="code-block">
-            <div class="code-bars">||||||||||||||||||||||</div>
-            <p class="code-id">{{ $electronica->id_orden }}</p>
-        </div>
-
-        <footer class="footer">
-            <p>Registrado por: <strong>{{ $electronica->user->name ?? 'Sistema' }}</strong></p>
-            <p class="thanks">Gracias por preferirnos</p>
-            <p>Conserve este comprobante para garantías o reclamos (válido según políticas del taller).</p>
-        </footer>
+@section('content')
+<div class="info-grid">
+    <div class="info-col">
+        <p><strong>Cliente:</strong> {{ $electronica->equipo->cliente->nombre ?? 'N/A' }}</p>
+        <p><strong>Teléfono:</strong> {{ $electronica->equipo->cliente->telefono ?? 'N/A' }}</p>
+        <p><strong>Técnico:</strong> {{ $electronica->tecnico->nombre ?? 'N/A' }}</p>
     </div>
-</body>
-</html>
+    <div class="info-col">
+        <p><strong>Fecha Ingreso:</strong> {{ $electronica->fecha_entrada ? \Carbon\Carbon::parse($electronica->fecha_entrada)->format('d/m/Y') : '—' }}</p>
+        <p><strong>Fecha Emisión:</strong> {{ now()->format('d/m/Y h:i A') }}</p>
+        <p><strong>Estado:</strong> <span style="text-transform: uppercase;">{{ $electronica->estado }}</span></p>
+    </div>
+</div>
+
+<div style="margin-bottom: 15px;">
+    <strong>Detalles del Dispositivo:</strong><br>
+    Equipo: {{ $electronica->equipo->nombre ?? 'N/A' }} | 
+    Marca/Modelo: {{ trim(($electronica->equipo->marca ?? '') . ' ' . ($electronica->equipo->modelo ?? '')) ?: '—' }} | 
+    Serie: {{ $electronica->equipo->serie ?? 'N/A' }}
+</div>
+
+<div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; background: #fafafa;">
+    <strong>Falla Principal:</strong> {{ strtoupper($electronica->falla_reportada ?: 'Sin reporte de falla.') }}<br>
+    <strong>Diagnóstico / Problema:</strong> {{ strtoupper($electronica->descripcion_problema ?: 'Pendiente de diagnóstico.') }}
+</div>
+
+@if($electronica->stocks->count() > 0)
+    <p class="font-bold mb-4">Repuestos / Componentes Utilizados:</p>
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th class="text-center" style="width: 10%;">CANT</th>
+                <th>DESCRIPCIÓN</th>
+                <th class="text-right" style="width: 20%;">V. UNITARIO</th>
+                <th class="text-right" style="width: 20%;">SUBTOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($electronica->stocks as $stock)
+            <tr>
+                <td class="text-center">{{ $stock->pivot->cantidad }}</td>
+                <td>{{ $stock->producto }}</td>
+                <td class="text-right">${{ number_format($stock->pivot->precio_unitario, 0, ',', '.') }}</td>
+                <td class="text-right">${{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+@endif
+
+<div class="clearfix">
+    <table class="totals">
+        <tr>
+            <td class="lbl">Costo Total Estimado:</td>
+            <td class="val">${{ number_format($electronica->costo, 0, ',', '.') }}</td>
+        </tr>
+        @if($electronica->abonos->count() > 0)
+            <tr>
+                <td class="lbl">Total Abonado:</td>
+                <td class="val" style="color: #c00;">- ${{ number_format($electronica->total_abonado, 0, ',', '.') }}</td>
+            </tr>
+            <tr class="grand-total">
+                <td class="lbl">SALDO PENDIENTE:</td>
+                <td class="val" style="{{ $electronica->saldo_pendiente == 0 ? 'color: green;' : 'color: red;' }}">
+                    ${{ number_format($electronica->saldo_pendiente, 0, ',', '.') }}
+                </td>
+            </tr>
+        @else
+            <tr class="grand-total">
+                <td class="lbl">SALDO PENDIENTE:</td>
+                <td class="val" style="color: red;">${{ number_format($electronica->costo, 0, ',', '.') }}</td>
+            </tr>
+        @endif
+    </table>
+</div>
+
+@if($electronica->abonos->count() > 0)
+    <div style="margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 10px;">
+        <p style="font-size: 8pt; font-weight: bold; margin-bottom: 5px;">Historial de Pagos:</p>
+        <p style="font-size: 8pt; color: #555;">
+            @foreach($electronica->abonos->sortBy('fecha') as $abono)
+                • {{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }} - {{ ucfirst($abono->tipo_pago) }}: ${{ number_format($abono->monto, 0, ',', '.') }}<br>
+            @endforeach
+        </p>
+    </div>
+@endif
+@endsection

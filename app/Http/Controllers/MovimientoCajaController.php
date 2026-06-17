@@ -15,6 +15,15 @@ class MovimientoCajaController extends Controller
 {
     public function index(Request $request)
     {
+        $fecha_desde = $request->input('fecha_desde', date('Y-m-01'));
+        $fecha_hasta = $request->input('fecha_hasta', date('Y-m-d'));
+
+        // Merge back to request so Blade matches
+        $request->merge([
+            'fecha_desde' => $fecha_desde,
+            'fecha_hasta' => $fecha_hasta,
+        ]);
+
         $query = MovimientoCaja::with('concepto', 'user');
 
         if ($request->filled('tipo_movimiento')) {
@@ -23,32 +32,41 @@ class MovimientoCajaController extends Controller
         if ($request->filled('tipo_pago')) {
             $query->where('tipo_pago', $request->tipo_pago);
         }
-        if ($request->filled('fecha_desde')) {
-            $query->whereDate('fecha', '>=', $request->fecha_desde);
-        }
-        if ($request->filled('fecha_hasta')) {
-            $query->whereDate('fecha', '<=', $request->fecha_hasta);
-        }
+        
+        $query->whereDate('fecha', '>=', $fecha_desde);
+        $query->whereDate('fecha', '<=', $fecha_hasta);
+
         if ($request->filled('search')) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {
                 $q->where('persona', 'like', "%{$s}%")
-                  ->orWhere('empresa', 'like', "%{$s}%");
+                  ->orWhere('empresa', 'like', "%{$s}%")
+                  ->orWhere('descripcion', 'like', "%{$s}%")
+                  ->orWhereHas('concepto', function($q2) use ($s) {
+                      $q2->where('nombre', 'like', "%{$s}%");
+                  });
             });
         }
 
-        $movimientos = $query->orderBy('fecha', 'desc')->orderBy('id', 'desc')->paginate(15);
+        $movimientos = $query->orderBy('fecha', 'desc')->orderBy('id', 'desc')->paginate(10);
 
         // Totales del período filtrado (sin paginar) — EXCLUYE anulados
         $totalesQuery = MovimientoCaja::where('estado', 'activo');
         if ($request->filled('tipo_movimiento')) $totalesQuery->where('tipo_movimiento', $request->tipo_movimiento);
         if ($request->filled('tipo_pago'))       $totalesQuery->where('tipo_pago', $request->tipo_pago);
-        if ($request->filled('fecha_desde'))     $totalesQuery->whereDate('fecha', '>=', $request->fecha_desde);
-        if ($request->filled('fecha_hasta'))     $totalesQuery->whereDate('fecha', '<=', $request->fecha_hasta);
+        
+        $totalesQuery->whereDate('fecha', '>=', $fecha_desde);
+        $totalesQuery->whereDate('fecha', '<=', $fecha_hasta);
+
         if ($request->filled('search')) {
             $s = $request->search;
             $totalesQuery->where(function ($q) use ($s) {
-                $q->where('persona', 'like', "%{$s}%")->orWhere('empresa', 'like', "%{$s}%");
+                $q->where('persona', 'like', "%{$s}%")
+                  ->orWhere('empresa', 'like', "%{$s}%")
+                  ->orWhere('descripcion', 'like', "%{$s}%")
+                  ->orWhereHas('concepto', function($q2) use ($s) {
+                      $q2->where('nombre', 'like', "%{$s}%");
+                  });
             });
         }
 
@@ -74,20 +92,24 @@ class MovimientoCajaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'empresa'         => 'nullable|string|max:255',
-            'persona'         => 'nullable|string|max:255',
+            'empresa'         => 'nullable|string|max:80',
+            'persona'         => 'nullable|string|max:80',
             'fecha'           => 'required|date',
-            'concepto_id'     => 'required_without:nuevo_concepto|nullable|exists:concepto_cajas,id',
-            'nuevo_concepto'  => 'required_without:concepto_id|nullable|string|max:255',
+            'concepto_id'     => 'required_without:nuevo_concepto|nullable|integer|exists:concepto_cajas,id',
+            'nuevo_concepto'  => 'required_without:concepto_id|nullable|string|max:80',
             'tipo_movimiento' => 'required|in:ingreso,egreso',
             'tipo_pago'       => 'required|in:efectivo,consignacion',
-            'monto'           => 'required|numeric|min:0.01',
-            'descripcion'     => 'nullable|string',
+            'monto'           => 'required|numeric|min:0.01|decimal:0,2',
+            'monto_total'     => 'nullable|numeric|min:0|decimal:0,2',
+            'descripcion'     => 'nullable|string|max:500',
         ]);
 
-        // Validar que al menos empresa o persona esté presente
+        // Validar que al menos empresa o persona esté presente, pero NO ambas
         if (empty($validated['empresa']) && empty($validated['persona'])) {
             return back()->withErrors(['persona' => 'Debe indicar al menos un nombre de persona o empresa.'])->withInput();
+        }
+        if (!empty($validated['empresa']) && !empty($validated['persona'])) {
+            return back()->withErrors(['persona' => 'No puede ingresar "Persona" y "Empresa" al mismo tiempo. Elija solo uno.'])->withInput();
         }
 
         try {
@@ -126,20 +148,24 @@ class MovimientoCajaController extends Controller
     public function update(Request $request, MovimientoCaja $movimiento)
     {
         $validated = $request->validate([
-            'empresa'         => 'nullable|string|max:255',
-            'persona'         => 'nullable|string|max:255',
+            'empresa'         => 'nullable|string|max:80',
+            'persona'         => 'nullable|string|max:80',
             'fecha'           => 'required|date',
-            'concepto_id'     => 'required_without:nuevo_concepto|nullable|exists:concepto_cajas,id',
-            'nuevo_concepto'  => 'required_without:concepto_id|nullable|string|max:255',
+            'concepto_id'     => 'required_without:nuevo_concepto|nullable|integer|exists:concepto_cajas,id',
+            'nuevo_concepto'  => 'required_without:concepto_id|nullable|string|max:80',
             'tipo_movimiento' => 'required|in:ingreso,egreso',
             'tipo_pago'       => 'required|in:efectivo,consignacion',
-            'monto'           => 'required|numeric|min:0.01',
-            'descripcion'     => 'nullable|string',
+            'monto'           => 'required|numeric|min:0.01|decimal:0,2',
+            'monto_total'     => 'nullable|numeric|min:0|decimal:0,2',
+            'descripcion'     => 'nullable|string|max:500',
         ]);
 
-        // Validar que al menos empresa o persona esté presente
+        // Validar que al menos empresa o persona esté presente, pero NO ambas
         if (empty($validated['empresa']) && empty($validated['persona'])) {
             return back()->withErrors(['persona' => 'Debe indicar al menos un nombre de persona o empresa.'])->withInput();
+        }
+        if (!empty($validated['empresa']) && !empty($validated['persona'])) {
+            return back()->withErrors(['persona' => 'No puede ingresar "Persona" y "Empresa" al mismo tiempo. Elija solo uno.'])->withInput();
         }
 
         try {

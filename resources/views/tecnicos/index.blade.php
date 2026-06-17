@@ -1,96 +1,114 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
-    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-        <h2 class="text-2xl font-bold">Listado de Técnicos</h2>
-        <div class="flex flex-wrap items-center gap-2">
-            <input type="text" id="search-tecnicos" placeholder="🔍 Buscar..." class="search-input bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus:outline-none w-48">
-            @if(!auth()->user()->isInvitado())
-                <a href="{{ route('tecnicos.create') }}" class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">
-                    ➕ Nuevo Técnico
-                </a>
-            @endif
-        </div>
-    </div>
+<div class="glass-card p-6">
+ <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+ <div>
+ <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
+ <span class="text-3xl">🛠️</span> Técnicos
+ </h2>
+ <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Controla el personal encargado de realizar los mantenimientos</p>
+ </div>
+ <div class="flex flex-wrap items-center gap-2">
+  <div class="relative">
+  <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
+  <input type="text" id="search-tecnicos" placeholder="Buscar técnico..." class="glass-input pl-9 w-48 sm:w-64">
+  </div>
+ @if(!auth()->user()->isInvitado())
+ <a href="{{ route('tecnicos.create') }}" class="btn-primary">
+ ➕ Nuevo Técnico
+ </a>
+ @endif
+ </div>
+ </div>
 
-    <div class="overflow-x-auto">
-        <table id="tabla-tecnicos" class="w-full text-left border-collapse responsive-table">
-            <thead>
-                <tr class="bg-gray-200 dark:bg-gray-700 text-center">
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">ID</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Foto</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Nombre</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Identificación</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Especialidad</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Móvil</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Email</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Dirección</th>
-                    <th class="p-3 border border-gray-300 dark:border-gray-500">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($tecnicos as $tecnico)
-                <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->id }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500 text-center">
-                        @if($tecnico->photo)
-                            <img src="{{ asset('storage/' . $tecnico->photo) }}" width="40" height="40" class="rounded-full object-cover mx-auto">
-                        @else
-                            <span class="text-gray-400 text-xs">Sin foto</span>
-                        @endif
-                    </td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->nombre }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->identificacion }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->especialidad }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->movil }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->email ?? '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">{{ $tecnico->direccion ?? '-' }}</td>
-                    <td class="p-3 border border-gray-300 dark:border-gray-500">
-                        <div class="flex justify-center items-center gap-2 flex-wrap">
-                            @if(!auth()->user()->isInvitado())
-                                <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-yellow-500/20 text-sm">
-                                    ✏️ Editar
-                                </a>
-                                @if(auth()->user()->isAdmin())
-                                    <form action="{{ route('tecnicos.destroy', $tecnico->id) }}" method="POST" class="inline-block m-0 p-0" data-confirm-delete="¿Eliminar al técnico '{{ $tecnico->nombre }}'? Esta acción no se puede deshacer.">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center gap-1 bg-red-500/20 text-red-700 dark:text-red-400 border border-red-500/30 hover:bg-red-500/40 backdrop-blur-sm rounded-xl px-3 py-1 font-semibold transition-all shadow-sm hover:shadow-red-500/20 text-sm">
-                                            🗑️ Eliminar
-                                        </button>
-                                    </form>
-                                @endif
-                            @else
-                                <span class="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-1 text-sm cursor-default" title="Solo lectura">
-                                    👁️ <span class="hidden md:inline">Lectura</span>
-                                </span>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="9" class="p-12 text-center">
-                        <div class="flex flex-col items-center justify-center space-y-4">
-                            <div class="text-6xl">🛠️</div>
-                            <h3 class="text-xl font-bold text-gray-700 dark:text-gray-300">No hay técnicos disponibles</h3>
-                            <p class="text-gray-500 dark:text-gray-400 max-w-xs mx-auto">Registra al personal técnico para asignar órdenes de mantenimiento.</p>
-                            @if(!auth()->user()->isInvitado())
-                                <a href="{{ route('tecnicos.create') }}" class="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/30">
-                                    ➕ Registrar Primer Técnico
-                                </a>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-    <div class="mt-4">
-        {{ $tecnicos->appends(request()->query())->links() }}
-    </div>
+ <div class="overflow-x-auto pb-2">
+ <table id="tabla-tecnicos" class="ts-table responsive-table">
+ <thead>
+ <tr>
+ <th class="w-16 text-center">ID</th>
+ <th class="w-16 text-center">Foto</th>
+ <th>Nombre</th>
+ <th>Identificación</th>
+ <th>Especialidad</th>
+ <th>Móvil</th>
+ <th>Email</th>
+ <th>Dirección</th>
+ <th class="text-center w-32">Acciones</th>
+ </tr>
+ </thead>
+ <tbody>
+ @forelse($tecnicos as $tecnico)
+ <tr>
+ <td class="text-center font-bold text-slate-800 dark:text-white">{{ $tecnico->id }}</td>
+ <td class="text-center">
+ @if($tecnico->photo)
+ <img src="{{ asset('storage/' . $tecnico->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm">
+ @else
+ <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">
+ N/A
+ </div>
+ @endif
+ </td>
+ <td class="font-bold text-slate-800 dark:text-white">{{ $tecnico->nombre }}</td>
+ <td class="font-mono text-gray-600 dark:text-gray-300">{{ $tecnico->identificacion }}</td>
+ @php
+     $espClass = 'pill-preventivo';
+     $espStr = strtolower($tecnico->especialidad);
+     if (str_contains($espStr, 'software')) $espClass = 'pill-especialidad';
+     elseif (str_contains($espStr, 'hardware')) $espClass = 'pill-correctivo';
+     elseif (str_contains($espStr, 'electrónic') || str_contains($espStr, 'electronic')) $espClass = 'pill-done';
+     elseif (str_contains($espStr, 'redes')) $espClass = 'pill-banco';
+ @endphp
+ <td><span class="pill {{ $espClass }}">{{ $tecnico->especialidad }}</span></td>
+ <td class="font-mono">{{ $tecnico->movil }}</td>
+ <td>{{ $tecnico->email ?? '-' }}</td>
+ <td>{{ $tecnico->direccion ?? '-' }}</td>
+ <td class="text-center">
+ <div class="flex justify-center items-center gap-1 flex-wrap">
+ @if(!auth()->user()->isInvitado())
+ <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">
+ ✏️
+ </a>
+ @if(auth()->user()->isAdmin())
+ <form action="{{ route('tecnicos.destroy', $tecnico->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar al técnico '{{ $tecnico->nombre }}'? Esta acción no se puede deshacer.">
+ @csrf
+ @method('DELETE')
+ <button type="submit" class="btn-danger px-2.5 py-1.5 text-xs" title="Eliminar">
+ 🗑️
+ </button>
+ </form>
+ @endif
+ @else
+ <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed" title="Solo lectura">
+ 👁️ Lectura
+ </span>
+ @endif
+ </div>
+ </td>
+ </tr>
+ @empty
+ <tr>
+ <td colspan="9" class="p-16 text-center">
+ <div class="flex flex-col items-center gap-3">
+ <div class="text-6xl drop-shadow-md mb-2">🛠️</div>
+ <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin técnicos registrados</h3>
+ <p class="text-gray-500 font-medium max-w-sm mb-4">Registra al personal técnico para asignar órdenes de mantenimiento.</p>
+ @if(!auth()->user()->isInvitado())
+ <a href="{{ route('tecnicos.create') }}" class="btn-primary">
+ ➕ Registrar Primer Técnico
+ </a>
+ @endif
+ </div>
+ </td>
+ </tr>
+ @endforelse
+ </tbody>
+ </table>
+ </div>
+ <div class="mt-6 flex justify-end">
+ {{ $tecnicos->appends(request()->query())->links() }}
+ </div>
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-tecnicos', 'tabla-tecnicos'));</script>
 @endsection

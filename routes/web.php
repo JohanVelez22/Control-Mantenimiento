@@ -64,6 +64,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('stocks',      App\Http\Controllers\StockController::class);
     Route::resource('electronicas',App\Http\Controllers\ElectronicaController::class);
     Route::get('electronicas/{electronica}/factura', [App\Http\Controllers\ElectronicaController::class, 'factura'])->name('electronicas.factura');
+    Route::post('electronicas/{electronica}/anular', [App\Http\Controllers\ElectronicaController::class, 'anular'])->name('electronicas.anular');
     Route::resource('mantenimientos', MantenimientoController::class);
 
     // ─── Proveedores ──────────────────────────────────────────────────
@@ -82,28 +83,39 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
         // Listado e impresión de facturas
         Route::get('/facturas',                     [App\Http\Controllers\MovimientoInventarioController::class, 'facturas'])->name('facturas');
         Route::get('/facturas/{factura}',            [App\Http\Controllers\MovimientoInventarioController::class, 'showFactura'])->name('facturas.show');
+        Route::get('/facturas/{factura}/edit',       [App\Http\Controllers\MovimientoInventarioController::class, 'editFactura'])->name('facturas.edit');
+        Route::put('/facturas/{factura}',            [App\Http\Controllers\MovimientoInventarioController::class, 'updateFactura'])->name('facturas.update');
+        Route::delete('/facturas/{factura}',         [App\Http\Controllers\MovimientoInventarioController::class, 'destroyFactura'])->name('facturas.destroy');
         Route::get('/facturas/{factura}/imprimir',   [App\Http\Controllers\MovimientoInventarioController::class, 'printFactura'])->name('facturas.print');
         Route::post('/facturas/{factura}/anular',    [App\Http\Controllers\MovimientoInventarioController::class, 'anularFactura'])->name('facturas.anular');
     });
 
     // ─── Caja ─────────────────────────────────────────────────────────
-    Route::resource('caja', App\Http\Controllers\MovimientoCajaController::class)->except(['show']);
+    Route::resource('caja', App\Http\Controllers\MovimientoCajaController::class)->except(['show'])->parameters([
+        'caja' => 'movimiento'
+    ]);
     Route::get( 'caja/{movimiento}/print',     [App\Http\Controllers\MovimientoCajaController::class, 'print'])->name('caja.print');
     Route::post('caja/{movimiento}/duplicate', [App\Http\Controllers\MovimientoCajaController::class, 'duplicate'])->name('caja.duplicate');
     Route::post('caja/{movimiento}/anular',    [App\Http\Controllers\MovimientoCajaController::class, 'anular'])->name('caja.anular');
     Route::post('caja/concepto',               [App\Http\Controllers\MovimientoCajaController::class, 'storeConcepto'])->name('caja.concepto.store');
 
+    Route::resource('conceptos', App\Http\Controllers\ConceptoCajaController::class)->only(['index', 'store', 'update', 'destroy']);
+
     // ─── Mantenimiento: acciones extra ────────────────────────────────
     Route::post('mantenimientos/{mantenimiento}/duplicate', [MantenimientoController::class, 'duplicate'])->name('mantenimientos.duplicate');
     Route::post('mantenimientos/{mantenimiento}/anular',    [MantenimientoController::class, 'anular'])->name('mantenimientos.anular');
 
-    // ─── Abonos (anidados bajo mantenimiento) ─────────────────────────
+    // ─── Abonos (anidados bajo mantenimiento y electronica) ─────────────────────────
     Route::post('mantenimientos/{mantenimiento}/abonos', [App\Http\Controllers\AbonoController::class, 'store'])->name('abonos.store');
     Route::delete('abonos/{abono}',                      [App\Http\Controllers\AbonoController::class, 'destroy'])->name('abonos.destroy');
+    Route::post('electronicas/{electronica}/abonos',     [App\Http\Controllers\ElectronicaAbonoController::class, 'store'])->name('electronicas.abonos.store');
+    Route::delete('electronicas/abonos/{abono}',         [App\Http\Controllers\ElectronicaAbonoController::class, 'destroy'])->name('electronicas.abonos.destroy');
 
-    // ─── Repuestos de stock (anidados bajo mantenimiento) ─────────────
+    // ─── Repuestos de stock (anidados bajo mantenimiento y electronica) ─────────────
     Route::post('mantenimientos/{mantenimiento}/stocks', [App\Http\Controllers\MantenimientoStockController::class, 'store'])->name('mantenimientos.stocks.store');
     Route::delete('mantenimientos/{mantenimiento}/stocks/{stock_id}', [App\Http\Controllers\MantenimientoStockController::class, 'destroy'])->name('mantenimientos.stocks.destroy');
+    Route::post('electronicas/{electronica}/stocks', [App\Http\Controllers\ElectronicaStockController::class, 'store'])->name('electronicas.stocks.store');
+    Route::delete('electronicas/{electronica}/stocks/{stock_id}', [App\Http\Controllers\ElectronicaStockController::class, 'destroy'])->name('electronicas.stocks.destroy');
 
     // ─── Cierre de Caja ───────────────────────────────────────────────
     Route::get(   'cierre',            [App\Http\Controllers\CierreCajaController::class, 'index'])->name('cierre.index');
@@ -115,4 +127,8 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
         Route::resource('usuarios', UserController::class);
         Route::post('usuarios/{usuario}/change-password', [UserController::class, 'changePassword'])->name('usuarios.change-password');
     });
+
+    // ─── Configuración de Empresa ──────────────────────────────────────
+    Route::get('/configuracion',  [App\Http\Controllers\ConfiguracionController::class, 'index'])->name('configuracion.index');
+    Route::post('/configuracion', [App\Http\Controllers\ConfiguracionController::class, 'update'])->name('configuracion.update');
 });

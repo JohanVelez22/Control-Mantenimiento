@@ -1,112 +1,182 @@
 @extends('layouts.app')
+@section('title', 'Informes y Reportes - Acumulado')
+
 @section('content')
+<div class="flex gap-4 mb-6 no-print">
+ <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
+ <a href="{{ route('reportes.financiero.diario') }}" class="bg-amber-500 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💵 Informes Financieros</a>
+ <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Módulo Electrónica</a>
+</div>
+
+<div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-4">
+ <div>
+ <h1 class="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+ 📊 Informes y Reportes
+ </h1>
+ <p class="text-gray-500 dark:text-gray-400 font-semibold mt-1">Período: <strong>{{ $desde->format('d/m/Y') }}</strong> al <strong>{{ $hasta->format('d/m/Y') }}</strong>.</p>
+ </div>
+</div>
+
+<div class="glass-card p-4 mb-6 flex flex-wrap items-center gap-2 no-print">
+ <a href="{{ route('reportes.financiero.diario') }}"
+ class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20">
+ 📅 Diario
+ </a>
+ <a href="{{ route('reportes.financiero.acumulado') }}"
+ class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-purple-500 text-white shadow-lg ">
+ 📈 Acumulado
+ </a>
+ <a href="{{ route('reportes.financiero.operaciones') }}"
+ class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20">
+ 📋 Operaciones
+ </a>
+</div>
+
+<div class="glass-card p-5 mb-6 no-print">
+ <form method="GET" class="flex flex-wrap items-center gap-3">
+  <label class="font-semibold text-sm">Desde:</label>
+  <input type="date" name="desde" value="{{ $desde->toDateString() }}" class="glass-input w-44">
+  <label class="font-semibold text-sm">Hasta:</label>
+  <input type="date" name="hasta" value="{{ $hasta->toDateString() }}" class="glass-input w-44">
+  <button class="btn-primary py-2 px-5 text-sm">
+  🔍 Ver Período
+  </button>
+  
+  <div class="flex items-center gap-2 ml-auto">
+      <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
+      <span>🖨️</span> Imprimir
+      </button>
+      <button type="submit" name="export" value="pdf" class="btn-pdf text-sm" title="Exportar a PDF">
+      <span>📄</span> PDF
+      </button>
+      <button type="submit" name="export" value="excel" class="btn-excel text-sm" title="Exportar a Excel">
+      <span>📊</span> Excel
+      </button>
+  </div>
+ </form>
+</div>
+
 <div class="space-y-5">
 
-    {{-- Tabs de navegación --}}
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-4">
-        <div class="flex flex-wrap items-center gap-2">
-            <span class="font-bold text-lg mr-2">📊 Reportes Financieros</span>
-            <a href="{{ route('reportes.financiero.diario') }}"
-               class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20">
-                📅 Diario
-            </a>
-            <a href="{{ route('reportes.financiero.acumulado') }}"
-               class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-purple-500 text-white shadow-lg shadow-purple-500/30">
-                📈 Acumulado
-            </a>
-            <a href="{{ route('reportes.financiero.operaciones') }}"
-               class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20">
-                🔍 Operaciones
-            </a>
-        </div>
-    </div>
+ {{-- KPIs principales --}}
+ <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
+ <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🔧</span> Mantenimientos</p>
+ <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['facturado_mant'], 0, ',', '.') }}</p>
+ </div>
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/30 transition-all"></div>
+ <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">⚡</span> Electrónica</p>
+ <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['facturado_elec'], 0, ',', '.') }}</p>
+ </div>
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 bg-orange-500/20 rounded-full blur-2xl group-hover:bg-orange-500/30 transition-all"></div>
+ <p class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📦</span> Compras</p>
+ <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['compras_inventario'], 0, ',', '.') }}</p>
+ </div>
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 bg-green-500/20 rounded-full blur-2xl group-hover:bg-green-500/30 transition-all"></div>
+ <p class="text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🛒</span> Ventas Inv.</p>
+ <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['ventas_inventario'], 0, ',', '.') }}</p>
+ </div>
+ </div>
 
-    {{-- Filtro de rango --}}
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-5">
-        <form method="GET" class="flex flex-wrap items-center gap-3">
-            <label class="font-semibold text-sm">Desde:</label>
-            <input type="date" name="desde" value="{{ $desde->toDateString() }}"
-                   class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-purple-500">
-            <label class="font-semibold text-sm">Hasta:</label>
-            <input type="date" name="hasta" value="{{ $hasta->toDateString() }}"
-                   class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-purple-500">
-            <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition-all shadow-lg shadow-purple-500/30">
-                Ver Período
-            </button>
-        </form>
-        <p class="text-xs text-gray-500 mt-2">
-            Período: <strong>{{ $desde->format('d/m/Y') }}</strong> al <strong>{{ $hasta->format('d/m/Y') }}</strong>
-        </p>
-    </div>
+ {{-- Balance consolidado --}}
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
+ <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Total Ingresos Reales (Caja)</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['ingresos_caja'], 0, ',', '.') }}</p>
+ </div>
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-500/20 rounded-full blur-2xl group-hover:bg-red-500/30 transition-all"></div>
+ <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💸</span> Total Egresos Reales (Caja)</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['egresos_caja'], 0, ',', '.') }}</p>
+ </div>
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 {{ $acumulado['balance_neto'] >= 0 ? 'bg-teal-500/20 group-hover:bg-teal-500/30' : 'bg-orange-500/20 group-hover:bg-orange-500/30' }} rounded-full blur-2xl transition-all"></div>
+ <p class="text-xs font-bold {{ $acumulado['balance_neto'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">⚖️</span> Balance Neto</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}</p>
+ </div>
+ </div>
 
-    {{-- KPIs principales --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-5 text-center">
-            <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-2">🔧 Mantenimientos</p>
-            <p class="text-3xl font-black text-blue-700 dark:text-blue-300">{{ $acumulado['total_mantenimientos'] }}</p>
-            <p class="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-1">${{ number_format($acumulado['facturado_mant'], 0, ',', '.') }}</p>
-        </div>
-        <div class="bg-purple-500/10 border border-purple-500/30 rounded-2xl p-5 text-center">
-            <p class="text-xs font-semibold text-purple-600 dark:text-purple-400 mb-2">⚡ Electrónica</p>
-            <p class="text-3xl font-black text-purple-700 dark:text-purple-300">{{ $acumulado['total_electronicas'] }}</p>
-            <p class="text-sm font-semibold text-purple-600 dark:text-purple-400 mt-1">${{ number_format($acumulado['facturado_elec'], 0, ',', '.') }}</p>
-        </div>
-        <div class="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-5 text-center">
-            <p class="text-xs font-semibold text-orange-600 dark:text-orange-400 mb-2">📦 Compras</p>
-            <p class="text-3xl font-black text-orange-700 dark:text-orange-300">{{ $acumulado['total_compras'] }}</p>
-            <p class="text-sm font-semibold text-orange-600 dark:text-orange-400 mt-1">${{ number_format($acumulado['compras_inventario'], 0, ',', '.') }}</p>
-        </div>
-        <div class="bg-green-500/10 border border-green-500/30 rounded-2xl p-5 text-center">
-            <p class="text-xs font-semibold text-green-600 dark:text-green-400 mb-2">🛒 Ventas Inv.</p>
-            <p class="text-3xl font-black text-green-700 dark:text-green-300">{{ $acumulado['total_ventas'] }}</p>
-            <p class="text-sm font-semibold text-green-600 dark:text-green-400 mt-1">${{ number_format($acumulado['ventas_inventario'], 0, ',', '.') }}</p>
-        </div>
-    </div>
+ {{-- Saldos pendientes --}}
+ @if($acumulado['saldo_pendiente_venta'] > 0 || $acumulado['saldo_pendiente_compra'] > 0)
+ <div class="bg-yellow-500/10 border border-yellow-400/40 rounded-2xl p-5">
+ <h3 class="font-bold text-yellow-700 dark:text-yellow-300 mb-3">⚠️ Saldos Pendientes</h3>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+ @if($acumulado['saldo_pendiente_venta'] > 0)
+ <div class="flex items-center gap-3 bg-white dark:bg-gray-800 p-3 rounded-xl border border-yellow-300">
+ <span class="text-2xl">🛒</span>
+ <div>
+ <p class="text-xs text-gray-500">Por cobrar (Ventas)</p>
+ <p class="font-black text-yellow-700 dark:text-yellow-300 text-lg">${{ number_format($acumulado['saldo_pendiente_venta'], 0, ',', '.') }}</p>
+ </div>
+ </div>
+ @endif
+ @if($acumulado['saldo_pendiente_compra'] > 0)
+ <div class="flex items-center gap-3 bg-white dark:bg-gray-800 p-3 rounded-xl border border-yellow-300">
+ <span class="text-2xl">📦</span>
+ <div>
+ <p class="text-xs text-gray-500">Por pagar (Compras)</p>
+ <p class="font-black text-yellow-700 dark:text-yellow-300 text-lg">${{ number_format($acumulado['saldo_pendiente_compra'], 0, ',', '.') }}</p>
+ </div>
+ </div>
+ @endif
+ </div>
+ </div>
+ @endif
 
-    {{-- Balance consolidado --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-5 text-center">
-            <p class="text-xs font-semibold text-emerald-600 mb-2">💵 Total Ingresos Reales (Caja)</p>
-            <p class="text-2xl font-black text-emerald-700 dark:text-emerald-300">${{ number_format($acumulado['ingresos_caja'], 0, ',', '.') }}</p>
-        </div>
-        <div class="bg-red-500/10 border border-red-500/30 rounded-2xl p-5 text-center">
-            <p class="text-xs font-semibold text-red-600 mb-2">💸 Total Egresos Reales (Caja)</p>
-            <p class="text-2xl font-black text-red-700 dark:text-red-300">${{ number_format($acumulado['egresos_caja'], 0, ',', '.') }}</p>
-        </div>
-        <div class="rounded-2xl p-5 text-center {{ $acumulado['balance_neto'] >= 0 ? 'bg-teal-500/10 border border-teal-500/30' : 'bg-red-500/10 border border-red-500/30' }}">
-            <p class="text-xs font-semibold {{ $acumulado['balance_neto'] >= 0 ? 'text-teal-600' : 'text-red-600' }} mb-2">⚖️ Balance Neto</p>
-            <p class="text-2xl font-black {{ $acumulado['balance_neto'] >= 0 ? 'text-teal-700 dark:text-teal-300' : 'text-red-700 dark:text-red-300' }}">
-                ${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}
-            </p>
-        </div>
-    </div>
+ {{-- Tabla de movimientos del período --}}
+ <div class="glass-card p-6 md:p-8 mt-6">
+ <div class="flex justify-between items-center mb-4">
+ <h3 class="text-lg font-bold">Detalle de Movimientos del Período ({{ $movimientos->count() }})</h3>
+ </div>
 
-    {{-- Saldos pendientes --}}
-    @if($acumulado['saldo_pendiente_venta'] > 0 || $acumulado['saldo_pendiente_compra'] > 0)
-    <div class="bg-yellow-500/10 border border-yellow-400/40 rounded-2xl p-5">
-        <h3 class="font-bold text-yellow-700 dark:text-yellow-300 mb-3">⚠️ Saldos Pendientes</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            @if($acumulado['saldo_pendiente_venta'] > 0)
-            <div class="flex items-center gap-3 bg-white dark:bg-gray-800 p-3 rounded-xl border border-yellow-300">
-                <span class="text-2xl">🛒</span>
-                <div>
-                    <p class="text-xs text-gray-500">Por cobrar (Ventas)</p>
-                    <p class="font-black text-yellow-700 dark:text-yellow-300 text-lg">${{ number_format($acumulado['saldo_pendiente_venta'], 0, ',', '.') }}</p>
-                </div>
-            </div>
-            @endif
-            @if($acumulado['saldo_pendiente_compra'] > 0)
-            <div class="flex items-center gap-3 bg-white dark:bg-gray-800 p-3 rounded-xl border border-yellow-300">
-                <span class="text-2xl">📦</span>
-                <div>
-                    <p class="text-xs text-gray-500">Por pagar (Compras)</p>
-                    <p class="font-black text-yellow-700 dark:text-yellow-300 text-lg">${{ number_format($acumulado['saldo_pendiente_compra'], 0, ',', '.') }}</p>
-                </div>
-            </div>
-            @endif
-        </div>
-    </div>
-    @endif
+ @if($movimientos->isEmpty())
+ <div class="flex flex-col items-center justify-center space-y-3 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm p-12 rounded-2xl border border-white/20 my-4">
+     <div class="text-5xl opacity-80">📭</div>
+     <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
+     <p class="text-sm font-medium text-slate-500 dark:text-slate-400">No hubo movimientos en este período.</p>
+ </div>
+ @else
+ <div class="overflow-x-auto pb-2">
+ <table class="ts-table responsive-table w-full text-sm">
+ <thead>
+ <tr>
+ <th class="p-3 text-center">Fecha</th>
+ <th class="p-3 text-center">Tipo</th>
+ <th class="p-3 text-left">Descripción</th>
+ <th class="p-3 text-center">Estado</th>
+ <th class="p-3 text-center">Monto</th>
+ </tr>
+ </thead>
+ <tbody>
+ @foreach($movimientos as $mov)
+ <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center {{ $mov['estado'] === 'anulado' || $mov['estado'] === 'anulada' ? 'opacity-50' : '' }}">
+ <td class="p-3 text-xs text-gray-500">{{ \Carbon\Carbon::parse($mov['fecha'])->format('d/m/Y') }}</td>
+ <td class="p-3">
+ <span class="px-2 py-0.5 rounded-lg text-xs font-bold
+ bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800
+ dark:bg-{{ $mov['color'] }}-900/40 dark:text-{{ $mov['color'] }}-300">
+ {{ $mov['icono'] }} {{ ucfirst($mov['tipo']) }}
+ </span>
+ </td>
+ <td class="p-3 text-left text-gray-700 dark:text-gray-300">{{ $mov['descripcion'] }}</td>
+ <td class="p-3">
+ <span class="text-xs font-semibold text-gray-500">{{ ucfirst($mov['estado'] ?? '—') }}</span>
+ </td>
+ <td class="p-3 font-bold {{ in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+ ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
+ </td>
+ </tr>
+ @endforeach
+ </tbody>
+ </table>
+ </div>
+ @endif
+ </div>
 
 </div>
 @endsection

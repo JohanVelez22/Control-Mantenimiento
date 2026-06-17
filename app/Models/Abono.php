@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Abono extends Model
 {
-    protected $fillable = ['mantenimiento_id', 'monto', 'fecha', 'tipo_pago', 'descripcion', 'user_id'];
+    protected $fillable = ['mantenimiento_id', 'electronica_id', 'monto', 'fecha', 'tipo_pago', 'descripcion', 'user_id'];
 
     protected function casts(): array
     {
@@ -16,6 +16,11 @@ class Abono extends Model
     public function mantenimiento()
     {
         return $this->belongsTo(Mantenimiento::class);
+    }
+
+    public function electronica()
+    {
+        return $this->belongsTo(Electronica::class);
     }
 
     public function user()

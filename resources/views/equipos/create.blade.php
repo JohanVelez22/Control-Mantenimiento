@@ -1,61 +1,72 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
-    <h2 class="text-2xl font-bold mb-6">Registrar Nuevo Equipo</h2>
-    
-    <form method="POST" action="{{ route('equipos.store') }}">
-        @csrf
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-2">Cliente Propietario</label>
-                <select name="cliente_id" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
-                    <option value="">Seleccione un cliente...</option>
-                    @foreach($clientes as $cliente)
-                        <option value="{{ $cliente->id }}" {{ old('cliente_id') == $cliente->id ? 'selected' : '' }}>
-                            {{ $cliente->nombre }} ({{ $cliente->identificacion }})
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+<div class="max-w-4xl mx-auto">
+ <div class="glass-card p-6 md:p-8">
+ <div class="flex items-center gap-3 mb-8">
+ <a href="{{ route('equipos.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+ <div>
+ <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">💻 Registrar Nuevo Equipo</h2>
+ <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Añade un nuevo dispositivo al inventario del cliente</p>
+ </div>
+ </div>
+ 
+ <form method="POST" action="{{ route('equipos.store') }}" class="space-y-6">
+ @csrf
+ 
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+ <div class="md:col-span-2">
+ <label class="field-label flex items-center gap-2"><span>👤</span> Cliente Propietario *</label>
+ <select name="cliente_id" required class="glass-input mt-1 text-sm font-bold">
+ <option value="">-- Seleccione un cliente --</option>
+ @foreach($clientes as $cliente)
+ <option value="{{ $cliente->id }}" {{ old('cliente_id') == $cliente->id ? 'selected' : '' }}>
+ {{ $cliente->nombre }} ({{ $cliente->identificacion }})
+ </option>
+ @endforeach
+ </select>
+ </div>
 
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-2">Nombre del Equipo (ej. PC Escritorio)</label>
-                <input type="text" name="nombre" value="{{ old('nombre') }}" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 @error('nombre') border-red-500 @enderror">
-                @error('nombre') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
+ <div>
+ <label class="field-label">Nombre del Equipo *</label>
+ <input type="text" name="nombre" value="{{ old('nombre') }}" required placeholder="Ej. PC Escritorio" class="glass-input mt-1 @error('nombre') border-red-500 @enderror">
+ @error('nombre') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+ </div>
 
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-2">Marca</label>
-                <input type="text" name="marca" value="{{ old('marca') }}" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 @error('marca') border-red-500 @enderror">
-                @error('marca') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
+ <div>
+ <label class="field-label">Marca *</label>
+ <input type="text" name="marca" value="{{ old('marca') }}" required placeholder="Ej. HP, Dell" class="glass-input mt-1 @error('marca') border-red-500 @enderror">
+ @error('marca') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+ </div>
 
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-2">Modelo</label>
-                <input type="text" name="modelo" value="{{ old('modelo') }}" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 @error('modelo') border-red-500 @enderror">
-                @error('modelo') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
+ <div>
+ <label class="field-label">Modelo *</label>
+ <input type="text" name="modelo" value="{{ old('modelo') }}" required placeholder="Ej. ProDesk 400" class="glass-input mt-1 @error('modelo') border-red-500 @enderror">
+ @error('modelo') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+ </div>
 
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-2">Número de Serie</label>
-                <input type="text" name="serie" value="{{ old('serie') }}" required class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 @error('serie') border-red-500 @enderror">
-                @error('serie') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
-            
-            {{-- El campo Estado ha sido eliminado conforme a la nueva estructura --}}
-        </div>
+ <div>
+ <label class="field-label">Número de Serie *</label>
+ <input type="text" name="serie" value="{{ old('serie') }}" required placeholder="S/N..." class="glass-input mt-1 font-mono uppercase @error('serie') border-red-500 @enderror">
+ @error('serie') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+ </div>
+ </div>
 
-        <div class="mb-6">
-            <label class="block text-sm font-medium mb-2">Observaciones / Detalles</label>
-            <textarea name="observacion" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 h-24">{{ old('observacion') }}</textarea>
-        </div>
+ <div>
+ <label class="field-label flex items-center gap-2"><span>📝</span> Observaciones / Detalles</label>
+ <textarea name="observacion" rows="3" class="glass-input mt-1 resize-y" placeholder="Cargador original, rayón en la tapa, etc...">{{ old('observacion') }}</textarea>
+ </div>
 
-        <div class="flex justify-end gap-4 mt-6">
-            <a href="{{ route('equipos.index') }}" class="w-1/2 text-center bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-gray-500/20">Cancelar</a>
-            <button type="submit" class="w-1/2 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-500/40 backdrop-blur-sm rounded-xl px-4 py-2 font-semibold transition-all shadow-sm hover:shadow-blue-500/20">Guardar Equipo</button>
-        </div>
-    </form>
+ <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+ <a href="{{ route('equipos.index') }}" class="btn-cancel">
+ ↩️ Cancelar
+ </a>
+ <button type="submit" class="btn-save">
+ 💾 Guardar Equipo
+ </button>
+ </div>
+ </form>
+ </div>
 </div>
 @endsection
 

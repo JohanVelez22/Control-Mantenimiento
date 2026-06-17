@@ -22,30 +22,24 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
 
     public function headings(): array
     {
-        // ID, Producto, Proveedor, Precio Compra, Utilidad, Precio Venta, Tipo de Pago y Estado (solicitado en el prompt, aunque parece una mezcla de Caja y Stock, lo adaptaremos a la tabla caja y mantenimientos)
         return [
-            'ID',
             'Fecha',
-            'Concepto / Producto',
-            'Persona / Proveedor',
-            'Tipo / Utilidad',
-            'Monto / Precio',
-            'Tipo de Pago',
+            'Tipo',
+            'Descripción / Concepto',
+            'Monto',
             'Estado'
         ];
     }
 
     public function map($tx): array
     {
+        $isArr = is_array($tx);
         return [
-            $tx->id,
-            \Carbon\Carbon::parse($tx->fecha)->format('d/m/Y'),
-            $tx->concepto->nombre ?? 'N/A',
-            $tx->persona ?? 'N/A',
-            $tx->tipo_movimiento,
-            $tx->monto,
-            $tx->tipo_pago,
-            $tx->estado
+            \Carbon\Carbon::parse($isArr ? $tx['fecha'] : $tx->fecha)->format('d/m/Y'),
+            ucfirst($isArr ? $tx['tipo'] : $tx->tipo_movimiento ?? 'N/A'),
+            $isArr ? $tx['descripcion'] : ($tx->concepto->nombre ?? $tx->persona ?? 'N/A'),
+            $isArr ? $tx['monto'] : ($tx->monto ?? $tx->total_documento ?? 0),
+            ucfirst($isArr ? ($tx['estado'] ?? '—') : ($tx->estado ?? '—'))
         ];
     }
 }

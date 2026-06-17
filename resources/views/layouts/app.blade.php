@@ -388,6 +388,146 @@
         mediaQuery.addListener(handleMobileChanges);
         handleMobileChanges(mediaQuery);
 
+        // Close notification dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const bell = document.getElementById('notification-bell');
+            const dropdown = document.getElementById('notif-dropdown');
+            if (bell && dropdown && !bell.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // ─── TABLA BUSQUEDA RÁPIDA ─────────────────────────────────────
+        function filterTable(inputId, tableId) {
+            const input = document.getElementById(inputId);
+            const table = document.getElementById(tableId);
+            if (!input || !table) return;
+
+            input.addEventListener('keyup', function() {
+                const filter = input.value.toLowerCase();
+                const tbody = table.getElementsByTagName('tbody')[0];
+                if (!tbody) return;
+                
+                const trs = tbody.getElementsByTagName('tr');
+                for (let i = 0; i < trs.length; i++) {
+                    const tr = trs[i];
+                    // Skip 'empty state' row (colspan)
+                    if (tr.cells.length === 1 && tr.cells[0].hasAttribute('colspan')) continue;
+                    
+                    let text = tr.textContent || tr.innerText;
+                    if (text.toLowerCase().indexOf(filter) > -1) {
+                        tr.style.display = '';
+                    } else {
+                        tr.style.display = 'none';
+                    }
+                }
+            });
+        }
+    </script>
+
+    @if(session('alertas_pendientes') && count(session('alertas_pendientes')) > 0)
+    <!-- Modal de Notificaciones Pendientes al Iniciar Sesión -->
+    <div id="ts-notif-modal" class="ts-modal-overlay opacity-0 transition-opacity duration-300 z-[200]">
+        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 md:p-8 flex flex-col items-center text-center transition-all duration-300">
+            <div class="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center mb-4">
+                <span class="text-3xl">🔔</span>
+            </div>
+            <h3 class="text-xl font-black text-slate-800 dark:text-white mb-2">¡Tienes tareas pendientes!</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Hay órdenes de electrónica y mantenimientos que requieren tu atención.</p>
+            
+            <div class="w-full max-h-[40vh] overflow-y-auto mb-6 text-left space-y-3 pr-2 scrollbar-hide">
+                @foreach(session('alertas_pendientes') as $alerta)
+                    <div class="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full {{ $alerta['modulo'] == 'mantenimiento' ? 'bg-blue-500' : 'bg-purple-500' }}"></div>
+                        <div class="flex justify-between items-start gap-3 pl-3">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xs font-black {{ $alerta['modulo'] == 'mantenimiento' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">{{ $alerta['id_orden'] }}</span>
+                                    <span class="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-md {{ $alerta['modulo'] == 'mantenimiento' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }}">{{ $alerta['modulo'] }}</span>
+                                </div>
+                                <p class="text-sm font-bold text-gray-800 dark:text-gray-200 truncate" title="{{ $alerta['dispositivo'] }}">{{ $alerta['dispositivo'] }}</p>
+                                <p class="text-xs text-gray-500 truncate" title="{{ $alerta['cliente'] }}">{{ $alerta['cliente'] }}</p>
+                            </div>
+                            <span class="pill pill-pending text-[10px] py-0.5 px-2 whitespace-nowrap">
+                                {{ $alerta['dias'] }} días
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            
+            <button onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-lg ">
+                Entendido
+            </button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('ts-notif-modal');
+            const card = document.getElementById('ts-notif-card');
+            
+            // Bloquear scroll de fondo
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95', 'opacity-0');
+            }, 100);
+        });
+
+        function closeNotifModal() {
+            const modal = document.getElementById('ts-notif-modal');
+            const card = document.getElementById('ts-notif-card');
+            modal.classList.add('opacity-0');
+            card.classList.add('scale-95', 'opacity-0');
+            
+            // Restaurar scroll
+            document.body.style.overflow = 'auto';
+            
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+    </script>
+    @endif
+
+    <!-- Scripts de Librerías (Flatpickr y Tom Select) -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Flatpickr para todos los inputs de tipo date
+            flatpickr("input[type='date']", {
+                locale: "es",
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d/m/Y",
+                altInputClass: "glass-input",
+                disableMobile: true,
+                monthSelectorType: "static" // Convierte el feo select nativo en texto elegante
+            });
+
+            // 2. Tom Select para selects con clase glass-input (con buscador habilitado)
+            document.querySelectorAll("select.glass-input").forEach((el) => {
+                if (!el.classList.contains('tomselected') && !el.classList.contains('no-search')) {
+                    let defaultPlaceholder = el.getAttribute('data-placeholder');
+                    
+                    // Si no tiene placeholder explícito, usa la primera opción vacía o un texto genérico
+                    if (!defaultPlaceholder && el.options.length > 0 && el.options[0].value === "") {
+                        defaultPlaceholder = el.options[0].text;
+                    } else if (!defaultPlaceholder) {
+                        defaultPlaceholder = 'Selecciona o busca...';
+                    }
+
+                    new TomSelect(el, {
+                        create: false,
+                        maxOptions: 100, // Aumentado para clientes grandes
+                        dropdownParent: 'body',
+                        placeholder: defaultPlaceholder
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>

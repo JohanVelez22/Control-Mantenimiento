@@ -32,7 +32,7 @@ class ReporteController extends Controller
             $queryDetallado->where('tipo_pago', $request->tipo_pago);
         }
 
-        $transacciones = $queryDetallado->paginate(15, ['*'], 'transacciones_page');
+        $transacciones = $queryDetallado->paginate(10, ['*'], 'transacciones_page');
 
         // --- INFORME ACUMULADO (MES ACTUAL O FILTRADO) ---
         $acumuladoQuery = MovimientoCaja::where('estado', 'activo')

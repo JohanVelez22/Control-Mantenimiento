@@ -51,26 +51,45 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        // 5. Construir alertas de electrónica
-        $alertasElectronica = \App\Models\Electronica::whereIn('estado', ['pendiente', 'terminado'])
-            ->orderByRaw("CASE WHEN estado = 'pendiente' THEN 0 ELSE 1 END")
-            ->orderBy('fecha_entrada')
+        // 5. Construir alertas de tareas pendientes
+        $alertasElectronica = \App\Models\Electronica::with('equipo.cliente')
+            ->where('estado', 'pendiente')
             ->get()
             ->map(function ($e) {
                 return [
+                    'modulo'     => 'electrónica',
                     'id_orden'   => $e->id_orden,
-                    'cliente'    => $e->cliente,
-                    'dispositivo'=> $e->dispositivo,
+                    'cliente'    => $e->equipo->cliente->nombre ?? 'N/A',
+                    'dispositivo'=> $e->equipo->nombre ?? 'N/A',
                     'estado'     => $e->estado,
-                    'dias'       => $e->dias_transcurridos,
+                    'dias'       => $e->dias_transcurridos ?? floor(abs(\Carbon\Carbon::parse($e->fecha_entrada)->diffInDays(now()))),
                 ];
             })->toArray();
 
-        if (count($alertasElectronica) > 0) {
-            $request->session()->put('alertas_electronica', $alertasElectronica);
+        $alertasMantenimiento = \App\Models\Mantenimiento::with('equipo.cliente')
+            ->where('estado', 'pendiente')
+            ->get()
+            ->map(function ($m) {
+                return [
+                    'modulo'     => 'mantenimiento',
+                    'id_orden'   => $m->id_orden,
+                    'cliente'    => $m->equipo->cliente->nombre ?? 'N/A',
+                    'dispositivo'=> $m->equipo->nombre ?? 'N/A',
+                    'estado'     => $m->estado,
+                    'dias'       => floor(abs(\Carbon\Carbon::parse($m->fecha_entrada)->diffInDays(now()))),
+                ];
+            })->toArray();
+
+        $alertasPendientes = array_merge($alertasElectronica, $alertasMantenimiento);
+        usort($alertasPendientes, function ($a, $b) {
+            return $b['dias'] <=> $a['dias']; // Ordenar por días descendente (los más antiguos primero)
+        });
+
+        if (count($alertasPendientes) > 0) {
+            $request->session()->flash('alertas_pendientes', $alertasPendientes);
         }
 
-        return redirect()->intended('/dashboard');
+        return redirect()->intended('/dashboard')->with('success', '¡Bienvenido de nuevo, ' . $user->name . '!');
     }
 
     // Muestra la vista de registro

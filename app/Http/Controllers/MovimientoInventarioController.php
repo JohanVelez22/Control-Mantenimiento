@@ -26,7 +26,7 @@ class MovimientoInventarioController extends Controller
     {
         $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
         $stocks      = Stock::orderBy('producto')->get();
-        $nextNumero  = Factura::siguienteNumero('C');
+        $nextNumero  = Factura::siguienteNumero('CP-');
 
         return view('inventario.compra', compact('proveedores', 'stocks', 'nextNumero'));
     }
@@ -55,7 +55,7 @@ class MovimientoInventarioController extends Controller
 
             // 1. Crear la factura
             $factura = Factura::create([
-                'numero_factura'  => Factura::siguienteNumero('C'),
+                'numero_factura'  => Factura::siguienteNumero('CP-'),
                 'tipo_movimiento' => 'compra',
                 'estado'          => $estado,
                 'facturable_id'   => $proveedor->id,
@@ -127,7 +127,7 @@ class MovimientoInventarioController extends Controller
     {
         $clientes   = Cliente::orderBy('nombre')->get();
         $stocks     = Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
-        $nextNumero = Factura::siguienteNumero('V');
+        $nextNumero = Factura::siguienteNumero('VT-');
 
         return view('inventario.venta', compact('clientes', 'stocks', 'nextNumero'));
     }
@@ -166,7 +166,7 @@ class MovimientoInventarioController extends Controller
 
             // 2. Crear la factura
             $factura = Factura::create([
-                'numero_factura'  => Factura::siguienteNumero('V'),
+                'numero_factura'  => Factura::siguienteNumero('VT-'),
                 'tipo_movimiento' => 'venta',
                 'estado'          => $estado,
                 'facturable_id'   => $cliente->id,
@@ -233,6 +233,15 @@ class MovimientoInventarioController extends Controller
 
     public function facturas(Request $request): View
     {
+        $fecha_desde = $request->input('fecha_desde', date('Y-m-01'));
+        $fecha_hasta = $request->input('fecha_hasta', date('Y-m-d'));
+
+        // Merge back to request so Blade matches
+        $request->merge([
+            'fecha_desde' => $fecha_desde,
+            'fecha_hasta' => $fecha_hasta,
+        ]);
+
         $query = Factura::with(['facturable', 'user'])
             ->orderBy('fecha', 'desc')
             ->orderBy('id', 'desc');
@@ -243,14 +252,11 @@ class MovimientoInventarioController extends Controller
         if ($request->filled('estado')) {
             $query->where('estado', $request->estado);
         }
-        if ($request->filled('fecha_desde')) {
-            $query->whereDate('fecha', '>=', $request->fecha_desde);
-        }
-        if ($request->filled('fecha_hasta')) {
-            $query->whereDate('fecha', '<=', $request->fecha_hasta);
-        }
+        
+        $query->whereDate('fecha', '>=', $fecha_desde);
+        $query->whereDate('fecha', '<=', $fecha_hasta);
 
-        $facturas = $query->paginate(15);
+        $facturas = $query->paginate(10);
 
         return view('inventario.facturas.index', compact('facturas'));
     }
@@ -301,6 +307,112 @@ class MovimientoInventarioController extends Controller
             DB::rollBack();
             Log::error('Error anulando factura: ' . $e->getMessage());
             return back()->with('error', 'Error al anular la factura.');
+        }
+    }
+
+    public function editFactura(Factura $factura): View
+    {
+        return view('inventario.facturas.edit', compact('factura'));
+    }
+
+    public function updateFactura(Request $request, Factura $factura): RedirectResponse
+    {
+        $request->validate([
+            'fecha'         => 'required|date',
+            'total_pagado'  => 'required|numeric|min:0',
+            'observaciones' => 'nullable|string',
+        ]);
+
+        $totalPagado = (float) $request->total_pagado;
+        $saldo       = $factura->total_documento - $totalPagado;
+        $estado      = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+        
+        try {
+            DB::beginTransaction();
+
+            // Si la factura estaba anulada y la estamos editando, significa que la estamos reactivando.
+            // Debemos volver a aplicar el stock de los productos.
+            if ($factura->estado === 'anulada') {
+                foreach ($factura->items as $item) {
+                    $stock = $item->stock;
+                    if ($stock) {
+                        if ($factura->tipo_movimiento === 'compra') {
+                            $stock->incrementarStock($item->cantidad);
+                        } else {
+                            $stock->decrementarStock($item->cantidad);
+                        }
+                    }
+                }
+            }
+
+            $factura->update([
+                'fecha'         => $request->fecha,
+                'total_pagado'  => $totalPagado,
+                'estado'        => $estado,
+                'observaciones' => $request->observaciones,
+            ]);
+
+            DB::commit();
+            return redirect()->route('inventario.facturas')->with('success', 'Factura actualizada y reactivada (si estaba anulada) correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error actualizando/reactivando factura: ' . $e->getMessage());
+            return back()->with('error', 'Error al actualizar la factura.');
+        }
+    }
+
+    public function destroyFactura(Request $request, Factura $factura): RedirectResponse
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->back()->with('error', 'Solo administradores pueden eliminar facturas.');
+        }
+
+        $request->validate([
+            'password_confirm' => 'required|string',
+        ]);
+
+        $currentUser = auth()->user();
+        $passwordOk = \Illuminate\Support\Facades\Hash::check($request->password_confirm, $currentUser->password);
+        if (!$passwordOk) {
+            $adminOk = \App\Models\User::where('role', 'admin')->where('active', true)->get()
+                ->contains(fn($a) => \Illuminate\Support\Facades\Hash::check($request->password_confirm, $a->password));
+            $passwordOk = $adminOk;
+        }
+
+        if (!$passwordOk) {
+            return back()->with('error', 'Contraseña incorrecta. No se eliminó la factura.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Solo revertimos el stock si la factura no estaba anulada
+            if ($factura->estado !== 'anulada') {
+                foreach ($factura->items as $item) {
+                    $stock = $item->stock;
+                    if ($stock) {
+                        if ($factura->tipo_movimiento === 'compra') {
+                            $stock->decrementarStock($item->cantidad);
+                        } else {
+                            $stock->incrementarStock($item->cantidad);
+                        }
+                    }
+                }
+            }
+
+            // Buscar y eliminar movimientos de caja asociados
+            MovimientoCaja::where('descripcion', 'like', "%{$factura->numero_factura}%")->delete();
+
+            $factura->items()->delete();
+            $factura->delete();
+
+            DB::commit();
+
+            return redirect()->route('inventario.facturas')->with('success', "Factura #{$factura->numero_factura} eliminada de forma permanente.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error eliminando factura: ' . $e->getMessage());
+            return back()->with('error', 'Error al eliminar la factura.');
         }
     }
 

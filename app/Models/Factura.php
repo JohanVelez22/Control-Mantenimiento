@@ -77,8 +77,8 @@ class Factura extends Model
     /** Genera el siguiente número de factura correlativo */
     public static function siguienteNumero(string $prefijo = 'F'): string
     {
-        $ultimo = static::withTrashed()->latest('id')->value('numero_factura');
+        $ultimo = static::withTrashed()->where('numero_factura', 'like', $prefijo . '%')->latest('id')->value('numero_factura');
         $num    = $ultimo ? ((int) substr($ultimo, strlen($prefijo))) + 1 : 1;
-        return $prefijo . str_pad($num, 6, '0', STR_PAD_LEFT);
+        return $prefijo . $num;
     }
 }

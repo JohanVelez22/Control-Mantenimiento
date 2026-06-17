@@ -29,7 +29,7 @@ class ProveedorController extends Controller
             $query->where('tipo_entidad', $request->tipo);
         }
 
-        $proveedores = $query->orderBy('nombre_razon_social')->paginate(15);
+        $proveedores = $query->orderBy('id', 'desc')->paginate(10);
 
         return view('proveedores.index', compact('proveedores'));
     }
@@ -43,12 +43,12 @@ class ProveedorController extends Controller
     {
         $validated = $request->validate([
             'tipo_entidad'        => ['required', Rule::in(['persona', 'empresa'])],
-            'identificacion'      => ['required', 'string', 'max:20', 'unique:proveedores,identificacion'],
-            'nombre_razon_social' => ['required', 'string', 'max:255'],
-            'telefono'            => ['nullable', 'string', 'max:20'],
-            'email'               => ['nullable', 'email', 'max:255'],
+            'identificacion'      => ['required', 'string', 'max:30', 'unique:proveedores,identificacion'],
+            'nombre_razon_social' => ['required', 'string', 'max:80'],
+            'telefono'            => ['nullable', 'string', 'max:30'],
+            'email'               => ['nullable', 'email', 'max:100'],
             'direccion'           => ['nullable', 'string', 'max:500'],
-            'notas'               => ['nullable', 'string'],
+            'notas'               => ['nullable', 'string', 'max:500'],
         ]);
 
         try {
@@ -80,12 +80,12 @@ class ProveedorController extends Controller
     {
         $validated = $request->validate([
             'tipo_entidad'        => ['required', Rule::in(['persona', 'empresa'])],
-            'identificacion'      => ['required', 'string', 'max:20', Rule::unique('proveedores')->ignore($proveedor->id)],
-            'nombre_razon_social' => ['required', 'string', 'max:255'],
-            'telefono'            => ['nullable', 'string', 'max:20'],
-            'email'               => ['nullable', 'email', 'max:255'],
+            'identificacion'      => ['required', 'string', 'max:30', Rule::unique('proveedores')->ignore($proveedor->id)],
+            'nombre_razon_social' => ['required', 'string', 'max:80'],
+            'telefono'            => ['nullable', 'string', 'max:30'],
+            'email'               => ['nullable', 'email', 'max:100'],
             'direccion'           => ['nullable', 'string', 'max:500'],
-            'notas'               => ['nullable', 'string'],
+            'notas'               => ['nullable', 'string', 'max:500'],
         ]);
 
         try {

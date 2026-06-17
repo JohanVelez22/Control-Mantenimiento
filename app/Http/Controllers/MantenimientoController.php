@@ -72,11 +72,20 @@ class MantenimientoController extends Controller
      */
     public function reportes(Request $request)
     {
+        $fecha_desde = $request->input('fecha_desde', date('Y-m-01'));
+        $fecha_hasta = $request->input('fecha_hasta', date('Y-m-d'));
+
+        // Merge back to request so Blade matches
+        $request->merge([
+            'fecha_desde' => $fecha_desde,
+            'fecha_hasta' => $fecha_hasta,
+        ]);
+
         $query = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user']);
 
         // Aplicación de filtros según los parámetros recibidos en el request
-        if ($request->filled('fecha_desde')) $query->whereDate('fecha_entrada', '>=', $request->fecha_desde);
-        if ($request->filled('fecha_hasta')) $query->whereDate('fecha_entrada', '<=', $request->fecha_hasta);
+        $query->whereDate('fecha_entrada', '>=', $fecha_desde);
+        $query->whereDate('fecha_entrada', '<=', $fecha_hasta);
         
         // Filtro complejo: Buscar mantenimientos de equipos que pertenecen a un cliente específico
         if ($request->filled('cliente_id') && $request->cliente_id !== 'todos') {
@@ -134,9 +143,15 @@ class MantenimientoController extends Controller
         if (Auth::user()->role === 'invitado') {
             return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para crear.');
         }
-        $equipos = Equipo::all();
-        $tecnicos = Tecnico::all();
-        return view('mantenimientos.create', compact('equipos', 'tecnicos'));
+        $equipos  = Equipo::with('cliente')->orderBy('nombre')->get();
+        $tecnicos = Tecnico::orderBy('nombre')->get();
+
+        // Calcular el siguiente consecutivo para mostrarlo en el formulario
+        $ultimo     = Mantenimiento::orderByDesc('id')->first();
+        $siguiente  = $ultimo ? intval(preg_replace('/[^0-9]/', '', $ultimo->id_orden)) + 1 : 1;
+        $nextOrden  = 'ORD-' . $siguiente;
+
+        return view('mantenimientos.create', compact('equipos', 'tecnicos', 'nextOrden'));
     }
 
     /**
@@ -154,11 +169,11 @@ class MantenimientoController extends Controller
             'fecha_salida'  => 'nullable|date|after_or_equal:fecha_entrada',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
-            'descripcion' => 'required|string|max:2000',
-            'costo' => 'required|numeric|min:0',
+            'descripcion' => 'required|string|max:500',
+            'costo' => 'required|numeric|min:0|decimal:0,2',
             'estado' => 'required|in:pendiente,terminado',
-            'equipo_id' => 'required|exists:equipos,id',
-            'tecnico_id' => 'required|exists:tecnicos,id',
+            'equipo_id' => 'required|integer|exists:equipos,id',
+            'tecnico_id' => 'required|integer|exists:tecnicos,id',
         ]);
 
         // Cálculo del siguiente número de orden basado en el último ID
@@ -201,11 +216,11 @@ class MantenimientoController extends Controller
             'fecha_salida'  => 'nullable|date|after_or_equal:fecha_entrada',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
-            'descripcion' => 'required|string|max:2000',
-            'costo' => 'required|numeric|min:0',
+            'descripcion' => 'required|string|max:500',
+            'costo' => 'required|numeric|min:0|decimal:0,2',
             'estado' => 'required|in:pendiente,terminado',
-            'equipo_id' => 'required|exists:equipos,id',
-            'tecnico_id' => 'required|exists:tecnicos,id',
+            'equipo_id' => 'required|integer|exists:equipos,id',
+            'tecnico_id' => 'required|integer|exists:tecnicos,id',
         ]);
 
         try {

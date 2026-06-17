@@ -1,110 +1,129 @@
 @extends('layouts.app')
+@section('title', 'Informes y Reportes - Diario')
+
 @section('content')
-<div class="space-y-5">
+<div class="flex gap-4 mb-6 no-print">
+ <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
+ <a href="{{ route('reportes.financiero.diario') }}" class="bg-amber-500 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💵 Informes Financieros</a>
+ <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Módulo Electrónica</a>
+</div>
 
-    {{-- Tabs de navegación --}}
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-4">
-        <div class="flex flex-wrap items-center gap-2">
-            <span class="font-bold text-lg mr-2">📊 Reportes Financieros</span>
-            <a href="{{ route('reportes.financiero.diario') }}"
-               class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-blue-500 text-white shadow-lg shadow-blue-500/30">
-                📅 Diario
-            </a>
-            <a href="{{ route('reportes.financiero.acumulado') }}"
-               class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-500/20">
-                📈 Acumulado
-            </a>
-            <a href="{{ route('reportes.financiero.operaciones') }}"
-               class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20">
-                🔍 Operaciones
-            </a>
-        </div>
-    </div>
+<div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-4">
+ <div>
+ <h1 class="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+ 📊 Informes y Reportes
+ </h1>
+ <p class="text-gray-500 dark:text-gray-400 font-semibold mt-1">Mostrando todos los movimientos del <strong>{{ \Carbon\Carbon::parse($fecha)->isoFormat('dddd D [de] MMMM [de] YYYY') }}</strong>.</p>
+ </div>
+</div>
 
-    {{-- Filtro de fecha --}}
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-5">
-        <form method="GET" class="flex flex-wrap items-center gap-3">
-            <label class="font-semibold text-sm">📅 Fecha:</label>
-            <input type="date" name="fecha" value="{{ $fecha }}"
-                   class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500">
-            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition-all shadow-lg shadow-blue-500/30">
-                Ver Día
-            </button>
-            <a href="{{ route('reportes.financiero.diario') }}" class="text-gray-400 hover:text-gray-600 text-sm px-3 py-2">Hoy</a>
-        </form>
-        <p class="text-xs text-gray-500 mt-2">Mostrando todos los movimientos del <strong>{{ \Carbon\Carbon::parse($fecha)->isoFormat('dddd D [de] MMMM [de] YYYY') }}</strong></p>
-    </div>
+<div class="glass-card p-4 mb-6 flex flex-wrap items-center gap-2 no-print">
+ <a href="{{ route('reportes.financiero.diario') }}"
+ class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-blue-500 text-white shadow-lg ">
+ 📅 Diario
+ </a>
+ <a href="{{ route('reportes.financiero.acumulado') }}"
+ class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-500/20">
+ 📈 Acumulado
+ </a>
+ <a href="{{ route('reportes.financiero.operaciones') }}"
+ class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20">
+ 📋 Operaciones
+ </a>
+</div>
 
-    {{-- Tarjetas de resumen --}}
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-green-500/10 border border-green-500/30 rounded-2xl p-4 text-center">
-            <p class="text-xs font-semibold text-green-600 mb-1">📈 Ingresos</p>
-            <p class="text-xl font-black text-green-700 dark:text-green-300">${{ number_format($resumen['total_ingresos'], 0, ',', '.') }}</p>
-        </div>
-        <div class="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 text-center">
-            <p class="text-xs font-semibold text-red-600 mb-1">📉 Egresos</p>
-            <p class="text-xl font-black text-red-700 dark:text-red-300">${{ number_format($resumen['total_egresos'], 0, ',', '.') }}</p>
-        </div>
-        <div class="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4 text-center">
-            <p class="text-xs font-semibold text-blue-600 mb-1">🔧 Mantenimientos</p>
-            <p class="text-xl font-black text-blue-700 dark:text-blue-300">${{ number_format($resumen['total_mantenimientos'], 0, ',', '.') }}</p>
-        </div>
-        <div class="bg-gray-500/10 border border-gray-500/30 rounded-2xl p-4 text-center">
-            <p class="text-xs font-semibold text-gray-600 mb-1">🚫 Anulados</p>
-            <p class="text-xl font-black text-gray-700 dark:text-gray-300">{{ $resumen['total_anulados'] }}</p>
-        </div>
-    </div>
+<div class="glass-card p-5 mb-6 no-print">
+ <form method="GET" class="flex flex-wrap items-center gap-3">
+   <label class="font-semibold text-sm">📅 Fecha:</label>
+   <input type="date" name="fecha" value="{{ $fecha }}" class="glass-input w-44">
+   <button class="btn-primary py-2 px-5 text-sm" title="Filtrar">Ver Día</button>
+   <a href="{{ route('reportes.financiero.diario') }}" class="btn-clean text-sm">Hoy</a>
+  
+   <div class="flex items-center gap-2 ml-auto">
+       <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
+       <span>🖨️</span> Imprimir
+       </button>
+       <button type="submit" name="export" value="pdf" class="btn-pdf text-sm" title="Exportar a PDF">
+       <span>📄</span> PDF
+       </button>
+       <button type="submit" name="export" value="excel" class="btn-excel text-sm" title="Exportar a Excel">
+       <span>📊</span> Excel
+       </button>
+   </div>
+ </form>
+</div>
 
-    {{-- Tabla de movimientos del día --}}
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-xl border border-white/20 dark:border-gray-700/50 rounded-2xl p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-bold">Movimientos del Día ({{ $movimientos->count() }})</h3>
-            <a href="{{ route('reportes.financiero.diario', array_merge(request()->query(), ['export' => 'excel'])) }}"
-               class="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/40 rounded-xl px-3 py-2 font-semibold text-sm transition-all">
-                📊 Exportar Excel
-            </a>
-        </div>
+ {{-- Tarjetas de resumen --}}
+ <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
+ <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📈</span> Ingresos</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_ingresos'], 0, ',', '.') }}</p>
+ </div>
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-500/20 rounded-full blur-2xl group-hover:bg-red-500/30 transition-all"></div>
+ <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📉</span> Egresos</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_egresos'], 0, ',', '.') }}</p>
+ </div>
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
+ <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🔧</span> Mantenimientos</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_mantenimientos'], 0, ',', '.') }}</p>
+ </div>
+ <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+ <div class="absolute -right-6 -top-6 w-24 h-24 bg-gray-500/20 rounded-full blur-2xl group-hover:bg-gray-500/30 transition-all"></div>
+ <p class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🚫</span> Anulados</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $resumen['total_anulados'] }}</p>
+ </div>
+ </div>
 
-        @if($movimientos->isEmpty())
-            <div class="text-center py-12">
-                <div class="text-5xl mb-3">📭</div>
-                <p class="text-gray-500">No hubo movimientos en esta fecha.</p>
-            </div>
-        @else
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-100 dark:bg-gray-700 font-semibold text-center">
-                        <tr>
-                            <th class="p-3">Tipo</th>
-                            <th class="p-3 text-left">Descripción</th>
-                            <th class="p-3">Estado</th>
-                            <th class="p-3">Monto</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($movimientos as $mov)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center {{ $mov['estado'] === 'anulado' || $mov['estado'] === 'anulada' ? 'opacity-50' : '' }}">
-                            <td class="p-3">
-                                <span class="px-2 py-0.5 rounded-lg text-xs font-bold
-                                    bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800
-                                    dark:bg-{{ $mov['color'] }}-900/40 dark:text-{{ $mov['color'] }}-300">
-                                    {{ $mov['icono'] }} {{ ucfirst($mov['tipo']) }}
-                                </span>
-                            </td>
-                            <td class="p-3 text-left text-gray-700 dark:text-gray-300">{{ $mov['descripcion'] }}</td>
-                            <td class="p-3">
-                                <span class="text-xs font-semibold text-gray-500">{{ ucfirst($mov['estado'] ?? '—') }}</span>
-                            </td>
-                            <td class="p-3 font-bold {{ in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-                                ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endif
-    </div>
+ {{-- Tabla de movimientos del día --}}
+ <div class="glass-card p-6 md:p-8 mt-6">
+ <div class="flex justify-between items-center mb-4">
+ <h3 class="text-lg font-bold">Movimientos del Día ({{ $movimientos->count() }})</h3>
+ </div>
+
+ @if($movimientos->isEmpty())
+ <div class="flex flex-col items-center justify-center space-y-3 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm p-12 rounded-2xl border border-white/20 my-4">
+     <div class="text-5xl opacity-80">📭</div>
+     <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
+     <p class="text-sm font-medium text-slate-500 dark:text-slate-400">No hubo movimientos en esta fecha.</p>
+ </div>
+ @else
+ <div class="overflow-x-auto pb-2">
+ <table class="ts-table responsive-table w-full text-sm">
+ <thead>
+ <tr>
+ <th class="p-3 text-center">Tipo</th>
+ <th class="p-3 text-left">Descripción</th>
+ <th class="p-3 text-center">Estado</th>
+ <th class="p-3 text-center">Monto</th>
+ </tr>
+ </thead>
+ <tbody>
+ @foreach($movimientos as $mov)
+ <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center {{ $mov['estado'] === 'anulado' || $mov['estado'] === 'anulada' ? 'opacity-50' : '' }}">
+ <td class="p-3">
+ <span class="px-2 py-0.5 rounded-lg text-xs font-bold
+ bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800
+ dark:bg-{{ $mov['color'] }}-900/40 dark:text-{{ $mov['color'] }}-300">
+ {{ $mov['icono'] }} {{ ucfirst($mov['tipo']) }}
+ </span>
+ </td>
+ <td class="p-3 text-left text-gray-700 dark:text-gray-300">{{ $mov['descripcion'] }}</td>
+ <td class="p-3">
+ <span class="text-xs font-semibold text-gray-500">{{ ucfirst($mov['estado'] ?? '—') }}</span>
+ </td>
+ <td class="p-3 font-bold {{ in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+ ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
+ </td>
+ </tr>
+ @endforeach
+ </tbody>
+ </table>
+ </div>
+ @endif
+ </div>
 
 </div>
 @endsection
