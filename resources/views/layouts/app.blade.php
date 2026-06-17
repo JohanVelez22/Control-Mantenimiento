@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" class="preload">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tecni Systemas — ERP</title>
+    <title>Tecni Systemas</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -147,9 +147,10 @@
                 </div>
 
                 <!-- Centro: Logo Centrado -->
-                <div class="flex-1 max-w-xl mx-4 hidden md:flex justify-center items-center">
-                    <a href="{{ route('dashboard') }}" class="text-[26px] font-black tracking-widest hover:scale-105 transition-transform duration-300 font-logo">
-                        <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span><span class="text-slate-800 dark:text-white">SYSTEMAS</span>
+                <div class="absolute left-1/2 transform -translate-x-1/2 hidden md:flex justify-center items-center">
+                    <a href="{{ route('dashboard') }}" class="text-[20px] font-black tracking-widest hover:scale-105 transition-transform duration-300 font-logo flex items-center gap-2">
+                        <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
+                        <span class="text-slate-800 dark:text-white">SYSTEMAS</span>
                     </a>
                 </div>
 
