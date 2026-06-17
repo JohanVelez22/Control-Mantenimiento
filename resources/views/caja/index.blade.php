@@ -112,25 +112,25 @@
  <form action="{{ route('caja.index') }}" method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-4 bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm">
  <div class="relative">
  <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
- <input type="text" name="search" value="{{ request('search') }}" placeholder="Persona o empresa..." class="glass-input pl-9 w-48 sm:w-64 text-sm">
+ <input type="text" name="search" value="{{ request('search') }}" placeholder="Persona o empresa..." class="glass-input pl-9 w-48 sm:w-64 text-sm h-[42px]">
  </div>
- <select name="tipo_movimiento" class="glass-input w-48 text-sm font-semibold no-search">
+ <select name="tipo_movimiento" class="glass-input w-48 text-sm font-semibold no-search h-[42px]">
  <option value="">Todos los tipos</option>
  <option value="ingreso" {{ request('tipo_movimiento') === 'ingreso' ? 'selected' : '' }}>📈 Ingreso</option>
  <option value="egreso" {{ request('tipo_movimiento') === 'egreso' ? 'selected' : '' }}>📉 Egreso</option>
  </select>
- <select name="tipo_pago" class="glass-input w-48 text-sm font-semibold no-search">
+ <select name="tipo_pago" class="glass-input w-48 text-sm font-semibold no-search h-[42px]">
  <option value="">Todos los pagos</option>
  <option value="efectivo" {{ request('tipo_pago') === 'efectivo' ? 'selected' : '' }}>💵 Efectivo</option>
  <option value="consignacion" {{ request('tipo_pago') === 'consignacion' ? 'selected' : '' }}>🏦 Consignación</option>
  </select>
  <div class="flex items-center gap-2">
- <input type="date" name="fecha_desde" value="{{ request('fecha_desde', date('Y-m-01')) }}" class="glass-input w-36 sm:w-44 text-sm">
+ <input type="date" name="fecha_desde" value="{{ request('fecha_desde', date('Y-m-01')) }}" class="glass-input w-36 sm:w-44 text-sm h-[42px]">
  <span class="text-gray-400 text-sm">a</span>
- <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta', date('Y-m-d')) }}" class="glass-input w-36 sm:w-44 text-sm">
+ <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta', date('Y-m-d')) }}" class="glass-input w-36 sm:w-44 text-sm h-[42px]">
  </div>
- <button type="submit" class="btn-primary py-2 px-4 text-sm">🌪️ Filtrar</button>
- <a href="{{ route('caja.index') }}" class="btn-clean text-sm">🧹 Limpiar</a>
+ <button type="submit" class="btn-primary py-2 px-4 text-sm h-[42px]">🌪️ Filtrar</button>
+ <a href="{{ route('caja.index') }}" class="btn-clean text-sm h-[42px] flex items-center">🧹 Limpiar</a>
  </form>
 {{-- Tabla adaptable --}}
 <div class="overflow-x-auto pb-2">
