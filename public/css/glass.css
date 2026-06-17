@@ -1033,16 +1033,27 @@ select.tomselected { display: none !important; }
     overflow: hidden !important;
 }
 .flatpickr-months {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    height: 44px !important;
     border-radius: 12px 12px 0 0 !important;
-    padding: 4px 0 !important;
 }
 .flatpickr-months .flatpickr-month {
-    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
 }
 .flatpickr-current-month {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     font-weight: 700 !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
     color: #1E293B !important;
+    padding: 0 !important;
 }
 .flatpickr-current-month input.cur-year {
     font-weight: 700 !important;
@@ -1050,18 +1061,34 @@ select.tomselected { display: none !important; }
 }
 .flatpickr-months .flatpickr-prev-month,
 .flatpickr-months .flatpickr-next-month {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
     fill: #475569 !important;
     color: #475569 !important;
-    padding: 6px !important;
+    padding: 0 !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
 }
+.flatpickr-months .flatpickr-prev-month { left: 4px !important; }
+.flatpickr-months .flatpickr-next-month { right: 4px !important; }
+
 .flatpickr-months .flatpickr-prev-month:hover,
 .flatpickr-months .flatpickr-next-month:hover {
     fill: #2563EB !important;
     color: #2563EB !important;
+    background: rgba(37,99,235,0.08) !important;
 }
 .flatpickr-months .flatpickr-prev-month svg,
 .flatpickr-months .flatpickr-next-month svg {
     fill: inherit !important;
+    width: 14px !important;
+    height: 14px !important;
 }
 span.flatpickr-weekday {
     color: #64748B !important;
