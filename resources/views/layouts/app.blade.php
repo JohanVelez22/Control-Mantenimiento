@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" class="preload">
 <head>
     <meta charset="UTF-8">
@@ -53,9 +53,8 @@
         <!-- SIDEBAR DE VIDRIO (Fijo) -->
         <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col">
             <!-- Brand / Logo -->
-            <div class="h-20 flex items-center justify-center expanded:justify-start border-b border-gray-200/40 dark:border-white/5 shrink-0 px-6 relative transition-all duration-300">
-                <span class="text-[13px] font-normal tracking-widest text-[#06B6D4] uppercase opacity-0 group-[.expanded]:opacity-100 transition-opacity duration-300 font-logo">NAVEGACIÓN</span>
-                <span class="text-[11px] font-black text-[#2563EB] uppercase group-[.expanded]:hidden font-logo">NAV</span>
+            <div class="h-16 flex items-center justify-center border-b border-gray-200/40 dark:border-white/5 shrink-0 px-6 relative transition-all duration-300">
+                <span class="text-[14px] font-semibold tracking-[0.15em] text-[#06B6D4] uppercase font-logo text-center w-full">NAVEGACIÓN</span>
             </div>
 
             <!-- Navegación -->
