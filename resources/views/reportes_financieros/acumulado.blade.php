@@ -32,7 +32,7 @@
  </a>
 </div>
 
-<div class="glass-card p-5 mb-6 no-print">
+<div class="glass-card p-5 mb-4 no-print">
  <form method="GET" class="flex flex-wrap items-center gap-3">
   <label class="font-semibold text-sm">Desde:</label>
   <input type="date" name="desde" value="{{ $desde->toDateString() }}" class="glass-input w-44">
@@ -129,7 +129,7 @@
  @endif
 
  {{-- Tabla de movimientos del período --}}
- <div class="glass-card p-6 md:p-8 mt-6">
+ <div class="glass-card p-6 md:p-8 mt-4">
  <div class="flex justify-between items-center mb-4">
  <h3 class="text-lg font-bold">Detalle de Movimientos del Período ({{ $movimientos->count() }})</h3>
  </div>

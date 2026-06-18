@@ -33,7 +33,7 @@
  </a>
 </div>
 
-<div class="glass-card p-5 mb-6 no-print">
+<div class="glass-card p-5 mb-4 no-print">
   <form action="{{ route('reportes.index') }}" method="GET" class="flex flex-wrap items-center gap-3">
    <select name="mes" class="glass-input w-40 font-semibold">
    @for($i=1; $i<=12; $i++)
@@ -63,7 +63,7 @@
   </form>
 </div>
 
-<div class="space-y-6">
+<div class="space-y-4">
 
  {{-- INFORME ACUMULADO --}}
  <div class="glass-card p-6">
@@ -104,7 +104,7 @@
   </div>
 
   {{-- INFORME DETALLADO (Transacciones) --}}
-  <div class="glass-card p-6 mt-6">
+  <div class="glass-card p-6 mt-4">
   <h3 class="text-xl font-bold mb-4">📝 Informe Detallado (Transacciones del Mes)</h3>
   
   @if($transacciones->isEmpty())

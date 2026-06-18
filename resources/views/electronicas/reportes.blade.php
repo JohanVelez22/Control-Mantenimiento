@@ -117,7 +117,7 @@
 
  <!-- Tabla con Datos Independientes (vista en pantalla: como antes; impresión: clase reportes-tabla-imprimir) -->
  <div class="overflow-x-auto pb-2">
- <table class="ts-table responsive-table reportes-tabla-imprimir w-full">
+ <table class="ts-table table-electronica responsive-table reportes-tabla-imprimir w-full">
  <thead>
  <tr>
  <th class="w-20 text-center">Orden</th>
@@ -135,7 +135,9 @@
  @forelse($registros as $m)
  <tr>
  <td class="text-center font-bold">
- <span class="text-purple-600 dark:text-purple-400">{{ $m->id_orden }}</span>
+ <a href="{{ route('electronicas.index', ['locate' => $m->id]) }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors no-print-link">
+ {{ $m->id_orden }}
+ </a>
  </td>
  <td class="text-center font-bold">
  {{ $m->cliente }}

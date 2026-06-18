@@ -51,7 +51,7 @@
  </div>
 </div>
 
-<div class="space-y-6">
+<div class="space-y-4">
  {{-- Tarjetas de totales Glassmorphism --}}
  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">

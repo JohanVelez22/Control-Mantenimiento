@@ -32,7 +32,7 @@
  </a>
 </div>
 
-<div class="glass-card p-5 mb-6 no-print">
+<div class="glass-card p-5 mb-4 no-print">
  <form method="GET" class="space-y-3">
    <div class="flex flex-wrap items-center gap-3">
    <select name="tipo" class="glass-input w-56 font-semibold">
@@ -89,7 +89,11 @@
  <tbody>
  @foreach($registros as $m)
  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
- <td class="p-2 font-mono font-bold">{{ $m->id_orden }}</td>
+ <td class="p-2 font-mono font-bold">
+ <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+ {{ $m->id_orden }}
+ </a>
+ </td>
  <td class="p-2 text-left">{{ $m->equipo->nombre ?? '—' }} <span class="text-xs text-gray-500">({{ $m->equipo->cliente->nombre ?? '—' }})</span></td>
  <td class="p-2">{{ $m->tecnico->nombre ?? '—' }}</td>
  <td class="p-2">{{ $m->fecha_entrada->format('d/m/Y') }}</td>
@@ -104,7 +108,7 @@
  {{-- Tabla Electrónica --}}
  @elseif($tipo === 'solo_electronica')
  <div class="overflow-x-auto pb-2">
- <table class="ts-table responsive-table w-full text-sm text-center">
+ <table class="ts-table table-electronica responsive-table w-full text-sm text-center">
  <thead>
  <tr>
  <th class="p-2 text-center">Orden</th><th class="p-2 text-left">Dispositivo / Cliente</th>
@@ -115,7 +119,11 @@
  <tbody>
  @foreach($registros as $e)
  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
- <td class="p-2 font-mono font-bold">{{ $e->id_orden }}</td>
+ <td class="p-2 font-mono font-bold">
+ <a href="{{ route('electronicas.index', ['locate' => $e->id]) }}" class="text-purple-600 dark:text-purple-400 hover:underline">
+ {{ $e->id_orden }}
+ </a>
+ </td>
  <td class="p-2 text-left">{{ $e->equipo->nombre ?? '—' }} <span class="text-xs text-gray-500">({{ $e->equipo->cliente->nombre ?? '—' }})</span></td>
  <td class="p-2">{{ $e->tecnico->nombre ?? '—' }}</td>
  <td class="p-2">{{ $e->fecha_entrada->format('d/m/Y') }}</td>

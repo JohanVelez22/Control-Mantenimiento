@@ -25,6 +25,14 @@ class ElectronicaController extends Controller
 
     public function index(Request $request)
     {
+        if ($request->has('locate')) {
+            $id = $request->locate;
+            // Calcular la página asumiendo orden descendente por ID
+            $position = Electronica::where('id', '>=', $id)->count();
+            $page = ceil($position / 10) ?: 1;
+            return redirect()->route('electronicas.index', ['page' => $page])->withFragment('electronica-' . $id);
+        }
+
         $query = Electronica::with('tecnico');
 
         if ($request->filled('search')) {

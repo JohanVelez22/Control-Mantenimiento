@@ -1,5 +1,16 @@
 @extends('layouts.app')
 @section('content')
+<style>
+ /* Fila resaltada al llegar por ancla (#electronica-id) */
+ tr:target {
+ background-color: rgba(168, 85, 247, 0.1) !important;
+ outline: 2px solid rgba(168, 85, 247, 0.5);
+ outline-offset: -2px;
+ }
+ .dark tr:target {
+ background-color: rgba(168, 85, 247, 0.2) !important;
+ }
+</style>
 
 {{-- Modal de contraseña para anular --}}
 <div id="pwd-anular-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
@@ -48,7 +59,7 @@
  </div>
 
  <div class="overflow-x-auto pb-2">
- <table id="tabla-electronicas" class="ts-table responsive-table w-full">
+ <table id="tabla-electronicas" class="ts-table table-electronica responsive-table w-full">
  <thead>
  <tr>
  <th class="w-20 text-center">Orden</th>
@@ -66,9 +77,9 @@
  </thead>
  <tbody>
  @forelse($electronicas as $e)
- <tr class="{{ $e->estado === 'anulado' ? 'row-anulado' : '' }}">
+ <tr id="electronica-{{ $e->id }}" class="{{ $e->estado === 'anulado' ? 'row-anulado' : '' }}">
  <td data-label="Orden:" class="font-bold text-center whitespace-nowrap">
- <span class="text-xs bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 px-2 py-0.5 rounded-lg font-mono">{{ $e->id_orden }}</span>
+ <a href="#electronica-{{ $e->id }}" class="text-xs bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 px-2 py-0.5 rounded-lg font-mono hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors">{{ $e->id_orden }}</a>
  </td>
  
  <td data-label="Equipo:">

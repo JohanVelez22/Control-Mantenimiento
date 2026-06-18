@@ -58,7 +58,7 @@
         <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col">
             <!-- Brand / Logo -->
             <div class="h-16 flex items-center justify-center border-b border-gray-200/40 dark:border-white/5 shrink-0 px-6 relative transition-all duration-150">
-                <span class="text-[11px] font-semibold tracking-[0.15em] text-[#06B6D4] uppercase font-logo text-center w-full">NAVEGACIÓN</span>
+                <span class="text-[11px] font-semibold tracking-[0.15em] text-[#06B6D4] uppercase font-logo text-center w-full sidebar-brand-text transition-opacity duration-200">NAVEGACIÓN</span>
             </div>
 
             <!-- Navegación -->
@@ -183,19 +183,19 @@
 
                                 <!-- Header -->
                                 <div id="notif-header" class="px-3 py-2.5 relative border-b text-center"
-                                     style="background:transparent; border-color:rgba(0,0,0,0.08);">
-                                    <span id="notif-title" class="text-[10px] font-black uppercase inline-block" style="color:#0F172A; letter-spacing:0.12em;">Pendientes</span>
+                                     style="background:rgba(37,99,235,0.12); border-color:rgba(37,99,235,0.15);">
+                                    <span id="notif-title" class="text-[11px] font-semibold tracking-[0.15em] font-logo inline-block uppercase" style="color:#06B6D4;">Pendientes</span>
                                     @if(isset($totalPendientes) && $totalPendientes > 0)
                                     <span class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center min-w-[20px] h-[20px] px-1 rounded-full text-white text-[10px] font-black" style="background:#ef4444; box-shadow:0 2px 6px rgba(239,68,68,0.5)">{{ $totalPendientes }}</span>
                                     @endif
                                 </div>
 
                                 <!-- Items -->
-                                <div class="py-1">
                                 @if(isset($totalPendientes) && $totalPendientes > 0)
+                                <div class="py-1">
                                     @if($mantPendientes > 0)
                                     <button onclick="openNotifModal('mant'); document.getElementById('notif-dropdown').classList.add('hidden');"
-                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-slate-100/50 dark:hover:bg-slate-800/60"
+                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/30"
                                             style="border-bottom:1px solid rgba(0,0,0,0.05);">
                                         <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(59,130,246,0.15);">🔧</div>
                                         <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Mantenimiento</span>
@@ -204,7 +204,7 @@
                                     @endif
                                     @if($elecPendientes > 0)
                                     <button onclick="openNotifModal('elec'); document.getElementById('notif-dropdown').classList.add('hidden');"
-                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-slate-100/50 dark:hover:bg-slate-800/60"
+                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-purple-50 dark:hover:bg-purple-900/30"
                                             style="border-bottom:1px solid rgba(0,0,0,0.05);">
                                         <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(168,85,247,0.15);">⚡</div>
                                         <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Electrónica</span>
@@ -213,28 +213,28 @@
                                     @endif
                                     @if($cajaPendientes > 0)
                                     <button onclick="openNotifModal('caja'); document.getElementById('notif-dropdown').classList.add('hidden');"
-                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-slate-100/50 dark:hover:bg-slate-800/60">
+                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-amber-50 dark:hover:bg-amber-900/30">
                                         <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(245,158,11,0.15);">💰</div>
                                         <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Saldos / Caja</span>
                                         <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#f59e0b; box-shadow:0 2px 6px rgba(245,158,11,0.4)">{{ $cajaPendientes }}</span>
                                     </button>
                                     @endif
                                 </div>
-
-                                <!-- Footer CTA outside padding -->
+                                <!-- Footer CTA -->
                                 <button id="notif-footer" onclick="openNotifModal('all'); document.getElementById('notif-dropdown').classList.add('hidden');"
-                                        class="w-full py-2.5 text-[11px] font-black text-center tracking-wide transition-colors hover:opacity-90"
-                                        style="border-top:1px solid rgba(0,0,0,0.05); background:rgba(248,250,252,0.8); color:#2563eb;">
+                                        class="w-full py-2.5 text-xs font-bold text-center tracking-wide transition-colors hover:bg-blue-50 dark:hover:bg-slate-800/50"
+                                        style="border-top:1px solid rgba(37,99,235,0.15); background:rgba(37,99,235,0.10); color:#1d4ed8;">
                                     Ver todos →
                                 </button>
                                 @else
+                                <div class="py-1">
                                     <div class="px-4 py-5 text-center">
                                         <div class="text-2xl mb-1">✅</div>
                                         <p class="text-sm font-semibold" style="color:#374151;">¡Todo al día!</p>
                                         <p class="text-xs mt-0.5" style="color:#9ca3af;">Sin tareas pendientes.</p>
                                     </div>
-                                @endif
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -262,7 +262,7 @@
                                 header.style.background = 'transparent'; 
                                 header.style.borderColor = 'rgba(255,255,255,0.1)'; 
                             }
-                            if (title) { title.style.color = '#F8FAFC'; } // text-slate-50
+                            if (title) { title.style.color = '#06B6D4'; } // cyan-500 matching NAVEGACION
                             
                             if (footer) {
                                 footer.style.background = 'rgba(30,41,59,0.5)'; // bg-slate-800/50
@@ -282,7 +282,7 @@
                                 header.style.background = 'transparent'; 
                                 header.style.borderColor = 'rgba(0,0,0,0.08)'; 
                             }
-                            if (title) { title.style.color = '#0F172A'; } // text-slate-900
+                            if (title) { title.style.color = '#06B6D4'; } // cyan-500 matching NAVEGACION
                             
                             if (footer) {
                                 footer.style.background = 'rgba(248,250,252,0.8)'; // bg-slate-50/80
@@ -325,7 +325,7 @@
             <div id="nav-progress" class="no-print"></div>
 
             <!-- CONTENIDO DINÁMICO -->
-            <main id="ts-main" class="flex-1 p-4 sm:p-6 lg:p-8 page-enter relative z-10">
+            <main id="ts-main" class="flex-1 p-4 sm:p-6 lg:p-8 pb-32 lg:pb-40 page-enter relative z-10">
                 @yield('content')
             </main>
         </div>
@@ -854,6 +854,22 @@
                     });
                 }
             });
+
+            // 3. Auto-centrar elementos al navegar por ancla (hash)
+            const scrollToHash = () => {
+                if (window.location.hash) {
+                    try {
+                        const target = document.querySelector(window.location.hash);
+                        if (target) {
+                            setTimeout(() => {
+                                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }, 150);
+                        }
+                    } catch(e) {}
+                }
+            };
+            scrollToHash();
+            window.addEventListener('hashchange', scrollToHash);
         });
     </script>
 

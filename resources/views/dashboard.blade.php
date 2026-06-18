@@ -47,11 +47,11 @@
 </div>
 
 <!-- Carrusel de Gráficos -->
-<h3 class="text-lg font-bold mb-3 text-gray-700 dark:text-gray-300 flex items-center gap-2">
+<h3 class="text-lg font-bold mb-6 text-gray-700 dark:text-gray-300 flex items-center gap-2">
  <span class="text-xl leading-none shrink-0" aria-hidden="true">📆</span>
  Análisis Visual de Rendimiento
 </h3>
-<div class="mb-8 glass-card relative overflow-hidden group " id="statsCarouselContainer">
+<div class="mb-6 glass-card relative overflow-hidden group " id="statsCarouselContainer">
  
  <!-- Indicadores -->
  <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-3 z-10 flex-wrap px-2" id="carouselIndicators">
@@ -150,7 +150,7 @@
  </div>
 </div>
 
-<div class="glass-card p-6 md:p-8">
+<div class="glass-card p-6 md:p-8 pb-4 md:pb-5">
 
  {{-- Tabs --}}
  <div class="flex items-center gap-1 mb-5 border-b border-gray-200 dark:border-gray-600">
@@ -190,7 +190,7 @@
  @endphp
  <tr>
  <td class="text-center font-bold">
- <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 hover:text-blue-800 hover:underline no-print-link">
+ <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline no-print-link">
  {{ $m->id_orden }}
  </a>
  </td>
@@ -244,17 +244,17 @@
  </tbody>
  </table>
  </div>
- <div class="mt-4 text-right">
- <a href="{{ route('mantenimientos.reportes') }}" class="btn-primary">
- 📈 Ver reporte detallado →
- </a>
- </div>
+    <div class="mt-4 md:mt-5 text-right">
+        <a href="{{ route('mantenimientos.reportes') }}" class="btn-primary">
+            📈 Ver reporte detallado →
+        </a>
+    </div>
  </div>
 
  {{-- ═══════════════ TAB: Electrónica ═══════════════ --}}
  <div id="tabPanelElec" class="hidden">
  <div class="overflow-x-auto rounded-xl border border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-md">
- <table class="ts-table responsive-table">
+ <table class="ts-table table-electronica responsive-table">
  <thead>
  <tr>
  <th class="text-center">Orden</th>
@@ -277,7 +277,7 @@
  @endphp
  <tr>
  <td class="text-center font-bold">
- <a href="{{ route('electronicas.index') }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 hover:underline">
+ <a href="{{ route('electronicas.index', ['locate' => $e->id]) }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline no-print-link">
  {{ $e->id_orden }}
  </a>
  </td>
@@ -325,8 +325,8 @@
  </tbody>
  </table>
  </div>
- <div class="mt-4 text-right">
- <a href="{{ route('electronicas.reportes') }}" class="btn-purple">
+    <div class="mt-4 md:mt-5 text-right">
+        <a href="{{ route('electronicas.reportes') }}" class="btn-purple">
  📈 Ver reporte detallado →
  </a>
  </div>
