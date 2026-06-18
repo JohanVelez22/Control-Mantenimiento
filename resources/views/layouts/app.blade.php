@@ -388,6 +388,10 @@
             wrapper.style.marginLeft = W_COLLAPSED;
 
             sb.addEventListener('mouseenter', () => {
+                // Cerrar calendarios abiertos antes de animar para evitar desalineamiento
+                if (window._flatpickrInstances) {
+                    window._flatpickrInstances.forEach(fp => fp.close());
+                }
                 wrapper.style.marginLeft = W_EXPANDED;
             });
             sb.addEventListener('mouseleave', () => {
@@ -538,6 +542,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // 1. Flatpickr para todos los inputs de tipo date
+            window._flatpickrInstances = [];
             flatpickr("input[type='date']", {
                 locale: "es",
                 dateFormat: "Y-m-d",
@@ -546,7 +551,10 @@
                 altInputClass: "glass-input",
                 disableMobile: true,
                 monthSelectorType: "static",
-                appendTo: document.body  // Evita desborde dentro de contenedores con overflow
+                // Sin appendTo:body para que el calendario siga al input al mover contenido
+                onReady: function(_, __, fp) {
+                    window._flatpickrInstances.push(fp);
+                }
             });
 
             // 2. Tom Select para selects con clase glass-input
