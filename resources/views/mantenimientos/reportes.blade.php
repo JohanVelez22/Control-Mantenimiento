@@ -142,7 +142,7 @@
  <tbody>
  @forelse($mantenimientos as $m)
  <tr>
- <td class="text-center font-bold">
+ <td class="text-center font-bold whitespace-nowrap">
  <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors no-print-link">
  {{ $m->id_orden }}
  </a>

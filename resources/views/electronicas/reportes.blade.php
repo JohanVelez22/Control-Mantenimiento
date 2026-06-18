@@ -134,7 +134,7 @@
  <tbody>
  @forelse($registros as $m)
  <tr>
- <td class="text-center font-bold">
+ <td class="text-center font-bold whitespace-nowrap">
  <a href="{{ route('electronicas.index', ['locate' => $m->id]) }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors no-print-link">
  {{ $m->id_orden }}
  </a>

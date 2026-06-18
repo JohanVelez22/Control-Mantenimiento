@@ -89,12 +89,19 @@
  <tbody>
  @foreach($registros as $m)
  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
- <td class="p-2 font-mono font-bold">
+ <td class="p-2 font-mono font-bold whitespace-nowrap">
  <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
  {{ $m->id_orden }}
  </a>
  </td>
- <td class="p-2 text-left">{{ $m->equipo->nombre ?? '—' }} <span class="text-xs text-gray-500">({{ $m->equipo->cliente->nombre ?? '—' }})</span></td>
+ <td class="p-2 text-left">
+ <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group hover:opacity-75 transition-opacity" title="Ver en tabla de equipos">
+ <span class="font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400">{{ $m->equipo->nombre ?? '—' }}</span>
+ </a> 
+ <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="group hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+ <span class="text-xs text-gray-500 font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400">({{ $m->equipo->cliente->nombre ?? '—' }})</span>
+ </a>
+ </td>
  <td class="p-2">{{ $m->tecnico->nombre ?? '—' }}</td>
  <td class="p-2">{{ $m->fecha_entrada->format('d/m/Y') }}</td>
  <td class="p-2 font-bold text-blue-600">${{ number_format($m->costo, 0, ',', '.') }}</td>
@@ -119,12 +126,19 @@
  <tbody>
  @foreach($registros as $e)
  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
- <td class="p-2 font-mono font-bold">
+ <td class="p-2 font-mono font-bold whitespace-nowrap">
  <a href="{{ route('electronicas.index', ['locate' => $e->id]) }}" class="text-purple-600 dark:text-purple-400 hover:underline">
  {{ $e->id_orden }}
  </a>
  </td>
- <td class="p-2 text-left">{{ $e->equipo->nombre ?? '—' }} <span class="text-xs text-gray-500">({{ $e->equipo->cliente->nombre ?? '—' }})</span></td>
+ <td class="p-2 text-left">
+ <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="group hover:opacity-75 transition-opacity" title="Ver en tabla de equipos">
+ <span class="font-bold group-hover:text-purple-600 dark:group-hover:text-purple-400">{{ $e->equipo->nombre ?? '—' }}</span>
+ </a> 
+ <a href="{{ route('clientes.index') }}#cliente-{{ $e->equipo->cliente_id ?? '' }}" class="group hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+ <span class="text-xs text-gray-500 font-semibold group-hover:text-purple-600 dark:group-hover:text-purple-400">({{ $e->equipo->cliente->nombre ?? '—' }})</span>
+ </a>
+ </td>
  <td class="p-2">{{ $e->tecnico->nombre ?? '—' }}</td>
  <td class="p-2">{{ $e->fecha_entrada->format('d/m/Y') }}</td>
  <td class="p-2 font-bold text-purple-600">${{ number_format($e->costo, 0, ',', '.') }}</td>

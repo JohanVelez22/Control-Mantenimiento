@@ -2,12 +2,12 @@
 @section('content')
 <style>
  /* Fila resaltada al llegar por ancla (#mantenimiento-id) */
- tr:target {
+ tr.active-target {
  background-color: rgba(59, 130, 246, 0.1) !important;
  outline: 2px solid rgba(59, 130, 246, 0.5);
  outline-offset: -2px;
  }
- .dark tr:target {
+ .dark tr.active-target {
  background-color: rgba(59, 130, 246, 0.2) !important;
  }
 </style>
@@ -78,14 +78,14 @@
  <tbody>
  @forelse($mantenimientos as $m)
  <tr id="mantenimiento-{{ $m->id }}" class="{{ $m->estado === 'anulado' ? 'row-anulado' : '' }}">
- <td class="text-center font-bold">
- <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
+ <td data-label="Orden:" class="font-bold text-center whitespace-nowrap">
+ <a href="#mantenimiento-{{ $m->id }}" class="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded-lg font-mono hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors">
  {{ $m->id_orden }}
  </a>
  </td>
  
  <td>
- <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group block hover:bg-gray-50 dark:hover:bg-gray-800/50 p-1.5 -ml-1.5 rounded-lg transition-colors" title="Ver en tabla de equipos">
+ <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de equipos">
  <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
  {{ $m->equipo->nombre ?? '-' }}
  </div>
@@ -99,7 +99,7 @@
  </td>
  
  <td>
- <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="group block hover:bg-gray-50 dark:hover:bg-gray-800/50 p-1.5 -ml-1.5 rounded-lg transition-colors" title="Ver en tabla de clientes">
+ <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
  <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
  {{ $m->equipo->cliente->nombre ?? '-' }}
  </div>
@@ -142,7 +142,7 @@
  @endif
  </td>
  
- <td class="text-center font-medium text-sm text-slate-800 dark:text-slate-200">
+ <td class="text-center text-slate-800 dark:text-slate-200">
  {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}
  @php 
  $fechaEntrada = \Carbon\Carbon::parse($m->fecha_entrada)->startOfDay();
@@ -154,7 +154,7 @@
  </div>
  </td>
  
- <td class="text-center font-medium text-sm {{ $m->fecha_salida ? 'text-slate-800 dark:text-white' : 'text-gray-400 italic' }}">
+ <td class="text-center {{ $m->fecha_salida ? 'text-slate-800 dark:text-white' : 'text-gray-400 italic' }}">
  {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '-' }}
  </td>
  

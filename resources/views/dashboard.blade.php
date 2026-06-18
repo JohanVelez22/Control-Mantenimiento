@@ -189,7 +189,7 @@
  $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
  @endphp
  <tr>
- <td class="text-center font-bold">
+ <td class="text-center font-bold whitespace-nowrap">
  <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline no-print-link">
  {{ $m->id_orden }}
  </a>
@@ -222,7 +222,7 @@
  </span>
  </td>
 
- <td class="text-center whitespace-nowrap font-mono text-gray-600">{{ $fechaEntrada->format('d/m/Y') }}</td>
+ <td class="text-center whitespace-nowrap text-gray-600 dark:text-gray-300">{{ $fechaEntrada->format('d/m/Y') }}</td>
  
  <td class="text-center font-bold">
  <span class="{{ !$m->fecha_salida && $diasTranscurridos > 3 ? 'text-red-500' : 'text-gray-600 dark:text-gray-400' }}">
@@ -230,7 +230,7 @@
  </span>
  </td>
 
- <td class="text-center whitespace-nowrap font-mono {{ $m->fecha_salida ? 'font-semibold text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }}">
+ <td class="text-center whitespace-nowrap {{ $m->fecha_salida ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }}">
  {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'En proceso' }}
  </td>
  </tr>
@@ -276,7 +276,7 @@
  $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
  @endphp
  <tr>
- <td class="text-center font-bold">
+ <td class="text-center font-bold whitespace-nowrap">
  <a href="{{ route('electronicas.index', ['locate' => $e->id]) }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline no-print-link">
  {{ $e->id_orden }}
  </a>
@@ -303,7 +303,7 @@
  </span>
  </td>
 
- <td class="text-center whitespace-nowrap font-mono text-gray-600">{{ $fechaEntrada->format('d/m/Y') }}</td>
+ <td class="text-center whitespace-nowrap text-gray-600 dark:text-gray-300">{{ $fechaEntrada->format('d/m/Y') }}</td>
  
  <td class="text-center font-bold">
  <span class="{{ !$e->fecha_salida && $diasTranscurridos > 3 ? 'text-red-500' : 'text-gray-600 dark:text-gray-400' }}">
@@ -311,7 +311,7 @@
  </span>
  </td>
 
- <td class="text-center whitespace-nowrap font-mono {{ $e->fecha_salida ? 'font-semibold text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }}">
+ <td class="text-center whitespace-nowrap {{ $e->fecha_salida ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }}">
  {{ $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : 'En proceso' }}
  </td>
  </tr>

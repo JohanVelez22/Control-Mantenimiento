@@ -325,7 +325,7 @@
             <div id="nav-progress" class="no-print"></div>
 
             <!-- CONTENIDO DINÁMICO -->
-            <main id="ts-main" class="flex-1 p-4 sm:p-6 lg:p-8 pb-32 lg:pb-40 page-enter relative z-10">
+            <main id="ts-main" class="flex-1 p-4 sm:p-6 lg:p-8 pb-[50vh] page-enter relative z-10">
                 @yield('content')
             </main>
         </div>
@@ -856,20 +856,67 @@
             });
 
             // 3. Auto-centrar elementos al navegar por ancla (hash)
+            const activateHashTarget = (hashStr) => {
+                try {
+                    // Remover clase active-target anterior de cualquier elemento
+                    document.querySelectorAll('.active-target').forEach(el => el.classList.remove('active-target'));
+                    
+                    const target = document.querySelector(hashStr);
+                    if (target) {
+                        // Agregar clase para simular :target de forma confiable
+                        target.classList.add('active-target');
+                        
+                        setTimeout(() => {
+                            // Desactivamos temporalmente el comportamiento CSS nativo que puede causar conflictos
+                            const originalBehavior = document.documentElement.style.scrollBehavior;
+                            document.documentElement.style.scrollBehavior = 'auto';
+                            
+                            // Calculamos matemáticamente el centro exacto
+                            const targetPosition = target.getBoundingClientRect().top + window.scrollY;
+                            const centerPosition = targetPosition - (window.innerHeight / 2) + (target.offsetHeight / 2);
+                            
+                            // Scroll suave manual absoluto
+                            window.scrollTo({
+                                top: centerPosition,
+                                behavior: 'smooth'
+                            });
+                            
+                            // Restauramos el comportamiento original después de la animación
+                            setTimeout(() => {
+                                document.documentElement.style.scrollBehavior = originalBehavior;
+                            }, 800);
+                            
+                        }, 100);
+                    }
+                } catch(e) {}
+            };
+
             const scrollToHash = () => {
                 if (window.location.hash) {
-                    try {
-                        const target = document.querySelector(window.location.hash);
-                        if (target) {
-                            setTimeout(() => {
-                                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }, 150);
-                        }
-                    } catch(e) {}
+                    activateHashTarget(window.location.hash);
                 }
             };
             scrollToHash();
             window.addEventListener('hashchange', scrollToHash);
+
+            // Interceptar clicks en enlaces a anclas para centrar incluso si el hash ya es el actual
+            document.addEventListener('click', function(e) {
+                const anchor = e.target.closest('a[href^="#"]');
+                if (anchor) {
+                    const hash = anchor.getAttribute('href');
+                    if (hash && hash !== '#') {
+                        try {
+                            const id = hash.substring(1);
+                            const target = document.getElementById(id);
+                            if (target) {
+                                e.preventDefault(); 
+                                history.pushState(null, null, hash); 
+                                activateHashTarget(hash);
+                            }
+                        } catch(err) {}
+                    }
+                }
+            });
         });
     </script>
 

@@ -2,12 +2,12 @@
 @section('content')
 <style>
  /* Fila resaltada al llegar por ancla (#electronica-id) */
- tr:target {
+ tr.active-target {
  background-color: rgba(168, 85, 247, 0.1) !important;
  outline: 2px solid rgba(168, 85, 247, 0.5);
  outline-offset: -2px;
  }
- .dark tr:target {
+ .dark tr.active-target {
  background-color: rgba(168, 85, 247, 0.2) !important;
  }
 </style>
@@ -83,7 +83,8 @@
  </td>
  
  <td data-label="Equipo:">
- <div class="font-bold text-slate-800 dark:text-white leading-tight">
+ <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de equipos">
+ <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
  {{ $e->equipo->nombre ?? '-' }}
  </div>
  <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
@@ -92,11 +93,18 @@
  <div class="text-[10px] text-gray-400">
  {{ $e->equipo->serie ?? '' }}
  </div>
+ </a>
  </td>
  
  <td data-label="Cliente:">
- <div class="font-bold text-slate-800 dark:text-white">{{ $e->equipo->cliente->nombre ?? 'N/A' }}</div>
- <div class="text-[11px] text-gray-500">{{ $e->equipo->cliente->identificacion ?? '' }}</div>
+ <a href="{{ route('clientes.index') }}#cliente-{{ $e->equipo->cliente_id ?? '' }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+ <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
+ {{ $e->equipo->cliente->nombre ?? 'N/A' }}
+ </div>
+ <div class="text-[11px] text-gray-500">
+ {{ $e->equipo->cliente->identificacion ?? '' }}
+ </div>
+ </a>
  </td>
  
  <td data-label="Técnico:" class="text-center">
@@ -129,7 +137,7 @@
  </span>
  </td>
  
- <td data-label="Entrada:" class="text-center font-medium text-sm text-slate-800 dark:text-slate-200">
+ <td data-label="Entrada:" class="text-center text-slate-800 dark:text-slate-200">
  {{ \Carbon\Carbon::parse($e->fecha_entrada)->format('d/m/Y') }}
  @php 
  $fechaEntrada = \Carbon\Carbon::parse($e->fecha_entrada)->startOfDay();
@@ -141,7 +149,7 @@
  </div>
  </td>
  
- <td data-label="Salida:" class="text-center font-medium text-sm {{ $e->fecha_salida ? 'text-slate-800 dark:text-white' : 'text-gray-400 italic' }}">
+ <td data-label="Salida:" class="text-center {{ $e->fecha_salida ? 'text-slate-800 dark:text-white' : 'text-gray-400 italic' }}">
  {{ $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : '-' }}
  </td>
  
