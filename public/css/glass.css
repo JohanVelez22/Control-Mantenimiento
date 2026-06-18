@@ -122,12 +122,12 @@ html.dark #ts-sidebar {
 }
 
 #main-wrapper {
-  margin-left: var(--sidebar-w);
+  margin-left: var(--sidebar-w) !important;
   transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 #ts-sidebar:hover ~ #main-wrapper,
 #ts-sidebar.expanded ~ #main-wrapper {
-  margin-left: var(--sidebar-expanded);
+  margin-left: var(--sidebar-expanded) !important;
 }
 
 @media (max-width: 1024px) {
