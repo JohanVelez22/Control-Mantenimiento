@@ -198,15 +198,15 @@ html.dark .nav-item .nav-icon { background: rgba(255,255,255,0.04); }
 
 .nav-item:hover { 
   color: #1D4ED8; 
-  background: rgba(37,99,235,0.08);
+  background: rgba(37,99,235,0.15);
 }
 html.dark .nav-item:hover { 
   color: #93C5FD; 
-  background: rgba(37,99,235,0.15);
+  background: rgba(37,99,235,0.20);
 }
 .nav-item:hover .nav-icon {
-  background: rgba(37,99,235,0.12);
-  box-shadow: 0 2px 8px rgba(37,99,235,0.20);
+  background: rgba(37,99,235,0.20);
+  box-shadow: 0 4px 12px rgba(37,99,235,0.30);
 }
 
 /* Active state */
@@ -769,8 +769,8 @@ html.dark .ts-table thead th {
 .ts-table tbody tr {
   transition: background-color 0.4s ease, transform 0.1s ease;
 }
-.ts-table tbody tr:hover { background: rgba(255,255,255,0.60); }
-html.dark .ts-table tbody tr:hover { background: rgba(30,41,59,0.50); }
+.ts-table tbody tr:hover { background: rgba(255,255,255,0.95); box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+html.dark .ts-table tbody tr:hover { background: rgba(30,41,59,0.85); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
 
 .ts-table tbody td {
   padding: 16px;
