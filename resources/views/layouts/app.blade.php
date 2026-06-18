@@ -159,7 +159,7 @@
 
                     <!-- Notification Bell -->
                     <div class="relative">
-                        <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg relative" onclick="document.getElementById('notif-dropdown').classList.toggle('hidden')">
+                        <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg relative" onclick="toggleNotifDropdown()">
                             🔔
                             @if(isset($totalPendientes) && $totalPendientes > 0)
                                 <span class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
@@ -169,42 +169,84 @@
                             @endif
                         </button>
                         
-                        <!-- Notification Dropdown -->
-                        <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-gray-200/80 dark:border-gray-700/80 rounded-xl shadow-2xl z-50 overflow-hidden">
-                            <div class="p-3 border-b border-gray-200/50 dark:border-gray-700/50 bg-gray-50/80 dark:bg-slate-800/80">
-                                <h3 class="text-xs font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Notificaciones Pendientes</h3>
+                        <!-- Notification Dropdown (Glass, centered on bell) -->
+                        <div id="notif-dropdown" class="hidden absolute right-1/2 translate-x-1/2 mt-3 w-80 z-50 opacity-0 scale-95 transition-all duration-200 origin-top"
+                             style="filter: drop-shadow(0 20px 40px rgba(0,0,0,0.25));">
+                            <!-- Arrow pointer -->
+                            <div class="flex justify-center -mb-px">
+                                <div class="w-3 h-3 rotate-45 bg-white/80 dark:bg-slate-800/90 border-l border-t border-gray-200/60 dark:border-white/10"></div>
                             </div>
-                            <div class="p-2 space-y-1">
+                            <!-- Card -->
+                            <div class="rounded-2xl overflow-hidden border border-white/40 dark:border-white/10"
+                                 style="background: rgba(255,255,255,0.75); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);">
+                                <!-- Header with total badge -->
+                                <div class="px-4 pt-4 pb-3 flex items-center justify-between border-b border-gray-200/40 dark:border-white/10"
+                                     style="background: rgba(255,255,255,0.30);">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-lg">🔔</span>
+                                        <span class="text-xs font-black text-gray-700 dark:text-gray-200 uppercase tracking-widest">Pendientes</span>
+                                    </div>
+                                    @if(isset($totalPendientes) && $totalPendientes > 0)
+                                    <span class="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 text-white text-[10px] font-black shadow-lg shadow-red-500/40">{{ $totalPendientes }}</span>
+                                    @endif
+                                </div>
+
+                                <!-- Items -->
+                                <div class="p-2 space-y-1">
                                 @if(isset($totalPendientes) && $totalPendientes > 0)
                                     @if($mantPendientes > 0)
-                                    <button onclick="openNotifModal(); document.getElementById('notif-dropdown').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
-                                        <div class="flex items-center justify-between">
-                                            <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Mantenimientos</span>
-                                            <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $mantPendientes }}</span>
+                                    <button onclick="openNotifModal('mant'); document.getElementById('notif-dropdown').classList.add('hidden');"
+                                            class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-50/80 dark:hover:bg-blue-900/30 transition-colors group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center shrink-0">
+                                                <span class="text-sm">🔧</span>
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex-1">Mantenimiento</span>
+                                            <span class="px-2 py-0.5 rounded-full bg-blue-500 text-white text-[10px] font-black shadow shadow-blue-500/30">{{ $mantPendientes }}</span>
                                         </div>
                                     </button>
                                     @endif
                                     @if($elecPendientes > 0)
-                                    <button onclick="openNotifModal(); document.getElementById('notif-dropdown').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">
-                                        <div class="flex items-center justify-between">
-                                            <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Electrónica</span>
-                                            <span class="bg-purple-100 text-purple-700 dark:bg-purple-900/80 dark:text-purple-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $elecPendientes }}</span>
+                                    <button onclick="openNotifModal('elec'); document.getElementById('notif-dropdown').classList.add('hidden');"
+                                            class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-purple-50/80 dark:hover:bg-purple-900/30 transition-colors group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-7 h-7 rounded-lg bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center shrink-0">
+                                                <span class="text-sm">⚡</span>
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex-1">Electrónica</span>
+                                            <span class="px-2 py-0.5 rounded-full bg-purple-500 text-white text-[10px] font-black shadow shadow-purple-500/30">{{ $elecPendientes }}</span>
                                         </div>
                                     </button>
                                     @endif
                                     @if($cajaPendientes > 0)
-                                    <button onclick="openNotifModal(); document.getElementById('notif-dropdown').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors">
-                                        <div class="flex items-center justify-between">
-                                            <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Saldos Pendientes</span>
-                                            <span class="bg-orange-100 text-orange-700 dark:bg-orange-900/80 dark:text-orange-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $cajaPendientes }}</span>
+                                    <button onclick="openNotifModal('caja'); document.getElementById('notif-dropdown').classList.add('hidden');"
+                                            class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-amber-50/80 dark:hover:bg-amber-900/30 transition-colors group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center shrink-0">
+                                                <span class="text-sm">💰</span>
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex-1">Saldos / Caja</span>
+                                            <span class="px-2 py-0.5 rounded-full bg-amber-500 text-white text-[10px] font-black shadow shadow-amber-500/30">{{ $cajaPendientes }}</span>
                                         </div>
                                     </button>
                                     @endif
+
+                                    <!-- Ver todo -->
+                                    <div class="pt-1 pb-1 px-1">
+                                        <button onclick="openNotifModal('all'); document.getElementById('notif-dropdown').classList.add('hidden');"
+                                                class="w-full py-2 rounded-xl text-xs font-bold text-center transition-colors"
+                                                style="background: rgba(37,99,235,0.12); color: #2563EB;">
+                                            Ver todos los pendientes →
+                                        </button>
+                                    </div>
                                 @else
-                                    <div class="px-3 py-4 text-center">
-                                        <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Todo al día, excelente trabajo.</span>
+                                    <div class="px-3 py-5 text-center">
+                                        <div class="text-3xl mb-2">✅</div>
+                                        <p class="text-sm font-semibold text-gray-600 dark:text-gray-300">¡Todo al día!</p>
+                                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">No tienes tareas pendientes.</p>
                                     </div>
                                 @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -652,7 +694,28 @@
             });
         }
 
-        function openNotifModal() {
+        function toggleNotifDropdown() {
+            const d = document.getElementById('notif-dropdown');
+            if (d.classList.contains('hidden')) {
+                d.classList.remove('hidden');
+                setTimeout(() => { d.classList.remove('opacity-0', 'scale-95'); }, 10);
+                // Close on outside click
+                setTimeout(() => {
+                    document.addEventListener('click', function handler(e) {
+                        if (!d.contains(e.target) && !e.target.closest('[onclick="toggleNotifDropdown()"]')) {
+                            d.classList.add('opacity-0', 'scale-95');
+                            setTimeout(() => d.classList.add('hidden'), 200);
+                            document.removeEventListener('click', handler);
+                        }
+                    });
+                }, 50);
+            } else {
+                d.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => d.classList.add('hidden'), 200);
+            }
+        }
+
+        function openNotifModal(tab) {
             const modal = document.getElementById('ts-notif-modal');
             const card  = document.getElementById('ts-notif-card');
             if (!modal) return;
@@ -662,6 +725,10 @@
                 modal.classList.remove('opacity-0');
                 card.classList.remove('scale-95', 'opacity-0');
             }, 10);
+            // Apply tab filter if provided
+            if (tab) {
+                setTimeout(() => filterNotifs(tab), 50);
+            }
         }
 
         function closeNotifModal() {
