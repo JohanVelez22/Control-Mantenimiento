@@ -255,47 +255,43 @@
                         if (!panel) return;
                         
                         if (isDark) {
-                            panel.style.background = 'rgba(15,23,42,0.85)';
-                            panel.style.border = '1px solid rgba(255,255,255,0.08)';
-                            panel.style.boxShadow = '0 8px 32px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07)';
-                            if (arrow)  { arrow.style.background = 'rgba(15,23,42,0.85)'; arrow.style.borderColor = 'rgba(255,255,255,0.08)'; }
+                            panel.style.background = 'rgba(15,23,42,0.98)';
+                            panel.style.border = '1px solid rgba(255,255,255,0.12)';
+                            panel.style.boxShadow = '0 20px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1)';
+                            if (arrow)  { arrow.style.background = 'rgba(15,23,42,0.98)'; arrow.style.borderColor = 'rgba(255,255,255,0.12)'; }
                             
-                            // High contrast colors for header & title in dark mode
                             if (header) { 
-                                header.style.background = 'rgba(59,130,246,0.15)'; 
-                                header.style.borderColor = 'rgba(59,130,246,0.25)'; 
+                                header.style.background = 'transparent'; 
+                                header.style.borderColor = 'rgba(255,255,255,0.1)'; 
                             }
-                            if (title) { title.style.color = '#38bdf8'; }
-                            if (svg) { svg.style.color = '#38bdf8'; }
+                            if (title) { title.style.color = '#F8FAFC'; } // text-slate-50
+                            if (svg) { svg.style.color = '#94A3B8'; } // text-slate-400
                             
-                            // High contrast colors for footer CTA in dark mode
                             if (footer) {
-                                footer.style.background = 'rgba(59,130,246,0.12)';
-                                footer.style.borderColor = 'rgba(59,130,246,0.25)';
+                                footer.style.background = 'rgba(30,41,59,0.5)'; // bg-slate-800/50
+                                footer.style.borderColor = 'rgba(255,255,255,0.05)';
                                 footer.style.color = '#38bdf8';
                             }
                             
                             document.querySelectorAll('.notif-row span.flex-1').forEach(el => el.style.color = '#f1f5f9');
                             document.querySelectorAll('.notif-row').forEach(el => el.style.borderBottomColor = 'rgba(255,255,255,0.05)');
                         } else {
-                            panel.style.background = 'rgba(255,255,255,0.85)';
-                            panel.style.border = '1px solid rgba(255,255,255,0.5)';
-                            panel.style.boxShadow = '0 8px 32px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6)';
-                            if (arrow)  { arrow.style.background = 'rgba(255,255,255,0.85)'; arrow.style.borderColor = 'rgba(255,255,255,0.4)'; }
+                            panel.style.background = 'rgba(255,255,255,0.98)';
+                            panel.style.border = '1px solid rgba(0,0,0,0.1)';
+                            panel.style.boxShadow = '0 20px 40px rgba(0,0,0,0.1)';
+                            if (arrow)  { arrow.style.background = 'rgba(255,255,255,0.98)'; arrow.style.borderColor = 'rgba(0,0,0,0.1)'; }
                             
-                            // High contrast colors for header & title in light mode
                             if (header) { 
-                                header.style.background = 'rgba(37,99,235,0.08)'; 
-                                header.style.borderColor = 'rgba(37,99,235,0.15)'; 
+                                header.style.background = 'transparent'; 
+                                header.style.borderColor = 'rgba(0,0,0,0.08)'; 
                             }
-                            if (title) { title.style.color = '#1d4ed8'; }
-                            if (svg) { svg.style.color = '#2563eb'; }
+                            if (title) { title.style.color = '#0F172A'; } // text-slate-900
+                            if (svg) { svg.style.color = '#64748B'; } // text-slate-500
                             
-                            // High contrast colors for footer CTA in light mode
                             if (footer) {
-                                footer.style.background = 'rgba(37,99,235,0.08)';
-                                footer.style.borderColor = 'rgba(37,99,235,0.15)';
-                                footer.style.color = '#1d4ed8';
+                                footer.style.background = 'rgba(248,250,252,0.8)'; // bg-slate-50/80
+                                footer.style.borderColor = 'rgba(0,0,0,0.05)';
+                                footer.style.color = '#2563eb';
                             }
                             
                             document.querySelectorAll('.notif-row span.flex-1').forEach(el => el.style.color = '#1e293b');
