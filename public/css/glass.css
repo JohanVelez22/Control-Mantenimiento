@@ -986,13 +986,14 @@ html.dark .ts-control > input { color: #E2E8F0 !important; }
 }
 .ts-dropdown .option:hover,
 .ts-dropdown .active {
-    background: rgba(37,99,235,0.08) !important;
+    background: rgba(37,99,235,0.20) !important;
     color: #2563EB !important;
+    font-weight: 600 !important;
 }
 .ts-dropdown .option.selected {
-    background: rgba(37,99,235,0.12) !important;
+    background: rgba(37,99,235,0.25) !important;
     color: #1D4ED8 !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
 }
 
 /* Dark dropdown */
