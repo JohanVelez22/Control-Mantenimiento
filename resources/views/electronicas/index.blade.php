@@ -79,7 +79,9 @@
  @forelse($electronicas as $e)
  <tr id="electronica-{{ $e->id }}" class="{{ $e->estado === 'anulado' ? 'row-anulado' : '' }}">
  <td data-label="Orden:" class="font-bold text-center whitespace-nowrap">
- <a href="#electronica-{{ $e->id }}" class="text-xs bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 px-2 py-0.5 rounded-lg font-mono hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors">{{ $e->id_orden }}</a>
+ <a href="#electronica-{{ $e->id }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors">
+ {{ $e->id_orden }}
+ </a>
  </td>
  
  <td data-label="Equipo:">
@@ -90,8 +92,8 @@
  <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
  {{ $e->equipo->marca ?? '' }} {{ $e->equipo->modelo ?? '' }}
  </div>
- <div class="text-[10px] text-gray-400">
- {{ $e->equipo->serie ?? '' }}
+ <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase">
+ SN: {{ $e->equipo->serie ?? 'N/A' }}
  </div>
  </a>
  </td>
@@ -101,8 +103,8 @@
  <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
  {{ $e->equipo->cliente->nombre ?? 'N/A' }}
  </div>
- <div class="text-[11px] text-gray-500">
- {{ $e->equipo->cliente->identificacion ?? '' }}
+ <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+ {{ $e->equipo->cliente->identificacion ?? 'N/A' }}
  </div>
  </a>
  </td>

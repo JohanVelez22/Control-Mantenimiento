@@ -92,7 +92,7 @@
  <label class="field-label">Concepto *</label>
  <div class="flex gap-2">
  <select name="concepto_id" id="concepto_select" class="glass-input flex-1">
- <option value="">-- Seleccionar concepto --</option>
+ <option value=\"\">Seleccionar concepto...</option>
  @foreach($conceptos as $c)
  <option value="{{ $c->id }}" {{ old('concepto_id', $movimiento->concepto_id ?? '') == $c->id ? 'selected' : '' }}>
  {{ $c->nombre }}

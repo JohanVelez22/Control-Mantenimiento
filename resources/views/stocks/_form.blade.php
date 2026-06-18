@@ -24,7 +24,7 @@
  <div>
  <label for="proveedor_id" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Proveedor *</label>
  <select name="proveedor_id" id="proveedor_id" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
- <option value="">Seleccione un proveedor...</option>
+ <option value=\"\"></option>
  @foreach($proveedores as $p)
  <option value="{{ $p->id }}" {{ old('proveedor_id', $stock->proveedor_id ?? '') == $p->id ? 'selected' : '' }}>
  {{ $p->nombre_razon_social }} ({{ $p->identificacion }})

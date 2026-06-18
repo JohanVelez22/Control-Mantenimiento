@@ -104,7 +104,7 @@
  <div class="md:col-span-2">
  <label class="field-label">Buscar repuesto en stock *</label>
  <select name="stock_id" required class="glass-input">
- <option value="">-- Seleccione un repuesto --</option>
+ <option value=\"\">Seleccione un repuesto...</option>
  @foreach($stocks_disponibles as $stock)
  <option value="{{ $stock->id }}">{{ $stock->producto }} (Disp: {{ $stock->cantidad }} | Venta: ${{ number_format($stock->precio_venta, 0, ',', '.') }})</option>
  @endforeach

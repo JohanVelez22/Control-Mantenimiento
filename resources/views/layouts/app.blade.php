@@ -33,7 +33,65 @@
     <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ time() }}">
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        .font-logo { font-family: 'Michroma', sans-serif; }
+        /* Ajuste de placeholder para TomSelect nativo */
+        .ts-control input::placeholder {
+            color: #94a3b8 !important;
+            opacity: 1 !important;
+            font-weight: 500 !important;
+            transition: color 0.2s ease;
+        }
+        /* Hacer que el placeholder desaparezca al hacer clic (focus) para que quede en blanco */
+        .ts-control.focus input::placeholder,
+        .ts-control input:focus::placeholder {
+            color: transparent !important;
+        }
+        /* Evitar Flash of Unstyled Content (FOUC) en los selects nativos */
+        select.glass-input:not(.tomselected) {
+            color: transparent !important;
+        }
+        /* Evitar expansión vertical (multilínea) cuando se seleccionan textos muy largos */
+        .ts-wrapper.single .ts-control {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            overflow: hidden !important;
+            padding-right: 35px !important; /* Espacio para el botón X */
+            position: relative !important;
+        }
+        .ts-control > .item {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            max-width: 100% !important;
+            display: inline-block !important;
+            pointer-events: none; /* Que el clic pase al control */
+        }
+        .ts-item-display {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            display: inline-block !important;
+            max-width: 100% !important;
+        }
+        /* Botón de limpiar siempre a la derecha */
+        .ts-control .clear-button {
+            position: absolute !important;
+            right: 8px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            z-index: 10;
+        }
+        /* Si hay un ítem seleccionado, ocultar el input para que no estorbe ni deforme la caja al hacer clic */
+        .ts-wrapper.single.has-items .ts-control > input {
+            display: none !important;
+        }
+        /* Cursores correctos para TomSelect */
+        .ts-control { cursor: pointer !important; }
+        .ts-control input { 
+            cursor: text !important; 
+            user-select: text !important; 
+            -webkit-user-select: text !important;
+        }
     </style>
     
     <!-- Lógica de Tema Temprana para evitar Flash de Contenido No Estilizado (FOUC) -->
@@ -823,36 +881,65 @@
                 }
             });
 
-            // 2. Tom Select para selects con clase glass-input
-            document.querySelectorAll("select.glass-input").forEach((el) => {
-                if (!el.classList.contains('tomselected')) {
-                    let defaultPlaceholder = el.getAttribute('data-placeholder');
-                    let isNoSearch = el.classList.contains('no-search');
-                    
-                    // Si no tiene placeholder explícito, usa la primera opción vacía
-                    if (!defaultPlaceholder && el.options.length > 0 && el.options[0].value === "") {
-                        defaultPlaceholder = el.options[0].text;
-                    } else if (!defaultPlaceholder) {
-                        defaultPlaceholder = 'Selecciona o busca...';
-                    }
+            // Función global para inicializar TomSelect con el comportamiento "Limpieza Mágica"
+            window.initGlassTomSelect = function(el) {
+                if (el.classList.contains('tomselected')) return;
 
-                    new TomSelect(el, {
-                        create: false,
-                        maxOptions: 100,
-                        dropdownParent: 'body',
-                        placeholder: defaultPlaceholder,
-                        controlInput: isNoSearch ? null : undefined,
-                        allowEmptyOption: true,
-                        render: {
-                            option: function(data, escape) {
-                                return '<div class="ts-option-item">' + escape(data.text) + '</div>';
-                            },
-                            item: function(data, escape) {
-                                return '<div class="ts-item-display">' + escape(data.text) + '</div>';
-                            }
-                        }
-                    });
+                let defaultPlaceholder = el.getAttribute('data-placeholder');
+                let isNoSearch = el.classList.contains('no-search');
+                
+                if (el.options.length > 0 && el.options[0].value === "") {
+                    if (!defaultPlaceholder) {
+                        defaultPlaceholder = el.options[0].text.replace(/^[-—–\s]+|[-—–\s]+$/g, '');
+                    }
+                    if (!isNoSearch) {
+                        el.options[0].textContent = ''; 
+                    }
+                } else if (!defaultPlaceholder) {
+                    defaultPlaceholder = 'Seleccionar...';
                 }
+
+                if (!isNoSearch) {
+                    defaultPlaceholder = ' '; 
+                }
+
+                let tsConfig = {
+                    create: false,
+                    maxOptions: 100,
+                    dropdownParent: 'body',
+                    placeholder: defaultPlaceholder,
+                    highlight: false,
+                    plugins: isNoSearch ? [] : ['clear_button'],
+                    render: {
+                        option: function(data, escape) {
+                            return '<div class="ts-option-item">' + escape(data.text) + '</div>';
+                        },
+                        item: function(data, escape) {
+                            return '<div class="ts-item-display">' + escape(data.text) + '</div>';
+                        },
+                        no_results: function(data, escape) {
+                            return '<div class="no-results font-bold" style="padding: 8px 12px; color: #475569; font-size: 13px;">No se encontraron resultados para "<span class="text-blue-600">' + escape(data.input) + '</span>"</div>';
+                        }
+                    }
+                };
+
+                if (isNoSearch) {
+                    tsConfig.controlInput = null;
+                }
+
+                let tsInstance = new TomSelect(el, tsConfig);
+
+                if (!isNoSearch && tsInstance.options[""]) {
+                    if (tsInstance.getValue() === "") {
+                        tsInstance.clear(true);
+                    }
+                    tsInstance.removeOption("");
+                }
+            };
+
+            // 2. Tom Select para selects con clase glass-input en carga de página
+            document.querySelectorAll("select.glass-input").forEach((el) => {
+                window.initGlassTomSelect(el);
             });
 
             // 3. Auto-centrar elementos al navegar por ancla (hash)

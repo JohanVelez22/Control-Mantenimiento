@@ -40,7 +40,7 @@
  <div>
  <label for="proveedor_id" class="field-label">Proveedor *</label>
  <select name="proveedor_id" id="proveedor_id" required class="glass-input text-sm font-bold">
- <option value="">-- Seleccione un proveedor --</option>
+ <option value=\"\">Seleccione un proveedor...</option>
  @foreach($proveedores as $proveedor)
  <option value="{{ $proveedor->id }}" {{ old('proveedor_id', $stock->proveedor_id ?? '') == $proveedor->id ? 'selected' : '' }}>
  {{ $proveedor->nombre_razon_social }} ({{ $proveedor->identificacion }})

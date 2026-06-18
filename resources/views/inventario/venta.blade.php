@@ -13,15 +13,15 @@
  <form action="{{ route('inventario.venta.store') }}" method="POST" id="venta-form" class="space-y-8">
  @csrf
 
- <div class="grid grid-cols-1 md:grid-cols-3 gap-5 p-5 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl">
- <div>
+ <div class="flex flex-col md:flex-row gap-5 p-5 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl">
+ <div class="w-full md:w-48 flex-shrink-0">
  <label class="field-label">N° Factura (Auto)</label>
  <input type="text" value="{{ $nextNumero }}" readonly class="glass-input font-mono bg-white/40 dark:bg-black/20 text-gray-500 cursor-not-allowed">
  </div>
- <div>
+ <div class="w-full flex-1">
  <label class="field-label">Cliente *</label>
  <select name="cliente_id" required class="glass-input focus:ring-emerald-500">
- <option value="">— Seleccionar —</option>
+ <option value="">Seleccionar...</option>
  @foreach($clientes as $c)
  <option value="{{ $c->id }}" {{ old('cliente_id') == $c->id ? 'selected' : '' }}>
  {{ $c->nombre }} ({{ $c->identificacion }})
@@ -30,7 +30,7 @@
  </select>
  @error('cliente_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
- <div>
+ <div class="w-full md:w-48 flex-shrink-0">
  <label class="field-label">Fecha *</label>
  <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}" class="glass-input focus:ring-emerald-500">
  @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
@@ -63,7 +63,7 @@
  <tr class="item-row bg-transparent">
  <td>
  <select name="items[0][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500">
- <option value="">— Seleccionar producto —</option>
+ <option value="">Seleccionar producto...</option>
  @foreach($stocks as $s)
  <option value="{{ $s->id }}" data-precio="{{ $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
  {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
@@ -150,7 +150,7 @@ function agregarFila() {
  tr.innerHTML = `
  <td>
  <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500">
- <option value="">— Seleccionar producto —</option>
+ <option value="">Seleccionar producto...</option>
  ${stockSelectOptions()}
  </select>
  </td>
@@ -170,13 +170,8 @@ function agregarFila() {
 
  // Inicializar TomSelect en el nuevo select
  const newSelect = tr.querySelector('.stock-select');
- if (newSelect && typeof TomSelect !== 'undefined') {
- new TomSelect(newSelect, {
- create: false,
- maxOptions: 100,
- dropdownParent: 'body',
- placeholder: 'Selecciona o busca...'
- });
+ if (newSelect && typeof window.initGlassTomSelect === 'function') {
+ window.initGlassTomSelect(newSelect);
  }
 }
 

@@ -9,7 +9,7 @@
  <div>
  <label class="field-label flex items-center gap-2"><span>👨‍🔧</span> Técnico Asignado *</label>
  <select name="tecnico_id" required class="glass-input mt-1">
- <option value="">-- Seleccionar técnico --</option>
+ <option value=\"\">Seleccionar técnico...</option>
  @foreach($tecnicos as $t)
  <option value="{{ $t->id }}" {{ old('tecnico_id', $electronica->tecnico_id ?? '') == $t->id ? 'selected' : '' }}>{{ $t->nombre }}</option>
  @endforeach
@@ -21,7 +21,7 @@
  <div class="md:col-span-2 p-4 bg-purple-50/50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-500/20 rounded-2xl">
  <label class="field-label flex items-center gap-2"><span>💻</span> Seleccionar Dispositivo / Equipo *</label>
  <select name="equipo_id" required class="glass-input text-sm font-bold mt-1">
- <option value="">-- Seleccione un equipo --</option>
+ <option value=\"\">Seleccione un equipo...</option>
  @foreach($equipos as $equipo)
  <option value="{{ $equipo->id }}" {{ old('equipo_id', $electronica->equipo_id ?? '') == $equipo->id ? 'selected' : '' }}>
  {{ $equipo->nombre }} ({{ $equipo->marca }} {{ $equipo->modelo }}) • S/N: {{ $equipo->serie }} • Cliente: {{ $equipo->cliente->nombre ?? 'N/A' }}

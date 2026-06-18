@@ -18,7 +18,7 @@
  <div class="md:col-span-2">
  <label class="field-label flex items-center gap-2"><span>👤</span> Cliente Propietario *</label>
  <select name="cliente_id" required class="glass-input mt-1 text-sm font-bold">
- <option value="">-- Seleccione un cliente --</option>
+ <option value=\"\">Seleccione un cliente...</option>
  @foreach($clientes as $cliente)
  <option value="{{ $cliente->id }}" {{ old('cliente_id') == $cliente->id ? 'selected' : '' }}>
  {{ $cliente->nombre }} ({{ $cliente->identificacion }})
