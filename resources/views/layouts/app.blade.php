@@ -507,7 +507,7 @@
 
             {{-- Filtros / Tabs --}}
             <div class="flex flex-wrap gap-2 mb-4 w-full justify-center">
-                <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-gray-800 text-white dark:bg-gray-100 dark:text-gray-900">Todos</button>
+                <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:text-white dark:hover:bg-emerald-600">Todos</button>
                 @if($mantPendientes > 0)
                 <button onclick="filterNotifs('mant')" id="btn-notif-mant" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60">Mantenimiento</button>
                 @endif
@@ -515,7 +515,7 @@
                 <button onclick="filterNotifs('elec')" id="btn-notif-elec" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60">Electrónica</button>
                 @endif
                 @if($cajaPendientes > 0)
-                <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-300 dark:hover:bg-yellow-900/60">Saldos/Caja</button>
+                <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors" style="background:#fde047;color:#713f12;">Saldos/Caja</button>
                 @endif
             </div>
 
@@ -617,13 +617,13 @@
             allTabs.forEach(btn => {
                 // Reset to unselected state
                 if(btn.id === 'btn-notif-all') {
-                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700';
+                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300';
                 } else if(btn.id === 'btn-notif-mant') {
                     btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40 border border-transparent';
                 } else if(btn.id === 'btn-notif-elec') {
                     btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-50 text-purple-600 hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:hover:bg-purple-900/40 border border-transparent';
                 } else if(btn.id === 'btn-notif-caja') {
-                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-yellow-50 text-yellow-600 hover:bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400 dark:hover:bg-yellow-900/40 border border-transparent';
+                    btn.style.cssText = 'background:#fde047;color:#713f12;'; btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors';
                 }
             });
 
@@ -631,13 +631,13 @@
             const activeBtn = document.getElementById('btn-notif-' + type);
             if(activeBtn) {
                 if(type === 'all') {
-                    activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-gray-800 text-white dark:bg-gray-100 dark:text-gray-900';
+                    activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-emerald-600 text-white dark:bg-emerald-500 dark:text-white';
                 } else if(type === 'mant') {
                     activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200 border border-blue-300 dark:border-blue-700';
                 } else if(type === 'elec') {
                     activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border border-purple-300 dark:border-purple-700';
                 } else if(type === 'caja') {
-                    activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-yellow-100 text-yellow-800 dark:bg-yellow-900/60 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-700';
+                    activeBtn.style.cssText = 'background:#facc15;color:#713f12;border:2px solid #ca8a04;'; activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors';
                 }
             }
 
