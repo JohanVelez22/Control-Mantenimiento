@@ -577,20 +577,29 @@
 
                 {{-- Ingresos/Egresos con saldo pendiente --}}
                 @foreach($movimientosPendientes as $mov)
+                @php
+                    $isIngreso = $mov->tipo_movimiento === 'ingreso';
+                    $bgClass = $isIngreso ? 'bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border-emerald-100 dark:border-emerald-800' : 'bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 border-orange-100 dark:border-orange-800';
+                    $barClass = $isIngreso ? 'bg-emerald-500' : 'bg-orange-500';
+                    $titleClass = $isIngreso ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400';
+                    $idClass = $isIngreso ? 'text-emerald-500 dark:text-emerald-300' : 'text-orange-500 dark:text-orange-300';
+                    $montoClass = $isIngreso ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400';
+                    $arrowClass = $isIngreso ? 'text-emerald-500 dark:text-emerald-400' : 'text-orange-500 dark:text-orange-400';
+                @endphp
                 <a href="{{ route('caja.index') }}" onclick="closeNotifModal()" data-notif-type="caja"
-                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
+                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl border {{ $bgClass }} transition-colors group relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full {{ $barClass }} rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
-                            <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo {{ ucfirst($mov->tipo_movimiento) }}</span>
-                            <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">#{{ str_pad($mov->id, 4, '0', STR_PAD_LEFT) }}</span>
+                            <span class="text-[10px] font-black {{ $titleClass }} uppercase tracking-wider">Saldo {{ ucfirst($mov->tipo_movimiento) }}</span>
+                            <span class="text-[10px] font-bold {{ $idClass }}">#{{ str_pad($mov->id, 4, '0', STR_PAD_LEFT) }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $mov->concepto->nombre ?? '—' }} - {{ $mov->persona ?? '—' }}</p>
-                        <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
-                            Deuda: ${{ number_format($mov->monto_total - $mov->monto, 0, ',', '.') }}
+                        <p class="text-xs {{ $montoClass }} font-semibold">
+                            Falta pagar: ${{ number_format($mov->monto_total - $mov->monto, 0, ',', '.') }}
                         </p>
                     </div>
-                    <span class="shrink-0 text-orange-500 dark:text-orange-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
+                    <span class="shrink-0 {{ $arrowClass }} group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
                 @endforeach
 
