@@ -769,8 +769,14 @@ html.dark .ts-table thead th {
 .ts-table tbody tr {
   transition: background-color 0.4s ease, transform 0.1s ease;
 }
-.ts-table tbody tr:hover { background: rgba(255,255,255,0.95); box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
-html.dark .ts-table tbody tr:hover { background: rgba(30,41,59,0.85); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+.ts-table tbody tr:hover { 
+  background: rgba(37,99,235,0.12) !important; 
+  box-shadow: inset 3px 0 0 #2563EB;
+}
+html.dark .ts-table tbody tr:hover { 
+  background: rgba(37,99,235,0.15) !important; 
+  box-shadow: inset 3px 0 0 #60A5FA;
+}
 
 .ts-table tbody td {
   padding: 16px;
