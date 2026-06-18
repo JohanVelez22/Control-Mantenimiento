@@ -387,11 +387,34 @@
             wrapper.style.transition = 'margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
             wrapper.style.marginLeft = W_COLLAPSED;
 
+            // Reposiciona el calendario Flatpickr siguiendo al input durante la transición
+            function trackOpenCalendars(durationMs) {
+                const start = performance.now();
+                function tick(now) {
+                    if (window._flatpickrInstances) {
+                        window._flatpickrInstances.forEach(function(fp) {
+                            if (fp.isOpen && fp.calendarContainer) {
+                                var input = fp.altInput || fp.input;
+                                var rect = input.getBoundingClientRect();
+                                var scrollY = window.scrollY || window.pageYOffset;
+                                var scrollX = window.scrollX || window.pageXOffset;
+                                fp.calendarContainer.style.top  = (rect.bottom + scrollY + 4) + 'px';
+                                fp.calendarContainer.style.left = (rect.left  + scrollX) + 'px';
+                            }
+                        });
+                    }
+                    if (now - start < durationMs) requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+            }
+
             sb.addEventListener('mouseenter', () => {
                 wrapper.style.marginLeft = W_EXPANDED;
+                trackOpenCalendars(300);
             });
             sb.addEventListener('mouseleave', () => {
                 wrapper.style.marginLeft = W_COLLAPSED;
+                trackOpenCalendars(300);
             });
         })();
 
@@ -547,7 +570,7 @@
                 altInputClass: "glass-input",
                 disableMobile: true,
                 monthSelectorType: "static",
-                // Sin appendTo:body para que el calendario siga al input al mover contenido
+                appendTo: document.body,
                 onReady: function(_, __, fp) {
                     window._flatpickrInstances.push(fp);
                 }
