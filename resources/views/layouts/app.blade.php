@@ -492,54 +492,79 @@
     <!-- Modal de Notificaciones Pendientes (siempre disponible, abierto desde campana o al iniciar sesión) -->
     @if(isset($totalPendientes) && $totalPendientes > 0)
     <div id="ts-notif-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
-        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 md:p-8 flex flex-col items-center text-center transition-all duration-300 max-w-md w-full mx-4">
-            <div class="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center mb-4">
-                <span class="text-3xl">🔔</span>
-            </div>
-            <h3 class="text-xl font-black text-slate-800 dark:text-white mb-2">¡Tienes tareas pendientes!</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Hay órdenes que requieren tu atención antes de finalizar el día.</p>
+        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 md:p-8 flex flex-col transition-all duration-300 w-full max-w-lg mx-4">
 
-            <div class="w-full mb-6 text-left space-y-3">
-                @if($mantPendientes > 0)
-                <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-                    <div class="flex justify-between items-center pl-3">
-                        <div>
-                            <p class="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-wide">Mantenimientos</p>
-                            <p class="text-sm font-bold text-gray-800 dark:text-gray-200">{{ $mantPendientes }} orden(es) en espera</p>
-                        </div>
-                        <a href="{{ route('mantenimientos.index') }}" onclick="closeNotifModal()" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline ml-3">Ver →</a>
-                    </div>
+            {{-- Header --}}
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center shrink-0">
+                    <span class="text-2xl">🔔</span>
                 </div>
-                @endif
-                @if($elecPendientes > 0)
-                <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-100 dark:border-purple-800 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
-                    <div class="flex justify-between items-center pl-3">
-                        <div>
-                            <p class="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wide">Electrónica</p>
-                            <p class="text-sm font-bold text-gray-800 dark:text-gray-200">{{ $elecPendientes }} orden(es) en espera</p>
-                        </div>
-                        <a href="{{ route('electronicas.index') }}" onclick="closeNotifModal()" class="text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline ml-3">Ver →</a>
-                    </div>
+                <div>
+                    <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">¡Tienes tareas pendientes!</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalPendientes }} elemento(s) requieren atención</p>
                 </div>
-                @endif
-                @if($cajaPendientes > 0)
-                <div class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-100 dark:border-orange-800 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
-                    <div class="flex justify-between items-center pl-3">
-                        <div>
-                            <p class="text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-wide">Saldos Pendientes</p>
-                            <p class="text-sm font-bold text-gray-800 dark:text-gray-200">{{ $cajaPendientes }} factura(s) sin cobrar</p>
-                        </div>
-                        <a href="{{ route('facturas.index') }}" onclick="closeNotifModal()" class="text-xs font-bold text-orange-600 dark:text-orange-400 hover:underline ml-3">Ver →</a>
-                    </div>
-                </div>
-                @endif
             </div>
 
-            <button onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-lg">
-                Entendido
+            {{-- Scrollable list of all pending items --}}
+            <div class="w-full max-h-[55vh] overflow-y-auto space-y-2 pr-1 scrollbar-hide mb-5">
+
+                {{-- Mantenimientos --}}
+                @foreach($mantList as $m)
+                <a href="{{ route('mantenimientos.show', $m->id) }}" onclick="closeNotifModal()"
+                   class="flex items-center justify-between gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors group relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-500 rounded-l-xl"></div>
+                    <div class="pl-3 min-w-0">
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <span class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Mantenimiento</span>
+                            <span class="text-[10px] font-bold text-blue-500 dark:text-blue-300">{{ $m->numero_orden }}</span>
+                        </div>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $m->dispositivo }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $m->cliente->nombre ?? '—' }}</p>
+                    </div>
+                    <span class="shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
+                </a>
+                @endforeach
+
+                {{-- Electrónica --}}
+                @foreach($elecList as $e)
+                <a href="{{ route('electronicas.show', $e->id) }}" onclick="closeNotifModal()"
+                   class="flex items-center justify-between gap-3 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors group relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-purple-500 rounded-l-xl"></div>
+                    <div class="pl-3 min-w-0">
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <span class="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Electrónica</span>
+                            <span class="text-[10px] font-bold text-purple-500 dark:text-purple-300">{{ $e->numero_orden }}</span>
+                        </div>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $e->dispositivo }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $e->cliente->nombre ?? '—' }}</p>
+                    </div>
+                    <span class="shrink-0 text-purple-500 dark:text-purple-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
+                </a>
+                @endforeach
+
+                {{-- Facturas con saldo pendiente --}}
+                @foreach($cajaList as $f)
+                <a href="{{ route('inventario.facturas.show', $f->id) }}" onclick="closeNotifModal()"
+                   class="flex items-center justify-between gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
+                    <div class="pl-3 min-w-0">
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Pendiente</span>
+                            <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $f->numero }}</span>
+                        </div>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $f->cliente->nombre ?? '—' }}</p>
+                        <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
+                            Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}
+                        </p>
+                    </div>
+                    <span class="shrink-0 text-orange-500 dark:text-orange-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
+                </a>
+                @endforeach
+
+            </div>
+
+            <button onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-base">
+                Cerrar
             </button>
         </div>
     </div>

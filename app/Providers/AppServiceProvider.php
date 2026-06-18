@@ -20,19 +20,33 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Support\Facades\View::composer('layouts.app', function ($view) {
-            $mantPendientes = \App\Models\Mantenimiento::where('estado', 'pendiente')->count();
-            $elecPendientes = \App\Models\Electronica::where('estado', 'pendiente')->count();
-            
-            // Ingresos/Egresos (Facturas) a los que les falta la totalidad del monto
-            $cajaPendientes = \App\Models\Factura::where('estado', '!=', 'anulado')
-                                ->where('saldo_pendiente', '>', 0)
-                                ->count();
-            
+            $mantList = \App\Models\Mantenimiento::where('estado', 'pendiente')
+                            ->select('id', 'numero_orden', 'dispositivo', 'estado')
+                            ->with('cliente:id,nombre')
+                            ->latest()
+                            ->get();
+
+            $elecList = \App\Models\Electronica::where('estado', 'pendiente')
+                            ->select('id', 'numero_orden', 'dispositivo', 'estado')
+                            ->with('cliente:id,nombre')
+                            ->latest()
+                            ->get();
+
+            $cajaList = \App\Models\Factura::where('estado', '!=', 'anulado')
+                            ->where('saldo_pendiente', '>', 0)
+                            ->select('id', 'numero', 'tipo', 'saldo_pendiente', 'total')
+                            ->with('cliente:id,nombre')
+                            ->latest()
+                            ->get();
+
             $view->with([
-                'mantPendientes' => $mantPendientes,
-                'elecPendientes' => $elecPendientes,
-                'cajaPendientes' => $cajaPendientes,
-                'totalPendientes' => $mantPendientes + $elecPendientes + $cajaPendientes
+                'mantList'        => $mantList,
+                'elecList'        => $elecList,
+                'cajaList'        => $cajaList,
+                'mantPendientes'  => $mantList->count(),
+                'elecPendientes'  => $elecList->count(),
+                'cajaPendientes'  => $cajaList->count(),
+                'totalPendientes' => $mantList->count() + $elecList->count() + $cajaList->count(),
             ]);
         });
     }
