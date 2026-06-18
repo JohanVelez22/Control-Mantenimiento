@@ -239,7 +239,7 @@
     @endauth
 
     @guest
-        <div class="min-h-screen flex items-center justify-center p-4 page-enter">
+        <div class="min-h-[100dvh] flex items-center justify-center p-4 page-enter pb-24 md:pb-32">
             @yield('content')
         </div>
     @endguest
