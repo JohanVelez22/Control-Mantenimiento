@@ -177,7 +177,7 @@
                             <div class="p-2 space-y-1">
                                 @if(isset($totalPendientes) && $totalPendientes > 0)
                                     @if($mantPendientes > 0)
-                                    <a href="{{ route('mantenimientos.index') }}" class="block px-3 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-colors">
+                                    <a href="{{ route('mantenimientos.index') }}" class="block px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
                                         <div class="flex items-center justify-between">
                                             <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Mantenimientos</span>
                                             <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $mantPendientes }}</span>
@@ -185,7 +185,7 @@
                                     </a>
                                     @endif
                                     @if($elecPendientes > 0)
-                                    <a href="{{ route('electronicas.index') }}" class="block px-3 py-2 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/40 transition-colors">
+                                    <a href="{{ route('electronicas.index') }}" class="block px-3 py-2 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">
                                         <div class="flex items-center justify-between">
                                             <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Electrónica</span>
                                             <span class="bg-purple-100 text-purple-700 dark:bg-purple-900/80 dark:text-purple-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $elecPendientes }}</span>
@@ -193,7 +193,7 @@
                                     </a>
                                     @endif
                                     @if($cajaPendientes > 0)
-                                    <a href="{{ route('facturas.index') }}" class="block px-3 py-2 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/40 transition-colors">
+                                    <a href="{{ route('facturas.index') }}" class="block px-3 py-2 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors">
                                         <div class="flex items-center justify-between">
                                             <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Saldos Pendientes</span>
                                             <span class="bg-orange-100 text-orange-700 dark:bg-orange-900/80 dark:text-orange-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $cajaPendientes }}</span>
