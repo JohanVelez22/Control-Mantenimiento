@@ -170,7 +170,7 @@
                         </button>
                         
                         <!-- Notification Dropdown - Acrylic Glass, centered, rectangular -->
-                        <div id="notif-dropdown" class="hidden absolute right-1/2 translate-x-1/2 mt-3 w-76 z-50 opacity-0 scale-95 transition-all duration-200 origin-top" style="width:300px">
+                        <div id="notif-dropdown" class="hidden absolute right-1/2 translate-x-1/2 mt-3 z-50 opacity-0 scale-95 transition-all duration-200 origin-top" style="width:240px">
 
                             <!-- Arrow tip -->
                             <div class="flex justify-center">
@@ -182,14 +182,14 @@
                                  style="background:rgba(255,255,255,0.82); border:1px solid rgba(255,255,255,0.5); backdrop-filter:blur(32px) saturate(200%); -webkit-backdrop-filter:blur(32px) saturate(200%); box-shadow:0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.6);">
 
                                 <!-- Header -->
-                                <div id="notif-header" class="px-4 py-3 flex items-center justify-between border-b"
-                                     style="background:rgba(255,255,255,0.25); border-color:rgba(0,0,0,0.07);">
-                                    <div class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#4b5563"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                                        <span class="text-xs font-black uppercase tracking-widest" style="color:#374151; letter-spacing:0.1em;">Notificaciones</span>
+                                <div id="notif-header" class="px-3 py-2.5 flex items-center justify-between border-b"
+                                     style="background:rgba(37,99,235,0.12); border-color:rgba(37,99,235,0.15);">
+                                    <div class="flex items-center gap-1.5">
+                                        <svg id="notif-header-svg" class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#2563eb"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                        <span id="notif-title" class="text-[10px] font-black uppercase" style="color:#1d4ed8; letter-spacing:0.12em;">Pendientes</span>
                                     </div>
                                     @if(isset($totalPendientes) && $totalPendientes > 0)
-                                    <span class="flex items-center justify-center min-w-[22px] h-[22px] px-1.5 rounded-full bg-red-500 text-white text-[10px] font-black" style="box-shadow:0 2px 8px rgba(239,68,68,0.5)">{{ $totalPendientes }}</span>
+                                    <span class="flex items-center justify-center min-w-[20px] h-[20px] px-1 rounded-full text-white text-[10px] font-black" style="background:#ef4444; box-shadow:0 2px 6px rgba(239,68,68,0.5)">{{ $totalPendientes }}</span>
                                     @endif
                                 </div>
 
@@ -224,13 +224,11 @@
                                     @endif
 
                                     <!-- Footer CTA -->
-                                    <div style="padding:8px; border-top:1px solid rgba(0,0,0,0.06); background:rgba(255,255,255,0.20);">
-                                        <button onclick="openNotifModal('all'); document.getElementById('notif-dropdown').classList.add('hidden');"
-                                                class="w-full py-2 text-xs font-bold text-center rounded-md transition-colors"
-                                                style="background:rgba(37,99,235,0.1); color:#2563eb;">
-                                            Ver todos los pendientes →
-                                        </button>
-                                    </div>
+                                    <button id="notif-footer" onclick="openNotifModal('all'); document.getElementById('notif-dropdown').classList.add('hidden');"
+                                            class="w-full py-2 text-[11px] font-black text-center tracking-wide transition-colors"
+                                            style="border-top:1px solid rgba(37,99,235,0.15); background:rgba(37,99,235,0.10); color:#1d4ed8;">
+                                        Ver todos →
+                                    </button>
                                 @else
                                     <div class="px-4 py-5 text-center">
                                         <div class="text-2xl mb-1">✅</div>
@@ -250,23 +248,56 @@
                         const panel = document.getElementById('notif-panel');
                         const header = document.getElementById('notif-header');
                         const arrow = document.getElementById('notif-arrow');
-                        const rows = document.querySelectorAll('.notif-row span.flex-1');
+                        const title = document.getElementById('notif-title');
+                        const svg = document.getElementById('notif-header-svg');
+                        const footer = document.getElementById('notif-footer');
+                        
                         if (!panel) return;
+                        
                         if (isDark) {
-                            panel.style.background = 'rgba(15,23,42,0.82)';
-                            panel.style.border = '1px solid rgba(255,255,255,0.10)';
+                            panel.style.background = 'rgba(15,23,42,0.85)';
+                            panel.style.border = '1px solid rgba(255,255,255,0.08)';
                             panel.style.boxShadow = '0 8px 32px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07)';
-                            if (header) { header.style.background = 'rgba(255,255,255,0.04)'; header.style.borderColor = 'rgba(255,255,255,0.08)'; }
-                            if (arrow)  { arrow.style.background = 'rgba(15,23,42,0.82)'; arrow.style.borderColor = 'rgba(255,255,255,0.10)'; }
-                            document.querySelectorAll('.notif-row span.flex-1').forEach(el => el.style.color = '#e2e8f0');
-                            document.querySelectorAll('.notif-row').forEach(el => el.style.borderBottomColor = 'rgba(255,255,255,0.06)');
-                            const h = panel.querySelector('[class*="uppercase"]'); if(h) h.style.color = '#e2e8f0';
+                            if (arrow)  { arrow.style.background = 'rgba(15,23,42,0.85)'; arrow.style.borderColor = 'rgba(255,255,255,0.08)'; }
+                            
+                            // High contrast colors for header & title in dark mode
+                            if (header) { 
+                                header.style.background = 'rgba(59,130,246,0.15)'; 
+                                header.style.borderColor = 'rgba(59,130,246,0.25)'; 
+                            }
+                            if (title) { title.style.color = '#38bdf8'; }
+                            if (svg) { svg.style.color = '#38bdf8'; }
+                            
+                            // High contrast colors for footer CTA in dark mode
+                            if (footer) {
+                                footer.style.background = 'rgba(59,130,246,0.12)';
+                                footer.style.borderColor = 'rgba(59,130,246,0.25)';
+                                footer.style.color = '#38bdf8';
+                            }
+                            
+                            document.querySelectorAll('.notif-row span.flex-1').forEach(el => el.style.color = '#f1f5f9');
+                            document.querySelectorAll('.notif-row').forEach(el => el.style.borderBottomColor = 'rgba(255,255,255,0.05)');
                         } else {
-                            panel.style.background = 'rgba(255,255,255,0.82)';
+                            panel.style.background = 'rgba(255,255,255,0.85)';
                             panel.style.border = '1px solid rgba(255,255,255,0.5)';
-                            panel.style.boxShadow = '0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.6)';
-                            if (header) { header.style.background = 'rgba(255,255,255,0.25)'; header.style.borderColor = 'rgba(0,0,0,0.07)'; }
-                            if (arrow)  { arrow.style.background = 'rgba(255,255,255,0.82)'; arrow.style.borderColor = 'rgba(255,255,255,0.4)'; }
+                            panel.style.boxShadow = '0 8px 32px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6)';
+                            if (arrow)  { arrow.style.background = 'rgba(255,255,255,0.85)'; arrow.style.borderColor = 'rgba(255,255,255,0.4)'; }
+                            
+                            // High contrast colors for header & title in light mode
+                            if (header) { 
+                                header.style.background = 'rgba(37,99,235,0.08)'; 
+                                header.style.borderColor = 'rgba(37,99,235,0.15)'; 
+                            }
+                            if (title) { title.style.color = '#1d4ed8'; }
+                            if (svg) { svg.style.color = '#2563eb'; }
+                            
+                            // High contrast colors for footer CTA in light mode
+                            if (footer) {
+                                footer.style.background = 'rgba(37,99,235,0.08)';
+                                footer.style.borderColor = 'rgba(37,99,235,0.15)';
+                                footer.style.color = '#1d4ed8';
+                            }
+                            
                             document.querySelectorAll('.notif-row span.flex-1').forEach(el => el.style.color = '#1e293b');
                             document.querySelectorAll('.notif-row').forEach(el => el.style.borderBottomColor = 'rgba(0,0,0,0.05)');
                         }
