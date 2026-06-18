@@ -516,10 +516,10 @@
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Mantenimiento</span>
-                            <span class="text-[10px] font-bold text-blue-500 dark:text-blue-300">{{ $m->numero_orden }}</span>
+                            <span class="text-[10px] font-bold text-blue-500 dark:text-blue-300">{{ $m->id_orden }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $m->dispositivo }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $m->cliente->nombre ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $m->equipo->nombre ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $m->equipo->cliente->nombre ?? '—' }}</p>
                     </div>
                     <span class="shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
@@ -533,10 +533,10 @@
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Electrónica</span>
-                            <span class="text-[10px] font-bold text-purple-500 dark:text-purple-300">{{ $e->numero_orden }}</span>
+                            <span class="text-[10px] font-bold text-purple-500 dark:text-purple-300">{{ $e->id_orden }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $e->dispositivo }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $e->cliente->nombre ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $e->equipo->nombre ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $e->equipo->cliente->nombre ?? '—' }}</p>
                     </div>
                     <span class="shrink-0 text-purple-500 dark:text-purple-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
@@ -550,9 +550,9 @@
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Pendiente</span>
-                            <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $f->numero }}</span>
+                            <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $f->numero_factura }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $f->cliente->nombre ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $f->facturable->nombre ?? '—' }}</p>
                         <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
                             Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}
                         </p>

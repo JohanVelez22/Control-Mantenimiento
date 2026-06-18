@@ -21,21 +21,21 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Support\Facades\View::composer('layouts.app', function ($view) {
             $mantList = \App\Models\Mantenimiento::where('estado', 'pendiente')
-                            ->select('id', 'numero_orden', 'dispositivo', 'estado')
-                            ->with('cliente:id,nombre')
+                            ->select('id', 'id_orden', 'equipo_id', 'estado')
+                            ->with('equipo.cliente:id,nombre')
                             ->latest()
                             ->get();
 
             $elecList = \App\Models\Electronica::where('estado', 'pendiente')
-                            ->select('id', 'numero_orden', 'dispositivo', 'estado')
-                            ->with('cliente:id,nombre')
+                            ->select('id', 'id_orden', 'equipo_id', 'estado')
+                            ->with('equipo.cliente:id,nombre')
                             ->latest()
                             ->get();
 
-            $cajaList = \App\Models\Factura::where('estado', '!=', 'anulado')
+            $cajaList = \App\Models\Factura::where('estado', '!=', 'anulada')
                             ->where('saldo_pendiente', '>', 0)
-                            ->select('id', 'numero', 'tipo', 'saldo_pendiente', 'total')
-                            ->with('cliente:id,nombre')
+                            ->select('id', 'numero_factura', 'tipo_movimiento', 'saldo_pendiente', 'total_documento', 'facturable_id', 'facturable_type')
+                            ->with('facturable')
                             ->latest()
                             ->get();
 
