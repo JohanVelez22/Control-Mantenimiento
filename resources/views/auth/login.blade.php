@@ -5,14 +5,22 @@
 {{-- Botón modo oscuro --}}
 <div class="absolute top-5 right-5 z-10">
  <button id="theme-toggle-login"
- class="p-2 rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-sm hover:scale-105 transition-transform text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+ class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg"
  title="Cambiar tema" aria-label="Cambiar tema">
-    <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-    <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+    <span class="dark:hidden">☀️</span>
+    <span class="hidden dark:inline">🌙</span>
  </button>
 </div>
 
 <div class="w-full max-w-lg px-6">
+
+ {{-- Logo TECNI SYSTEMAS --}}
+ <div class="flex justify-center mb-8">
+     <div class="text-[24px] font-black tracking-widest font-logo flex items-center gap-2">
+         <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
+         <span class="text-slate-800 dark:text-white">SYSTEMAS</span>
+     </div>
+ </div>
 
  {{-- Header --}}
  <div class="text-center mb-8">
