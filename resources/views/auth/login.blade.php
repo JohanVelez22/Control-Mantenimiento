@@ -12,7 +12,7 @@
  </button>
 </div>
 
-<div class="w-full max-w-lg px-6">
+<div class="w-full max-w-lg px-6 pb-16">
 
  {{-- Logo TECNI SYSTEMAS --}}
  <div class="flex justify-center mb-8">
