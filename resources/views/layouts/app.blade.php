@@ -505,13 +505,27 @@
                 </div>
             </div>
 
+            {{-- Filtros / Tabs --}}
+            <div class="flex flex-wrap gap-2 mb-4 w-full justify-center">
+                <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-gray-800 text-white dark:bg-gray-100 dark:text-gray-900">Todos</button>
+                @if($mantPendientes > 0)
+                <button onclick="filterNotifs('mant')" id="btn-notif-mant" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60">Mantenimiento</button>
+                @endif
+                @if($elecPendientes > 0)
+                <button onclick="filterNotifs('elec')" id="btn-notif-elec" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60">Electrónica</button>
+                @endif
+                @if($cajaPendientes > 0)
+                <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/40 dark:text-orange-300 dark:hover:bg-orange-900/60">Saldos/Caja</button>
+                @endif
+            </div>
+
             {{-- Scrollable list of all pending items --}}
-            <div class="w-full max-h-[55vh] overflow-y-auto space-y-2 pr-1 scrollbar-hide mb-5">
+            <div class="w-full max-h-[50vh] overflow-y-auto space-y-2 pr-1 scrollbar-hide mb-5">
 
                 {{-- Mantenimientos --}}
                 @foreach($mantList as $m)
-                <a href="{{ route('mantenimientos.show', $m->id) }}" onclick="closeNotifModal()"
-                   class="flex items-center justify-between gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors group relative overflow-hidden">
+                <a href="{{ route('mantenimientos.show', $m->id) }}" onclick="closeNotifModal()" data-notif-type="mant"
+                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-blue-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
@@ -527,8 +541,8 @@
 
                 {{-- Electrónica --}}
                 @foreach($elecList as $e)
-                <a href="{{ route('electronicas.show', $e->id) }}" onclick="closeNotifModal()"
-                   class="flex items-center justify-between gap-3 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors group relative overflow-hidden">
+                <a href="{{ route('electronicas.show', $e->id) }}" onclick="closeNotifModal()" data-notif-type="elec"
+                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-purple-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
@@ -544,8 +558,8 @@
 
                 {{-- Facturas con saldo pendiente --}}
                 @foreach($cajaList as $f)
-                <a href="{{ route('inventario.facturas.show', $f->id) }}" onclick="closeNotifModal()"
-                   class="flex items-center justify-between gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
+                <a href="{{ route('inventario.facturas.show', $f->id) }}" onclick="closeNotifModal()" data-notif-type="caja"
+                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
@@ -569,6 +583,47 @@
         </div>
     </div>
     <script>
+        function filterNotifs(type) {
+            // Update tabs styling
+            const allTabs = document.querySelectorAll('.notif-tab');
+            allTabs.forEach(btn => {
+                // Reset to unselected state
+                if(btn.id === 'btn-notif-all') {
+                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700';
+                } else if(btn.id === 'btn-notif-mant') {
+                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40 border border-transparent';
+                } else if(btn.id === 'btn-notif-elec') {
+                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-50 text-purple-600 hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:hover:bg-purple-900/40 border border-transparent';
+                } else if(btn.id === 'btn-notif-caja') {
+                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-orange-50 text-orange-600 hover:bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:hover:bg-orange-900/40 border border-transparent';
+                }
+            });
+
+            // Set active state
+            const activeBtn = document.getElementById('btn-notif-' + type);
+            if(activeBtn) {
+                if(type === 'all') {
+                    activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-gray-800 text-white dark:bg-gray-100 dark:text-gray-900';
+                } else if(type === 'mant') {
+                    activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200 border border-blue-300 dark:border-blue-700';
+                } else if(type === 'elec') {
+                    activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border border-purple-300 dark:border-purple-700';
+                } else if(type === 'caja') {
+                    activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border border-orange-300 dark:border-orange-700';
+                }
+            }
+
+            // Filter items
+            const items = document.querySelectorAll('.notif-item');
+            items.forEach(item => {
+                if(type === 'all' || item.dataset.notifType === type) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
         function openNotifModal() {
             const modal = document.getElementById('ts-notif-modal');
             const card  = document.getElementById('ts-notif-card');
