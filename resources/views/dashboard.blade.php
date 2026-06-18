@@ -14,7 +14,7 @@
 }
 </style>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
  <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
  <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
  <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💻</span> Equipos</div>
@@ -47,7 +47,7 @@
 </div>
 
 <!-- Carrusel de Gráficos -->
-<h3 class="text-lg font-bold mb-6 text-gray-700 dark:text-gray-300 flex items-center gap-2">
+<h3 class="text-lg font-bold mb-4 text-gray-700 dark:text-gray-300 flex items-center gap-2">
  <span class="text-xl leading-none shrink-0" aria-hidden="true">📆</span>
  Análisis Visual de Rendimiento
 </h3>

@@ -20,7 +20,7 @@
 
             <div>
                 <label class="field-label">Total Pagado ($) *</label>
-                <input type="number" step="0.01" min="0" name="total_pagado" required value="{{ old('total_pagado', $factura->total_pagado) }}" class="glass-input font-bold text-emerald-600">
+                <input type="text" name="total_pagado" id="total_pagado" required value="{{ old('total_pagado', number_format($factura->total_pagado, 0, '', '.')) }}" oninput="window.formatCurrencyInput(this)" class="glass-input font-bold text-emerald-600 text-center">
                 <p class="text-[11px] text-gray-400 mt-1">El monto total del documento es ${{ number_format($factura->total_documento, 0, ',', '.') }}. Modificar el pago ajustará el saldo y el estado automáticamente.</p>
             </div>
 

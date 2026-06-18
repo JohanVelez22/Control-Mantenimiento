@@ -10,7 +10,7 @@
  </div>
  </div>
 
- <form action="{{ route('inventario.venta.store') }}" method="POST" id="venta-form" class="space-y-8">
+ <form action="{{ route('inventario.venta.store') }}" method="POST" id="venta-form" class="space-y-5">
  @csrf
 
  <div class="flex flex-col md:flex-row gap-5 p-5 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl">
@@ -39,7 +39,7 @@
 
  {{-- Tabla de ítems --}}
  <div>
- <div class="flex justify-between items-center mb-4">
+ <div class="flex justify-between items-center mb-2">
  <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
  <span>🛍️</span> Artículos a Vender
  </h3>
@@ -75,7 +75,7 @@
  <input type="number" name="items[0][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-emerald-500">
  </td>
  <td>
- <input type="number" name="items[0][precio_unitario]" min="0" step="0.01" value="0" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-mono">
+ <input type="text" name="items[0][precio_unitario]" value="0" oninput="window.formatCurrencyInput(this); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-mono">
  </td>
  <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell align-middle pr-4">
  $0
@@ -98,10 +98,10 @@
 
  {{-- Pago y observaciones --}}
  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5 bg-white/40 dark:bg-slate-800/40 border border-gray-200/60 dark:border-gray-700/60 rounded-2xl">
- <div>
- <label class="field-label">Total Recibido Ahora ($) *</label>
- <input type="number" name="total_pagado" id="total_pagado" min="0" step="0.01" value="0" required 
- class="glass-input text-2xl font-black text-right focus:ring-emerald-500 py-3 text-emerald-600 dark:text-emerald-400">
+ <div class="text-center">
+ <label class="field-label text-center block">Total Recibido Ahora ($) *</label>
+ <input type="text" name="total_pagado" id="total_pagado" value="0" oninput="window.formatCurrencyInput(this); recalcular()" required 
+ class="glass-input text-2xl font-black text-center focus:ring-emerald-500 py-3 text-emerald-600 dark:text-emerald-400">
  <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2 font-medium leading-tight">Si recibes menos del total, el estado quedará como <strong>Pendiente de Cobro</strong> y se registrará la deuda contable del cliente.</p>
  </div>
  <div id="saldo-preview" class="hidden flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">
@@ -158,7 +158,7 @@ function agregarFila() {
  <input type="number" name="items[${filaIndex}][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-emerald-500">
  </td>
  <td>
- <input type="number" name="items[${filaIndex}][precio_unitario]" min="0" step="0.01" value="0" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-mono">
+ <input type="text" name="items[${filaIndex}][precio_unitario]" value="0" oninput="window.formatCurrencyInput(this); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-mono">
  </td>
  <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell align-middle pr-4">$0</td>
  <td class="text-center align-middle">
@@ -187,18 +187,18 @@ function bindFila(tr) {
  const precio = tr.querySelector('.precio-input');
  sel.addEventListener('change', () => {
  const opt = sel.options[sel.selectedIndex];
- precio.value = opt.dataset.precio || 0;
+ precio.value = parseInt(opt.dataset.precio || 0).toLocaleString('es-CO');
  const maxStock = parseInt(opt.dataset.stock) || 0;
  cant.max = maxStock;
  actualizarSubtotal(tr);
  });
  cant.addEventListener('input', () => actualizarSubtotal(tr));
- precio.addEventListener('input', () => actualizarSubtotal(tr));
 }
 
 function actualizarSubtotal(tr) {
  const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
- const precio = parseFloat(tr.querySelector('.precio-input').value) || 0;
+ const precioText = tr.querySelector('.precio-input').value.replace(/\./g, '');
+ const precio = parseFloat(precioText) || 0;
  tr.querySelector('.subtotal-cell').textContent = '$' + (cant * precio).toLocaleString('es-CO');
  recalcular();
 }
@@ -206,9 +206,10 @@ function actualizarSubtotal(tr) {
 function recalcular() {
  let total = 0;
  document.querySelectorAll('.item-row').forEach(tr => {
- const c = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
- const p = parseFloat(tr.querySelector('.precio-input').value) || 0;
- total += c * p;
+ const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
+ const pText = tr.querySelector('.precio-input').value.replace(/\./g, '');
+ const p = parseFloat(pText) || 0;
+ total += cant * p;
  });
  document.getElementById('total-display').textContent = '$' + total.toLocaleString('es-CO');
  
@@ -219,7 +220,8 @@ function recalcular() {
 }
 
 function calcularSaldo(total) {
- const pagado = parseFloat(document.getElementById('total_pagado').value) || 0;
+ const pagadoText = document.getElementById('total_pagado').value.replace(/\./g, '');
+ const pagado = parseFloat(pagadoText) || 0;
  const saldo = total - pagado;
  const box = document.getElementById('saldo-preview');
  if (saldo > 0.01) {
@@ -233,10 +235,6 @@ function calcularSaldo(total) {
 }
 
 document.querySelectorAll('.item-row').forEach(bindFila);
-document.getElementById('total_pagado').addEventListener('input', () => {
- const totalText = document.getElementById('total-display').textContent.replace(/[^0-9,-]+/g,""); 
- const total = parseFloat(totalText) || 0;
- calcularSaldo(total);
-});
+ // Listener delegado a global
 </script>
 @endsection

@@ -38,7 +38,14 @@
   /* Sidebar */
   --sidebar-w:         72px;
   --sidebar-expanded:  210px;
+
+  --font-logo: 'Michroma', sans-serif;
+  --font-display: 'Orbitron', sans-serif;
 }
+
+/* ─── Typography Classes ─────────────────────────────────────────── */
+.font-logo { font-family: var(--font-logo) !important; }
+.font-display { font-family: var(--font-display) !important; }
 
 /* ─── Base Reset ─────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

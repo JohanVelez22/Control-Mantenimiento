@@ -29,6 +29,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
     
+    <!-- Scripts de Librerías (cargados en el head para prevenir FOUC) -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    
     <!-- CSS Propio (Liquid Glass) - va DESPUÉS para sobreescribir estilos base -->
     <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ time() }}">
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -85,6 +90,197 @@
         .ts-wrapper.single.has-items .ts-control > input {
             display: none !important;
         }
+        
+        /* Ocultar el icono de calendario nativo de Chrome para evitar salto visual */
+        input[type="date"]:not(.flatpickr-input)::-webkit-calendar-picker-indicator {
+            display: none !important;
+            -webkit-appearance: none !important;
+        }
+        input[type="date"]:not(.flatpickr-input)::-webkit-datetime-edit,
+        input[type="date"]:not(.flatpickr-input)::-webkit-datetime-edit-fields-wrapper {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+
+        .flatpickr-calendar {
+            background: rgba(255, 255, 255, 0.55) !important;
+            backdrop-filter: blur(24px) !important;
+            -webkit-backdrop-filter: blur(24px) !important;
+            border: 1px solid rgba(148,163,184,0.3) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5) inset !important;
+            padding: 10px !important;
+            font-family: inherit !important;
+            width: 310px !important; /* Ancho fijo suficiente para 7 columnas */
+        }
+        .dark .flatpickr-calendar {
+            background: rgba(15, 23, 42, 0.65) !important;
+            border: 1px solid rgba(100,116,139,0.4) !important;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset !important;
+        }
+        /* Cabecera del mes */
+        .flatpickr-months {
+            padding: 4px 0 8px !important;
+            align-items: center !important;
+        }
+        .flatpickr-month {
+            height: 36px !important;
+        }
+        .flatpickr-current-month {
+            font-size: 15px !important;
+            font-weight: 800 !important;
+            color: #1e293b !important;
+            padding-top: 4px !important;
+        }
+        .dark .flatpickr-current-month {
+            color: #e2e8f0 !important;
+        }
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            font-weight: 800 !important;
+            background: transparent !important;
+            font-size: 15px !important;
+            color: #1e293b !important;
+            cursor: pointer;
+        }
+        .dark .flatpickr-current-month .flatpickr-monthDropdown-months {
+            color: #e2e8f0 !important;
+        }
+        .flatpickr-current-month .numInputWrapper {
+            width: 7.5ch !important;
+            margin-left: 2px !important;
+        }
+        .flatpickr-current-month input.cur-year {
+            font-weight: 700 !important;
+            font-size: 16px !important;
+            color: #000000 !important; /* Negro absoluto en fondo claro */
+            padding-right: 22px !important; /* Crea el espacio entre el número y las flechas */
+            box-sizing: border-box !important;
+        }
+        .dark .flatpickr-current-month input.cur-year {
+            color: #ffffff !important;
+        }
+        /* Flechas de navegación de mes */
+        .flatpickr-prev-month, .flatpickr-next-month {
+            width: 32px !important;
+            height: 32px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 8px !important;
+            transition: background 0.2s !important;
+            top: 8px !important;
+            padding: 6px !important;
+        }
+        .flatpickr-prev-month:hover, .flatpickr-next-month:hover {
+            background: rgba(59,130,246,0.15) !important;
+        }
+        .flatpickr-prev-month svg, .flatpickr-next-month svg {
+            width: 16px !important;
+            height: 16px !important;
+        }
+        .flatpickr-prev-month svg path, .flatpickr-next-month svg path {
+            fill: #2563eb !important;
+        }
+        .dark .flatpickr-prev-month svg path, .dark .flatpickr-next-month svg path {
+            fill: #60a5fa !important;
+        }
+        /* Flechas de año (arriba/abajo) */
+        .flatpickr-current-month .arrowUp,
+        .flatpickr-current-month .arrowDown {
+            border: none !important;
+            padding: 2px 5px !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            transition: background 0.15s !important;
+            right: 0 !important; /* Alineado a la derecha del wrapper */
+        }
+        .flatpickr-current-month .arrowUp:after {
+            border-bottom-color: #334155 !important; /* Gris oscuro en vez de azul */
+            border-width: 0 4px 5px !important;
+        }
+        .flatpickr-current-month .arrowDown:after {
+            border-top-color: #334155 !important; /* Gris oscuro en vez de azul */
+            border-width: 5px 4px 0 !important;
+        }
+        .dark .flatpickr-current-month .arrowUp:after {
+            border-bottom-color: #60a5fa !important;
+        }
+        .dark .flatpickr-current-month .arrowDown:after {
+            border-top-color: #60a5fa !important;
+        }
+        .flatpickr-current-month .numInputWrapper:hover .arrowUp,
+        .flatpickr-current-month .numInputWrapper:hover .arrowDown,
+        .flatpickr-current-month .numInputWrapper span:hover {
+            background: rgba(59,130,246,0.15) !important;
+        }
+        /* Días de la semana */
+        .flatpickr-weekdays {
+            padding: 4px 0 !important;
+        }
+        .flatpickr-weekday {
+            color: #64748b !important;
+            font-weight: 700 !important;
+            font-size: 11px !important;
+            text-transform: uppercase !important;
+        }
+        .dark .flatpickr-weekday {
+            color: #94a3b8 !important;
+        }
+        /* Días del mes */
+        .flatpickr-days, .dayContainer {
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+        }
+        .flatpickr-day {
+            border-radius: 8px !important;
+            color: #334155 !important;
+            font-weight: 600 !important;
+            transition: all 0.15s !important;
+            height: 36px !important;
+            line-height: 36px !important;
+            max-width: 38px !important;
+            margin: 0 auto !important; /* El margin causaba el wrap de los días */
+        }
+        .dark .flatpickr-day {
+            color: #cbd5e1 !important;
+        }
+        .flatpickr-day:hover {
+            background: rgba(59,130,246,0.12) !important;
+            border-color: transparent !important;
+            color: #2563eb !important;
+        }
+        .dark .flatpickr-day:hover {
+            background: rgba(96,165,250,0.15) !important;
+            color: #93c5fd !important;
+        }
+        .flatpickr-day.selected, .flatpickr-day.selected:hover {
+            background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+            border-color: #2563eb !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.4) !important;
+            font-weight: 800 !important;
+        }
+        .flatpickr-day.today {
+            border-color: #3b82f6 !important;
+            font-weight: 800 !important;
+        }
+        .dark .flatpickr-day.today {
+            border-color: #60a5fa !important;
+        }
+        .flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay {
+            opacity: 0.3 !important;
+        }
+        /* Ocultar la 6ta fila si solo contiene días del mes siguiente */
+        .flatpickr-day.nextMonthDay:nth-child(n+36) {
+            display: none !important;
+        }
+        /* Input alternativo (el que se muestra con altInput: true) */
+        .flatpickr-input.flatpickr-mobile, input.flatpickr-input.form-control {
+            display: none !important;
+        }
+
         /* Cursores correctos para TomSelect */
         .ts-control { cursor: pointer !important; }
         .ts-control input { 
@@ -550,8 +746,10 @@
                                 var rect = input.getBoundingClientRect();
                                 var scrollY = window.scrollY || window.pageYOffset;
                                 var scrollX = window.scrollX || window.pageXOffset;
+                                var calendarWidth = fp.calendarContainer.offsetWidth;
+                                var leftPos = rect.left + scrollX + (rect.width / 2) - (calendarWidth / 2);
                                 fp.calendarContainer.style.top  = (rect.bottom + scrollY + 4) + 'px';
-                                fp.calendarContainer.style.left = (rect.left  + scrollX) + 'px';
+                                fp.calendarContainer.style.left = leftPos + 'px';
                             }
                         });
                     }
@@ -858,13 +1056,9 @@
     </script>
     @endif
 
-    <!-- Scripts de Librerías (Flatpickr y Tom Select) -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
-    
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        // Inicialización INMEDIATA sin esperar a DOMContentLoaded para evitar FOUC
+        (function() {
             // 1. Flatpickr para todos los inputs de tipo date
             window._flatpickrInstances = [];
             flatpickr("input[type='date']", {
@@ -872,10 +1066,10 @@
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "d/m/Y",
-                altInputClass: "glass-input",
                 disableMobile: true,
                 monthSelectorType: "static",
                 appendTo: document.body,
+                position: "auto center",
                 onReady: function(_, __, fp) {
                     window._flatpickrInstances.push(fp);
                 }
@@ -936,6 +1130,33 @@
                     tsInstance.removeOption("");
                 }
             };
+
+            // Formateador global de moneda (separadores de miles)
+            window.formatCurrencyInput = function(input) {
+                // Si el input está centrado (ej: total a pagar) y se borra todo, dejar un '0'
+                let val = input.value.replace(/\D/g, ''); 
+                if (val === '') val = '0';
+                
+                // Si el primer carácter es 0 y hay más números, quitamos el 0 a la izquierda
+                if (val.length > 1 && val.startsWith('0')) {
+                    val = val.substring(1);
+                }
+
+                input.value = parseInt(val, 10).toLocaleString('es-CO');
+                
+                if (typeof window.recalcular === 'function') {
+                    window.recalcular();
+                }
+            };
+
+            // Remover el formato antes de enviar cualquier formulario que tenga inputs de moneda
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function() {
+                    this.querySelectorAll('.precio-input, #total_pagado').forEach(input => {
+                        input.value = input.value.replace(/\./g, '');
+                    });
+                });
+            });
 
             // 2. Tom Select para selects con clase glass-input en carga de página
             document.querySelectorAll("select.glass-input").forEach((el) => {
@@ -1004,7 +1225,7 @@
                     }
                 }
             });
-        });
+        })();
     </script>
 
 </body>
