@@ -177,28 +177,28 @@
                             <div class="p-2 space-y-1">
                                 @if(isset($totalPendientes) && $totalPendientes > 0)
                                     @if($mantPendientes > 0)
-                                    <a href="{{ route('mantenimientos.index') }}" class="block px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
+                                    <button onclick="openNotifModal(); document.getElementById('notif-dropdown').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
                                         <div class="flex items-center justify-between">
                                             <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Mantenimientos</span>
                                             <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $mantPendientes }}</span>
                                         </div>
-                                    </a>
+                                    </button>
                                     @endif
                                     @if($elecPendientes > 0)
-                                    <a href="{{ route('electronicas.index') }}" class="block px-3 py-2 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">
+                                    <button onclick="openNotifModal(); document.getElementById('notif-dropdown').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">
                                         <div class="flex items-center justify-between">
                                             <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Electrónica</span>
                                             <span class="bg-purple-100 text-purple-700 dark:bg-purple-900/80 dark:text-purple-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $elecPendientes }}</span>
                                         </div>
-                                    </a>
+                                    </button>
                                     @endif
                                     @if($cajaPendientes > 0)
-                                    <a href="{{ route('facturas.index') }}" class="block px-3 py-2 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors">
+                                    <button onclick="openNotifModal(); document.getElementById('notif-dropdown').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors">
                                         <div class="flex items-center justify-between">
                                             <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Saldos Pendientes</span>
                                             <span class="bg-orange-100 text-orange-700 dark:bg-orange-900/80 dark:text-orange-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $cajaPendientes }}</span>
                                         </div>
-                                    </a>
+                                    </button>
                                     @endif
                                 @else
                                     <div class="px-3 py-4 text-center">
@@ -489,67 +489,87 @@
         }
     </script>
 
-    @if(session('alertas_pendientes') && count(session('alertas_pendientes')) > 0)
-    <!-- Modal de Notificaciones Pendientes al Iniciar Sesión -->
-    <div id="ts-notif-modal" class="ts-modal-overlay opacity-0 transition-opacity duration-300 z-[200]">
-        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 md:p-8 flex flex-col items-center text-center transition-all duration-150">
+    <!-- Modal de Notificaciones Pendientes (siempre disponible, abierto desde campana o al iniciar sesión) -->
+    @if(isset($totalPendientes) && $totalPendientes > 0)
+    <div id="ts-notif-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 md:p-8 flex flex-col items-center text-center transition-all duration-300 max-w-md w-full mx-4">
             <div class="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center mb-4">
                 <span class="text-3xl">🔔</span>
             </div>
             <h3 class="text-xl font-black text-slate-800 dark:text-white mb-2">¡Tienes tareas pendientes!</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Hay órdenes de electrónica y mantenimientos que requieren tu atención.</p>
-            
-            <div class="w-full max-h-[40vh] overflow-y-auto mb-6 text-left space-y-3 pr-2 scrollbar-hide">
-                @foreach(session('alertas_pendientes') as $alerta)
-                    <div class="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full {{ $alerta['modulo'] == 'mantenimiento' ? 'bg-blue-500' : 'bg-purple-500' }}"></div>
-                        <div class="flex justify-between items-start gap-3 pl-3">
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="text-xs font-black {{ $alerta['modulo'] == 'mantenimiento' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">{{ $alerta['id_orden'] }}</span>
-                                    <span class="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-md {{ $alerta['modulo'] == 'mantenimiento' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700' }}">{{ $alerta['modulo'] }}</span>
-                                </div>
-                                <p class="text-sm font-bold text-gray-800 dark:text-gray-200 truncate" title="{{ $alerta['dispositivo'] }}">{{ $alerta['dispositivo'] }}</p>
-                                <p class="text-xs text-gray-500 truncate" title="{{ $alerta['cliente'] }}">{{ $alerta['cliente'] }}</p>
-                            </div>
-                            <span class="pill pill-pending text-[10px] py-0.5 px-2 whitespace-nowrap">
-                                {{ $alerta['dias'] }} días
-                            </span>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Hay órdenes que requieren tu atención antes de finalizar el día.</p>
+
+            <div class="w-full mb-6 text-left space-y-3">
+                @if($mantPendientes > 0)
+                <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                    <div class="flex justify-between items-center pl-3">
+                        <div>
+                            <p class="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-wide">Mantenimientos</p>
+                            <p class="text-sm font-bold text-gray-800 dark:text-gray-200">{{ $mantPendientes }} orden(es) en espera</p>
                         </div>
+                        <a href="{{ route('mantenimientos.index') }}" onclick="closeNotifModal()" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline ml-3">Ver →</a>
                     </div>
-                @endforeach
+                </div>
+                @endif
+                @if($elecPendientes > 0)
+                <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-100 dark:border-purple-800 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
+                    <div class="flex justify-between items-center pl-3">
+                        <div>
+                            <p class="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wide">Electrónica</p>
+                            <p class="text-sm font-bold text-gray-800 dark:text-gray-200">{{ $elecPendientes }} orden(es) en espera</p>
+                        </div>
+                        <a href="{{ route('electronicas.index') }}" onclick="closeNotifModal()" class="text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline ml-3">Ver →</a>
+                    </div>
+                </div>
+                @endif
+                @if($cajaPendientes > 0)
+                <div class="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-100 dark:border-orange-800 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
+                    <div class="flex justify-between items-center pl-3">
+                        <div>
+                            <p class="text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-wide">Saldos Pendientes</p>
+                            <p class="text-sm font-bold text-gray-800 dark:text-gray-200">{{ $cajaPendientes }} factura(s) sin cobrar</p>
+                        </div>
+                        <a href="{{ route('facturas.index') }}" onclick="closeNotifModal()" class="text-xs font-bold text-orange-600 dark:text-orange-400 hover:underline ml-3">Ver →</a>
+                    </div>
+                </div>
+                @endif
             </div>
-            
-            <button onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-lg ">
+
+            <button onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-lg">
                 Entendido
             </button>
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        function openNotifModal() {
             const modal = document.getElementById('ts-notif-modal');
-            const card = document.getElementById('ts-notif-card');
-            
-            // Bloquear scroll de fondo
+            const card  = document.getElementById('ts-notif-card');
+            if (!modal) return;
+            modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
-            
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 card.classList.remove('scale-95', 'opacity-0');
-            }, 100);
-        });
+            }, 10);
+        }
 
         function closeNotifModal() {
             const modal = document.getElementById('ts-notif-modal');
-            const card = document.getElementById('ts-notif-card');
+            const card  = document.getElementById('ts-notif-card');
+            if (!modal) return;
             modal.classList.add('opacity-0');
             card.classList.add('scale-95', 'opacity-0');
-            
-            // Restaurar scroll
             document.body.style.overflow = 'auto';
-            
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
+
+        // Abrir automáticamente al iniciar sesión si hay alertas de sesión pendientes
+        @if(session('alertas_pendientes') && count(session('alertas_pendientes')) > 0)
+        document.addEventListener('DOMContentLoaded', () => openNotifModal());
+        @endif
     </script>
     @endif
 
