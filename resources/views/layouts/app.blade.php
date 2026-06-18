@@ -563,12 +563,31 @@
                     <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
-                            <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Pendiente</span>
+                            <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Factura</span>
                             <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $f->numero_factura }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $f->facturable->nombre ?? '—' }}</p>
                         <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
                             Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}
+                        </p>
+                    </div>
+                    <span class="shrink-0 text-orange-500 dark:text-orange-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
+                </a>
+                @endforeach
+
+                {{-- Ingresos/Egresos con saldo pendiente --}}
+                @foreach($movimientosPendientes as $mov)
+                <a href="{{ route('caja.index') }}" onclick="closeNotifModal()" data-notif-type="caja"
+                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
+                    <div class="pl-3 min-w-0">
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo {{ ucfirst($mov->tipo_movimiento) }}</span>
+                            <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">#{{ str_pad($mov->id, 4, '0', STR_PAD_LEFT) }}</span>
+                        </div>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $mov->concepto->nombre ?? '—' }} - {{ $mov->persona ?? '—' }}</p>
+                        <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
+                            Deuda: ${{ number_format($mov->monto_total - $mov->monto, 0, ',', '.') }}
                         </p>
                     </div>
                     <span class="shrink-0 text-orange-500 dark:text-orange-400 group-hover:translate-x-1 transition-transform text-lg">→</span>

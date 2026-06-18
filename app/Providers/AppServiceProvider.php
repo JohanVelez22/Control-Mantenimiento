@@ -39,14 +39,20 @@ class AppServiceProvider extends ServiceProvider
                             ->latest()
                             ->get();
 
+            $movimientosPendientes = \App\Models\MovimientoCaja::whereRaw('monto_total > monto')
+                            ->with('concepto')
+                            ->latest()
+                            ->get();
+
             $view->with([
-                'mantList'        => $mantList,
-                'elecList'        => $elecList,
-                'cajaList'        => $cajaList,
-                'mantPendientes'  => $mantList->count(),
-                'elecPendientes'  => $elecList->count(),
-                'cajaPendientes'  => $cajaList->count(),
-                'totalPendientes' => $mantList->count() + $elecList->count() + $cajaList->count(),
+                'mantList'              => $mantList,
+                'elecList'              => $elecList,
+                'cajaList'              => $cajaList,
+                'movimientosPendientes' => $movimientosPendientes,
+                'mantPendientes'        => $mantList->count(),
+                'elecPendientes'        => $elecList->count(),
+                'cajaPendientes'        => $cajaList->count() + $movimientosPendientes->count(),
+                'totalPendientes'       => $mantList->count() + $elecList->count() + $cajaList->count() + $movimientosPendientes->count(),
             ]);
         });
     }
