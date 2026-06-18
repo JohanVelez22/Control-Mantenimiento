@@ -515,7 +515,7 @@
                 <button onclick="filterNotifs('elec')" id="btn-notif-elec" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60">Electrónica</button>
                 @endif
                 @if($cajaPendientes > 0)
-                <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/40 dark:text-orange-300 dark:hover:bg-orange-900/60">Saldos/Caja</button>
+                <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-300 dark:hover:bg-yellow-900/60">Saldos/Caja</button>
                 @endif
             </div>
 
@@ -623,7 +623,7 @@
                 } else if(btn.id === 'btn-notif-elec') {
                     btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-50 text-purple-600 hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:hover:bg-purple-900/40 border border-transparent';
                 } else if(btn.id === 'btn-notif-caja') {
-                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-orange-50 text-orange-600 hover:bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:hover:bg-orange-900/40 border border-transparent';
+                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-yellow-50 text-yellow-600 hover:bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400 dark:hover:bg-yellow-900/40 border border-transparent';
                 }
             });
 
@@ -637,7 +637,7 @@
                 } else if(type === 'elec') {
                     activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border border-purple-300 dark:border-purple-700';
                 } else if(type === 'caja') {
-                    activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border border-orange-300 dark:border-orange-700';
+                    activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-yellow-100 text-yellow-800 dark:bg-yellow-900/60 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-700';
                 }
             }
 
