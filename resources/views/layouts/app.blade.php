@@ -388,10 +388,6 @@
             wrapper.style.marginLeft = W_COLLAPSED;
 
             sb.addEventListener('mouseenter', () => {
-                // Cerrar calendarios abiertos antes de animar para evitar desalineamiento
-                if (window._flatpickrInstances) {
-                    window._flatpickrInstances.forEach(fp => fp.close());
-                }
                 wrapper.style.marginLeft = W_EXPANDED;
             });
             sb.addEventListener('mouseleave', () => {
