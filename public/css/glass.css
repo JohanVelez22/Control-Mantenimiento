@@ -1191,3 +1191,22 @@ html.dark .flatpickr-day.flatpickr-disabled {
 
 i n p u t : - w e b k i t - a u t o f i l l ,   i n p u t : - w e b k i t - a u t o f i l l : h o v e r ,   i n p u t : - w e b k i t - a u t o f i l l : f o c u s ,   i n p u t : - w e b k i t - a u t o f i l l : a c t i v e   {   - w e b k i t - b o x - s h a d o w :   0   0   0   1 0 0 0 p x   t r a n s p a r e n t   i n s e t   ! i m p o r t a n t ;   t r a n s i t i o n :   b a c k g r o u n d - c o l o r   5 0 0 0 s   e a s e - i n - o u t   0 s ;   }  
  
+
+/* ─── Correccion de Autocompletado del Navegador ─── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.9) inset !important;
+    -webkit-text-fill-color: #1e293b !important; /* text-slate-800 */
+    transition: background-color 5000s ease-in-out 0s !important;
+}
+
+html.dark input:-webkit-autofill,
+html.dark input:-webkit-autofill:hover, 
+html.dark input:-webkit-autofill:focus, 
+html.dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px rgba(15, 23, 42, 0.9) inset !important;
+    -webkit-text-fill-color: #f8fafc !important; /* text-slate-50 */
+    transition: background-color 5000s ease-in-out 0s !important;
+}
