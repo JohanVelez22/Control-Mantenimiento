@@ -182,14 +182,11 @@
                                  style="background:rgba(255,255,255,0.82); border:1px solid rgba(255,255,255,0.5); backdrop-filter:blur(32px) saturate(200%); -webkit-backdrop-filter:blur(32px) saturate(200%); box-shadow:0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.6);">
 
                                 <!-- Header -->
-                                <div id="notif-header" class="px-3 py-2.5 flex items-center justify-between border-b"
-                                     style="background:rgba(37,99,235,0.12); border-color:rgba(37,99,235,0.15);">
-                                    <div class="flex items-center gap-1.5">
-                                        <svg id="notif-header-svg" class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#2563eb"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                                        <span id="notif-title" class="text-[10px] font-black uppercase" style="color:#1d4ed8; letter-spacing:0.12em;">Pendientes</span>
-                                    </div>
+                                <div id="notif-header" class="px-3 py-2.5 relative border-b text-center"
+                                     style="background:transparent; border-color:rgba(0,0,0,0.08);">
+                                    <span id="notif-title" class="text-[10px] font-black uppercase inline-block" style="color:#0F172A; letter-spacing:0.12em;">Pendientes</span>
                                     @if(isset($totalPendientes) && $totalPendientes > 0)
-                                    <span class="flex items-center justify-center min-w-[20px] h-[20px] px-1 rounded-full text-white text-[10px] font-black" style="background:#ef4444; box-shadow:0 2px 6px rgba(239,68,68,0.5)">{{ $totalPendientes }}</span>
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center min-w-[20px] h-[20px] px-1 rounded-full text-white text-[10px] font-black" style="background:#ef4444; box-shadow:0 2px 6px rgba(239,68,68,0.5)">{{ $totalPendientes }}</span>
                                     @endif
                                 </div>
 
@@ -198,7 +195,7 @@
                                 @if(isset($totalPendientes) && $totalPendientes > 0)
                                     @if($mantPendientes > 0)
                                     <button onclick="openNotifModal('mant'); document.getElementById('notif-dropdown').classList.add('hidden');"
-                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors"
+                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-slate-100/50 dark:hover:bg-slate-800/60"
                                             style="border-bottom:1px solid rgba(0,0,0,0.05);">
                                         <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(59,130,246,0.15);">🔧</div>
                                         <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Mantenimiento</span>
@@ -207,7 +204,7 @@
                                     @endif
                                     @if($elecPendientes > 0)
                                     <button onclick="openNotifModal('elec'); document.getElementById('notif-dropdown').classList.add('hidden');"
-                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors"
+                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-slate-100/50 dark:hover:bg-slate-800/60"
                                             style="border-bottom:1px solid rgba(0,0,0,0.05);">
                                         <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(168,85,247,0.15);">⚡</div>
                                         <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Electrónica</span>
@@ -216,19 +213,20 @@
                                     @endif
                                     @if($cajaPendientes > 0)
                                     <button onclick="openNotifModal('caja'); document.getElementById('notif-dropdown').classList.add('hidden');"
-                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors">
+                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-slate-100/50 dark:hover:bg-slate-800/60">
                                         <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(245,158,11,0.15);">💰</div>
                                         <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Saldos / Caja</span>
                                         <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#f59e0b; box-shadow:0 2px 6px rgba(245,158,11,0.4)">{{ $cajaPendientes }}</span>
                                     </button>
                                     @endif
+                                </div>
 
-                                    <!-- Footer CTA -->
-                                    <button id="notif-footer" onclick="openNotifModal('all'); document.getElementById('notif-dropdown').classList.add('hidden');"
-                                            class="w-full py-2 text-[11px] font-black text-center tracking-wide transition-colors"
-                                            style="border-top:1px solid rgba(37,99,235,0.15); background:rgba(37,99,235,0.10); color:#1d4ed8;">
-                                        Ver todos →
-                                    </button>
+                                <!-- Footer CTA outside padding -->
+                                <button id="notif-footer" onclick="openNotifModal('all'); document.getElementById('notif-dropdown').classList.add('hidden');"
+                                        class="w-full py-2.5 text-[11px] font-black text-center tracking-wide transition-colors hover:opacity-90"
+                                        style="border-top:1px solid rgba(0,0,0,0.05); background:rgba(248,250,252,0.8); color:#2563eb;">
+                                    Ver todos →
+                                </button>
                                 @else
                                     <div class="px-4 py-5 text-center">
                                         <div class="text-2xl mb-1">✅</div>
@@ -265,7 +263,6 @@
                                 header.style.borderColor = 'rgba(255,255,255,0.1)'; 
                             }
                             if (title) { title.style.color = '#F8FAFC'; } // text-slate-50
-                            if (svg) { svg.style.color = '#94A3B8'; } // text-slate-400
                             
                             if (footer) {
                                 footer.style.background = 'rgba(30,41,59,0.5)'; // bg-slate-800/50
@@ -286,7 +283,6 @@
                                 header.style.borderColor = 'rgba(0,0,0,0.08)'; 
                             }
                             if (title) { title.style.color = '#0F172A'; } // text-slate-900
-                            if (svg) { svg.style.color = '#64748B'; } // text-slate-500
                             
                             if (footer) {
                                 footer.style.background = 'rgba(248,250,252,0.8)'; // bg-slate-50/80
