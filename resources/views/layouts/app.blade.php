@@ -159,9 +159,54 @@
 
                     <!-- Notification Bell -->
                     <div class="relative">
-                        <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg" onclick="document.getElementById('notif-dropdown').classList.toggle('hidden')">
+                        <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg relative" onclick="document.getElementById('notif-dropdown').classList.toggle('hidden')">
                             🔔
+                            @if(isset($totalPendientes) && $totalPendientes > 0)
+                                <span class="absolute top-0 right-0 -mt-1 -mr-1 flex h-3 w-3">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                </span>
+                            @endif
                         </button>
+                        
+                        <!-- Notification Dropdown -->
+                        <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-72 glass-card rounded-xl shadow-xl z-50 overflow-hidden">
+                            <div class="p-3 border-b border-gray-200/50 dark:border-gray-700/50 bg-gray-50/50 dark:bg-slate-800/50">
+                                <h3 class="text-xs font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Notificaciones Pendientes</h3>
+                            </div>
+                            <div class="p-2 space-y-1">
+                                @if(isset($totalPendientes) && $totalPendientes > 0)
+                                    @if($mantPendientes > 0)
+                                    <a href="{{ route('mantenimientos.index') }}" class="block px-3 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Mantenimientos</span>
+                                            <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $mantPendientes }}</span>
+                                        </div>
+                                    </a>
+                                    @endif
+                                    @if($elecPendientes > 0)
+                                    <a href="{{ route('electronicas.index') }}" class="block px-3 py-2 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Electrónica</span>
+                                            <span class="bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $elecPendientes }}</span>
+                                        </div>
+                                    </a>
+                                    @endif
+                                    @if($cajaPendientes > 0)
+                                    <a href="{{ route('facturas.index') }}" class="block px-3 py-2 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Saldos Pendientes</span>
+                                            <span class="bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300 py-0.5 px-2 rounded-full text-xs font-bold">{{ $cajaPendientes }}</span>
+                                        </div>
+                                    </a>
+                                    @endif
+                                @else
+                                    <div class="px-3 py-4 text-center">
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">Todo al día, excelente trabajo.</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Theme Toggle -->

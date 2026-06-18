@@ -23,10 +23,9 @@ class AppServiceProvider extends ServiceProvider
             $mantPendientes = \App\Models\Mantenimiento::where('estado', 'pendiente')->count();
             $elecPendientes = \App\Models\Electronica::where('estado', 'pendiente')->count();
             
-            // Movimientos de caja activos donde el monto total sea mayor al monto pagado
-            $cajaPendientes = \App\Models\MovimientoCaja::where('estado', 'activo')
-                                ->whereNotNull('monto_total')
-                                ->whereRaw('monto_total > monto')
+            // Ingresos/Egresos (Facturas) a los que les falta la totalidad del monto
+            $cajaPendientes = \App\Models\Factura::where('estado', '!=', 'anulado')
+                                ->where('saldo_pendiente', '>', 0)
                                 ->count();
             
             $view->with([
