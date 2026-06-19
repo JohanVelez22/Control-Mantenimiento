@@ -26,6 +26,7 @@ class ReporteFinancieroController extends Controller
 
         // — Mantenimientos ingresados ese día
         $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico'])
+            ->where('anulado', false)
             ->whereDate('fecha_entrada', $fecha)
             ->orderBy('id', 'desc')
             ->get()
@@ -45,6 +46,7 @@ class ReporteFinancieroController extends Controller
 
         // — Electrónicas ingresadas ese día
         $electronicas = Electronica::with(['tecnico', 'equipo.cliente'])
+            ->where('anulado', false)
             ->whereDate('fecha_entrada', $fecha)
             ->orderBy('id', 'desc')
             ->get()
@@ -82,6 +84,7 @@ class ReporteFinancieroController extends Controller
 
         // — Movimientos de Caja (ingresos/egresos)
         $caja = MovimientoCaja::with('concepto')
+            ->where('anulado', false)
             ->whereDate('fecha', $fecha)
             ->orderBy('id', 'desc')
             ->get()
@@ -109,11 +112,10 @@ class ReporteFinancieroController extends Controller
             ->values();
 
         $resumen = [
-            'total_ingresos'     => $movimientos->whereIn('tipo', ['ingreso', 'venta'])->where('estado', '!=', 'anulada')->sum('monto'),
-            'total_egresos'      => $movimientos->whereIn('tipo', ['egreso', 'compra'])->where('estado', '!=', 'anulada')->sum('monto'),
-            'total_mantenimientos' => $mantenimientos->where('anulado', false)->sum('monto'),
-            'total_anulados'     => $movimientos->where('anulado', true)->count()
-                                    + $movimientos->where('estado', 'anulada')->count(),
+            'total_ingresos'       => $movimientos->whereIn('tipo', ['ingreso', 'venta'])->sum('monto'),
+            'total_egresos'        => $movimientos->whereIn('tipo', ['egreso', 'compra'])->sum('monto'),
+            'total_mantenimientos' => $mantenimientos->sum('monto'),
+            'total_anulados'       => 0,
         ];
 
         if ($request->get('export') === 'excel') {
@@ -150,6 +152,7 @@ class ReporteFinancieroController extends Controller
 
         // Movimientos de Caja
         $cajaBase = MovimientoCaja::where('estado', 'activo')
+            ->where('anulado', false)
             ->whereBetween('fecha', [$desde, $hasta]);
 
         // Facturas
@@ -183,6 +186,7 @@ class ReporteFinancieroController extends Controller
 
         // — Mantenimientos en el rango
         $mantenimientosList = Mantenimiento::with(['equipo.cliente', 'tecnico'])
+            ->where('anulado', false)
             ->whereBetween('fecha_entrada', [$desde, $hasta])
             ->orderBy('id', 'desc')
             ->get()
@@ -202,6 +206,7 @@ class ReporteFinancieroController extends Controller
 
         // — Electrónicas en el rango
         $electronicasList = Electronica::with(['tecnico', 'equipo.cliente'])
+            ->where('anulado', false)
             ->whereBetween('fecha_entrada', [$desde, $hasta])
             ->orderBy('id', 'desc')
             ->get()
@@ -239,6 +244,7 @@ class ReporteFinancieroController extends Controller
 
         // — Movimientos de Caja en el rango
         $cajaList = MovimientoCaja::with('concepto')
+            ->where('anulado', false)
             ->whereBetween('fecha', [$desde, $hasta])
             ->orderBy('id', 'desc')
             ->get()
@@ -311,12 +317,14 @@ class ReporteFinancieroController extends Controller
                 ->paginate(10),
 
             'solo_ingresos' => MovimientoCaja::with(['concepto', 'user'])
+                ->where('anulado', false)
                 ->where('tipo_movimiento', 'ingreso')
                 ->whereBetween('fecha', [$desde, $hasta])
                 ->orderBy('fecha', 'desc')
                 ->paginate(10),
 
             'solo_egresos' => MovimientoCaja::with(['concepto', 'user'])
+                ->where('anulado', false)
                 ->where('tipo_movimiento', 'egreso')
                 ->whereBetween('fecha', [$desde, $hasta])
                 ->orderBy('fecha', 'desc')
