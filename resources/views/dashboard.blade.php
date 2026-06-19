@@ -173,7 +173,8 @@
  <th class="text-center">Orden</th>
  <th class="text-center">Equipo</th>
  <th class="text-center">Costo</th>
- <th class="text-center">Estado</th>
+ <th class="text-center">Progreso</th>
+ <th class=\"text-center\">Estado</th>
  <th class="text-center">Entrada</th>
  <th class="text-center">Días</th>
  <th class="text-center">Salida</th>
@@ -188,7 +189,7 @@
  : \Carbon\Carbon::now()->startOfDay();
  $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
  @endphp
- <tr>
+ <tr class=\"{{ $m->anulado ? 'opacity-50 line-through' : '' }}\">
  <td class="text-center font-bold whitespace-nowrap">
  <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline no-print-link">
  {{ $m->id_orden }}
@@ -219,6 +220,11 @@
  <td class="text-center">
  <span class="pill {{ $m->estado == 'terminado' ? 'pill-done' : 'pill-pending' }}">
  {{ strtoupper($m->estado) }}
+ </span>
+ </td>
+ <td class=\"text-center\">
+ <span class=\"pill {{ $m->anulado ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800' }}\">
+ {{ $m->anulado ? 'ANULADO' : 'ACTIVO' }}
  </span>
  </td>
 
@@ -260,7 +266,8 @@
  <th class="text-center">Orden</th>
  <th class="text-center">Equipo</th>
  <th class="text-center">Costo</th>
- <th class="text-center">Estado</th>
+ <th class="text-center">Progreso</th>
+ <th class=\"text-center\">Estado</th>
  <th class="text-center">Entrada</th>
  <th class="text-center">Días</th>
  <th class="text-center">Salida</th>
@@ -275,7 +282,7 @@
  : \Carbon\Carbon::now()->startOfDay();
  $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
  @endphp
- <tr>
+ <tr class=\"{{ $e->anulado ? 'opacity-50 line-through' : '' }}\">
  <td class="text-center font-bold whitespace-nowrap">
  <a href="{{ route('electronicas.index', ['locate' => $e->id]) }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline no-print-link">
  {{ $e->id_orden }}
@@ -300,6 +307,11 @@
  <td class="text-center">
  <span class="pill {{ $e->estado == 'terminado' ? 'pill-done' : 'pill-pending' }}">
  {{ strtoupper($e->estado) }}
+ </span>
+ </td>
+ <td class=\"text-center\">
+ <span class=\"pill {{ $e->anulado ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800' }}\">
+ {{ $e->anulado ? 'ANULADO' : 'ACTIVO' }}
  </span>
  </td>
 

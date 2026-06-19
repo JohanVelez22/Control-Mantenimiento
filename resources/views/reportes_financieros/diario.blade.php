@@ -96,13 +96,14 @@
  <tr>
  <th class="p-3 text-center">Tipo</th>
  <th class="p-3 text-left">Descripción</th>
- <th class="p-3 text-center">Estado</th>
+ <th class="p-3 text-center">Progreso</th>
+ <th class=\"p-3 text-center\">Estado</th>
  <th class="p-3 text-center">Monto</th>
  </tr>
  </thead>
  <tbody>
  @foreach($movimientos as $mov)
- <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center">
+ <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center {{ !empty($mov['anulado']) ? 'opacity-50 line-through' : '' }}">
  <td class="p-3">
  <span class="px-2 py-0.5 rounded-lg text-xs font-bold
  bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800
@@ -113,6 +114,11 @@
  <td class="p-3 text-left text-gray-700 dark:text-gray-300">{{ $mov['descripcion'] }}</td>
  <td class="p-3">
  <span class="text-xs font-semibold text-gray-500">{{ ucfirst($mov['estado'] ?? '—') }}</span>
+ </td>
+ <td class=\"p-3\">
+ <span class=\"px-2 py-0.5 rounded-lg text-xs font-bold {{ !empty($mov['anulado']) ? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' }}\">
+ {{ !empty($mov['anulado']) ? 'Anulado' : 'Activo' }}
+ </span>
  </td>
  <td class="p-3 font-bold {{ in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
  ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}

@@ -26,7 +26,6 @@ class ReporteFinancieroController extends Controller
 
         // — Mantenimientos ingresados ese día
         $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico'])
-            ->where('anulado', false)
             ->whereDate('fecha_entrada', $fecha)
             ->orderBy('id', 'desc')
             ->get()
@@ -39,6 +38,7 @@ class ReporteFinancieroController extends Controller
                     'descripcion' => "{$m->id_orden} — {$equipo} ({$cliente})",
                     'monto'       => $m->costo,
                     'estado'      => $m->estado,
+                    'anulado'     => $m->anulado,
                     'icono'       => '🔧',
                     'color'       => 'blue',
                 ];
@@ -46,7 +46,6 @@ class ReporteFinancieroController extends Controller
 
         // — Electrónicas ingresadas ese día
         $electronicas = Electronica::with(['tecnico', 'equipo.cliente'])
-            ->where('anulado', false)
             ->whereDate('fecha_entrada', $fecha)
             ->orderBy('id', 'desc')
             ->get()
@@ -59,6 +58,7 @@ class ReporteFinancieroController extends Controller
                     'descripcion' => "{$e->id_orden} — {$equipo} ({$cliente})",
                     'monto'       => $e->costo,
                     'estado'      => $e->estado,
+                    'anulado'     => $e->anulado,
                     'icono'       => '⚡',
                     'color'       => 'purple',
                 ];
@@ -77,6 +77,7 @@ class ReporteFinancieroController extends Controller
                     'descripcion' => "#{$f->numero_factura} — {$nombre}",
                     'monto'       => $f->total_documento,
                     'estado'      => $f->estado,
+                    'anulado'     => $f->estado === 'anulada',
                     'icono'       => $f->tipo_movimiento === 'compra' ? '📦' : '🛒',
                     'color'       => $f->tipo_movimiento === 'compra' ? 'orange' : 'green',
                 ];
@@ -84,7 +85,6 @@ class ReporteFinancieroController extends Controller
 
         // — Movimientos de Caja (ingresos/egresos)
         $caja = MovimientoCaja::with('concepto')
-            ->where('anulado', false)
             ->whereDate('fecha', $fecha)
             ->orderBy('id', 'desc')
             ->get()
@@ -97,6 +97,7 @@ class ReporteFinancieroController extends Controller
                     'descripcion' => "{$quien} — {$concepto}",
                     'monto'       => $c->monto,
                     'estado'      => $c->estado,
+                    'anulado'     => $c->anulado,
                     'icono'       => $c->tipo_movimiento === 'ingreso' ? '📈' : '📉',
                     'color'       => $c->tipo_movimiento === 'ingreso' ? 'emerald' : 'red',
                 ];
@@ -112,10 +113,10 @@ class ReporteFinancieroController extends Controller
             ->values();
 
         $resumen = [
-            'total_ingresos'       => $movimientos->whereIn('tipo', ['ingreso', 'venta'])->sum('monto'),
-            'total_egresos'        => $movimientos->whereIn('tipo', ['egreso', 'compra'])->sum('monto'),
-            'total_mantenimientos' => $mantenimientos->sum('monto'),
-            'total_anulados'       => 0,
+            'total_ingresos'       => $movimientos->where('anulado', false)->whereIn('tipo', ['ingreso', 'venta'])->sum('monto'),
+            'total_egresos'        => $movimientos->where('anulado', false)->whereIn('tipo', ['egreso', 'compra'])->sum('monto'),
+            'total_mantenimientos' => $mantenimientos->where('anulado', false)->sum('costo'),
+            'total_anulados'       => $movimientos->where('anulado', true)->count(),
         ];
 
         if ($request->get('export') === 'excel') {
@@ -186,7 +187,6 @@ class ReporteFinancieroController extends Controller
 
         // — Mantenimientos en el rango
         $mantenimientosList = Mantenimiento::with(['equipo.cliente', 'tecnico'])
-            ->where('anulado', false)
             ->whereBetween('fecha_entrada', [$desde, $hasta])
             ->orderBy('id', 'desc')
             ->get()
@@ -199,6 +199,7 @@ class ReporteFinancieroController extends Controller
                     'descripcion' => "{$m->id_orden} — {$equipo} ({$cliente})",
                     'monto'       => $m->costo,
                     'estado'      => $m->estado,
+                    'anulado'     => $m->anulado,
                     'icono'       => '🔧',
                     'color'       => 'blue',
                 ];
@@ -206,7 +207,6 @@ class ReporteFinancieroController extends Controller
 
         // — Electrónicas en el rango
         $electronicasList = Electronica::with(['tecnico', 'equipo.cliente'])
-            ->where('anulado', false)
             ->whereBetween('fecha_entrada', [$desde, $hasta])
             ->orderBy('id', 'desc')
             ->get()
@@ -219,6 +219,7 @@ class ReporteFinancieroController extends Controller
                     'descripcion' => "{$e->id_orden} — {$equipo} ({$cliente})",
                     'monto'       => $e->costo,
                     'estado'      => $e->estado,
+                    'anulado'     => $e->anulado,
                     'icono'       => '⚡',
                     'color'       => 'purple',
                 ];
@@ -237,6 +238,7 @@ class ReporteFinancieroController extends Controller
                     'descripcion' => "#{$f->numero_factura} — {$nombre}",
                     'monto'       => $f->total_documento,
                     'estado'      => $f->estado,
+                    'anulado'     => $f->estado === 'anulada',
                     'icono'       => $f->tipo_movimiento === 'compra' ? '📦' : '🛒',
                     'color'       => $f->tipo_movimiento === 'compra' ? 'orange' : 'green',
                 ];
@@ -244,7 +246,6 @@ class ReporteFinancieroController extends Controller
 
         // — Movimientos de Caja en el rango
         $cajaList = MovimientoCaja::with('concepto')
-            ->where('anulado', false)
             ->whereBetween('fecha', [$desde, $hasta])
             ->orderBy('id', 'desc')
             ->get()
@@ -257,6 +258,7 @@ class ReporteFinancieroController extends Controller
                     'descripcion' => "{$quien} — {$concepto}",
                     'monto'       => $c->monto,
                     'estado'      => $c->estado,
+                    'anulado'     => $c->anulado,
                     'icono'       => $c->tipo_movimiento === 'ingreso' ? '📈' : '📉',
                     'color'       => $c->tipo_movimiento === 'ingreso' ? 'emerald' : 'red',
                 ];
