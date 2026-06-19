@@ -17,6 +17,7 @@ class Electronica extends Model
         'tipo',
         'costo',
         'estado',
+        'anulado',
         'fecha_entrada',
         'fecha_salida',
         'tecnico_id',

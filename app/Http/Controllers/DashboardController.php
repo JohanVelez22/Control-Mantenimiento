@@ -19,15 +19,15 @@ class DashboardController extends Controller
     {
         // Métricas rápidas: Conteo total de registros
         $totalEquipos = Equipo::count();
-        $totalMantenimientos = Mantenimiento::count();
+        $totalMantenimientos = Mantenimiento::where('anulado', false)->count();
 
         // Caja: ingresos, egresos y saldo actual del histórico
-        $cajaIngresos = \App\Models\MovimientoCaja::where('estado', 'activo')->where('tipo_movimiento', 'ingreso')->sum('monto');
-        $cajaEgresos = \App\Models\MovimientoCaja::where('estado', 'activo')->where('tipo_movimiento', 'egreso')->sum('monto');
+        $cajaIngresos = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $cajaEgresos = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
         $cajaSaldoActual = $cajaIngresos - $cajaEgresos;
 
         // Caja: ingresos del día (Hoy)
-        $cajaIngresosDia = \App\Models\MovimientoCaja::where('estado', 'activo')
+        $cajaIngresosDia = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)
             ->where('tipo_movimiento', 'ingreso')
             ->whereDate('fecha', Carbon::today())
             ->sum('monto');
@@ -44,12 +44,12 @@ class DashboardController extends Controller
 
         // Estados Mantenimientos
         $stats = [
-            'pendientes' => Mantenimiento::where('estado', 'pendiente')->count(),
-            'en_proceso' => Mantenimiento::where('estado', 'en_proceso')->count(),
-            'reparados'  => Mantenimiento::where('estado', 'reparado')->count(),
-            'terminados' => Mantenimiento::whereIn('estado', ['terminado', 'entregado'])->count(),
+            'pendientes' => Mantenimiento::where('anulado', false)->where('estado', 'pendiente')->count(),
+            'en_proceso' => Mantenimiento::where('anulado', false)->where('estado', 'en_proceso')->count(),
+            'reparados'  => Mantenimiento::where('anulado', false)->where('estado', 'reparado')->count(),
+            'terminados' => Mantenimiento::where('anulado', false)->whereIn('estado', ['terminado', 'entregado'])->count(),
             'stock_bajo' => \App\Models\Stock::where('cantidad', '<=', 5)->count(),
-            'electronica_pendientes' => \App\Models\Electronica::where('estado', 'pendiente')->count(),
+            'electronica_pendientes' => \App\Models\Electronica::where('anulado', false)->where('estado', 'pendiente')->count(),
         ];
 
         // --- Gráficos de los últimos 7 días: 3 queries agrupadas en lugar de 28 ---
@@ -63,13 +63,13 @@ class DashboardController extends Controller
             ->pluck('total', 'fecha');
 
         // 1 query: mantenimientos por día de entrada
-        $mantPorDia = Mantenimiento::whereBetween('fecha_entrada', [$startDate, $endDate])
+        $mantPorDia = Mantenimiento::where('anulado', false)->whereBetween('fecha_entrada', [$startDate, $endDate])
             ->selectRaw('DATE(fecha_entrada) as fecha, COUNT(*) as total')
             ->groupBy('fecha')
             ->pluck('total', 'fecha');
 
         // 1 query: ingresos por caja (ingresos - egresos) de los últimos 7 días
-        $cajaMovs = \App\Models\MovimientoCaja::where('estado', 'activo')
+        $cajaMovs = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)
             ->whereBetween('fecha', [$startDate, $endDate])
             ->selectRaw("DATE(fecha) as fecha, tipo_movimiento, SUM(monto) as total")
             ->groupBy('fecha', 'tipo_movimiento')
@@ -83,7 +83,7 @@ class DashboardController extends Controller
         $dataIngresosAcumulados = [];
 
         // Para el acumulado debemos partir del saldo histórico ANTES de los 7 días
-        $saldoAnterior = \App\Models\MovimientoCaja::where('estado', 'activo')
+        $saldoAnterior = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)
             ->where('fecha', '<', $startDate)
             ->selectRaw("SUM(CASE WHEN tipo_movimiento='ingreso' THEN monto ELSE -monto END) as saldo")
             ->value('saldo') ?? 0;
@@ -107,10 +107,10 @@ class DashboardController extends Controller
         }
 
         // Estadísticas de Electrónica para el slide del dashboard
-        $electronicaPendientes  = Electronica::where('estado', 'pendiente')->count();
-        $electronicaTerminados  = Electronica::where('estado', 'terminado')->count();
-        $electronicaCorrectivos = Electronica::where('tipo', 'correctivo')->count();
-        $electronicaPreventivos = Electronica::where('tipo', 'preventivo')->count();
+        $electronicaPendientes  = Electronica::where('anulado', false)->where('estado', 'pendiente')->count();
+        $electronicaTerminados  = Electronica::where('anulado', false)->where('estado', 'terminado')->count();
+        $electronicaCorrectivos = Electronica::where('anulado', false)->where('tipo', 'correctivo')->count();
+        $electronicaPreventivos = Electronica::where('anulado', false)->where('tipo', 'preventivo')->count();
         // 5 más recientes (cualquier estado) para la tabla del dashboard
         $recentElec = Electronica::with(['tecnico', 'equipo.cliente'])
             ->orderBy('id', 'desc')

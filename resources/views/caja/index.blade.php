@@ -108,13 +108,9 @@
  {{ $m->concepto->nombre }}
  </td>
  <td data-label="Tipo:" class="text-center">
- @if($m->anulado)
- <span class="pill pill-anulado" title="Anulado">🚫 Anulado</span>
- @else
  <span class="pill {{ $m->tipo_movimiento === 'ingreso' ? 'pill-done' : 'pill-egreso' }}">
  {{ $m->tipo_movimiento === 'ingreso' ? '📈 Ingreso' : '📉 Egreso' }}
  </span>
- @endif
  </td>
  <td data-label="Pago:" class="text-center">
  <span class="pill {{ $m->tipo_pago === 'efectivo' ? 'pill-efectivo' : 'pill-banco' }}">

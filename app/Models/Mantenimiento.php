@@ -17,6 +17,7 @@ class Mantenimiento extends Model
         'descripcion',
         'costo',
         'estado',
+        'anulado',
         'equipo_id',
         'tecnico_id',
         'user_id'

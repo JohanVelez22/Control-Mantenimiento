@@ -18,6 +18,7 @@ class ReporteController extends Controller
         // --- INFORME DETALLADO ---
         $queryDetallado = MovimientoCaja::with(['concepto', 'user'])
             ->where('estado', 'activo')
+            ->where('anulado', false)
             ->orderBy('fecha', 'desc')
             ->orderBy('id', 'desc');
 
@@ -36,6 +37,7 @@ class ReporteController extends Controller
 
         // --- INFORME ACUMULADO (MES ACTUAL O FILTRADO) ---
         $acumuladoQuery = MovimientoCaja::where('estado', 'activo')
+            ->where('anulado', false)
             ->whereMonth('fecha', $mes)
             ->whereYear('fecha', $anio);
 
@@ -44,12 +46,12 @@ class ReporteController extends Controller
         $saldo_mes = $ingresos_mes - $egresos_mes;
 
         // Facturación Total (Mantenimientos + Electrónica) - Lo que se ha cobrado o se debe cobrar
-        $facturado_mantenimientos = Mantenimiento::where('estado', '!=', 'anulado')
+        $facturado_mantenimientos = Mantenimiento::where('anulado', false)
             ->whereMonth('fecha_entrada', $mes)
             ->whereYear('fecha_entrada', $anio)
             ->sum('costo');
 
-        $facturado_electronica = \App\Models\Electronica::where('estado', '!=', 'anulado')
+        $facturado_electronica = \App\Models\Electronica::where('anulado', false)
             ->whereMonth('fecha_entrada', $mes)
             ->whereYear('fecha_entrada', $anio)
             ->sum('costo');

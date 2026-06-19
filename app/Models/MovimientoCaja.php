@@ -17,6 +17,7 @@ class MovimientoCaja extends Model
         'monto_total',
         'descripcion',
         'estado',
+        'anulado',
         'user_id',
     ];
 

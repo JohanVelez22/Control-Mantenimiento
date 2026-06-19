@@ -20,13 +20,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Support\Facades\View::composer('layouts.app', function ($view) {
-            $mantList = \App\Models\Mantenimiento::where('estado', 'pendiente')
+            $mantList = \App\Models\Mantenimiento::where('anulado', false)
+                            ->where('estado', 'pendiente')
                             ->select('id', 'id_orden', 'equipo_id', 'estado')
                             ->with('equipo.cliente:id,nombre')
                             ->latest()
                             ->get();
 
-            $elecList = \App\Models\Electronica::where('estado', 'pendiente')
+            $elecList = \App\Models\Electronica::where('anulado', false)
+                            ->where('estado', 'pendiente')
                             ->select('id', 'id_orden', 'equipo_id', 'estado')
                             ->with('equipo.cliente:id,nombre')
                             ->latest()
@@ -39,7 +41,8 @@ class AppServiceProvider extends ServiceProvider
                             ->latest()
                             ->get();
 
-            $movimientosPendientes = \App\Models\MovimientoCaja::whereRaw('monto_total > monto')
+            $movimientosPendientes = \App\Models\MovimientoCaja::where('anulado', false)
+                            ->whereRaw('monto_total > monto')
                             ->with('concepto')
                             ->latest()
                             ->get();

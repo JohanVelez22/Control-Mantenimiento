@@ -102,9 +102,6 @@
  </td>
  
  <td class="text-center">
- @if($m->anulado)
- <span class="pill pill-anulado" title="Anulado">🚫 Anulado</span>
- @else
  @php
  $estadoIcon = '⏳';
  if(in_array($m->estado, ['terminado', 'entregado'])) $estadoIcon = '✅';
@@ -114,7 +111,6 @@
  <span class="pill {{ in_array($m->estado, ['terminado', 'entregado']) ? 'pill-done' : 'pill-pending' }}">
  {{ $estadoIcon }} {{ ucfirst($m->estado) }}
  </span>
- @endif
  </td>
  
  <td class="text-center text-slate-800 dark:text-slate-200">
