@@ -208,7 +208,7 @@
 
  <td class="text-center">
  <div class="flex flex-col items-center gap-1">
- <span class="font-bold text-blue-600 dark:text-blue-400">${{ number_format($m->costo, 0, ',', '.') }}</span>
+ <span class="font-bold text-gray-900 dark:text-white">${{ number_format($m->costo, 0, ',', '.') }}</span>
  @if($m->total_abonado > 0)
  <span class="text-[11px] font-semibold text-green-600">Abonado: ${{ number_format($m->total_abonado, 0, ',', '.') }}</span>
  <span class="text-[11px] font-semibold text-red-500">Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }}</span>
@@ -293,7 +293,7 @@
  </a>
  </td>
 
- <td class="text-center font-bold text-purple-600 dark:text-purple-400">
+ <td class="text-center font-bold text-gray-900 dark:text-white">
  ${{ number_format($e->costo, 0, ',', '.') }}
  </td>
 

@@ -62,10 +62,10 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('equipos',     EquipoController::class);
     Route::resource('tecnicos',    TecnicoController::class);
     Route::resource('stocks',      App\Http\Controllers\StockController::class);
-    Route::resource('electronicas',App\Http\Controllers\ElectronicaController::class);
+    Route::resource('electronicas',App\Http\Controllers\ElectronicaController::class)->except(['destroy']);
     Route::get('electronicas/{electronica}/factura', [App\Http\Controllers\ElectronicaController::class, 'factura'])->name('electronicas.factura');
     Route::post('electronicas/{electronica}/anular', [App\Http\Controllers\ElectronicaController::class, 'anular'])->name('electronicas.anular');
-    Route::resource('mantenimientos', MantenimientoController::class);
+    Route::resource('mantenimientos', MantenimientoController::class)->except(['destroy']);
 
     // ─── Proveedores ──────────────────────────────────────────────────
     Route::resource('proveedores', App\Http\Controllers\ProveedorController::class)->parameters(['proveedores' => 'proveedor']);
@@ -91,7 +91,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     });
 
     // ─── Caja ─────────────────────────────────────────────────────────
-    Route::resource('caja', App\Http\Controllers\MovimientoCajaController::class)->except(['show'])->parameters([
+    Route::resource('caja', App\Http\Controllers\MovimientoCajaController::class)->except(['show', 'destroy'])->parameters([
         'caja' => 'movimiento'
     ]);
     Route::get( 'caja/{movimiento}/print',     [App\Http\Controllers\MovimientoCajaController::class, 'print'])->name('caja.print');

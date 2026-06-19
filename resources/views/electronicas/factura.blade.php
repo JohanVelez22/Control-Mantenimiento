@@ -2,7 +2,7 @@
 
 @section('title', 'Factura ' . $electronica->id_orden)
 
-@section('watermark_class', $electronica->estado === 'anulado' ? 'anulado' : '')
+@section('watermark_class', $electronica->anulado ? 'anulado' : '')
 
 @section('doc_title', 'ORDEN DE ELECTRÓNICA - ' . $electronica->id_orden)
 

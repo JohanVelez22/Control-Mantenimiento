@@ -10,7 +10,7 @@ class MantenimientoStockController extends Controller
 {
     public function store(Request $request, Mantenimiento $mantenimiento)
     {
-        if ($mantenimiento->estado === 'anulado') {
+        if ($mantenimiento->anulado) {
             return redirect()->back()->with('error', 'No se pueden añadir repuestos a un mantenimiento anulado.');
         }
 
@@ -50,7 +50,7 @@ class MantenimientoStockController extends Controller
 
     public function destroy(Mantenimiento $mantenimiento, $stock_id)
     {
-        if ($mantenimiento->estado === 'anulado') {
+        if ($mantenimiento->anulado) {
             return redirect()->back()->with('error', 'No se pueden eliminar repuestos de un mantenimiento anulado.');
         }
 

@@ -127,16 +127,6 @@ class ElectronicaController extends Controller
                          ->with('success', 'Registro electrónico actualizado correctamente.');
     }
 
-    public function destroy(Electronica $electronica)
-    {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('electronicas.index')->with('error', 'Solo el administrador puede eliminar.');
-        }
-        $electronica->delete();
-        return redirect()->route('electronicas.index')
-                         ->with('success', 'Registro electrónico eliminado.');
-    }
-
     public function anular(Request $request, Electronica $electronica)
     {
         if (auth()->user()->role === 'invitado') {
@@ -155,7 +145,26 @@ class ElectronicaController extends Controller
 
         try {
             \Illuminate\Support\Facades\DB::beginTransaction();
-            $electronica->update(['estado' => 'anulado']);
+            $electronica->update(['anulado' => true]);
+
+            // Revertir stock
+            foreach ($electronica->stocks as $stock) {
+                \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
+            }
+
+            // Revertir abonos en Caja
+            $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
+            if ($concepto && $electronica->abonos->count() > 0) {
+                foreach ($electronica->abonos as $abono) {
+                    \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
+                        ->where('monto', $abono->monto)
+                        ->where('fecha', $abono->fecha->toDateString())
+                        ->where('descripcion', 'like', "%Orden " . $electronica->id_orden . "%")
+                        ->where('estado', 'activo')
+                        ->update(['anulado' => true]);
+                }
+            }
+
             \Illuminate\Support\Facades\DB::commit();
             return redirect()->back()->with('success', 'Registro electrónico anulado correctamente.');
         } catch (\Exception $e) {

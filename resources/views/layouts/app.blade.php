@@ -619,6 +619,33 @@
         </div>
     </div>
 
+    <!-- MODAL GLOBAL DE ANULACIÓN (fuera del main-wrapper para centrado correcto) -->
+    <div id="global-anular-modal" class="ts-modal-overlay hidden opacity-0">
+        <div class="ts-modal-card scale-95 opacity-0" id="global-anular-card">
+            <div class="p-6">
+                <div class="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4">
+                    🚫
+                </div>
+                <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Anulación</h3>
+                <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+                    Ingresa tu contraseña para anular este registro. Se mantendrá el historial pero no afectará saldos.
+                </p>
+                <form id="global-anular-form" method="POST" class="space-y-4">
+                    @csrf
+                    <div>
+                        <input type="password" name="password_confirm" id="global-anular-input" required
+                            placeholder="Contraseña..." 
+                            class="glass-input text-center tracking-widest text-lg focus:ring-orange-500">
+                    </div>
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="closeAnularModal()" class="flex-1 btn-ghost justify-center">Cancelar</button>
+                        <button type="submit" class="flex-1 btn-danger justify-center">🚫 Anular</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPTS CORE -->
     <script>
         // ─── TEMA CLARO/OSCURO ──────────────────────────────────────────
@@ -702,6 +729,34 @@
                 _pendingForm = null;
             }, 300);
         }
+
+        // ─── MODAL GLOBAL DE ANULACIÓN ───────────────────────────────────
+        function openAnularModal(actionUrl) {
+            const modal = document.getElementById('global-anular-modal');
+            const card  = document.getElementById('global-anular-card');
+            const form  = document.getElementById('global-anular-form');
+            const input = document.getElementById('global-anular-input');
+            form.action  = actionUrl;
+            input.value  = '';
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95', 'opacity-0');
+                input.focus();
+            }, 10);
+        }
+
+        function closeAnularModal() {
+            const modal = document.getElementById('global-anular-modal');
+            const card  = document.getElementById('global-anular-card');
+            modal.classList.add('opacity-0');
+            card.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeAnularModal();
+        });
 
         document.getElementById('ts-modal-confirm')?.addEventListener('click', () => {
             if (_pendingForm) {

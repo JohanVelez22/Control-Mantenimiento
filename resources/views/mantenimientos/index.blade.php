@@ -12,31 +12,6 @@
  }
 </style>
 
-{{-- Modal de contraseña para anular --}}
-<div id="pwd-anular-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
- <div class="ts-modal-card scale-95 opacity-0" id="pwd-anular-card">
- <div class="p-6">
- <div class="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4">
- 🚫
- </div>
- <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Anulación</h3>
- <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
- Ingresa tu contraseña para anular esta orden. Se mantendrá el historial pero se marcará como anulada.
- </p>
- <form id="anular-pwd-form" method="POST" class="space-y-4">
- @csrf
- <div>
- <input type="password" name="password_confirm" id="pwd-anular-input" required placeholder="Contraseña..." class="glass-input text-center tracking-widest text-lg focus:ring-orange-500">
- </div>
- <div class="flex gap-3 pt-2">
- <button type="button" onclick="closeAnularModal()" class="flex-1 btn-ghost justify-center">Cancelar</button>
- <button type="submit" class="flex-1 text-center justify-center font-bold text-white py-2.5 rounded-xl transition-all">Anular Orden</button>
- </div>
- </form>
- </div>
- </div>
-</div>
-
 <div class="glass-card p-6">
  <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
  <div>
@@ -77,7 +52,7 @@
  </thead>
  <tbody>
  @forelse($mantenimientos as $m)
- <tr id="mantenimiento-{{ $m->id }}" class="{{ $m->estado === 'anulado' ? 'row-anulado' : '' }}">
+ <tr id="mantenimiento-{{ $m->id }}" class="{{ $m->anulado ? 'row-anulado' : '' }}">
  <td data-label="Orden:" class="font-bold text-center whitespace-nowrap">
  <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
  {{ $m->id_orden }}
@@ -127,7 +102,7 @@
  </td>
  
  <td class="text-center">
- @if($m->estado === 'anulado')
+ @if($m->anulado)
  <span class="pill pill-anulado" title="Anulado">🚫 Anulado</span>
  @else
  @php
@@ -171,15 +146,8 @@
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('mantenimientos.edit', $m->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
 
- @if($m->estado !== 'anulado')
+ @if(!$m->anulado)
  <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs text-orange-600 border-orange-500/20 hover:bg-orange-500/10" title="Anular orden">🚫</button>
- @endif
-
- @if(auth()->user()->isAdmin())
- <form action="{{ route('mantenimientos.destroy', $m->id) }}" method="POST" class="inline" data-confirm-delete="¿Eliminar definitivamente la orden '{{ $m->id_orden }}'?">
- @csrf @method('DELETE')
- <button class="btn-danger px-2.5 py-1.5 text-xs" title="Eliminar">🗑️</button>
- </form>
  @endif
  @endif
  </div>
@@ -215,26 +183,7 @@
  filterTable('search-mantenimientos', 'tabla-mantenimientos');
  }
  });
-
- function openAnularModal(actionUrl) {
- const modal = document.getElementById('pwd-anular-modal');
- const card = document.getElementById('pwd-anular-card');
- document.getElementById('anular-pwd-form').action = actionUrl;
- document.getElementById('pwd-anular-input').value = '';
- modal.classList.remove('hidden');
- setTimeout(() => {
- modal.classList.remove('opacity-0');
- card.classList.remove('scale-95', 'opacity-0');
- document.getElementById('pwd-anular-input').focus();
- }, 10);
- }
- 
- function closeAnularModal() {
- const modal = document.getElementById('pwd-anular-modal');
- const card = document.getElementById('pwd-anular-card');
- modal.classList.add('opacity-0');
- card.classList.add('scale-95', 'opacity-0');
- setTimeout(() => modal.classList.add('hidden'), 300);
+, 300);
  }
  
  document.addEventListener('keydown', e => { 

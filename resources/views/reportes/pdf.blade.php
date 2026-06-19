@@ -94,7 +94,7 @@
  </thead>
  <tbody>
  @foreach($transaccionesParaExportar as $tx)
- @if($tx->estado === 'anulado')
+ @if($tx->anulado)
  <div class="watermark">ANULADO</div>
  @endif
  <tr>

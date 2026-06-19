@@ -111,8 +111,8 @@ class ReporteFinancieroController extends Controller
         $resumen = [
             'total_ingresos'     => $movimientos->whereIn('tipo', ['ingreso', 'venta'])->where('estado', '!=', 'anulada')->sum('monto'),
             'total_egresos'      => $movimientos->whereIn('tipo', ['egreso', 'compra'])->where('estado', '!=', 'anulada')->sum('monto'),
-            'total_mantenimientos' => $mantenimientos->where('estado', '!=', 'anulado')->sum('monto'),
-            'total_anulados'     => $movimientos->where('estado', 'anulado')->count()
+            'total_mantenimientos' => $mantenimientos->where('anulado', false)->sum('monto'),
+            'total_anulados'     => $movimientos->where('anulado', true)->count()
                                     + $movimientos->where('estado', 'anulada')->count(),
         ];
 
@@ -142,11 +142,11 @@ class ReporteFinancieroController extends Controller
 
         // Mantenimientos
         $mantenimientosQuery = Mantenimiento::whereBetween('fecha_entrada', [$desde, $hasta])
-            ->where('estado', '!=', 'anulado');
+            ->where('anulado', false);
 
         // Electrónicas
         $electronicasQuery = Electronica::whereBetween('fecha_entrada', [$desde, $hasta])
-            ->where('estado', '!=', 'anulado');
+            ->where('anulado', false);
 
         // Movimientos de Caja
         $cajaBase = MovimientoCaja::where('estado', 'activo')
@@ -279,7 +279,7 @@ class ReporteFinancieroController extends Controller
                     'total_ingresos' => $acumulado['ingresos_caja'],
                     'total_egresos' => $acumulado['egresos_caja'],
                     'total_mantenimientos' => $acumulado['facturado_mant'],
-                    'total_anulados' => $movimientos->whereIn('estado', ['anulado', 'anulada'])->count(),
+                    'total_anulados' => $movimientos->where('anulado', true)->count(),
                 ],
                 'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')}"
             ]);
@@ -410,7 +410,7 @@ class ReporteFinancieroController extends Controller
                             'total_ingresos' => $tipo === 'solo_ingresos' ? $movimientosMapped->sum('monto') : 0,
                             'total_egresos' => $tipo === 'solo_egresos' ? $movimientosMapped->sum('monto') : 0,
                             'total_mantenimientos' => 0,
-                            'total_anulados' => $movimientosMapped->whereIn('estado', ['anulado', 'anulada'])->count(),
+                            'total_anulados' => $movimientosMapped->where('anulado', true)->count(),
                         ],
                         'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')} ({$tipoLabels[$tipo]})"
                     ]);

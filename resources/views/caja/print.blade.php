@@ -2,7 +2,7 @@
 
 @section('title', 'Comprobante de Caja ' . str_pad($movimiento->id, 5, '0', STR_PAD_LEFT))
 
-@section('watermark_class', $movimiento->estado === 'anulado' ? 'anulado' : '')
+@section('watermark_class', $movimiento->anulado ? 'anulado' : '')
 
 @section('doc_title')
     COMPROBANTE DE {{ strtoupper($movimiento->tipo_movimiento) }} A CAJA - #{{ str_pad($movimiento->id, 5, '0', STR_PAD_LEFT) }}

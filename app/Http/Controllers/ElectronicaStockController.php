@@ -10,7 +10,7 @@ class ElectronicaStockController extends Controller
 {
     public function store(Request $request, Electronica $electronica)
     {
-        if ($electronica->estado === 'anulado') {
+        if ($electronica->anulado) {
             return redirect()->back()->with('error', 'No se pueden añadir repuestos a un registro anulado.');
         }
 
@@ -48,7 +48,7 @@ class ElectronicaStockController extends Controller
 
     public function destroy(Electronica $electronica, $stock_id)
     {
-        if ($electronica->estado === 'anulado') {
+        if ($electronica->anulado) {
             return redirect()->back()->with('error', 'No se pueden eliminar repuestos de un registro anulado.');
         }
 

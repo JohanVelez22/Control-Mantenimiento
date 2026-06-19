@@ -10,7 +10,7 @@
  <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
  <span class="text-blue-500">📋</span>
  {{ $mantenimiento->id_orden }}
- @if($mantenimiento->estado === 'anulado')
+ @if($mantenimiento->anulado)
  <span class="pill pill-anulado text-sm py-1 px-3 ml-2">🚫 Anulado</span>
  @else
  <span class="pill {{ $mantenimiento->estado === 'terminado' ? 'pill-done' : 'pill-pending' }} text-sm py-1 px-3 ml-2">
@@ -94,7 +94,7 @@
  <div class="glass-card p-6 md:p-8">
  <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2 mb-6">📦 Repuestos / Insumos Utilizados</h3>
 
- @if(!auth()->user()->isInvitado() && $mantenimiento->estado !== 'anulado')
+ @if(!auth()->user()->isInvitado() && !$mantenimiento->anulado)
  <form action="{{ route('mantenimientos.stocks.store', $mantenimiento) }}" method="POST" class="p-4 bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-500/20 rounded-2xl mb-6">
  @csrf
  <h4 class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-3">Añadir repuesto al mantenimiento</h4>
@@ -119,7 +119,7 @@
  </div>
  </div>
  </form>
- @elseif($mantenimiento->estado === 'anulado')
+ @elseif($mantenimiento->anulado)
  <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-xl p-4 mb-6">
  <p class="text-sm font-bold text-red-600 dark:text-red-400 flex items-center justify-center gap-2"><span>🚫</span> No se pueden agregar repuestos a una orden anulada.</p>
  </div>
@@ -153,7 +153,7 @@
  <p class="font-black text-blue-600 dark:text-cyan-400">${{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</p>
  </div>
  
- @if(auth()->user()->role === 'admin' && $mantenimiento->estado !== 'anulado')
+ @if(auth()->user()->role === 'admin' && !$mantenimiento->anulado)
  <form action="{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}" method="POST" class="inline-block"
  onsubmit="return confirm('¿Seguro que deseas eliminar este repuesto? Se descontará del costo de la orden y volverá al inventario.');">
  @csrf @method('DELETE')
@@ -174,7 +174,7 @@
  <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2 mb-6">💳 Abonos / Pagos Parciales</h3>
 
  {{-- Formulario nuevo abono --}}
- @if(!auth()->user()->isInvitado() && $mantenimiento->estado !== 'anulado')
+ @if(!auth()->user()->isInvitado() && !$mantenimiento->anulado)
  <form action="{{ route('abonos.store', $mantenimiento) }}" method="POST" class="p-4 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl mb-6 space-y-4">
  @csrf
  <h4 class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Registrar nuevo abono</h4>
@@ -204,7 +204,7 @@
  ➕ Registrar Abono
  </button>
  </form>
- @elseif($mantenimiento->estado === 'anulado')
+ @elseif($mantenimiento->anulado)
  <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-xl p-4 mb-6">
  <p class="text-sm font-bold text-red-600 dark:text-red-400 flex items-center justify-center gap-2"><span>🚫</span> No se pueden agregar abonos a una orden anulada.</p>
  </div>

@@ -2,7 +2,7 @@
 
 @section('title', 'Factura ' . $mantenimiento->id_orden)
 
-@section('watermark_class', $mantenimiento->estado === 'anulado' ? 'anulado' : '')
+@section('watermark_class', $mantenimiento->anulado ? 'anulado' : '')
 
 @section('doc_title', 'ORDEN DE SERVICIO TÉCNICO - ' . $mantenimiento->id_orden)
 

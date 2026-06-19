@@ -187,40 +187,7 @@ class MovimientoCajaController extends Controller
         }
     }
 
-    /**
-     * Eliminar — requiere contraseña del usuario autenticado o del admin.
-     */
-    public function destroy(Request $request, MovimientoCaja $movimiento)
-    {
-        $request->validate([
-            'password_confirm' => 'required|string',
-        ]);
 
-        $currentUser = auth()->user();
-
-        // Verificar contra la contraseña del usuario actual O de cualquier admin activo
-        $passwordOk = Hash::check($request->password_confirm, $currentUser->password);
-        if (!$passwordOk) {
-            $adminOk = User::where('role', 'admin')->where('active', true)->get()
-                ->contains(fn($a) => Hash::check($request->password_confirm, $a->password));
-            $passwordOk = $adminOk;
-        }
-
-        if (!$passwordOk) {
-            return back()->with('error', 'Contraseña incorrecta. No se eliminó el registro.');
-        }
-
-        try {
-            DB::beginTransaction();
-            $movimiento->delete();
-            DB::commit();
-            return redirect()->route('caja.index')->with('success', 'Movimiento eliminado correctamente.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error eliminando movimiento de caja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al eliminar el movimiento de caja.');
-        }
-    }
 
     /**
      * Vista de impresión de un movimiento.
@@ -276,7 +243,7 @@ class MovimientoCajaController extends Controller
 
         try {
             DB::beginTransaction();
-            $movimiento->update(['estado' => 'anulado']);
+            $movimiento->update(['anulado' => true]);
             DB::commit();
             return redirect()->back()->with('success', 'Movimiento anulado correctamente.');
         } catch (\Exception $e) {

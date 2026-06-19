@@ -1,12 +1,12 @@
-/* ═══════════════════════════════════════════════════════════════════
-   TECNI SYSTEMAS — LIQUID GLASS DESIGN SYSTEM
-   Paleta: Azul Eléctrico #2563EB, Azul Oscuro #0F172A, Blanco #FFFFFF
-   ═══════════════════════════════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   TECNI SYSTEMAS â€” LIQUID GLASS DESIGN SYSTEM
+   Paleta: Azul ElÃ©ctrico #2563EB, Azul Oscuro #0F172A, Blanco #FFFFFF
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ─── Google Font: Inter ─────────────────────────────────────────── */
+/* â”€â”€â”€ Google Font: Inter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-/* ─── Design Tokens ──────────────────────────────────────────────── */
+/* â”€â”€â”€ Design Tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root {
   --ts-blue:        #2563EB;
   --ts-blue-dark:   #1D4ED8;
@@ -43,16 +43,16 @@
   --font-display: 'Orbitron', sans-serif;
 }
 
-/* ─── Typography Classes ─────────────────────────────────────────── */
+/* â”€â”€â”€ Typography Classes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .font-logo { font-family: var(--font-logo) !important; }
 .font-display { font-family: var(--font-display) !important; }
 
-/* ─── Base Reset ─────────────────────────────────────────────────── */
+/* â”€â”€â”€ Base Reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; scroll-behavior: smooth; }
 body { min-height: 100vh; font-size: 14px; line-height: 1.6; }
 
-/* ─── Background Mesh Gradient ───────────────────────────────────── */
+/* â”€â”€â”€ Background Mesh Gradient â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .ts-bg {
   background-color: #EFF6FF;
   background-image:
@@ -70,7 +70,7 @@ html.dark .ts-bg {
     radial-gradient(ellipse at 60% 20%, rgba(99,102,241,0.08) 0%, transparent 45%);
 }
 
-/* ─── Glass Panel ────────────────────────────────────────────────── */
+/* â”€â”€â”€ Glass Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .glass {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -85,7 +85,7 @@ html.dark .glass {
   box-shadow: var(--glass-dark-shadow);
 }
 
-/* ─── Glass Card (rounded) ───────────────────────────────────────── */
+/* â”€â”€â”€ Glass Card (rounded) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .glass-card {
   background: rgba(255,255,255,0.50);
   border: 1px solid rgba(255,255,255,0.55);
@@ -102,7 +102,7 @@ html.dark .glass-card {
   box-shadow: 0 4px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
-/* ─── Liquid Glass Sidebar ───────────────────────────────────────── */
+/* â”€â”€â”€ Liquid Glass Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #ts-sidebar {
   width: var(--sidebar-w);
   background: rgba(255,255,255,0.55);
@@ -148,7 +148,7 @@ html.dark #ts-sidebar {
   transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
 }
 
-/* ─── Sidebar Nav Items ───────────────────────────────────────────── */
+/* â”€â”€â”€ Sidebar Nav Items â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .brand-text {
   display: flex;
   align-items: center;
@@ -303,7 +303,7 @@ html.dark .nav-group-label { color: #475569; }
   50%       { box-shadow: 0 2px 14px rgba(239,68,68,0.70); }
 }
 
-/* ─── Topbar ─────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Topbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #ts-topbar {
   background: rgba(255,255,255,0.60);
   border-bottom: 1px solid rgba(255,255,255,0.50);
@@ -320,7 +320,7 @@ html.dark #ts-topbar {
   box-shadow: 0 1px 12px rgba(0,0,0,0.30);
 }
 
-/* ─── Liquid Glass Button (Primary) ──────────────────────────────── */
+/* â”€â”€â”€ Liquid Glass Button (Primary) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -390,7 +390,7 @@ html.dark #ts-topbar {
 }
 .btn-clean:active { transform: translateY(0); }
 
-/* Large submit button for forms — same gradient, bigger size */
+/* Large submit button for forms â€” same gradient, bigger size */
 .btn-save {
   display: inline-flex;
   align-items: center;
@@ -426,7 +426,7 @@ html.dark #ts-topbar {
 }
 .btn-save:active { transform: translateY(0); }
 
-/* Large cancel button for forms — pink/magenta gradient */
+/* Large cancel button for forms â€” pink/magenta gradient */
 .btn-cancel {
   display: inline-flex;
   align-items: center;
@@ -640,7 +640,7 @@ html.dark #ts-topbar {
   color: white !important;
 }
 .btn-pdf:active { transform: translateY(0); }
-/* ─── Ghost / Secondary Buttons ─────────────────────────────────── */
+/* â”€â”€â”€ Ghost / Secondary Buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .btn-ghost {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 14px; font-weight: 600; font-size: 13px;
@@ -661,7 +661,7 @@ html.dark .btn-ghost:hover { background: rgba(37,99,235,0.18); color: #93C5FD; }
 }
 .btn-danger:hover { background: rgba(220,38,38,0.15); }
 
-/* ─── Glass Input ────────────────────────────────────────────────── */
+/* â”€â”€â”€ Glass Input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .glass-input {
   width: 100%;
   padding: 10px 14px;
@@ -698,7 +698,7 @@ html.dark .glass-input:focus {
 .glass-input::placeholder { color: #94A3B8; }
 .glass-input.border-red-500 { border-color: #EF4444 !important; box-shadow: 0 0 0 3px rgba(239,68,68,0.12) !important; }
 
-/* ─── Select & Date Pickers Customization ────────────────────────── */
+/* â”€â”€â”€ Select & Date Pickers Customization â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 select.glass-input option {
   background-color: #ffffff;
   color: #0F172A;
@@ -725,7 +725,7 @@ html.dark input[type="datetime-local"].glass-input::-webkit-calendar-picker-indi
   opacity: 0.8;
 }
 
-/* ─── Glass Label ────────────────────────────────────────────────── */
+/* â”€â”€â”€ Glass Label â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .field-label {
   display: block;
   font-size: 12px;
@@ -737,7 +737,7 @@ html.dark input[type="datetime-local"].glass-input::-webkit-calendar-picker-indi
 html.dark .field-label { color: #CBD5E1; }
 
 
-/* ─── Data Table ─────────────────────────────────────────────────── */
+/* â”€â”€â”€ Data Table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .ts-table { 
   width: 100%; 
   border-collapse: separate; 
@@ -791,7 +791,7 @@ html.dark .ts-table tbody tr:hover {
   box-shadow: inset 3px 0 0 #60A5FA;
 }
 
-/* Hover variante púrpura para tablas de electrónica */
+/* Hover variante pÃºrpura para tablas de electrÃ³nica */
 .ts-table.table-electronica tbody tr:hover {
   background: rgba(168, 85, 247, 0.12) !important;
   box-shadow: inset 3px 0 0 #9333EA;
@@ -822,7 +822,7 @@ html.dark .ts-table tbody td {
 .ts-table tbody tr.row-anulado { opacity: 0.50; }
 .ts-table tbody tr.row-anulado td { text-decoration: line-through; color: #94A3B8; }
 
-/* ─── Status Pills ───────────────────────────────────────────────── */
+/* â”€â”€â”€ Status Pills â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pill {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 3px 10px; border-radius: 20px;
@@ -851,7 +851,7 @@ html.dark .pill-correctivo { color: #FDBA74; border-color: rgba(249,115,22,0.40)
 html.dark .pill-preventivo { color: #93C5FD; border-color: rgba(37,99,235,0.40); background: rgba(37,99,235,0.15); }
 html.dark .pill-especialidad { color: #A5B4FC; border-color: rgba(99,102,241,0.40); background: rgba(99,102,241,0.15); }
 
-/* ─── Entity Toggle (Persona / Empresa) ─────────────────────────── */
+/* â”€â”€â”€ Entity Toggle (Persona / Empresa) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .entity-toggle { display: flex; gap: 6px; padding: 5px; background: rgba(0,0,0,0.05); border-radius: 14px; }
 html.dark .entity-toggle { background: rgba(255,255,255,0.06); }
 .entity-tab {
@@ -867,13 +867,20 @@ html.dark .entity-tab { color: #94A3B8; }
   box-shadow: 0 3px 10px rgba(37,99,235,0.35), inset 0 1px 0 rgba(255,255,255,0.20) !important;
 }
 
-/* ─── Modal Glass ────────────────────────────────────────────────── */
+/* â”€â”€â”€ Modal Glass â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .ts-modal-overlay {
-  position: fixed; inset: 0; z-index: 200;
-  display: flex; align-items: center; justify-content: center; padding: 16px;
-  background: rgba(0,0,0,0.40);
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex !important; align-items: center; justify-content: center; padding: 16px;
+  background: rgba(0,0,0,0.50);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.ts-modal-overlay.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  display: flex !important;
 }
 .ts-modal-card {
   background: rgba(255,255,255,0.80);
@@ -891,7 +898,7 @@ html.dark .ts-modal-card {
   box-shadow: 0 24px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
-/* ─── Progress Bar ───────────────────────────────────────────────── */
+/* â”€â”€â”€ Progress Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #nav-progress {
   position: fixed; top: 0; left: 0; height: 3px; width: 0%;
   background: linear-gradient(90deg, #2563EB, #06B6D4, #8B5CF6);
@@ -900,34 +907,34 @@ html.dark .ts-modal-card {
   transition: width 0.15s ease; pointer-events: none;
 }
 
-/* ─── Scrollbar ──────────────────────────────────────────────────── */
+/* â”€â”€â”€ Scrollbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.25); border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(37,99,235,0.45); }
 
-/* ─── Animations ─────────────────────────────────────────────────── */
+/* â”€â”€â”€ Animations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .page-enter { animation: fadeSlideIn 0.28s cubic-bezier(0.22,1,0.36,1) both; }
 
-/* ─── WCAG: focus visible ─────────────────────────────────────────── */
+/* â”€â”€â”€ WCAG: focus visible â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :focus-visible {
   outline: 2px solid #2563EB;
   outline-offset: 2px;
   border-radius: 6px;
 }
 
-/* ─── Print ──────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Print â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media print {
   #ts-sidebar, #ts-topbar, #nav-progress, .no-print { display: none !important; }
   #ts-main { margin-left: 0 !important; }
   .glass-card { border: 1px solid #E2E8F0 !important; background: white !important; backdrop-filter: none !important; }
 }
 
-/* ─── Responsive tables ──────────────────────────────────────────── */
+/* â”€â”€â”€ Responsive tables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (max-width: 767px) {
   .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td { display: block; width: 100%; }
   .responsive-table thead { display: none; }
@@ -937,13 +944,13 @@ html.dark .ts-modal-card {
   .responsive-table td::before { content: attr(data-label); font-weight: 700; font-size: 11px; color: #64748B; }
 }
 
-/* ─── Preload: bloquear transiciones ─────────────────────────────── */
+/* â”€â”€â”€ Preload: bloquear transiciones â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .preload * { transition: none !important; }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    GLASSMORPHISM: TOM-SELECT
-   ═══════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 /* Wrapper: ELIMINAR todo fondo/borde para evitar "cuadro dentro de cuadro" */
 .ts-wrapper {
@@ -954,7 +961,7 @@ html.dark .ts-modal-card {
     box-shadow: none !important;
 }
 
-/* Control principal (el ÚNICO campo visible) */
+/* Control principal (el ÃšNICO campo visible) */
 .ts-wrapper .ts-control {
     background: rgba(255,255,255,0.65) !important;
     border: 1px solid rgba(226,232,240,0.80) !important;
@@ -1046,9 +1053,9 @@ html.dark .ts-dropdown .option.selected {
 select.tomselected { display: none !important; }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    GLASSMORPHISM: FLATPICKR CALENDAR
-   ═══════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .flatpickr-calendar {
     background: rgba(255,255,255,0.70) !important;
@@ -1210,10 +1217,11 @@ html.dark .flatpickr-day.flatpickr-disabled {
 
 
 
-i n p u t : - w e b k i t - a u t o f i l l ,   i n p u t : - w e b k i t - a u t o f i l l : h o v e r ,   i n p u t : - w e b k i t - a u t o f i l l : f o c u s ,   i n p u t : - w e b k i t - a u t o f i l l : a c t i v e   {   - w e b k i t - b o x - s h a d o w :   0   0   0   1 0 0 0 p x   t r a n s p a r e n t   i n s e t   ! i m p o r t a n t ;   t r a n s i t i o n :   b a c k g r o u n d - c o l o r   5 0 0 0 s   e a s e - i n - o u t   0 s ;   }  
+i n p u t : - w e b k i t - a u t o f i l l ,   i n p u t : - w e b k i t - a u t o f i l l : h o v e r ,   i n p u t : - w e b k i t - a u t o f i l l : f o c u s ,   i n p u t : - w e b k i t - a u t o f i l l : a c t i v e   {   - w e b k i t - b o x - s h a d o w :   0   0   0   1 0 0 0 p x   t r a n s p a r e n t   i n s e t   ! i m p o r t a n t ;   t r a n s i t i o n :   b a c k g r o u n d - c o l o r   5 0 0 0 s   e a s e - i n - o u t   0 s ;   } 
+ 
  
 
-/* ─── Correccion de Autocompletado del Navegador ─── */
+/* â”€â”€â”€ Correccion de Autocompletado del Navegador â”€â”€â”€ */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
@@ -1230,4 +1238,33 @@ html.dark input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0px 1000px rgba(15, 23, 42, 0.9) inset !important;
     -webkit-text-fill-color: #f8fafc !important; /* text-slate-50 */
     transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* ─── Modal Overlay (Liquid Glass) ────────────────────────────── */
+.ts-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: opacity 0.3s ease;
+}
+.ts-modal-overlay.hidden {
+  pointer-events: none;
+}
+.ts-modal-card {
+  width: 100%;
+  max-width: 420px;
+  margin: 1rem;
+  border-radius: 1.25rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
 }

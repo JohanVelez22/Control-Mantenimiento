@@ -235,23 +235,6 @@ class MantenimientoController extends Controller
         }
     }
 
-    public function destroy(Mantenimiento $mantenimiento)
-    {
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('mantenimientos.index')->with('error', 'Solo el administrador puede eliminar.');
-        }
-        try {
-            DB::beginTransaction();
-            $mantenimiento->delete();
-            DB::commit();
-            return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento eliminado.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error eliminando mantenimiento: ' . $e->getMessage());
-            return redirect()->route('mantenimientos.index')->with('error', 'Error al eliminar el mantenimiento.');
-        }
-    }
-
     public function factura(Mantenimiento $mantenimiento)
     {
         if (!$mantenimiento->fecha_salida) {
@@ -288,12 +271,26 @@ class MantenimientoController extends Controller
         try {
             DB::beginTransaction();
             // Al anular, se establece el estado a 'anulado'
-            $mantenimiento->update(['estado' => 'anulado']);
+            $mantenimiento->update(['anulado' => true]);
 
             // Revertir stock si se implementa relación pivot
             foreach ($mantenimiento->stocks as $stock) {
                 \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
             }
+
+            // Revertir abonos en Caja
+            $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Mantenimiento')->first();
+            if ($concepto && $mantenimiento->abonos->count() > 0) {
+                foreach ($mantenimiento->abonos as $abono) {
+                    \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
+                        ->where('monto', $abono->monto)
+                        ->where('fecha', $abono->fecha->toDateString())
+                        ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%")
+                        ->where('estado', 'activo')
+                        ->update(['anulado' => true]);
+                }
+            }
+
             DB::commit();
             return redirect()->back()->with('success', 'Mantenimiento anulado correctamente. La transacción y stock asociados (si aplica) han sido revertidos.');
         } catch (\Exception $e) {

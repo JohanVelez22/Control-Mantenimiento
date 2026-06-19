@@ -1,56 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- Modal de contraseña para eliminar (Liquid Glass) --}}
-<div id="pwd-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
- <div class="ts-modal-card scale-95 opacity-0" id="pwd-modal-card">
- <div class="p-6">
- <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
- 🔒
- </div>
- <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Eliminación</h3>
- <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
- Ingresa tu contraseña de administrador para continuar. Esta acción borrará el registro de la base de datos.
- </p>
- <form id="delete-pwd-form" method="POST" class="space-y-4">
- @csrf @method('DELETE')
- <div>
- <input type="password" name="password_confirm" id="pwd-input" required placeholder="Contraseña..." class="glass-input text-center tracking-widest text-lg">
- </div>
- <div class="flex gap-3 pt-2">
- <button type="button" onclick="closePwdModal()" class="flex-1 btn-ghost justify-center">Cancelar</button>
- <button type="submit" class="flex-1 btn-danger justify-center font-bold">Eliminar</button>
- </div>
- </form>
- </div>
- </div>
-</div>
-
-{{-- Modal de contraseña para anular (Liquid Glass) --}}
-<div id="pwd-anular-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
- <div class="ts-modal-card scale-95 opacity-0" id="pwd-anular-card">
- <div class="p-6">
- <div class="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4">
- 🚫
- </div>
- <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Anulación</h3>
- <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
- Ingresa tu contraseña para anular este registro. Se mantendrá el historial pero no afectará saldos.
- </p>
- <form id="anular-pwd-form" method="POST" class="space-y-4">
- @csrf
- <div>
- <input type="password" name="password_confirm" id="pwd-anular-input" required placeholder="Contraseña..." class="glass-input text-center tracking-widest text-lg focus:ring-orange-500">
- </div>
- <div class="flex gap-3 pt-2">
- <button type="button" onclick="closeAnularModal()" class="flex-1 btn-ghost justify-center">Cancelar</button>
- <button type="submit" class="flex-1 text-center justify-center font-bold text-white py-2.5 rounded-xl transition-all">Anular</button>
- </div>
- </form>
- </div>
- </div>
-</div>
-
 <div class="space-y-4">
  {{-- Tarjetas de totales Glassmorphism --}}
  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
@@ -148,7 +98,7 @@
 </thead>
 <tbody>
 @forelse($movimientos as $m)
-<tr class="{{ $m->estado === 'anulado' ? 'row-anulado' : '' }}">
+<tr class="{{ $m->anulado ? 'row-anulado' : '' }}">
 <td data-label="Fecha:" class="text-center font-medium">{{ $m->fecha->format('d/m/Y') }}</td>
  <td data-label="Entidad:" class="font-bold text-slate-800 dark:text-white leading-tight">
  {{ $m->persona }}
@@ -158,7 +108,7 @@
  {{ $m->concepto->nombre }}
  </td>
  <td data-label="Tipo:" class="text-center">
- @if($m->estado === 'anulado')
+ @if($m->anulado)
  <span class="pill pill-anulado" title="Anulado">🚫 Anulado</span>
  @else
  <span class="pill {{ $m->tipo_movimiento === 'ingreso' ? 'pill-done' : 'pill-egreso' }}">
@@ -183,12 +133,10 @@
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('caja.edit', $m->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Editar">✏️</a>
 
- @if($m->estado !== 'anulado')
+ @if(!$m->anulado)
  <button type="button" onclick="openAnularModal('{{ route('caja.anular', $m->id) }}')" class="btn-ghost px-3 py-1.5 text-xs text-orange-600 border-orange-500/20 hover:bg-orange-500/10" title="Anular movimiento">🚫</button>
  @endif
- <button type="button" onclick="openPwdModal('{{ route('caja.destroy', $m->id) }}')" class="btn-danger px-3 py-1.5 text-xs" title="Eliminar definitivamente">🗑️</button>
- @endif
- </div>
+ @endif </div>
  </td>
  </tr>
  @empty
@@ -213,51 +161,11 @@
 </div>
 
 <script>
- function openPwdModal(actionUrl) {
- const modal = document.getElementById('pwd-modal');
- const card = document.getElementById('pwd-modal-card');
- document.getElementById('delete-pwd-form').action = actionUrl;
- document.getElementById('pwd-input').value = '';
- modal.classList.remove('hidden');
- setTimeout(() => {
- modal.classList.remove('opacity-0');
- card.classList.remove('scale-95', 'opacity-0');
- document.getElementById('pwd-input').focus();
- }, 10);
- }
- 
- function closePwdModal() {
- const modal = document.getElementById('pwd-modal');
- const card = document.getElementById('pwd-modal-card');
- modal.classList.add('opacity-0');
- card.classList.add('scale-95', 'opacity-0');
- setTimeout(() => modal.classList.add('hidden'), 300);
- }
-
- function openAnularModal(actionUrl) {
- const modal = document.getElementById('pwd-anular-modal');
- const card = document.getElementById('pwd-anular-card');
- document.getElementById('anular-pwd-form').action = actionUrl;
- document.getElementById('pwd-anular-input').value = '';
- modal.classList.remove('hidden');
- setTimeout(() => {
- modal.classList.remove('opacity-0');
- card.classList.remove('scale-95', 'opacity-0');
- document.getElementById('pwd-anular-input').focus();
- }, 10);
- }
- 
- function closeAnularModal() {
- const modal = document.getElementById('pwd-anular-modal');
- const card = document.getElementById('pwd-anular-card');
- modal.classList.add('opacity-0');
- card.classList.add('scale-95', 'opacity-0');
- setTimeout(() => modal.classList.add('hidden'), 300);
+, 300);
  }
 
  document.addEventListener('keydown', e => { 
  if (e.key === 'Escape') {
- closePwdModal();
  closeAnularModal();
  }
  });
