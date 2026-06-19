@@ -102,7 +102,7 @@
  </thead>
  <tbody>
  @foreach($movimientos as $mov)
- <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center {{ $mov['anulado']  ? 'opacity-50' : '' }}">
+ <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center">
  <td class="p-3">
  <span class="px-2 py-0.5 rounded-lg text-xs font-bold
  bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800
