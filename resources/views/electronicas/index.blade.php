@@ -111,7 +111,7 @@
  $estadoIcon = '⏳';
  if($e->estado === 'terminado') $estadoIcon = '✅';
  @endphp
- <span class="pill {{ $e->estado === 'terminado' ? 'pill-done' : 'pill-pending' }}">
+ <span class="pill {{ $e->estado === 'terminado' ? 'pill-done' : 'pill-pending' }} {{ $e->anulado ? 'line-through opacity-70' : '' }}\">
  {{ $estadoIcon }} {{ ucfirst($e->estado) }}
  </span>
  </td>

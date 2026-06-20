@@ -168,12 +168,18 @@
    <td class="p-3">
    @php
        $progreso = strtolower($mov['estado'] ?? '');
+       
+       // Clarificar el "progreso" para transacciones que no son mantenimientos
+       if(in_array($mov['tipo'], ['ingreso', 'egreso'])) $progreso = 'procesado';
+       if(in_array($mov['tipo'], ['venta', 'compra'])) $progreso = 'emitida';
+
        $pillClass = 'pill-pending';
-       if(in_array($progreso, ['terminado', 'entregado', 'emitida', 'activo'])) $pillClass = 'pill-done';
-       elseif(in_array($progreso, ['anulada', 'anulado'])) $pillClass = 'pill-anulado';
+       if(in_array($progreso, ['terminado', 'entregado'])) $pillClass = 'pill-done';
+       elseif($progreso === 'emitida') $pillClass = 'pill-preventivo';
+       elseif($progreso === 'procesado') $pillClass = 'pill-especialidad';
        elseif(in_array($progreso, ['en_proceso', 'reparado'])) $pillClass = 'pill-efectivo';
    @endphp
-   <span class="pill {{ $pillClass }}">{{ ucfirst($progreso) ?: '—' }}</span>
+   <span class="pill {{ $pillClass }} {{ !empty($mov['anulado']) ? 'line-through opacity-70' : '' }}">{{ ucfirst($progreso) ?: '—' }}</span>
    </td>
  <td class="p-3">
  <span class="pill {{ !empty($mov['anulado']) ? 'pill-anulado' : 'pill-done' }}">

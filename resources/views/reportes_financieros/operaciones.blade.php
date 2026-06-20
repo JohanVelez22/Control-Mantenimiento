@@ -105,7 +105,7 @@
  <td class="p-2">{{ $m->tecnico->nombre ?? '—' }}</td>
  <td class="p-2">{{ $m->fecha_entrada->format('d/m/Y') }}</td>
  <td class="p-2 font-bold text-blue-600">${{ number_format($m->costo, 0, ',', '.') }}</td>
- <td class="p-2"><span class="pill pill-efectivo">{{ ucfirst($m->estado) }}</span></td>
+ <td class="p-2"><span class="pill pill-efectivo {{ !empty($m->anulado) ? 'line-through opacity-70' : '' }}\">{{ ucfirst($m->estado) }}</span></td>
  <td class="p-2">
  <span class="pill {{ !empty($m->anulado) ? 'pill-anulado' : 'pill-done' }}">
  {{ !empty($m->anulado) ? 'Anulado' : 'Activo' }}
@@ -147,7 +147,7 @@
  <td class="p-2">{{ $e->tecnico->nombre ?? '—' }}</td>
  <td class="p-2">{{ $e->fecha_entrada->format('d/m/Y') }}</td>
  <td class="p-2 font-bold text-purple-600">${{ number_format($e->costo, 0, ',', '.') }}</td>
- <td class="p-2"><span class="px-2 py-0.5 rounded-lg text-xs font-bold bg-purple-100 text-purple-800">{{ ucfirst($e->estado) }}</span></td>
+ <td class="p-2"><span class="pill pill-pending {{ !empty($e->anulado) ? 'line-through opacity-70' : '' }}">{{ ucfirst($e->estado) }}</span></td>
  <td class="p-2">
  <span class="pill {{ !empty($e->anulado) ? 'pill-anulado' : 'pill-done' }}">
  {{ !empty($e->anulado) ? 'Anulado' : 'Activo' }}
@@ -178,7 +178,7 @@
  <td class="p-2 text-xs">{{ $c->concepto->nombre ?? '—' }}</td>
  <td class="p-2 text-xs capitalize">{{ $c->tipo_pago }}</td>
  <td class="p-2 font-bold {{ $tipo === 'solo_ingresos' ? 'text-green-600' : 'text-red-600' }}">${{ number_format($c->monto, 0, ',', '.') }}</td>
- <td class="p-2"><span class="text-xs font-semibold capitalize">{{ $c->estado }}</span></td>
+ <td class="p-2"><span class="pill pill-especialidad {{ !empty($c->anulado) ? 'line-through opacity-70' : '' }}">Procesado</span></td>
  <td class="p-2">
  <span class="pill {{ !empty($c->anulado) ? 'pill-anulado' : 'pill-done' }}">
  {{ !empty($c->anulado) ? 'Anulado' : 'Activo' }}
@@ -212,7 +212,7 @@
   <td class="p-2 text-left">{{ $f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—' }}</td>
   <td class="p-2 font-bold text-blue-600">${{ number_format($f->total_documento, 0, ',', '.') }}</td>
   <td class="p-2 font-semibold text-emerald-600">${{ number_format($f->total_pagado, 0, ',', '.') }}</td>
-  <td class="p-2"><span class="text-xs font-semibold capitalize">{{ $f->estado }}</span></td>
+  <td class="p-2"><span class="pill pill-preventivo {{ $f->estado === 'anulada' ? 'line-through opacity-70' : '' }}">Emitida</span></td>
   </tr>
   @endforeach
   </tbody>
