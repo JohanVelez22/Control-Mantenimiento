@@ -54,7 +54,10 @@
   </thead>
   <tbody>
   @forelse($electronicas as $e)
-  @php $dim = $e->anulado ? 'opacity-60 grayscale line-through text-gray-400 dark:text-gray-500' : ''; @endphp
+  @php 
+    $dim = $e->anulado ? 'opacity-60 grayscale line-through text-gray-400 dark:text-gray-500' : '';
+    $dimLight = $e->anulado ? 'opacity-60' : '';
+  @endphp
   <tr id="electronica-{{ $e->id }}" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
   <td data-label="Orden:" class="font-bold text-center whitespace-nowrap {{ $dim }}">
   <a href="#electronica-{{ $e->id }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors">
@@ -91,7 +94,7 @@
   <span class="font-medium text-slate-700 dark:text-slate-300">{{ $e->tecnico->nombre ?? 'N/A' }}</span>
   </td>
   
-  <td data-label="Tipo:" class="text-center {{ $dim }}">
+  <td data-label="Tipo:" class="text-center {{ $dimLight }}">
   <span class="pill {{ $e->tipo === 'correctivo' ? 'pill-correctivo' : 'pill-preventivo' }} {{ $e->anulado ? 'line-through opacity-70' : '' }}">
   {{ ucfirst($e->tipo) }}
   </span>
@@ -107,7 +110,7 @@
   ${{ number_format($e->costo, 0, ',', '.') }}
   </td>
   
-  <td data-label="Estado:" class="text-center {{ $dim }}">
+  <td data-label="Estado:" class="text-center {{ $dimLight }}">
   @php
   $estadoIcon = '⏳';
   if($e->estado === 'terminado') $estadoIcon = '✅';

@@ -189,6 +189,7 @@
  : \Carbon\Carbon::now()->startOfDay();
  $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
  $dim = $m->anulado ? 'opacity-60 grayscale' : '';
+ $dimLight = $m->anulado ? 'opacity-60' : '';
  @endphp
  <tr>
  <td class="text-center font-bold whitespace-nowrap {{ $dim }}">
@@ -218,7 +219,7 @@
  </div>
  </td>
 
- <td class="text-center {{ $dim }}">
+ <td class="text-center {{ $dimLight }}">
  <span class="pill {{ $m->estado == 'terminado' ? 'pill-done' : 'pill-pending' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
  {{ strtoupper($m->estado) }}
  </span>
@@ -283,6 +284,7 @@
  : \Carbon\Carbon::now()->startOfDay();
  $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
  $dim = $e->anulado ? 'opacity-60 grayscale' : '';
+ $dimLight = $e->anulado ? 'opacity-60' : '';
  @endphp
  <tr>
  <td class="text-center font-bold whitespace-nowrap {{ $dim }}">
@@ -306,7 +308,7 @@
  ${{ number_format($e->costo, 0, ',', '.') }}
  </td>
 
- <td class="text-center {{ $dim }}">
+ <td class="text-center {{ $dimLight }}">
  <span class="pill {{ $e->estado == 'terminado' ? 'pill-done' : 'pill-pending' }} {{ $e->anulado ? 'line-through opacity-70' : '' }}">
  {{ strtoupper($e->estado) }}
  </span>

@@ -53,7 +53,10 @@
   </thead>
   <tbody>
   @forelse($mantenimientos as $m)
-  @php $dim = $m->anulado ? 'opacity-60 grayscale line-through text-gray-400 dark:text-gray-500' : ''; @endphp
+  @php 
+    $dim = $m->anulado ? 'opacity-60 grayscale line-through text-gray-400 dark:text-gray-500' : '';
+    $dimLight = $m->anulado ? 'opacity-60' : '';
+  @endphp
   <tr id="mantenimiento-{{ $m->id }}" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
   <td data-label="Orden:" class="font-bold text-center whitespace-nowrap {{ $dim }}">
   <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
@@ -88,7 +91,7 @@
   
   <td class="text-center font-medium text-sm {{ $dim }}">{{ $m->tecnico->nombre ?? '-' }}</td>
   
-  <td class="text-center {{ $dim }}">
+  <td class="text-center {{ $dimLight }}">
   <span class="pill {{ $m->tipo === 'correctivo' ? 'pill-correctivo' : 'pill-preventivo' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
   {{ ucfirst($m->tipo) }}
   </span>
@@ -105,7 +108,7 @@
   ${{ number_format($m->costo, 0, ',', '.') }}
   </td>
   
-  <td class="text-center {{ $dim }}">
+  <td class="text-center {{ $dimLight }}">
   @php
   $estadoIcon = '⏳';
   if(in_array($m->estado, ['terminado', 'entregado'])) $estadoIcon = '✅';
