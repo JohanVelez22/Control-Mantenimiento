@@ -91,11 +91,22 @@
  </select>
  </div>
  <div>
- <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Estado</label>
+ <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Progreso</label>
  <select name="estado" class="glass-input">
  <option value="todos">Todos</option>
  <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+ <option value="en_proceso" {{ request('estado') == 'en_proceso' ? 'selected' : '' }}>En Proceso</option>
+ <option value="reparado" {{ request('estado') == 'reparado' ? 'selected' : '' }}>Reparado</option>
  <option value="terminado" {{ request('estado') == 'terminado' ? 'selected' : '' }}>Terminado</option>
+ <option value="entregado" {{ request('estado') == 'entregado' ? 'selected' : '' }}>Entregado</option>
+ </select>
+ </div>
+ <div>
+ <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Estado</label>
+ <select name="anulado" class="glass-input">
+ <option value="todos">Todos</option>
+ <option value="activo" {{ request('anulado') === null || request('anulado') == 'activo' ? 'selected' : '' }}>Activo</option>
+ <option value="anulado" {{ request('anulado') == 'anulado' ? 'selected' : '' }}>Anulado</option>
  </select>
  </div>
  <div>
@@ -134,6 +145,8 @@
  <th class="text-center">Técnico</th>
  <th class="text-center">Tipo</th>
  <th class="text-center">Reparación</th>
+ <th class="text-center">Progreso</th>
+ <th class="text-center">Estado</th>
  <th class="text-center">Costo</th>
  <th class="text-center w-24">Entrada</th>
  <th class="text-center w-24">Salida</th>
@@ -141,13 +154,18 @@
  </thead>
  <tbody>
  @forelse($mantenimientos as $m)
+ @php
+    $isAnulado = !empty($m->anulado);
+    $dim = $isAnulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
+    $dimLight = $isAnulado ? 'opacity-60' : '';
+ @endphp
  <tr>
- <td class="text-center font-bold whitespace-nowrap">
+ <td class="text-center font-bold whitespace-nowrap {{ $dim }}">
  <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors no-print-link">
  {{ $m->id_orden }}
  </a>
  </td>
- <td>
+ <td class="{{ $dim }}">
  <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de clientes">
  <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">
  {{ $m->equipo->cliente->nombre ?? 'N/A' }}
@@ -159,7 +177,7 @@
  </td>
  
  <!-- Columna Equipo: Nombre arriba, Marca/Modelo abajo -->
- <td>
+ <td class="{{ $dim }}">
  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group block hover:bg-gray-50 dark:hover:bg-gray-800/50 p-1.5 -ml-1.5 rounded-lg transition-colors no-print-link" title="Ver en tabla de equipos">
  <div class="font-bold text-gray-900 dark:text-gray-100 group-hover:underline">{{ $m->equipo->nombre ?? 'N/A' }}</div>
  <div class="font-bold text-[14px] text-gray-400 italic">
@@ -171,29 +189,48 @@
  </a>
  </td>
 
- <td class="text-center font-medium text-sm">{{ $m->tecnico->nombre ?? 'N/A' }}</td>
+ <td class="text-center font-medium text-sm {{ $dim }}">{{ $m->tecnico->nombre ?? 'N/A' }}</td>
  
  <!-- Columna Tipo con Colores (Azul/Verde) -->
- <td class="text-center">
+ <td class="text-center {{ $dimLight }}">
  <span class="pill {{ $m->tipo == 'preventivo' ? 'pill-preventivo' : 'pill-correctivo' }}">
  {{ ucfirst($m->tipo) }}
  </span>
  </td>
 
- <td class="text-center capitalize">{{ $m->reparacion }}</td>
- <td class="text-center font-black text-green-600 dark:text-green-400">${{ number_format($m->costo, 2) }}</td>
- <td class="text-center font-mono text-xs text-gray-500 dark:text-gray-400">
+ <td class="text-center capitalize {{ $dim }}">{{ $m->reparacion }}</td>
+ 
+ <td class="text-center {{ $dimLight }}">
+ @php
+     $progreso = strtolower($m->estado ?? '');
+     $pillClass = 'pill-pending';
+     if(in_array($progreso, ['terminado', 'entregado'])) $pillClass = 'pill-done';
+     elseif($progreso === 'preventivo') $pillClass = 'pill-preventivo';
+     elseif($progreso === 'especialidad') $pillClass = 'pill-especialidad';
+     elseif(in_array($progreso, ['en_proceso', 'reparado'])) $pillClass = 'pill-efectivo';
+ @endphp
+ <span class="pill {{ $pillClass }}">{{ ucfirst($m->estado) ?: '—' }}</span>
+ </td>
+ 
+ <td class="text-center">
+ <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
+ {{ $isAnulado ? 'Anulado' : 'Activo' }}
+ </span>
+ </td>
+
+ <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">${{ number_format($m->costo, 2) }}</td>
+ <td class="text-center font-mono text-xs text-gray-500 dark:text-gray-400 {{ $dim }}">
  {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}
  </td>
  
  <!-- Salida Centrada -->
- <td class="text-center font-mono text-xs {{ $m->fecha_salida ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 italic' }}">
+ <td class="text-center font-mono text-xs {{ $m->fecha_salida ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 italic' }} {{ $dim }}">
  {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}
  </td>
  </tr>
  @empty
  <tr>
-     <td colspan="9" class="p-12 text-center bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm">
+     <td colspan="11" class="p-12 text-center bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm">
          <div class="flex flex-col items-center justify-center space-y-3">
              <div class="text-5xl opacity-80">📭</div>
              <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
@@ -207,7 +244,7 @@
  <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
  <tr>
  <td class="text-center font-bold">Total: {{ $mantenimientos->count() }}</td>
- <td colspan="5" class="text-right uppercase text-xs">Totales Filtrados:</td>
+ <td colspan="7" class="text-right uppercase text-xs">Totales Filtrados:</td>
  <td class="text-center font-black text-green-600 dark:text-green-400">${{ number_format($mantenimientos->sum('costo'), 2) }}</td>
  <td colspan="2"></td>
  </tr>
@@ -338,6 +375,15 @@
  row.style.display = text.includes(filter) ? '' : 'none';
  }
  });
- });
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll("select.glass-input").forEach((el) => {
+          if (el.tomselect) return;
+          if (window.initGlassTomSelect) {
+              window.initGlassTomSelect(el);
+          }
+      });
+  });
 </script>
 @endsection

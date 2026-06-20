@@ -98,6 +98,15 @@ class MantenimientoController extends Controller
         if ($request->filled('tipo') && $request->tipo !== 'todos') $query->where('tipo', $request->tipo);
         if ($request->filled('reparacion') && $request->reparacion !== 'todos') $query->where('reparacion', $request->reparacion);
         if ($request->filled('estado') && $request->estado !== 'todos') $query->where('estado', $request->estado);
+        if ($request->filled('anulado') && $request->anulado !== 'todos') {
+            if ($request->anulado === 'activo') {
+                $query->where(function($q) {
+                    $q->where('anulado', 0)->orWhereNull('anulado');
+                });
+            } elseif ($request->anulado === 'anulado') {
+                $query->where('anulado', 1);
+            }
+        }
         if ($request->filled('min_cost')) $query->where('costo', '>=', $request->min_cost);
         if ($request->filled('max_cost')) $query->where('costo', '<=', $request->max_cost);
 

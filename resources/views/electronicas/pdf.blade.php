@@ -48,6 +48,8 @@
                 <th>Equipo / Info</th>
                 <th>Técnico</th>
                 <th>Tipo</th>
+                <th>Progreso</th>
+                <th>Estado</th>
                 <th>Costo</th>
                 <th>Entrada</th>
                 <th>Salida</th>
@@ -55,7 +57,7 @@
         </thead>
         <tbody>
             @foreach($electronicas as $e)
-            <tr>
+            <tr style="{{ $e->anulado ? 'opacity: 0.6;' : '' }}">
                 <td><strong>{{ $e->id_orden }}</strong></td>
                 <td>
                     <div>{{ $e->equipo->cliente->nombre ?? 'N/A' }}</div>
@@ -69,6 +71,8 @@
                 <td>
                     <div>{{ ucfirst($e->tipo) }}</div>
                 </td>
+                <td>{{ ucfirst($e->estado) }}</td>
+                <td style="{{ $e->anulado ? 'color: #dc2626; font-weight: bold;' : 'color: #16a34a;' }}">{{ $e->anulado ? 'Anulado' : 'Activo' }}</td>
                 <td>${{ number_format($e->costo, 2) }}</td>
                 <td>{{ \Carbon\Carbon::parse($e->fecha_entrada)->format('d/m/Y') }}</td>
                 <td>{{ $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : 'Pendiente' }}</td>

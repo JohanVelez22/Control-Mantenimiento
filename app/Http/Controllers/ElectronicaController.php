@@ -242,6 +242,15 @@ class ElectronicaController extends Controller
         if ($request->filled('estado') && $request->estado !== 'todos') {
             $query->where('estado', $request->estado);
         }
+        if ($request->filled('anulado') && $request->anulado !== 'todos') {
+            if ($request->anulado === 'activo') {
+                $query->where(function($q) {
+                    $q->where('anulado', 0)->orWhereNull('anulado');
+                });
+            } elseif ($request->anulado === 'anulado') {
+                $query->where('anulado', 1);
+            }
+        }
         if ($request->filled('tipo') && $request->tipo !== 'todos') {
             $query->where('tipo', $request->tipo);
         }

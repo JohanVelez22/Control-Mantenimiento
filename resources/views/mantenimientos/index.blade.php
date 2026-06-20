@@ -41,7 +41,7 @@
   <th class="text-center">Equipo</th>
   <th class="text-center">Cliente</th>
   <th class="text-center">Técnico</th>
-  <th class="text-center">Tipo</th>
+  <th class="text-center">Tipo/Rep</th>
   <th class="text-center">Observación</th>
   <th class="text-center">Costo</th>
   <th class="text-center">Progreso</th>

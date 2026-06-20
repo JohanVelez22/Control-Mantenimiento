@@ -83,11 +83,19 @@
  </select>
  </div>
  <div>
- <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Estado</label>
+ <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Progreso</label>
  <select name="estado" class="glass-input">
  <option value="todos">Todos</option>
  <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
  <option value="terminado" {{ request('estado') == 'terminado' ? 'selected' : '' }}>Terminado</option>
+ </select>
+ </div>
+ <div>
+ <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Estado</label>
+ <select name="anulado" class="glass-input">
+ <option value="todos">Todos</option>
+ <option value="activo" {{ request('anulado') === null || request('anulado') == 'activo' ? 'selected' : '' }}>Activo</option>
+ <option value="anulado" {{ request('anulado') == 'anulado' ? 'selected' : '' }}>Anulado</option>
  </select>
  </div>
  <div>
@@ -102,7 +110,7 @@
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Búsqueda Rápida</label>
- <input type="text" name="search" id="real_time_search" class="glass-input" value="{{ request('search') }}" placeholder="Orden, Cliente, Dispositivo...">
+ <input type="text" name="search" id="real_time_search" class="glass-input" value="{{ request('search') }}" placeholder="Orden, Cliente, Equipo...">
  </div>
 
  <div class="lg:col-span-1 flex justify-end gap-2 mt-2">
@@ -116,78 +124,107 @@
  </form>
 
  <!-- Tabla con Datos Independientes (vista en pantalla: como antes; impresión: clase reportes-tabla-imprimir) -->
- <div class="overflow-x-auto pb-2">
  <table class="ts-table table-electronica responsive-table reportes-tabla-imprimir w-full">
- <thead>
- <tr>
- <th class="w-20 text-center">Orden</th>
- <th class="text-center">Cliente</th>
- <th class="text-center">Dispositivo</th>
- <th class="text-center">Técnico</th>
- <th class="text-center">Tipo</th>
- <th class="text-center">Estado</th>
- <th class="text-center w-24">Entrada</th>
- <th class="text-center w-24">Salida</th>
- <th class="text-center">Costo</th>
- </tr>
- </thead>
- <tbody>
- @forelse($registros as $m)
- <tr>
- <td class="text-center font-bold whitespace-nowrap">
- <a href="{{ route('electronicas.index', ['locate' => $m->id]) }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors no-print-link">
- {{ $m->id_orden }}
- </a>
- </td>
- <td class="text-center font-bold">
- {{ $m->cliente }}
- </td>
- <td class="text-center">
- {{ $m->dispositivo }} {{ $m->marca ? '('.$m->marca.')' : '' }}
- </td>
- <td class="text-center">{{ $m->tecnico->nombre ?? 'N/A' }}</td>
- 
- <td class="text-center">
- <span class="pill {{ $m->tipo == 'preventivo' ? 'pill-preventivo' : 'pill-correctivo' }}">
- {{ ucfirst($m->tipo) }}
- </span>
- </td>
+  <thead>
+  <tr>
+  <th class="w-20 text-center">Orden</th>
+  <th class="text-center">Cliente</th>
+  <th class="text-center">Equipo</th>
+  <th class="text-center">Técnico</th>
+  <th class="text-center">Tipo</th>
+  <th class="text-center">Progreso</th>
+  <th class="text-center">Estado</th>
+  <th class="text-center w-24">Entrada</th>
+  <th class="text-center w-24">Salida</th>
+  <th class="text-center">Costo</th>
+  </tr>
+  </thead>
+  <tbody>
+  @forelse($registros as $m)
+  @php
+    $isAnulado = !empty($m->anulado);
+    $dim = $isAnulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
+    $dimLight = $isAnulado ? 'opacity-60' : '';
+  @endphp
+  <tr>
+  <td class="text-center font-bold whitespace-nowrap {{ $dim }}">
+  <a href="{{ route('electronicas.index', ['locate' => $m->id]) }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors no-print-link">
+  {{ $m->id_orden }}
+  </a>
+  </td>
+  
+  <td class="{{ $dim }}">
+  <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de clientes">
+  <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">
+  {{ $m->equipo->cliente->nombre ?? 'N/A' }}
+  </span>
+  <span class="font-bold text-[14px] text-gray-400 italic">
+  {{ $m->equipo->cliente->identificacion ?? '-' }}
+  </span>
+  </a>
+  </td>
 
- <td class="text-center">
- <span class="pill {{ $m->estado == 'terminado' ? 'pill-done' : 'pill-pending' }}">
- {{ ucfirst($m->estado) }}
- </span>
- </td>
+  <td class="{{ $dim }}">
+  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group block hover:bg-gray-50 dark:hover:bg-gray-800/50 p-1.5 -ml-1.5 rounded-lg transition-colors no-print-link" title="Ver en tabla de equipos">
+  <div class="font-bold text-gray-900 dark:text-gray-100 group-hover:underline">{{ $m->equipo->nombre ?? 'N/A' }}</div>
+  <div class="font-bold text-[14px] text-gray-400 italic">
+  ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
+  <span class="not-italic text-gray-900 dark:text-gray-100 font-medium text-[13.5px]">
+  {{ $m->equipo->serie ?? '' }}
+  </span>
+  </div>
+  </a>
+  </td>
 
- <td class="text-center font-mono text-xs text-gray-500 dark:text-gray-400">
- {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}
- </td>
- <td class="text-center font-mono text-xs {{ $m->fecha_salida ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 italic' }}">
- {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}
- </td>
- <td class="text-center font-black text-green-600 dark:text-green-400">${{ number_format($m->costo, 2) }}</td>
- </tr>
- @empty
- <tr>
-     <td colspan="9" class="p-12 text-center bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm">
-         <div class="flex flex-col items-center justify-center space-y-3">
-             <div class="text-5xl opacity-80">📭</div>
-             <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
-             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Intenta con otros filtros de búsqueda.</p>
-         </div>
-     </td>
- </tr>
- @endforelse
- </tbody>
- @if($registros->count() > 0)
- <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
- <tr>
- <td class="text-center font-bold">Total: {{ $totales['cantidad'] }}</td>
- <td colspan="7" class="text-right uppercase text-xs">Total Filtrados:</td>
- <td class="text-center font-black text-green-600 dark:text-green-400">${{ number_format($totales['costo'], 2) }}</td>
- </tr>
- </tfoot>
- @endif
+  <td class="text-center font-medium text-sm {{ $dim }}">{{ $m->tecnico->nombre ?? 'N/A' }}</td>
+  
+  <td class="text-center {{ $dimLight }}">
+  <span class="pill {{ $m->tipo == 'preventivo' ? 'pill-preventivo' : 'pill-correctivo' }}">
+  {{ ucfirst($m->tipo) }}
+  </span>
+  </td>
+
+  <td class="text-center {{ $dimLight }}">
+  <span class="pill {{ $m->estado == 'terminado' ? 'pill-done' : 'pill-pending' }}">
+  {{ ucfirst($m->estado) }}
+  </span>
+  </td>
+
+  <td class="text-center">
+  <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
+  {{ $isAnulado ? 'Anulado' : 'Activo' }}
+  </span>
+  </td>
+
+  <td class="text-center font-mono text-xs text-gray-500 dark:text-gray-400 {{ $dim }}">
+  {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}
+  </td>
+  <td class="text-center font-mono text-xs {{ $m->fecha_salida ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 italic' }} {{ $dim }}">
+  {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}
+  </td>
+  <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">${{ number_format($m->costo, 2) }}</td>
+  </tr>
+  @empty
+  <tr>
+      <td colspan="10" class="p-12 text-center bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm">
+          <div class="flex flex-col items-center justify-center space-y-3">
+              <div class="text-5xl opacity-80">📭</div>
+              <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
+              <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Intenta con otros filtros de búsqueda.</p>
+          </div>
+      </td>
+  </tr>
+  @endforelse
+  </tbody>
+  @if($registros->count() > 0)
+  <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
+  <tr>
+  <td class="text-center font-bold">Total: {{ $totales['cantidad'] }}</td>
+  <td colspan="8" class="text-right uppercase text-xs">Total Filtrados:</td>
+  <td class="text-center font-black text-green-600 dark:text-green-400">${{ number_format($totales['costo'], 2) }}</td>
+  </tr>
+  </tfoot>
+  @endif
  </table>
  </div>
  <div class="mt-4 no-print">
@@ -271,5 +308,14 @@
  }
  });
  });
+
+ document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll("select.glass-input").forEach((el) => {
+          if (el.tomselect) return;
+          if (window.initGlassTomSelect) {
+              window.initGlassTomSelect(el);
+          }
+      });
+  });
 </script>
 @endsection
