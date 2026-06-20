@@ -103,16 +103,21 @@
  </thead>
  <tbody>
  @foreach($movimientos as $mov)
- <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center {{ !empty($mov['anulado']) ? 'row-anulado' : '' }}">
- <td class="p-3">
+ @php
+   $isAnulado = !empty($mov['anulado']);
+   $dim = $isAnulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
+   $dimLight = $isAnulado ? 'opacity-60' : '';
+ @endphp
+ <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center">
+ <td class="p-3 {{ $dimLight }}">
  <span class="px-2 py-0.5 rounded-lg text-xs font-bold
  bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800
  dark:bg-{{ $mov['color'] }}-900/40 dark:text-{{ $mov['color'] }}-300">
  {{ $mov['icono'] }} {{ ucfirst($mov['tipo']) }}
  </span>
  </td>
- <td class="p-3 text-left text-gray-700 dark:text-gray-300">{{ $mov['descripcion'] }}</td>
-   <td class="p-3">
+ <td class="p-3 text-left text-gray-700 dark:text-gray-300 {{ $dim }}">{{ $mov['descripcion'] }}</td>
+   <td class="p-3 {{ $dimLight }}">
    @php
        $progreso = strtolower($mov['estado'] ?? '');
        
@@ -126,14 +131,14 @@
        elseif($progreso === 'procesado') $pillClass = 'pill-especialidad';
        elseif(in_array($progreso, ['en_proceso', 'reparado'])) $pillClass = 'pill-efectivo';
    @endphp
-   <span class="pill {{ $pillClass }} {{ !empty($mov['anulado']) ? 'line-through opacity-70' : '' }}">{{ ucfirst($progreso) ?: '—' }}</span>
+   <span class="pill {{ $pillClass }} {{ $isAnulado ? 'opacity-70' : '' }}">{{ ucfirst($progreso) ?: '—' }}</span>
    </td>
  <td class="p-3">
- <span class="pill {{ !empty($mov['anulado']) ? 'pill-anulado' : 'pill-done' }}">
- {{ !empty($mov['anulado']) ? 'Anulado' : 'Activo' }}
+ <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
+ {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-3 font-bold {{ in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+ <td class="p-3 font-bold {{ in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }} {{ $dim }}">
  ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
  </td>
  </tr>
