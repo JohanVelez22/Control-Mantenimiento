@@ -92,13 +92,14 @@
 <th>Concepto</th>
 <th class="text-center">Tipo</th>
 <th class="text-center">Pago</th>
+<th class="text-center">Estado</th>
 <th class="text-right">Monto</th>
 <th class="text-center">Acciones</th>
 </tr>
 </thead>
 <tbody>
 @forelse($movimientos as $m)
-<tr class="{{ $m->anulado ? 'row-anulado' : '' }}">
+<tr class="{{ $m->anulado ? 'opacity-50 line-through' : '' }} hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
 <td data-label="Fecha:" class="text-center font-medium">{{ $m->fecha->format('d/m/Y') }}</td>
  <td data-label="Entidad:" class="font-bold text-slate-800 dark:text-white leading-tight">
  {{ $m->persona }}
@@ -115,6 +116,11 @@
  <td data-label="Pago:" class="text-center">
  <span class="pill {{ $m->tipo_pago === 'efectivo' ? 'pill-efectivo' : 'pill-banco' }}">
  {{ $m->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Banco' }}
+ </span>
+ </td>
+ <td data-label="Estado:" class="text-center">
+ <span class="px-2 py-0.5 rounded-lg text-xs font-bold {{ $m->anulado ? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' }}">
+ {{ $m->anulado ? 'ANULADO' : 'ACTIVO' }}
  </span>
  </td>
  <td data-label="Monto:" class="text-right font-black text-lg {{ $m->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
@@ -137,7 +143,7 @@
  </tr>
  @empty
  <tr>
- <td colspan="7" class="p-16 text-center">
+ <td colspan="8" class="p-16 text-center">
  <div class="flex flex-col items-center justify-center gap-3">
  <div class="text-6xl drop-shadow-md mb-2">💸</div>
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Caja vacía</h3>
