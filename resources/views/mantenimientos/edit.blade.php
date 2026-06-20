@@ -113,6 +113,15 @@
  <textarea name="descripcion" required rows="3" class="glass-input mt-1 resize-y @error('descripcion') border-red-500 @enderror">{{ old('descripcion', $mantenimiento->descripcion) }}</textarea>
  @error('descripcion') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
  </div>
+
+ {{-- Estado de la Orden (Anulado/Activo) --}}
+ <div class="md:col-span-2">
+ <label class="field-label flex items-center gap-2"><span>🛡️</span> Estado de la Orden</label>
+ <select name="anulado" class="glass-input mt-1 font-bold">
+ <option value="0" {{ old('anulado', $mantenimiento->anulado) ? '' : 'selected' }}>🟢 Activo</option>
+ <option value="1" {{ old('anulado', $mantenimiento->anulado) ? 'selected' : '' }}>🔴 Anulado</option>
+ </select>
+ </div>
  </div>
 
  <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">

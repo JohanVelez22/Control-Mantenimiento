@@ -119,12 +119,62 @@ class ElectronicaController extends Controller
             'fecha_entrada'        => 'required|date',
             'fecha_salida'         => 'nullable|date|after_or_equal:fecha_entrada',
             'tecnico_id'           => 'required|exists:tecnicos,id',
+            'anulado'              => 'nullable|in:0,1',
         ]);
 
-        $electronica->update($validated);
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
 
-        return redirect()->route('electronicas.index')
-                         ->with('success', 'Registro electrónico actualizado correctamente.');
+            $reactivar = $electronica->anulado && !$request->boolean('anulado');
+            $anular = !$electronica->anulado && $request->boolean('anulado');
+
+            if ($reactivar) {
+                // Re-deducir stock
+                foreach ($electronica->stocks as $stock) {
+                    \App\Models\Stock::where('id', $stock->id)->decrement('cantidad', $stock->pivot->cantidad);
+                }
+                // Reactivar abonos en Caja
+                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
+                if ($concepto && $electronica->abonos->count() > 0) {
+                    foreach ($electronica->abonos as $abono) {
+                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
+                            ->where('monto', $abono->monto)
+                            ->where('fecha', $abono->fecha->toDateString())
+                            ->where('descripcion', 'like', "%Orden " . $electronica->id_orden . "%")
+                            ->update(['anulado' => false]);
+                    }
+                }
+                $validated['anulado'] = false;
+            } elseif ($anular) {
+                // Devolver stock al inventario
+                foreach ($electronica->stocks as $stock) {
+                    \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
+                }
+                // Anular abonos en Caja
+                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
+                if ($concepto && $electronica->abonos->count() > 0) {
+                    foreach ($electronica->abonos as $abono) {
+                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
+                            ->where('monto', $abono->monto)
+                            ->where('fecha', $abono->fecha->toDateString())
+                            ->where('descripcion', 'like', "%Orden " . $electronica->id_orden . "%")
+                            ->where('estado', 'activo')
+                            ->update(['anulado' => true]);
+                    }
+                }
+                $validated['anulado'] = true;
+            }
+
+            $electronica->update($validated);
+            \Illuminate\Support\Facades\DB::commit();
+
+            return redirect()->route('electronicas.index')
+                             ->with('success', 'Registro electrónico actualizado correctamente.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Error actualizando electrónica: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar el registro electrónico.')->withInput();
+        }
     }
 
     public function anular(Request $request, Electronica $electronica)

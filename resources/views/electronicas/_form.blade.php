@@ -1,4 +1,4 @@
-﻿<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
  <div>
  <label class="field-label flex items-center gap-2"><span>🔖</span> N° Orden</label>
@@ -84,6 +84,17 @@
  <input type="hidden" name="costo" id="costo_real" value="{{ old('costo', isset($electronica) ? intval($electronica->costo) : 0) }}">
  @error('costo') <p class="text-red-500 text-xs font-bold mt-1 text-center">{{ $message }}</p> @enderror
  </div>
+
+ @isset($electronica)
+ {{-- Estado de la Orden (Anulado/Activo) --}}
+ <div class="md:col-span-2">
+ <label class="field-label flex items-center gap-2"><span>🛡️</span> Estado de la Orden</label>
+ <select name="anulado" class="glass-input mt-1 font-bold">
+ <option value="0" {{ old('anulado', $electronica->anulado) ? '' : 'selected' }}>🟢 Activo</option>
+ <option value="1" {{ old('anulado', $electronica->anulado) ? 'selected' : '' }}>🔴 Anulado</option>
+ </select>
+ </div>
+ @endisset
 
 </div>
 
