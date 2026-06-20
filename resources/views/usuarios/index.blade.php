@@ -10,7 +10,7 @@
  <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Gestiona los accesos y credenciales de los colaboradores del sistema</p>
  </div>
  <div class="flex flex-wrap items-center gap-2">
- <input type="text" id="search-usuarios" placeholder="🔍 Buscar..." class="search-input bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus:outline-none w-48">
+  <input type="text" id="search-usuarios" placeholder="🔍 Buscar..." class="search-input bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus:outline-none w-48">
  @if(auth()->user()->isAdmin())
  <a href="{{ route('usuarios.create') }}" class="btn-primary">
  ➕ Nuevo Usuario
@@ -35,9 +35,10 @@
  </thead>
  <tbody>
  @forelse($users as $u)
- <tr class="{{ !$u->active ? 'opacity-60 grayscale' : '' }}">
- <td class="text-center font-bold text-slate-800 dark:text-white">{{ $u->id }}</td>
- <td class="text-center">
+ @php $dim = !$u->active ? 'opacity-60 grayscale' : ''; @endphp
+ <tr>
+ <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $u->id }}</td>
+ <td class="text-center {{ $dim }}">
  @if($u->photo)
  <img src="{{ asset('storage/' . $u->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm">
  @else
@@ -46,16 +47,16 @@
  </div>
  @endif
  </td>
- <td class="font-bold text-slate-800 dark:text-white">{{ $u->name }}</td>
- <td>{{ $u->email }}</td>
- <td><span class="capitalize">{{ $u->role }}</span></td>
+ <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $u->name }}</td>
+ <td class="{{ $dim }}">{{ $u->email }}</td>
+ <td class="{{ $dim }}"><span class="capitalize">{{ $u->role }}</span></td>
  <td>
  <span class="pill {{ $u->active ? 'pill-done' : 'pill-anulado' }}">
  {{ $u->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
- <td class="font-mono text-gray-500">{{ $u->created_at->format('d/m/Y') }}</td>
- <td class="text-center">
+ <td class="font-mono text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
+ <td class="text-center {{ $dim }}">
  <div class="flex justify-center items-center gap-1 flex-wrap">
  @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
  <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">
@@ -94,6 +95,3 @@
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-usuarios', 'tabla-usuarios'));</script>
 @endsection
-
-
-

@@ -14,13 +14,13 @@
  @include('proveedores._form')
 
  @if(auth()->user()->isAdmin())
- <div class="border border-amber-200 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-900/20 rounded-xl p-4">
+ <div>
  <label class="field-label flex items-center gap-2">⚙️ Estado del Proveedor</label>
  <select name="active" class="glass-input mt-1">
  <option value="1" {{ old('active', $proveedor->active) ? 'selected' : '' }}>✅ Activo</option>
  <option value="0" {{ !old('active', $proveedor->active) ? 'selected' : '' }}>🚫 Inactivo (deshabilitado)</option>
  </select>
- <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">Los proveedores inactivos no aparecerán en nuevas compras de inventario.</p>
+ 
  </div>
  @else
  <input type="hidden" name="active" value="{{ $proveedor->active ? 1 : 0 }}">

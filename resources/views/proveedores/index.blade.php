@@ -38,18 +38,19 @@
  </thead>
  <tbody>
  @forelse($proveedores as $p)
- <tr class="{{ !$p->active ? 'opacity-60 grayscale' : '' }}">
- <td class="text-center font-bold text-slate-800 dark:text-white">{{ $p->id }}</td>
- <td>
+ @php $dim = !$p->active ? 'opacity-60 grayscale' : ''; @endphp
+ <tr>
+ <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $p->id }}</td>
+ <td class="{{ $dim }}">
  <span class="pill {{ $p->tipo_entidad === 'empresa' ? 'pill-done' : 'pill-pending' }}">
  {{ $p->tipo_entidad === 'empresa' ? '🏢 Empresa' : '👤 Persona' }}
  </span>
  </td>
- <td class="font-mono font-bold text-sm tracking-tight text-slate-700 dark:text-slate-300">{{ $p->identificacion }}</td>
- <td class="font-bold text-slate-800 dark:text-white">{{ $p->nombre_razon_social }}</td>
- <td class="font-medium">{{ $p->telefono ?? '—' }}</td>
- <td class="text-sm font-medium">{{ $p->email ?? '—' }}</td>
- <td class="text-center font-black text-blue-600 dark:text-cyan-400">
+ <td class="font-mono font-bold text-sm tracking-tight text-slate-700 dark:text-slate-300 {{ $dim }}">{{ $p->identificacion }}</td>
+ <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $p->nombre_razon_social }}</td>
+ <td class="font-medium {{ $dim }}">{{ $p->telefono ?? '—' }}</td>
+ <td class="text-sm font-medium {{ $dim }}">{{ $p->email ?? '—' }}</td>
+ <td class="text-center font-black text-blue-600 dark:text-cyan-400 {{ $dim }}">
  {{ $p->stocks_count ?? $p->stocks()->count() }}
  </td>
  <td class="text-center">
@@ -57,7 +58,7 @@
  {{ $p->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
- <td>
+ <td class="{{ $dim }}">
  <div class="flex justify-center gap-2">
  <a href="{{ route('proveedores.show', $p->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Ver Detalles">👁️</a>
  @if(!auth()->user()->isInvitado())

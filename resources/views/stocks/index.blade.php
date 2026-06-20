@@ -38,26 +38,27 @@
  </thead>
  <tbody>
  @forelse($stocks as $stock)
- <tr id="stock-{{ $stock->id }}" class="{{ !$stock->active ? 'opacity-60 grayscale' : '' }}">
- <td data-label="Código:" class="font-mono text-sm font-bold text-slate-500 dark:text-slate-400">
+ @php $dim = !$stock->active ? 'opacity-60 grayscale' : ''; @endphp
+ <tr id="stock-{{ $stock->id }}">
+ <td data-label="Código:" class="font-mono text-sm font-bold text-slate-500 dark:text-slate-400 {{ $dim }}">
  {{ $stock->codigo ?? '-' }}
  </td>
- <td data-label="Producto:" class="font-bold text-slate-800 dark:text-white">
+ <td data-label="Producto:" class="font-bold text-slate-800 dark:text-white {{ $dim }}">
  {{ $stock->producto }}
  </td>
- <td data-label="Cantidad:" class="text-center">
+ <td data-label="Cantidad:" class="text-center {{ $dim }}">
  <span class="pill {{ $stock->cantidad > 5 ? 'pill-done' : 'pill-anulado' }}">
  {{ $stock->cantidad }}
  </span>
  </td>
- <td data-label="P. Compra:" class="text-right font-medium">
+ <td data-label="P. Compra:" class="text-right font-medium {{ $dim }}">
  ${{ number_format($stock->precio_compra, 0, ',', '.') }}
  </td>
  @php
  $utilidadPesos = $stock->precio_venta - $stock->precio_compra;
  $utilidadPct = $stock->utilidad ?? 0;
  @endphp
- <td data-label="Utilidad:" class="text-center">
+ <td data-label="Utilidad:" class="text-center {{ $dim }}">
  <div class="flex flex-col items-center gap-0.5 justify-end md:justify-center w-full" title="Margen sobre precio de compra">
  <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
  💹 +{{ number_format($utilidadPct, 0) }}%
@@ -67,10 +68,10 @@
  </span>
  </div>
  </td>
- <td data-label="P. Venta:" class="text-right font-black text-blue-600 dark:text-cyan-400 text-base">
+ <td data-label="P. Venta:" class="text-right font-black text-blue-600 dark:text-cyan-400 text-base {{ $dim }}">
  ${{ number_format($stock->precio_venta, 0, ',', '.') }}
  </td>
- <td data-label="P. Técnico:" class="text-right font-bold text-purple-600 dark:text-purple-400">
+ <td data-label="P. Técnico:" class="text-right font-bold text-purple-600 dark:text-purple-400 {{ $dim }}">
  ${{ number_format($stock->precio_tecnico, 0, ',', '.') }}
  </td>
  <td data-label="Estado:" class="text-center">
@@ -78,7 +79,7 @@
  {{ $stock->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
- <td data-label="Acciones:" class="text-center">
+ <td data-label="Acciones:" class="text-center {{ $dim }}">
  <div class="flex justify-end md:justify-center gap-2">
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Editar">✏️</a>

@@ -2,7 +2,6 @@
 
 @section('content')
 <style>
- /* Fila resaltada al llegar por ancla (#cliente-id) */
  tr:target {
  background-color: rgba(59, 130, 246, 0.2) !important;
  outline: 2px solid #3b82f6;
@@ -23,9 +22,7 @@
   <input type="text" id="search-clientes" placeholder="Buscar cliente..." class="glass-input pl-9 w-48 sm:w-64">
   </div>
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('clientes.create') }}" class="btn-primary">
- ➕ Nuevo Cliente
- </a>
+ <a href="{{ route('clientes.create') }}" class="btn-primary">➕ Nuevo Cliente</a>
  @endif
  </div>
  </div>
@@ -46,24 +43,23 @@
  </thead>
  <tbody>
  @forelse($clientes as $cliente)
- <tr id="cliente-{{ $cliente->id }}" class="scroll-mt-[6.5rem] {{ !$cliente->active ? 'opacity-60 grayscale' : '' }}">
- <td class="text-center font-bold text-slate-800 dark:text-white">{{ $cliente->id }}</td>
- <td class="font-bold text-slate-800 dark:text-white">{{ $cliente->nombre }}</td>
- <td class="font-mono text-gray-600 dark:text-gray-300">{{ $cliente->identificacion }}</td>
- <td class="font-mono">{{ $cliente->movil }}</td>
- <td>{{ $cliente->email ?? '-' }}</td>
- <td>{{ $cliente->direccion ?? '-' }}</td>
+ @php $dim = !$cliente->active ? 'opacity-60 grayscale' : ''; @endphp
+ <tr id="cliente-{{ $cliente->id }}" class="scroll-mt-[6.5rem]">
+ <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $cliente->id }}</td>
+ <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $cliente->nombre }}</td>
+ <td class="font-mono text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $cliente->identificacion }}</td>
+ <td class="font-mono {{ $dim }}">{{ $cliente->movil }}</td>
+ <td class="{{ $dim }}">{{ $cliente->email ?? '-' }}</td>
+ <td class="{{ $dim }}">{{ $cliente->direccion ?? '-' }}</td>
  <td class="text-center">
  <span class="pill {{ $cliente->active ? 'pill-done' : 'pill-anulado' }}">
  {{ $cliente->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
- <td class="text-center">
+ <td class="text-center {{ $dim }}">
  <div class="flex justify-center items-center gap-1">
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">
- ✏️
- </a>
+ <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
  @else
  <span class="text-gray-400 text-sm">👁️ Lectura</span>
  @endif
@@ -78,9 +74,7 @@
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin clientes registrados</h3>
  <p class="text-gray-500 font-medium max-w-sm mb-4">Registra a tu primer cliente para comenzar a gestionar sus equipos y mantenimientos.</p>
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('clientes.create') }}" class="btn-primary">
- ➕ Registrar Primer Cliente
- </a>
+ <a href="{{ route('clientes.create') }}" class="btn-primary">➕ Registrar Primer Cliente</a>
  @endif
  </div>
  </td>

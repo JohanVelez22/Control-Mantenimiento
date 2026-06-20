@@ -15,9 +15,7 @@
   <input type="text" id="search-tecnicos" placeholder="Buscar técnico..." class="glass-input pl-9 w-48 sm:w-64">
   </div>
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('tecnicos.create') }}" class="btn-primary">
- ➕ Nuevo Técnico
- </a>
+ <a href="{{ route('tecnicos.create') }}" class="btn-primary">➕ Nuevo Técnico</a>
  @endif
  </div>
  </div>
@@ -39,17 +37,18 @@
  </thead>
  <tbody>
  @forelse($tecnicos as $tecnico)
- <tr class="{{ !$tecnico->active ? 'opacity-60 grayscale' : '' }}">
- <td class="text-center font-bold text-slate-800 dark:text-white">{{ $tecnico->id }}</td>
- <td class="text-center">
+ @php $dim = !$tecnico->active ? 'opacity-60 grayscale' : ''; @endphp
+ <tr>
+ <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $tecnico->id }}</td>
+ <td class="text-center {{ $dim }}">
  @if($tecnico->photo)
  <img src="{{ asset('storage/' . $tecnico->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm">
  @else
  <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">N/A</div>
  @endif
  </td>
- <td class="font-bold text-slate-800 dark:text-white">{{ $tecnico->nombre }}</td>
- <td class="font-mono text-gray-600 dark:text-gray-300">{{ $tecnico->identificacion }}</td>
+ <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $tecnico->nombre }}</td>
+ <td class="font-mono text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $tecnico->identificacion }}</td>
  @php
      $espClass = 'pill-preventivo';
      $espStr = strtolower($tecnico->especialidad);
@@ -58,15 +57,15 @@
      elseif (str_contains($espStr, 'electrónic') || str_contains($espStr, 'electronic')) $espClass = 'pill-done';
      elseif (str_contains($espStr, 'redes')) $espClass = 'pill-banco';
  @endphp
- <td><span class="pill {{ $espClass }}">{{ $tecnico->especialidad }}</span></td>
- <td class="font-mono">{{ $tecnico->movil }}</td>
- <td>{{ $tecnico->email ?? '-' }}</td>
+ <td class="{{ $dim }}"><span class="pill {{ $espClass }}">{{ $tecnico->especialidad }}</span></td>
+ <td class="font-mono {{ $dim }}">{{ $tecnico->movil }}</td>
+ <td class="{{ $dim }}">{{ $tecnico->email ?? '-' }}</td>
  <td class="text-center">
  <span class="pill {{ $tecnico->active ? 'pill-done' : 'pill-anulado' }}">
  {{ $tecnico->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
- <td class="text-center">
+ <td class="text-center {{ $dim }}">
  <div class="flex justify-center items-center gap-1">
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>

@@ -2,11 +2,11 @@
 
 @section('content')
 <style>
- /* Fila resaltada al llegar por ancla (#equipo-id) */
- tr:target {
- background-color: rgba(59, 130, 246, 0.2) !important;
- outline: 2px solid #3b82f6;
- }
+  /* Fila resaltada al llegar por ancla (#equipo-id) */
+  tr:target {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  outline: 2px solid #3b82f6;
+  }
 </style>
 
 <div class="glass-card p-6">
@@ -46,22 +46,23 @@
  </thead>
  <tbody>
  @forelse($equipos as $equipo)
- <tr id="equipo-{{ $equipo->id }}" class="scroll-mt-[6.5rem] {{ !$equipo->active ? 'opacity-60 grayscale' : '' }}">
- <td class="text-center font-bold text-slate-800 dark:text-white">{{ $equipo->id }}</td>
- <td>
+ @php $dim = !$equipo->active ? 'opacity-60 grayscale' : ''; @endphp
+ <tr id="equipo-{{ $equipo->id }}" class="scroll-mt-[6.5rem]">
+ <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $equipo->id }}</td>
+ <td class="{{ $dim }}">
  <div class="font-bold text-slate-800 dark:text-white leading-tight">{{ $equipo->nombre }}</div>
  <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">{{ $equipo->marca }} {{ $equipo->modelo }}</div>
  </td>
- <td class="font-mono text-gray-600 dark:text-gray-300">{{ $equipo->serie }}</td>
- <td class="font-bold text-slate-800 dark:text-white">{{ $equipo->cliente->nombre ?? '-' }}</td>
- <td><p class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2" title="{{ $equipo->observacion }}">{{ $equipo->observacion ?? '-' }}</p></td>
- <td><span class="font-medium text-slate-700 dark:text-slate-300">{{ $equipo->user->name ?? '-' }}</span></td>
+ <td class="font-mono text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $equipo->serie }}</td>
+ <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $equipo->cliente->nombre ?? '-' }}</td>
+ <td class="{{ $dim }}"><p class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2" title="{{ $equipo->observacion }}">{{ $equipo->observacion ?? '-' }}</p></td>
+ <td class="{{ $dim }}"><span class="font-medium text-slate-700 dark:text-slate-300">{{ $equipo->user->name ?? '-' }}</span></td>
  <td class="text-center">
  <span class="pill {{ $equipo->active ? 'pill-done' : 'pill-anulado' }}">
  {{ $equipo->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
- <td class="text-center">
+ <td class="text-center {{ $dim }}">
  <div class="flex justify-center items-center gap-1">
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>

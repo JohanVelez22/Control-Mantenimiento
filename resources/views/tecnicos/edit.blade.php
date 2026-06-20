@@ -70,13 +70,13 @@
  </div>
 
  @if(auth()->user()->isAdmin())
- <div class="border border-amber-200 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-900/20 rounded-xl p-4">
+ <div>
  <label class="field-label flex items-center gap-2">⚙️ Estado del Técnico</label>
  <select name="active" class="glass-input mt-1">
  <option value="1" {{ old('active', $tecnico->active) ? 'selected' : '' }}>✅ Activo</option>
  <option value="0" {{ !old('active', $tecnico->active) ? 'selected' : '' }}>🚫 Inactivo (deshabilitado)</option>
  </select>
- <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">Los técnicos inactivos no aparecerán en nuevos formularios de asignación.</p>
+ 
  </div>
  @else
  <input type="hidden" name="active" value="{{ $tecnico->active ? 1 : 0 }}">
