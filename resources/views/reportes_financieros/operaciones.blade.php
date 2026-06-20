@@ -105,7 +105,7 @@
  <td class="p-2">{{ $m->tecnico->nombre ?? '—' }}</td>
  <td class="p-2">{{ $m->fecha_entrada->format('d/m/Y') }}</td>
  <td class="p-2 font-bold text-blue-600">${{ number_format($m->costo, 0, ',', '.') }}</td>
- <td class="p-2"><span class="pill pill-efectivo {{ !empty($m->anulado) ? 'line-through opacity-70' : '' }}\">{{ ucfirst($m->estado) }}</span></td>
+ <td class="p-2"><span class="pill pill-efectivo {{ !empty($m->anulado) ? 'line-through opacity-70' : '' }}">{{ ucfirst($m->estado) }}</span></td>
  <td class="p-2">
  <span class="pill {{ !empty($m->anulado) ? 'pill-anulado' : 'pill-done' }}">
  {{ !empty($m->anulado) ? 'Anulado' : 'Activo' }}

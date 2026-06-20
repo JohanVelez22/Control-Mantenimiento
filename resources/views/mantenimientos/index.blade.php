@@ -109,7 +109,7 @@
  elseif($m->estado === 'en_proceso') $estadoIcon = '⚙️';
  elseif($m->estado === 'reparado') $estadoIcon = '🔧';
  @endphp
- <span class="pill {{ in_array($m->estado, ['terminado', 'entregado']) ? 'pill-done' : 'pill-pending' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}\">
+ <span class="pill {{ in_array($m->estado, ['terminado', 'entregado']) ? 'pill-done' : 'pill-pending' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
  {{ $estadoIcon }} {{ ucfirst($m->estado) }}
  </span>
  </td>
