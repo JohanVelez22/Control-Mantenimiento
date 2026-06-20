@@ -86,8 +86,13 @@
             transform: translateY(-50%) !important;
             z-index: 10;
         }
-        /* Si hay un ítem seleccionado, ocultar el input para que no estorbe ni deforme la caja al hacer clic */
-        .ts-wrapper.single.has-items .ts-control > input {
+        /* Si hay un ítem seleccionado, ocultar el input para que no estorbe ni deforme la caja al hacer clic (pero mostrarlo si está enfocado o activo) */
+        .ts-wrapper.single.has-items:not(.focus):not(.dropdown-active) .ts-control > input {
+            display: none !important;
+        }
+        /* Ocultar el item seleccionado cuando está en foco o dropdown activo para evitar solapamiento al escribir */
+        .ts-wrapper.single.focus .ts-control > .item,
+        .ts-wrapper.single.dropdown-active .ts-control > .item {
             display: none !important;
         }
         

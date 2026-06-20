@@ -178,14 +178,12 @@
  
  <!-- Columna Equipo: Nombre arriba, Marca/Modelo abajo -->
  <td class="{{ $dim }}">
- <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group block hover:bg-gray-50 dark:hover:bg-gray-800/50 p-1.5 -ml-1.5 rounded-lg transition-colors no-print-link" title="Ver en tabla de equipos">
- <div class="font-bold text-gray-900 dark:text-gray-100 group-hover:underline">{{ $m->equipo->nombre ?? 'N/A' }}</div>
- <div class="font-bold text-[14px] text-gray-400 italic">
- ({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
+ <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
+ <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">{{ $m->equipo->nombre ?? 'N/A' }}</span>
+ <span class="font-bold text-[14px] text-gray-400 italic">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
  <span class="not-italic text-gray-900 dark:text-gray-100 font-medium text-[13.5px]">
  {{ $m->equipo->serie ?? '' }}
- </span>
- </div>
+ </span></span>
  </a>
  </td>
 
