@@ -87,10 +87,12 @@
  
  <td class="text-center font-medium text-sm">{{ $m->tecnico->nombre ?? '-' }}</td>
  
- <td class="text-center">
- <div class="font-bold text-slate-800 dark:text-white capitalize text-sm">{{ $m->tipo }}</div>
- <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">{{ $m->reparacion }}</div>
- </td>
+    <td class="text-center">
+   <span class="pill {{ $m->tipo === 'correctivo' ? 'pill-correctivo' : 'pill-preventivo' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
+   {{ ucfirst($m->tipo) }}
+   </span>
+   <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mt-1">{{ $m->reparacion }}</div>
+   </td>
  
  <td class="max-w-[250px]">
  <p class="text-sm text-gray-600 dark:text-gray-400 whitespace-normal break-words leading-relaxed font-medium">

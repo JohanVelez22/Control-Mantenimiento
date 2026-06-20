@@ -361,7 +361,7 @@
                     <span class="nav-icon">🔒</span>
                     <span class="nav-label">Arqueo / Cierre</span>
                 </a>
-                <a href="{{ route('reportes.index') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}" title="Info Operativos">
+                <a href="{{ route('reportes.financiero.diario') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}" title="Info Operativos">
                     <span class="nav-icon">📈</span>
                     <span class="nav-label">Info Operativos</span>
                 </a>

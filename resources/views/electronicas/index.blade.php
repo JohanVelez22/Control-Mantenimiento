@@ -91,7 +91,7 @@
  </td>
  
  <td data-label="Tipo:" class="text-center">
- <span class="pill {{ $e->tipo === 'correctivo' ? 'pill-correctivo' : 'pill-preventivo' }}">
+ <span class="pill {{ $e->tipo === 'correctivo' ? 'pill-correctivo' : 'pill-preventivo' }} {{ $e->anulado ? 'line-through opacity-70' : '' }}\">
  {{ ucfirst($e->tipo) }}
  </span>
  </td>
