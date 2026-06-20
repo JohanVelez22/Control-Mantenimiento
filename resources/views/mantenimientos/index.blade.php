@@ -54,7 +54,7 @@
   <tbody>
   @forelse($mantenimientos as $m)
   @php 
-    $dim = $m->anulado ? 'opacity-60 grayscale line-through text-gray-400 dark:text-gray-500' : '';
+    $dim = $m->anulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
     $dimLight = $m->anulado ? 'opacity-60' : '';
   @endphp
   <tr id="mantenimiento-{{ $m->id }}" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
@@ -92,7 +92,7 @@
   <td class="text-center font-medium text-sm {{ $dim }}">{{ $m->tecnico->nombre ?? '-' }}</td>
   
   <td class="text-center {{ $dimLight }}">
-  <span class="pill {{ $m->tipo === 'correctivo' ? 'pill-correctivo' : 'pill-preventivo' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
+  <span class="pill {{ $m->tipo === 'correctivo' ? 'pill-correctivo' : 'pill-preventivo' }} {{ $m->anulado ? 'opacity-70' : '' }}">
   {{ ucfirst($m->tipo) }}
   </span>
   <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mt-1">{{ $m->reparacion }}</div>
@@ -115,7 +115,7 @@
   elseif($m->estado === 'en_proceso') $estadoIcon = '⚙️';
   elseif($m->estado === 'reparado') $estadoIcon = '🔧';
   @endphp
-  <span class="pill {{ in_array($m->estado, ['terminado', 'entregado']) ? 'pill-done' : 'pill-pending' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
+  <span class="pill {{ in_array($m->estado, ['terminado', 'entregado']) ? 'pill-done' : 'pill-pending' }} {{ $m->anulado ? 'opacity-70' : '' }}">
   {{ $estadoIcon }} {{ ucfirst($m->estado) }}
   </span>
   </td>

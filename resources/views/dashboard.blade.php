@@ -220,7 +220,7 @@
  </td>
 
  <td class="text-center {{ $dimLight }}">
- <span class="pill {{ $m->estado == 'terminado' ? 'pill-done' : 'pill-pending' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
+ <span class="pill {{ $m->estado == 'terminado' ? 'pill-done' : 'pill-pending' }} {{ $m->anulado ? 'opacity-70' : '' }}">
  {{ strtoupper($m->estado) }}
  </span>
  </td>
