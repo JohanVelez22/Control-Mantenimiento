@@ -99,7 +99,7 @@
 </thead>
 <tbody>
 @forelse($movimientos as $m)
-<tr class="{{ $m->anulado ? 'opacity-50 line-through' : '' }} hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+<tr class="{{ $m->anulado ? 'row-anulado' : '' }} hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
 <td data-label="Fecha:" class="text-center font-medium">{{ $m->fecha->format('d/m/Y') }}</td>
  <td data-label="Entidad:" class="font-bold text-slate-800 dark:text-white leading-tight">
  {{ $m->persona }}
@@ -119,7 +119,7 @@
  </span>
  </td>
  <td data-label="Estado:" class="text-center">
- <span class="px-2 py-0.5 rounded-lg text-xs font-bold {{ $m->anulado ? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' }}">
+ <span class="pill {{ $m->anulado ? 'pill-anulado' : 'pill-done' }}">
  {{ $m->anulado ? 'ANULADO' : 'ACTIVO' }}
  </span>
  </td>

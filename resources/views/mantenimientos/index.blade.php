@@ -44,6 +44,7 @@
  <th class="text-center">Tipo</th>
  <th class="text-center">Observación</th>
  <th class="text-center">Costo</th>
+ <th class="text-center">Progreso</th>
  <th class="text-center">Estado</th>
  <th class="text-center w-24">Entrada</th>
  <th class="text-center w-24">Salida</th>
@@ -52,7 +53,7 @@
  </thead>
  <tbody>
  @forelse($mantenimientos as $m)
- <tr id="mantenimiento-{{ $m->id }}" class="{{ $m->anulado ? 'row-anulado' : '' }}">
+ <tr id="mantenimiento-{{ $m->id }}" class="{{ $m->anulado ? 'row-anulado' : '' }} hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
  <td data-label="Orden:" class="font-bold text-center whitespace-nowrap">
  <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
  {{ $m->id_orden }}
@@ -113,6 +114,12 @@
  </span>
  </td>
  
+ <td class="text-center">
+ <span class="pill {{ $m->anulado ? 'pill-anulado' : 'pill-done' }}">
+ {{ $m->anulado ? 'ANULADO' : 'ACTIVO' }}
+ </span>
+ </td>
+ 
  <td class="text-center text-slate-800 dark:text-slate-200">
  {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}
  @php 
@@ -151,7 +158,7 @@
  </tr>
  @empty
  <tr>
- <td colspan="11" class="p-16 text-center">
+ <td colspan="12" class="p-16 text-center">
  <div class="flex flex-col items-center justify-center gap-3">
  <div class="text-6xl drop-shadow-md mb-2">🔧</div>
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin mantenimientos registrados</h3>

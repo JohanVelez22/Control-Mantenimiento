@@ -83,12 +83,12 @@
  <tr>
  <th class="p-2 text-center">Orden</th><th class="p-2 text-left">Equipo / Cliente</th>
  <th class="p-2 text-center">Técnico</th><th class="p-2 text-center">Entrada</th>
- <th class="p-2 text-center">Costo</th><th class=\"p-2 text-center\">Progreso</th><th class=\"p-2 text-center\">Estado</th>
+ <th class="p-2 text-center">Costo</th><th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th>
  </tr>
  </thead>
  <tbody>
  @foreach($registros as $m)
- <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 {{ !empty($m->anulado) ? 'opacity-50 line-through' : '' }}">
+ <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 {{ !empty($m->anulado) ? 'row-anulado' : '' }}">
  <td class="p-2 font-mono font-bold whitespace-nowrap">
  <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
  {{ $m->id_orden }}
@@ -106,8 +106,8 @@
  <td class="p-2">{{ $m->fecha_entrada->format('d/m/Y') }}</td>
  <td class="p-2 font-bold text-blue-600">${{ number_format($m->costo, 0, ',', '.') }}</td>
  <td class="p-2"><span class="pill pill-efectivo">{{ ucfirst($m->estado) }}</span></td>
- <td class=\"p-2\">
- <span class=\"px-2 py-0.5 rounded-lg text-xs font-bold {{ !empty($m->anulado) ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800' }}\">
+ <td class="p-2">
+ <span class="pill {{ !empty($m->anulado) ? 'pill-anulado' : 'pill-done' }}">
  {{ !empty($m->anulado) ? 'Anulado' : 'Activo' }}
  </span>
  </td>
@@ -125,12 +125,12 @@
  <tr>
  <th class="p-2 text-center">Orden</th><th class="p-2 text-left">Dispositivo / Cliente</th>
  <th class="p-2 text-center">Técnico</th><th class="p-2 text-center">Entrada</th>
- <th class="p-2 text-center">Costo</th><th class=\"p-2 text-center\">Progreso</th><th class=\"p-2 text-center\">Estado</th>
+ <th class="p-2 text-center">Costo</th><th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th>
  </tr>
  </thead>
  <tbody>
  @foreach($registros as $e)
- <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 {{ !empty($m->anulado) ? 'opacity-50 line-through' : '' }}">
+ <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 {{ !empty($m->anulado) ? 'row-anulado' : '' }}">
  <td class="p-2 font-mono font-bold whitespace-nowrap">
  <a href="{{ route('electronicas.index', ['locate' => $e->id]) }}" class="text-purple-600 dark:text-purple-400 hover:underline">
  {{ $e->id_orden }}
@@ -148,8 +148,8 @@
  <td class="p-2">{{ $e->fecha_entrada->format('d/m/Y') }}</td>
  <td class="p-2 font-bold text-purple-600">${{ number_format($e->costo, 0, ',', '.') }}</td>
  <td class="p-2"><span class="px-2 py-0.5 rounded-lg text-xs font-bold bg-purple-100 text-purple-800">{{ ucfirst($e->estado) }}</span></td>
- <td class=\"p-2\">
- <span class=\"px-2 py-0.5 rounded-lg text-xs font-bold {{ !empty($e->anulado) ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800' }}\">
+ <td class="p-2">
+ <span class="pill {{ !empty($e->anulado) ? 'pill-anulado' : 'pill-done' }}">
  {{ !empty($e->anulado) ? 'Anulado' : 'Activo' }}
  </span>
  </td>
@@ -167,20 +167,20 @@
  <tr>
  <th class="p-2 text-center">Fecha</th><th class="p-2 text-left">Persona / Empresa</th>
  <th class="p-2 text-center">Concepto</th><th class="p-2 text-center">Tipo Pago</th>
- <th class="p-2 text-center">Monto</th><th class=\"p-2 text-center\">Progreso</th><th class=\"p-2 text-center\">Estado</th>
+ <th class="p-2 text-center">Monto</th><th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th>
  </tr>
  </thead>
  <tbody>
  @foreach($registros as $c)
- <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 {{ !empty($m->anulado) ? 'opacity-50 line-through' : '' }}">
+ <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 {{ !empty($m->anulado) ? 'row-anulado' : '' }}">
  <td class="p-2">{{ $c->fecha->format('d/m/Y') }}</td>
  <td class="p-2 text-left">{{ $c->persona ?? $c->empresa ?? '—' }}</td>
  <td class="p-2 text-xs">{{ $c->concepto->nombre ?? '—' }}</td>
  <td class="p-2 text-xs capitalize">{{ $c->tipo_pago }}</td>
  <td class="p-2 font-bold {{ $tipo === 'solo_ingresos' ? 'text-green-600' : 'text-red-600' }}">${{ number_format($c->monto, 0, ',', '.') }}</td>
  <td class="p-2"><span class="text-xs font-semibold capitalize">{{ $c->estado }}</span></td>
- <td class=\"p-2\">
- <span class=\"px-2 py-0.5 rounded-lg text-xs font-bold {{ !empty($c->anulado) ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800' }}\">
+ <td class="p-2">
+ <span class="pill {{ !empty($c->anulado) ? 'pill-anulado' : 'pill-done' }}">
  {{ !empty($c->anulado) ? 'Anulado' : 'Activo' }}
  </span>
  </td>
@@ -206,7 +206,7 @@
   </thead>
   <tbody>
   @foreach($registros as $f)
-  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 {{ !empty($m->anulado) ? 'opacity-50 line-through' : '' }}">
+  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 {{ !empty($m->anulado) ? 'row-anulado' : '' }}">
   <td class="p-2">{{ $f->fecha->format('d/m/Y') }}</td>
   <td class="p-2 font-mono font-bold">{{ $f->numero_factura }}</td>
   <td class="p-2 text-left">{{ $f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—' }}</td>

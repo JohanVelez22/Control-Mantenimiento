@@ -149,13 +149,13 @@
  <th class="p-3 text-center">Tipo</th>
  <th class="p-3 text-left">Descripción</th>
  <th class="p-3 text-center">Progreso</th>
- <th class=\"p-3 text-center\">Estado</th>
+ <th class="p-3 text-center">Estado</th>
  <th class="p-3 text-center">Monto</th>
  </tr>
  </thead>
  <tbody>
  @foreach($movimientos as $mov)
- <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center {{ !empty($mov['anulado']) ? 'opacity-50 line-through' : '' }}">
+ <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center {{ !empty($mov['anulado']) ? 'row-anulado' : '' }}">
  <td class="p-3 text-xs text-gray-500">{{ \Carbon\Carbon::parse($mov['fecha'])->format('d/m/Y') }}</td>
  <td class="p-3">
  <span class="px-2 py-0.5 rounded-lg text-xs font-bold
@@ -165,11 +165,18 @@
  </span>
  </td>
  <td class="p-3 text-left text-gray-700 dark:text-gray-300">{{ $mov['descripcion'] }}</td>
+   <td class="p-3">
+   @php
+       $progreso = strtolower($mov['estado'] ?? '');
+       $pillClass = 'pill-pending';
+       if(in_array($progreso, ['terminado', 'entregado', 'emitida', 'activo'])) $pillClass = 'pill-done';
+       elseif(in_array($progreso, ['anulada', 'anulado'])) $pillClass = 'pill-anulado';
+       elseif(in_array($progreso, ['en_proceso', 'reparado'])) $pillClass = 'pill-efectivo';
+   @endphp
+   <span class="pill {{ $pillClass }}">{{ ucfirst($progreso) ?: '—' }}</span>
+   </td>
  <td class="p-3">
- <span class="text-xs font-semibold text-gray-500">{{ ucfirst($mov['estado'] ?? '—') }}</span>
- </td>
- <td class=\"p-3\">
- <span class=\"px-2 py-0.5 rounded-lg text-xs font-bold {{ !empty($mov['anulado']) ? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' }}\">
+ <span class="pill {{ !empty($mov['anulado']) ? 'pill-anulado' : 'pill-done' }}">
  {{ !empty($mov['anulado']) ? 'Anulado' : 'Activo' }}
  </span>
  </td>
