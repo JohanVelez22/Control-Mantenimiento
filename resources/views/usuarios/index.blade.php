@@ -35,7 +35,7 @@
  </thead>
  <tbody>
  @forelse($users as $u)
- <tr>
+ <tr class="{{ !$u->active ? 'opacity-60 grayscale' : '' }}">
  <td class="text-center font-bold text-slate-800 dark:text-white">{{ $u->id }}</td>
  <td class="text-center">
  @if($u->photo)
@@ -65,16 +65,6 @@
  <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed" title="Solo lectura">
  👁️ Lectura
  </span>
- @endif
- 
- @if(auth()->user()->isAdmin() && $u->id !== auth()->id())
- <form action="{{ route('usuarios.destroy', $u->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar el usuario '{{ $u->name }}'? Esta acción no se puede deshacer.">
- @csrf
- @method('DELETE')
- <button type="submit" class="btn-danger px-2.5 py-1.5 text-xs" title="Eliminar">
- 🗑️
- </button>
- </form>
  @endif
  </div>
  </td>

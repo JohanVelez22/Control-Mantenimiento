@@ -58,17 +58,17 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::get('/mantenimientos/{mantenimiento}/factura', [MantenimientoController::class, 'factura'])->name('mantenimientos.factura');
 
     // ─── Módulos generales ────────────────────────────────────────────
-    Route::resource('clientes',    ClienteController::class);
-    Route::resource('equipos',     EquipoController::class);
-    Route::resource('tecnicos',    TecnicoController::class);
-    Route::resource('stocks',      App\Http\Controllers\StockController::class);
+    Route::resource('clientes', ClienteController::class)->except(['destroy']);
+    Route::resource('equipos', EquipoController::class)->except(['destroy']);
+    Route::resource('tecnicos', TecnicoController::class)->except(['destroy']);
+    Route::resource('stocks', App\Http\Controllers\StockController::class)->except(['destroy']);
     Route::resource('electronicas',App\Http\Controllers\ElectronicaController::class)->except(['destroy']);
     Route::get('electronicas/{electronica}/factura', [App\Http\Controllers\ElectronicaController::class, 'factura'])->name('electronicas.factura');
     Route::post('electronicas/{electronica}/anular', [App\Http\Controllers\ElectronicaController::class, 'anular'])->name('electronicas.anular');
     Route::resource('mantenimientos', MantenimientoController::class)->except(['destroy']);
 
     // ─── Proveedores ──────────────────────────────────────────────────
-    Route::resource('proveedores', App\Http\Controllers\ProveedorController::class)->parameters(['proveedores' => 'proveedor']);
+    Route::resource('proveedores', App\Http\Controllers\ProveedorController::class)->parameters(['proveedores' => 'proveedor'])->except(['destroy']);
 
     // ─── Inventario: Compras y Ventas ─────────────────────────────────
     Route::prefix('inventario')->name('inventario.')->group(function () {
@@ -124,7 +124,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
 
     // ─── Módulo de Usuarios (ADMIN y TÉCNICO) ─────────────────────────
     Route::middleware(['role:admin,tecnico'])->group(function () {
-        Route::resource('usuarios', UserController::class);
+        Route::resource('usuarios', UserController::class)->except(['destroy']);
         Route::post('usuarios/{usuario}/change-password', [UserController::class, 'changePassword'])->name('usuarios.change-password');
     });
 

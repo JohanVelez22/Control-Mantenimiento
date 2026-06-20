@@ -9,9 +9,11 @@ class Equipo extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nombre', 'marca', 'modelo', 'serie', 
-        'observacion', 'user_id', 'cliente_id'
+        'nombre', 'marca', 'modelo', 'serie',
+        'observacion', 'user_id', 'cliente_id', 'active'
     ];
+
+    protected $casts = ['active' => 'boolean'];
 
     public function cliente()
     {

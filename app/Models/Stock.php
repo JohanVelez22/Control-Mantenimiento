@@ -19,7 +19,10 @@ class Stock extends Model
         'utilidad',
         'precio_venta',
         'precio_tecnico',
+        'active',
     ];
+
+    protected $casts = ['active' => 'boolean'];
 
     protected static function booted(): void
     {

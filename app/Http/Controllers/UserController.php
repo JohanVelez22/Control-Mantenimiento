@@ -109,35 +109,16 @@ class UserController extends Controller
         return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado correctamente.');
     }
 
-    public function destroy(User $usuario)
+    
+    public function toggle(User $usuario)
     {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('usuarios.index')->with('error', 'Solo el administrador puede eliminar usuarios.');
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
+            return back()->with('error', 'No tienes permisos para modificar el estado.');
         }
 
-        if ($usuario->id === auth()->id()) {
-            return redirect()->route('usuarios.index')->with('error', 'No puedes eliminar tu propia cuenta.');
-        }
-        $usuario->delete();
-        return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado.');
-    }
+        $usuario->update(['active' => !$usuario->active]);
+        $estado = $usuario->active ? 'activado' : 'desactivado';
 
-    /**
-     * Cambia solo la contraseña de un usuario (ruta dedicada; útil para integraciones o formularios separados).
-     */
-    public function changePassword(Request $request, User $usuario)
-    {
-        if (auth()->user()->role !== 'admin' && auth()->id() !== $usuario->id) {
-            return redirect()->route('usuarios.index')->with('error', 'Solo puedes cambiar tu propia contraseña.');
-        }
-
-        $request->validate([
-            'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed'],
-        ]);
-
-        $usuario->password = Hash::make($request->password);
-        $usuario->save();
-
-        return redirect()->route('usuarios.edit', $usuario)->with('success', 'Contraseña actualizada correctamente.');
+        return back()->with('success', "User $estado correctamente.");
     }
 }

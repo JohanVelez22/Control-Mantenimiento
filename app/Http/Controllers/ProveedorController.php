@@ -86,31 +86,17 @@ class ProveedorController extends Controller
             'email'               => ['nullable', 'email', 'max:100'],
             'direccion'           => ['nullable', 'string', 'max:500'],
             'notas'               => ['nullable', 'string', 'max:500'],
+            'active'              => ['boolean'],
         ]);
 
         try {
+            $validated['active'] = $request->boolean('active');
             $proveedor->update($validated);
             return redirect()->route('proveedores.index')
                 ->with('success', 'Proveedor actualizado correctamente.');
         } catch (\Exception $e) {
             Log::error('Error actualizando proveedor: ' . $e->getMessage());
             return back()->with('error', 'Error al actualizar el proveedor.')->withInput();
-        }
-    }
-
-    public function destroy(Proveedor $proveedor): RedirectResponse
-    {
-        try {
-            // SoftDelete — no elimina si tiene stocks activos
-            if ($proveedor->stocks()->exists()) {
-                return back()->with('error', 'No se puede eliminar el proveedor porque tiene artículos de inventario asociados.');
-            }
-            $proveedor->delete();
-            return redirect()->route('proveedores.index')
-                ->with('success', 'Proveedor eliminado.');
-        } catch (\Exception $e) {
-            Log::error('Error eliminando proveedor: ' . $e->getMessage());
-            return back()->with('error', 'Error al eliminar el proveedor.');
         }
     }
 }

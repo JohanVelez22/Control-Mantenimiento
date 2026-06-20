@@ -40,59 +40,46 @@
  <th>Cliente</th>
  <th>Observación</th>
  <th>Registrado por</th>
- <th class="text-center w-32">Acciones</th>
+ <th class="text-center">Estado</th>
+ <th class="text-center w-28">Acciones</th>
  </tr>
  </thead>
  <tbody>
  @forelse($equipos as $equipo)
- <tr id="equipo-{{ $equipo->id }}" class="scroll-mt-[6.5rem]">
+ <tr id="equipo-{{ $equipo->id }}" class="scroll-mt-[6.5rem] {{ !$equipo->active ? 'opacity-60 grayscale' : '' }}">
  <td class="text-center font-bold text-slate-800 dark:text-white">{{ $equipo->id }}</td>
  <td>
- <div class="font-bold text-slate-800 dark:text-white leading-tight">
- {{ $equipo->nombre }}
- </div>
- <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
- {{ $equipo->marca }} {{ $equipo->modelo }}
- </div>
+ <div class="font-bold text-slate-800 dark:text-white leading-tight">{{ $equipo->nombre }}</div>
+ <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">{{ $equipo->marca }} {{ $equipo->modelo }}</div>
  </td>
  <td class="font-mono text-gray-600 dark:text-gray-300">{{ $equipo->serie }}</td>
  <td class="font-bold text-slate-800 dark:text-white">{{ $equipo->cliente->nombre ?? '-' }}</td>
  <td><p class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2" title="{{ $equipo->observacion }}">{{ $equipo->observacion ?? '-' }}</p></td>
  <td><span class="font-medium text-slate-700 dark:text-slate-300">{{ $equipo->user->name ?? '-' }}</span></td>
  <td class="text-center">
- <div class="flex justify-center items-center gap-1 flex-wrap">
- @if(!auth()->user()->isInvitado())
- <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">
- ✏️
- </a>
- @if(auth()->user()->isAdmin())
- <form action="{{ route('equipos.destroy', $equipo->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar el equipo '{{ $equipo->nombre }}'? Esta acción no se puede deshacer.">
- @csrf
- @method('DELETE')
- <button type="submit" class="btn-danger px-2.5 py-1.5 text-xs" title="Eliminar">
- 🗑️
- </button>
- </form>
- @endif
- @else
- <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed" title="Solo lectura">
- 👁️ Lectura
+ <span class="pill {{ $equipo->active ? 'pill-done' : 'pill-anulado' }}">
+ {{ $equipo->active ? 'Activo' : 'Inactivo' }}
  </span>
+ </td>
+ <td class="text-center">
+ <div class="flex justify-center items-center gap-1">
+ @if(!auth()->user()->isInvitado())
+ <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
+ @else
+ <span class="text-gray-400 text-sm">👁️ Lectura</span>
  @endif
  </div>
  </td>
  </tr>
  @empty
  <tr>
- <td colspan="7" class="p-16 text-center">
+ <td colspan="8" class="p-16 text-center">
  <div class="flex flex-col items-center gap-3">
  <div class="text-6xl drop-shadow-md mb-2">🖥️</div>
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin equipos registrados</h3>
  <p class="text-gray-500 font-medium max-w-sm mb-4">Comienza vinculando un equipo a un cliente para iniciar el seguimiento.</p>
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('equipos.create') }}" class="btn-primary">
- ➕ Registrar Primer Equipo
- </a>
+ <a href="{{ route('equipos.create') }}" class="btn-primary">➕ Registrar Primer Equipo</a>
  @endif
  </div>
  </td>
@@ -107,6 +94,3 @@
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-equipos', 'tabla-equipos'));</script>
 @endsection
-
-
-

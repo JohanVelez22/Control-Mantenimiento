@@ -70,23 +70,13 @@ class ClienteController extends Controller
             'identificacion' => 'required|string|max:30|unique:clientes,identificacion,' . $cliente->id,
             'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
             'email' => 'nullable|email|max:100',
-            'direccion' => 'nullable|string|max:500'
+            'direccion' => 'nullable|string|max:500',
+            'active' => 'boolean',
         ]);
 
+        $validated['active'] = $request->boolean('active');
         $cliente->update($validated);
 
         return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
-    }
-
-    // Eliminar cliente (SOLO ADMIN)
-    public function destroy(Cliente $cliente)
-    {
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('clientes.index')->with('error', 'No tienes permisos para eliminar.');
-        }
-
-        $cliente->delete();
-
-        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
     }
 }

@@ -33,21 +33,19 @@
  <th>Especialidad</th>
  <th>Móvil</th>
  <th>Email</th>
- <th>Dirección</th>
- <th class="text-center w-32">Acciones</th>
+ <th class="text-center">Estado</th>
+ <th class="text-center w-28">Acciones</th>
  </tr>
  </thead>
  <tbody>
  @forelse($tecnicos as $tecnico)
- <tr>
+ <tr class="{{ !$tecnico->active ? 'opacity-60 grayscale' : '' }}">
  <td class="text-center font-bold text-slate-800 dark:text-white">{{ $tecnico->id }}</td>
  <td class="text-center">
  @if($tecnico->photo)
  <img src="{{ asset('storage/' . $tecnico->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm">
  @else
- <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">
- N/A
- </div>
+ <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">N/A</div>
  @endif
  </td>
  <td class="font-bold text-slate-800 dark:text-white">{{ $tecnico->nombre }}</td>
@@ -63,26 +61,17 @@
  <td><span class="pill {{ $espClass }}">{{ $tecnico->especialidad }}</span></td>
  <td class="font-mono">{{ $tecnico->movil }}</td>
  <td>{{ $tecnico->email ?? '-' }}</td>
- <td>{{ $tecnico->direccion ?? '-' }}</td>
  <td class="text-center">
- <div class="flex justify-center items-center gap-1 flex-wrap">
- @if(!auth()->user()->isInvitado())
- <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">
- ✏️
- </a>
- @if(auth()->user()->isAdmin())
- <form action="{{ route('tecnicos.destroy', $tecnico->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar al técnico '{{ $tecnico->nombre }}'? Esta acción no se puede deshacer.">
- @csrf
- @method('DELETE')
- <button type="submit" class="btn-danger px-2.5 py-1.5 text-xs" title="Eliminar">
- 🗑️
- </button>
- </form>
- @endif
- @else
- <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed" title="Solo lectura">
- 👁️ Lectura
+ <span class="pill {{ $tecnico->active ? 'pill-done' : 'pill-anulado' }}">
+ {{ $tecnico->active ? 'Activo' : 'Inactivo' }}
  </span>
+ </td>
+ <td class="text-center">
+ <div class="flex justify-center items-center gap-1">
+ @if(!auth()->user()->isInvitado())
+ <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
+ @else
+ <span class="text-gray-400 text-sm">👁️ Lectura</span>
  @endif
  </div>
  </td>
@@ -95,9 +84,7 @@
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin técnicos registrados</h3>
  <p class="text-gray-500 font-medium max-w-sm mb-4">Registra al personal técnico para asignar órdenes de mantenimiento.</p>
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('tecnicos.create') }}" class="btn-primary">
- ➕ Registrar Primer Técnico
- </a>
+ <a href="{{ route('tecnicos.create') }}" class="btn-primary">➕ Registrar Primer Técnico</a>
  @endif
  </div>
  </td>
@@ -112,6 +99,3 @@
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-tecnicos', 'tabla-tecnicos'));</script>
 @endsection
-
-
-

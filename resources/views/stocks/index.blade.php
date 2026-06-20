@@ -32,12 +32,13 @@
  <th class="text-center">Utilidad</th>
  <th class="text-right">P. Venta</th>
  <th class="text-right">P. Técnico</th>
+ <th class="text-center">Estado</th>
  <th class="text-center">Acciones</th>
  </tr>
  </thead>
  <tbody>
  @forelse($stocks as $stock)
- <tr id="stock-{{ $stock->id }}">
+ <tr id="stock-{{ $stock->id }}" class="{{ !$stock->active ? 'opacity-60 grayscale' : '' }}">
  <td data-label="Código:" class="font-mono text-sm font-bold text-slate-500 dark:text-slate-400">
  {{ $stock->codigo ?? '-' }}
  </td>
@@ -72,16 +73,15 @@
  <td data-label="P. Técnico:" class="text-right font-bold text-purple-600 dark:text-purple-400">
  ${{ number_format($stock->precio_tecnico, 0, ',', '.') }}
  </td>
+ <td data-label="Estado:" class="text-center">
+ <span class="pill {{ $stock->active ? 'pill-done' : 'pill-anulado' }}">
+ {{ $stock->active ? 'Activo' : 'Inactivo' }}
+ </span>
+ </td>
  <td data-label="Acciones:" class="text-center">
  <div class="flex justify-end md:justify-center gap-2">
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Editar">✏️</a>
- @if(auth()->user()->isAdmin())
- <form action="{{ route('stocks.destroy', $stock->id) }}" method="POST" class="inline" data-confirm-delete="¿Eliminar '{{ $stock->producto }}' del inventario?">
- @csrf @method('DELETE')
- <button class="btn-danger px-3 py-1.5 text-xs" title="Eliminar">🗑️</button>
- </form>
- @endif
  @else
  <span class="text-gray-400 text-sm">👁️ Lectura</span>
  @endif
@@ -90,15 +90,13 @@
  </tr>
  @empty
  <tr>
- <td colspan="8" class="p-16 text-center">
+ <td colspan="9" class="p-16 text-center">
  <div class="flex flex-col items-center gap-3">
  <div class="text-6xl drop-shadow-md mb-2">📦</div>
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Inventario Vacío</h3>
  <p class="text-gray-500 font-medium max-w-sm mb-4">Registra tu primer repuesto o producto en el stock.</p>
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('stocks.create') }}" class="btn-primary">
- ➕ Agregar Producto
- </a>
+ <a href="{{ route('stocks.create') }}" class="btn-primary">➕ Agregar Producto</a>
  @endif
  </div>
  </td>
@@ -107,7 +105,7 @@
  </tbody>
  </table>
  </div>
- 
+
  <div class="mt-6 flex justify-end">
  {{ $stocks->appends(request()->query())->links() }}
  </div>

@@ -16,7 +16,12 @@ class Tecnico extends Model
         'movil',
         'email',
         'direccion',
-        'photo'
+        'photo',
+        'active',
+    ];
+
+    protected $casts = [
+        'active' => 'boolean'
     ];
 
     // Relación: Un técnico puede tener muchos mantenimientos (Lo usaremos en la siguiente fase)

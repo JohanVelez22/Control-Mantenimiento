@@ -45,6 +45,19 @@
  <textarea name="direccion" rows="3" class="glass-input mt-1 resize-y">{{ old('direccion', $cliente->direccion) }}</textarea>
  </div>
 
+ @if(auth()->user()->isAdmin())
+ <div class="border border-amber-200 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-900/20 rounded-xl p-4">
+ <label class="field-label flex items-center gap-2">⚙️ Estado de la Cuenta</label>
+ <select name="active" class="glass-input mt-1">
+ <option value="1" {{ old('active', $cliente->active) ? 'selected' : '' }}>✅ Activo</option>
+ <option value="0" {{ !old('active', $cliente->active) ? 'selected' : '' }}>🚫 Inactivo (deshabilitado)</option>
+ </select>
+ <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">Los registros inactivos se mostrarán en gris y no aparecerán en los selectores.</p>
+ </div>
+ @else
+ <input type="hidden" name="active" value="{{ $cliente->active ? 1 : 0 }}">
+ @endif
+
  <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
  <a href="{{ route('clientes.index') }}" class="btn-cancel">
  ↩️ Cancelar

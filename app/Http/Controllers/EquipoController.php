@@ -74,9 +74,11 @@ class EquipoController extends Controller
             'modelo' => 'required|string|max:80',
             'serie' => 'required|string|max:80|unique:equipos,serie,' . $equipo->id,
             'cliente_id' => 'required|integer|exists:clientes,id',
-            'observacion' => 'nullable|string|max:500'
+            'observacion' => 'nullable|string|max:500',
+            'active' => 'boolean',
         ]);
 
+        $validated['active'] = $request->boolean('active');
         $equipo->update($validated);
 
         return redirect()->route('equipos.index')->with('success', 'Equipo actualizado correctamente.');

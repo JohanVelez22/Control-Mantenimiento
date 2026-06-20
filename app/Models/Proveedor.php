@@ -21,13 +21,10 @@ class Proveedor extends Model
         'email',
         'direccion',
         'notas',
-        'activo',
+        'active',
     ];
 
-    protected function casts(): array
-    {
-        return ['activo' => 'boolean'];
-    }
+    protected $casts = ['active' => 'boolean'];
 
     /** Artículos de stock que fueron suministrados por este proveedor */
     public function stocks(): HasMany

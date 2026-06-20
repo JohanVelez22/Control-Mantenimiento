@@ -40,12 +40,13 @@
  <th>Móvil</th>
  <th>Email</th>
  <th>Dirección</th>
- <th class="text-center w-32">Acciones</th>
+ <th class="text-center">Estado</th>
+ <th class="text-center w-28">Acciones</th>
  </tr>
  </thead>
  <tbody>
  @forelse($clientes as $cliente)
- <tr id="cliente-{{ $cliente->id }}" class="scroll-mt-[6.5rem]">
+ <tr id="cliente-{{ $cliente->id }}" class="scroll-mt-[6.5rem] {{ !$cliente->active ? 'opacity-60 grayscale' : '' }}">
  <td class="text-center font-bold text-slate-800 dark:text-white">{{ $cliente->id }}</td>
  <td class="font-bold text-slate-800 dark:text-white">{{ $cliente->nombre }}</td>
  <td class="font-mono text-gray-600 dark:text-gray-300">{{ $cliente->identificacion }}</td>
@@ -53,31 +54,25 @@
  <td>{{ $cliente->email ?? '-' }}</td>
  <td>{{ $cliente->direccion ?? '-' }}</td>
  <td class="text-center">
- <div class="flex justify-center items-center gap-1 flex-wrap">
+ <span class="pill {{ $cliente->active ? 'pill-done' : 'pill-anulado' }}">
+ {{ $cliente->active ? 'Activo' : 'Inactivo' }}
+ </span>
+ </td>
+ <td class="text-center">
+ <div class="flex justify-center items-center gap-1">
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">
  ✏️
  </a>
- @if(auth()->user()->isAdmin())
- <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" class="inline-block" data-confirm-delete="¿Eliminar al cliente '{{ $cliente->nombre }}'? Esta acción no se puede deshacer.">
- @csrf
- @method('DELETE')
- <button type="submit" class="btn-danger px-2.5 py-1.5 text-xs" title="Eliminar">
- 🗑️
- </button>
- </form>
- @endif
  @else
- <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed" title="Solo lectura">
- 👁️ Lectura
- </span>
+ <span class="text-gray-400 text-sm">👁️ Lectura</span>
  @endif
  </div>
  </td>
  </tr>
  @empty
  <tr>
- <td colspan="7" class="p-16 text-center">
+ <td colspan="8" class="p-16 text-center">
  <div class="flex flex-col items-center gap-3">
  <div class="text-6xl drop-shadow-md mb-2">👤</div>
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin clientes registrados</h3>
@@ -100,6 +95,3 @@
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-clientes', 'tabla-clientes'));</script>
 @endsection
-
-
-

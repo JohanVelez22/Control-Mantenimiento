@@ -14,7 +14,12 @@ class Cliente extends Model
         'identificacion',
         'movil',
         'email',
-        'direccion'
+        'direccion',
+        'active',
+    ];
+
+    protected $casts = [
+        'active' => 'boolean'
     ];
 
      // Relación: Un cliente tiene muchos equipos

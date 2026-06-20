@@ -32,12 +32,13 @@
  <th>Teléfono</th>
  <th>Email</th>
  <th class="text-center">Stock Asociado</th>
+ <th class="text-center">Estado</th>
  <th class="text-center">Acciones</th>
  </tr>
  </thead>
  <tbody>
  @forelse($proveedores as $p)
- <tr>
+ <tr class="{{ !$p->active ? 'opacity-60 grayscale' : '' }}">
  <td class="text-center font-bold text-slate-800 dark:text-white">{{ $p->id }}</td>
  <td>
  <span class="pill {{ $p->tipo_entidad === 'empresa' ? 'pill-done' : 'pill-pending' }}">
@@ -51,33 +52,29 @@
  <td class="text-center font-black text-blue-600 dark:text-cyan-400">
  {{ $p->stocks_count ?? $p->stocks()->count() }}
  </td>
+ <td class="text-center">
+ <span class="pill {{ $p->active ? 'pill-done' : 'pill-anulado' }}">
+ {{ $p->active ? 'Activo' : 'Inactivo' }}
+ </span>
+ </td>
  <td>
  <div class="flex justify-center gap-2">
  <a href="{{ route('proveedores.show', $p->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Ver Detalles">👁️</a>
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('proveedores.edit', $p->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Editar">✏️</a>
- @if(auth()->user()->isAdmin())
- <form action="{{ route('proveedores.destroy', $p->id) }}" method="POST" class="inline"
- data-confirm-delete="¿Eliminar definitivamente al proveedor '{{ $p->nombre_razon_social }}'?">
- @csrf @method('DELETE')
- <button class="btn-danger px-3 py-1.5 text-xs">🗑️</button>
- </form>
- @endif
  @endif
  </div>
  </td>
  </tr>
  @empty
  <tr>
- <td colspan="8" class="p-16 text-center">
+ <td colspan="9" class="p-16 text-center">
  <div class="flex flex-col items-center gap-3">
  <div class="text-6xl drop-shadow-md mb-2">🏭</div>
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin proveedores registrados</h3>
  <p class="text-gray-500 font-medium max-w-sm mb-4">Agrega el primer proveedor para gestionar el abastecimiento de inventario.</p>
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('proveedores.create') }}" class="btn-primary">
- ➕ Agregar Proveedor
- </a>
+ <a href="{{ route('proveedores.create') }}" class="btn-primary">➕ Agregar Proveedor</a>
  @endif
  </div>
  </td>
@@ -86,7 +83,7 @@
  </tbody>
  </table>
  </div>
- 
+
  <div class="mt-6 flex justify-end">
  {{ $proveedores->appends(request()->query())->links() }}
  </div>

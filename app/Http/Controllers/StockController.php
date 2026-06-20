@@ -81,31 +81,15 @@ class StockController extends Controller
             'utilidad' => 'required|numeric|min:0|max:100',
             'precio_venta' => 'nullable|numeric|min:0|decimal:0,2',
             'precio_tecnico' => 'nullable|numeric|min:0|decimal:0,2',
+            'active' => 'boolean',
         ]);
 
-        // Si se editó la compra o utilidad y se dejaron en blanco la venta, se resetearán a 0 para que el boot los recalcule.
         if (!isset($validated['precio_venta'])) $validated['precio_venta'] = 0;
         if (!isset($validated['precio_tecnico'])) $validated['precio_tecnico'] = 0;
 
+        $validated['active'] = $request->boolean('active');
         $stock->update($validated);
 
         return redirect()->route('stocks.index')->with('success', 'Producto actualizado exitosamente.');
-    }
-
-    public function destroy(Stock $stock)
-    {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('stocks.index')->with('error', 'Solo el administrador puede eliminar.');
-        }
-        
-        try {
-            $stock->delete();
-            return redirect()->route('stocks.index')->with('success', 'Producto eliminado del inventario.');
-        } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->getCode() == 23000) {
-                return redirect()->route('stocks.index')->with('error', 'No se puede eliminar este producto porque está asociado a facturas o reparaciones existentes.');
-            }
-            return redirect()->route('stocks.index')->with('error', 'Error al eliminar el producto.');
-        }
     }
 }
