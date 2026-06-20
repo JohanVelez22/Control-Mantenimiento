@@ -188,15 +188,16 @@
  ? \Carbon\Carbon::parse($m->fecha_salida)->startOfDay() 
  : \Carbon\Carbon::now()->startOfDay();
  $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
+ $dim = $m->anulado ? 'opacity-60 grayscale' : '';
  @endphp
- <tr class="{{ $m->anulado ? 'row-anulado' : '' }}">
- <td class="text-center font-bold whitespace-nowrap">
+ <tr>
+ <td class="text-center font-bold whitespace-nowrap {{ $dim }}">
  <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline no-print-link">
  {{ $m->id_orden }}
  </a>
  </td>
  
- <td class="text-center">
+ <td class="text-center {{ $dim }}">
  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
  <span class="font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap group-hover:underline">
  {{ $m->equipo->nombre ?? '-' }}
@@ -207,7 +208,7 @@
  </a>
  </td>
 
- <td class="text-center">
+ <td class="text-center {{ $dim }}">
  <div class="flex flex-col items-center gap-1">
  <span class="font-bold text-gray-900 dark:text-white">${{ number_format($m->costo, 0, ',', '.') }}</span>
  @if($m->total_abonado > 0)
@@ -217,7 +218,7 @@
  </div>
  </td>
 
- <td class="text-center">
+ <td class="text-center {{ $dim }}">
  <span class="pill {{ $m->estado == 'terminado' ? 'pill-done' : 'pill-pending' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
  {{ strtoupper($m->estado) }}
  </span>
@@ -228,15 +229,15 @@
  </span>
  </td>
 
- <td class="text-center whitespace-nowrap text-gray-600 dark:text-gray-300">{{ $fechaEntrada->format('d/m/Y') }}</td>
+ <td class="text-center whitespace-nowrap text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $fechaEntrada->format('d/m/Y') }}</td>
  
- <td class="text-center font-bold">
+ <td class="text-center font-bold {{ $dim }}">
  <span class="{{ !$m->fecha_salida && $diasTranscurridos > 3 ? 'text-red-500' : 'text-gray-600 dark:text-gray-400' }}">
  {{ $diasTranscurridos }}
  </span>
  </td>
 
- <td class="text-center whitespace-nowrap {{ $m->fecha_salida ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }}">
+ <td class="text-center whitespace-nowrap {{ $m->fecha_salida ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }} {{ $dim }}">
  {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'En proceso' }}
  </td>
  </tr>
@@ -281,15 +282,16 @@
  ? \Carbon\Carbon::parse($e->fecha_salida)->startOfDay() 
  : \Carbon\Carbon::now()->startOfDay();
  $diasTranscurridos = $fechaEntrada->diffInDays($fechaFin);
+ $dim = $e->anulado ? 'opacity-60 grayscale' : '';
  @endphp
- <tr class="{{ $e->anulado ? 'row-anulado' : '' }}">
- <td class="text-center font-bold whitespace-nowrap">
+ <tr>
+ <td class="text-center font-bold whitespace-nowrap {{ $dim }}">
  <a href="{{ route('electronicas.index', ['locate' => $e->id]) }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline no-print-link">
  {{ $e->id_orden }}
  </a>
  </td>
 
- <td class="text-center">
+ <td class="text-center {{ $dim }}">
  <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="flex items-baseline justify-center gap-1 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
  <span class="font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap group-hover:underline">
  {{ $e->equipo->nombre ?? '-' }}
@@ -300,11 +302,11 @@
  </a>
  </td>
 
- <td class="text-center font-bold text-gray-900 dark:text-white">
+ <td class="text-center font-bold text-gray-900 dark:text-white {{ $dim }}">
  ${{ number_format($e->costo, 0, ',', '.') }}
  </td>
 
- <td class="text-center">
+ <td class="text-center {{ $dim }}">
  <span class="pill {{ $e->estado == 'terminado' ? 'pill-done' : 'pill-pending' }} {{ $e->anulado ? 'line-through opacity-70' : '' }}">
  {{ strtoupper($e->estado) }}
  </span>
@@ -315,15 +317,15 @@
  </span>
  </td>
 
- <td class="text-center whitespace-nowrap text-gray-600 dark:text-gray-300">{{ $fechaEntrada->format('d/m/Y') }}</td>
+ <td class="text-center whitespace-nowrap text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $fechaEntrada->format('d/m/Y') }}</td>
  
- <td class="text-center font-bold">
+ <td class="text-center font-bold {{ $dim }}">
  <span class="{{ !$e->fecha_salida && $diasTranscurridos > 3 ? 'text-red-500' : 'text-gray-600 dark:text-gray-400' }}">
  {{ $diasTranscurridos }}
  </span>
  </td>
 
- <td class="text-center whitespace-nowrap {{ $e->fecha_salida ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }}">
+ <td class="text-center whitespace-nowrap {{ $e->fecha_salida ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 italic' }} {{ $dim }}">
  {{ $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : 'En proceso' }}
  </td>
  </tr>
