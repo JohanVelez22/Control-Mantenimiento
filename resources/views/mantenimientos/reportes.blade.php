@@ -74,22 +74,16 @@
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Hasta</label>
  <input type="date" name="fecha_hasta" class="glass-input" value="{{ request('fecha_hasta', date('Y-m-d')) }}">
  </div>
- <div>
- <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Tipo Mantenimiento</label>
- <select name="tipo" class="glass-input">
- <option value="todos">Todos</option>
- <option value="preventivo" {{ request('tipo') == 'preventivo' ? 'selected' : '' }}>Preventivo</option>
- <option value="correctivo" {{ request('tipo') == 'correctivo' ? 'selected' : '' }}>Correctivo</option>
- </select>
- </div>
- <div>
- <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Reparación</label>
- <select name="reparacion" class="glass-input">
- <option value="todos">Todas</option>
- <option value="software" {{ request('reparacion') == 'software' ? 'selected' : '' }}>Software</option>
- <option value="hardware" {{ request('reparacion') == 'hardware' ? 'selected' : '' }}>Hardware</option>
- </select>
- </div>
+   <div>
+  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Tipo/Rep</label>
+  <select name="tipo_rep" class="glass-input">
+  <option value="todos">Todos</option>
+  <option value="preventivo" {{ request('tipo_rep') == 'preventivo' ? 'selected' : '' }}>Preventivo</option>
+  <option value="correctivo" {{ request('tipo_rep') == 'correctivo' ? 'selected' : '' }}>Correctivo</option>
+  <option value="software" {{ request('tipo_rep') == 'software' ? 'selected' : '' }}>Software</option>
+  <option value="hardware" {{ request('tipo_rep') == 'hardware' ? 'selected' : '' }}>Hardware</option>
+  </select>
+  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Progreso</label>
  <select name="estado" class="glass-input">
@@ -143,13 +137,12 @@
  <th class="text-center">Cliente</th>
  <th class="text-center">Equipo</th>
  <th class="text-center">Técnico</th>
- <th class="text-center">Tipo</th>
- <th class="text-center">Reparación</th>
+ <th class="text-center">Tipo/Rep</th>
  <th class="text-center">Progreso</th>
  <th class="text-center">Estado</th>
- <th class="text-center">Costo</th>
  <th class="text-center w-24">Entrada</th>
  <th class="text-center w-24">Salida</th>
+ <th class="text-center">Costo</th>
  </tr>
  </thead>
  <tbody>
@@ -191,12 +184,11 @@
  
  <!-- Columna Tipo con Colores (Azul/Verde) -->
  <td class="text-center {{ $dimLight }}">
- <span class="pill {{ $m->tipo == 'preventivo' ? 'pill-preventivo' : 'pill-correctivo' }}">
- {{ ucfirst($m->tipo) }}
- </span>
- </td>
-
- <td class="text-center capitalize {{ $dim }}">{{ $m->reparacion }}</td>
+  <span class="pill {{ $m->tipo == 'preventivo' ? 'pill-preventivo' : 'pill-correctivo' }}">
+  {{ ucfirst($m->tipo) }}
+  </span>
+  <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mt-1 {{ $dim }}">{{ $m->reparacion }}</div>
+  </td>
  
  <td class="text-center {{ $dimLight }}">
  @php
@@ -216,19 +208,15 @@
  </span>
  </td>
 
- <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">${{ number_format($m->costo, 2) }}</td>
- <td class="text-center font-mono text-xs text-gray-500 dark:text-gray-400 {{ $dim }}">
- {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}
- </td>
+ <td class="text-center font-medium text-sm {{ $dim }}">{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
  
  <!-- Salida Centrada -->
- <td class="text-center font-mono text-xs {{ $m->fecha_salida ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 italic' }} {{ $dim }}">
- {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}
- </td>
+ <td class="text-center font-medium text-sm {{ $m->fecha_salida ? '' : 'text-gray-400 italic' }} {{ $dim }}">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}</td>
+ <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">${{ number_format($m->costo, 2) }}</td>
  </tr>
  @empty
  <tr>
-     <td colspan="11" class="p-12 text-center bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm">
+     <td colspan="10" class="p-12 text-center bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm">
          <div class="flex flex-col items-center justify-center space-y-3">
              <div class="text-5xl opacity-80">📭</div>
              <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
@@ -242,9 +230,8 @@
  <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
  <tr>
  <td class="text-center font-bold">Total: {{ $mantenimientos->count() }}</td>
- <td colspan="7" class="text-right uppercase text-xs">Totales Filtrados:</td>
+ <td colspan="8" class="text-right uppercase text-xs">Totales Filtrados:</td>
  <td class="text-center font-black text-green-600 dark:text-green-400">${{ number_format($mantenimientos->sum('costo'), 2) }}</td>
- <td colspan="2"></td>
  </tr>
  </tfoot>
  @endif

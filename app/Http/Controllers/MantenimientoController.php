@@ -95,8 +95,17 @@ class MantenimientoController extends Controller
         if ($request->filled('equipo_id') && $request->equipo_id !== 'todos') $query->where('equipo_id', $request->equipo_id);
         if ($request->filled('tecnico_id') && $request->tecnico_id !== 'todos') $query->where('tecnico_id', $request->tecnico_id);
         if ($request->filled('user_id') && $request->user_id !== 'todos') $query->where('user_id', $request->user_id);
-        if ($request->filled('tipo') && $request->tipo !== 'todos') $query->where('tipo', $request->tipo);
-        if ($request->filled('reparacion') && $request->reparacion !== 'todos') $query->where('reparacion', $request->reparacion);
+        if ($request->filled('tipo_rep') && $request->tipo_rep !== 'todos') {
+            $val = $request->tipo_rep;
+            if (in_array($val, ['preventivo', 'correctivo'])) {
+                $query->where('tipo', $val);
+            } elseif (in_array($val, ['software', 'hardware'])) {
+                $query->where('reparacion', $val);
+            }
+        } else {
+            if ($request->filled('tipo') && $request->tipo !== 'todos') $query->where('tipo', $request->tipo);
+            if ($request->filled('reparacion') && $request->reparacion !== 'todos') $query->where('reparacion', $request->reparacion);
+        }
         if ($request->filled('estado') && $request->estado !== 'todos') $query->where('estado', $request->estado);
         if ($request->filled('anulado') && $request->anulado !== 'todos') {
             if ($request->anulado === 'activo') {

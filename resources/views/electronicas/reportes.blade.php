@@ -194,12 +194,8 @@
   </span>
   </td>
 
-  <td class="text-center font-mono text-xs text-gray-500 dark:text-gray-400 {{ $dim }}">
-  {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}
-  </td>
-  <td class="text-center font-mono text-xs {{ $m->fecha_salida ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 italic' }} {{ $dim }}">
-  {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}
-  </td>
+    <td class="text-center font-medium text-sm {{ $dim }}">{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
+  <td class="text-center font-medium text-sm {{ $m->fecha_salida ? '' : 'text-gray-400 italic' }} {{ $dim }}">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}</td>
   <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">${{ number_format($m->costo, 2) }}</td>
   </tr>
   @empty
