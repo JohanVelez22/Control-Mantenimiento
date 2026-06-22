@@ -298,16 +298,18 @@ class ElectronicaController extends Controller
         ];
 
         if ($request->get('export') == 'excel') {
-            $electronicas = $query->orderBy('fecha_entrada', 'desc')->get();
+            $electronicas = $query->orderBy('id', 'desc')->get();
             return Excel::download(new ElectronicasExport($electronicas), 'reporte_electronica.xlsx');
         }
 
         if ($request->get('export') == 'pdf') {
-            $electronicas = $query->orderBy('fecha_entrada', 'desc')->get();
-            return Pdf::loadView('electronicas.pdf', compact('electronicas'))->download('reporte_electronica.pdf');
+            $electronicas = $query->orderBy('id', 'desc')->get();
+            return Pdf::loadView('electronicas.pdf', compact('electronicas'))
+                ->setPaper('letter', 'landscape')
+                ->download('reporte_electronica.pdf');
         }
 
-        $registros = $query->with(['tecnico', 'user', 'equipo.cliente'])->orderBy('fecha_entrada', 'desc')->paginate(10);
+        $registros = $query->with(['tecnico', 'user', 'equipo.cliente'])->orderBy('id', 'desc')->paginate(10);
         $tecnicos = Tecnico::orderBy('nombre')->get(['id', 'nombre']);
         $clientes = Cliente::orderBy('nombre')->get(['id', 'nombre', 'identificacion']);
         $equipos  = Equipo::orderBy('nombre')->get(['id', 'nombre', 'modelo', 'serie']);

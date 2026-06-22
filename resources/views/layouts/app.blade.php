@@ -350,11 +350,11 @@
                     <span class="nav-icon">📄</span>
                     <span class="nav-label">Operaciones (C/V)</span>
                 </a>
-                <a href="{{ route('mantenimientos.index') }}" class="nav-item {{ request()->routeIs('mantenimientos.*') ? 'active' : '' }}" title="Mantenimientos">
+                <a href="{{ route('mantenimientos.index') }}" class="nav-item {{ request()->routeIs('mantenimientos.*') && !request()->routeIs('mantenimientos.reportes') ? 'active' : '' }}" title="Mantenimientos">
                     <span class="nav-icon">⚙️</span>
                     <span class="nav-label">Mantenimientos</span>
                 </a>
-                <a href="{{ route('electronicas.index') }}" class="nav-item {{ request()->routeIs('electronicas.*') ? 'active' : '' }}" title="Electrónica">
+                <a href="{{ route('electronicas.index') }}" class="nav-item {{ request()->routeIs('electronicas.*') && !request()->routeIs('electronicas.reportes') ? 'active' : '' }}" title="Electrónica">
                     <span class="nav-icon">⚡</span>
                     <span class="nav-label">Electrónica</span>
                 </a>
@@ -366,7 +366,7 @@
                     <span class="nav-icon">🔒</span>
                     <span class="nav-label">Arqueo / Cierre</span>
                 </a>
-                <a href="{{ route('reportes.financiero.diario') }}" class="nav-item {{ request()->routeIs('reportes.*') ? 'active' : '' }}" title="Info Operativos">
+                <a href="{{ route('reportes.financiero.diario') }}" class="nav-item {{ request()->routeIs('reportes.*') || request()->routeIs('mantenimientos.reportes') || request()->routeIs('electronicas.reportes') ? 'active' : '' }}" title="Info Operativos">
                     <span class="nav-icon">📈</span>
                     <span class="nav-label">Info Operativos</span>
                 </a>

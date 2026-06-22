@@ -143,7 +143,9 @@ class MantenimientoController extends Controller
         }
         if ($request->get('export') == 'pdf') {
             $mantenimientos = $query->orderBy('id', 'desc')->get();
-            return Pdf::loadView('mantenimientos.pdf', compact('mantenimientos'))->download('reporte.pdf');
+            return Pdf::loadView('mantenimientos.pdf', compact('mantenimientos'))
+                ->setPaper('letter', 'landscape')
+                ->download('reporte_mantenimientos.pdf');
         }
 
         $mantenimientos = $query->orderBy('id', 'desc')->paginate(10);

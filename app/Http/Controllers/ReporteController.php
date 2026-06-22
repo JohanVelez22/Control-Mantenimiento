@@ -19,7 +19,6 @@ class ReporteController extends Controller
         $queryDetallado = MovimientoCaja::with(['concepto', 'user'])
             ->where('estado', 'activo')
             ->where('anulado', false)
-            ->orderBy('fecha', 'desc')
             ->orderBy('id', 'desc');
 
         if ($request->filled('mes')) {
@@ -89,7 +88,9 @@ class ReporteController extends Controller
         }
         if ($request->get('export') == 'pdf') {
             $transaccionesParaExportar = $queryDetallado->get();
-            return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes.pdf', compact('transaccionesParaExportar', 'acumulado', 'operaciones', 'mes', 'anio'))->download('reporte_financiero.pdf');
+            return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes.pdf', compact('transaccionesParaExportar', 'acumulado', 'operaciones', 'mes', 'anio'))
+                ->setPaper('letter', 'portrait')
+                ->download('reporte_financiero.pdf');
         }
 
         return view('reportes.index', compact('transacciones', 'acumulado', 'operaciones', 'mes', 'anio'));

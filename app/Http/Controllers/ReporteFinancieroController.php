@@ -18,7 +18,7 @@ class ReporteFinancieroController extends Controller
     //  REPORTE DIARIO: Todos los movimientos de una fecha específica
     // ═══════════════════════════════════════════════════════════════
 
-    public function reporteDiario(Request $request): View
+    public function reporteDiario(Request $request)
     {
         $fecha = $request->filled('fecha')
             ? Carbon::parse($request->fecha)->toDateString()
@@ -126,6 +126,15 @@ class ReporteFinancieroController extends Controller
             );
         }
 
+        if ($request->get('export') === 'pdf') {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_diario', [
+                'movimientos' => $movimientos,
+                'resumen'     => $resumen,
+                'fecha'       => \Carbon\Carbon::parse($fecha)->isoFormat('dddd D [de] MMMM [de] YYYY'),
+            ])->setPaper('letter', 'landscape');
+            return $pdf->download("reporte_diario_{$fecha}.pdf");
+        }
+
         return view('reportes_financieros.diario', compact('movimientos', 'fecha', 'resumen'));
     }
 
@@ -133,7 +142,7 @@ class ReporteFinancieroController extends Controller
     //  REPORTE ACUMULADO: Totales consolidados de un rango de fechas
     // ═══════════════════════════════════════════════════════════════
 
-    public function reporteAcumulado(Request $request): View
+    public function reporteAcumulado(Request $request)
     {
         $desde = $request->filled('desde')
             ? Carbon::parse($request->desde)->startOfDay()
@@ -290,7 +299,7 @@ class ReporteFinancieroController extends Controller
                     'total_anulados' => $movimientos->where('anulado', true)->count(),
                 ],
                 'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')}"
-            ]);
+            ])->setPaper('letter', 'landscape');
             return $pdf->download("reporte_acumulado_{$desde->toDateString()}_al_{$hasta->toDateString()}.pdf");
         }
 
@@ -301,7 +310,7 @@ class ReporteFinancieroController extends Controller
     //  REPORTE OPERACIONES: Filtro excluyente por tipo
     // ═══════════════════════════════════════════════════════════════
 
-    public function reporteOperaciones(Request $request): View
+    public function reporteOperaciones(Request $request)
     {
         $tipo  = $request->get('tipo', 'solo_mantenimientos');
         $desde = $request->filled('desde') ? Carbon::parse($request->desde) : now()->startOfMonth();
@@ -396,35 +405,38 @@ class ReporteFinancieroController extends Controller
 
             if ($request->get('export') === 'pdf') {
                 if ($tipo === 'solo_mantenimientos') {
-                    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('mantenimientos.pdf', ['mantenimientos' => $exportData]);
-                    return $pdf->download("mantenimientos_{$desde->toDateString()}.pdf");
+                    return \Barryvdh\DomPDF\Facade\Pdf::loadView('mantenimientos.pdf', ['mantenimientos' => $exportData])
+                        ->setPaper('letter', 'landscape')
+                        ->download("mantenimientos_{$desde->toDateString()}.pdf");
                 } elseif ($tipo === 'solo_electronica') {
-                    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('electronicas.pdf', ['electronicas' => $exportData]);
-                    return $pdf->download("electronicas_{$desde->toDateString()}.pdf");
+                    return \Barryvdh\DomPDF\Facade\Pdf::loadView('electronicas.pdf', ['electronicas' => $exportData])
+                        ->setPaper('letter', 'landscape')
+                        ->download("electronicas_{$desde->toDateString()}.pdf");
                 } else {
                     // Mapeo genérico para que funcione con pdf_diario
                     $movimientosMapped = $exportData->map(function($tx) use ($tipo) {
                         return [
-                            'fecha' => $tx->fecha ?? $tx->fecha_entrada,
-                            'tipo' => $tx->tipo_movimiento ?? str_replace('solo_', '', $tipo),
+                            'fecha'       => $tx->fecha ?? $tx->fecha_entrada,
+                            'tipo'        => $tx->tipo_movimiento ?? str_replace('solo_', '', $tipo),
                             'descripcion' => $tx->concepto->nombre ?? $tx->persona ?? ($tx->facturable->nombre ?? 'N/A'),
-                            'monto' => $tx->monto ?? $tx->total_documento ?? 0,
-                            'estado' => $tx->estado ?? '—',
-                            'icono' => '📋',
-                            'color' => 'gray'
+                            'monto'       => $tx->monto ?? $tx->total_documento ?? 0,
+                            'estado'      => $tx->estado ?? '—',
+                            'anulado'     => $tx->anulado ?? false,
+                            'icono'       => '📋',
+                            'color'       => 'gray'
                         ];
                     });
-                    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_diario', [
+                    return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_diario', [
                         'movimientos' => $movimientosMapped,
                         'resumen' => [
-                            'total_ingresos' => $tipo === 'solo_ingresos' ? $movimientosMapped->sum('monto') : 0,
-                            'total_egresos' => $tipo === 'solo_egresos' ? $movimientosMapped->sum('monto') : 0,
+                            'total_ingresos'       => $tipo === 'solo_ingresos' ? $movimientosMapped->sum('monto') : 0,
+                            'total_egresos'        => $tipo === 'solo_egresos'  ? $movimientosMapped->sum('monto') : 0,
                             'total_mantenimientos' => 0,
-                            'total_anulados' => $movimientosMapped->where('anulado', true)->count(),
+                            'total_anulados'       => $movimientosMapped->where('anulado', true)->count(),
                         ],
                         'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')} ({$tipoLabels[$tipo]})"
-                    ]);
-                    return $pdf->download("operaciones_{$tipo}_{$desde->toDateString()}.pdf");
+                    ])->setPaper('letter', 'landscape')
+                      ->download("operaciones_{$tipo}_{$desde->toDateString()}.pdf");
                 }
             }
         }

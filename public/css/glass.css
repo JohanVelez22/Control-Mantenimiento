@@ -935,7 +935,7 @@ html.dark .ts-modal-card {
 }
 
 /* â”€â”€â”€ Responsive tables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-@media (max-width: 767px) {
+@media screen and (max-width: 767px) {
   .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td { display: block; width: 100%; }
   .responsive-table thead { display: none; }
   .responsive-table tr { margin-bottom: 12px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(226,232,240,0.70); }
