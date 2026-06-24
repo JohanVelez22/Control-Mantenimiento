@@ -55,7 +55,7 @@
  {{ $u->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
- <td class="font-mono text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
+ <td class="text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
  <td class="text-center {{ $dim }}">
  <div class="flex justify-center items-center gap-1 flex-wrap">
  @if(auth()->user()->isAdmin() || auth()->id() === $u->id)

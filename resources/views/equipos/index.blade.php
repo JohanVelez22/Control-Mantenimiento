@@ -53,9 +53,9 @@
  <div class="font-bold text-slate-800 dark:text-white leading-tight">{{ $equipo->nombre }}</div>
  <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">{{ $equipo->marca }} {{ $equipo->modelo }}</div>
  </td>
- <td class="font-mono text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $equipo->serie }}</td>
+ <td class="uppercase text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $equipo->serie }}</td>
  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $equipo->cliente->nombre ?? '-' }}</td>
- <td class="{{ $dim }}"><p class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2" title="{{ $equipo->observacion }}">{{ $equipo->observacion ?? '-' }}</p></td>
+ <td class="{{ $dim }}"><p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2" title="{{ $equipo->observacion }}">{{ $equipo->observacion ?? '-' }}</p></td>
  <td class="{{ $dim }}"><span class="font-medium text-slate-700 dark:text-slate-300">{{ $equipo->user->name ?? '-' }}</span></td>
  <td class="text-center">
  <span class="pill {{ $equipo->active ? 'pill-done' : 'pill-anulado' }}">

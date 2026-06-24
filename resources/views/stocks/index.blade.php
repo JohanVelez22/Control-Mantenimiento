@@ -40,7 +40,7 @@
  @forelse($stocks as $stock)
  @php $dim = !$stock->active ? 'opacity-60 grayscale' : ''; @endphp
  <tr id="stock-{{ $stock->id }}">
- <td data-label="Código:" class="font-mono text-sm font-bold text-slate-500 dark:text-slate-400 {{ $dim }}">
+ <td data-label="Código:" class="text-sm font-bold text-slate-500 dark:text-slate-400 {{ $dim }}">
  {{ $stock->codigo ?? '-' }}
  </td>
  <td data-label="Producto:" class="font-bold text-slate-800 dark:text-white {{ $dim }}">

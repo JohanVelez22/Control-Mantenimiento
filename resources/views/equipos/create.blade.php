@@ -47,7 +47,7 @@
 
  <div>
  <label class="field-label">Número de Serie *</label>
- <input type="text" name="serie" value="{{ old('serie') }}" required placeholder="S/N..." class="glass-input mt-1 font-mono uppercase @error('serie') border-red-500 @enderror">
+ <input type="text" name="serie" value="{{ old('serie') }}" required placeholder="S/N..." oninput="this.value = this.value.toUpperCase()" class="glass-input mt-1 uppercase @error('serie') border-red-500 @enderror">
  @error('serie') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
  </div>

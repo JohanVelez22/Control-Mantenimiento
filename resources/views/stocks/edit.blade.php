@@ -19,7 +19,7 @@
  <!-- Código -->
  <div>
  <label for="codigo" class="field-label">Código (Opcional)</label>
- <input type="text" name="codigo" id="codigo" value="{{ old('codigo', $stock->codigo ?? '') }}" class="glass-input font-mono placeholder-gray-400" placeholder="Ej: REF-001">
+ <input type="text" name="codigo" id="codigo" value="{{ old('codigo', $stock->codigo ?? '') }}" oninput="this.value = this.value.toUpperCase()" class="glass-input placeholder-gray-400" placeholder="Ej: REF-001">
  @error('codigo') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
 

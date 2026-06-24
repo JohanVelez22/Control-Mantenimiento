@@ -47,8 +47,8 @@
  <tr id="cliente-{{ $cliente->id }}" class="scroll-mt-[6.5rem]">
  <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $cliente->id }}</td>
  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $cliente->nombre }}</td>
- <td class="font-mono text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $cliente->identificacion }}</td>
- <td class="font-mono {{ $dim }}">{{ $cliente->movil }}</td>
+ <td class="text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $cliente->identificacion }}</td>
+ <td class="{{ $dim }}">{{ $cliente->movil }}</td>
  <td class="{{ $dim }}">{{ $cliente->email ?? '-' }}</td>
  <td class="{{ $dim }}">{{ $cliente->direccion ?? '-' }}</td>
  <td class="text-center">

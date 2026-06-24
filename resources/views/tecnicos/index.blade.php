@@ -48,7 +48,7 @@
  @endif
  </td>
  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $tecnico->nombre }}</td>
- <td class="font-mono text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $tecnico->identificacion }}</td>
+ <td class="text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $tecnico->identificacion }}</td>
  @php
      $espClass = 'pill-preventivo';
      $espStr = strtolower($tecnico->especialidad);
@@ -58,7 +58,7 @@
      elseif (str_contains($espStr, 'redes')) $espClass = 'pill-banco';
  @endphp
  <td class="{{ $dim }}"><span class="pill {{ $espClass }}">{{ $tecnico->especialidad }}</span></td>
- <td class="font-mono {{ $dim }}">{{ $tecnico->movil }}</td>
+ <td class="{{ $dim }}">{{ $tecnico->movil }}</td>
  <td class="{{ $dim }}">{{ $tecnico->email ?? '-' }}</td>
  <td class="text-center">
  <span class="pill {{ $tecnico->active ? 'pill-done' : 'pill-anulado' }}">
