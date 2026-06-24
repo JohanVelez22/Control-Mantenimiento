@@ -23,12 +23,12 @@
             </div>
             
             @if(!auth()->user()->isInvitado())
-            <div class="flex flex-wrap gap-3 w-full md:w-auto">
-                <a href="{{ route('electronicas.edit', $electronica) }}" class="btn-ghost flex-1 md:flex-none justify-center border-yellow-500/20 text-yellow-600">
+            <div class="flex items-center gap-3 shrink-0">
+                <a href="{{ route('electronicas.edit', $electronica) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
                     ✏️ Editar
                 </a>
                 @if($electronica->fecha_salida && $electronica->estado === 'terminado')
-                <a href="{{ route('electronicas.factura', $electronica) }}" target="_blank" class="btn-primary flex-1 md:flex-none justify-center">
+                <a href="{{ route('electronicas.factura', $electronica) }}" target="_blank" class="btn-primary">
                     🖨️ Factura
                 </a>
                 @endif

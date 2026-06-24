@@ -115,7 +115,7 @@
  <textarea name="observaciones" rows="2" class="glass-input resize-y focus:ring-emerald-500" placeholder="Notas sobre la venta..."></textarea>
  </div>
 
- <div class="flex gap-4 pt-4 border-t border-gray-200/50 dark:border-white/10">
+ <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
  <a href="{{ route('inventario.facturas') }}" class="btn-cancel">↩️ Cancelar</a>
  <button type="submit" class="btn-venta">
  🛒 Procesar Venta y Descargar Inventario

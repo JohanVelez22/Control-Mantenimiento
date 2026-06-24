@@ -71,10 +71,10 @@
  <label for="active" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Activar usuario inmediatamente</label>
  </div>
 
- <div class="flex gap-4 mt-6">
+ <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
  <a href="{{ route('usuarios.index') }}" class="btn-cancel">↩️ Cancelar</a>
- <button type="submit" class="btn-save w-1/2">
- Crear Usuario
+ <button type="submit" class="btn-save">
+ 💾 Crear Usuario
  </button>
  </div>
  </form>

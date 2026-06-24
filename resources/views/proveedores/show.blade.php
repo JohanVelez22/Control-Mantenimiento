@@ -19,11 +19,11 @@
  </div>
  
  @if(!auth()->user()->isInvitado())
- <div class="flex flex-wrap gap-3 w-full md:w-auto">
- <a href="{{ route('proveedores.edit', $proveedor) }}" class="btn-ghost flex-1 md:flex-none justify-center border-yellow-500/20 text-yellow-600">
+ <div class="flex items-center gap-3 shrink-0">
+ <a href="{{ route('proveedores.edit', $proveedor) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
  ✏️ Editar
  </a>
- <a href="{{ route('inventario.compra.create') }}?proveedor_id={{ $proveedor->id }}" class="btn-primary flex-1 md:flex-none justify-center">
+ <a href="{{ route('inventario.compra.create') }}?proveedor_id={{ $proveedor->id }}" class="btn-primary">
  📦 Nueva Compra
  </a>
  </div>
