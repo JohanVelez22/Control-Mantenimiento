@@ -94,7 +94,7 @@
  @if(auth()->user()->isAdmin())
  <div>
  <label class="field-label flex items-center gap-2">⚙️ Estado del Producto</label>
- <select name="active" class="glass-input mt-1">
+ <select name="active" class="glass-input no-search mt-1">
  <option value="1" {{ old('active', $stock->active) ? 'selected' : '' }}>✅ Activo (disponible)</option>
  <option value="0" {{ !old('active', $stock->active) ? 'selected' : '' }}>🚫 Inactivo (oculto del inventario activo)</option>
  </select>

@@ -19,10 +19,10 @@
  <button type="button" onclick="window.print()" class="btn-print">
  <span>🖨️</span> Imprimir
  </button>
- <button type="submit" form="filtros-mantenimiento" name="export" value="excel" class="btn-excel">
+ <button type="button" onclick="exportarReporte('excel', this)" class="btn-excel">
  <span>📊</span> Excel
  </button>
- <button type="submit" form="filtros-mantenimiento" name="export" value="pdf" class="btn-pdf">
+ <button type="button" onclick="exportarReporte('pdf', this)" class="btn-pdf">
  <span>📄</span> PDF
  </button>
  </div>
@@ -76,7 +76,7 @@
  </div>
    <div>
   <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Tipo/Rep</label>
-  <select name="tipo_rep" class="glass-input">
+  <select name="tipo_rep" class="glass-input no-search">
   <option value="todos">Todos</option>
   <option value="preventivo" {{ request('tipo_rep') == 'preventivo' ? 'selected' : '' }}>Preventivo</option>
   <option value="correctivo" {{ request('tipo_rep') == 'correctivo' ? 'selected' : '' }}>Correctivo</option>
@@ -86,7 +86,7 @@
   </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Progreso</label>
- <select name="estado" class="glass-input">
+ <select name="estado" class="glass-input no-search">
  <option value="todos">Todos</option>
  <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
  <option value="en_proceso" {{ request('estado') == 'en_proceso' ? 'selected' : '' }}>En Proceso</option>
@@ -97,7 +97,7 @@
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Estado</label>
- <select name="anulado" class="glass-input">
+ <select name="anulado" class="glass-input no-search">
  <option value="todos" {{ request('anulado') === null || request('anulado') == 'todos' ? 'selected' : '' }}>Todos</option>
  <option value="activo" {{ request('anulado') == 'activo' ? 'selected' : '' }}>Activo</option>
  <option value="anulado" {{ request('anulado') == 'anulado' ? 'selected' : '' }}>Anulado</option>
@@ -251,13 +251,14 @@
 <style>
 /* ── Bloque de estilos solo para impresión ── */
 @media print {
+ @page { size: A4 portrait; margin: 15mm; }
  .no-print, nav, aside, header, footer, form, button { display: none !important; }
  a { color: inherit !important; text-decoration: none !important; }
  .no-print-link { color: #000 !important; pointer-events: none !important; }
 
- body { background: #fff !important; color: #000 !important; margin: 10mm !important; padding: 0 !important; font-size: 8pt !important; }
+ body { background: #fff !important; color: #000 !important; margin: 0 !important; padding: 0 !important; font-size: 8pt !important; }
  .shadow, .rounded-lg { box-shadow: none !important; }
- .glass-card { background: #fff !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }
+ .glass-card { background: #fff !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; margin: 0 !important; padding: 0 !important; }
 
  /* Encabezado visible al imprimir */
  .print-header { display: block !important; text-align: center; margin-bottom: 10mm; border-bottom: 2px solid #000; padding-bottom: 4mm; }
@@ -366,5 +367,66 @@
           }
       });
   });
+
+  function exportarReporte(tipo, btn) {
+      const form = document.getElementById('filtros-mantenimiento');
+      const params = new URLSearchParams(new FormData(form));
+      params.set('export', tipo);
+      const url = window.location.pathname + '?' + params.toString();
+      const fallbackName = 'Reporte_Mantenimientos_' + new Date().toISOString().slice(0,10) + (tipo === 'pdf' ? '.pdf' : '.xlsx');
+      
+      const origText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span>...';
+      
+      fetch(url)
+          .then(response => {
+              if (!response.ok) throw new Error('Error al generar el reporte');
+              let filename = fallbackName;
+              const disposition = response.headers.get('Content-Disposition');
+              if (disposition && disposition.indexOf('attachment') !== -1) {
+                  const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                  const matches = filenameRegex.exec(disposition);
+                  if (matches != null && matches[1]) { 
+                      filename = matches[1].replace(/['"]/g, '');
+                  }
+              }
+              return response.blob().then(blob => ({ blob, filename }));
+          })
+          .then(({ blob, filename }) => {
+              const blobUrl = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.style.display = 'none';
+              a.href = blobUrl;
+              a.download = filename;
+              document.body.appendChild(a);
+              a.click();
+              window.URL.revokeObjectURL(blobUrl);
+              a.remove();
+          })
+          .catch(error => {
+              console.error(error);
+              alert('Hubo un error al generar o descargar el reporte.');
+          })
+          .finally(() => {
+              btn.disabled = false;
+              btn.innerHTML = origText;
+          });
+  }
 </script>
+<style>
+@media print {
+    @page { size: A4 portrait; margin: 15mm; }
+    html, body { width: 100% !important; margin: 0 !important; padding: 0 !important; background: #fff !important; color: #000 !important; font-size: 9pt !important; }
+    #ts-sidebar, #ts-topbar, .no-print, form, button, .pagination { display: none !important; }
+    #main-wrapper, #ts-main { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+    .glass-card, .glass-panel, .container, .max-w-7xl, .mx-auto, .p-4, .p-6, .p-8, .shadow-lg, .shadow-xl { background: transparent !important; box-shadow: none !important; border: none !important; margin: 0 !important; padding: 0 !important; max-width: 100% !important; width: 100% !important; border-radius: 0 !important; }
+    table { width: 100% !important; border-collapse: collapse !important; display: table !important; }
+    tr { display: table-row !important; page-break-inside: avoid !important; }
+    th, td { display: table-cell !important; border: 1px solid #ddd !important; padding: 6px !important; }
+    .responsive-table td::before { display: none !important; }
+    thead { display: table-header-group !important; }
+    -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+}
+</style>
 @endsection

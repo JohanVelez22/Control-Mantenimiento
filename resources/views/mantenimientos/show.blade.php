@@ -192,7 +192,7 @@
  </div>
  <div>
  <label class="field-label">Tipo de pago *</label>
- <select name="tipo_pago" class="glass-input">
+ <select name="tipo_pago" class="glass-input no-search">
  <option value="efectivo">💵 Efectivo</option>
  <option value="consignacion">🏦 Consignación</option>
  </select>

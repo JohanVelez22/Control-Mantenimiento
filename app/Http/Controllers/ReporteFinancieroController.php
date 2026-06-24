@@ -120,19 +120,18 @@ class ReporteFinancieroController extends Controller
         ];
 
         if ($request->get('export') === 'excel') {
-            return Excel::download(
+            return \Maatwebsite\Excel\Facades\Excel::download(
                 new \App\Exports\ReportesFinancierosExport($movimientos),
-                "reporte_diario_{$fecha}.xlsx"
+                'Reporte_Diario_' . date('Y-m-d_His') . '.xlsx'
             );
         }
 
         if ($request->get('export') === 'pdf') {
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_diario', [
+            return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_diario', [
                 'movimientos' => $movimientos,
                 'resumen'     => $resumen,
                 'fecha'       => \Carbon\Carbon::parse($fecha)->isoFormat('dddd D [de] MMMM [de] YYYY'),
-            ])->setPaper('letter', 'landscape');
-            return $pdf->download("reporte_diario_{$fecha}.pdf");
+            ])->setPaper('a4', 'portrait')->download('Reporte_Diario_' . date('Y-m-d_His') . '.pdf');
         }
 
         return view('reportes_financieros.diario', compact('movimientos', 'fecha', 'resumen'));
@@ -283,14 +282,14 @@ class ReporteFinancieroController extends Controller
             ->values();
 
         if ($request->get('export') === 'excel') {
-            return Excel::download(
+            return \Maatwebsite\Excel\Facades\Excel::download(
                 new \App\Exports\ReportesFinancierosExport($movimientos),
-                "reporte_acumulado_{$desde->toDateString()}_al_{$hasta->toDateString()}.xlsx"
+                'Reporte_Acumulado_' . date('Y-m-d_His') . '.xlsx'
             );
         }
 
         if ($request->get('export') === 'pdf') {
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_diario', [
+            return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_diario', [
                 'movimientos' => $movimientos,
                 'resumen' => [
                     'total_ingresos' => $acumulado['ingresos_caja'],
@@ -299,8 +298,7 @@ class ReporteFinancieroController extends Controller
                     'total_anulados' => $movimientos->where('anulado', true)->count(),
                 ],
                 'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')}"
-            ])->setPaper('letter', 'landscape');
-            return $pdf->download("reporte_acumulado_{$desde->toDateString()}_al_{$hasta->toDateString()}.pdf");
+            ])->setPaper('a4', 'portrait')->download('Reporte_Acumulado_' . date('Y-m-d_His') . '.pdf');
         }
 
         return view('reportes_financieros.acumulado', compact('acumulado', 'desde', 'hasta', 'movimientos'));
@@ -395,25 +393,24 @@ class ReporteFinancieroController extends Controller
 
             if ($request->get('export') === 'excel') {
                 if ($tipo === 'solo_mantenimientos') {
-                    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\MantenimientosExport($exportData), "mantenimientos_{$desde->toDateString()}_al_{$hasta->toDateString()}.xlsx");
+                    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\MantenimientosExport($exportData), 'Reporte_Operaciones_' . date('Y-m-d_His') . '.xlsx');
                 } elseif ($tipo === 'solo_electronica') {
-                    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ElectronicasExport($exportData), "electronicas_{$desde->toDateString()}_al_{$hasta->toDateString()}.xlsx");
+                    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ElectronicasExport($exportData), 'Reporte_Operaciones_' . date('Y-m-d_His') . '.xlsx');
                 } else {
-                    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportesFinancierosExport($exportData), "operaciones_{$tipo}_{$desde->toDateString()}.xlsx");
+                    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportesFinancierosExport($exportData), 'Reporte_Operaciones_' . date('Y-m-d_His') . '.xlsx');
                 }
             }
 
             if ($request->get('export') === 'pdf') {
                 if ($tipo === 'solo_mantenimientos') {
                     return \Barryvdh\DomPDF\Facade\Pdf::loadView('mantenimientos.pdf', ['mantenimientos' => $exportData])
-                        ->setPaper('letter', 'landscape')
-                        ->download("mantenimientos_{$desde->toDateString()}.pdf");
+                        ->setPaper('a4', 'portrait')
+                        ->download('Reporte_Operaciones_' . date('Y-m-d_His') . '.pdf');
                 } elseif ($tipo === 'solo_electronica') {
                     return \Barryvdh\DomPDF\Facade\Pdf::loadView('electronicas.pdf', ['electronicas' => $exportData])
-                        ->setPaper('letter', 'landscape')
-                        ->download("electronicas_{$desde->toDateString()}.pdf");
+                        ->setPaper('a4', 'portrait')
+                        ->download('Reporte_Operaciones_' . date('Y-m-d_His') . '.pdf');
                 } else {
-                    // Mapeo genérico para que funcione con pdf_diario
                     $movimientosMapped = $exportData->map(function($tx) use ($tipo) {
                         return [
                             'fecha'       => $tx->fecha ?? $tx->fecha_entrada,
@@ -435,8 +432,8 @@ class ReporteFinancieroController extends Controller
                             'total_anulados'       => $movimientosMapped->where('anulado', true)->count(),
                         ],
                         'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')} ({$tipoLabels[$tipo]})"
-                    ])->setPaper('letter', 'landscape')
-                      ->download("operaciones_{$tipo}_{$desde->toDateString()}.pdf");
+                    ])->setPaper('a4', 'portrait')
+                      ->download('Reporte_Operaciones_' . date('Y-m-d_His') . '.pdf');
                 }
             }
         }

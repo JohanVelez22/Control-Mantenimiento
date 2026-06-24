@@ -4,7 +4,7 @@
  <div>
  <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Tipo de Entidad *</label>
  <select name="tipo_entidad" required
- class="glass-input w-full">
+ class="glass-input no-search w-full">
  <option value="persona" {{ old('tipo_entidad', $proveedor->tipo_entidad ?? 'persona') === 'persona' ? 'selected' : '' }}>👤 Persona Natural</option>
  <option value="empresa" {{ old('tipo_entidad', $proveedor->tipo_entidad ?? '') === 'empresa' ? 'selected' : '' }}>🏢 Empresa</option>
  </select>

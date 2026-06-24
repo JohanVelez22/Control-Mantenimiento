@@ -48,7 +48,7 @@
  {{-- Estado --}}
  <div>
  <label class="field-label flex items-center gap-2"><span>🏷️</span> Estado Inicial *</label>
- <select name="estado" required class="glass-input mt-1 font-bold text-yellow-600 dark:text-yellow-400">
+ <select name="estado" required class="glass-input no-search mt-1 font-bold text-yellow-600 dark:text-yellow-400">
  <option value="pendiente" selected>⏳ Pendiente</option>
  <option value="terminado" class="text-emerald-600">✅ Terminado</option>
  </select>

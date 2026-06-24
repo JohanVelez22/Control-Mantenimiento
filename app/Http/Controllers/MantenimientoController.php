@@ -139,13 +139,13 @@ class MantenimientoController extends Controller
         // Lógica de exportación o paginación según el botón presionado
         if ($request->get('export') == 'excel') {
             $mantenimientos = $query->orderBy('id', 'desc')->get();
-            return Excel::download(new MantenimientosExport($mantenimientos), 'reporte.xlsx');
+            return \Maatwebsite\Excel\Facades\Excel::download(new MantenimientosExport($mantenimientos), 'Reporte_Mantenimientos_' . date('Y-m-d_His') . '.xlsx');
         }
         if ($request->get('export') == 'pdf') {
             $mantenimientos = $query->orderBy('id', 'desc')->get();
             return Pdf::loadView('mantenimientos.pdf', compact('mantenimientos'))
-                ->setPaper('letter', 'landscape')
-                ->download('reporte_mantenimientos.pdf');
+                ->setPaper('a4', 'portrait')
+                ->download('Reporte_Mantenimientos_' . date('Y-m-d_His') . '.pdf');
         }
 
         $mantenimientos = $query->orderBy('id', 'desc')->paginate(10);

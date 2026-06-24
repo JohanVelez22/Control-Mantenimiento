@@ -84,13 +84,13 @@ class ReporteController extends Controller
         // Lógica de exportación según el botón presionado
         if ($request->get('export') == 'excel') {
             $transaccionesParaExportar = $queryDetallado->get();
-            return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportesFinancierosExport($transaccionesParaExportar), 'reporte_financiero.xlsx');
+            return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportesFinancierosExport($transaccionesParaExportar), 'Reporte_Financiero_' . date('Y-m-d_His') . '.xlsx');
         }
         if ($request->get('export') == 'pdf') {
             $transaccionesParaExportar = $queryDetallado->get();
             return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes.pdf', compact('transaccionesParaExportar', 'acumulado', 'operaciones', 'mes', 'anio'))
-                ->setPaper('letter', 'portrait')
-                ->download('reporte_financiero.pdf');
+                ->setPaper('a4', 'portrait')
+                ->download('Reporte_Financiero_' . date('Y-m-d_His') . '.pdf');
         }
 
         return view('reportes.index', compact('transacciones', 'acumulado', 'operaciones', 'mes', 'anio'));

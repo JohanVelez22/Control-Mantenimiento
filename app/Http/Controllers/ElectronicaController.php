@@ -299,14 +299,14 @@ class ElectronicaController extends Controller
 
         if ($request->get('export') == 'excel') {
             $electronicas = $query->orderBy('id', 'desc')->get();
-            return Excel::download(new ElectronicasExport($electronicas), 'reporte_electronica.xlsx');
+            return \Maatwebsite\Excel\Facades\Excel::download(new ElectronicasExport($electronicas), 'Reporte_Electronica_' . date('Y-m-d_His') . '.xlsx');
         }
 
         if ($request->get('export') == 'pdf') {
             $electronicas = $query->orderBy('id', 'desc')->get();
             return Pdf::loadView('electronicas.pdf', compact('electronicas'))
-                ->setPaper('letter', 'landscape')
-                ->download('reporte_electronica.pdf');
+                ->setPaper('a4', 'portrait')
+                ->download('Reporte_Electronica_' . date('Y-m-d_His') . '.pdf');
         }
 
         $registros = $query->with(['tecnico', 'user', 'equipo.cliente'])->orderBy('id', 'desc')->paginate(10);

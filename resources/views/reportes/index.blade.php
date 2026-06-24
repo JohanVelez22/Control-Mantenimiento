@@ -34,13 +34,13 @@
 </div>
 
 <div class="glass-card p-5 mb-4 no-print">
-  <form action="{{ route('reportes.index') }}" method="GET" class="flex flex-wrap items-center gap-3">
-   <select name="mes" class="glass-input w-40 font-semibold">
+  <form id="filtros-acumulado-general" action="{{ route('reportes.index') }}" method="GET" class="flex flex-wrap items-center gap-3">
+   <select name="mes" class="glass-input no-search w-40 font-semibold">
    @for($i=1; $i<=12; $i++)
    <option value="{{ $i }}" {{ $mes == $i ? 'selected' : '' }}>{{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}</option>
    @endfor
    </select>
-   <select name="anio" class="glass-input w-28 font-semibold">
+   <select name="anio" class="glass-input no-search w-28 font-semibold">
    @for($i=date('Y')-2; $i<=date('Y'); $i++)
    <option value="{{ $i }}" {{ $anio == $i ? 'selected' : '' }}>{{ $i }}</option>
    @endfor
@@ -53,10 +53,10 @@
        <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
        <span>🖨️</span> Imprimir
        </button>
-       <button type="submit" name="export" value="pdf" class="btn-pdf text-sm" title="Exportar a PDF">
+       <button type="button" onclick="exportarAcumuladoGeneral('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
        <span>📄</span> PDF
        </button>
-       <button type="submit" name="export" value="excel" class="btn-excel text-sm" title="Exportar a Excel">
+       <button type="button" onclick="exportarAcumuladoGeneral('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">
        <span>📊</span> Excel
        </button>
    </div>
@@ -214,6 +214,69 @@
 
 
 </div>
+<style>
+@media print {
+    @page { size: A4 portrait; margin: 15mm; }
+    html, body { width: 100% !important; margin: 0 !important; padding: 0 !important; background: #fff !important; color: #000 !important; font-size: 9pt !important; }
+    #ts-sidebar, #ts-topbar, .no-print, form, button, .pagination { display: none !important; }
+    #main-wrapper, #ts-main { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+    .glass-card, .glass-panel, .container, .max-w-7xl, .mx-auto, .p-4, .p-6, .p-8, .shadow-lg, .shadow-xl { background: transparent !important; box-shadow: none !important; border: none !important; margin: 0 !important; padding: 0 !important; max-width: 100% !important; width: 100% !important; border-radius: 0 !important; }
+    table { width: 100% !important; border-collapse: collapse !important; display: table !important; }
+    tr { display: table-row !important; page-break-inside: avoid !important; }
+    th, td { display: table-cell !important; border: 1px solid #ddd !important; padding: 6px !important; }
+    .responsive-table td::before { display: none !important; }
+    thead { display: table-header-group !important; }
+    -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+}
+</style>
+
+<script>
+function exportarAcumuladoGeneral(tipo, btn) {
+    const form = document.getElementById('filtros-acumulado-general');
+    const params = new URLSearchParams(new FormData(form));
+    params.set('export', tipo);
+    const url = window.location.pathname + '?' + params.toString();
+    const fallbackName = 'Reporte_General_' + new Date().toISOString().slice(0,10) + (tipo === 'pdf' ? '.pdf' : '.xlsx');
+    
+    const origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span>...';
+    
+    fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error('Error al generar el reporte');
+            let filename = fallbackName;
+            const disposition = response.headers.get('Content-Disposition');
+            if (disposition && disposition.indexOf('attachment') !== -1) {
+                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                const matches = filenameRegex.exec(disposition);
+                if (matches != null && matches[1]) { 
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+            return response.blob().then(blob => ({ blob, filename }));
+        })
+        .then(({ blob, filename }) => {
+            const blobUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = blobUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(blobUrl);
+            a.remove();
+        })
+        .catch(error => {
+            console.error(error);
+            alert('Hubo un error al generar o descargar el reporte.');
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = origText;
+        });
+}
+</script>
 @endsection
 
 

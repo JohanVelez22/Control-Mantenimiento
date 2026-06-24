@@ -2,101 +2,231 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reporte de Electrónica</title>
+    <title>Reporte de Electrónica – Tecni Systemas</title>
     <style>
+        @page {
+            size: A4 portrait;
+            margin: 18mm 15mm 18mm 15mm;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DejaVu Sans', Helvetica, Arial, sans-serif; font-size: 8.5px; color: #1a202c; background: #fff; }
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 8.2px;
+            color: #1e293b;
+            background: #fff;
+            line-height: 1.35;
+        }
 
-        .header {
-            text-align: center;
-            margin-bottom: 14px;
+        /* ─── HEADER ─── */
+        .report-header {
+            display: table;
+            width: 100%;
+            margin-bottom: 12px;
             padding-bottom: 10px;
-            border-bottom: 3px solid #553c9a;
+            border-bottom: 3px solid #4c1d95;
         }
-        .header h1 { font-size: 15px; font-weight: 700; color: #1a202c; letter-spacing: 1px; text-transform: uppercase; }
-        .header p  { font-size: 9px; color: #4a5568; margin-top: 4px; }
+        .header-left  { display: table-cell; vertical-align: middle; width: 70%; }
+        .header-right { display: table-cell; vertical-align: middle; text-align: right; width: 30%; }
 
-        table { width: 100%; border-collapse: collapse; }
-        thead tr th {
-            background-color: #553c9a;
-            color: #ffffff;
-            padding: 5px 5px;
+        .company-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #4c1d95;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
-            font-size: 7px;
-            letter-spacing: 0.4px;
-            text-align: center;
-            border: 1px solid #44337a;
         }
-        tbody tr td {
-            border: 1px solid #cbd5e0;
-            padding: 4px 5px;
-            vertical-align: middle;
+        .report-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #334155;
+            margin-top: 3px;
+            letter-spacing: 0.3px;
+        }
+        .header-meta {
+            font-size: 7.5px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .header-badge {
+            display: inline-block;
+            background: #4c1d95;
+            color: #fff;
             font-size: 8px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
         }
-        tbody tr:nth-child(even) { background-color: #faf5ff; }
-        tbody tr.anulado { opacity: 0.55; }
-        tbody tr.anulado td { font-style: italic; }
+        .header-count {
+            font-size: 9px;
+            color: #475569;
+            margin-top: 4px;
+        }
 
-        td.center { text-align: center; }
-        td.right  { text-align: right; }
+        /* ─── SUMMARY ROW ─── */
+        .summary-bar {
+            display: table;
+            width: 100%;
+            margin-bottom: 10px;
+            background: #f5f3ff;
+            border: 1px solid #ddd6fe;
+            border-radius: 4px;
+            padding: 6px 10px;
+        }
+        .summary-item   { display: table-cell; text-align: center; vertical-align: middle; }
+        .summary-label  { font-size: 6.5px; color: #64748b; text-transform: uppercase; letter-spacing: 0.4px; }
+        .summary-value  { font-size: 11px; font-weight: 800; color: #4c1d95; }
+        .summary-divider { display: table-cell; width: 1px; background: #ddd6fe; padding: 0; }
 
+        /* ─── TABLE ─── */
+        table { width: 100%; border-collapse: collapse; }
+
+        thead tr th {
+            background: #4c1d95;
+            color: #fff;
+            padding: 5px 4px;
+            font-size: 6.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            border: 1px solid #3b0764;
+        }
+
+        tbody tr td {
+            border: 1px solid #dde3ea;
+            padding: 4px 4px;
+            vertical-align: middle;
+            font-size: 7.8px;
+            color: #1e293b;
+        }
+        tbody tr:nth-child(even) td { background: #faf7ff; }
+        tbody tr.anulado td {
+            opacity: 0.55;
+            font-style: italic;
+            background: #fff5f5 !important;
+        }
+        tbody tr { page-break-inside: avoid; }
+
+        .col-center { text-align: center; }
+        .col-right  { text-align: right; }
+        .col-bold   { font-weight: 700; }
+
+        /* ─── BADGES ─── */
         .badge {
             display: inline-block;
             padding: 1px 5px;
             border-radius: 3px;
-            font-size: 6.5px;
+            font-size: 6px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.3px;
             border: 1px solid;
+            white-space: nowrap;
         }
-        .badge-pendiente  { background: #fef3c7; color: #92400e; border-color: #fde68a; }
-        .badge-en_proceso { background: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
-        .badge-reparado   { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
-        .badge-terminado  { background: #a7f3d0; color: #065f46; border-color: #6ee7b7; }
-        .badge-entregado  { background: #c6f6d5; color: #276749; border-color: #9ae6b4; }
-        .badge-activo     { background: #c6f6d5; color: #276749; border-color: #9ae6b4; }
-        .badge-anulado    { background: #fed7d7; color: #9b2c2c; border-color: #feb2b2; }
+        .badge-pendiente   { background:#fef9c3; color:#854d0e; border-color:#fde047; }
+        .badge-en_proceso  { background:#dbeafe; color:#1e40af; border-color:#93c5fd; }
+        .badge-reparado    { background:#dcfce7; color:#166534; border-color:#86efac; }
+        .badge-terminado   { background:#d1fae5; color:#065f46; border-color:#6ee7b7; }
+        .badge-entregado   { background:#d1fae5; color:#065f46; border-color:#6ee7b7; }
+        .badge-activo      { background:#dcfce7; color:#166534; border-color:#86efac; }
+        .badge-anulado     { background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
+        .badge-correctivo  { background:#ede9fe; color:#4c1d95; border-color:#c4b5fd; }
+        .badge-preventivo  { background:#dbeafe; color:#1e40af; border-color:#93c5fd; }
+        .badge-diagnostico { background:#fef9c3; color:#854d0e; border-color:#fde047; }
+        .badge-instalacion { background:#dcfce7; color:#166534; border-color:#86efac; }
 
-        /* Tipo badges electrónica */
-        .badge-correctivo    { background: #e9d8fd; color: #553c9a; border-color: #d6bcfa; }
-        .badge-preventivo    { background: #bee3f8; color: #2b6cb0; border-color: #90cdf4; }
-        .badge-diagnostico   { background: #fefcbf; color: #7b6200; border-color: #f6e05e; }
-        .badge-instalacion   { background: #c6f6d5; color: #276749; border-color: #9ae6b4; }
+        .sub-text { font-size: 7px; color: #64748b; margin-top: 1px; }
 
-        .equipo-sub { font-size: 7px; color: #718096; margin-top: 1px; }
-
+        /* ─── FOOTER TABLE ─── */
         tfoot tr td {
-            background: #f3ebff;
-            font-weight: 800;
-            font-size: 8.5px;
-            border: 1px solid #b794f4;
-            padding: 4px 5px;
+            background: #4c1d95;
+            color: #fff;
+            font-weight: 700;
+            font-size: 8px;
+            border: 1px solid #3b0764;
+            padding: 5px 4px;
         }
 
-        .monto { color: #553c9a; font-weight: 700; }
-        .footer { margin-top: 14px; text-align: right; font-size: 7.5px; color: #718096; font-style: italic; }
+        .monto-cell { color: #4c1d95; font-weight: 700; }
+
+        /* ─── DOCUMENT FOOTER ─── */
+        .doc-footer {
+            margin-top: 14px;
+            padding-top: 7px;
+            border-top: 1px solid #e2e8f0;
+            display: table;
+            width: 100%;
+        }
+        .footer-left  { display: table-cell; font-size: 7px; color: #94a3b8; font-style: italic; }
+        .footer-right { display: table-cell; text-align: right; font-size: 7px; color: #94a3b8; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>⚡ Reporte de Módulo Electrónica</h1>
-        <p>Generado el: {{ date('d/m/Y h:i A') }} &nbsp;|&nbsp; Total de registros: {{ count($electronicas) }}</p>
+
+    {{-- ── ENCABEZADO ── --}}
+    <div class="report-header">
+        <div class="header-left">
+            <div class="company-name">⚡ Tecni Systemas</div>
+            <div class="report-title">Reporte Detallado de Módulo Electrónica</div>
+            <div class="header-meta">
+                Generado el {{ \Carbon\Carbon::now()->isoFormat('dddd D [de] MMMM [de] YYYY, h:mm A') }}
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="header-badge">ELECTRÓNICA</div>
+            <div class="header-count">{{ count($electronicas) }} registro(s) encontrados</div>
+        </div>
     </div>
 
+    {{-- ── BARRA DE RESUMEN ── --}}
+    @php
+        $totalCosto    = $electronicas->sum('costo');
+        $totalActivos  = $electronicas->where('anulado', false)->count();
+        $totalAnulados = $electronicas->where('anulado', true)->count();
+        $totalEntregados = $electronicas->where('estado', 'entregado')->count();
+    @endphp
+    <div class="summary-bar">
+        <div class="summary-item">
+            <div class="summary-label">Total Órdenes</div>
+            <div class="summary-value">{{ count($electronicas) }}</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-item">
+            <div class="summary-label">Activos</div>
+            <div class="summary-value" style="color:#166534">{{ $totalActivos }}</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-item">
+            <div class="summary-label">Anulados</div>
+            <div class="summary-value" style="color:#991b1b">{{ $totalAnulados }}</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-item">
+            <div class="summary-label">Entregados</div>
+            <div class="summary-value" style="color:#0369a1">{{ $totalEntregados }}</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-item">
+            <div class="summary-label">Costo Total</div>
+            <div class="summary-value" style="color:#4c1d95; font-size:9px">${{ number_format($totalCosto, 2) }}</div>
+        </div>
+    </div>
+
+    {{-- ── TABLA ── --}}
     <table>
         <thead>
             <tr>
-                <th style="width:7%">Orden</th>
-                <th style="width:13%">Cliente</th>
-                <th style="width:17%">Equipo / Info</th>
-                <th style="width:11%">Técnico</th>
-                <th style="width:9%">Tipo</th>
+                <th style="width:6%">Orden</th>
+                <th style="width:14%">Cliente</th>
+                <th style="width:15%">Equipo / Info</th>
+                <th style="width:10%">Técnico</th>
+                <th style="width:8%">Tipo</th>
                 <th style="width:9%">Progreso</th>
-                <th style="width:8%">Estado</th>
+                <th style="width:7%">Estado</th>
                 <th style="width:8%">Entrada</th>
                 <th style="width:8%">Salida</th>
-                <th style="width:9%; text-align:right">Costo</th>
+                <th style="width:8%; text-align:right">Costo</th>
             </tr>
         </thead>
         <tbody>
@@ -107,47 +237,62 @@
                 $tipo      = strtolower($e->tipo ?? '');
             @endphp
             <tr class="{{ $isAnulado ? 'anulado' : '' }}">
-                <td class="center"><strong>{{ $e->id_orden }}</strong></td>
+                <td class="col-center col-bold">{{ $e->id_orden }}</td>
                 <td>
-                    <div style="font-weight:700">{{ $e->equipo->cliente->nombre ?? 'N/A' }}</div>
-                    <div class="equipo-sub">{{ $e->equipo->cliente->identificacion ?? '-' }}</div>
+                    <div class="col-bold">{{ $e->equipo->cliente->nombre ?? 'N/A' }}</div>
+                    <div class="sub-text">{{ $e->equipo->cliente->identificacion ?? '-' }}</div>
                 </td>
                 <td>
-                    <div style="font-weight:700">{{ $e->equipo->nombre ?? 'N/A' }}</div>
-                    <div class="equipo-sub">{{ $e->equipo->marca ?? '' }} {{ $e->equipo->modelo ?? '' }} &mdash; {{ $e->equipo->serie ?? '' }}</div>
+                    <div class="col-bold">{{ $e->equipo->nombre ?? 'N/A' }}</div>
+                    <div class="sub-text">{{ $e->equipo->marca ?? '' }} {{ $e->equipo->modelo ?? '' }} &mdash; {{ $e->equipo->serie ?? '' }}</div>
                 </td>
-                <td class="center">{{ $e->tecnico->nombre ?? 'N/A' }}</td>
-                <td class="center">
+                <td class="col-center">{{ $e->tecnico->nombre ?? 'N/A' }}</td>
+                <td class="col-center">
                     <span class="badge badge-{{ $tipo ?: 'correctivo' }}">{{ ucfirst($tipo) ?: '—' }}</span>
                 </td>
-                <td class="center">
-                    <span class="badge badge-{{ $progreso }}">{{ ucfirst($progreso) ?: '—' }}</span>
+                <td class="col-center">
+                    <span class="badge badge-{{ $progreso ?: 'pendiente' }}">{{ ucfirst($progreso) ?: '—' }}</span>
                 </td>
-                <td class="center">
+                <td class="col-center">
                     <span class="badge {{ $isAnulado ? 'badge-anulado' : 'badge-activo' }}">
                         {{ $isAnulado ? 'Anulado' : 'Activo' }}
                     </span>
                 </td>
-                <td class="center">{{ \Carbon\Carbon::parse($e->fecha_entrada)->format('d/m/Y') }}</td>
-                <td class="center">{{ $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : '—' }}</td>
-                <td class="right monto">${{ number_format($e->costo, 2) }}</td>
+                <td class="col-center">{{ \Carbon\Carbon::parse($e->fecha_entrada)->format('d/m/Y') }}</td>
+                <td class="col-center">{{ $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : '—' }}</td>
+                <td class="col-right monto-cell">${{ number_format($e->costo, 2) }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="10" style="text-align:center; padding:20px; color:#718096;">No hay registros para mostrar.</td>
+                <td colspan="10" style="text-align:center; padding:20px; color:#94a3b8; font-style:italic;">
+                    No hay registros para mostrar con los filtros aplicados.
+                </td>
             </tr>
             @endforelse
         </tbody>
         @if(count($electronicas) > 0)
         <tfoot>
             <tr>
-                <td colspan="9" style="text-align:right; font-size:8px; text-transform:uppercase;">Total {{ count($electronicas) }} registros — Costo acumulado:</td>
-                <td style="text-align:right; color:#553c9a">${{ number_format($electronicas->sum('costo'), 2) }}</td>
+                <td colspan="9" style="text-align:right; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px;">
+                    TOTAL — {{ count($electronicas) }} registros &nbsp;|&nbsp; Costo acumulado:
+                </td>
+                <td style="text-align:right; font-size:9px; font-weight:800;">
+                    ${{ number_format($electronicas->sum('costo'), 2) }}
+                </td>
             </tr>
         </tfoot>
         @endif
     </table>
 
-    <div class="footer">Sistema de Control de Mantenimiento &mdash; Reporte generado automáticamente</div>
+    {{-- ── PIE DE DOCUMENTO ── --}}
+    <div class="doc-footer">
+        <div class="footer-left">
+            Sistema de Control de Mantenimiento &mdash; Reporte generado automáticamente. Documento de uso interno.
+        </div>
+        <div class="footer-right">
+            Tecni Systemas &copy; {{ date('Y') }}
+        </div>
+    </div>
+
 </body>
 </html>

@@ -28,7 +28,7 @@
 
  <div>
  <label class="field-label">Especialidad *</label>
- <select name="especialidad" required class="glass-input mt-1 text-sm font-bold">
+ <select name="especialidad" required class="glass-input no-search mt-1 text-sm font-bold">
  <option value=\"\"></option>
  <option value="Hardware" {{ old('especialidad') == 'Hardware' ? 'selected' : '' }}>Hardware</option>
  <option value="Software" {{ old('especialidad') == 'Software' ? 'selected' : '' }}>Software</option>

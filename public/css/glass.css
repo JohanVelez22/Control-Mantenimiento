@@ -851,6 +851,104 @@ html.dark .pill-correctivo { color: #FDBA74; border-color: rgba(249,115,22,0.40)
 html.dark .pill-preventivo { color: #93C5FD; border-color: rgba(37,99,235,0.40); background: rgba(37,99,235,0.15); }
 html.dark .pill-especialidad { color: #A5B4FC; border-color: rgba(99,102,241,0.40); background: rgba(99,102,241,0.15); }
 
+/* ─── Print ─────────────────────────────────────────────────────────────── */
+@media print {
+  /* ── 1. Tamaño y márgenes de página ── */
+  @page {
+    size: A4 portrait;
+    margin: 15mm 12mm 15mm 12mm;
+  }
+
+  /* ── 2. Reset total del body ── */
+  html, body {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 9pt !important;
+  }
+
+  /* ── 3. Ocultar toda la UI de navegación y controles ── */
+  #ts-sidebar,
+  #ts-topbar,
+  #nav-progress,
+  .no-print,
+  nav,
+  aside,
+  header,
+  footer,
+  button,
+  form,
+  .ts-wrapper,
+  .pagination,
+  [data-bs-toggle],
+  .modal,
+  .ts-modal-overlay { display: none !important; }
+
+  /* ── 4. Resetear el layout flex principal ── */
+  .flex.min-h-screen,
+  .flex.min-h-screen > div {
+    display: block !important;
+    width: 100% !important;
+    min-height: unset !important;
+  }
+
+  #main-wrapper {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: none !important;
+  }
+
+  /* ── 5. Contenido principal: sin padding ni padding-bottom gigante ── */
+  #ts-main {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Eliminar el pb-[50vh] de Tailwind que crea espacio enorme al imprimir */
+  [class*="pb-"] { padding-bottom: 0 !important; }
+
+  /* ── 6. Glassmorphism → papel blanco ── */
+  .glass-card,
+  .glass-input,
+  [class*="glass"] {
+    background: #fff !important;
+    border: 1px solid #e2e8f0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* ── 7. Encabezado de impresión (print-header) visible ── */
+  .print-header { display: block !important; }
+
+  /* ── 8. Tablas: ancho completo y sin cortes ── */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+  }
+  thead { display: table-header-group !important; }
+  tfoot { display: table-footer-group !important; }
+  tr    { page-break-inside: avoid !important; }
+
+  /* ── 9. Links sin decoración ── */
+  a { color: inherit !important; text-decoration: none !important; }
+
+  /* ── 10. Colores forzados en encabezados de tabla ── */
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
 /* â”€â”€â”€ Entity Toggle (Persona / Empresa) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .entity-toggle { display: flex; gap: 6px; padding: 5px; background: rgba(0,0,0,0.05); border-radius: 14px; }
 html.dark .entity-toggle { background: rgba(255,255,255,0.06); }

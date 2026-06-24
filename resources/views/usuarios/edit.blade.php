@@ -33,7 +33,7 @@
  @if(auth()->user()->isAdmin())
  <div class="mb-4">
  <label class="field-label">Rol del Sistema</label>
- <select name="role" required class="glass-input mt-1">
+ <select name="role" required class="glass-input no-search mt-1">
  <option value="tecnico" {{ old('role', $user->role) == 'tecnico' ? 'selected' : '' }}>Técnico</option>
  <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Administrador</option>
  <option value="invitado" {{ old('role', $user->role) == 'invitado' ? 'selected' : '' }}>Invitado</option>
@@ -60,7 +60,7 @@
  @if(auth()->user()->isAdmin())
  <div class="mb-4">
  <label class="field-label">Estado de la Cuenta</label>
- <select name="active" class="glass-input mt-1">
+ <select name="active" class="glass-input no-search mt-1">
  <option value="1" {{ old('active', $user->active) ? 'selected' : '' }}>Activo (Permitir acceso)</option>
  <option value="0" {{ !old('active', $user->active) ? 'selected' : '' }}>Inactivo (Bloquear acceso)</option>
  </select>

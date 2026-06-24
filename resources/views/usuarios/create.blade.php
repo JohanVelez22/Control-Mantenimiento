@@ -24,7 +24,7 @@
  {{-- Rol --}}
  <div class="mb-4">
  <label class="block text-sm font-medium mb-2">Rol</label>
- <select name="role" required class="glass-input">
+ <select name="role" required class="glass-input no-search">
  <option value="tecnico" {{ old('role') == 'tecnico' ? 'selected' : '' }}>Técnico</option>
  <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrador</option>
  <option value="invitado" {{ old('role') == 'invitado' ? 'selected' : '' }}>Invitado</option>

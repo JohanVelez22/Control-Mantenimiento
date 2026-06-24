@@ -90,9 +90,8 @@
         .ts-wrapper.single.has-items:not(.focus):not(.dropdown-active) .ts-control > input {
             display: none !important;
         }
-        /* Ocultar el item seleccionado cuando está en foco o dropdown activo para evitar solapamiento al escribir */
-        .ts-wrapper.single.focus .ts-control > .item,
-        .ts-wrapper.single.dropdown-active .ts-control > .item {
+        /* Ocultar el item seleccionado cuando el dropdown está activo para evitar solapamiento al escribir (solo si NO es no-search) */
+        .ts-wrapper.single.dropdown-active:not(.no-search) .ts-control > .item {
             display: none !important;
         }
         

@@ -49,7 +49,7 @@
  {{-- Estado --}}
  <div>
  <label class="field-label flex items-center gap-2"><span>🏷️</span> Estado *</label>
- <select name="estado" required class="glass-input mt-1 font-bold {{ old('estado', $mantenimiento->estado) === 'terminado' ? 'text-emerald-600 dark:text-emerald-400' : 'text-yellow-600 dark:text-yellow-400' }}">
+ <select name="estado" required class="glass-input no-search mt-1 font-bold {{ old('estado', $mantenimiento->estado) === 'terminado' ? 'text-emerald-600 dark:text-emerald-400' : 'text-yellow-600 dark:text-yellow-400' }}">
  <option value="pendiente" {{ old('estado', $mantenimiento->estado) == 'pendiente' ? 'selected' : '' }} class="text-yellow-600">⏳ Pendiente</option>
  <option value="terminado" {{ old('estado', $mantenimiento->estado) == 'terminado' ? 'selected' : '' }} class="text-emerald-600">✅ Terminado</option>
  </select>
@@ -117,7 +117,7 @@
  {{-- Estado de la Orden (Anulado/Activo) --}}
  <div class="md:col-span-2">
  <label class="field-label flex items-center gap-2"><span>🛡️</span> Estado de la Orden</label>
- <select name="anulado" class="glass-input mt-1 font-bold">
+ <select name="anulado" class="glass-input no-search mt-1 font-bold">
  <option value="0" {{ old('anulado', $mantenimiento->anulado) ? '' : 'selected' }}>🟢 Activo</option>
  <option value="1" {{ old('anulado', $mantenimiento->anulado) ? 'selected' : '' }}>🔴 Anulado</option>
  </select>

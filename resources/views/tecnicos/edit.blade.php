@@ -29,7 +29,7 @@
 
  <div>
  <label class="field-label">Especialidad *</label>
- <select name="especialidad" required class="glass-input mt-1 text-sm font-bold">
+ <select name="especialidad" required class="glass-input no-search mt-1 text-sm font-bold">
  <option value="Hardware" {{ old('especialidad', $tecnico->especialidad) == 'Hardware' ? 'selected' : '' }}>Hardware</option>
  <option value="Software" {{ old('especialidad', $tecnico->especialidad) == 'Software' ? 'selected' : '' }}>Software</option>
  <option value="Electrónica" {{ old('especialidad', $tecnico->especialidad) == 'Electrónica' ? 'selected' : '' }}>Electrónica</option>
@@ -72,7 +72,7 @@
  @if(auth()->user()->isAdmin())
  <div>
  <label class="field-label flex items-center gap-2">⚙️ Estado del Técnico</label>
- <select name="active" class="glass-input mt-1">
+ <select name="active" class="glass-input no-search mt-1">
  <option value="1" {{ old('active', $tecnico->active) ? 'selected' : '' }}>✅ Activo</option>
  <option value="0" {{ !old('active', $tecnico->active) ? 'selected' : '' }}>🚫 Inactivo (deshabilitado)</option>
  </select>
