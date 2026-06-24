@@ -29,7 +29,7 @@
  </div>
 
  <!-- Formulario de Filtros Independientes -->
- <form id="filtros-electronica" action="{{ route('electronicas.reportes') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end mb-8 p-5 bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm no-print">
+ <form id="filtros-electronica" action="{{ route('electronicas.reportes') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end mb-8 p-5 glass-card no-print">
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Cliente</label>
  <select name="cliente_id" class="glass-input">

@@ -25,7 +25,7 @@
  </div>
 
  {{-- Filtros --}}
- <form method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-4 bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm">
+  <form method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-5 glass-card no-print">
  <select name="tipo" class="glass-input no-search w-48 font-semibold">
  <option value="">Todos los tipos</option>
  <option value="compra" {{ request('tipo') === 'compra' ? 'selected' : '' }}>📦 Compras</option>
