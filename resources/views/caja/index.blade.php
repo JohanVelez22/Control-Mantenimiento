@@ -109,17 +109,17 @@
  {{ $m->concepto->nombre }}
  </td>
  <td data-label="Tipo:" class="text-center">
- <span class="pill {{ $m->tipo_movimiento === 'ingreso' ? 'pill-done' : 'pill-egreso' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
+ <span class="pill {{ $m->tipo_movimiento === 'ingreso' ? 'pill-done' : 'pill-egreso' }} {{ $m->anulado ? 'opacity-70' : '' }}">
  {{ $m->tipo_movimiento === 'ingreso' ? '📈 Ingreso' : '📉 Egreso' }}
  </span>
  </td>
  <td data-label="Pago:" class="text-center">
- <span class="pill {{ $m->tipo_pago === 'efectivo' ? 'pill-efectivo' : 'pill-banco' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
+ <span class="pill {{ $m->tipo_pago === 'efectivo' ? 'pill-efectivo' : 'pill-banco' }} {{ $m->anulado ? 'opacity-70' : '' }}">
  {{ $m->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Banco' }}
  </span>
  </td>
  <td data-label="Estado:" class="text-center">
- <span class="pill {{ $m->anulado ? 'pill-anulado' : 'pill-done' }} {{ $m->anulado ? 'line-through opacity-70' : '' }}">
+ <span class="pill {{ $m->anulado ? 'pill-anulado' : 'pill-done' }} {{ $m->anulado ? 'opacity-70' : '' }}">
  {{ $m->anulado ? 'ANULADO' : 'ACTIVO' }}
  </span>
  </td>

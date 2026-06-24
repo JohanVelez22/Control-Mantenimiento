@@ -32,9 +32,9 @@
             </div>
         </div>
 
-        <div class="pt-4 border-t border-gray-200/50 dark:border-white/10 flex justify-end gap-3">
-            <a href="{{ route('inventario.facturas') }}" class="btn-ghost">Cancelar</a>
-            <button type="submit" class="btn-primary">💾 Guardar Cambios</button>
+        <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+            <a href="{{ route('inventario.facturas') }}" class="btn-cancel">↩️ Cancelar</a>
+            <button type="submit" class="btn-save">💾 Guardar Cambios</button>
         </div>
     </form>
 </div>

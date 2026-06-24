@@ -246,10 +246,10 @@ class MovimientoInventarioController extends Controller
             ->orderBy('fecha', 'desc')
             ->orderBy('id', 'desc');
 
-        if ($request->filled('tipo')) {
+        if ($request->filled('tipo') && $request->tipo !== 'todos') {
             $query->where('tipo_movimiento', $request->tipo);
         }
-        if ($request->filled('estado')) {
+        if ($request->filled('estado') && $request->estado !== 'todos') {
             $query->where('estado', $request->estado);
         }
         
@@ -361,60 +361,6 @@ class MovimientoInventarioController extends Controller
         }
     }
 
-    public function destroyFactura(Request $request, Factura $factura): RedirectResponse
-    {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->back()->with('error', 'Solo administradores pueden eliminar facturas.');
-        }
-
-        $request->validate([
-            'password_confirm' => 'required|string',
-        ]);
-
-        $currentUser = auth()->user();
-        $passwordOk = \Illuminate\Support\Facades\Hash::check($request->password_confirm, $currentUser->password);
-        if (!$passwordOk) {
-            $adminOk = \App\Models\User::where('role', 'admin')->where('active', true)->get()
-                ->contains(fn($a) => \Illuminate\Support\Facades\Hash::check($request->password_confirm, $a->password));
-            $passwordOk = $adminOk;
-        }
-
-        if (!$passwordOk) {
-            return back()->with('error', 'Contraseña incorrecta. No se eliminó la factura.');
-        }
-
-        try {
-            DB::beginTransaction();
-
-            // Solo revertimos el stock si la factura no estaba anulada
-            if ($factura->estado !== 'anulada') {
-                foreach ($factura->items as $item) {
-                    $stock = $item->stock;
-                    if ($stock) {
-                        if ($factura->tipo_movimiento === 'compra') {
-                            $stock->decrementarStock($item->cantidad);
-                        } else {
-                            $stock->incrementarStock($item->cantidad);
-                        }
-                    }
-                }
-            }
-
-            // Buscar y eliminar movimientos de caja asociados
-            MovimientoCaja::where('descripcion', 'like', "%{$factura->numero_factura}%")->delete();
-
-            $factura->items()->delete();
-            $factura->delete();
-
-            DB::commit();
-
-            return redirect()->route('inventario.facturas')->with('success', "Factura #{$factura->numero_factura} eliminada de forma permanente.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error eliminando factura: ' . $e->getMessage());
-            return back()->with('error', 'Error al eliminar la factura.');
-        }
-    }
 
     // ─── Helpers Privados ─────────────────────────────────────────
 

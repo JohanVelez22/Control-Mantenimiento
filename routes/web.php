@@ -85,7 +85,6 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
         Route::get('/facturas/{factura}',            [App\Http\Controllers\MovimientoInventarioController::class, 'showFactura'])->name('facturas.show');
         Route::get('/facturas/{factura}/edit',       [App\Http\Controllers\MovimientoInventarioController::class, 'editFactura'])->name('facturas.edit');
         Route::put('/facturas/{factura}',            [App\Http\Controllers\MovimientoInventarioController::class, 'updateFactura'])->name('facturas.update');
-        Route::delete('/facturas/{factura}',         [App\Http\Controllers\MovimientoInventarioController::class, 'destroyFactura'])->name('facturas.destroy');
         Route::get('/facturas/{factura}/imprimir',   [App\Http\Controllers\MovimientoInventarioController::class, 'printFactura'])->name('facturas.print');
         Route::post('/facturas/{factura}/anular',    [App\Http\Controllers\MovimientoInventarioController::class, 'anularFactura'])->name('facturas.anular');
     });

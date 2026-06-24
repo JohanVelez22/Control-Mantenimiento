@@ -27,12 +27,12 @@
  {{-- Filtros --}}
   <form method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-5 glass-card no-print">
  <select name="tipo" class="glass-input no-search w-48 font-semibold">
- <option value="">Todos los tipos</option>
+ <option value="todos" {{ request('tipo') === 'todos' || !request('tipo') ? 'selected' : '' }}>Todos los tipos</option>
  <option value="compra" {{ request('tipo') === 'compra' ? 'selected' : '' }}>📦 Compras</option>
  <option value="venta" {{ request('tipo') === 'venta' ? 'selected' : '' }}>🛒 Ventas</option>
  </select>
  <select name="estado" class="glass-input no-search w-48 font-semibold">
- <option value="">Todos los estados</option>
+ <option value="todos" {{ request('estado') === 'todos' || !request('estado') ? 'selected' : '' }}>Todos los estados</option>
  <option value="emitida" {{ request('estado') === 'emitida' ? 'selected' : '' }}>✅ Emitida</option>
  <option value="pendiente_pago" {{ request('estado') === 'pendiente_pago' ? 'selected' : '' }}>⏳ Pendiente</option>
  <option value="anulada" {{ request('estado') === 'anulada' ? 'selected' : '' }}>🚫 Anulada</option>
@@ -112,14 +112,6 @@
  </form>
  @endif
 
- @if(auth()->user()->isAdmin())
- <form id="delete-form-{{$f->id}}" action="{{ route('inventario.facturas.destroy', $f->id) }}" method="POST" class="hidden">
- @csrf
- @method('DELETE')
- <input type="hidden" name="password_confirm" id="pwd-hidden-{{$f->id}}">
- </form>
- <button type="button" onclick="openPwdModal('{{$f->id}}')" class="btn-danger px-2.5 py-1.5 text-xs" title="Eliminar definitivamente">🗑️</button>
- @endif
  @endif
  </div>
  </td>
@@ -150,70 +142,5 @@
  </div>
 </div>
 
-<!-- Modal para pedir Contraseña (ELIMINAR DEFINITIVO) -->
-<div id="pwd-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
- <div class="ts-modal-card scale-95 opacity-0" id="pwd-modal-card">
- <div class="p-6">
- <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
- 🗑️
- </div>
- <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Factura</h3>
- <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
- Esta acción eliminará los registros de caja vinculados y revertirá el inventario de manera forzada. 
- Ingresa tu contraseña de administrador para confirmar.
- </p>
- 
- <div class="mb-6">
- <input type="password" id="pwd-input" required placeholder="Contraseña de administrador..." class="glass-input w-full text-center tracking-widest text-lg py-3" onkeypress="if(event.key === 'Enter') confirmPwdModal()">
- </div>
- 
- <div class="flex gap-3">
- <button type="button" onclick="closePwdModal()" class="flex-1 btn-ghost justify-center">
- Cancelar
- </button>
- <button type="button" onclick="confirmPwdModal()" class="flex-1 btn-danger justify-center font-bold">
- Eliminar
- </button>
- </div>
- </div>
- </div>
-</div>
 
-<script>
- let currentDeleteId = null;
-
- function openPwdModal(id) {
- currentDeleteId = id;
- const modal = document.getElementById('pwd-modal');
- const card = document.getElementById('pwd-modal-card');
- document.getElementById('pwd-input').value = '';
- modal.classList.remove('hidden');
- setTimeout(() => {
- modal.classList.remove('opacity-0');
- card.classList.remove('scale-95', 'opacity-0');
- document.getElementById('pwd-input').focus();
- }, 10);
- }
- 
- function confirmPwdModal() {
- const pwd = document.getElementById('pwd-input').value;
- if(!pwd) {
- alert('Por favor ingresa la contraseña.');
- return;
- }
- document.getElementById('pwd-hidden-' + currentDeleteId).value = pwd;
- document.getElementById('delete-form-' + currentDeleteId).submit();
- }
-
- function closePwdModal() {
- const modal = document.getElementById('pwd-modal');
- const card = document.getElementById('pwd-modal-card');
- modal.classList.add('opacity-0');
- card.classList.add('scale-95', 'opacity-0');
- setTimeout(() => {
- modal.classList.add('hidden');
- currentDeleteId = null;
- }, 300);
- }
-</script>
 @endsection

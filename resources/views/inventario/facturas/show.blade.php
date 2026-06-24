@@ -45,15 +45,15 @@
   </div>
   </div>
  
- <div class="flex items-center gap-3 w-full md:w-auto">
- <a href="{{ route('inventario.facturas.print', $factura->id) }}" target="_blank" class="btn-ghost flex-1 md:flex-none justify-center border-blue-500/20 text-blue-600">
+ <div class="flex items-center gap-3 shrink-0">
+ <a href="{{ route('inventario.facturas.print', $factura->id) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600">
  🖨️ Imprimir
  </a>
  
  @if($factura->estado !== 'anulada' && !auth()->user()->isInvitado())
- <form action="{{ route('inventario.facturas.anular', $factura->id) }}" method="POST" class="flex-1 md:flex-none" data-confirm-delete="¿Estás seguro de anular la factura {{ $factura->numero_factura }}? El inventario y los movimientos de caja se revertirán.">
+ <form action="{{ route('inventario.facturas.anular', $factura->id) }}" method="POST" class="inline" data-confirm-delete="¿Estás seguro de anular la factura {{ $factura->numero_factura }}? El inventario y los movimientos de caja se revertirán.">
  @csrf
- <button type="submit" class="btn-danger w-full justify-center">
+ <button type="submit" class="btn-danger">
  🚫 Anular
  </button>
  </form>

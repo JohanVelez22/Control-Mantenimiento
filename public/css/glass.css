@@ -822,7 +822,7 @@ html.dark .ts-table tbody td {
 
 /* Row state: anulado */
 .ts-table tbody tr.row-anulado { opacity: 0.50; }
-.ts-table tbody tr.row-anulado td { text-decoration: line-through; color: #94A3B8; }
+.ts-table tbody tr.row-anulado td { text-decoration: none; color: #94A3B8; }
 
 /* â”€â”€â”€ Status Pills â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pill {
