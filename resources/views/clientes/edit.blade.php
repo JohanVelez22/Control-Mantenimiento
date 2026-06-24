@@ -17,19 +17,19 @@
  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
  <div>
  <label class="field-label">Nombre Completo *</label>
- <input type="text" name="nombre" value="{{ old('nombre', $cliente->nombre) }}" required class="glass-input mt-1 @error('nombre') border-red-500 @enderror">
+ <input type="text" name="nombre" value="{{ old('nombre', $cliente->nombre) }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input mt-1 @error('nombre') border-red-500 @enderror">
  @error('nombre') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
  <div>
  <label class="field-label">Identificación (DNI/NIT) *</label>
- <input type="text" name="identificacion" value="{{ old('identificacion', $cliente->identificacion) }}" required class="glass-input mt-1 @error('identificacion') border-red-500 @enderror">
+ <input type="text" name="identificacion" value="{{ old('identificacion', $cliente->identificacion) }}" required oninput="this.value = this.value.replace(/[^0-9-]/g, '')" class="glass-input mt-1 @error('identificacion') border-red-500 @enderror">
  @error('identificacion') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
  <div>
  <label class="field-label">Teléfono Móvil *</label>
- <input type="tel" pattern="[\d\+\-\s\(\)]+" name="movil" value="{{ old('movil', $cliente->movil) }}" required class="glass-input mt-1 @error('movil') border-red-500 @enderror">
+ <input type="tel" name="movil" value="{{ old('movil', $cliente->movil) }}" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="glass-input mt-1 @error('movil') border-red-500 @enderror">
  @error('movil') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 

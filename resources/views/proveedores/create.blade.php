@@ -33,7 +33,7 @@
  <!-- Identificación -->
  <div>
  <label class="field-label">Identificación (NIT / Cédula) *</label>
- <input type="text" name="identificacion" required value="{{ old('identificacion') }}" placeholder="Ej: 900123456-7" class="glass-input">
+ <input type="text" name="identificacion" required value="{{ old('identificacion') }}" oninput="this.value = this.value.replace(/[^0-9-]/g, '')" placeholder="Ej: 900123456-7" class="glass-input">
  @error('identificacion') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
 
@@ -47,7 +47,7 @@
  <!-- Teléfono -->
  <div>
  <label class="field-label">Teléfono</label>
- <input type="text" name="telefono" value="{{ old('telefono') }}" placeholder="Ej: 3001234567" class="glass-input">
+ <input type="text" name="telefono" value="{{ old('telefono') }}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Ej: 3001234567" class="glass-input">
  @error('telefono') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
 

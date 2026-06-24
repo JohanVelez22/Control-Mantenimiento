@@ -18,7 +18,7 @@
  {{-- Nombre --}}
  <div class="mb-4">
  <label class="block text-sm font-medium mb-2">Nombre Completo</label>
- <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="glass-input @error('name') border-red-500 @enderror">
+ <input type="text" name="name" value="{{ old('name', $user->name) }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input @error('name') border-red-500 @enderror">
  @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
  </div>
 
@@ -75,10 +75,16 @@
  <div class="mb-4">
  <label class="block text-sm font-medium mb-2 text-gray-500">Cambiar Contraseña del Usuario (opcional)</label>
  <input type="password" id="password" name="password" placeholder="Dejar en blanco para no cambiar" class="glass-input @error('password') border-red-500 @enderror">
- <ul id="password-requirements" class="mt-2 text-sm text-gray-500 dark:text-gray-400 space-y-1 hidden">
- <li id="req-length" class="flex items-center"><span class="mr-2">✗</span> Mínimo 8 caracteres</li>
- <li id="req-case" class="flex items-center"><span class="mr-2">✗</span> Mayúsculas y minúsculas</li>
- <li id="req-number" class="flex items-center"><span class="mr-2">✗</span> Al menos un número</li>
+ <ul id="password-requirements" class="mt-2 text-xs space-y-1.5 hidden transition-all duration-300">
+ <li id="req-length" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium transition-colors">
+ <span class="flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[9px] font-black transition-colors">✖</span> Mínimo 8 caracteres
+ </li>
+ <li id="req-case" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium transition-colors">
+ <span class="flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[9px] font-black transition-colors">✖</span> Mayúsculas y minúsculas
+ </li>
+ <li id="req-number" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium transition-colors">
+ <span class="flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[9px] font-black transition-colors">✖</span> Al menos un número
+ </li>
  </ul>
  @error('password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
  </div>
@@ -115,15 +121,24 @@ document.addEventListener('DOMContentLoaded', function() {
  var reqNumber = document.getElementById('req-number');
  var reqMatch = document.getElementById('req-match');
 
- function updateRequirement(el, isValid) {
- if (isValid) {
- el.classList.remove('text-gray-500', 'dark:text-gray-400', 'text-red-500');
- el.classList.add('text-green-500');
- el.querySelector('span').textContent = '✓';
+ function setReq(el, valid) {
+ var span = el.querySelector('span');
+ if (valid) {
+ el.classList.add('text-emerald-600', 'dark:text-emerald-400');
+ el.classList.remove('text-gray-500', 'dark:text-gray-400');
+ if (span) {
+ span.textContent = '✓';
+ span.classList.add('bg-emerald-100', 'text-emerald-600', 'dark:bg-emerald-900/50', 'dark:text-emerald-400');
+ span.classList.remove('bg-gray-200', 'text-gray-500', 'dark:bg-gray-700', 'dark:text-gray-400');
+ }
  } else {
- el.classList.remove('text-green-500');
+ el.classList.remove('text-emerald-600', 'dark:text-emerald-400');
  el.classList.add('text-gray-500', 'dark:text-gray-400');
- el.querySelector('span').textContent = '✗';
+ if (span) {
+ span.textContent = '✖';
+ span.classList.remove('bg-emerald-100', 'text-emerald-600', 'dark:bg-emerald-900/50', 'dark:text-emerald-400');
+ span.classList.add('bg-gray-200', 'text-gray-500', 'dark:bg-gray-700', 'dark:text-gray-400');
+ }
  }
  }
 
@@ -135,9 +150,9 @@ document.addEventListener('DOMContentLoaded', function() {
  passwordInput.addEventListener('input', function() {
  var val = passwordInput.value;
  requirementsList.classList.remove('hidden');
- updateRequirement(reqLength, val.length >= 8);
- updateRequirement(reqCase, /[a-z]/.test(val) && /[A-Z]/.test(val));
- updateRequirement(reqNumber, /\d/.test(val));
+ setReq(reqLength, val.length >= 8);
+ setReq(reqCase, /[a-z]/.test(val) && /[A-Z]/.test(val));
+ setReq(reqNumber, /\d/.test(val));
  checkMatch();
  });
  }

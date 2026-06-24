@@ -15,6 +15,7 @@
  <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Identificación (NIT / Cédula) *</label>
  <input type="text" name="identificacion" required
  value="{{ old('identificacion', $proveedor->identificacion ?? '') }}"
+ oninput="this.value = this.value.replace(/[^0-9-]/g, '')"
  placeholder="Ej: 900123456-7"
  class="glass-input w-full">
  @error('identificacion') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -33,6 +34,7 @@
  <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Teléfono</label>
  <input type="text" name="telefono"
  value="{{ old('telefono', $proveedor->telefono ?? '') }}"
+ oninput="this.value = this.value.replace(/[^0-9]/g, '')"
  placeholder="Ej: 3001234567"
  class="glass-input w-full">
  @error('telefono') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
