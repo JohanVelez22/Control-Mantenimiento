@@ -24,7 +24,7 @@
     <strong>Detalles del Equipo:</strong><br>
     Equipo: {{ $mantenimiento->equipo->nombre ?? 'N/A' }} | 
     Marca/Modelo: {{ trim(($mantenimiento->equipo->marca ?? '') . ' ' . ($mantenimiento->equipo->modelo ?? '')) ?: '—' }} | 
-    Serie: {{ $mantenimiento->equipo->serie ?? 'N/A' }}
+    Serie: {{ strtoupper($mantenimiento->equipo->serie ?? 'N/A') }}
 </div>
 
 <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; background: #fafafa;">

@@ -244,7 +244,7 @@
                 </td>
                 <td>
                     <div class="col-bold">{{ $e->equipo->nombre ?? 'N/A' }}</div>
-                    <div class="sub-text">{{ $e->equipo->marca ?? '' }} {{ $e->equipo->modelo ?? '' }} &mdash; {{ $e->equipo->serie ?? '' }}</div>
+                    <div class="sub-text">{{ $e->equipo->marca ?? '' }} {{ $e->equipo->modelo ?? '' }} &mdash; {{ strtoupper($e->equipo->serie ?? '') }}</div>
                 </td>
                 <td class="col-center">{{ $e->tecnico->nombre ?? 'N/A' }}</td>
                 <td class="col-center">

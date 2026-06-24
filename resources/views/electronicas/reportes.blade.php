@@ -44,7 +44,7 @@
  <select name="equipo_id" class="glass-input">
  <option value="todos">Todos los equipos</option>
  @foreach($equipos as $e)
- <option value="{{ $e->id }}" {{ request('equipo_id') == $e->id ? 'selected' : '' }}>{{ $e->nombre }} ({{ $e->modelo}}) {{ $e->serie }}</option>
+ <option value="{{ $e->id }}" {{ request('equipo_id') == $e->id ? 'selected' : '' }}>{{ $e->nombre }} ({{ $e->modelo}}) {{ strtoupper($e->serie) }}</option>
  @endforeach
  </select>
  </div>
@@ -175,7 +175,7 @@
   <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">{{ $m->equipo->nombre ?? 'N/A' }}</span>
   <span class="font-bold text-[14px] text-gray-400 italic">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
   <span class="not-italic text-gray-900 dark:text-gray-100 font-medium text-[13.5px]">
-  {{ $m->equipo->serie ?? '' }}
+  {{ strtoupper($m->equipo->serie ?? '') }}
   </span></span>
   </a>
   </td>

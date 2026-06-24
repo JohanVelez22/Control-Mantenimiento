@@ -24,7 +24,7 @@
     <strong>Detalles del Dispositivo:</strong><br>
     Equipo: {{ $electronica->equipo->nombre ?? 'N/A' }} | 
     Marca/Modelo: {{ trim(($electronica->equipo->marca ?? '') . ' ' . ($electronica->equipo->modelo ?? '')) ?: '—' }} | 
-    Serie: {{ $electronica->equipo->serie ?? 'N/A' }}
+    Serie: {{ strtoupper($electronica->equipo->serie ?? 'N/A') }}
 </div>
 
 <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; background: #fafafa;">
