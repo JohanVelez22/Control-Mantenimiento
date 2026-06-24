@@ -3,13 +3,15 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-8">
-        <div>
-            <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
-                🏷️ Conceptos de Caja
-            </h2>
-            <p class="text-gray-500 font-medium mt-2">Gestiona las categorías o conceptos para ingresos y egresos.</p>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+            <div>
+                <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
+                    🏷️ Conceptos de Caja
+                </h2>
+                <p class="text-gray-500 font-medium mt-1">Gestiona las categorías o conceptos para ingresos y egresos.</p>
+            </div>
         </div>
-        <a href="{{ route('caja.index') }}" class="btn-ghost">⬅️ Volver a Caja</a>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

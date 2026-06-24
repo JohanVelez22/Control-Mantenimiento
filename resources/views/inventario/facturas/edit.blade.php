@@ -2,11 +2,13 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto">
-    <div class="flex items-center gap-4 mb-6">
-        <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-1.5 text-xs inline-flex text-gray-500">⬅️ Volver a facturas</a>
-        <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
-            ✏️ Editar Factura {{ $factura->numero_factura }}
-        </h2>
+    <div class="flex items-center gap-3 mb-6">
+        <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+        <div>
+            <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
+                ✏️ Editar Factura {{ $factura->numero_factura }}
+            </h2>
+        </div>
     </div>
 
     <form action="{{ route('inventario.facturas.update', $factura->id) }}" method="POST" class="glass-card p-6 md:p-8 space-y-6">

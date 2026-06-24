@@ -5,8 +5,9 @@
  {{-- Header --}}
  <div class="glass-card p-6 md:p-8">
  <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6">
+ <div class="flex items-center gap-3">
+ <a href="{{ route('proveedores.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
  <div>
- <a href="{{ route('proveedores.index') }}" class="btn-ghost px-3 py-1.5 text-xs mb-3 inline-flex">⬅️ Volver a proveedores</a>
  <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
  <span class="text-indigo-500">{{ $proveedor->tipo_entidad === 'empresa' ? '🏢' : '👤' }}</span>
  {{ $proveedor->nombre_razon_social }}
@@ -14,6 +15,7 @@
  {{ $proveedor->tipo_label }}
  </span>
  </h2>
+ </div>
  </div>
  
  @if(!auth()->user()->isInvitado())

@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 @section('content')
 <div class="max-w-4xl mx-auto">
  <div class="glass-card p-6 md:p-8">
@@ -32,16 +32,18 @@
 
  {{-- Encabezado --}}
  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6">
- <div>
- <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-1.5 text-xs mb-3 inline-flex">⬅️ Volver a facturas</a>
- <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
- {{ $factura->numero_factura }}
- <span class="pill {{ $factura->tipo_movimiento === 'compra' ? 'pill-pending' : 'pill-done' }} text-sm py-1 px-3">
- {{ $factura->tipo_movimiento === 'compra' ? '📦 COMPRA' : '🛒 VENTA' }}
- </span>
- </h2>
- <p class="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{{ $factura->fecha->format('d \d\e F \d\e Y') }}</p>
- </div>
+  <div class="flex items-center gap-3">
+  <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+  <div>
+  <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
+  {{ $factura->numero_factura }}
+  <span class="pill {{ $factura->tipo_movimiento === 'compra' ? 'pill-pending' : 'pill-done' }} text-sm py-1 px-3">
+  {{ $factura->tipo_movimiento === 'compra' ? '📦 COMPRA' : '🛒 VENTA' }}
+  </span>
+  </h2>
+  <p class="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{{ $factura->fecha->format('d \d\e F \d\e Y') }}</p>
+  </div>
+  </div>
  
  <div class="flex items-center gap-3 w-full md:w-auto">
  <a href="{{ route('inventario.facturas.print', $factura->id) }}" target="_blank" class="btn-ghost flex-1 md:flex-none justify-center border-blue-500/20 text-blue-600">
