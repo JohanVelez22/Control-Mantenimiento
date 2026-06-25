@@ -26,7 +26,19 @@ trait Auditable
                 }
                 
                 if (count($changedNuevos) > 0) {
-                    Evento::registrar('actualizado', $model, $changedViejos, $changedNuevos, "Actualizó un registro de " . class_basename($model));
+                    $accion = 'actualizado';
+                    $mensaje = "Actualizó un registro de " . class_basename($model);
+
+                    // Detect annulments (either 'anulado' = 1 or 'estado' = 'anulada')
+                    if (isset($changedNuevos['anulado']) && $changedNuevos['anulado'] == 1 && isset($changedViejos['anulado']) && $changedViejos['anulado'] == 0) {
+                        $accion = 'anulado';
+                        $mensaje = "Anuló un registro de " . class_basename($model);
+                    } elseif (isset($changedNuevos['estado']) && $changedNuevos['estado'] === 'anulada') {
+                        $accion = 'anulado';
+                        $mensaje = "Anuló un registro de " . class_basename($model);
+                    }
+
+                    Evento::registrar($accion, $model, $changedViejos, $changedNuevos, $mensaje);
                 }
             }
         });

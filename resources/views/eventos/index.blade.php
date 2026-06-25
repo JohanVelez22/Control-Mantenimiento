@@ -63,8 +63,8 @@
                 <button type="submit" class="btn-primary px-4 py-2.5 font-bold">
                     🔍 Filtrar
                 </button>
-                <a href="{{ route('eventos.index') }}" class="btn-cancel px-4 py-2.5 flex items-center justify-center font-bold text-sm">
-                    Limpiar
+                <a href="{{ route('eventos.index') }}" class="btn-clean px-4 py-2.5 flex items-center justify-center font-bold text-sm">
+                    🧹 Limpiar
                 </a>
             </div>
         </form>
@@ -79,7 +79,7 @@
                         <th class="text-left w-48">Fecha</th>
                         <th class="text-center w-32">Acción</th>
                         <th class="text-left">Descripción / Módulo</th>
-                        <th class="text-left w-40">Usuario</th>
+                        <th class="text-center w-40">Usuario</th>
                         <th class="text-center w-24">Detalles</th>
                     </tr>
                 </thead>
@@ -120,8 +120,9 @@
                                 {{ $evento->created_at->format('d/m/Y h:i A') }}
                             </td>
                             <td data-label="Acción:" class="text-center">
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider border {{ $badgeClass }}">
-                                    {{ $icon }} {{ $evento->accion }}
+                                <span class="inline-flex flex-col items-center justify-center px-2 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider border w-24 leading-tight {{ $badgeClass }}">
+                                    <span class="text-base mb-0.5">{{ $icon }}</span>
+                                    <span>{{ $evento->accion }}</span>
                                 </span>
                             </td>
                             <td data-label="Descripción:" class="font-medium text-sm">
@@ -130,13 +131,10 @@
                                     <div class="text-[11px] text-gray-500 font-mono mt-0.5">{{ class_basename($evento->modelo_tipo) }} #{{ $evento->modelo_id }}</div>
                                 @endif
                             </td>
-                            <td data-label="Usuario:">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-md bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold text-xs">
-                                        {{ substr($evento->user->name ?? '?', 0, 1) }}
-                                    </div>
-                                    <span class="text-sm font-bold text-slate-700 dark:text-slate-300">{{ $evento->user->name ?? 'Sistema' }}</span>
-                                </div>
+                            <td data-label="Usuario:" class="text-center">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center h-full">
+                                    {{ $evento->user->name ?? 'Sistema' }}
+                                </span>
                             </td>
                             <td data-label="Detalles:" class="text-center">
                                 @if($evento->valores_antiguos || $evento->valores_nuevos)
