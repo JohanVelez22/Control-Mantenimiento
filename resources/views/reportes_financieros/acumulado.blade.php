@@ -182,10 +182,20 @@
             </tbody>
                                     <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
                 <tr>
-                    <td class="text-left font-bold text-xs">Total Registros: {{ ($acumulado['total_mantenimientos'] ?? 0) + ($acumulado['total_electronicas'] ?? 0) + ($acumulado['total_compras'] ?? 0) + ($acumulado['total_ventas'] ?? 0) + ($acumulado['total_ingresos'] ?? 0) + ($acumulado['total_egresos'] ?? 0) + ($acumulado['total_anulados'] ?? 0) }}</td>
-                    <td class="text-right uppercase text-xs">Balance Neto del Período:</td>
-                    <td class="text-center font-black text-lg {{ ($acumulado['balance_neto'] >= 0) ? 'text-teal-600 dark:text-teal-400' : 'text-red-600 dark:text-red-400' }}">
-                        ${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}
+                    <td class="text-center font-bold text-xs">Total: 7</td>
+                    <td class="text-center">
+                        <div class="relative inline-block">
+                            <span class="absolute right-full mr-2 font-bold text-xs whitespace-nowrap">Total Registros:</span>
+                            <span class="font-bold text-xs">{{ ($acumulado['total_mantenimientos'] ?? 0) + ($acumulado['total_electronicas'] ?? 0) + ($acumulado['total_compras'] ?? 0) + ($acumulado['total_ventas'] ?? 0) + ($acumulado['total_ingresos'] ?? 0) + ($acumulado['total_egresos'] ?? 0) + ($acumulado['total_anulados'] ?? 0) }}</span>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="relative inline-block">
+                            <span class="absolute right-full mr-3 top-1/2 -translate-y-1/2 uppercase text-xs whitespace-nowrap">Balance Neto:</span>
+                            <span class="font-black text-lg {{ ($acumulado['balance_neto'] >= 0) ? 'text-teal-600 dark:text-teal-400' : 'text-red-600 dark:text-red-400' }}">
+                                ${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}
+                            </span>
+                        </div>
                     </td>
                 </tr>
             </tfoot>
