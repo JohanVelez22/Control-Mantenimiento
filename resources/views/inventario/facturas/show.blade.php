@@ -51,12 +51,9 @@
  </a>
  
  @if($factura->estado !== 'anulada' && !auth()->user()->isInvitado())
- <form action="{{ route('inventario.facturas.anular', $factura->id) }}" method="POST" class="inline" data-confirm-delete="¿Estás seguro de anular la factura {{ $factura->numero_factura }}? El inventario y los movimientos de caja se revertirán.">
- @csrf
- <button type="submit" class="btn-danger">
+ <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $factura->id) }}')" class="btn-danger">
  🚫 Anular
  </button>
- </form>
  @endif
  </div>
  </div>

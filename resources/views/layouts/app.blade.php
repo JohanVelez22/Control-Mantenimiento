@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" class="preload">
 <head>
     <meta charset="UTF-8">
@@ -364,7 +364,7 @@
                     <span class="nav-label">Control Stock</span>
                 </a>
                 <a href="{{ route('inventario.facturas') }}" class="nav-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}" title="Operaciones (C/V)">
-                    <span class="nav-icon">📄</span>
+                    <span class="nav-icon">🛒</span>
                     <span class="nav-label">Operaciones (C/V)</span>
                 </a>
                 <a href="{{ route('mantenimientos.index') }}" class="nav-item {{ request()->routeIs('mantenimientos.*') && !request()->routeIs('mantenimientos.reportes') ? 'active' : '' }}" title="Mantenimientos">

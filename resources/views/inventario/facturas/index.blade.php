@@ -106,10 +106,7 @@
  <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600 border-yellow-500/20 hover:bg-yellow-500/10" title="Editar">✏️</a>
  
  @if($f->estado !== 'anulada')
- <form action="{{ route('inventario.facturas.anular', $f->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Seguro que deseas anular esta factura? El inventario se revertirá.');">
- @csrf
- <button type="submit" class="btn-ghost px-2.5 py-1.5 text-xs text-orange-600 border-orange-500/20 hover:bg-orange-500/10" title="Anular">🚫</button>
- </form>
+ <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs text-orange-600 border-orange-500/20 hover:bg-orange-500/10" title="Anular">🚫</button>
  @endif
 
  @endif

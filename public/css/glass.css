@@ -821,8 +821,14 @@ html.dark .ts-table tbody td {
 }
 
 /* Row state: anulado */
-.ts-table tbody tr.row-anulado { opacity: 0.50; }
-.ts-table tbody tr.row-anulado td { text-decoration: none; color: #94A3B8; }
+.ts-table tbody tr.row-anulado { 
+  opacity: 0.60;
+}
+.ts-table tbody tr.row-anulado td,
+.ts-table tbody tr.row-anulado td *:not(.pill):not(.pill *) {
+  text-decoration: none !important;
+  color: #94a3b8 !important;
+}
 
 /* â”€â”€â”€ Status Pills â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pill {

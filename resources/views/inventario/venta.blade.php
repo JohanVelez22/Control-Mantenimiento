@@ -39,7 +39,7 @@
 
  {{-- Tabla de ítems --}}
  <div>
- <div class="flex justify-between items-center mb-2">
+ <div class="flex justify-between items-center mb-5">
  <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
  <span>🛍️</span> Artículos a Vender
  </h3>

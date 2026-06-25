@@ -89,10 +89,7 @@
  <select name="estado" class="glass-input no-search">
  <option value="todos">Todos</option>
  <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
- <option value="en_proceso" {{ request('estado') == 'en_proceso' ? 'selected' : '' }}>En Proceso</option>
- <option value="reparado" {{ request('estado') == 'reparado' ? 'selected' : '' }}>Reparado</option>
  <option value="terminado" {{ request('estado') == 'terminado' ? 'selected' : '' }}>Terminado</option>
- <option value="entregado" {{ request('estado') == 'entregado' ? 'selected' : '' }}>Entregado</option>
  </select>
  </div>
  <div>
