@@ -112,8 +112,33 @@ class StockController extends Controller
             });
         }
 
+        if ($request->filled('proveedor_id')) {
+            $query->where('proveedor_id', $request->proveedor_id);
+        }
+
         if ($request->filled('categoria')) {
             $query->where('categoria', $request->categoria);
+        }
+
+        if ($request->filled('subcategoria')) {
+            $query->where('subcategoria', $request->subcategoria);
+        }
+
+        if ($request->filled('desde')) {
+            $query->whereDate('created_at', '>=', $request->desde);
+        }
+        if ($request->filled('hasta')) {
+            $query->whereDate('created_at', '<=', $request->hasta);
+        }
+
+        if ($request->filled('min_costo')) {
+            $col = in_array($request->price_type, ['precio_venta', 'precio_tecnico']) ? $request->price_type : 'precio_compra';
+            $query->where($col, '>=', $request->min_costo);
+        }
+        
+        if ($request->filled('max_costo')) {
+            $col = in_array($request->price_type, ['precio_venta', 'precio_tecnico']) ? $request->price_type : 'precio_compra';
+            $query->where($col, '<=', $request->max_costo);
         }
 
         if ($request->filled('estado') && $request->estado !== 'todos') {
@@ -137,9 +162,11 @@ class StockController extends Controller
             );
         }
 
-        $stocks = $query->orderBy('id', 'desc')->paginate(20);
-        $categorias = Stock::select('categoria')->whereNotNull('categoria')->where('categoria', '!=', '')->distinct()->pluck('categoria');
+        $stocks = $query->orderBy('id', 'desc')->paginate(20)->withQueryString();
+        $categorias = \App\Models\CategoriaStock::where('tipo', 'categoria')->pluck('nombre')->merge(Stock::select('categoria')->whereNotNull('categoria')->where('categoria', '!=', '')->distinct()->pluck('categoria'))->unique();
+        $subcategorias = \App\Models\CategoriaStock::where('tipo', 'subcategoria')->pluck('nombre')->merge(Stock::select('subcategoria')->whereNotNull('subcategoria')->where('subcategoria', '!=', '')->distinct()->pluck('subcategoria'))->unique();
+        $proveedores = \App\Models\Proveedor::where('active', 1)->orderBy('nombre_razon_social')->get();
 
-        return view('stocks.reportes', compact('stocks', 'categorias'));
+        return view('stocks.reportes', compact('stocks', 'categorias', 'subcategorias', 'proveedores'));
     }
 }

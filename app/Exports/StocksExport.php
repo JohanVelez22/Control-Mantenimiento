@@ -41,12 +41,14 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                 $cantidadTotal = $this->stocks->sum('cantidad');
                 $compraTotal = $this->stocks->sum('precio_compra');
                 $ventaTotal = $this->stocks->sum('precio_venta');
+                $tecnicoTotal = $this->stocks->sum('precio_tecnico');
 
                 // Escribir totales
                 $sheet->setCellValue("A{$footerRow}", "Total Registros: {$totalRegistros}");
-                $sheet->setCellValue("E{$footerRow}", "Cant. Total: {$cantidadTotal}");
-                $sheet->setCellValue("F{$footerRow}", "T. Compra: $" . number_format($compraTotal, 2));
-                $sheet->setCellValue("H{$footerRow}", "T. Venta: $" . number_format($ventaTotal, 2));
+                $sheet->setCellValue("F{$footerRow}", "Cant. Total: {$cantidadTotal}");
+                $sheet->setCellValue("G{$footerRow}", "T. Compra: $" . number_format($compraTotal, 2));
+                $sheet->setCellValue("I{$footerRow}", "T. Venta: $" . number_format($ventaTotal, 2));
+                $sheet->setCellValue("J{$footerRow}", "T. Técnico: $" . number_format($tecnicoTotal, 2));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:J{$footerRow}")->applyFromArray([
@@ -56,8 +58,9 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                     ],
                 ]);
 
-                $sheet->getStyle("F{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
-                $sheet->getStyle("H{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("G{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("I{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("J{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             },
         ];
     }

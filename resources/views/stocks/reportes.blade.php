@@ -29,17 +29,65 @@
     </div>
 
     <!-- Formulario de Filtros -->
-    <form id="filtros-stock" action="{{ route('stocks.reportes') }}" method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-8 p-5 glass-card no-print">
+    <form id="filtros-stock" action="{{ route('stocks.reportes') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4 items-end mb-8 p-5 glass-card no-print">
+        <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Proveedor</label>
+            <select name="proveedor_id" class="glass-input">
+                <option value="">Todos los proveedores</option>
+                @foreach($proveedores as $prov)
+                    <option value="{{ $prov->id }}" {{ request('proveedor_id') == $prov->id ? 'selected' : '' }}>{{ $prov->nombre_razon_social }}</option>
+                @endforeach
+            </select>
+        </div>
+
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Categoría</label>
             <select name="categoria" class="glass-input">
-                <option value="">Todas las categorías</option>
+                <option value="">Todas</option>
                 @foreach($categorias as $cat)
                     <option value="{{ $cat }}" {{ request('categoria') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
                 @endforeach
             </select>
         </div>
+
+        <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Subcategoría</label>
+            <select name="subcategoria" class="glass-input">
+                <option value="">Todas</option>
+                @foreach($subcategorias as $sub)
+                    <option value="{{ $sub }}" {{ request('subcategoria') == $sub ? 'selected' : '' }}>{{ $sub }}</option>
+                @endforeach
+            </select>
+        </div>
         
+        <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Desde</label>
+            <input type="date" name="desde" value="{{ request('desde') }}" class="glass-input">
+        </div>
+        <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Hasta</label>
+            <input type="date" name="hasta" value="{{ request('hasta') }}" class="glass-input">
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Buscar Costo Por</label>
+            <select name="price_type" class="glass-input no-search">
+                <option value="precio_compra" {{ request('price_type') === 'precio_compra' ? 'selected' : '' }}>P. Compra</option>
+                <option value="precio_venta" {{ request('price_type') === 'precio_venta' ? 'selected' : '' }}>P. Venta</option>
+                <option value="precio_tecnico" {{ request('price_type') === 'precio_tecnico' ? 'selected' : '' }}>P. Técnico</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Costo Mínimo ($)</label>
+            <input type="number" step="0.01" name="min_costo" value="{{ request('min_costo') }}" class="glass-input" placeholder="Mínimo...">
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Costo Máximo ($)</label>
+            <input type="number" step="0.01" name="max_costo" value="{{ request('max_costo') }}" class="glass-input" placeholder="Máximo...">
+        </div>
+
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Estado</label>
             <select name="estado" class="glass-input no-search">
@@ -51,10 +99,10 @@
 
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Búsqueda Rápida</label>
-            <input type="text" name="search" id="real_time_search" class="glass-input" value="{{ request('search') }}" placeholder="Producto, código, proveedor...">
+            <input type="text" name="search" id="real_time_search" class="glass-input" value="{{ request('search') }}" placeholder="Producto, código...">
         </div>
 
-        <div class="md:col-span-3 flex justify-end gap-2 mt-2">
+        <div class="md:col-span-4 lg:col-span-5 flex justify-end gap-2 mt-2">
             <a href="{{ route('stocks.reportes') }}" class="btn-clean">
                 🧹 Limpiar
             </a>
@@ -79,10 +127,11 @@
                     <th class="text-left">Producto</th>
                     <th class="text-left">Proveedor</th>
                     <th class="text-center w-20">Cant.</th>
+                    <th class="text-center w-24">Estado</th>
                     <th class="text-right w-28">P. Compra</th>
                     <th class="text-center w-20">Utilidad</th>
                     <th class="text-right w-28">P. Venta</th>
-                    <th class="text-center w-24">Estado</th>
+                    <th class="text-right w-28">P. Técnico</th>
                 </tr>
             </thead>
             <tbody>
@@ -114,6 +163,11 @@
                             {{ $stock->cantidad }}
                         </span>
                     </td>
+                    <td class="text-center">
+                        <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
+                            {{ $isAnulado ? 'Inactivo' : 'Activo' }}
+                        </span>
+                    </td>
                     <td class="text-right font-medium {{ $dim }}">
                         ${{ number_format($stock->precio_compra, 2) }}
                     </td>
@@ -123,15 +177,13 @@
                     <td class="text-right font-black text-blue-600 dark:text-blue-400 {{ $dim }}">
                         ${{ number_format($stock->precio_venta, 2) }}
                     </td>
-                    <td class="text-center">
-                        <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
-                            {{ $isAnulado ? 'Inactivo' : 'Activo' }}
-                        </span>
+                    <td class="text-right font-bold text-purple-600 dark:text-purple-400 {{ $dim }}">
+                        ${{ number_format($stock->precio_tecnico, 2) }}
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" class="p-12 text-center bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm">
+                    <td colspan="9" class="p-12 text-center bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm">
                         <div class="flex flex-col items-center justify-center space-y-3">
                             <div class="text-5xl opacity-80">📦</div>
                             <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
@@ -144,12 +196,18 @@
             @if($stocks->count() > 0)
             <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
                 <tr>
-                    <td colspan="3" class="text-right uppercase text-xs">Totales:</td>
-                    <td class="text-center font-bold">{{ $stocks->sum('cantidad') }}</td>
-                    <td class="text-right font-black text-gray-700 dark:text-gray-300">${{ number_format($stocks->sum('precio_compra'), 2) }}</td>
-                    <td></td>
-                    <td class="text-right font-black text-blue-600 dark:text-blue-400">${{ number_format($stocks->sum('precio_venta'), 2) }}</td>
-                    <td></td>
+                    <td colspan="2" class="text-right uppercase text-xs font-bold pt-2">
+                        <div class="flex flex-col items-end">
+                            <span>Total de Registros: <span class="text-blue-600">{{ $stocks->total() }}</span></span>
+                        </div>
+                    </td>
+                    <td class="text-right uppercase text-xs pt-2">Totales:</td>
+                    <td class="text-center font-bold pt-2">{{ $stocks->sum('cantidad') }}</td>
+                    <td class="pt-2"></td>
+                    <td class="text-right font-black text-gray-700 dark:text-gray-300 pt-2">${{ number_format($stocks->sum('precio_compra'), 2) }}</td>
+                    <td class="pt-2"></td>
+                    <td class="text-right font-black text-blue-600 dark:text-blue-400 pt-2">${{ number_format($stocks->sum('precio_venta'), 2) }}</td>
+                    <td class="text-right font-black text-purple-600 dark:text-purple-400 pt-2">${{ number_format($stocks->sum('precio_tecnico'), 2) }}</td>
                 </tr>
             </tfoot>
             @endif
