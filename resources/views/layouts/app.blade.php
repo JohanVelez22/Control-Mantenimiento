@@ -62,7 +62,9 @@
             overflow: hidden !important;
             padding-right: 35px !important; /* Espacio para el botón X */
             position: relative !important;
+            box-shadow: none !important; /* Eliminar sombra nativa para evitar doble borde */
         }
+
         .ts-control > .item {
             white-space: nowrap !important;
             overflow: hidden !important;

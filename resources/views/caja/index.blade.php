@@ -65,12 +65,12 @@
  <input type="text" name="search" value="{{ request('search') }}" placeholder="Persona o empresa..." class="glass-input pl-9 w-48 sm:w-64 text-sm h-[42px]">
  </div>
  <select name="tipo_movimiento" class="glass-input w-48 text-sm font-semibold no-search h-[42px]">
- <option value="">Todos los tipos</option>
+ <option value="todos" {{ request('tipo_movimiento') === 'todos' || !request('tipo_movimiento') ? 'selected' : '' }}>Todos los tipos</option>
  <option value="ingreso" {{ request('tipo_movimiento') === 'ingreso' ? 'selected' : '' }}>📈 Ingreso</option>
  <option value="egreso" {{ request('tipo_movimiento') === 'egreso' ? 'selected' : '' }}>📉 Egreso</option>
  </select>
  <select name="tipo_pago" class="glass-input w-48 text-sm font-semibold no-search h-[42px]">
- <option value="">Todos los pagos</option>
+ <option value="todos" {{ request('tipo_pago') === 'todos' || !request('tipo_pago') ? 'selected' : '' }}>Todos los pagos</option>
  <option value="efectivo" {{ request('tipo_pago') === 'efectivo' ? 'selected' : '' }}>💵 Efectivo</option>
  <option value="consignacion" {{ request('tipo_pago') === 'consignacion' ? 'selected' : '' }}>🏦 Consignación</option>
  </select>
@@ -101,9 +101,28 @@
 @forelse($movimientos as $m)
 <tr class="{{ $m->anulado ? 'row-anulado' : '' }} hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
 <td data-label="Fecha:" class="text-center font-medium">{{ $m->fecha->format('d/m/Y') }}</td>
- <td data-label="Entidad:" class="font-bold text-slate-800 dark:text-white leading-tight">
- {{ $m->persona }}
- @if($m->empresa) <div class="text-xs text-gray-500 font-semibold mt-0.5">{{ $m->empresa }}</div> @endif
+ <td data-label="Entidad:" class="{{ $m->anulado ? 'opacity-60 grayscale' : '' }}">
+ @if($m->persona)
+ <a href="{{ route('clientes.index', ['search' => $m->persona]) }}" class="group block hover:opacity-75 transition-opacity" title="Buscar en Clientes">
+ <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+ 👤 {{ $m->persona }}
+ </div>
+ <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+ Persona / Cliente
+ </div>
+ </a>
+ @elseif($m->empresa)
+ <a href="{{ route('proveedores.index', ['search' => $m->empresa]) }}" class="group block hover:opacity-75 transition-opacity" title="Buscar en Proveedores">
+ <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
+ 🏢 {{ $m->empresa }}
+ </div>
+ <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+ Empresa / Proveedor
+ </div>
+ </a>
+ @else
+ <span class="text-gray-400 font-bold">—</span>
+ @endif
  </td>
  <td data-label="Concepto:" class="font-medium">
  {{ $m->concepto->nombre }}

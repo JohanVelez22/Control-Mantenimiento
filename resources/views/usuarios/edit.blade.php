@@ -16,22 +16,22 @@
  @method('PUT')
 
  {{-- Nombre --}}
- <div class="mb-4">
- <label class="block text-sm font-medium mb-2">Nombre Completo</label>
- <input type="text" name="name" value="{{ old('name', $user->name) }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input @error('name') border-red-500 @enderror">
+ <div class="mb-5">
+ <label class="field-label">Nombre Completo *</label>
+ <input type="text" name="name" value="{{ old('name', $user->name) }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input mt-1 @error('name') border-red-500 @enderror">
  @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
  </div>
 
  {{-- Email --}}
- <div class="mb-4">
- <label class="block text-sm font-medium mb-2">Correo Electrónico</label>
- <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="glass-input @error('email') border-red-500 @enderror">
+ <div class="mb-5">
+ <label class="field-label">Correo Electrónico *</label>
+ <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="glass-input mt-1 @error('email') border-red-500 @enderror">
  @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
  </div>
 
  {{-- Rol --}}
  @if(auth()->user()->isAdmin())
- <div class="mb-4">
+ <div class="mb-5">
  <label class="field-label">Rol del Sistema</label>
  <select name="role" required class="glass-input no-search mt-1">
  <option value="tecnico" {{ old('role', $user->role) == 'tecnico' ? 'selected' : '' }}>Técnico</option>
@@ -44,8 +44,8 @@
  @endif
 
  {{-- Foto de Perfil --}}
- <div class="mb-4">
- <label class="block text-sm font-medium mb-2">Foto de Perfil</label>
+ <div class="mb-5">
+ <label class="field-label">Foto de Perfil</label>
  @if($user->photo)
  <div class="mb-3">
  <img src="{{ asset('storage/' . $user->photo) }}" width="100" height="100" class="rounded-full object-cover border-2 border-gray-300 dark:border-gray-600">

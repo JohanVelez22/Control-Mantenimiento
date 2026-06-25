@@ -90,7 +90,7 @@
  {{-- Concepto --}}
  <div class="md:col-span-2">
  <label class="field-label">Concepto *</label>
- <div class="flex gap-2">
+ <div class="flex gap-2 min-w-0">
  <select name="concepto_id" id="concepto_select" class="glass-input flex-1">
  <option value=\"\">Seleccionar concepto...</option>
  @foreach($conceptos as $c)
@@ -178,11 +178,19 @@
  formatInput('monto_visual', 'monto_real');
  formatInput('monto_total_visual', 'monto_total_real');
 
- // --- BÚSQUEDA DE CLIENTES ---
+ // --- BÚSQUEDA DE CLIENTES Y PROVEEDORES ---
  @php
- $clientesData = \App\Models\Cliente::orderBy('nombre')->get(['id','nombre','identificacion','movil']);
+ $clientesData = \App\Models\Cliente::orderBy('nombre')->get(['id','nombre','identificacion','movil'])->map(function($c) {
+     $c->tipo_entidad = 'cliente';
+     return $c;
+ });
+ $proveedoresData = \App\Models\Proveedor::orderBy('nombre_razon_social')->get(['id','nombre_razon_social as nombre','identificacion','telefono as movil'])->map(function($p) {
+     $p->tipo_entidad = 'proveedor';
+     return $p;
+ });
+ $entidadesData = $clientesData->concat($proveedoresData);
  @endphp
- const todosClientes = @json($clientesData);
+ const todasEntidades = @json($entidadesData);
 
  function buscarClienteCaja() {
  const termino = document.getElementById('cliente_busqueda').value.trim().toLowerCase();
@@ -194,7 +202,7 @@
  return;
  }
 
- const encontrados = todosClientes.filter(c =>
+ const encontrados = todasEntidades.filter(c =>
  c.nombre.toLowerCase().includes(termino) ||
  (c.identificacion && c.identificacion.toLowerCase().includes(termino))
  );
@@ -206,18 +214,25 @@
  const btn = document.createElement('button');
  btn.type = 'button';
  btn.className = 'w-full text-left px-3 py-2 text-sm bg-transparent hover:bg-indigo-100 dark:hover:bg-indigo-900/40 rounded-lg transition-colors border-b border-gray-100 dark:border-white/5 last:border-0';
- btn.innerHTML = `<div class="font-bold text-slate-800 dark:text-white">${c.nombre}</div> <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">${c.identificacion || 'N/A'} • ${c.movil || 'N/A'}</div>`;
- btn.onclick = () => seleccionarClienteCaja(c);
+ const icon = c.tipo_entidad === 'cliente' ? '👤' : '🏢';
+ const typeLabel = c.tipo_entidad === 'cliente' ? 'Cliente' : 'Proveedor';
+ btn.innerHTML = `<div class="font-bold text-slate-800 dark:text-white">${icon} ${c.nombre}</div> <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">${typeLabel} • ${c.identificacion || 'N/A'}</div>`;
+ btn.onclick = () => seleccionarEntidadCaja(c);
  resultadosDiv.appendChild(btn);
  });
  }
  resultadosDiv.classList.remove('hidden');
  }
 
- function seleccionarClienteCaja(cliente) {
- document.getElementById('caja_persona').value = cliente.nombre;
- document.getElementById('caja_empresa').value = '';
- document.getElementById('cliente_busqueda').value = cliente.nombre + ' (' + (cliente.identificacion || '') + ')';
+ function seleccionarEntidadCaja(entidad) {
+ if (entidad.tipo_entidad === 'cliente') {
+     document.getElementById('caja_persona').value = entidad.nombre;
+     document.getElementById('caja_empresa').value = '';
+ } else {
+     document.getElementById('caja_empresa').value = entidad.nombre;
+     document.getElementById('caja_persona').value = '';
+ }
+ document.getElementById('cliente_busqueda').value = entidad.nombre + ' (' + (entidad.identificacion || '') + ')';
  document.getElementById('cliente_resultados').classList.add('hidden');
  }
 

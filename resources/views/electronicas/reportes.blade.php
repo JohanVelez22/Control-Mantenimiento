@@ -298,6 +298,26 @@
 .print-header { display: none; }
 </style>
 <script>
+  function formatInput(visualId, realId) {
+    const inputVisual = document.getElementById(visualId);
+    const inputReal = document.getElementById(realId);
+    if (!inputVisual || !inputReal) return;
+
+    inputVisual.addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, "");
+      if (value !== "") {
+        inputReal.value = value;
+        e.target.value = new Intl.NumberFormat('es-CO').format(value);
+      } else {
+        inputReal.value = "";
+        e.target.value = "";
+      }
+    });
+  }
+
+  formatInput('min_cost_visual', 'min_cost');
+  formatInput('max_cost_visual', 'max_cost');
+
  document.getElementById('real_time_search').addEventListener('keyup', function() {
  let filter = this.value.toLowerCase();
  let rows = document.querySelectorAll('.reportes-tabla-imprimir tbody tr');

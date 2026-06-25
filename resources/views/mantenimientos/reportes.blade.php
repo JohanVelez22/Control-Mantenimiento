@@ -334,10 +334,11 @@
  if (value !== "") {
  inputReal.value = value;
  e.target.value = new Intl.NumberFormat('es-CO').format(value);
- } else {
- inputReal.value = "";
- }
- });
+      } else {
+        inputReal.value = "";
+        e.target.value = "";
+      }
+    });
  }
 
  formatInput('min_cost_visual', 'min_cost');

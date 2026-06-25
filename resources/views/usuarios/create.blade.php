@@ -8,23 +8,23 @@
  @csrf
  
  {{-- Nombre --}}
- <div class="mb-4">
- <label class="block text-sm font-medium mb-2">Nombre</label>
- <input type="text" name="name" value="{{ old('name') }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input @error('name') border-red-500 @enderror">
+ <div class="mb-5">
+ <label class="field-label">Nombre *</label>
+ <input type="text" name="name" value="{{ old('name') }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input mt-1 @error('name') border-red-500 @enderror">
  @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
  </div>
 
  {{-- Email --}}
- <div class="mb-4">
- <label class="block text-sm font-medium mb-2">Email</label>
- <input type="email" name="email" value="{{ old('email') }}" required class="glass-input @error('email') border-red-500 @enderror">
+ <div class="mb-5">
+ <label class="field-label">Email *</label>
+ <input type="email" name="email" value="{{ old('email') }}" required class="glass-input mt-1 @error('email') border-red-500 @enderror">
  @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
  </div>
 
  {{-- Rol --}}
- <div class="mb-4">
- <label class="block text-sm font-medium mb-2">Rol</label>
- <select name="role" required class="glass-input no-search">
+ <div class="mb-5">
+ <label class="field-label">Rol *</label>
+ <select name="role" required class="glass-input no-search mt-1">
  <option value="tecnico" {{ old('role') == 'tecnico' ? 'selected' : '' }}>Técnico</option>
  <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrador</option>
  <option value="invitado" {{ old('role') == 'invitado' ? 'selected' : '' }}>Invitado</option>
@@ -32,16 +32,16 @@
  </div>
 
  {{-- Foto de Perfil --}}
- <div class="mb-4">
- <label class="block text-sm font-medium mb-2">Foto de Perfil (Opcional)</label>
- <input type="file" name="photo" accept="image/*" class="glass-input @error('photo') border-red-500 @enderror">
+ <div class="mb-5">
+ <label class="field-label">Foto de Perfil (Opcional)</label>
+ <input type="file" name="photo" accept="image/*" class="glass-input mt-1 @error('photo') border-red-500 @enderror">
  @error('photo') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
  </div>
 
  {{-- Contraseña (para el usuario a crear) --}}
- <div class="mb-4">
- <label class="block text-sm font-medium mb-2">Contraseña del Nuevo Usuario</label>
- <input type="password" id="password" name="password" required class="glass-input @error('password') border-red-500 @enderror">
+ <div class="mb-5">
+ <label class="field-label">Contraseña del Nuevo Usuario *</label>
+ <input type="password" id="password" name="password" required class="glass-input mt-1 @error('password') border-red-500 @enderror">
  @error('password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
  <ul id="password-requirements" class="mt-2 text-xs space-y-1.5 hidden transition-all duration-300">
  <li id="req-length" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium transition-colors">

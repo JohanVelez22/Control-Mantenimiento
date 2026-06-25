@@ -73,8 +73,30 @@
   {{ $f->tipo_movimiento === 'compra' ? '📦 Compra' : '🛒 Venta' }}
   </span>
   </td>
-  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">
-  {{ $f->facturable->nombre_razon_social ?? $f->facturable->nombre ?? '—' }}
+  <td class="{{ $dim }}">
+  @if($f->facturable)
+  @if(class_basename($f->facturable) === 'Cliente')
+  <a href="{{ route('clientes.index') }}#cliente-{{ $f->facturable->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+  👤 {{ $f->facturable->nombre }}
+  </div>
+  <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+  {{ $f->facturable->identificacion ?? 'Cliente' }}
+  </div>
+  </a>
+  @else
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $f->facturable->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+  <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
+  🏢 {{ $f->facturable->nombre_razon_social }}
+  </div>
+  <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+  {{ $f->facturable->identificacion ?? 'Proveedor' }}
+  </div>
+  </a>
+  @endif
+  @else
+  <span class="text-gray-400 font-bold">—</span>
+  @endif
   </td>
   <td class="text-center font-medium {{ $dim }}">{{ $f->fecha->format('d/m/Y') }}</td>
   <td class="text-right font-black text-slate-800 dark:text-white text-base {{ $dim }}">

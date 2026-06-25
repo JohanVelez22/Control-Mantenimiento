@@ -26,10 +26,10 @@ class MovimientoCajaController extends Controller
 
         $query = MovimientoCaja::with('concepto', 'user');
 
-        if ($request->filled('tipo_movimiento')) {
+        if ($request->filled('tipo_movimiento') && $request->tipo_movimiento !== 'todos') {
             $query->where('tipo_movimiento', $request->tipo_movimiento);
         }
-        if ($request->filled('tipo_pago')) {
+        if ($request->filled('tipo_pago') && $request->tipo_pago !== 'todos') {
             $query->where('tipo_pago', $request->tipo_pago);
         }
         
@@ -52,8 +52,8 @@ class MovimientoCajaController extends Controller
 
         // Totales del período filtrado (sin paginar) — EXCLUYE anulados
         $totalesQuery = MovimientoCaja::where('estado', 'activo')->where('anulado', false);
-        if ($request->filled('tipo_movimiento')) $totalesQuery->where('tipo_movimiento', $request->tipo_movimiento);
-        if ($request->filled('tipo_pago'))       $totalesQuery->where('tipo_pago', $request->tipo_pago);
+        if ($request->filled('tipo_movimiento') && $request->tipo_movimiento !== 'todos') $totalesQuery->where('tipo_movimiento', $request->tipo_movimiento);
+        if ($request->filled('tipo_pago') && $request->tipo_pago !== 'todos')       $totalesQuery->where('tipo_pago', $request->tipo_pago);
         
         $totalesQuery->whereDate('fecha', '>=', $fecha_desde);
         $totalesQuery->whereDate('fecha', '<=', $fecha_hasta);
