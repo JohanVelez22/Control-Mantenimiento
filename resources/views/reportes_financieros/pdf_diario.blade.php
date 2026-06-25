@@ -78,7 +78,7 @@
         .pill-active  { color: #276749; font-weight: 700; }
         .pill-anulado { color: #9b2c2c; font-weight: 700; font-style: italic; }
 
-        td.monto { text-align: right; font-weight: 700; }
+        td.monto { text-align: center; font-weight: 700; }
         td.monto.positivo { color: #276749; }
         td.monto.negativo { color: #9b2c2c; }
 
@@ -133,7 +133,7 @@
                 <th style="width:12%">Fecha</th>
                 <th style="width:14%">Progreso</th>
                 <th style="width:12%">Estado</th>
-                <th style="width:10%; text-align:right">Monto</th>
+                <th style="width:10%; text-align:center">Costo</th>
             </tr>
         </thead>
         <tbody>
@@ -178,10 +178,15 @@
             @endforelse
         </tbody>
         @if(count($movimientos) > 0)
-        <tfoot>
+                <tfoot>
             <tr>
-                <td colspan="5" style="text-align:right">Total de {{ count($movimientos) }} registros:</td>
-                <td style="text-align:right">${{ number_format(collect($movimientos)->sum('monto'), 2, ',', '.') }}</td>
+                @php
+                    $neto = collect($movimientos)->where('anulado', false)->whereIn('tipo', ['ingreso','venta','mantenimiento','electronica'])->sum('monto')
+                          - collect($movimientos)->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
+                    $color = $neto >= 0 ? '#276749' : '#9b2c2c';
+                @endphp
+                <td colspan="5" style="text-align:right">Balance Neto:</td>
+                <td style="text-align:center; color: {{ $color }};">${{ number_format($neto, 2, ',', '.') }}</td>
             </tr>
         </tfoot>
         @endif

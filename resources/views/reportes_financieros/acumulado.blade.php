@@ -128,89 +128,68 @@
  </div>
  @endif
 
- {{-- Tabla de movimientos del período --}}
+  {{-- Tabla consolidada del período --}}
  <div class="glass-card p-6 md:p-8 mt-4">
- <div class="flex justify-between items-center mb-4">
- <h3 class="text-lg font-bold">Detalle de Movimientos del Período ({{ $movimientos->count() }})</h3>
- </div>
-
- @if($movimientos->isEmpty())
- <div class="flex flex-col items-center justify-center space-y-3 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm p-12 rounded-2xl border border-white/20 my-4">
-     <div class="text-5xl opacity-80">📭</div>
-     <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
-     <p class="text-sm font-medium text-slate-500 dark:text-slate-400">No hubo movimientos en este período.</p>
- </div>
- @else
- <div class="overflow-x-auto pb-2">
- <table class="ts-table responsive-table w-full text-sm">
- <thead>
- <tr>
- <th class="p-3 text-center">Fecha</th>
- <th class="p-3 text-center">Tipo</th>
- <th class="p-3 text-left">Descripción</th>
- <th class="p-3 text-center">Progreso</th>
- <th class="p-3 text-center">Estado</th>
- <th class="p-3 text-center">Costo</th>
- </tr>
- </thead>
- <tbody>
- @foreach($movimientos as $mov)
- @php
-   $isAnulado = !empty($mov['anulado']);
-   $dim = $isAnulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
-   $dimLight = $isAnulado ? 'opacity-60' : '';
- @endphp
- <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center">
- <td class="p-3 text-xs text-gray-500 {{ $dim }}">{{ \Carbon\Carbon::parse($mov['fecha'])->format('d/m/Y') }}</td>
- <td class="p-3 {{ $dimLight }}">
- <span class="px-2 py-0.5 rounded-lg text-xs font-bold
- bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800
- dark:bg-{{ $mov['color'] }}-900/40 dark:text-{{ $mov['color'] }}-300">
- {{ $mov['icono'] }} {{ ucfirst($mov['tipo']) }}
- </span>
- </td>
- <td class="p-3 text-left text-gray-700 dark:text-gray-300 {{ $dim }}">{{ $mov['descripcion'] }}</td>
-   <td class="p-3 {{ $dimLight }}">
-   @php
-       $progreso = strtolower($mov['estado'] ?? '');
-       
-       // Clarificar el "progreso" para transacciones que no son mantenimientos
-       if(in_array($mov['tipo'], ['ingreso', 'egreso'])) $progreso = 'procesado';
-       if(in_array($mov['tipo'], ['venta', 'compra'])) $progreso = 'emitida';
-
-       $pillClass = 'pill-pending';
-       if(in_array($progreso, ['terminado', 'entregado'])) $pillClass = 'pill-done';
-       elseif($progreso === 'emitida') $pillClass = 'pill-preventivo';
-       elseif($progreso === 'procesado') $pillClass = 'pill-especialidad';
-       elseif(in_array($progreso, ['en_proceso', 'reparado'])) $pillClass = 'pill-efectivo';
-   @endphp
-   <span class="pill {{ $pillClass }} {{ $isAnulado ? 'opacity-70' : '' }}">{{ ucfirst($progreso) ?: '—' }}</span>
-   </td>
- <td class="p-3">
- <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
- {{ $isAnulado ? 'Anulado' : 'Activo' }}
- </span>
- </td>
- <td class="p-3 text-center font-bold {{ in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }} {{ $dim }}">
- ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
- </td>
- </tr>
- @endforeach
- </tbody>
- <tfoot>
-    <tr class="bg-gray-100 dark:bg-gray-800">
-        @php
-            $netoAcumulado = $movimientos->where('anulado', false)->whereIn('tipo', ['ingreso','venta','mantenimiento','electronica'])->sum('monto') 
-                           - $movimientos->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
-            $colorAc = $netoAcumulado >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600 dark:text-red-400';
-        @endphp
-        <td colspan="5" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Balance Neto del Período:</td>
-        <td class="p-3 text-center font-black text-lg {{ $colorAc }}">${{ number_format($netoAcumulado, 0, ',', '.') }}</td>
-    </tr>
- </tfoot>
- </table>
- </div>
- @endif
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold">Resumen Consolidado del Período</h3>
+    </div>
+    
+    <div class="overflow-x-auto pb-2">
+        <table class="ts-table responsive-table w-full text-sm">
+            <thead>
+                <tr>
+                    <th class="p-3 text-left">Categoría</th>
+                    <th class="p-3 text-center">Cantidad</th>
+                    <th class="p-3 text-center">Costo Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td class="p-3 font-semibold text-blue-600 dark:text-blue-400"><span class="mr-2">🔧</span>Mantenimientos</td>
+                    <td class="p-3 text-center">{{ $acumulado['total_mantenimientos'] }}</td>
+                    <td class="p-3 text-center font-bold text-blue-600 dark:text-blue-400">${{ number_format($acumulado['facturado_mant'], 0, ',', '.') }}</td>
+                </tr>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td class="p-3 font-semibold text-purple-600 dark:text-purple-400"><span class="mr-2">⚡</span>Electrónica</td>
+                    <td class="p-3 text-center">{{ $acumulado['total_electronicas'] }}</td>
+                    <td class="p-3 text-center font-bold text-purple-600 dark:text-purple-400">${{ number_format($acumulado['facturado_elec'], 0, ',', '.') }}</td>
+                </tr>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td class="p-3 font-semibold text-orange-600 dark:text-orange-400"><span class="mr-2">📦</span>Compras de Inventario</td>
+                    <td class="p-3 text-center">{{ $acumulado['total_compras'] }}</td>
+                    <td class="p-3 text-center font-bold text-orange-600 dark:text-orange-400">${{ number_format($acumulado['compras_inventario'], 0, ',', '.') }}</td>
+                </tr>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td class="p-3 font-semibold text-green-600 dark:text-green-400"><span class="mr-2">🛒</span>Ventas de Inventario</td>
+                    <td class="p-3 text-center">{{ $acumulado['total_ventas'] }}</td>
+                    <td class="p-3 text-center font-bold text-green-600 dark:text-green-400">${{ number_format($acumulado['ventas_inventario'], 0, ',', '.') }}</td>
+                </tr>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td class="p-3 font-semibold text-emerald-600 dark:text-emerald-400"><span class="mr-2">📈</span>Ingresos Reales (Caja)</td>
+                    <td class="p-3 text-center">{{ $acumulado['total_ingresos'] ?? 0 }}</td>
+                    <td class="p-3 text-center font-bold text-emerald-600 dark:text-emerald-400">${{ number_format($acumulado['ingresos_caja'], 0, ',', '.') }}</td>
+                </tr>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td class="p-3 font-semibold text-red-600 dark:text-red-400"><span class="mr-2">📉</span>Egresos Reales (Caja)</td>
+                    <td class="p-3 text-center">{{ $acumulado['total_egresos'] ?? 0 }}</td>
+                    <td class="p-3 text-center font-bold text-red-600 dark:text-red-400">${{ number_format($acumulado['egresos_caja'], 0, ',', '.') }}</td>
+                </tr>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 opacity-70">
+                    <td class="p-3 font-semibold text-gray-500"><span class="mr-2">🚫</span>Movimientos Anulados</td>
+                    <td class="p-3 text-center">{{ $acumulado['total_anulados'] ?? 0 }}</td>
+                    <td class="p-3 text-center text-gray-500">—</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="bg-gray-100 dark:bg-gray-800">
+                    <td colspan="2" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Balance Neto del Período:</td>
+                    <td class="p-3 text-center font-black text-lg {{ ($acumulado['balance_neto'] >= 0) ? 'text-teal-600 dark:text-teal-400' : 'text-red-600 dark:text-red-400' }}">
+                        ${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
  </div>
 
 </div>

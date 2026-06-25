@@ -38,15 +38,27 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
                 $lastRow   = $sheet->getHighestRow();
                 $footerRow = $lastRow + 2;
 
-                $total = $this->transacciones->sum(fn($tx) => is_array($tx) ? ($tx['monto'] ?? 0) : ($tx->monto ?? $tx->total_documento ?? 0));
+                                $ingresos = $this->transacciones->filter(function($tx) {
+                    $tipo = is_array($tx) ? ($tx['tipo'] ?? '') : ($tx->tipo_movimiento ?? '');
+                    $anulado = is_array($tx) ? !empty($tx['anulado']) : $tx->anulado;
+                    return !$anulado && in_array($tipo, ['ingreso', 'venta', 'mantenimiento', 'electronica']);
+                })->sum(fn($tx) => is_array($tx) ? ($tx['monto'] ?? 0) : ($tx->monto ?? $tx->total_documento ?? 0));
+
+                $egresos = $this->transacciones->filter(function($tx) {
+                    $tipo = is_array($tx) ? ($tx['tipo'] ?? '') : ($tx->tipo_movimiento ?? '');
+                    $anulado = is_array($tx) ? !empty($tx['anulado']) : $tx->anulado;
+                    return !$anulado && in_array($tipo, ['egreso', 'compra']);
+                })->sum(fn($tx) => is_array($tx) ? ($tx['monto'] ?? 0) : ($tx->monto ?? $tx->total_documento ?? 0));
+
+                $total = $ingresos - $egresos;
 
                 $sheet->setCellValue("A{$footerRow}", 'Total registros: ' . $this->transacciones->count());
-                $sheet->setCellValue("F{$footerRow}", 'Total: $' . number_format($total, 2));
+                $sheet->setCellValue("D{$footerRow}", 'Balance Neto: $' . number_format($total, 2));
 
                 $sheet->getStyle("A{$footerRow}:F{$footerRow}")->applyFromArray([
                     'font' => ['bold' => true, 'size' => 11],
                 ]);
-                $sheet->getStyle("F{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("D{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             },
         ];
     }
@@ -77,7 +89,7 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
             ['INFORME FINANCIERO'],
             ['Generado el: ' . date('d/m/Y h:i A')],
             [''],
-            ['Fecha', 'Tipo', 'Descripción / Concepto', 'Monto', 'Estado', 'Anulado'],
+            ['Fecha', 'Tipo', 'Descripción / Concepto', 'Costo', 'Estado', 'Anulado'],
         ];
     }
 

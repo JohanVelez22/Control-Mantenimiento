@@ -174,6 +174,17 @@ class ReporteFinancieroController extends Controller
             'total_electronicas'    => (clone $electronicasQuery)->count(),
             'total_compras'         => (clone $facturasBase)->where('tipo_movimiento', 'compra')->count(),
             'total_ventas'          => (clone $facturasBase)->where('tipo_movimiento', 'venta')->count(),
+            'total_ingresos'        => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->count(),
+            'total_egresos'         => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->count(),
+            'total_anulados'        => Mantenimiento::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->count()
+                                     + Electronica::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->count()
+                                     + MovimientoCaja::whereBetween('fecha', [$desde, $hasta])->where('anulado', true)->count()
+                                     + Factura::whereBetween('fecha', [$desde, $hasta])->where('estado', 'anulada')->count(),
+
+            'total_costo_anulados'  => Mantenimiento::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->sum('costo')
+                                     + Electronica::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->sum('costo')
+                                     + MovimientoCaja::whereBetween('fecha', [$desde, $hasta])->where('anulado', true)->sum('monto')
+                                     + Factura::whereBetween('fecha', [$desde, $hasta])->where('estado', 'anulada')->sum('total_documento'),
 
             // Montos
             'facturado_mant'        => (clone $mantenimientosQuery)->sum('costo'),
@@ -283,20 +294,15 @@ class ReporteFinancieroController extends Controller
 
         if ($request->get('export') === 'excel') {
             return \Maatwebsite\Excel\Facades\Excel::download(
-                new \App\Exports\ReportesFinancierosExport($movimientos),
+                new \App\Exports\AcumuladoExport($acumulado),
                 'Reporte_Acumulado_' . date('Y-m-d_His') . '.xlsx'
             );
         }
 
         if ($request->get('export') === 'pdf') {
-            return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_diario', [
+            return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_acumulado', [
                 'movimientos' => $movimientos,
-                'resumen' => [
-                    'total_ingresos' => $acumulado['ingresos_caja'],
-                    'total_egresos' => $acumulado['egresos_caja'],
-                    'total_mantenimientos' => $acumulado['facturado_mant'],
-                    'total_anulados' => $movimientos->where('anulado', true)->count(),
-                ],
+                'acumulado' => $acumulado,
                 'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')}"
             ])->setPaper('a4', 'portrait')->download('Reporte_Acumulado_' . date('Y-m-d_His') . '.pdf');
         }
