@@ -177,13 +177,14 @@
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 opacity-70">
                     <td class="p-3 font-semibold text-gray-500"><span class="mr-2">🚫</span>Movimientos Anulados</td>
                     <td class="p-3 text-center">{{ $acumulado['total_anulados'] ?? 0 }}</td>
-                    <td class="p-3 text-center text-gray-500">—</td>
+                    <td class="p-3 text-center font-bold" style="color: #dd6b20 !important;"" title="Este valor no suma al balance">${{ number_format($acumulado['total_costo_anulados'] ?? 0, 0, ',', '.') }}</td>
                 </tr>
             </tbody>
-            <tfoot>
-                <tr class="bg-gray-100 dark:bg-gray-800">
-                    <td colspan="2" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Balance Neto del Período:</td>
-                    <td class="p-3 text-center font-black text-lg {{ ($acumulado['balance_neto'] >= 0) ? 'text-teal-600 dark:text-teal-400' : 'text-red-600 dark:text-red-400' }}">
+                                    <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
+                <tr>
+                    <td class="text-left font-bold text-xs">Total Registros: {{ ($acumulado['total_mantenimientos'] ?? 0) + ($acumulado['total_electronicas'] ?? 0) + ($acumulado['total_compras'] ?? 0) + ($acumulado['total_ventas'] ?? 0) + ($acumulado['total_ingresos'] ?? 0) + ($acumulado['total_egresos'] ?? 0) + ($acumulado['total_anulados'] ?? 0) }}</td>
+                    <td class="text-right uppercase text-xs">Balance Neto del Período:</td>
+                    <td class="text-center font-black text-lg {{ ($acumulado['balance_neto'] >= 0) ? 'text-teal-600 dark:text-teal-400' : 'text-red-600 dark:text-red-400' }}">
                         ${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}
                     </td>
                 </tr>

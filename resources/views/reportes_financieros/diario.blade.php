@@ -138,21 +138,22 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-3 text-center font-bold {{ in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }} {{ $dim }}">
+ <td class="p-3 text-center font-bold {{ $isAnulado ? '' : (in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400') }} {{ $isAnulado ? '' : $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>
  ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
  </td>
  </tr>
  @endforeach
  </tbody>
- <tfoot>
-    <tr class="bg-gray-100 dark:bg-gray-800">
+   <tfoot>
+    <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
         @php
             $neto = $movimientos->where('anulado', false)->whereIn('tipo', ['ingreso','venta','mantenimiento','electronica'])->sum('monto') 
                   - $movimientos->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
             $color = $neto >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600 dark:text-red-400';
         @endphp
-        <td colspan="4" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Balance Neto del Día:</td>
-        <td class="p-3 text-center font-black text-lg {{ $color }}">${{ number_format($neto, 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs">Total: {{ $movimientos->count() }}</td>
+        <td colspan="3" class="text-right uppercase text-xs">Balance Neto del Día:</td>
+        <td class="text-center font-black text-lg {{ $color }}">${{ number_format($neto, 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>

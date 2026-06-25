@@ -181,7 +181,7 @@
             <tr class="anulado">
                 <td style="color:#718096">🚫 Movimientos Anulados</td>
                 <td style="text-align:center; color:#718096">{{ $acumulado['total_anulados'] ?? 0 }}</td>
-                <td style="text-align:center; color:#718096">—</td>
+                <td style="text-align:center; color:#e53e3e;">${{ number_format($acumulado['total_costo_anulados'] ?? 0, 2, ',', '.') }}</td>
             </tr>
         </tbody>
         <tfoot>

@@ -167,8 +167,12 @@
                         <span class="pill-active">Activo</span>
                     @endif
                 </td>
-                <td class="monto {{ $isPositivo ? 'positivo' : 'negativo' }}">
-                    {{ $isPositivo ? '+' : '-' }}${{ number_format($mov['monto'] ?? 0, 2, ',', '.') }}
+                                <td class="monto {{ $isAnulado ? 'anulado-monto' : ($isPositivo ? 'positivo' : 'negativo') }}">
+                    @if($isAnulado)
+                        <span style="color: #e53e3e;">${{ number_format($mov['monto'] ?? 0, 2, ',', '.') }}</span>
+                    @else
+                        {{ $isPositivo ? '+' : '-' }}${{ number_format($mov['monto'] ?? 0, 2, ',', '.') }}
+                    @endif
                 </td>
             </tr>
             @empty

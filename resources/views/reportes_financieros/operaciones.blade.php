@@ -112,14 +112,15 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-2 text-center font-bold text-blue-600 {{ $dim }}">${{ number_format($m->costo, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-blue-600 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($m->costo, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
- <tfoot>
-    <tr class="bg-gray-100 dark:bg-gray-800">
-        <td colspan="6" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Total Costos Mantenimientos:</td>
-        <td class="p-3 text-center font-black text-lg text-blue-700 dark:text-blue-400">${{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
+  <tfoot>
+    <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
+        <td class="text-center font-bold text-xs">Total: {{ $registros->count() }}</td>
+        <td colspan="5" class="text-right uppercase text-xs">Total Costos Mantenimientos:</td>
+        <td class="text-center font-black text-lg text-blue-700 dark:text-blue-400">${{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>
@@ -165,14 +166,15 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-2 text-center font-bold text-purple-600 {{ $dim }}">${{ number_format($e->costo, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-purple-600 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($e->costo, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
- <tfoot>
-    <tr class="bg-gray-100 dark:bg-gray-800">
-        <td colspan="6" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Total Costos Electrónica:</td>
-        <td class="p-3 text-center font-black text-lg text-purple-700 dark:text-purple-400">${{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
+  <tfoot>
+    <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
+        <td class="text-center font-bold text-xs">Total: {{ $registros->count() }}</td>
+        <td colspan="5" class="text-right uppercase text-xs">Total Costos Electrónica:</td>
+        <td class="text-center font-black text-lg text-purple-700 dark:text-purple-400">${{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>
@@ -207,14 +209,14 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-2 text-center font-bold {{ $tipo === 'solo_ingresos' ? 'text-green-600' : 'text-red-600' }} {{ $dim }}">${{ number_format($c->monto, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold {{ $tipo === 'solo_ingresos' ? 'text-green-600' : 'text-red-600' }} {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($c->monto, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
  <tfoot>
     <tr class="bg-gray-100 dark:bg-gray-800">
         <td colspan="6" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Total Monto:</td>
-        <td class="p-3 text-center font-black text-lg {{ $tipo === 'solo_ingresos' ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400' }}">${{ number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.') }}</td>
+        <td class="text-center font-black text-lg {{ $tipo === 'solo_ingresos' ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400' }}">${{ number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>
@@ -256,14 +258,14 @@
   {{ $label }}
   </span>
   </td>
- <td class="p-2 text-center font-bold text-blue-600 {{ $dim }}">${{ number_format($f->total_documento, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-blue-600 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($f->total_documento, 0, ',', '.') }}</td>
   </tr>
   @endforeach
   </tbody>
  <tfoot>
     <tr class="bg-gray-100 dark:bg-gray-800">
         <td colspan="5" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Total Documentos:</td>
-        <td class="p-3 text-center font-black text-lg text-blue-700 dark:text-blue-400">${{ number_format($registros->filter(function($i) { return $i->estado !== 'anulada'; })->sum('total_documento'), 0, ',', '.') }}</td>
+        <td class="text-center font-black text-lg text-blue-700 dark:text-blue-400">${{ number_format($registros->filter(function($i) { return $i->estado !== 'anulada'; })->sum('total_documento'), 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>

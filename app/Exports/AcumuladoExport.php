@@ -28,7 +28,7 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
             ['Ventas de Inventario', $this->acumulado['total_ventas'] ?? 0, $this->acumulado['ventas_inventario'] ?? 0],
             ['Ingresos Reales (Caja)', $this->acumulado['total_ingresos'] ?? 0, $this->acumulado['ingresos_caja'] ?? 0],
             ['Egresos Reales (Caja)', $this->acumulado['total_egresos'] ?? 0, $this->acumulado['egresos_caja'] ?? 0],
-            ['Movimientos Anulados', $this->acumulado['total_anulados'] ?? 0, 0],
+            ['Movimientos Anulados', $this->acumulado['total_anulados'] ?? 0, $this->acumulado['total_costo_anulados'] ?? 0],
         ];
     }
 
@@ -71,6 +71,14 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
 
                 // Format amount column (C)
                 $sheet->getStyle('C5:C11')->getNumberFormat()->setFormatCode('"$"#,##0.00');
+                
+                // Strikethrough and orange color for Movimientos Anulados (Row 11)
+                $sheet->getStyle('A11:C11')->applyFromArray([
+                    'font' => [
+                        
+                        'color' => ['rgb' => 'E53E3E']
+                    ]
+                ]);
 
                 $lastRow = 11;
                 $footerRow = $lastRow + 2;
