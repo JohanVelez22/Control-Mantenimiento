@@ -6,7 +6,7 @@
  @error('id_orden') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
- <div>
+ <div class="min-w-0">
  <label class="field-label flex items-center gap-2"><span>👨‍🔧</span> Técnico Asignado *</label>
  <select name="tecnico_id" required class="glass-input mt-1">
  <option value=\"\">Seleccionar técnico...</option>
@@ -18,7 +18,7 @@
  </div>
 
  {{-- Equipo --}}
- <div class="md:col-span-2 p-4 bg-purple-50/50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-500/20 rounded-2xl">
+ <div class="md:col-span-2 min-w-0 p-4 bg-purple-50/50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-500/20 rounded-2xl">
  <label class="field-label flex items-center gap-2"><span>💻</span> Seleccionar Dispositivo / Equipo *</label>
  <select name="equipo_id" required class="glass-input text-sm font-bold mt-1">
  <option value=\"\">Seleccione un equipo...</option>

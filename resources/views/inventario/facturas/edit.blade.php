@@ -8,7 +8,7 @@
             <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                 ✏️ Editar Factura {{ $factura->numero_factura }}
             </h2>
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Modifica los detalles, cantidades o el estado de la factura</p>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Modifica los detalles, agrega artículos o cambia el estado</p>
         </div>
     </div>
 
@@ -17,7 +17,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{-- Cliente / Proveedor --}}
-            <div class="md:col-span-2">
+            <div class="md:col-span-2 min-w-0">
                 <label class="field-label">Cliente / Proveedor *</label>
                 <select name="facturable_global" required class="glass-input font-bold">
                     <option value="">Seleccionar...</option>
@@ -54,35 +54,49 @@
 
             {{-- Artículos de la Factura --}}
             <div class="md:col-span-2">
-                <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
-                    <span>📦</span> Artículos y Cantidades
-                </h3>
-                <div class="overflow-x-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
+                        <span>📦</span> Artículos de la Factura
+                    </h3>
+                    <button type="button" onclick="agregarFila()" class="btn-clean">
+                        ➕ Agregar artículo
+                    </button>
+                </div>
+                <div class="overflow-x-auto pb-2">
                     <table class="ts-table">
                         <thead>
                             <tr>
                                 <th>Artículo</th>
-                                <th class="w-32 text-center">Cantidad</th>
-                                <th class="w-32 text-right">Precio Unitario ($)</th>
-                                <th class="w-32 text-right">Subtotal</th>
+                                <th class="w-24 text-center">Cantidad</th>
+                                <th class="min-w-[160px] text-right">Precio Unitario ($)</th>
+                                <th class="min-w-[160px] text-right">Subtotal</th>
+                                <th class="w-12"></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="items-body">
                             @foreach($factura->items as $index => $item)
-                                <tr>
+                                <tr class="existing-row">
                                     <td>
-                                        <span class="font-bold text-slate-700 dark:text-gray-300">{{ $item->stock ? $item->stock->producto : 'Producto no disponible' }}</span>
-                                        <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item->id }}">
+                                        <input type="hidden" name="existing_items[{{ $index }}][id]" value="{{ $item->id }}">
+                                        <select name="existing_items[{{ $index }}][stock_id]" required class="glass-input py-1.5 focus:ring-orange-500" onchange="actualizarPrecio(this)">
+                                            <option value="">Seleccionar producto...</option>
+                                            @foreach($stocks as $s)
+                                                <option value="{{ $s->id }}" data-precio="{{ $factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta }}" {{ $item->stock_id == $s->id ? 'selected' : '' }}>
+                                                    {{ $s->producto }} (Stock: {{ $s->cantidad }})
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </td>
                                     <td>
-                                        <input type="number" name="items[{{ $index }}][cantidad]" min="1" value="{{ (int)$item->cantidad }}" required class="glass-input text-center py-1.5 focus:ring-orange-500 quantity-input font-bold" data-price="{{ (float)$item->precio_unitario }}" oninput="recalcularTotalesEdicion()">
+                                        <input type="number" name="existing_items[{{ $index }}][cantidad]" min="1" value="{{ (int)$item->cantidad }}" required class="glass-input text-center py-1.5 focus:ring-orange-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
                                     </td>
-                                    <td class="text-right font-mono py-1.5 align-middle text-gray-500 dark:text-gray-400">
-                                        ${{ number_format($item->precio_unitario, 0, ',', '.') }}
+                                    <td>
+                                        <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, '', '.') }}" required class="glass-input text-right py-1.5 focus:ring-orange-500 font-mono price-input" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
                                     </td>
                                     <td class="text-right font-mono subtotal-display py-1.5 align-middle font-bold text-slate-800 dark:text-white">
                                         ${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}
                                     </td>
+                                    <td></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -118,13 +132,70 @@
 </div>
 
 <script>
+const stocksData = @json($stocks);
+let filaIndex = 999;
+
+function agregarFila() {
+    filaIndex++;
+    let optionsHtml = '<option value="">Seleccionar producto...</option>';
+    stocksData.forEach(s => {
+        // En compras usar precio_compra, en ventas usar precio_venta o dejar 0
+        const defaultPrice = {{ $factura->tipo_movimiento === 'compra' ? 's.precio_compra' : 's.precio_venta' }} || 0;
+        optionsHtml += `<option value="${s.id}" data-precio="${defaultPrice}">${s.producto} (Stock: ${s.cantidad})</option>`;
+    });
+
+    const tr = document.createElement('tr');
+    tr.className = 'new-row bg-blue-50/20 dark:bg-blue-900/10';
+    tr.innerHTML = `
+        <td>
+            <select name="new_items[${filaIndex}][stock_id]" required class="glass-input py-1.5 focus:ring-blue-500" onchange="actualizarPrecio(this)">
+                ${optionsHtml}
+            </select>
+        </td>
+        <td>
+            <input type="number" name="new_items[${filaIndex}][cantidad]" min="1" value="1" required class="glass-input text-center py-1.5 focus:ring-blue-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
+        </td>
+        <td>
+            <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 focus:ring-blue-500 font-mono price-input" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
+        </td>
+        <td class="text-right font-mono subtotal-display py-1.5 align-middle font-bold text-blue-600 dark:text-blue-400">
+            $0
+        </td>
+        <td class="text-center align-middle">
+            <button type="button" onclick="eliminarFilaNueva(this)" class="text-red-400 hover:text-red-600 p-2" title="Eliminar fila nueva">✕</button>
+        </td>
+    `;
+    document.getElementById('items-body').appendChild(tr);
+    // Initialize TomSelect if needed, but standard select is fine here for dynamically added rows.
+}
+
+function eliminarFilaNueva(btn) {
+    btn.closest('tr').remove();
+    recalcularTotalesEdicion();
+}
+
+function actualizarPrecio(selectElem) {
+    const option = selectElem.options[selectElem.selectedIndex];
+    if(option && option.dataset.precio) {
+        const tr = selectElem.closest('tr');
+        const priceInput = tr.querySelector('.price-input');
+        if(priceInput) {
+            priceInput.value = parseFloat(option.dataset.precio).toLocaleString('es-CO');
+            recalcularTotalesEdicion();
+        }
+    }
+}
+
 function recalcularTotalesEdicion() {
     let totalDoc = 0;
+    
+    // Sum all rows (existing and new)
     document.querySelectorAll('tbody tr').forEach(row => {
         const qtyInput = row.querySelector('.quantity-input');
-        if (qtyInput) {
+        const priceInput = row.querySelector('.price-input');
+        if (qtyInput && priceInput) {
             const qty = parseFloat(qtyInput.value) || 0;
-            const price = parseFloat(qtyInput.dataset.price) || 0;
+            const price = parseFloat(priceInput.value.replace(/\./g, '')) || 0;
             const sub = qty * price;
             const subtotalCell = row.querySelector('.subtotal-display');
             if (subtotalCell) {

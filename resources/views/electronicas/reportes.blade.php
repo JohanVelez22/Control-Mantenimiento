@@ -113,7 +113,7 @@
  <input type="text" name="search" id="real_time_search" class="glass-input" value="{{ request('search') }}" placeholder="Orden, Cliente, Equipo...">
  </div>
 
- <div class="lg:col-span-1 flex justify-end gap-2 mt-2">
+ <div class="lg:col-span-4 flex justify-end gap-2 mt-2">
  <a href="{{ route('electronicas.reportes') }}" class="btn-clean">
  🧹 Limpiar
  </a>

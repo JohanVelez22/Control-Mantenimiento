@@ -18,7 +18,7 @@
  <label class="field-label">N° Factura (Auto)</label>
  <input type="text" value="{{ $nextNumero }}" readonly class="glass-input font-mono bg-white/40 dark:bg-black/20 text-gray-500 cursor-not-allowed">
  </div>
- <div class="w-full flex-1">
+ <div class="w-full flex-1 min-w-0">
  <label class="field-label">Cliente / Proveedor *</label>
  <select name="facturable_global" required class="glass-input focus:ring-emerald-500">
  <option value="">Seleccionar...</option>
@@ -59,8 +59,8 @@
  <tr>
  <th>Artículo del Stock</th>
  <th class="w-24 text-center">Cant.</th>
- <th class="w-32 text-right">Precio Un. ($)</th>
- <th class="w-32 text-right">Subtotal</th>
+ <th class="min-w-[160px] text-right">Precio Un. ($)</th>
+ <th class="min-w-[160px] text-right">Subtotal</th>
  <th class="w-12 text-center"></th>
  </tr>
  </thead>
@@ -123,7 +123,7 @@
  <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
  <a href="{{ route('inventario.facturas') }}" class="btn-cancel">↩️ Cancelar</a>
  <button type="submit" class="btn-venta">
- 🛒 Procesar Venta y Descargar Inventario
+ 🛒 Procesar Venta y Afectar Inventario
  </button>
  </div>
  </form>

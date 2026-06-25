@@ -338,21 +338,28 @@ class MovimientoInventarioController extends Controller
     {
         $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
         $clientes    = Cliente::orderBy('nombre')->get();
+        $stocks      = Stock::orderBy('producto')->get();
         $factura->load('items.stock');
-        return view('inventario.facturas.edit', compact('factura', 'proveedores', 'clientes'));
+        return view('inventario.facturas.edit', compact('factura', 'proveedores', 'clientes', 'stocks'));
     }
 
     public function updateFactura(Request $request, Factura $factura): RedirectResponse
     {
         $request->validate([
-            'fecha'             => 'required|date',
-            'total_pagado'      => 'required|numeric|min:0',
-            'observaciones'     => 'nullable|string',
-            'anulado'           => 'required|in:0,1',
-            'facturable_global' => 'required|string',
-            'items'             => 'nullable|array',
-            'items.*.id'        => 'required|exists:factura_items,id',
-            'items.*.cantidad'  => 'required|integer|min:1',
+            'fecha'                   => 'required|date',
+            'total_pagado'            => 'required|numeric|min:0',
+            'observaciones'           => 'nullable|string',
+            'anulado'                 => 'required|in:0,1',
+            'facturable_global'       => 'required|string',
+            'existing_items'             => 'nullable|array',
+            'existing_items.*.id'        => 'required|exists:factura_items,id',
+            'existing_items.*.stock_id'  => 'required|exists:stocks,id',
+            'existing_items.*.cantidad'  => 'required|integer|min:1',
+            'existing_items.*.precio_unitario'=> 'required|numeric|min:0',
+            'new_items'               => 'nullable|array',
+            'new_items.*.stock_id'    => 'required|exists:stocks,id',
+            'new_items.*.cantidad'    => 'required|integer|min:1',
+            'new_items.*.precio_unitario'=> 'required|numeric|min:0',
         ]);
 
         list($type, $id) = explode(':', $request->facturable_global);
@@ -386,34 +393,86 @@ class MovimientoInventarioController extends Controller
                 }
             }
 
-            // 2. Ajustar stock por modificación de cantidad de los ítems
-            if (isset($request->items) && is_array($request->items) && !$shouldBeAnulada) {
-                foreach ($request->items as $itemData) {
+            // 2. Ajustar stock por modificación de cantidad o artículo de los ítems existentes
+            if (isset($request->existing_items) && is_array($request->existing_items) && !$shouldBeAnulada) {
+                foreach ($request->existing_items as $itemData) {
                     $item = FacturaItem::findOrFail($itemData['id']);
-                    $stock = $item->stock;
+                    $oldStock = $item->stock;
                     $oldQty = (int) $item->cantidad;
+                    
+                    $newStockId = (int) $itemData['stock_id'];
                     $newQty = (int) $itemData['cantidad'];
-                    $diff = $newQty - $oldQty;
+                    $newPrice = (float) $itemData['precio_unitario'];
 
-                    if ($diff !== 0 && $stock) {
-                        if ($factura->tipo_movimiento === 'compra') {
-                            if ($diff > 0) {
-                                $stock->incrementarStock($diff);
+                    if ($oldStock) {
+                        if ($oldStock->id !== $newStockId) {
+                            $newStock = Stock::findOrFail($newStockId);
+                            if ($factura->tipo_movimiento === 'compra') {
+                                $oldStock->decrementarStock($oldQty);
+                                $newStock->incrementarStock($newQty);
                             } else {
-                                $stock->decrementarStock(abs($diff));
+                                $oldStock->incrementarStock($oldQty);
+                                if (!$newStock->tieneDisponible($newQty)) {
+                                    throw new \DomainException("Stock insuficiente para '{$newStock->producto}'. Requerido: {$newQty}, disponible: {$newStock->cantidad}.");
+                                }
+                                $newStock->decrementarStock($newQty);
                             }
                         } else {
-                            if ($diff > 0) {
-                                if (!$stock->tieneDisponible($diff)) {
-                                    throw new \DomainException("Stock insuficiente para '{$stock->producto}'. Requerido adicional: {$diff}, disponible: {$stock->cantidad}.");
+                            // Es el mismo artículo, solo cambia cantidad
+                            $diff = $newQty - $oldQty;
+                            if ($diff !== 0) {
+                                if ($factura->tipo_movimiento === 'compra') {
+                                    if ($diff > 0) {
+                                        $oldStock->incrementarStock($diff);
+                                    } else {
+                                        $oldStock->decrementarStock(abs($diff));
+                                    }
+                                } else {
+                                    if ($diff > 0) {
+                                        if (!$oldStock->tieneDisponible($diff)) {
+                                            throw new \DomainException("Stock insuficiente para '{$oldStock->producto}'. Requerido adicional: {$diff}, disponible: {$oldStock->cantidad}.");
+                                        }
+                                        $oldStock->decrementarStock($diff);
+                                    } else {
+                                        $oldStock->incrementarStock(abs($diff));
+                                    }
                                 }
-                                $stock->decrementarStock($diff);
-                            } else {
-                                $stock->incrementarStock(abs($diff));
                             }
                         }
                     }
-                    $item->update(['cantidad' => $newQty]);
+                    
+                    $item->update([
+                        'stock_id'        => $newStockId,
+                        'cantidad'        => $newQty,
+                        'precio_unitario' => $newPrice,
+                    ]);
+                }
+            }
+
+            // 2.5. Añadir nuevos ítems a la factura
+            if (isset($request->new_items) && is_array($request->new_items) && !$shouldBeAnulada) {
+                foreach ($request->new_items as $itemData) {
+                    $stock = Stock::findOrFail($itemData['stock_id']);
+                    
+                    FacturaItem::create([
+                        'factura_id'      => $factura->id,
+                        'stock_id'        => $stock->id,
+                        'cantidad'        => $itemData['cantidad'],
+                        'precio_unitario' => $itemData['precio_unitario'],
+                    ]);
+
+                    if ($factura->tipo_movimiento === 'compra') {
+                        // Actualizar proveedor del stock si es compra a proveedor
+                        if ($type === 'Proveedor') {
+                            $stock->update(['proveedor_id' => $entity->id]);
+                        }
+                        $stock->incrementarStock((int) $itemData['cantidad']);
+                    } else {
+                        if (!$stock->tieneDisponible((int) $itemData['cantidad'])) {
+                            throw new \DomainException("Stock insuficiente para '{$stock->producto}'. Requerido: {$itemData['cantidad']}, disponible: {$stock->cantidad}.");
+                        }
+                        $stock->decrementarStock((int) $itemData['cantidad']);
+                    }
                 }
             }
 

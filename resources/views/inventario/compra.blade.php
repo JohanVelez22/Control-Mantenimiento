@@ -19,7 +19,7 @@
  <label class="field-label">N° Factura (Auto)</label>
  <input type="text" value="{{ $nextNumero }}" readonly class="glass-input font-mono bg-white/40 dark:bg-black/20 text-gray-500 cursor-not-allowed">
  </div>
- <div class="w-full flex-1">
+ <div class="w-full flex-1 min-w-0">
  <label class="field-label">Proveedor / Cliente *</label>
  <select name="facturable_global" required class="glass-input focus:ring-orange-500">
  <option value="">Seleccionar...</option>
@@ -60,8 +60,8 @@
  <tr>
  <th>Artículo del Stock</th>
  <th class="w-24 text-center">Cant.</th>
- <th class="w-32 text-right">Precio Un. ($)</th>
- <th class="w-32 text-right">Subtotal</th>
+ <th class="min-w-[160px] text-right">Precio Un. ($)</th>
+ <th class="min-w-[160px] text-right">Subtotal</th>
  <th class="w-12 text-center"></th>
  </tr>
  </thead>

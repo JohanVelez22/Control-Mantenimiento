@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" class="preload">
 <head>
     <meta charset="UTF-8">
@@ -993,7 +993,7 @@
                             <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Factura</span>
                             <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $f->numero_factura }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $f->facturable->nombre ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—' }}</p>
                         <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
                             Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}
                         </p>
