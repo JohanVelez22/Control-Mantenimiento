@@ -62,57 +62,61 @@
  </thead>
  <tbody>
  @forelse($facturas as $f)
- <tr class="{{ $f->estado === 'anulada' ? 'row-anulado' : '' }}">
- <td class="text-center font-mono font-bold text-sm text-slate-700 dark:text-slate-300">{{ $f->numero_factura }}</td>
- <td class="text-center">
- <span class="pill {{ $f->tipo_movimiento === 'compra' ? 'pill-pending' : 'pill-done' }}">
- {{ $f->tipo_movimiento === 'compra' ? '📦 Compra' : '🛒 Venta' }}
- </span>
- </td>
- <td class="font-bold text-slate-800 dark:text-white">
- {{ $f->facturable->nombre_razon_social ?? $f->facturable->nombre ?? '—' }}
- </td>
- <td class="text-center font-medium">{{ $f->fecha->format('d/m/Y') }}</td>
- <td class="text-right font-black text-slate-800 dark:text-white text-base">
- ${{ number_format($f->total_documento, 0, ',', '.') }}
- </td>
- <td class="text-right">
- <span class="font-bold text-sm {{ $f->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
- ${{ number_format($f->total_pagado, 0, ',', '.') }}
- </span>
- @if($f->saldo_pendiente > 0 && $f->estado !== 'anulada')
- <div class="text-[10px] text-red-500 uppercase tracking-tight mt-0.5 font-bold">Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}</div>
- @endif
- </td>
- <td class="text-center">
- @php
- $stClass = 'pill-pending';
- if($f->estado === 'emitida') $stClass = 'pill-done';
- if($f->estado === 'anulada') $stClass = 'pill-anulado';
+  @php
+    $dim = $f->estado === 'anulada' ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
+    $dimLight = $f->estado === 'anulada' ? 'opacity-60' : '';
+  @endphp
+  <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+  <td class="text-center font-mono font-bold text-sm text-slate-700 dark:text-slate-300 {{ $dim }}">{{ $f->numero_factura }}</td>
+  <td class="text-center {{ $dimLight }}">
+  <span class="pill {{ $f->tipo_movimiento === 'compra' ? 'pill-pending' : 'pill-done' }}">
+  {{ $f->tipo_movimiento === 'compra' ? '📦 Compra' : '🛒 Venta' }}
+  </span>
+  </td>
+  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">
+  {{ $f->facturable->nombre_razon_social ?? $f->facturable->nombre ?? '—' }}
+  </td>
+  <td class="text-center font-medium {{ $dim }}">{{ $f->fecha->format('d/m/Y') }}</td>
+  <td class="text-right font-black text-slate-800 dark:text-white text-base {{ $dim }}">
+  ${{ number_format($f->total_documento, 0, ',', '.') }}
+  </td>
+  <td class="text-right {{ $dim }}">
+  <span class="font-bold text-sm {{ $f->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
+  ${{ number_format($f->total_pagado, 0, ',', '.') }}
+  </span>
+  @if($f->saldo_pendiente > 0 && $f->estado !== 'anulada')
+  <div class="text-[10px] text-red-500 uppercase tracking-tight mt-0.5 font-bold">Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}</div>
+  @endif
+  </td>
+  <td class="text-center">
+  @php
+  $stClass = 'pill-pending';
+  if($f->estado === 'emitida') $stClass = 'pill-done';
+  if($f->estado === 'anulada') $stClass = 'pill-anulado';
+  
+  $label = ucfirst(str_replace('_', ' ', $f->estado));
+  if($f->estado === 'pendiente_pago') $label = 'Pendiente';
+  @endphp
+  <span class="pill {{ $stClass }}">
+  {{ $label }}
+  </span>
+  </td>
+  <td class="text-center {{ $dim }}">
+  <div class="flex justify-center md:justify-end gap-1.5 flex-wrap">
+  <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Ver Detalles">👁️</a>
+  <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs" title="Imprimir">🖨️</a>
+  
+  @if(!auth()->user()->isInvitado())
+  <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600 border-yellow-500/20 hover:bg-yellow-500/10" title="Editar">✏️</a>
+  
+  @if($f->estado !== 'anulada')
+  <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs text-orange-600 border-orange-500/20 hover:bg-orange-500/10" title="Anular">🚫</button>
+  @endif
  
- $label = ucfirst(str_replace('_', ' ', $f->estado));
- if($f->estado === 'pendiente_pago') $label = 'Pendiente';
- @endphp
- <span class="pill {{ $stClass }}">
- {{ $label }}
- </span>
- </td>
- <td class="text-center">
- <div class="flex justify-center md:justify-end gap-1.5 flex-wrap">
- <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Ver Detalles">👁️</a>
- <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs" title="Imprimir">🖨️</a>
- 
- @if(!auth()->user()->isInvitado())
- <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600 border-yellow-500/20 hover:bg-yellow-500/10" title="Editar">✏️</a>
- 
- @if($f->estado !== 'anulada')
- <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs text-orange-600 border-orange-500/20 hover:bg-orange-500/10" title="Anular">🚫</button>
- @endif
-
- @endif
- </div>
- </td>
- </tr>
+  @endif
+  </div>
+  </td>
+  </tr>
  @empty
  <tr>
  <td colspan="8" class="p-16 text-center">

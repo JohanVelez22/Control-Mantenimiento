@@ -25,16 +25,17 @@ class MovimientoInventarioController extends Controller
     public function createCompra(): View
     {
         $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
+        $clientes    = Cliente::orderBy('nombre')->get();
         $stocks      = Stock::orderBy('producto')->get();
         $nextNumero  = Factura::siguienteNumero('CP-');
 
-        return view('inventario.compra', compact('proveedores', 'stocks', 'nextNumero'));
+        return view('inventario.compra', compact('proveedores', 'clientes', 'stocks', 'nextNumero'));
     }
 
     public function registrarCompra(Request $request): RedirectResponse
     {
         $request->validate([
-            'proveedor_id'            => ['required', 'exists:proveedores,id'],
+            'facturable_global'       => ['required', 'string'],
             'fecha'                   => ['required', 'date'],
             'total_pagado'            => ['required', 'numeric', 'min:0'],
             'observaciones'           => ['nullable', 'string'],
@@ -47,7 +48,17 @@ class MovimientoInventarioController extends Controller
         try {
             DB::beginTransaction();
 
-            $proveedor     = Proveedor::findOrFail($request->proveedor_id);
+            list($type, $id) = explode(':', $request->facturable_global);
+            if ($type === 'Proveedor') {
+                $entity = Proveedor::findOrFail($id);
+                $facturableType = Proveedor::class;
+                $entityName = $entity->nombre_razon_social;
+            } else {
+                $entity = Cliente::findOrFail($id);
+                $facturableType = Cliente::class;
+                $entityName = $entity->nombre;
+            }
+
             $totalDocumento = $this->calcularTotal($request->items);
             $totalPagado    = (float) $request->total_pagado;
             $saldo          = $totalDocumento - $totalPagado;
@@ -58,8 +69,8 @@ class MovimientoInventarioController extends Controller
                 'numero_factura'  => Factura::siguienteNumero('CP-'),
                 'tipo_movimiento' => 'compra',
                 'estado'          => $estado,
-                'facturable_id'   => $proveedor->id,
-                'facturable_type' => Proveedor::class,
+                'facturable_id'   => $entity->id,
+                'facturable_type' => $facturableType,
                 'total_documento' => $totalDocumento,
                 'total_pagado'    => $totalPagado,
                 'observaciones'   => $this->buildObservaciones($request->observaciones, $saldo),
@@ -78,8 +89,10 @@ class MovimientoInventarioController extends Controller
                     'precio_unitario' => $item['precio_unitario'],
                 ]);
 
-                // Actualizar también el proveedor del artículo
-                $stock->update(['proveedor_id' => $proveedor->id]);
+                // Actualizar proveedor del artículo si es Proveedor
+                if ($type === 'Proveedor') {
+                    $stock->update(['proveedor_id' => $entity->id]);
+                }
                 // Incrementar stock de forma atómica
                 $stock->incrementarStock((int) $item['cantidad']);
             }
@@ -89,7 +102,7 @@ class MovimientoInventarioController extends Controller
                 $this->registrarMovimientoCaja(
                     tipo: 'egreso',
                     monto: $totalPagado,
-                    persona: $proveedor->nombre_razon_social,
+                    persona: $entityName,
                     descripcion: "Pago compra #{$factura->numero_factura}",
                     fecha: $request->fecha
                 );
@@ -100,7 +113,7 @@ class MovimientoInventarioController extends Controller
                 session()->flash('alert_compra_pendiente', [
                     'factura' => $factura->numero_factura,
                     'saldo'   => $saldo,
-                    'proveedor' => $proveedor->nombre_razon_social,
+                    'proveedor' => $entityName,
                 ]);
             }
 
@@ -125,17 +138,18 @@ class MovimientoInventarioController extends Controller
 
     public function createVenta(): View
     {
-        $clientes   = Cliente::orderBy('nombre')->get();
-        $stocks     = Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
-        $nextNumero = Factura::siguienteNumero('VT-');
+        $clientes    = Cliente::orderBy('nombre')->get();
+        $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
+        $stocks      = Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
+        $nextNumero  = Factura::siguienteNumero('VT-');
 
-        return view('inventario.venta', compact('clientes', 'stocks', 'nextNumero'));
+        return view('inventario.venta', compact('clientes', 'proveedores', 'stocks', 'nextNumero'));
     }
 
     public function registrarVenta(Request $request): RedirectResponse
     {
         $request->validate([
-            'cliente_id'              => ['required', 'exists:clientes,id'],
+            'facturable_global'       => ['required', 'string'],
             'fecha'                   => ['required', 'date'],
             'total_pagado'            => ['required', 'numeric', 'min:0'],
             'observaciones'           => ['nullable', 'string'],
@@ -148,7 +162,17 @@ class MovimientoInventarioController extends Controller
         try {
             DB::beginTransaction();
 
-            $cliente        = Cliente::findOrFail($request->cliente_id);
+            list($type, $id) = explode(':', $request->facturable_global);
+            if ($type === 'Proveedor') {
+                $entity = Proveedor::findOrFail($id);
+                $facturableType = Proveedor::class;
+                $entityName = $entity->nombre_razon_social;
+            } else {
+                $entity = Cliente::findOrFail($id);
+                $facturableType = Cliente::class;
+                $entityName = $entity->nombre;
+            }
+
             $totalDocumento = $this->calcularTotal($request->items);
             $totalPagado    = (float) $request->total_pagado;
             $saldo          = $totalDocumento - $totalPagado;
@@ -169,8 +193,8 @@ class MovimientoInventarioController extends Controller
                 'numero_factura'  => Factura::siguienteNumero('VT-'),
                 'tipo_movimiento' => 'venta',
                 'estado'          => $estado,
-                'facturable_id'   => $cliente->id,
-                'facturable_type' => Cliente::class,
+                'facturable_id'   => $entity->id,
+                'facturable_type' => $facturableType,
                 'total_documento' => $totalDocumento,
                 'total_pagado'    => $totalPagado,
                 'observaciones'   => $this->buildObservaciones($request->observaciones, $saldo),
@@ -197,7 +221,7 @@ class MovimientoInventarioController extends Controller
                 $this->registrarMovimientoCaja(
                     tipo: 'ingreso',
                     monto: $totalPagado,
-                    persona: $cliente->nombre,
+                    persona: $entityName,
                     descripcion: "Cobro venta #{$factura->numero_factura}",
                     fecha: $request->fecha
                 );
@@ -208,7 +232,7 @@ class MovimientoInventarioController extends Controller
                 session()->flash('alert_venta_pendiente', [
                     'factura' => $factura->numero_factura,
                     'saldo'   => $saldo,
-                    'cliente' => $cliente->nombre,
+                    'cliente' => $entityName,
                 ]);
             }
 
@@ -312,27 +336,44 @@ class MovimientoInventarioController extends Controller
 
     public function editFactura(Factura $factura): View
     {
-        return view('inventario.facturas.edit', compact('factura'));
+        $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
+        $clientes    = Cliente::orderBy('nombre')->get();
+        $factura->load('items.stock');
+        return view('inventario.facturas.edit', compact('factura', 'proveedores', 'clientes'));
     }
 
     public function updateFactura(Request $request, Factura $factura): RedirectResponse
     {
         $request->validate([
-            'fecha'         => 'required|date',
-            'total_pagado'  => 'required|numeric|min:0',
-            'observaciones' => 'nullable|string',
+            'fecha'             => 'required|date',
+            'total_pagado'      => 'required|numeric|min:0',
+            'observaciones'     => 'nullable|string',
+            'anulado'           => 'required|in:0,1',
+            'facturable_global' => 'required|string',
+            'items'             => 'nullable|array',
+            'items.*.id'        => 'required|exists:factura_items,id',
+            'items.*.cantidad'  => 'required|integer|min:1',
         ]);
 
+        list($type, $id) = explode(':', $request->facturable_global);
+        if ($type === 'Proveedor') {
+            $entity = Proveedor::findOrFail($id);
+            $facturableType = Proveedor::class;
+        } else {
+            $entity = Cliente::findOrFail($id);
+            $facturableType = Cliente::class;
+        }
+
         $totalPagado = (float) $request->total_pagado;
-        $saldo       = $factura->total_documento - $totalPagado;
-        $estado      = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+        
+        $shouldBeAnulada = $request->anulado == '1';
+        $wasAnulada = $factura->estado === 'anulada';
         
         try {
             DB::beginTransaction();
 
-            // Si la factura estaba anulada y la estamos editando, significa que la estamos reactivando.
-            // Debemos volver a aplicar el stock de los productos.
-            if ($factura->estado === 'anulada') {
+            // 1. Reactivar primero si estaba anulada
+            if ($wasAnulada && !$shouldBeAnulada) {
                 foreach ($factura->items as $item) {
                     $stock = $item->stock;
                     if ($stock) {
@@ -345,18 +386,78 @@ class MovimientoInventarioController extends Controller
                 }
             }
 
+            // 2. Ajustar stock por modificación de cantidad de los ítems
+            if (isset($request->items) && is_array($request->items) && !$shouldBeAnulada) {
+                foreach ($request->items as $itemData) {
+                    $item = FacturaItem::findOrFail($itemData['id']);
+                    $stock = $item->stock;
+                    $oldQty = (int) $item->cantidad;
+                    $newQty = (int) $itemData['cantidad'];
+                    $diff = $newQty - $oldQty;
+
+                    if ($diff !== 0 && $stock) {
+                        if ($factura->tipo_movimiento === 'compra') {
+                            if ($diff > 0) {
+                                $stock->incrementarStock($diff);
+                            } else {
+                                $stock->decrementarStock(abs($diff));
+                            }
+                        } else {
+                            if ($diff > 0) {
+                                if (!$stock->tieneDisponible($diff)) {
+                                    throw new \DomainException("Stock insuficiente para '{$stock->producto}'. Requerido adicional: {$diff}, disponible: {$stock->cantidad}.");
+                                }
+                                $stock->decrementarStock($diff);
+                            } else {
+                                $stock->incrementarStock(abs($diff));
+                            }
+                        }
+                    }
+                    $item->update(['cantidad' => $newQty]);
+                }
+            }
+
+            // 3. Anular si se solicitó anulación ahora
+            if (!$wasAnulada && $shouldBeAnulada) {
+                foreach ($factura->items as $item) {
+                    $stock = $item->stock;
+                    if ($stock) {
+                        if ($factura->tipo_movimiento === 'compra') {
+                            $stock->decrementarStock($item->cantidad);
+                        } else {
+                            $stock->incrementarStock($item->cantidad);
+                        }
+                    }
+                }
+            }
+
+            // 4. Calcular el nuevo total de la factura
+            $totalDocumento = 0;
+            foreach ($factura->items()->get() as $item) {
+                $totalDocumento += (float) $item->cantidad * (float) $item->precio_unitario;
+            }
+
+            $saldo = $totalDocumento - $totalPagado;
+            $estado = $shouldBeAnulada ? 'anulada' : ($saldo > 0.01 ? 'pendiente_pago' : 'emitida');
+
             $factura->update([
-                'fecha'         => $request->fecha,
-                'total_pagado'  => $totalPagado,
-                'estado'        => $estado,
-                'observaciones' => $request->observaciones,
+                'fecha'           => $request->fecha,
+                'total_pagado'    => $totalPagado,
+                'total_documento' => $totalDocumento,
+                'estado'          => $estado,
+                'observaciones'   => $request->observaciones,
+                'facturable_id'   => $entity->id,
+                'facturable_type' => $facturableType,
             ]);
 
             DB::commit();
-            return redirect()->route('inventario.facturas')->with('success', 'Factura actualizada y reactivada (si estaba anulada) correctamente.');
+            return redirect()->route('inventario.facturas')->with('success', 'Factura actualizada correctamente.');
+        } catch (\DomainException $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage())->withInput();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error actualizando/reactivando factura: ' . $e->getMessage());
+            Log::error('Error actualizando factura: ' . $e->getMessage());
             return back()->with('error', 'Error al actualizar la factura.');
         }
     }

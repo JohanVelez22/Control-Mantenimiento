@@ -20,16 +20,21 @@
  <input type="text" value="{{ $nextNumero }}" readonly class="glass-input font-mono bg-white/40 dark:bg-black/20 text-gray-500 cursor-not-allowed">
  </div>
  <div class="w-full flex-1">
- <label class="field-label">Proveedor *</label>
- <select name="proveedor_id" required class="glass-input focus:ring-orange-500">
+ <label class="field-label">Proveedor / Cliente *</label>
+ <select name="facturable_global" required class="glass-input focus:ring-orange-500">
  <option value="">Seleccionar...</option>
  @foreach($proveedores as $prov)
- <option value="{{ $prov->id }}" {{ old('proveedor_id', request('proveedor_id')) == $prov->id ? 'selected' : '' }}>
- {{ $prov->nombre_razon_social }} ({{ $prov->identificacion }})
+ <option value="Proveedor:{{ $prov->id }}" {{ old('facturable_global') == "Proveedor:{$prov->id}" ? 'selected' : '' }}>
+ 🏢 Proveedor: {{ $prov->nombre_razon_social }} ({{ $prov->identificacion }})
+ </option>
+ @endforeach
+ @foreach($clientes as $cli)
+ <option value="Cliente:{{ $cli->id }}" {{ old('facturable_global') == "Cliente:{$cli->id}" ? 'selected' : '' }}>
+ 👤 Cliente: {{ $cli->nombre }} ({{ $cli->identificacion ?? 'Cliente' }})
  </option>
  @endforeach
  </select>
- @error('proveedor_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+ @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
  <div class="w-full md:w-48 flex-shrink-0">
  <label class="field-label">Fecha *</label>
@@ -99,15 +104,15 @@
  </div>
 
  {{-- Pago y observaciones --}}
- <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5 bg-white/40 dark:bg-slate-800/40 border border-gray-200/60 dark:border-gray-700/60 rounded-2xl">
- <div class="text-center">
+ <div class="flex flex-col md:flex-row justify-center gap-5 p-5 bg-white/40 dark:bg-slate-800/40 border border-gray-200/60 dark:border-gray-700/60 rounded-2xl">
+ <div class="text-center w-full md:w-1/2">
  <label class="field-label text-center block">Total Pagado Ahora ($) *</label>
  <input type="text" name="total_pagado" id="total_pagado" value="0" oninput="window.formatCurrencyInput(this); recalcular()" required 
  class="glass-input text-2xl font-black text-center focus:ring-orange-500 py-3 text-emerald-600 dark:text-emerald-400">
  <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2 font-medium leading-tight">Si pagas menos del total, el estado quedará como <strong>Pendiente de Pago</strong> y se registrará la deuda contable.</p>
  @error('total_pagado') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
- <div id="saldo-preview" class="hidden flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">
+ <div id="saldo-preview" class="hidden w-full md:w-1/2 flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">
  <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 mb-1 tracking-wide uppercase">⚠️ Saldo por Pagar</p>
  <p class="text-3xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$0</p>
  </div>

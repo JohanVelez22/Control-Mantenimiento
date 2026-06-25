@@ -57,7 +57,7 @@
     $dim = $m->anulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
     $dimLight = $m->anulado ? 'opacity-60' : '';
   @endphp
-  <tr id="mantenimiento-{{ $m->id }}" class="{{ $m->anulado ? 'row-anulado' : '' }} hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+  <tr id="mantenimiento-{{ $m->id }}" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
   <td data-label="Orden:" class="font-bold text-center whitespace-nowrap {{ $dim }}">
   <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
   {{ $m->id_orden }}

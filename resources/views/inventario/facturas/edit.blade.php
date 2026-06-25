@@ -8,6 +8,7 @@
             <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                 ✏️ Editar Factura {{ $factura->numero_factura }}
             </h2>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Modifica los detalles, cantidades o el estado de la factura</p>
         </div>
     </div>
 
@@ -15,20 +16,97 @@
         @csrf @method('PUT')
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{-- Cliente / Proveedor --}}
+            <div class="md:col-span-2">
+                <label class="field-label">Cliente / Proveedor *</label>
+                <select name="facturable_global" required class="glass-input font-bold">
+                    <option value="">Seleccionar...</option>
+                    @foreach($proveedores as $p)
+                        <option value="Proveedor:{{ $p->id }}" {{ ($factura->facturable_type === 'App\Models\Proveedor' && $factura->facturable_id == $p->id) ? 'selected' : '' }}>
+                            🏢 Proveedor: {{ $p->nombre_razon_social }} ({{ $p->identificacion }})
+                        </option>
+                    @endforeach
+                    @foreach($clientes as $c)
+                        <option value="Cliente:{{ $c->id }}" {{ ($factura->facturable_type === 'App\Models\Cliente' && $factura->facturable_id == $c->id) ? 'selected' : '' }}>
+                            👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }})
+                        </option>
+                    @endforeach
+                </select>
+                @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+            </div>
+
+            {{-- Fecha --}}
             <div>
                 <label class="field-label">Fecha de Factura *</label>
                 <input type="date" name="fecha" required value="{{ old('fecha', $factura->fecha->format('Y-m-d')) }}" class="glass-input">
+                @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
 
+            {{-- Estado de la Factura (Activa/Anulada) --}}
             <div>
-                <label class="field-label">Total Pagado ($) *</label>
-                <input type="text" name="total_pagado" id="total_pagado" required value="{{ old('total_pagado', number_format($factura->total_pagado, 0, '', '.')) }}" oninput="window.formatCurrencyInput(this)" class="glass-input font-bold text-emerald-600 text-center">
-                <p class="text-[11px] text-gray-400 mt-1">El monto total del documento es ${{ number_format($factura->total_documento, 0, ',', '.') }}. Modificar el pago ajustará el saldo y el estado automáticamente.</p>
+                <label class="field-label flex items-center gap-2"><span>🛡️</span> Estado de la Factura</label>
+                <select name="anulado" class="glass-input no-search font-bold">
+                    <option value="0" {{ old('anulado', $factura->estado === 'anulada' ? 1 : 0) == 0 ? 'selected' : '' }}>🟢 Activo</option>
+                    <option value="1" {{ old('anulado', $factura->estado === 'anulada' ? 1 : 0) == 1 ? 'selected' : '' }}>🔴 Anulado</option>
+                </select>
+                @error('anulado') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
 
+            {{-- Artículos de la Factura --}}
+            <div class="md:col-span-2">
+                <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+                    <span>📦</span> Artículos y Cantidades
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="ts-table">
+                        <thead>
+                            <tr>
+                                <th>Artículo</th>
+                                <th class="w-32 text-center">Cantidad</th>
+                                <th class="w-32 text-right">Precio Unitario ($)</th>
+                                <th class="w-32 text-right">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($factura->items as $index => $item)
+                                <tr>
+                                    <td>
+                                        <span class="font-bold text-slate-700 dark:text-gray-300">{{ $item->stock ? $item->stock->producto : 'Producto no disponible' }}</span>
+                                        <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item->id }}">
+                                    </td>
+                                    <td>
+                                        <input type="number" name="items[{{ $index }}][cantidad]" min="1" value="{{ (int)$item->cantidad }}" required class="glass-input text-center py-1.5 focus:ring-orange-500 quantity-input font-bold" data-price="{{ (float)$item->precio_unitario }}" oninput="recalcularTotalesEdicion()">
+                                    </td>
+                                    <td class="text-right font-mono py-1.5 align-middle text-gray-500 dark:text-gray-400">
+                                        ${{ number_format($item->precio_unitario, 0, ',', '.') }}
+                                    </td>
+                                    <td class="text-right font-mono subtotal-display py-1.5 align-middle font-bold text-slate-800 dark:text-white">
+                                        ${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 flex justify-between items-center p-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl border border-gray-200/50 dark:border-gray-700">
+                    <span class="font-bold text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">Nuevo Total Documento:</span>
+                    <span class="text-2xl font-black text-blue-600 dark:text-blue-400" id="total_documento_display">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>
+                </div>
+            </div>
+
+            {{-- Total Pagado --}}
+            <div class="md:col-span-2 p-4 bg-white/40 dark:bg-slate-800/40 border border-gray-200/60 dark:border-gray-700/60 rounded-2xl">
+                <label class="field-label text-center block text-sm">Total Pagado ($) *</label>
+                <input type="text" name="total_pagado" id="total_pagado" required value="{{ old('total_pagado', number_format($factura->total_pagado, 0, '', '.')) }}" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()" class="glass-input font-black text-2xl text-emerald-600 text-center py-3">
+                <p class="text-[11px] text-gray-400 mt-2 text-center" id="total_pagado_help">El monto total del documento es ${{ number_format($factura->total_documento, 0, ',', '.') }}. Modificar el pago ajustará el saldo y el estado automáticamente.</p>
+                @error('total_pagado') <p class="text-red-500 text-xs mt-1 font-bold text-center">{{ $message }}</p> @enderror
+            </div>
+
+            {{-- Observaciones --}}
             <div class="md:col-span-2">
                 <label class="field-label">Observaciones</label>
                 <textarea name="observaciones" rows="3" class="glass-input">{{ old('observaciones', $factura->observaciones) }}</textarea>
+                @error('observaciones') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
         </div>
 
@@ -38,4 +116,31 @@
         </div>
     </form>
 </div>
+
+<script>
+function recalcularTotalesEdicion() {
+    let totalDoc = 0;
+    document.querySelectorAll('tbody tr').forEach(row => {
+        const qtyInput = row.querySelector('.quantity-input');
+        if (qtyInput) {
+            const qty = parseFloat(qtyInput.value) || 0;
+            const price = parseFloat(qtyInput.dataset.price) || 0;
+            const sub = qty * price;
+            const subtotalCell = row.querySelector('.subtotal-display');
+            if (subtotalCell) {
+                subtotalCell.textContent = '$' + sub.toLocaleString('es-CO');
+            }
+            totalDoc += sub;
+        }
+    });
+    
+    document.getElementById('total_documento_display').textContent = '$' + totalDoc.toLocaleString('es-CO');
+    
+    // Update the help text of total pagado
+    const helpText = document.getElementById('total_pagado_help');
+    if (helpText) {
+        helpText.textContent = `El monto total del documento es $${totalDoc.toLocaleString('es-CO')}. Modificar el pago ajustará el saldo y el estado automáticamente.`;
+    }
+}
+</script>
 @endsection

@@ -19,16 +19,21 @@
  <input type="text" value="{{ $nextNumero }}" readonly class="glass-input font-mono bg-white/40 dark:bg-black/20 text-gray-500 cursor-not-allowed">
  </div>
  <div class="w-full flex-1">
- <label class="field-label">Cliente *</label>
- <select name="cliente_id" required class="glass-input focus:ring-emerald-500">
+ <label class="field-label">Cliente / Proveedor *</label>
+ <select name="facturable_global" required class="glass-input focus:ring-emerald-500">
  <option value="">Seleccionar...</option>
  @foreach($clientes as $c)
- <option value="{{ $c->id }}" {{ old('cliente_id') == $c->id ? 'selected' : '' }}>
- {{ $c->nombre }} ({{ $c->identificacion }})
+ <option value="Cliente:{{ $c->id }}" {{ old('facturable_global') == "Cliente:{$c->id}" ? 'selected' : '' }}>
+ 👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }})
+ </option>
+ @endforeach
+ @foreach($proveedores as $prov)
+ <option value="Proveedor:{{ $prov->id }}" {{ old('facturable_global') == "Proveedor:{$prov->id}" ? 'selected' : '' }}>
+ 🏢 Proveedor: {{ $prov->nombre_razon_social }} ({{ $prov->identificacion }})
  </option>
  @endforeach
  </select>
- @error('cliente_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+ @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
  <div class="w-full md:w-48 flex-shrink-0">
  <label class="field-label">Fecha *</label>
@@ -97,14 +102,14 @@
  </div>
 
  {{-- Pago y observaciones --}}
- <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-5 bg-white/40 dark:bg-slate-800/40 border border-gray-200/60 dark:border-gray-700/60 rounded-2xl">
- <div class="text-center">
+ <div class="flex flex-col md:flex-row justify-center gap-5 p-5 bg-white/40 dark:bg-slate-800/40 border border-gray-200/60 dark:border-gray-700/60 rounded-2xl">
+ <div class="text-center w-full md:w-1/2">
  <label class="field-label text-center block">Total Recibido Ahora ($) *</label>
  <input type="text" name="total_pagado" id="total_pagado" value="0" oninput="window.formatCurrencyInput(this); recalcular()" required 
  class="glass-input text-2xl font-black text-center focus:ring-emerald-500 py-3 text-emerald-600 dark:text-emerald-400">
  <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2 font-medium leading-tight">Si recibes menos del total, el estado quedará como <strong>Pendiente de Cobro</strong> y se registrará la deuda contable del cliente.</p>
  </div>
- <div id="saldo-preview" class="hidden flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">
+ <div id="saldo-preview" class="hidden w-full md:w-1/2 flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">
  <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 mb-1 tracking-wide uppercase">⚠️ Saldo por Cobrar</p>
  <p class="text-3xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$0</p>
  </div>
