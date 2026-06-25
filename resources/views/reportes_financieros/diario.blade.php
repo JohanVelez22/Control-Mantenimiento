@@ -3,8 +3,8 @@
 
 @section('content')
 <div class="flex gap-4 mb-6 no-print">
- <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
  <a href="{{ route('reportes.financiero.diario') }}" class="bg-amber-500 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💵 Informes Financieros</a>
+ <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
  <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Módulo Electrónica</a>
 </div>
 
@@ -98,7 +98,7 @@
  <th class="p-3 text-left">Descripción</th>
  <th class="p-3 text-center">Progreso</th>
  <th class="p-3 text-center">Estado</th>
- <th class="p-3 text-center">Monto</th>
+ <th class="p-3 text-center">Costo</th>
  </tr>
  </thead>
  <tbody>
@@ -138,12 +138,23 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-3 font-bold {{ in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }} {{ $dim }}">
+ <td class="p-3 text-center font-bold {{ in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }} {{ $dim }}">
  ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
  </td>
  </tr>
  @endforeach
  </tbody>
+ <tfoot>
+    <tr class="bg-gray-100 dark:bg-gray-800">
+        @php
+            $neto = $movimientos->where('anulado', false)->whereIn('tipo', ['ingreso','venta','mantenimiento','electronica'])->sum('monto') 
+                  - $movimientos->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
+            $color = $neto >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600 dark:text-red-400';
+        @endphp
+        <td colspan="4" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Balance Neto del Día:</td>
+        <td class="p-3 text-center font-black text-lg {{ $color }}">${{ number_format($neto, 0, ',', '.') }}</td>
+    </tr>
+ </tfoot>
  </table>
  </div>
  @endif

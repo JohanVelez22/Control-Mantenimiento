@@ -60,9 +60,9 @@
  </td>
  <td class="{{ $dim }}">
  <div class="flex justify-center gap-2">
- <a href="{{ route('proveedores.show', $p->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Ver Detalles">👁️</a>
+ <a href="{{ route('proveedores.show', $p->id) }}" class="btn-ghost px-3 py-1.5 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('proveedores.edit', $p->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Editar">✏️</a>
+ <a href="{{ route('proveedores.edit', $p->id) }}" class="btn-ghost px-3 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
  @endif
  </div>
  </td>

@@ -144,7 +144,7 @@
   
   <td data-label="Acciones:" class="text-center {{ $dim }}">
   <div class="flex justify-end md:justify-center gap-1.5 flex-wrap">
-  <a href="{{ route('electronicas.show', $e->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Ver detalle">👁️</a>
+  <a href="{{ route('electronicas.show', $e->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600" title="Ver detalle">👁️</a>
  
   @if($e->estado === 'terminado' && $e->fecha_salida)
   <a href="{{ route('electronicas.factura', $e->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 hover:text-green-700 hover:bg-green-50/50" title="Imprimir Factura">🖨️</a>
@@ -153,7 +153,7 @@
   @endif
   
   @if(!auth()->user()->isInvitado())
-  <a href="{{ route('electronicas.edit', $e->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
+  <a href="{{ route('electronicas.edit', $e->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
   
   @if(!$e->anulado)
   <button type="button" onclick="openAnularModal('{{ route('electronicas.anular', $e->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs text-orange-600 border-orange-500/20 hover:bg-orange-500/10" title="Anular orden">🚫</button>

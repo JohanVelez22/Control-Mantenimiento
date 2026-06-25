@@ -82,7 +82,7 @@
  <td data-label="Acciones:" class="text-center {{ $dim }}">
  <div class="flex justify-end md:justify-center gap-2">
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Editar">✏️</a>
+ <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost px-3 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
  @else
  <span class="text-gray-400 text-sm">👁️ Lectura</span>
  @endif

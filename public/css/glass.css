@@ -652,6 +652,19 @@ html.dark .btn-ghost { color: #CBD5E1; background: rgba(255,255,255,0.06); borde
 .btn-ghost:hover { background: rgba(37,99,235,0.10); border-color: rgba(37,99,235,0.25); color: #1D4ED8; }
 html.dark .btn-ghost:hover { background: rgba(37,99,235,0.18); color: #93C5FD; }
 
+/* Overrides para botones de acción con colores específicos */
+.btn-ghost.text-yellow-600:hover { color: #D97706 !important; border-color: rgba(217,119,6,0.3) !important; background: rgba(245,158,11,0.1) !important; }
+.btn-ghost.text-green-600:hover { color: #16A34A !important; border-color: rgba(22,163,74,0.3) !important; background: rgba(34,197,94,0.1) !important; }
+.btn-ghost.text-red-600:hover { color: #DC2626 !important; border-color: rgba(220,38,38,0.3) !important; background: rgba(239,68,68,0.1) !important; }
+.btn-ghost.text-orange-600:hover { color: #EA580C !important; border-color: rgba(234,88,12,0.3) !important; background: rgba(249,115,22,0.1) !important; }
+.btn-ghost.text-indigo-600:hover { color: #4F46E5 !important; border-color: rgba(79,70,229,0.3) !important; background: rgba(99,102,241,0.1) !important; }
+
+html.dark .btn-ghost.text-yellow-600:hover { color: #FCD34D !important; border-color: rgba(252,211,77,0.3) !important; background: rgba(251,191,36,0.15) !important; }
+html.dark .btn-ghost.text-green-600:hover { color: #6EE7B7 !important; border-color: rgba(110,231,183,0.3) !important; background: rgba(52,211,153,0.15) !important; }
+html.dark .btn-ghost.text-red-600:hover { color: #FCA5A5 !important; border-color: rgba(252,165,165,0.3) !important; background: rgba(248,113,113,0.15) !important; }
+html.dark .btn-ghost.text-orange-600:hover { color: #FDBA74 !important; border-color: rgba(253,186,116,0.3) !important; background: rgba(251,146,60,0.15) !important; }
+html.dark .btn-ghost.text-indigo-600:hover { color: #818CF8 !important; border-color: rgba(129,140,248,0.3) !important; background: rgba(99,102,241,0.15) !important; }
+
 .btn-danger {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 14px; font-weight: 600; font-size: 13px;

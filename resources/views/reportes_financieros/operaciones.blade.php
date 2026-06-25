@@ -3,8 +3,9 @@
 
 @section('content')
 <div class="flex gap-4 mb-6 no-print">
- <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
  <a href="{{ route('reportes.financiero.diario') }}" class="bg-amber-500 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💵 Informes Financieros</a>
+ <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
+
  <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Módulo Electrónica</a>
 </div>
 
@@ -33,14 +34,18 @@
 </div>
 
 <div class="glass-card p-5 mb-4 no-print">
- <form id="filtros-operaciones" method="GET" class="space-y-3">
-   <div class="flex flex-wrap items-center gap-3">
-   <select name="tipo" class="glass-input no-search w-56 font-semibold">
+ <form id="filtros-operaciones" method="GET" class="flex flex-wrap items-center gap-3">
+   <select name="tipo" class="glass-input no-search w-48 font-semibold">
    @foreach($tipoLabels as $val => $label)
    <option value="{{ $val }}" {{ $tipo === $val ? 'selected' : '' }}>{{ $label }}</option>
    @endforeach
    </select>
-    <div class="flex items-center gap-2 ml-auto">
+   <label class="font-semibold text-sm">Desde:</label>
+   <input type="date" name="desde" value="{{ $desde->toDateString() }}" class="glass-input w-36">
+   <label class="font-semibold text-sm">Hasta:</label>
+   <input type="date" name="hasta" value="{{ $hasta->toDateString() }}" class="glass-input w-36">
+   <button class="btn-primary py-2 px-4 text-sm" title="Filtrar">🔍 Filtrar</button>
+   <div class="flex items-center gap-2 ml-auto">
         <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
         <span>🖨️</span> Imprimir
         </button>
@@ -51,14 +56,6 @@
         <span>📊</span> Excel
         </button>
     </div>
-   </div>
-   <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-gray-200/50 dark:border-white/10">
-   <label class="font-semibold text-sm">Desde:</label>
-   <input type="date" name="desde" value="{{ $desde->toDateString() }}" class="glass-input w-44">
-   <label class="font-semibold text-sm">Hasta:</label>
-   <input type="date" name="hasta" value="{{ $hasta->toDateString() }}" class="glass-input w-44">
-   <button class="btn-primary py-2 px-5 text-sm" title="Filtrar">🔍 Filtrar</button>
-   </div>
  </form>
 </div>
 
@@ -83,7 +80,7 @@
  <tr>
  <th class="p-2 text-center">Orden</th><th class="p-2 text-left">Equipo / Cliente</th>
  <th class="p-2 text-center">Técnico</th><th class="p-2 text-center">Entrada</th>
- <th class="p-2 text-center">Costo</th><th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th>
+ <th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th><th class="p-2 text-center">Costo</th>
  </tr>
  </thead>
  <tbody>
@@ -109,19 +106,25 @@
  </td>
  <td class="p-2 {{ $dim }}">{{ $m->tecnico->nombre ?? '—' }}</td>
  <td class="p-2 {{ $dim }}">{{ $m->fecha_entrada->format('d/m/Y') }}</td>
- <td class="p-2 font-bold text-blue-600 {{ $dim }}">${{ number_format($m->costo, 0, ',', '.') }}</td>
  <td class="p-2 {{ $dimLight }}"><span class="pill pill-efectivo {{ $isAnulado ? 'opacity-70' : '' }}">{{ ucfirst($m->estado) }}</span></td>
  <td class="p-2">
  <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
+ <td class="p-2 text-center font-bold text-blue-600 {{ $dim }}">${{ number_format($m->costo, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
+ <tfoot>
+    <tr class="bg-gray-100 dark:bg-gray-800">
+        <td colspan="6" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Total Costos Mantenimientos:</td>
+        <td class="p-3 text-center font-black text-lg text-blue-700 dark:text-blue-400">${{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
+    </tr>
+ </tfoot>
  </table>
  </div>
-
+ 
  {{-- Tabla Electrónica --}}
  @elseif($tipo === 'solo_electronica')
  <div class="overflow-x-auto pb-2">
@@ -130,7 +133,7 @@
  <tr>
  <th class="p-2 text-center">Orden</th><th class="p-2 text-left">Dispositivo / Cliente</th>
  <th class="p-2 text-center">Técnico</th><th class="p-2 text-center">Entrada</th>
- <th class="p-2 text-center">Costo</th><th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th>
+ <th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th><th class="p-2 text-center">Costo</th>
  </tr>
  </thead>
  <tbody>
@@ -156,19 +159,25 @@
  </td>
  <td class="p-2 {{ $dim }}">{{ $e->tecnico->nombre ?? '—' }}</td>
  <td class="p-2 {{ $dim }}">{{ $e->fecha_entrada->format('d/m/Y') }}</td>
- <td class="p-2 font-bold text-purple-600 {{ $dim }}">${{ number_format($e->costo, 0, ',', '.') }}</td>
  <td class="p-2 {{ $dimLight }}"><span class="pill pill-pending {{ $isAnulado ? 'opacity-70' : '' }}">{{ ucfirst($e->estado) }}</span></td>
  <td class="p-2">
  <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
+ <td class="p-2 text-center font-bold text-purple-600 {{ $dim }}">${{ number_format($e->costo, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
+ <tfoot>
+    <tr class="bg-gray-100 dark:bg-gray-800">
+        <td colspan="6" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Total Costos Electrónica:</td>
+        <td class="p-3 text-center font-black text-lg text-purple-700 dark:text-purple-400">${{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
+    </tr>
+ </tfoot>
  </table>
  </div>
-
+ 
  {{-- Tabla Ingresos / Egresos --}}
  @elseif(in_array($tipo, ['solo_ingresos', 'solo_egresos']))
  <div class="overflow-x-auto pb-2">
@@ -177,7 +186,7 @@
  <tr>
  <th class="p-2 text-center">Fecha</th><th class="p-2 text-left">Persona / Empresa</th>
  <th class="p-2 text-center">Concepto</th><th class="p-2 text-center">Tipo Pago</th>
- <th class="p-2 text-center">Monto</th><th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th>
+ <th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th><th class="p-2 text-center">Monto</th>
  </tr>
  </thead>
  <tbody>
@@ -192,19 +201,25 @@
  <td class="p-2 text-left {{ $dim }}">{{ $c->persona ?? $c->empresa ?? '—' }}</td>
  <td class="p-2 text-xs {{ $dim }}">{{ $c->concepto->nombre ?? '—' }}</td>
  <td class="p-2 text-xs capitalize {{ $dim }}">{{ $c->tipo_pago }}</td>
- <td class="p-2 font-bold {{ $tipo === 'solo_ingresos' ? 'text-green-600' : 'text-red-600' }} {{ $dim }}">${{ number_format($c->monto, 0, ',', '.') }}</td>
  <td class="p-2 {{ $dimLight }}"><span class="pill pill-especialidad {{ $isAnulado ? 'opacity-70' : '' }}">Procesado</span></td>
  <td class="p-2">
  <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
+ <td class="p-2 text-center font-bold {{ $tipo === 'solo_ingresos' ? 'text-green-600' : 'text-red-600' }} {{ $dim }}">${{ number_format($c->monto, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
+ <tfoot>
+    <tr class="bg-gray-100 dark:bg-gray-800">
+        <td colspan="6" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Total Monto:</td>
+        <td class="p-3 text-center font-black text-lg {{ $tipo === 'solo_ingresos' ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400' }}">${{ number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.') }}</td>
+    </tr>
+ </tfoot>
  </table>
  </div>
-
+ 
  {{-- Tabla Compras / Ventas --}}
  @else
   <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
@@ -214,9 +229,9 @@
   <th class="p-2 text-center">Fecha</th>
   <th class="p-2 text-center">Factura Nº</th>
   <th class="p-2 text-left">Persona / Empresa</th>
-  <th class="p-2 text-center">Total</th>
   <th class="p-2 text-center">Pagado</th>
-  <th class="p-2 text-center">Estado</th>
+ <th class="p-2 text-center">Estado</th>
+ <th class="p-2 text-center">Total</th>
   </tr>
   </thead>
   <tbody>
@@ -235,19 +250,25 @@
   <td class="p-2 {{ $dim }}">{{ $f->fecha->format('d/m/Y') }}</td>
   <td class="p-2 font-mono font-bold {{ $dim }}">{{ $f->numero_factura }}</td>
   <td class="p-2 text-left {{ $dim }}">{{ $f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—' }}</td>
-  <td class="p-2 font-bold text-blue-600 {{ $dim }}">${{ number_format($f->total_documento, 0, ',', '.') }}</td>
   <td class="p-2 font-semibold text-emerald-600 {{ $dim }}">${{ number_format($f->total_pagado, 0, ',', '.') }}</td>
   <td class="p-2">
   <span class="pill {{ $stClass }}">
   {{ $label }}
   </span>
   </td>
+ <td class="p-2 text-center font-bold text-blue-600 {{ $dim }}">${{ number_format($f->total_documento, 0, ',', '.') }}</td>
   </tr>
   @endforeach
   </tbody>
-  </table>
-  </div>
-  <div class="mt-6 flex justify-end">
+ <tfoot>
+    <tr class="bg-gray-100 dark:bg-gray-800">
+        <td colspan="5" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Total Documentos:</td>
+        <td class="p-3 text-center font-black text-lg text-blue-700 dark:text-blue-400">${{ number_format($registros->filter(function($i) { return $i->estado !== 'anulada'; })->sum('total_documento'), 0, ',', '.') }}</td>
+    </tr>
+ </tfoot>
+ </table>
+ </div>
+ <div class="mt-6 flex justify-end">
   {{ $registros->appends(request()->query())->links() }}
   </div>
   @endif
@@ -318,3 +339,4 @@ function exportarOperaciones(tipo, btn) {
         });
 }
 </script>
+

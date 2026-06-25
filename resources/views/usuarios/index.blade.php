@@ -59,7 +59,7 @@
  <td class="text-center {{ $dim }}">
  <div class="flex justify-center items-center gap-1 flex-wrap">
  @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
- <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">
+ <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">
  ✏️
  </a>
  @else

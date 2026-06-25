@@ -125,7 +125,7 @@
   </td>
   <td class="text-center {{ $dim }}">
   <div class="flex justify-center md:justify-end gap-1.5 flex-wrap">
-  <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Ver Detalles">👁️</a>
+  <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
   <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs" title="Imprimir">🖨️</a>
   
   @if(!auth()->user()->isInvitado())

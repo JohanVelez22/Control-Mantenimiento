@@ -65,7 +65,7 @@
  <td class="text-center {{ $dim }}">
  <div class="flex justify-center items-center gap-1">
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
+ <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
  @else
  <span class="text-gray-400 text-sm">👁️ Lectura</span>
  @endif
