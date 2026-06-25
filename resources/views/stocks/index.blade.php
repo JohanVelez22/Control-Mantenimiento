@@ -1,5 +1,15 @@
 @extends('layouts.app')
 @section('content')
+<style>
+  tr.active-target {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  outline: 2px solid rgba(59, 130, 246, 0.5);
+  outline-offset: -2px;
+  }
+  .dark tr.active-target {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  }
+</style>
 <div class="glass-card p-6">
  <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
  <div>

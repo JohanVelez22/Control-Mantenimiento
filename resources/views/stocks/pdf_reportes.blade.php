@@ -213,7 +213,7 @@
         <div class="summary-divider"></div>
         <div class="summary-item">
             <div class="summary-label">Valor Inv. (Compra)</div>
-            <div class="summary-value" style="color:#166534; font-size:9px">${{ number_format($totalCompra, 2) }}</div>
+            <div class="summary-value" style="color:#166534; font-size:9px">${{ number_format($totalCompra, 0) }}</div>
         </div>
     </div>
 
@@ -245,17 +245,22 @@
                     <div class="sub-text">{{ $stock->categoria }} {{ $stock->subcategoria ? '/ '.$stock->subcategoria : '' }}</div>
                     @endif
                 </td>
-                <td class="col-center">{{ $stock->proveedor->nombre_razon_social ?? $stock->proveedor ?? 'N/A' }}</td>
+                <td class="col-center">
+                    <div>{{ $stock->proveedor_id ? ($stock->proveedor->nombre_razon_social ?? 'N/A') : ($stock->getRawOriginal('proveedor') ?: 'N/A') }}</div>
+                    @if(optional($stock->proveedor)->identificacion)
+                    <div class="sub-text">{{ $stock->proveedor->identificacion }}</div>
+                    @endif
+                </td>
                 <td class="col-center">{{ $stock->cantidad }}</td>
                 <td class="col-center">
                     <span class="badge {{ $isAnulado ? 'badge-anulado' : 'badge-activo' }}">
                         {{ $isAnulado ? 'Inactivo' : 'Activo' }}
                     </span>
                 </td>
-                <td class="col-right monto-cell">${{ number_format($stock->precio_compra, 2) }}</td>
+                <td class="col-right monto-cell">${{ number_format($stock->precio_compra, 0) }}</td>
                 <td class="col-center" style="font-size:7.5px">+{{ number_format($stock->utilidad, 0) }}%</td>
-                <td class="col-right monto-venta">${{ number_format($stock->precio_venta, 2) }}</td>
-                <td class="col-right" style="color:#a855f7; font-weight:700;">${{ number_format($stock->precio_tecnico, 2) }}</td>
+                <td class="col-right monto-venta">${{ number_format($stock->precio_venta, 0) }}</td>
+                <td class="col-right" style="color:#a855f7; font-weight:700;">${{ number_format($stock->precio_tecnico, 0) }}</td>
             </tr>
             @empty
             <tr>
@@ -268,22 +273,22 @@
         @if(count($stocks) > 0)
         <tfoot>
             <tr>
-                <td colspan="3" style="text-align:right; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px;">
-                    TOTAL DE {{ count($stocks) }} REGISTROS:
+                <td colspan="3" style="text-align:left; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px; padding-left:10px;">
+                    TOTAL: {{ count($stocks) }}
                 </td>
                 <td class="col-center" style="font-size:9px; font-weight:800;">
                     {{ $stocks->sum('cantidad') }}
                 </td>
                 <td></td>
                 <td style="text-align:right; font-size:9px; font-weight:800; color:#4ade80;">
-                    ${{ number_format($stocks->sum('precio_compra'), 2) }}
+                    ${{ number_format($stocks->sum('precio_compra'), 0) }}
                 </td>
                 <td></td>
                 <td style="text-align:right; font-size:9px; font-weight:800; color:#93c5fd;">
-                    ${{ number_format($stocks->sum('precio_venta'), 2) }}
+                    ${{ number_format($stocks->sum('precio_venta'), 0) }}
                 </td>
                 <td style="text-align:right; font-size:9px; font-weight:800; color:#c084fc;">
-                    ${{ number_format($stocks->sum('precio_tecnico'), 2) }}
+                    ${{ number_format($stocks->sum('precio_tecnico'), 0) }}
                 </td>
             </tr>
         </tfoot>

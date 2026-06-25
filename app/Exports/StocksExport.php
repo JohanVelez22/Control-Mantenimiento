@@ -46,9 +46,9 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                 // Escribir totales
                 $sheet->setCellValue("A{$footerRow}", "Total Registros: {$totalRegistros}");
                 $sheet->setCellValue("F{$footerRow}", "Cant. Total: {$cantidadTotal}");
-                $sheet->setCellValue("G{$footerRow}", "T. Compra: $" . number_format($compraTotal, 2));
-                $sheet->setCellValue("I{$footerRow}", "T. Venta: $" . number_format($ventaTotal, 2));
-                $sheet->setCellValue("J{$footerRow}", "T. Técnico: $" . number_format($tecnicoTotal, 2));
+                $sheet->setCellValue("G{$footerRow}", "T. Compra: $" . number_format($compraTotal, 0));
+                $sheet->setCellValue("I{$footerRow}", "T. Venta: $" . number_format($ventaTotal, 0));
+                $sheet->setCellValue("J{$footerRow}", "T. Técnico: $" . number_format($tecnicoTotal, 0));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:J{$footerRow}")->applyFromArray([
@@ -114,7 +114,7 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             $s->producto,
             $s->categoria ?? '-',
             $s->subcategoria ?? '-',
-            $s->proveedor->nombre_razon_social ?? $s->proveedor ?? 'N/A',
+            $s->proveedor_id ? ($s->proveedor->nombre_razon_social ?? 'N/A') : ($s->getRawOriginal('proveedor') ?: 'N/A'),
             $s->cantidad,
             $s->precio_compra,
             $s->utilidad,

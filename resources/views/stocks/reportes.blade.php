@@ -33,7 +33,7 @@
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Proveedor</label>
             <select name="proveedor_id" class="glass-input">
-                <option value="">Todos los proveedores</option>
+                <option value="todos">Todos los proveedores</option>
                 @foreach($proveedores as $prov)
                     <option value="{{ $prov->id }}" {{ request('proveedor_id') == $prov->id ? 'selected' : '' }}>{{ $prov->nombre_razon_social }}</option>
                 @endforeach
@@ -43,7 +43,7 @@
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Categoría</label>
             <select name="categoria" class="glass-input">
-                <option value="">Todas</option>
+                <option value="todos">Todas las categorías</option>
                 @foreach($categorias as $cat)
                     <option value="{{ $cat }}" {{ request('categoria') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
                 @endforeach
@@ -53,7 +53,7 @@
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Subcategoría</label>
             <select name="subcategoria" class="glass-input">
-                <option value="">Todas</option>
+                <option value="todos">Todas las subcategorías</option>
                 @foreach($subcategorias as $sub)
                     <option value="{{ $sub }}" {{ request('subcategoria') == $sub ? 'selected' : '' }}>{{ $sub }}</option>
                 @endforeach
@@ -62,11 +62,11 @@
         
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Desde</label>
-            <input type="date" name="desde" value="{{ request('desde') }}" class="glass-input">
+            <input type="date" name="desde" value="{{ request('desde', date('Y-m-01')) }}" class="glass-input">
         </div>
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Hasta</label>
-            <input type="date" name="hasta" value="{{ request('hasta') }}" class="glass-input">
+            <input type="date" name="hasta" value="{{ request('hasta', date('Y-m-d')) }}" class="glass-input">
         </div>
 
         <div>
@@ -80,12 +80,12 @@
 
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Costo Mínimo ($)</label>
-            <input type="number" step="0.01" name="min_costo" value="{{ request('min_costo') }}" class="glass-input" placeholder="Mínimo...">
+            <input type="text" name="min_costo" value="{{ request('min_costo') }}" class="glass-input" placeholder="Mínimo...">
         </div>
 
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Costo Máximo ($)</label>
-            <input type="number" step="0.01" name="max_costo" value="{{ request('max_costo') }}" class="glass-input" placeholder="Máximo...">
+            <input type="text" name="max_costo" value="{{ request('max_costo') }}" class="glass-input" placeholder="Máximo...">
         </div>
 
         <div>
@@ -147,7 +147,9 @@
                     </td>
                     <td class="{{ $dim }}">
                         <div class="font-bold text-slate-800 dark:text-white leading-tight">
-                            {{ $stock->producto }}
+                            <a href="{{ route('stocks.index', ['locate' => $stock->id]) }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                {{ $stock->producto }}
+                            </a>
                         </div>
                         @if($stock->categoria || $stock->subcategoria)
                         <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-1">
@@ -155,8 +157,21 @@
                         </div>
                         @endif
                     </td>
-                    <td class="text-sm font-medium {{ $dim }}">
-                        {{ $stock->proveedor->nombre_razon_social ?? $stock->proveedor ?? '-' }}
+                    <td class="text-sm font-medium text-center {{ $dim }}">
+                        @if(!empty($stock->proveedor_id))
+                            <div class="flex flex-col items-center justify-center leading-tight">
+                                <a href="{{ route('proveedores.index', ['locate' => $stock->proveedor_id]) }}" class="text-blue-600 dark:text-blue-400 font-bold hover:underline">
+                                    {{ optional($stock->proveedor)->nombre_razon_social ?? 'Proveedor ' . $stock->proveedor_id }}
+                                </a>
+                                @if(optional($stock->proveedor)->identificacion)
+                                <span class="text-[10.5px] font-bold text-gray-400 italic uppercase">
+                                    {{ $stock->proveedor->identificacion }}
+                                </span>
+                                @endif
+                            </div>
+                        @else
+                            {{ $stock->getRawOriginal('proveedor') ?: '-' }}
+                        @endif
                     </td>
                     <td class="text-center {{ $dim }}">
                         <span class="pill {{ $stock->cantidad > 5 ? 'pill-done' : 'pill-anulado' }}">
@@ -169,16 +184,16 @@
                         </span>
                     </td>
                     <td class="text-right font-medium {{ $dim }}">
-                        ${{ number_format($stock->precio_compra, 2) }}
+                        ${{ number_format($stock->precio_compra, 0) }}
                     </td>
                     <td class="text-center font-bold text-emerald-600 dark:text-emerald-400 text-xs {{ $dim }}">
                         +{{ number_format($stock->utilidad, 0) }}%
                     </td>
                     <td class="text-right font-black text-blue-600 dark:text-blue-400 {{ $dim }}">
-                        ${{ number_format($stock->precio_venta, 2) }}
+                        ${{ number_format($stock->precio_venta, 0) }}
                     </td>
                     <td class="text-right font-bold text-purple-600 dark:text-purple-400 {{ $dim }}">
-                        ${{ number_format($stock->precio_tecnico, 2) }}
+                        ${{ number_format($stock->precio_tecnico, 0) }}
                     </td>
                 </tr>
                 @empty
@@ -196,18 +211,18 @@
             @if($stocks->count() > 0)
             <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
                 <tr>
-                    <td colspan="2" class="text-right uppercase text-xs font-bold pt-2">
-                        <div class="flex flex-col items-end">
-                            <span>Total de Registros: <span class="text-blue-600">{{ $stocks->total() }}</span></span>
+                    <td colspan="2" class="text-left uppercase text-xs font-bold pt-2 pl-4">
+                        <div class="flex items-center">
+                            <span>Total: <span class="text-blue-600">{{ $stocks->total() }}</span></span>
                         </div>
                     </td>
                     <td class="text-right uppercase text-xs pt-2">Totales:</td>
                     <td class="text-center font-bold pt-2">{{ $stocks->sum('cantidad') }}</td>
                     <td class="pt-2"></td>
-                    <td class="text-right font-black text-gray-700 dark:text-gray-300 pt-2">${{ number_format($stocks->sum('precio_compra'), 2) }}</td>
+                    <td class="text-center font-black text-gray-700 dark:text-gray-300 pt-2">${{ number_format($stocks->sum('precio_compra'), 0) }}</td>
                     <td class="pt-2"></td>
-                    <td class="text-right font-black text-blue-600 dark:text-blue-400 pt-2">${{ number_format($stocks->sum('precio_venta'), 2) }}</td>
-                    <td class="text-right font-black text-purple-600 dark:text-purple-400 pt-2">${{ number_format($stocks->sum('precio_tecnico'), 2) }}</td>
+                    <td class="text-center font-black text-blue-600 dark:text-blue-400 pt-2">${{ number_format($stocks->sum('precio_venta'), 0) }}</td>
+                    <td class="text-center font-black text-purple-600 dark:text-purple-400 pt-2">${{ number_format($stocks->sum('precio_tecnico'), 0) }}</td>
                 </tr>
             </tfoot>
             @endif

@@ -12,8 +12,15 @@ use Illuminate\Validation\Rule;
 
 class ProveedorController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request)
     {
+        if ($request->has('locate')) {
+            $id = $request->locate;
+            $position = Proveedor::where('id', '>=', $id)->count();
+            $page = ceil($position / 10) ?: 1;
+            return redirect()->route('proveedores.index', ['page' => $page])->withFragment('proveedor-' . $id);
+        }
+
         $query = Proveedor::query();
 
         if ($request->filled('search')) {

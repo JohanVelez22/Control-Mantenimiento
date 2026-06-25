@@ -10,6 +10,13 @@ class StockController extends Controller
 {
     public function index(Request $request)
     {
+        if ($request->has('locate')) {
+            $id = $request->locate;
+            $position = Stock::where('id', '>=', $id)->count();
+            $page = ceil($position / 10) ?: 1;
+            return redirect()->route('stocks.index', ['page' => $page])->withFragment('stock-' . $id);
+        }
+
         $query = Stock::with('proveedor');
 
         if ($request->has('search')) {
@@ -112,15 +119,15 @@ class StockController extends Controller
             });
         }
 
-        if ($request->filled('proveedor_id')) {
+        if ($request->filled('proveedor_id') && $request->proveedor_id !== 'todos') {
             $query->where('proveedor_id', $request->proveedor_id);
         }
 
-        if ($request->filled('categoria')) {
+        if ($request->filled('categoria') && $request->categoria !== 'todos') {
             $query->where('categoria', $request->categoria);
         }
 
-        if ($request->filled('subcategoria')) {
+        if ($request->filled('subcategoria') && $request->subcategoria !== 'todos') {
             $query->where('subcategoria', $request->subcategoria);
         }
 
