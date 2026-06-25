@@ -14,9 +14,14 @@
   <input type="text" id="search-stocks" placeholder="Buscar producto, cod..." class="glass-input pl-9 w-48 sm:w-64">
   </div>
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('stocks.create') }}" class="btn-primary ml-2 ">
- ➕ Nuevo Producto
+ <div class="flex gap-3 ml-2">
+ <a href="{{ route('stocks.categorias.index') }}" class="btn-concepts flex items-center gap-2" style="padding: 9px 18px; font-size: 13px;">
+ 🏷️ <span class="hidden sm:inline">Gestionar Categorías</span>
  </a>
+ <a href="{{ route('stocks.create') }}" class="btn-primary flex items-center gap-2 shadow-lg shadow-indigo-500/30" style="padding: 9px 18px; font-size: 13px;">
+ <span>➕</span> <span class="hidden sm:inline">Nuevo Producto</span>
+ </a>
+ </div>
  @endif
  </div>
  </div>
@@ -43,8 +48,15 @@
  <td data-label="Código:" class="text-sm font-bold text-slate-500 dark:text-slate-400 {{ $dim }}">
  {{ $stock->codigo ?? '-' }}
  </td>
- <td data-label="Producto:" class="font-bold text-slate-800 dark:text-white {{ $dim }}">
+ <td data-label="Producto:" class="{{ $dim }}">
+ <div class="font-bold text-slate-800 dark:text-white leading-tight">
  {{ $stock->producto }}
+ </div>
+ @if($stock->categoria || $stock->subcategoria)
+ <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-1">
+ {{ $stock->categoria ?? 'Sin Categoría' }} {{ $stock->subcategoria ? ' / ' . $stock->subcategoria : '' }}
+ </div>
+ @endif
  </td>
  <td data-label="Cantidad:" class="text-center {{ $dim }}">
  <span class="pill {{ $stock->cantidad > 5 ? 'pill-done' : 'pill-anulado' }}">

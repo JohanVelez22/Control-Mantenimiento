@@ -12,6 +12,8 @@ class Stock extends Model
     protected $fillable = [
         'codigo',
         'producto',
+        'categoria',
+        'subcategoria',
         'cantidad',
         'proveedor',       // Campo texto legado (aún existe)
         'proveedor_id',    // FK formal

@@ -30,6 +30,34 @@
  @error('producto') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
 
+ <!-- Categoría -->
+ <div>
+ <label for="categoria" class="field-label">Categoría *</label>
+ @php
+     $categorias = \App\Models\CategoriaStock::where('tipo', 'categoria')->pluck('nombre');
+     $subcategorias = \App\Models\CategoriaStock::where('tipo', 'subcategoria')->pluck('nombre');
+ @endphp
+ <select name="categoria" id="categoria" required class="glass-input">
+    <option value="">Seleccione una categoría...</option>
+    @foreach($categorias as $cat)
+        <option value="{{ $cat }}" {{ old('categoria', $stock->categoria ?? '') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+    @endforeach
+ </select>
+ @error('categoria') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+ </div>
+
+ <!-- Subcategoría -->
+ <div>
+ <label for="subcategoria" class="field-label">Subcategoría *</label>
+ <select name="subcategoria" id="subcategoria" required class="glass-input">
+    <option value="">Seleccione una subcategoría...</option>
+    @foreach($subcategorias as $subcat)
+        <option value="{{ $subcat }}" {{ old('subcategoria', $stock->subcategoria ?? '') == $subcat ? 'selected' : '' }}>{{ $subcat }}</option>
+    @endforeach
+ </select>
+ @error('subcategoria') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+ </div>
+
  <!-- Cantidad -->
  <div>
  <label for="cantidad" class="field-label">Cantidad Actual *</label>

@@ -13,6 +13,30 @@
  @error('producto') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
+ <!-- Categoría -->
+ <div>
+ <label for="categoria" class="field-label">Categoría (Opcional)</label>
+ <input type="text" name="categoria" id="categoria" value="{{ old('categoria', $stock->categoria ?? '') }}" list="categorias-list" class="glass-input" placeholder="Ej: Repuestos, Accesorios...">
+ <datalist id="categorias-list">
+    @foreach(\App\Models\Stock::select('categoria')->whereNotNull('categoria')->where('categoria', '!=', '')->distinct()->pluck('categoria') as $cat)
+        <option value="{{ $cat }}">
+    @endforeach
+ </datalist>
+ @error('categoria') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+ </div>
+
+ <!-- Subcategoría -->
+ <div>
+ <label for="subcategoria" class="field-label">Subcategoría (Opcional)</label>
+ <input type="text" name="subcategoria" id="subcategoria" value="{{ old('subcategoria', $stock->subcategoria ?? '') }}" list="subcategorias-list" class="glass-input" placeholder="Ej: Pantallas, Baterías...">
+ <datalist id="subcategorias-list">
+    @foreach(\App\Models\Stock::select('subcategoria')->whereNotNull('subcategoria')->where('subcategoria', '!=', '')->distinct()->pluck('subcategoria') as $subcat)
+        <option value="{{ $subcat }}">
+    @endforeach
+ </datalist>
+ @error('subcategoria') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+ </div>
+
  <!-- Cantidad -->
  <div>
  <label for="cantidad" class="field-label">Cantidad Inicial *</label>

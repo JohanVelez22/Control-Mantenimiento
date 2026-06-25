@@ -44,6 +44,8 @@ class StockController extends Controller
         $validated = $request->validate([
             'codigo' => 'nullable|string|max:50|unique:stocks,codigo',
             'producto' => 'required|string|max:80',
+            'categoria' => 'required|string|max:50',
+            'subcategoria' => 'required|string|max:50',
             'cantidad' => 'required|integer|min:0',
             'proveedor_id' => 'required|integer|exists:proveedores,id',
             'precio_compra' => 'required|numeric|min:0|decimal:0,2',
@@ -75,6 +77,8 @@ class StockController extends Controller
         $validated = $request->validate([
             'codigo' => 'nullable|string|max:50|unique:stocks,codigo,' . $stock->id,
             'producto' => 'required|string|max:80',
+            'categoria' => 'required|string|max:50',
+            'subcategoria' => 'required|string|max:50',
             'cantidad' => 'required|integer|min:0',
             'proveedor_id' => 'required|integer|exists:proveedores,id',
             'precio_compra' => 'required|numeric|min:0|decimal:0,2',
@@ -91,5 +95,51 @@ class StockController extends Controller
         $stock->update($validated);
 
         return redirect()->route('stocks.index')->with('success', 'Producto actualizado exitosamente.');
+    }
+
+    public function reportes(Request $request)
+    {
+        $query = Stock::with('proveedor');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('producto', 'like', "%{$search}%")
+                  ->orWhere('codigo', 'like', "%{$search}%")
+                  ->orWhereHas('proveedor', function($q2) use ($search) {
+                      $q2->where('nombre_razon_social', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->filled('categoria')) {
+            $query->where('categoria', $request->categoria);
+        }
+
+        if ($request->filled('estado') && $request->estado !== 'todos') {
+            $query->where('active', $request->estado === 'activo' ? 1 : 0);
+        }
+
+        // Exportar PDF
+        if ($request->has('export') && $request->export === 'pdf') {
+            $stocks = $query->get();
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('stocks.pdf_reportes', compact('stocks'))
+                                             ->setPaper('a4', 'landscape');
+            return $pdf->download('Reporte_Inventario_' . date('Ymd_Hi') . '.pdf');
+        }
+
+        // Exportar Excel
+        if ($request->has('export') && $request->export === 'excel') {
+            $stocks = $query->get();
+            return \Maatwebsite\Excel\Facades\Excel::download(
+                new \App\Exports\StocksExport($stocks),
+                'Reporte_Inventario_' . date('Ymd_Hi') . '.xlsx'
+            );
+        }
+
+        $stocks = $query->orderBy('id', 'desc')->paginate(20);
+        $categorias = Stock::select('categoria')->whereNotNull('categoria')->where('categoria', '!=', '')->distinct()->pluck('categoria');
+
+        return view('stocks.reportes', compact('stocks', 'categorias'));
     }
 }

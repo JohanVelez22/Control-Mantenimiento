@@ -46,6 +46,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     // ─── Reportes de módulos ───────────────────────────────────────────
     Route::get('/mantenimientos-reportes', [MantenimientoController::class, 'reportes'])->name('mantenimientos.reportes');
     Route::get('/electronicas-reportes',   [App\Http\Controllers\ElectronicaController::class, 'reportes'])->name('electronicas.reportes');
+    Route::get('/stocks-reportes',         [App\Http\Controllers\StockController::class, 'reportes'])->name('stocks.reportes');
     Route::get('/reportes',                [App\Http\Controllers\ReporteController::class, 'index'])->name('reportes.index');
 
     // ─── Reportes Financieros (Diario, Acumulado, Operaciones) ────────
@@ -61,6 +62,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('clientes', ClienteController::class)->except(['destroy']);
     Route::resource('equipos', EquipoController::class)->except(['destroy']);
     Route::resource('tecnicos', TecnicoController::class)->except(['destroy']);
+    Route::resource('stocks/categorias', App\Http\Controllers\CategoriaStockController::class)->names('stocks.categorias')->except(['create', 'show', 'edit']);
     Route::resource('stocks', App\Http\Controllers\StockController::class)->except(['destroy']);
     Route::resource('electronicas',App\Http\Controllers\ElectronicaController::class)->except(['destroy']);
     Route::get('electronicas/{electronica}/factura', [App\Http\Controllers\ElectronicaController::class, 'factura'])->name('electronicas.factura');
