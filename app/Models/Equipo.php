@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Equipo extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Auditable;
     protected $fillable = [
         'nombre', 'marca', 'modelo', 'serie',
         'observacion', 'user_id', 'cliente_id', 'active'

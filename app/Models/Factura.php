@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Factura extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, \App\Traits\Auditable;
 
     protected $fillable = [
         'numero_factura',

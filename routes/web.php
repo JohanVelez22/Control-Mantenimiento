@@ -130,4 +130,8 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     // ─── Configuración de Empresa ──────────────────────────────────────
     Route::get('/configuracion',  [App\Http\Controllers\ConfiguracionController::class, 'index'])->name('configuracion.index');
     Route::post('/configuracion', [App\Http\Controllers\ConfiguracionController::class, 'update'])->name('configuracion.update');
+
+    // ─── Eventos / Auditoría ──────────────────────────────────────────
+    Route::get('/eventos', [App\Http\Controllers\EventoController::class, 'index'])->name('eventos.index');
+    Route::get('/eventos/{evento}', [App\Http\Controllers\EventoController::class, 'show'])->name('eventos.show');
 });

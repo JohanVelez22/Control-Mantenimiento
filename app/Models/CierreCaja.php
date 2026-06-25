@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CierreCaja extends Model
 {
+    use \App\Traits\Auditable;
+    
     protected $fillable = [
         'fecha', 'total_ingresos', 'total_egresos',
         'efectivo', 'consignacion', 'saldo_final',

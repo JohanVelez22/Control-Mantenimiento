@@ -158,6 +158,7 @@ class MovimientoCajaController extends Controller
             'monto'           => 'required|numeric|min:0.01|decimal:0,2',
             'monto_total'     => 'nullable|numeric|min:0|decimal:0,2',
             'descripcion'     => 'nullable|string|max:500',
+            'anulado'         => 'nullable|in:0,1',
         ]);
 
         // Validar que al menos empresa o persona esté presente, pero NO ambas

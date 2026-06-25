@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Auditable;
     // Permitimos la asignación masiva de estos campos
     protected $fillable = [
         'nombre',

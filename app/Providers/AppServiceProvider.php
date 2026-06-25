@@ -62,5 +62,15 @@ class AppServiceProvider extends ServiceProvider
                 'totalPendientes'       => $mantList->count() + $elecList->count() + $cajaList->count() + $movimientosPendientes->count(),
             ]);
         });
+
+        \Illuminate\Support\Facades\Event::listen(\Illuminate\Auth\Events\Login::class, function ($event) {
+            \App\Models\Evento::registrar('login', $event->user, null, null, "El usuario inició sesión en el sistema.");
+        });
+
+        \Illuminate\Support\Facades\Event::listen(\Illuminate\Auth\Events\Logout::class, function ($event) {
+            if ($event->user) {
+                \App\Models\Evento::registrar('logout', $event->user, null, null, "El usuario cerró sesión en el sistema.");
+            }
+        });
     }
 }

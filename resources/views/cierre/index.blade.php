@@ -2,6 +2,7 @@
 
 @section('content')
 
+@push('modals')
 {{-- Modal de contraseña para eliminar cierre (Liquid Glass) --}}
 <div id="pwd-cierre-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
     <div class="ts-modal-card scale-95 opacity-0" id="pwd-cierre-card">
@@ -27,6 +28,114 @@
     </div>
 </div>
 
+{{-- Modal Calculadora de Billetes --}}
+<div id="calc-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+    <div class="ts-modal-card scale-95 opacity-0 max-w-md w-full" id="calc-card">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🧮 Calculadora de Dinero</h3>
+                <button type="button" onclick="closeCalc()" class="text-gray-400 hover:text-red-500 transition-colors text-xl leading-none">✕</button>
+            </div>
+            <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 100.000 x</label>
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="100000" placeholder="Cantidad">
+                </div>
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 50.000 x</label>
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="50000" placeholder="Cantidad">
+                </div>
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 20.000 x</label>
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="20000" placeholder="Cantidad">
+                </div>
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 10.000 x</label>
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="10000" placeholder="Cantidad">
+                </div>
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 5.000 x</label>
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="5000" placeholder="Cantidad">
+                </div>
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 2.000 x</label>
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="2000" placeholder="Cantidad">
+                </div>
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 1.000 x</label>
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="1000" placeholder="Cantidad">
+                </div>
+                <hr class="border-gray-200/50 dark:border-white/10 my-2">
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Monedas (Valor Total)</label>
+                    <input type="number" min="0" class="glass-input calc-input-monedas font-bold" placeholder="Suma de monedas">
+                </div>
+            </div>
+            
+            <div class="mt-4 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700/30 text-center">
+                <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1">Total Contado</p>
+                <p class="text-3xl font-black text-slate-800 dark:text-white" id="calc-total">$0</p>
+            </div>
+            <div class="mt-4 flex gap-3">
+                <button type="button" onclick="resetCalc()" class="btn-cancel flex-1 justify-center font-bold" style="padding: 9px 18px;">Limpiar</button>
+                <button type="button" onclick="closeCalc()" class="btn-primary flex-1 justify-center font-bold" style="padding: 9px 18px;">Hecho</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Lógica Calculadora
+    function openCalc() {
+        const modal = document.getElementById('calc-modal');
+        const card = document.getElementById('calc-card');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            card.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+    }
+
+    function closeCalc() {
+        const modal = document.getElementById('calc-modal');
+        const card = document.getElementById('calc-card');
+        modal.classList.add('opacity-0');
+        card.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    function calculateTotal() {
+        let total = 0;
+        document.querySelectorAll('.calc-input').forEach(input => {
+            let val = parseInt(input.value) || 0;
+            let mult = parseInt(input.dataset.val);
+            total += (val * mult);
+        });
+        
+        const monedas = document.querySelector('.calc-input-monedas');
+        if (monedas && monedas.value) {
+            total += parseInt(monedas.value) || 0;
+        }
+
+        document.getElementById('calc-total').innerText = '$' + new Intl.NumberFormat('es-CO').format(total);
+    }
+
+    function resetCalc() {
+        document.querySelectorAll('.calc-input, .calc-input-monedas').forEach(input => input.value = '');
+        calculateTotal();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.calc-input, .calc-input-monedas').forEach(input => {
+            input.addEventListener('input', calculateTotal);
+        });
+    });
+</script>
+
+@endpush
+
 <div class="space-y-4">
 
     {{-- Preview del día actual (si no cerrado) --}}
@@ -41,7 +150,10 @@
                 @csrf
                 <input type="hidden" name="fecha" value="{{ $hoy }}">
                 <div class="flex flex-wrap gap-2 items-center">
-                    <button type="submit" class="btn-primary text-sm px-5 py-2">
+                    <button type="button" onclick="openCalc()" class="btn-clean text-sm px-4 py-2 font-bold flex items-center gap-2">
+                        <span>🧮</span> Calcular Dinero
+                    </button>
+                    <button type="submit" class="btn-primary text-sm px-5 py-2 font-bold">
                         🔒 Cerrar Día
                     </button>
                 </div>
@@ -175,7 +287,13 @@
             modal.classList.add('hidden');
         }, 300);
     }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCierrePwd(); });
+    document.addEventListener('keydown', e => { 
+        if (e.key === 'Escape') {
+            closeCierrePwd(); 
+            closeCalc();
+        }
+    });
+
 </script>
 @endsection
 

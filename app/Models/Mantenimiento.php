@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mantenimiento extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Auditable;
     protected $fillable = [
         'id_orden',
         'fecha_entrada',

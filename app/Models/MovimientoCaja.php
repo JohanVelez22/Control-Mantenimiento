@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class MovimientoCaja extends Model
 {
+    use \App\Traits\Auditable;
+
     protected $fillable = [
         'empresa',
         'persona',

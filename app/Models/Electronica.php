@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class Electronica extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Auditable;
 
     protected $fillable = [
         'id_orden',
