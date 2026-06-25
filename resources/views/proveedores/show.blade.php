@@ -4,14 +4,14 @@
 
  {{-- Header --}}
  <div class="glass-card p-6 md:p-8">
- <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 w-full">
- <div class="flex items-center gap-3">
- <a href="{{ route('proveedores.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+ <div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 w-full">
+ <div class="flex items-start gap-4">
+ <a href="{{ route('proveedores.index') }}" class="btn-ghost px-3 py-2 text-xl mt-1 shrink-0" title="Volver">⬅️</a>
  <div>
- <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
- <span class="text-indigo-500">{{ $proveedor->tipo_entidad === 'empresa' ? '🏢' : '👤' }}</span>
- {{ $proveedor->nombre_razon_social }}
- <span class="pill {{ $proveedor->tipo_entidad === 'empresa' ? 'pill-done' : 'pill-pending' }} text-sm py-1 px-3 ml-2">
+ <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight">
+ <span class="text-indigo-500 mr-1 align-middle inline-block">{{ $proveedor->tipo_entidad === 'empresa' ? '🏢' : '👤' }}</span>
+ <span class="align-middle">{{ $proveedor->nombre_razon_social }}</span>
+ <span class="pill {{ $proveedor->tipo_entidad === 'empresa' ? 'pill-done' : 'pill-pending' }} text-xs py-1 px-2 ml-2 align-middle inline-flex whitespace-nowrap">
  {{ $proveedor->tipo_label }}
  </span>
  </h2>
@@ -19,7 +19,7 @@
  </div>
  
  @if(!auth()->user()->isInvitado())
- <div class="flex items-center gap-3 shrink-0">
+ <div class="flex items-center gap-3 shrink-0 mt-1 md:mt-2">
  <a href="{{ route('proveedores.edit', $proveedor) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
  ✏️ Editar
  </a>
