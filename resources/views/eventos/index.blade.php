@@ -17,15 +17,15 @@
 
     {{-- Filtros (Liquid Glass) --}}
     <div class="glass-card p-5">
-        <form action="{{ route('eventos.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-            <div>
-                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Buscar</label>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Módulo, observación..." class="glass-input">
+        <form action="{{ route('eventos.index') }}" method="GET" class="flex flex-wrap items-center gap-4">
+            <div class="flex items-center gap-2">
+                <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Buscar:</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Módulo, observación..." class="glass-input w-48 text-sm">
             </div>
             
-            <div>
-                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Acción</label>
-                <select name="accion" class="glass-input no-search">
+            <div class="flex items-center gap-2">
+                <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Acción:</label>
+                <select name="accion" class="glass-input no-search w-36 text-sm">
                     <option value="todas" {{ request('accion', 'todas') == 'todas' ? 'selected' : '' }}>Ver Todas</option>
                     <option value="login" {{ request('accion') == 'login' ? 'selected' : '' }}>Login</option>
                     <option value="logout" {{ request('accion') == 'logout' ? 'selected' : '' }}>Logout</option>
@@ -36,9 +36,9 @@
                 </select>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Usuario</label>
-                <select name="user_id" class="glass-input">
+            <div class="flex items-center gap-2">
+                <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Usuario:</label>
+                <select name="user_id" class="glass-input w-40 text-sm">
                     <option value="todos" {{ request('user_id', 'todos') == 'todos' ? 'selected' : '' }}>Ver Todos</option>
                     @foreach($users as $user)
                         <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
@@ -48,22 +48,21 @@
                 </select>
             </div>
 
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Desde</label>
-                    <input type="date" name="fecha_desde" value="{{ $fechaDesde }}" class="glass-input">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Hasta</label>
-                    <input type="date" name="fecha_hasta" value="{{ $fechaHasta }}" class="glass-input">
-                </div>
+            <div class="flex items-center gap-2">
+                <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Desde:</label>
+                <input type="date" name="fecha_desde" value="{{ $fechaDesde }}" class="glass-input w-36 text-sm">
+            </div>
+
+            <div class="flex items-center gap-2">
+                <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Hasta:</label>
+                <input type="date" name="fecha_hasta" value="{{ $fechaHasta }}" class="glass-input w-36 text-sm">
             </div>
 
             <div class="flex gap-2">
-                <button type="submit" class="btn-primary px-4 py-2.5 font-bold">
+                <button type="submit" class="btn-primary px-4 py-2 font-bold text-sm">
                     🔍 Filtrar
                 </button>
-                <a href="{{ route('eventos.index') }}" class="btn-clean px-4 py-2.5 flex items-center justify-center font-bold text-sm">
+                <a href="{{ route('eventos.index') }}" class="btn-clean px-4 py-2 flex items-center justify-center font-bold text-sm">
                     🧹 Limpiar
                 </a>
             </div>
