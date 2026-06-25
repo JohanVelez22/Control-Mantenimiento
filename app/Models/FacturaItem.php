@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FacturaItem extends Model
 {
+    use \App\Traits\Auditable;
+
     protected $fillable = [
         'factura_id',
         'stock_id',

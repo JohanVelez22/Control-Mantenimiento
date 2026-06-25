@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Stock extends Model
 {
+    use \App\Traits\Auditable;
+
     protected $fillable = [
         'codigo',
         'producto',

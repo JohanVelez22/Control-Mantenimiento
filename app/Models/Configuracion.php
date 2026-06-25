@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Configuracion extends Model
 {
+    use \App\Traits\Auditable;
+
     protected $table = 'configuraciones';
 
     protected $fillable = [

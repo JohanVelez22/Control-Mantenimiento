@@ -1,6 +1,64 @@
 @extends('layouts.app')
 
 @section('content')
+
+@push('modals')
+{{-- Modal de contraseña para eliminar (Liquid Glass) --}}
+<div id="pwd-delete-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-50">
+    <div class="ts-modal-card scale-95 opacity-0" id="pwd-delete-card">
+        <div class="p-6">
+            <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
+                🔓
+            </div>
+            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Concepto</h3>
+            <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+                Ingresa tu contraseña o la del administrador para confirmar la eliminación.
+            </p>
+            <form id="delete-form" method="POST" class="space-y-4">
+                @csrf @method('DELETE')
+                <div>
+                    <input type="password" name="password_confirm" id="pwd-delete-input" required placeholder="Contraseña..." class="glass-input text-center tracking-widest text-lg">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeDeletePwd()" class="flex-1 btn-ghost justify-center">Cancelar</button>
+                    <button type="submit" class="flex-1 btn-danger justify-center font-bold">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openDeletePwd(url) {
+        const modal = document.getElementById('pwd-delete-modal');
+        const card = document.getElementById('pwd-delete-card');
+        document.getElementById('delete-form').action = url;
+        document.getElementById('pwd-delete-input').value = '';
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            card.classList.remove('scale-95', 'opacity-0');
+            document.getElementById('pwd-delete-input').focus();
+        }, 10);
+    }
+    
+    function closeDeletePwd() {
+        const modal = document.getElementById('pwd-delete-modal');
+        const card = document.getElementById('pwd-delete-card');
+        modal.classList.add('opacity-0');
+        card.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+    document.addEventListener('keydown', e => { 
+        if (e.key === 'Escape') {
+            closeDeletePwd(); 
+        }
+    });
+</script>
+@endpush
+
 <div class="max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-8">
         <div class="flex items-center gap-3">
@@ -41,10 +99,7 @@
                             <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-1.5 px-3 text-sm">
                             <button type="submit" class="btn-ghost px-3 py-1.5 text-xs text-blue-600 border-blue-500/20 hover:bg-blue-500/10">💾 Guardar</button>
                         </form>
-                        <form action="{{ route('conceptos.destroy', $c->id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este concepto?');">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-danger px-3 py-1.5 text-xs">🗑️</button>
-                        </form>
+                        <button type="button" onclick="openDeletePwd('{{ route('conceptos.destroy', $c->id) }}')" class="btn-danger px-3 py-1.5 text-xs">🗑️</button>
                     </li>
                     @empty
                     <li class="p-4 text-center text-gray-500">No hay conceptos registrados.</li>

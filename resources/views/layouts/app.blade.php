@@ -361,7 +361,7 @@
                     <span class="nav-icon">🛠️</span>
                     <span class="nav-label">Técnicos</span>
                 </a>
-                <a href="{{ route('stocks.index') }}" class="nav-item {{ request()->routeIs('stocks.*') ? 'active' : '' }}" title="Control Stock">
+                <a href="{{ route('stocks.index') }}" class="nav-item {{ request()->routeIs('stocks.*') && !request()->routeIs('stocks.reportes') ? 'active' : '' }}" title="Control Stock">
                     <span class="nav-icon">📦</span>
                     <span class="nav-label">Control Stock</span>
                 </a>
@@ -385,7 +385,7 @@
                     <span class="nav-icon">🔒</span>
                     <span class="nav-label">Arqueo / Cierre</span>
                 </a>
-                <a href="{{ route('reportes.financiero.diario') }}" class="nav-item {{ request()->routeIs('reportes.*') || request()->routeIs('mantenimientos.reportes') || request()->routeIs('electronicas.reportes') ? 'active' : '' }}" title="Info Operativos">
+                <a href="{{ route('reportes.financiero.diario') }}" class="nav-item {{ request()->routeIs('reportes.*') || request()->routeIs('mantenimientos.reportes') || request()->routeIs('electronicas.reportes') || request()->routeIs('stocks.reportes') ? 'active' : '' }}" title="Info Operativos">
                     <span class="nav-icon">📈</span>
                     <span class="nav-label">Info Operativos</span>
                 </a>

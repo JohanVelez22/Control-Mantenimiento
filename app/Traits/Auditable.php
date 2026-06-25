@@ -36,6 +36,9 @@ trait Auditable
                     } elseif (isset($changedNuevos['estado']) && $changedNuevos['estado'] === 'anulada') {
                         $accion = 'anulado';
                         $mensaje = "Anuló un registro de " . class_basename($model);
+                    } elseif (isset($changedNuevos['active']) && $changedNuevos['active'] == 0 && isset($changedViejos['active']) && $changedViejos['active'] == 1) {
+                        $accion = 'anulado';
+                        $mensaje = "Inactivó (anuló) un registro de " . class_basename($model);
                     }
 
                     Evento::registrar($accion, $model, $changedViejos, $changedNuevos, $mensaje);

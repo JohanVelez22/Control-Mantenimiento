@@ -1,6 +1,64 @@
 @extends('layouts.app')
 
 @section('content')
+
+@push('modals')
+{{-- Modal de contraseña para eliminar (Liquid Glass) --}}
+<div id="pwd-delete-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-50">
+    <div class="ts-modal-card scale-95 opacity-0" id="pwd-delete-card">
+        <div class="p-6">
+            <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
+                🔓
+            </div>
+            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Registro</h3>
+            <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+                Ingresa tu contraseña o la del administrador para confirmar la eliminación.
+            </p>
+            <form id="delete-form" method="POST" class="space-y-4">
+                @csrf @method('DELETE')
+                <div>
+                    <input type="password" name="password_confirm" id="pwd-delete-input" required placeholder="Contraseña..." class="glass-input text-center tracking-widest text-lg">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeDeletePwd()" class="flex-1 btn-ghost justify-center">Cancelar</button>
+                    <button type="submit" class="flex-1 btn-danger justify-center font-bold">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openDeletePwd(url) {
+        const modal = document.getElementById('pwd-delete-modal');
+        const card = document.getElementById('pwd-delete-card');
+        document.getElementById('delete-form').action = url;
+        document.getElementById('pwd-delete-input').value = '';
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            card.classList.remove('scale-95', 'opacity-0');
+            document.getElementById('pwd-delete-input').focus();
+        }, 10);
+    }
+    
+    function closeDeletePwd() {
+        const modal = document.getElementById('pwd-delete-modal');
+        const card = document.getElementById('pwd-delete-card');
+        modal.classList.add('opacity-0');
+        card.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+    document.addEventListener('keydown', e => { 
+        if (e.key === 'Escape') {
+            closeDeletePwd(); 
+        }
+    });
+</script>
+@endpush
+
 <div class="max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-8">
         <div class="flex items-center gap-3">
@@ -21,15 +79,15 @@
                 <h3 class="font-bold text-slate-800 dark:text-white mb-4">Nueva Clasificación</h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="field-label">Nombre</label>
-                        <input type="text" name="nombre" required class="glass-input" placeholder="Ej: Pantallas, Accesorios...">
+                        <label class="field-label">Tipo de Clasificación</label>
+                        <select name="tipo" class="glass-input no-search font-bold" required>
+                            <option value="categoria">🗂️ Categoría Principal</option>
+                            <option value="subcategoria">📂 Subcategoría</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="field-label">Tipo</label>
-                        <select name="tipo" class="glass-input no-search" required>
-                            <option value="categoria">Categoría Principal</option>
-                            <option value="subcategoria">Subcategoría</option>
-                        </select>
+                        <label class="field-label">Nombre</label>
+                        <input type="text" name="nombre" required class="glass-input" placeholder="Ej: Pantallas, Accesorios...">
                     </div>
                     <button type="submit" class="btn-primary w-full justify-center">Crear Clasificación</button>
                 </div>
@@ -45,17 +103,16 @@
                     <li class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-gray-200/50 dark:border-white/5 gap-2">
                         <form action="{{ route('stocks.categorias.update', $c->id) }}" method="POST" class="flex-1 w-full flex flex-wrap sm:flex-nowrap gap-2 items-center">
                             @csrf @method('PUT')
-                            <select name="tipo" class="glass-input py-1.5 px-2 text-xs w-auto no-search">
-                                <option value="categoria" {{ $c->tipo == 'categoria' ? 'selected' : '' }}>Categoría</option>
-                                <option value="subcategoria" {{ $c->tipo == 'subcategoria' ? 'selected' : '' }}>Subcat</option>
+                            <select name="tipo" class="glass-input py-1.5 px-2 text-xs w-auto no-search font-bold {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
+                                <option value="categoria" {{ $c->tipo == 'categoria' ? 'selected' : '' }}>🗂️ Categoría</option>
+                                <option value="subcategoria" {{ $c->tipo == 'subcategoria' ? 'selected' : '' }}>📂 Subcat</option>
                             </select>
                             <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-1.5 px-3 text-sm min-w-[120px]">
                             <button type="submit" class="btn-ghost px-3 py-1.5 text-xs text-blue-600 border-blue-500/20 hover:bg-blue-500/10">💾</button>
                         </form>
-                        <form action="{{ route('stocks.categorias.destroy', $c->id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar esta clasificación?');" class="ml-auto sm:ml-0">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-danger px-3 py-1.5 text-xs">🗑️</button>
-                        </form>
+                        <div class="ml-auto sm:ml-0">
+                            <button type="button" onclick="openDeletePwd('{{ route('stocks.categorias.destroy', $c->id) }}')" class="btn-danger px-3 py-1.5 text-xs">🗑️</button>
+                        </div>
                     </li>
                     @empty
                     <li class="p-4 text-center text-gray-500">No hay clasificaciones registradas.</li>

@@ -27,8 +27,12 @@ class ConceptoCajaController extends Controller
         return redirect()->back()->with('success', 'Concepto actualizado correctamente.');
     }
 
-    public function destroy(ConceptoCaja $concepto)
+    public function destroy(Request $request, ConceptoCaja $concepto)
     {
+        if (!\Illuminate\Support\Facades\Hash::check($request->password_confirm, auth()->user()->password) && !\Illuminate\Support\Facades\Hash::check($request->password_confirm, \App\Models\User::where('role', 'admin')->first()->password ?? '')) {
+            return redirect()->back()->with('error', 'Contraseña incorrecta.');
+        }
+
         if ($concepto->movimientos()->exists()) {
             return redirect()->back()->with('error', 'No se puede eliminar el concepto porque tiene movimientos de caja asociados.');
         }
