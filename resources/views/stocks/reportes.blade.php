@@ -29,7 +29,7 @@
     </div>
 
     <!-- Formulario de Filtros -->
-    <form id="filtros-stock" action="{{ route('stocks.reportes') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4 items-end mb-8 p-5 glass-card no-print">
+    <form id="filtros-stock" action="{{ route('stocks.reportes') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4 items-end mb-8 p-5 glass-card no-print relative z-50">
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Proveedor</label>
             <select name="proveedor_id" class="glass-input">

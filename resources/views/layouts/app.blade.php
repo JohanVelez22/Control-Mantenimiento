@@ -1185,7 +1185,6 @@
                 let tsConfig = {
                     create: false,
                     maxOptions: 100,
-                    dropdownParent: 'body',
                     placeholder: defaultPlaceholder,
                     highlight: false,
                     plugins: isNoSearch ? [] : ['clear_button'],
