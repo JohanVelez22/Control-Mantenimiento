@@ -223,11 +223,25 @@
             if(Object.keys(obj).length === 0) return 'Sin cambios relevantes';
             
             let output = '';
+            const monetaryKeys = ['costo', 'monto', 'precio', 'total', 'abono', 'saldo', 'valor'];
+            
             for(let key in obj) {
                 // Ignore tokens or long hash strings if any
                 if(key === 'remember_token' || key === 'password') continue;
+                
+                let val = obj[key];
+                
+                // Formatear valores monetarios (sin decimales, con puntos)
+                const isMonetary = monetaryKeys.some(mk => key.toLowerCase().includes(mk));
+                if (isMonetary && val !== null && val !== '') {
+                    let num = parseFloat(val);
+                    if (!isNaN(num)) {
+                        val = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(num);
+                    }
+                }
+                
                 output += `<span class="font-bold text-gray-500 uppercase text-[10px] tracking-wider">${key}</span>\n`;
-                output += `${obj[key]}\n\n`;
+                output += `${val}\n\n`;
             }
             return output || 'Ninguno';
         } catch (e) {
