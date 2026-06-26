@@ -176,4 +176,35 @@ class StockController extends Controller
 
         return view('stocks.reportes', compact('stocks', 'categorias', 'subcategorias', 'proveedores'));
     }
+
+    public function show(Stock $stock)
+    {
+        $historial = \App\Models\FacturaItem::with('factura.facturable', 'factura.user')
+            ->where('stock_id', $stock->id)
+            ->get()
+            ->sortByDesc(function($item) {
+                return $item->factura->fecha ?? $item->created_at;
+            });
+            
+        return view('stocks.show', compact('stock', 'historial'));
+    }
+
+    public function print(Stock $stock)
+    {
+        return view('stocks.print', compact('stock'));
+    }
+
+    public function anular(Stock $stock)
+    {
+        if (auth()->user()->role === 'invitado') {
+            return redirect()->route('stocks.index')->with('error', 'No tienes permisos para realizar esta acción.');
+        }
+
+        // Toggle the active status
+        $stock->active = !$stock->active;
+        $stock->save();
+
+        $action = $stock->active ? 'reactivado' : 'desactivado (anulado)';
+        return redirect()->back()->with('success', "El producto ha sido {$action} exitosamente.");
+    }
 }

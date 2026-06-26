@@ -64,6 +64,8 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::resource('tecnicos', TecnicoController::class)->except(['destroy']);
     Route::resource('stocks/categorias', App\Http\Controllers\CategoriaStockController::class)->names('stocks.categorias')->except(['create', 'show', 'edit']);
     Route::resource('stocks', App\Http\Controllers\StockController::class)->except(['destroy']);
+    Route::get('stocks/{stock}/print', [App\Http\Controllers\StockController::class, 'print'])->name('stocks.print');
+    Route::post('stocks/{stock}/anular', [App\Http\Controllers\StockController::class, 'anular'])->name('stocks.anular');
     Route::resource('electronicas',App\Http\Controllers\ElectronicaController::class)->except(['destroy']);
     Route::get('electronicas/{electronica}/factura', [App\Http\Controllers\ElectronicaController::class, 'factura'])->name('electronicas.factura');
     Route::post('electronicas/{electronica}/anular', [App\Http\Controllers\ElectronicaController::class, 'anular'])->name('electronicas.anular');
