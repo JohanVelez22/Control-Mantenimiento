@@ -340,7 +340,7 @@
             </div>
 
             <!-- Navegación -->
-            <nav class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide py-4 px-2 space-y-1">
+            <nav class="flex-1 flex flex-col justify-between overflow-y-auto overflow-x-hidden scrollbar-hide py-4 px-2 gap-1">
                 <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}" title="Dashboard">
                     <span class="nav-icon">📊</span>
                     <span class="nav-label">Dashboard</span>
