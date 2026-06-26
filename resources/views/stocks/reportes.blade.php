@@ -166,7 +166,7 @@
                                     {{ $stock->getRelationValue('proveedor')->nombre_razon_social ?? 'Proveedor ' . $stock->proveedor_id }}
                                 </span>
                                 @if(optional($stock->getRelationValue('proveedor'))->identificacion)
-                                <span class="text-[10px] text-gray-500 tracking-wider uppercase mt-0.5">
+                                <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
                                     {{ $stock->getRelationValue('proveedor')->identificacion }}
                                 </span>
                                 @endif
