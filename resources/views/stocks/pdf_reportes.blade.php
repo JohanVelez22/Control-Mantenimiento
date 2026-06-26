@@ -246,9 +246,9 @@
                     @endif
                 </td>
                 <td class="col-center">
-                    <div>{{ $stock->proveedor_id ? ($stock->proveedor->nombre_razon_social ?? 'N/A') : ($stock->getRawOriginal('proveedor') ?: 'N/A') }}</div>
-                    @if(optional($stock->proveedor)->identificacion)
-                    <div class="sub-text">{{ $stock->proveedor->identificacion }}</div>
+                    <div>{{ $stock->proveedor_id ? ($stock->getRelationValue('proveedor')->nombre_razon_social ?? 'N/A') : ($stock->getRawOriginal('proveedor') ?: 'N/A') }}</div>
+                    @if(optional($stock->getRelationValue('proveedor'))->identificacion)
+                    <div class="sub-text">{{ $stock->getRelationValue('proveedor')->identificacion }}</div>
                     @endif
                 </td>
                 <td class="col-center">{{ $stock->cantidad }}</td>

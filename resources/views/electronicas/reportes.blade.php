@@ -165,7 +165,7 @@
   <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
   {{ $m->equipo->cliente->nombre ?? 'N/A' }}
   </span>
-  <span class="font-bold text-[14px] text-gray-400 italic">
+  <span class="text-[10px] text-gray-500 tracking-wider uppercase mt-0.5">
   {{ $m->equipo->cliente->identificacion ?? '-' }}
   </span>
   </a>
@@ -174,8 +174,8 @@
   <td class="{{ $dim }}">
   <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
   <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{{ $m->equipo->nombre ?? 'N/A' }}</span>
-  <span class="font-bold text-[14px] text-gray-400 italic">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
-  <span class="not-italic text-gray-900 dark:text-gray-100 font-medium text-[13.5px]">
+  <span class="text-[10px] text-gray-500 tracking-wider uppercase mt-0.5">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
+  <span class="text-[10px] text-gray-500 tracking-wider uppercase mt-0.5">
   {{ strtoupper($m->equipo->serie ?? '') }}
   </span></span>
   </a>

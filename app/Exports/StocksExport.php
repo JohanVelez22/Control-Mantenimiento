@@ -114,7 +114,7 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             $s->producto,
             $s->categoria ?? '-',
             $s->subcategoria ?? '-',
-            $s->proveedor_id ? ($s->proveedor->nombre_razon_social ?? 'N/A') : ($s->getRawOriginal('proveedor') ?: 'N/A'),
+            $s->proveedor_id ? ($s->getRelationValue('proveedor')->nombre_razon_social ?? 'N/A') : ($s->getRawOriginal('proveedor') ?: 'N/A'),
             $s->cantidad,
             $s->precio_compra,
             $s->utilidad,
