@@ -164,7 +164,7 @@
  </td>
  <td class="{{ $dim }}">
  <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de clientes">
- <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">
+ <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
  {{ $m->equipo->cliente->nombre ?? 'N/A' }}
  </span>
  <span class="font-bold text-[14px] text-gray-400 italic">
@@ -176,7 +176,7 @@
  <!-- Columna Equipo: Nombre arriba, Marca/Modelo abajo -->
  <td class="{{ $dim }}">
  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
- <span class="text-gray-900 dark:text-gray-100 font-bold whitespace-nowrap group-hover:underline">{{ $m->equipo->nombre ?? 'N/A' }}</span>
+ <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">{{ $m->equipo->nombre ?? 'N/A' }}</span>
  <span class="font-bold text-[14px] text-gray-400 italic">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
  <span class="not-italic text-gray-900 dark:text-gray-100 font-medium text-[13.5px]">
  {{ strtoupper($m->equipo->serie ?? '') }}
