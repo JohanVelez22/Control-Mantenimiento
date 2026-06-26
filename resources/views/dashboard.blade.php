@@ -200,7 +200,7 @@
  
  <td class="text-center {{ $dim }}">
  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
- <span class="font-bold text-slate-800 dark:text-white whitespace-nowrap group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
+ <span class="font-bold text-slate-800 dark:text-white whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
  {{ $m->equipo->nombre ?? '-' }}
  </span>
  <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">

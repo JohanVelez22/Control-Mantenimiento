@@ -158,13 +158,13 @@
  @endphp
  <tr>
  <td class="text-center font-bold whitespace-nowrap {{ $dim }}">
- <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors no-print-link">
+ <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors no-print-link">
  {{ $m->id_orden }}
  </a>
  </td>
  <td class="{{ $dim }}">
  <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de clientes">
- <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
+ <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
  {{ $m->equipo->cliente->nombre ?? 'N/A' }}
  </span>
  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
@@ -176,7 +176,7 @@
  <!-- Columna Equipo: Nombre arriba, Marca/Modelo abajo -->
  <td class="{{ $dim }}">
  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
- <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">{{ $m->equipo->nombre ?? 'N/A' }}</span>
+ <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{{ $m->equipo->nombre ?? 'N/A' }}</span>
  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
  {{ strtoupper($m->equipo->serie ?? '') }}
