@@ -76,7 +76,6 @@ class TecnicoController extends Controller
             'email' => 'nullable|email|max:100',
             'direccion' => 'nullable|string|max:500',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'active' => 'boolean',
         ]);
 
         if ($request->hasFile('photo')) {
@@ -86,9 +85,21 @@ class TecnicoController extends Controller
             $validated['photo'] = $request->file('photo')->store('tecnicos', 'public');
         }
 
-        $validated['active'] = $request->boolean('active');
         $tecnico->update($validated);
 
         return redirect()->route('tecnicos.index')->with('success', 'Técnico actualizado correctamente.');
+    }
+
+    public function anular(Tecnico $tecnico)
+    {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('tecnicos.index')->with('error', 'No tienes permisos para realizar esta acción.');
+        }
+
+        $tecnico->active = !$tecnico->active;
+        $tecnico->save();
+
+        $action = $tecnico->active ? 'reactivado' : 'desactivado (anulado)';
+        return redirect()->back()->with('success', "El técnico ha sido {$action} exitosamente.");
     }
 }

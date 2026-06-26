@@ -71,12 +71,23 @@ class ClienteController extends Controller
             'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
             'email' => 'nullable|email|max:100',
             'direccion' => 'nullable|string|max:500',
-            'active' => 'boolean',
         ]);
 
-        $validated['active'] = $request->boolean('active');
         $cliente->update($validated);
 
         return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
+    }
+
+    public function anular(Cliente $cliente)
+    {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('clientes.index')->with('error', 'No tienes permisos para realizar esta acción.');
+        }
+
+        $cliente->active = !$cliente->active;
+        $cliente->save();
+
+        $action = $cliente->active ? 'reactivado' : 'desactivado (anulado)';
+        return redirect()->back()->with('success', "El cliente ha sido {$action} exitosamente.");
     }
 }

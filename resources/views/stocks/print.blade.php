@@ -56,8 +56,8 @@
             <div class="row"><span class="label">Precio Venta Público:</span> <span class="value text-right" style="color: #065f46; font-size: 14px;">${{ number_format($stock->precio_venta, 0, ',', '.') }}</span></div>
             
             <h3 style="margin-top: 20px;">Proveedor Predeterminado</h3>
-            <div class="row"><span class="label">Razón Social:</span> <span class="value">{{ $stock->proveedor->nombre_razon_social ?? '—' }}</span></div>
-            <div class="row"><span class="label">Identificación (NIT):</span> <span class="value">{{ $stock->proveedor->identificacion ?? 'N/A' }}</span></div>
+            <div class="row"><span class="label">Razón Social:</span> <span class="value">{{ $proveedor->nombre_razon_social ?? '—' }}</span></div>
+            <div class="row"><span class="label">Identificación (NIT):</span> <span class="value">{{ $proveedor->identificacion ?? 'N/A' }}</span></div>
         </div>
     </div>
 

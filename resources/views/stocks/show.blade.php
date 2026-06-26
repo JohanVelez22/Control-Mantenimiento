@@ -57,9 +57,9 @@
                 <div>
                     <p class="text-[10px] font-black text-indigo-500 tracking-widest uppercase mb-1">Proveedor Predeterminado</p>
                     <p class="font-black text-xl text-slate-800 dark:text-white leading-tight">
-                        {{ $stock->proveedor->nombre_razon_social ?? '—' }}
+                        {{ $proveedor->nombre_razon_social ?? '—' }}
                     </p>
-                    <p class="text-xs font-semibold text-gray-500 mt-1">ID: {{ $stock->proveedor->identificacion ?? 'N/A' }}</p>
+                    <p class="text-xs font-semibold text-gray-500 mt-1">ID: {{ $proveedor->identificacion ?? 'N/A' }}</p>
                 </div>
             </div>
             
@@ -67,7 +67,7 @@
                 <div>
                     <p class="text-[10px] font-black text-blue-500 tracking-widest uppercase mb-1">Existencia Actual</p>
                     <p class="font-black text-4xl text-slate-800 dark:text-white leading-tight">
-                        {{ $stock->cantidad }} <span class="text-sm text-gray-500 font-bold">unidades</span>
+                        {{ $stock->cantidad }} <span class="text-sm text-gray-500 font-bold">Unidades</span>
                     </p>
                 </div>
                 <div class="text-5xl opacity-80 drop-shadow-md">📦</div>

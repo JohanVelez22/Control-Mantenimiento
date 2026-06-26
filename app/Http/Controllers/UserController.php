@@ -81,10 +81,9 @@ class UserController extends Controller
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // El administrador puede cambiar roles y estados directamente
+        // El administrador puede cambiar roles
         if (auth()->user()->role === 'admin') {
             $usuario->role = $request->role;
-            $usuario->active = $request->boolean('active');
         }
 
         if ($request->filled('password') || $request->filled('password_confirmation')) {
@@ -110,15 +109,19 @@ class UserController extends Controller
     }
 
     
-    public function toggle(User $usuario)
+    public function anular(User $usuario)
     {
         if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
             return back()->with('error', 'No tienes permisos para modificar el estado.');
         }
 
-        $usuario->update(['active' => !$usuario->active]);
-        $estado = $usuario->active ? 'activado' : 'desactivado';
+        if ($usuario->id === auth()->id()) {
+            return back()->with('error', 'No puedes anular tu propio usuario.');
+        }
 
-        return back()->with('success', "User $estado correctamente.");
+        $usuario->update(['active' => !$usuario->active]);
+        $action = $usuario->active ? 'reactivado' : 'desactivado (anulado)';
+
+        return back()->with('success', "El usuario ha sido {$action} exitosamente.");
     }
 }

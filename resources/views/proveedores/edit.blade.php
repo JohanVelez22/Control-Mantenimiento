@@ -13,18 +13,7 @@
  @csrf @method('PUT')
  @include('proveedores._form')
 
- @if(auth()->user()->isAdmin())
- <div>
- <label class="field-label flex items-center gap-2">⚙️ Estado del Proveedor</label>
- <select name="active" class="glass-input no-search mt-1">
- <option value="1" {{ old('active', $proveedor->active) ? 'selected' : '' }}>✅ Activo</option>
- <option value="0" {{ !old('active', $proveedor->active) ? 'selected' : '' }}>🚫 Inactivo (deshabilitado)</option>
- </select>
- 
- </div>
- @else
- <input type="hidden" name="active" value="{{ $proveedor->active ? 1 : 0 }}">
- @endif
+
  
  <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
  <a href="{{ route('proveedores.index') }}" class="btn-cancel">

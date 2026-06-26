@@ -92,13 +92,11 @@ class StockController extends Controller
             'utilidad' => 'required|numeric|min:0|max:100',
             'precio_venta' => 'nullable|numeric|min:0|decimal:0,2',
             'precio_tecnico' => 'nullable|numeric|min:0|decimal:0,2',
-            'active' => 'boolean',
         ]);
 
         if (!isset($validated['precio_venta'])) $validated['precio_venta'] = 0;
         if (!isset($validated['precio_tecnico'])) $validated['precio_tecnico'] = 0;
 
-        $validated['active'] = $request->boolean('active');
         $stock->update($validated);
 
         return redirect()->route('stocks.index')->with('success', 'Producto actualizado exitosamente.');
@@ -186,12 +184,16 @@ class StockController extends Controller
                 return $item->factura->fecha ?? $item->created_at;
             });
             
-        return view('stocks.show', compact('stock', 'historial'));
+        // Explicitly get the proveedor relationship to avoid the 'proveedor' column masking it
+        $proveedor = $stock->proveedor()->first();
+            
+        return view('stocks.show', compact('stock', 'historial', 'proveedor'));
     }
 
     public function print(Stock $stock)
     {
-        return view('stocks.print', compact('stock'));
+        $proveedor = $stock->proveedor()->first();
+        return view('stocks.print', compact('stock', 'proveedor'));
     }
 
     public function anular(Stock $stock)

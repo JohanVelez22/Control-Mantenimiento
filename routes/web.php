@@ -60,8 +60,13 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
 
     // ─── Módulos generales ────────────────────────────────────────────
     Route::resource('clientes', ClienteController::class)->except(['destroy']);
+    Route::post('clientes/{cliente}/anular', [ClienteController::class, 'anular'])->name('clientes.anular');
+    
     Route::resource('equipos', EquipoController::class)->except(['destroy']);
+    Route::post('equipos/{equipo}/anular', [EquipoController::class, 'anular'])->name('equipos.anular');
+    
     Route::resource('tecnicos', TecnicoController::class)->except(['destroy']);
+    Route::post('tecnicos/{tecnico}/anular', [TecnicoController::class, 'anular'])->name('tecnicos.anular');
     Route::resource('stocks/categorias', App\Http\Controllers\CategoriaStockController::class)->names('stocks.categorias')->except(['create', 'show', 'edit']);
     Route::resource('stocks', App\Http\Controllers\StockController::class)->except(['destroy']);
     Route::get('stocks/{stock}/print', [App\Http\Controllers\StockController::class, 'print'])->name('stocks.print');
@@ -73,6 +78,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
 
     // ─── Proveedores ──────────────────────────────────────────────────
     Route::resource('proveedores', App\Http\Controllers\ProveedorController::class)->parameters(['proveedores' => 'proveedor'])->except(['destroy']);
+    Route::post('proveedores/{proveedor}/anular', [App\Http\Controllers\ProveedorController::class, 'anular'])->name('proveedores.anular');
 
     // ─── Inventario: Compras y Ventas ─────────────────────────────────
     Route::prefix('inventario')->name('inventario.')->group(function () {
@@ -129,6 +135,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::middleware(['role:admin,tecnico'])->group(function () {
         Route::resource('usuarios', UserController::class)->except(['destroy']);
         Route::post('usuarios/{usuario}/change-password', [UserController::class, 'changePassword'])->name('usuarios.change-password');
+        Route::post('usuarios/{usuario}/anular', [UserController::class, 'anular'])->name('usuarios.anular');
     });
 
     // ─── Configuración de Empresa ──────────────────────────────────────

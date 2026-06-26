@@ -67,6 +67,12 @@
  👁️ Lectura
  </span>
  @endif
+ 
+ @if(auth()->user()->isAdmin() && auth()->id() !== $u->id)
+ <button type="button" onclick="openAnularModal('{{ route('usuarios.anular', $u->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs {{ $u->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $u->active ? 'Anular Usuario' : 'Reactivar Usuario' }}">
+ {{ $u->active ? '🚫' : '✅' }}
+ </button>
+ @endif
  </div>
  </td>
  </tr>

@@ -56,18 +56,7 @@
  @error('photo') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
  </div>
 
- {{-- Estado (IMPORTANTE: name="active") --}}
- @if(auth()->user()->isAdmin())
- <div class="mb-4">
- <label class="field-label">Estado de la Cuenta</label>
- <select name="active" class="glass-input no-search mt-1">
- <option value="1" {{ old('active', $user->active) ? 'selected' : '' }}>Activo (Permitir acceso)</option>
- <option value="0" {{ !old('active', $user->active) ? 'selected' : '' }}>Inactivo (Bloquear acceso)</option>
- </select>
- </div>
- @else
- <input type="hidden" name="active" value="{{ $user->active }}">
- @endif
+
 
  <hr class="my-6 border-gray-200 dark:border-gray-700">
 

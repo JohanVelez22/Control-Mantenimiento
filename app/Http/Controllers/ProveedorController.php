@@ -93,11 +93,9 @@ class ProveedorController extends Controller
             'email'               => ['nullable', 'email', 'max:100'],
             'direccion'           => ['nullable', 'string', 'max:500'],
             'notas'               => ['nullable', 'string', 'max:500'],
-            'active'              => ['boolean'],
         ]);
 
         try {
-            $validated['active'] = $request->boolean('active');
             $proveedor->update($validated);
             return redirect()->route('proveedores.index')
                 ->with('success', 'Proveedor actualizado correctamente.');
@@ -105,5 +103,18 @@ class ProveedorController extends Controller
             Log::error('Error actualizando proveedor: ' . $e->getMessage());
             return back()->with('error', 'Error al actualizar el proveedor.')->withInput();
         }
+    }
+
+    public function anular(Proveedor $proveedor): RedirectResponse
+    {
+        if (auth()->user()->role === 'invitado') {
+            return redirect()->route('proveedores.index')->with('error', 'No tienes permisos para realizar esta acción.');
+        }
+
+        $proveedor->active = !$proveedor->active;
+        $proveedor->save();
+
+        $action = $proveedor->active ? 'reactivado' : 'desactivado (anulado)';
+        return redirect()->back()->with('success', "El proveedor ha sido {$action} exitosamente.");
     }
 }

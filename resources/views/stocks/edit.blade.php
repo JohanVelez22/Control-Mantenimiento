@@ -119,19 +119,7 @@
  </div>
  </div>
 
- @if(auth()->user()->isAdmin())
- <div>
- <label class="field-label flex items-center gap-2">⚙️ Estado del Producto</label>
- <select name="active" class="glass-input no-search mt-1">
- <option value="1" {{ old('active', $stock->active) ? 'selected' : '' }}>✅ Activo (disponible)</option>
- <option value="0" {{ !old('active', $stock->active) ? 'selected' : '' }}>🚫 Inactivo (oculto del inventario activo)</option>
- </select>
- 
- </div>
- @else
- <input type="hidden" name="active" value="{{ $stock->active ? 1 : 0 }}">
- @endif
- 
+
  <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
  <a href="{{ route('stocks.index') }}" class="btn-cancel">↩️ Cancelar</a>
  <button type="submit" class="btn-save">

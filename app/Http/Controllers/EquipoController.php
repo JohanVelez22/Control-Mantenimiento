@@ -75,13 +75,24 @@ class EquipoController extends Controller
             'serie' => 'required|string|max:80|unique:equipos,serie,' . $equipo->id,
             'cliente_id' => 'required|integer|exists:clientes,id',
             'observacion' => 'nullable|string|max:500',
-            'active' => 'boolean',
         ]);
 
-        $validated['active'] = $request->boolean('active');
         $equipo->update($validated);
 
         return redirect()->route('equipos.index')->with('success', 'Equipo actualizado correctamente.');
+    }
+
+    public function anular(Equipo $equipo)
+    {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->route('equipos.index')->with('error', 'No tienes permisos para realizar esta acción.');
+        }
+
+        $equipo->active = !$equipo->active;
+        $equipo->save();
+
+        $action = $equipo->active ? 'reactivado' : 'desactivado (anulado)';
+        return redirect()->back()->with('success', "El equipo ha sido {$action} exitosamente.");
     }
 
     public function destroy(Equipo $equipo)

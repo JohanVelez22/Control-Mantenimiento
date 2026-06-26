@@ -60,6 +60,9 @@
  <div class="flex justify-center items-center gap-1">
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
+ <button type="button" onclick="openAnularModal('{{ route('clientes.anular', $cliente->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs {{ $cliente->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $cliente->active ? 'Anular Cliente' : 'Reactivar Cliente' }}">
+ {{ $cliente->active ? '🚫' : '✅' }}
+ </button>
  @else
  <span class="text-gray-400 text-sm">👁️ Lectura</span>
  @endif

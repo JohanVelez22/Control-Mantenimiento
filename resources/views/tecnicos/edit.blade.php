@@ -69,18 +69,7 @@
  @error('photo') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
- @if(auth()->user()->isAdmin())
- <div>
- <label class="field-label flex items-center gap-2">⚙️ Estado del Técnico</label>
- <select name="active" class="glass-input no-search mt-1">
- <option value="1" {{ old('active', $tecnico->active) ? 'selected' : '' }}>✅ Activo</option>
- <option value="0" {{ !old('active', $tecnico->active) ? 'selected' : '' }}>🚫 Inactivo (deshabilitado)</option>
- </select>
- 
- </div>
- @else
- <input type="hidden" name="active" value="{{ $tecnico->active ? 1 : 0 }}">
- @endif
+
 
  <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
  <a href="{{ route('tecnicos.index') }}" class="btn-cancel">
