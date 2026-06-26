@@ -241,51 +241,12 @@ class MantenimientoController extends Controller
             'estado' => 'required|in:pendiente,terminado',
             'equipo_id' => 'required|integer|exists:equipos,id',
             'tecnico_id' => 'required|integer|exists:tecnicos,id',
-            'anulado' => 'nullable|in:0,1',
         ]);
 
         try {
             DB::beginTransaction();
 
-            $reactivar = $mantenimiento->anulado && !$request->boolean('anulado');
-            $anular = !$mantenimiento->anulado && $request->boolean('anulado');
 
-            if ($reactivar) {
-                // Re-deducir stock
-                foreach ($mantenimiento->stocks as $stock) {
-                    \App\Models\Stock::where('id', $stock->id)->decrement('cantidad', $stock->pivot->cantidad);
-                }
-                // Reactivar abonos en Caja
-                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Mantenimiento')->first();
-                if ($concepto && $mantenimiento->abonos->count() > 0) {
-                    foreach ($mantenimiento->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
-                            ->where('monto', $abono->monto)
-                            ->where('fecha', $abono->fecha->toDateString())
-                            ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%")
-                            ->update(['anulado' => false]);
-                    }
-                }
-                $validated['anulado'] = false;
-            } elseif ($anular) {
-                // Devolver stock al inventario
-                foreach ($mantenimiento->stocks as $stock) {
-                    \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
-                }
-                // Anular abonos en Caja
-                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Mantenimiento')->first();
-                if ($concepto && $mantenimiento->abonos->count() > 0) {
-                    foreach ($mantenimiento->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
-                            ->where('monto', $abono->monto)
-                            ->where('fecha', $abono->fecha->toDateString())
-                            ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%")
-                            ->where('estado', 'activo')
-                            ->update(['anulado' => true]);
-                    }
-                }
-                $validated['anulado'] = true;
-            }
 
             $mantenimiento->update($validated);
             DB::commit();
@@ -332,29 +293,51 @@ class MantenimientoController extends Controller
 
         try {
             DB::beginTransaction();
-            // Al anular, se establece el estado a 'anulado'
-            $mantenimiento->update(['anulado' => true]);
+            
+            $esAnulacion = !$mantenimiento->anulado;
+            $mantenimiento->update(['anulado' => $esAnulacion]);
 
-            // Revertir stock si se implementa relación pivot
-            foreach ($mantenimiento->stocks as $stock) {
-                \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
-            }
-
-            // Revertir abonos en Caja
-            $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Mantenimiento')->first();
-            if ($concepto && $mantenimiento->abonos->count() > 0) {
-                foreach ($mantenimiento->abonos as $abono) {
-                    \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
-                        ->where('monto', $abono->monto)
-                        ->where('fecha', $abono->fecha->toDateString())
-                        ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%")
-                        ->where('estado', 'activo')
-                        ->update(['anulado' => true]);
+            if ($esAnulacion) {
+                // Revertir stock
+                foreach ($mantenimiento->stocks as $stock) {
+                    \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
                 }
+
+                // Revertir abonos en Caja
+                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Mantenimiento')->first();
+                if ($concepto && $mantenimiento->abonos->count() > 0) {
+                    foreach ($mantenimiento->abonos as $abono) {
+                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
+                            ->where('monto', $abono->monto)
+                            ->where('fecha', $abono->fecha->toDateString())
+                            ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%")
+                            ->where('estado', 'activo')
+                            ->update(['anulado' => true]);
+                    }
+                }
+                $msg = 'Mantenimiento anulado correctamente. La transacción y stock asociados (si aplica) han sido revertidos.';
+            } else {
+                // Reactivar stock
+                foreach ($mantenimiento->stocks as $stock) {
+                    \App\Models\Stock::where('id', $stock->id)->decrement('cantidad', $stock->pivot->cantidad);
+                }
+
+                // Reactivar abonos en Caja
+                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Mantenimiento')->first();
+                if ($concepto && $mantenimiento->abonos->count() > 0) {
+                    foreach ($mantenimiento->abonos as $abono) {
+                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
+                            ->where('monto', $abono->monto)
+                            ->where('fecha', $abono->fecha->toDateString())
+                            ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%")
+                            ->update(['anulado' => false]);
+                    }
+                }
+                $msg = 'Mantenimiento reactivado correctamente. El stock y caja han sido actualizados.';
             }
 
             DB::commit();
-            return redirect()->back()->with('success', 'Mantenimiento anulado correctamente. La transacción y stock asociados (si aplica) han sido revertidos.');
+            return redirect()->back()->with('success', $msg);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error anulando mantenimiento: ' . $e->getMessage());

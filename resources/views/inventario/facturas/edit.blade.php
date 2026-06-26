@@ -2,18 +2,19 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto">
-    <div class="flex items-center gap-3 mb-6">
-        <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
-        <div>
-            <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
-                ✏️ Editar Factura {{ $factura->numero_factura }}
-            </h2>
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Modifica los detalles, agrega artículos o cambia el estado</p>
+    <div class="glass-card p-6 md:p-8">
+        <div class="flex items-center gap-3 mb-6">
+            <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+            <div>
+                <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
+                    ✏️ Editar Factura {{ $factura->numero_factura }}
+                </h2>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Modifica los detalles, agrega artículos o cambia el estado</p>
+            </div>
         </div>
-    </div>
 
-    <form action="{{ route('inventario.facturas.update', $factura->id) }}" method="POST" class="glass-card p-6 md:p-8 space-y-6">
-        @csrf @method('PUT')
+        <form action="{{ route('inventario.facturas.update', $factura->id) }}" method="POST" class="space-y-6">
+            @csrf @method('PUT')
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{-- Cliente / Proveedor --}}
@@ -42,15 +43,6 @@
                 @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
 
-            {{-- Estado de la Factura (Activa/Anulada) --}}
-            <div>
-                <label class="field-label flex items-center gap-2"><span>🛡️</span> Estado de la Factura</label>
-                <select name="anulado" class="glass-input no-search font-bold">
-                    <option value="0" {{ old('anulado', $factura->estado === 'anulada' ? 1 : 0) == 0 ? 'selected' : '' }}>🟢 Activo</option>
-                    <option value="1" {{ old('anulado', $factura->estado === 'anulada' ? 1 : 0) == 1 ? 'selected' : '' }}>🔴 Anulado</option>
-                </select>
-                @error('anulado') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
-            </div>
 
             {{-- Artículos de la Factura --}}
             <div class="md:col-span-2">
@@ -129,6 +121,7 @@
             <button type="submit" class="btn-save">💾 Guardar Cambios</button>
         </div>
     </form>
+    </div>
 </div>
 
 <script>

@@ -85,17 +85,6 @@
  @error('costo') <p class="text-red-500 text-xs font-bold mt-1 text-center">{{ $message }}</p> @enderror
  </div>
 
- @isset($electronica)
- {{-- Estado de la Orden (Anulado/Activo) --}}
- <div class="md:col-span-2">
- <label class="field-label flex items-center gap-2"><span>🛡️</span> Estado de la Orden</label>
- <select name="anulado" class="glass-input no-search mt-1 font-bold">
- <option value="0" {{ old('anulado', $electronica->anulado) ? '' : 'selected' }}>🟢 Activo</option>
- <option value="1" {{ old('anulado', $electronica->anulado) ? 'selected' : '' }}>🔴 Anulado</option>
- </select>
- </div>
- @endisset
-
 </div>
 
 <script>

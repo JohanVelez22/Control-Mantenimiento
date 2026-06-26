@@ -98,9 +98,9 @@
 
         {{-- Historial de Operaciones --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Historial de Operaciones (Compras y Ventas)</h3>
-        <div class="overflow-x-auto pb-2 mb-6">
-            <table class="ts-table">
-                <thead>
+        <div class="overflow-x-auto overflow-y-auto max-h-[400px] rounded-xl border border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 relative mb-6">
+            <table class="ts-table mb-0">
+                <thead class="sticky top-0 z-20 shadow-sm">
                     <tr>
                         <th>Fecha</th>
                         <th>Tipo</th>

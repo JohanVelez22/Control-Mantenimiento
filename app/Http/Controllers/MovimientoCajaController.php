@@ -158,7 +158,6 @@ class MovimientoCajaController extends Controller
             'monto'           => 'required|numeric|min:0.01|decimal:0,2',
             'monto_total'     => 'nullable|numeric|min:0|decimal:0,2',
             'descripcion'     => 'nullable|string|max:500',
-            'anulado'         => 'nullable|in:0,1',
         ]);
 
         // Validar que al menos empresa o persona esté presente, pero NO ambas
@@ -244,9 +243,10 @@ class MovimientoCajaController extends Controller
 
         try {
             DB::beginTransaction();
-            $movimiento->update(['anulado' => true]);
+            $esAnulacion = !$movimiento->anulado;
+            $movimiento->update(['anulado' => $esAnulacion]);
             DB::commit();
-            return redirect()->back()->with('success', 'Movimiento anulado correctamente.');
+            return redirect()->back()->with('success', $esAnulacion ? 'Movimiento anulado correctamente.' : 'Movimiento reactivado correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error anulando movimiento de caja: ' . $e->getMessage());

@@ -90,9 +90,9 @@
  <p class="text-gray-500 font-medium">No hay artículos de inventario asociados a este proveedor.</p>
  </div>
  @else
- <div class="overflow-x-auto pb-2">
- <table class="ts-table">
- <thead>
+ <div class="overflow-x-auto overflow-y-auto max-h-[400px] rounded-xl border border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 relative mb-2">
+ <table class="ts-table mb-0">
+ <thead class="sticky top-0 z-20 shadow-sm">
  <tr>
  <th class="w-24">Código</th>
  <th>Producto</th>
@@ -134,7 +134,7 @@
  <p class="text-gray-500 font-medium">No hay compras registradas con este proveedor.</p>
  </div>
  @else
- <div class="space-y-3">
+ <div class="space-y-3 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
  @foreach($proveedor->facturas->sortByDesc('fecha') as $f)
  <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-4 bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 rounded-xl hover:bg-white/60 dark:hover:bg-slate-700/40 transition-colors">
  <div class="flex items-start gap-4">

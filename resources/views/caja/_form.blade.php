@@ -80,23 +80,11 @@
  </div>
 
  {{-- Monto Pagado y Estado --}}
- <div class="{{ isset($movimiento) ? 'md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5' : '' }}">
  <div>
  <label class="field-label">Monto Pagado Hoy ($) *</label>
  <input type="text" id="monto_visual" required value="{{ old('monto', isset($movimiento) ? number_format($movimiento->monto, 0, ',', '.') : '') }}" placeholder="Monto pagado..." class="glass-input font-bold text-right py-2">
  <input type="hidden" name="monto" id="monto_real" value="{{ old('monto', $movimiento->monto ?? '') }}">
  @error('monto') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
- </div>
- 
- @if(isset($movimiento))
- <div>
- <label class="field-label flex items-center gap-2"><span>🛡️</span> Estado del Movimiento</label>
- <select name="anulado" class="glass-input no-search font-bold h-[42px]">
- <option value="0" {{ old('anulado', $movimiento->anulado ?? 0) == '0' ? 'selected' : '' }}>🟢 Activo</option>
- <option value="1" {{ old('anulado', $movimiento->anulado ?? 0) == '1' ? 'selected' : '' }}>🔴 Anulado</option>
- </select>
- </div>
- @endif
  </div>
 
  {{-- Concepto --}}

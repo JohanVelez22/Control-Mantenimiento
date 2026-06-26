@@ -299,38 +299,73 @@ class MovimientoInventarioController extends Controller
 
     public function anularFactura(Request $request, Factura $factura): RedirectResponse
     {
-        if ($factura->estado === 'anulada') {
-            return back()->with('error', 'Esta factura ya estaba anulada.');
-        }
-
         try {
             DB::beginTransaction();
 
-            // Revertir el movimiento de stock
-            foreach ($factura->items as $item) {
-                $stock = $item->stock;
-                if ($factura->tipo_movimiento === 'compra') {
-                    // Compra anulada: quitar lo que se agregó
-                    $stock->decrementarStock($item->cantidad);
-                } else {
-                    // Venta anulada: devolver lo que se quitó
-                    $stock->incrementarStock($item->cantidad);
+            if ($factura->estado === 'anulada') {
+                // REACTIVAR LA FACTURA
+                // Verificar si hay stock disponible si es una venta
+                if ($factura->tipo_movimiento === 'venta') {
+                    foreach ($factura->items as $item) {
+                        $stock = $item->stock;
+                        if (!$stock->tieneDisponible($item->cantidad)) {
+                            throw new \DomainException("No se puede reactivar. Stock insuficiente para '{$stock->producto}'. Requerido: {$item->cantidad}, disponible: {$stock->cantidad}.");
+                        }
+                    }
                 }
-            }
 
-            $factura->update([
-                'estado'        => 'anulada',
-                'observaciones' => ($factura->observaciones ?? '') . "\n[ANULADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']',
-            ]);
+                foreach ($factura->items as $item) {
+                    $stock = $item->stock;
+                    if ($factura->tipo_movimiento === 'compra') {
+                        // Reactivando compra: vuelve a entrar el stock
+                        $stock->incrementarStock($item->cantidad);
+                    } else {
+                        // Reactivando venta: vuelve a salir el stock
+                        $stock->decrementarStock($item->cantidad);
+                    }
+                }
+
+                $saldo = $factura->total_documento - $factura->total_pagado;
+                $nuevoEstado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+
+                $factura->update([
+                    'estado'        => $nuevoEstado,
+                    'observaciones' => ($factura->observaciones ?? '') . "\n[REACTIVADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']',
+                ]);
+
+                $action = 'reactivada';
+            } else {
+                // ANULAR LA FACTURA
+                foreach ($factura->items as $item) {
+                    $stock = $item->stock;
+                    if ($factura->tipo_movimiento === 'compra') {
+                        // Compra anulada: quitar lo que se agregó
+                        $stock->decrementarStock($item->cantidad);
+                    } else {
+                        // Venta anulada: devolver lo que se quitó
+                        $stock->incrementarStock($item->cantidad);
+                    }
+                }
+
+                $factura->update([
+                    'estado'        => 'anulada',
+                    'observaciones' => ($factura->observaciones ?? '') . "\n[ANULADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']',
+                ]);
+
+                $action = 'anulada';
+            }
 
             DB::commit();
 
-            return redirect()->route('inventario.facturas.show', $factura->id)
-                ->with('success', "Factura #{$factura->numero_factura} anulada. El stock fue revertido.");
+            return redirect()->back()
+                ->with('success', "Factura #{$factura->numero_factura} {$action}. El stock fue actualizado.");
+        } catch (\DomainException $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error anulando factura: ' . $e->getMessage());
-            return back()->with('error', 'Error al anular la factura.');
+            Log::error('Error anulando/reactivando factura: ' . $e->getMessage());
+            return back()->with('error', 'Error al cambiar el estado de la factura.');
         }
     }
 
@@ -349,7 +384,6 @@ class MovimientoInventarioController extends Controller
             'fecha'                   => 'required|date',
             'total_pagado'            => 'required|numeric|min:0',
             'observaciones'           => 'nullable|string',
-            'anulado'                 => 'required|in:0,1',
             'facturable_global'       => 'required|string',
             'existing_items'             => 'nullable|array',
             'existing_items.*.id'        => 'required|exists:factura_items,id',
@@ -373,25 +407,11 @@ class MovimientoInventarioController extends Controller
 
         $totalPagado = (float) $request->total_pagado;
         
-        $shouldBeAnulada = $request->anulado == '1';
         $wasAnulada = $factura->estado === 'anulada';
+        $shouldBeAnulada = $wasAnulada; // State change happens in anularFactura now
         
         try {
             DB::beginTransaction();
-
-            // 1. Reactivar primero si estaba anulada
-            if ($wasAnulada && !$shouldBeAnulada) {
-                foreach ($factura->items as $item) {
-                    $stock = $item->stock;
-                    if ($stock) {
-                        if ($factura->tipo_movimiento === 'compra') {
-                            $stock->incrementarStock($item->cantidad);
-                        } else {
-                            $stock->decrementarStock($item->cantidad);
-                        }
-                    }
-                }
-            }
 
             // 2. Ajustar stock por modificación de cantidad o artículo de los ítems existentes
             if (isset($request->existing_items) && is_array($request->existing_items) && !$shouldBeAnulada) {
@@ -476,19 +496,7 @@ class MovimientoInventarioController extends Controller
                 }
             }
 
-            // 3. Anular si se solicitó anulación ahora
-            if (!$wasAnulada && $shouldBeAnulada) {
-                foreach ($factura->items as $item) {
-                    $stock = $item->stock;
-                    if ($stock) {
-                        if ($factura->tipo_movimiento === 'compra') {
-                            $stock->decrementarStock($item->cantidad);
-                        } else {
-                            $stock->incrementarStock($item->cantidad);
-                        }
-                    }
-                }
-            }
+
 
             // 4. Calcular el nuevo total de la factura
             $totalDocumento = 0;

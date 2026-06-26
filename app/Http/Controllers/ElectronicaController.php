@@ -119,51 +119,12 @@ class ElectronicaController extends Controller
             'fecha_entrada'        => 'required|date',
             'fecha_salida'         => 'nullable|date|after_or_equal:fecha_entrada',
             'tecnico_id'           => 'required|exists:tecnicos,id',
-            'anulado'              => 'nullable|in:0,1',
         ]);
 
         try {
             \Illuminate\Support\Facades\DB::beginTransaction();
 
-            $reactivar = $electronica->anulado && !$request->boolean('anulado');
-            $anular = !$electronica->anulado && $request->boolean('anulado');
 
-            if ($reactivar) {
-                // Re-deducir stock
-                foreach ($electronica->stocks as $stock) {
-                    \App\Models\Stock::where('id', $stock->id)->decrement('cantidad', $stock->pivot->cantidad);
-                }
-                // Reactivar abonos en Caja
-                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
-                if ($concepto && $electronica->abonos->count() > 0) {
-                    foreach ($electronica->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
-                            ->where('monto', $abono->monto)
-                            ->where('fecha', $abono->fecha->toDateString())
-                            ->where('descripcion', 'like', "%Orden " . $electronica->id_orden . "%")
-                            ->update(['anulado' => false]);
-                    }
-                }
-                $validated['anulado'] = false;
-            } elseif ($anular) {
-                // Devolver stock al inventario
-                foreach ($electronica->stocks as $stock) {
-                    \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
-                }
-                // Anular abonos en Caja
-                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
-                if ($concepto && $electronica->abonos->count() > 0) {
-                    foreach ($electronica->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
-                            ->where('monto', $abono->monto)
-                            ->where('fecha', $abono->fecha->toDateString())
-                            ->where('descripcion', 'like', "%Orden " . $electronica->id_orden . "%")
-                            ->where('estado', 'activo')
-                            ->update(['anulado' => true]);
-                    }
-                }
-                $validated['anulado'] = true;
-            }
 
             $electronica->update($validated);
             \Illuminate\Support\Facades\DB::commit();
@@ -195,32 +156,55 @@ class ElectronicaController extends Controller
 
         try {
             \Illuminate\Support\Facades\DB::beginTransaction();
-            $electronica->update(['anulado' => true]);
+            
+            $esAnulacion = !$electronica->anulado;
+            $electronica->update(['anulado' => $esAnulacion]);
 
-            // Revertir stock
-            foreach ($electronica->stocks as $stock) {
-                \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
-            }
-
-            // Revertir abonos en Caja
-            $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
-            if ($concepto && $electronica->abonos->count() > 0) {
-                foreach ($electronica->abonos as $abono) {
-                    \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
-                        ->where('monto', $abono->monto)
-                        ->where('fecha', $abono->fecha->toDateString())
-                        ->where('descripcion', 'like', "%Orden " . $electronica->id_orden . "%")
-                        ->where('estado', 'activo')
-                        ->update(['anulado' => true]);
+            if ($esAnulacion) {
+                // Revertir stock
+                foreach ($electronica->stocks as $stock) {
+                    \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
                 }
+
+                // Revertir abonos en Caja
+                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
+                if ($concepto && $electronica->abonos->count() > 0) {
+                    foreach ($electronica->abonos as $abono) {
+                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
+                            ->where('monto', $abono->monto)
+                            ->where('fecha', $abono->fecha->toDateString())
+                            ->where('descripcion', 'like', "%Orden " . $electronica->id_orden . "%")
+                            ->where('estado', 'activo')
+                            ->update(['anulado' => true]);
+                    }
+                }
+                $msg = 'Registro electrónico anulado correctamente.';
+            } else {
+                // Reactivar stock
+                foreach ($electronica->stocks as $stock) {
+                    \App\Models\Stock::where('id', $stock->id)->decrement('cantidad', $stock->pivot->cantidad);
+                }
+
+                // Reactivar abonos en Caja
+                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
+                if ($concepto && $electronica->abonos->count() > 0) {
+                    foreach ($electronica->abonos as $abono) {
+                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
+                            ->where('monto', $abono->monto)
+                            ->where('fecha', $abono->fecha->toDateString())
+                            ->where('descripcion', 'like', "%Orden " . $electronica->id_orden . "%")
+                            ->update(['anulado' => false]);
+                    }
+                }
+                $msg = 'Registro electrónico reactivado correctamente.';
             }
 
             \Illuminate\Support\Facades\DB::commit();
-            return redirect()->back()->with('success', 'Registro electrónico anulado correctamente.');
+            return redirect()->back()->with('success', $msg);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
-            \Illuminate\Support\Facades\Log::error('Error anulando electrónica: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al anular.');
+            \Illuminate\Support\Facades\Log::error('Error anulando/reactivando electrónica: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al cambiar estado.');
         }
     }
 
