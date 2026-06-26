@@ -47,7 +47,7 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
                 $sheet->setCellValue("A{$footerRow}", "Total: {$totalRegistros}");
                 
                 // Escribir el costo total bajo la columna "Costo" (Columna M)
-                $sheet->setCellValue("M{$footerRow}", "Total: $" . number_format($costoTotal, 2));
+                $sheet->setCellValue("M{$footerRow}", "Total: $" . number_format($costoTotal, 0, '', '.'));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:M{$footerRow}")->applyFromArray([

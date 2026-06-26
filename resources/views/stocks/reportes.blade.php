@@ -5,7 +5,7 @@
     <a href="{{ route('reportes.financiero.diario') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">💵 Informes Financieros</a>
     <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
     <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Reporte de Electrónica</a>
-    <a href="{{ route('stocks.reportes') }}" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold shadow-sm">📦 Informe Inventario</a>
+    <a href="{{ route('stocks.reportes') }}" class="bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold shadow-sm">📦 Informe Inventario</a>
 </div>
 
 <div class="glass-card p-6 mb-6">
@@ -80,12 +80,14 @@
 
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Costo Mínimo ($)</label>
-            <input type="text" name="min_costo" value="{{ request('min_costo') }}" class="glass-input" placeholder="Mínimo...">
+            <input type="text" id="min_costo_visual" value="{{ request('min_costo') ? number_format(request('min_costo'), 0, '', '.') : '' }}" placeholder="0" class="glass-input">
+            <input type="hidden" name="min_costo" id="min_costo" value="{{ request('min_costo') }}">
         </div>
 
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Costo Máximo ($)</label>
-            <input type="text" name="max_costo" value="{{ request('max_costo') }}" class="glass-input" placeholder="Máximo...">
+            <input type="text" id="max_costo_visual" value="{{ request('max_costo') ? number_format(request('max_costo'), 0, '', '.') : '' }}" placeholder="0" class="glass-input">
+            <input type="hidden" name="max_costo" id="max_costo" value="{{ request('max_costo') }}">
         </div>
 
         <div>
@@ -124,8 +126,8 @@
             <thead>
                 <tr>
                     <th class="text-left w-24">Código</th>
-                    <th class="text-left">Producto</th>
-                    <th class="text-left">Proveedor</th>
+                    <th class="text-center">Producto</th>
+                    <th class="text-center">Proveedor</th>
                     <th class="text-center w-20">Cant.</th>
                     <th class="text-center w-24">Estado</th>
                     <th class="text-right w-28">P. Compra</th>
@@ -145,8 +147,8 @@
                     <td class="text-sm font-bold text-slate-500 dark:text-slate-400 {{ $dim }}">
                         {{ $stock->codigo ?? '-' }}
                     </td>
-                    <td class="{{ $dim }}">
-                        <div class="font-bold text-slate-800 dark:text-white leading-tight">
+                    <td class="text-center {{ $dim }}">
+                        <div class="flex flex-col items-center leading-tight">
                             <a href="{{ route('stocks.index', ['locate' => $stock->id]) }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                 {{ $stock->producto }}
                             </a>
@@ -159,16 +161,16 @@
                     </td>
                     <td class="text-sm font-medium text-center {{ $dim }}">
                         @if(!empty($stock->proveedor_id))
-                            <div class="flex flex-col items-center justify-center leading-tight">
-                                <a href="{{ route('proveedores.index', ['locate' => $stock->proveedor_id]) }}" class="text-blue-600 dark:text-blue-400 font-bold hover:underline">
+                            <a href="{{ route('proveedores.index', ['locate' => $stock->proveedor_id]) }}" class="flex flex-col items-center gap-0 group no-print-link transition-colors" title="Ver en tabla de proveedores">
+                                <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-600 transition-colors">
                                     {{ optional($stock->proveedor)->nombre_razon_social ?? 'Proveedor ' . $stock->proveedor_id }}
-                                </a>
+                                </span>
                                 @if(optional($stock->proveedor)->identificacion)
-                                <span class="text-[10.5px] font-bold text-gray-400 italic uppercase">
+                                <span class="font-bold text-[14px] text-gray-400 italic">
                                     {{ $stock->proveedor->identificacion }}
                                 </span>
                                 @endif
-                            </div>
+                            </a>
                         @else
                             {{ $stock->getRawOriginal('proveedor') ?: '-' }}
                         @endif
@@ -183,18 +185,12 @@
                             {{ $isAnulado ? 'Inactivo' : 'Activo' }}
                         </span>
                     </td>
-                    <td class="text-right font-medium {{ $dim }}">
-                        ${{ number_format($stock->precio_compra, 0) }}
+                    <td class="text-right font-medium {{ $dim }}">${{ number_format($stock->precio_compra, 0, '', '.') }}</td>
+                    <td class="text-center font-bold text-green-600 dark:text-green-400 {{ $dim }}">
+                        +{{ $stock->utilidad }}%
                     </td>
-                    <td class="text-center font-bold text-emerald-600 dark:text-emerald-400 text-xs {{ $dim }}">
-                        +{{ number_format($stock->utilidad, 0) }}%
-                    </td>
-                    <td class="text-right font-black text-blue-600 dark:text-blue-400 {{ $dim }}">
-                        ${{ number_format($stock->precio_venta, 0) }}
-                    </td>
-                    <td class="text-right font-bold text-purple-600 dark:text-purple-400 {{ $dim }}">
-                        ${{ number_format($stock->precio_tecnico, 0) }}
-                    </td>
+                    <td class="text-right font-black text-slate-800 dark:text-white {{ $dim }}">${{ number_format($stock->precio_venta, 0, '', '.') }}</td>
+                    <td class="text-right font-black text-slate-800 dark:text-white {{ $dim }}">${{ number_format($stock->precio_tecnico, 0, '', '.') }}</td>
                 </tr>
                 @empty
                 <tr>
@@ -213,16 +209,16 @@
                 <tr>
                     <td colspan="2" class="text-left uppercase text-xs font-bold pt-2 pl-4">
                         <div class="flex items-center">
-                            <span>Total: <span class="text-blue-600">{{ $stocks->total() }}</span></span>
+                            <span>Total: <span class="text-slate-800 dark:text-white">{{ $stocks->total() }}</span></span>
                         </div>
                     </td>
                     <td class="text-right uppercase text-xs pt-2">Totales:</td>
                     <td class="text-center font-bold pt-2">{{ $stocks->sum('cantidad') }}</td>
                     <td class="pt-2"></td>
-                    <td class="text-center font-black text-gray-700 dark:text-gray-300 pt-2">${{ number_format($stocks->sum('precio_compra'), 0) }}</td>
+                    <td class="text-center font-black text-slate-800 dark:text-slate-200 pt-2">${{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}</td>
                     <td class="pt-2"></td>
-                    <td class="text-center font-black text-blue-600 dark:text-blue-400 pt-2">${{ number_format($stocks->sum('precio_venta'), 0) }}</td>
-                    <td class="text-center font-black text-purple-600 dark:text-purple-400 pt-2">${{ number_format($stocks->sum('precio_tecnico'), 0) }}</td>
+                    <td class="text-center font-black text-slate-800 dark:text-slate-200 pt-2">${{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}</td>
+                    <td class="text-center font-black text-slate-800 dark:text-slate-200 pt-2">${{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}</td>
                 </tr>
             </tfoot>
             @endif
@@ -326,6 +322,27 @@
             }
         });
     });
+
+    function formatInput(visualId, realId) {
+        const inputVisual = document.getElementById(visualId);
+        const inputReal = document.getElementById(realId);
+
+        if (inputVisual && inputReal) {
+            inputVisual.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, "");
+                if (value !== "") {
+                    inputReal.value = value;
+                    e.target.value = new Intl.NumberFormat('es-CO').format(value);
+                } else {
+                    inputReal.value = "";
+                    e.target.value = "";
+                }
+            });
+        }
+    }
+
+    formatInput('min_costo_visual', 'min_costo');
+    formatInput('max_costo_visual', 'max_costo');
 
     function exportarReporte(tipo, btn) {
         const form = document.getElementById('filtros-stock');

@@ -273,7 +273,7 @@
                 </td>
                 <td class="col-center">{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
                 <td class="col-center">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '—' }}</td>
-                <td class="col-right monto-cell">${{ number_format($m->costo, 2) }}</td>
+                <td class="col-right monto-cell">${{ number_format($m->costo, 0, '', '.') }}</td>
             </tr>
             @empty
             <tr>

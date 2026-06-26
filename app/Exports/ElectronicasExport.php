@@ -47,7 +47,7 @@ class ElectronicasExport implements FromCollection, WithHeadings, WithMapping, S
                 $sheet->setCellValue("A{$footerRow}", "Total: {$totalRegistros}");
                 
                 // Escribir el costo total bajo la columna "Costo" (Columna L)
-                $sheet->setCellValue("L{$footerRow}", "Total: $" . number_format($costoTotal, 2));
+                $sheet->setCellValue("L{$footerRow}", "Total: $" . number_format($costoTotal, 0, '', '.'));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:L{$footerRow}")->applyFromArray([
