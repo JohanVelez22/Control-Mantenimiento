@@ -33,7 +33,7 @@
  </a>
 </div>
 
-<div class="glass-card p-5 mb-4 no-print">
+<div class="glass-card p-5 mb-4 no-print relative z-50">
  <form id="filtros-operaciones" method="GET" class="flex flex-wrap items-center gap-3">
    <select name="tipo" class="glass-input no-search w-48 font-semibold">
    @foreach($tipoLabels as $val => $label)

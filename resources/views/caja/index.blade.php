@@ -59,7 +59,7 @@
  </div>
 
  {{-- Filtros --}}
-  <form action="{{ route('caja.index') }}" method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-5 glass-card no-print">
+  <form action="{{ route('caja.index') }}" method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-5 glass-card no-print relative z-50">
  <div class="relative">
  <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
  <input type="text" name="search" value="{{ request('search') }}" placeholder="Persona o empresa..." class="glass-input pl-9 w-48 sm:w-64 text-sm h-[42px]">

@@ -34,7 +34,7 @@
  </a>
 </div>
 
-<div class="glass-card p-5 mb-4 no-print">
+<div class="glass-card p-5 mb-4 no-print relative z-50">
   <form id="filtros-acumulado-general" action="{{ route('reportes.index') }}" method="GET" class="flex flex-wrap items-center gap-3">
    <select name="mes" class="glass-input no-search w-40 font-semibold">
    @for($i=1; $i<=12; $i++)

@@ -33,7 +33,7 @@
  </a>
 </div>
 
-<div class="glass-card p-5 mb-4 no-print">
+<div class="glass-card p-5 mb-4 no-print relative z-50">
  <form id="filtros-acumulado" method="GET" class="flex flex-wrap items-center gap-3">
   <label class="font-semibold text-sm">Desde:</label>
   <input type="date" name="desde" value="{{ $desde->toDateString() }}" class="glass-input w-44">

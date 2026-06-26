@@ -16,7 +16,7 @@
     </div>
 
     {{-- Filtros (Liquid Glass) --}}
-    <div class="glass-card p-5">
+    <div class="glass-card p-5 relative z-50">
         <form action="{{ route('eventos.index') }}" method="GET" class="flex flex-wrap items-center gap-4">
             <div class="flex items-center gap-2">
                 <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Buscar:</label>
