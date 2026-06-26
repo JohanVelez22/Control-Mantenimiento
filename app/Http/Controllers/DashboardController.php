@@ -26,15 +26,22 @@ class DashboardController extends Controller
         $cajaEgresos = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
         $cajaSaldoActual = $cajaIngresos - $cajaEgresos;
 
-        // Caja: ingresos del día (Hoy)
-        $cajaIngresosDia = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)
+        // Caja: saldo neto del día (Hoy)
+        $ingresosHoy = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)
             ->where('tipo_movimiento', 'ingreso')
             ->whereDate('fecha', Carbon::today())
             ->sum('monto');
+            
+        $egresosHoy = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)
+            ->where('tipo_movimiento', 'egreso')
+            ->whereDate('fecha', Carbon::today())
+            ->sum('monto');
+            
+        $cajaSaldoDia = $ingresosHoy - $egresosHoy;
 
         // Formateo para la vista
         $totalCostoFormateado = number_format($cajaSaldoActual, 0, ',', '.');
-        $totalCostoDiaFormateado = number_format($cajaIngresosDia, 0, ',', '.');
+        $totalCostoDiaFormateado = number_format($cajaSaldoDia, 0, ',', '.');
 
         // Mantenimientos recientes (incluye abonos para calcular saldos pendientes)
         $recentMant = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user', 'abonos'])
@@ -152,6 +159,8 @@ class DashboardController extends Controller
             'chartData',
             'clientes',
             'tecnicos',
+            'cajaSaldoActual',
+            'cajaSaldoDia',
             'totalCostoFormateado',
             'totalCostoDiaFormateado',
             'electronicaRecientes'

@@ -138,15 +138,17 @@
 
 <!-- Tarjetas de ingresos (resumen rápido bajo el carrusel) -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+ @php $isSaldoNegativo = isset($cajaSaldoActual) && $cajaSaldoActual < 0; @endphp
  <div class="glass-card p-4 flex flex-col justify-center relative overflow-hidden group items-center text-center">
- <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
- <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💰</span> Saldo en Caja (Histórico)</div>
- <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ $totalCostoFormateado ?? '0.00' }}</div>
+ <div class="absolute -right-4 -top-4 w-20 h-20 {{ $isSaldoNegativo ? 'bg-red-500/20 group-hover:bg-red-500/30' : 'bg-emerald-500/20 group-hover:bg-emerald-500/30' }} rounded-full blur-2xl transition-all"></div>
+ <div class="text-xs font-bold {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💰</span> Saldo en Caja (Histórico)</div>
+ <div class="text-2xl font-black {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoActual ?? 0), 0, ',', '.') }}</div>
  </div>
+ @php $isSaldoDiaNegativo = isset($cajaSaldoDia) && $cajaSaldoDia < 0; @endphp
  <div class="glass-card p-4 flex flex-col justify-center relative overflow-hidden group items-center text-center">
- <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
- <div class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Ingresos a Caja (Hoy)</div>
- <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ $totalCostoDiaFormateado ?? '0.00' }}</div>
+ <div class="absolute -right-4 -top-4 w-20 h-20 {{ $isSaldoDiaNegativo ? 'bg-red-500/20 group-hover:bg-red-500/30' : 'bg-blue-500/20 group-hover:bg-blue-500/30' }} rounded-full blur-2xl transition-all"></div>
+ <div class="text-xs font-bold {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Balance Caja (Hoy)</div>
+ <div class="text-2xl font-black {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoDiaNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoDia ?? 0), 0, ',', '.') }}</div>
  </div>
 </div>
 
