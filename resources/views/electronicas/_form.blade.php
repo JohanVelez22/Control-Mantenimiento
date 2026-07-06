@@ -78,11 +78,11 @@
  </div>
 
  {{-- Costo --}}
- <div class="md:col-span-2 p-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl border border-gray-200/50 dark:border-gray-700 mt-2">
- <label class="field-label text-center mb-2 block text-sm">Costo Estimado / Final ($) *</label>
- <input type="text" id="costo_visual" value="{{ old('costo', isset($electronica) ? number_format($electronica->costo, 0, '', '') : 0) }}" class="glass-input text-3xl font-black text-center py-4 text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-900" placeholder="0">
+ <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm mt-2">
+ <label class="field-label text-center mb-2 block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Costo Estimado / Final ($) *</label>
+ <input type="text" id="costo_visual" value="{{ old('costo', isset($electronica) ? number_format($electronica->costo, 0, '', '') : 0) }}" class="glass-input bg-white/50 dark:bg-slate-900/60 border-gray-200/50 dark:border-white/5 text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20" placeholder="0">
  <input type="hidden" name="costo" id="costo_real" value="{{ old('costo', isset($electronica) ? intval($electronica->costo) : 0) }}">
- @error('costo') <p class="text-red-500 text-xs font-bold mt-1 text-center">{{ $message }}</p> @enderror
+ @error('costo') <p class="text-red-500 text-xs font-bold mt-2 text-center">{{ $message }}</p> @enderror
  </div>
 
 </div>

@@ -102,7 +102,7 @@
  </div>
 
  {{-- Pago y observaciones --}}
- <div class="flex flex-col md:flex-row justify-center gap-5 p-5 bg-white/40 dark:bg-slate-800/40 border border-gray-200/60 dark:border-gray-700/60 rounded-2xl">
+ <div class="flex flex-col md:flex-row justify-center gap-5 p-5 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
  <div class="text-center w-full md:w-1/2">
  <label class="field-label text-center block">Total Recibido Ahora ($) *</label>
  <input type="text" name="total_pagado" id="total_pagado" value="0" oninput="window.formatCurrencyInput(this); recalcular()" required 

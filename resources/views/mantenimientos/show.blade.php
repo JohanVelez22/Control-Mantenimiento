@@ -1,10 +1,9 @@
 @extends('layouts.app')
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
-
- {{-- Header --}}
- <div class="glass-card p-6 md:p-8">
-  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 w-full">
+<div class="max-w-4xl mx-auto">
+    <div class="glass-card p-6 md:p-8">
+        {{-- Header --}}
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 w-full">
   <div class="flex items-center gap-3">
   <a href="{{ route('mantenimientos.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
   <div>
@@ -69,11 +68,10 @@
  </div>
  @endif
  </div>
- </div>
-
- {{-- Resumen financiero --}}
- <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+    {{-- Resumen financiero --}}
+    <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 mt-8">Resumen Financiero</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
  <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
  <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10">Costo Total</p>
  <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($mantenimiento->costo, 0, ',', '.') }}</p>
@@ -90,16 +88,15 @@
  <p class="text-[10px] font-black {{ $mantenimiento->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10">Saldo Pendiente</p>
  <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($mantenimiento->saldo_pendiente, 0, ',', '.') }}</p>
  </div>
- </div>
+    </div>
 
- {{-- Panel de Repuestos Utilizados (Stock) --}}
- <div class="glass-card p-6 md:p-8">
- <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2 mb-6">📦 Repuestos / Insumos Utilizados</h3>
+    {{-- Panel de Repuestos Utilizados (Stock) --}}
+    <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 mt-8 flex items-center gap-2 border-t border-gray-200/50 dark:border-white/10 pt-6">📦 Repuestos / Insumos Utilizados</h3>
 
- @if(!auth()->user()->isInvitado() && !$mantenimiento->anulado)
- <form action="{{ route('mantenimientos.stocks.store', $mantenimiento) }}" method="POST" class="p-4 bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-500/20 rounded-2xl mb-6">
+    @if(!auth()->user()->isInvitado() && !$mantenimiento->anulado)
+ <form action="{{ route('mantenimientos.stocks.store', $mantenimiento) }}" method="POST" class="p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl mb-6">
  @csrf
- <h4 class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-3">Añadir repuesto al mantenimiento</h4>
+ <h4 class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Añadir repuesto al mantenimiento</h4>
  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
  <div class="md:col-span-2">
  <label class="field-label">Buscar repuesto en stock *</label>
@@ -169,13 +166,11 @@
  @endforeach
  </div>
  @endif
- </div>
 
- {{-- Panel de Abonos --}}
- <div class="glass-card p-6 md:p-8">
- <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2 mb-6">💳 Abonos / Pagos Parciales</h3>
+    {{-- Panel de Abonos --}}
+    <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 mt-8 flex items-center gap-2 border-t border-gray-200/50 dark:border-white/10 pt-6">💳 Abonos / Pagos Parciales</h3>
 
- {{-- Formulario nuevo abono --}}
+    {{-- Formulario nuevo abono --}}
  @if(!auth()->user()->isInvitado() && !$mantenimiento->anulado)
  <form action="{{ route('abonos.store', $mantenimiento) }}" method="POST" class="p-4 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl mb-6 space-y-4">
  @csrf
@@ -248,8 +243,8 @@
  </div>
  @endforeach
  </div>
- @endif
- </div>
+    @endif
+    </div>
 </div>
 
 <script>

@@ -168,7 +168,7 @@
 
  {{-- ═══════════════ TAB: Mantenimientos ═══════════════ --}}
  <div id="tabPanelMant">
- <div class="overflow-x-auto rounded-xl border border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-md">
+ <div class="overflow-x-auto pb-2">
  <table class="ts-table responsive-table">
  <thead>
  <tr>
@@ -263,7 +263,7 @@
 
  {{-- ═══════════════ TAB: Electrónica ═══════════════ --}}
  <div id="tabPanelElec" class="hidden">
- <div class="overflow-x-auto rounded-xl border border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-md">
+ <div class="overflow-x-auto pb-2">
  <table class="ts-table table-electronica responsive-table">
  <thead>
  <tr>

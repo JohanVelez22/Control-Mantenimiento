@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
  {{-- Buscar cliente o proveedor --}}
- <div class="md:col-span-2 p-4 bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-500/20 rounded-2xl">
+ <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
  <label class="field-label flex items-center gap-2"><span>🔍</span> Buscar Cliente / Proveedor (Opcional)</label>
  <div class="flex gap-2 items-center">
  <input type="text" id="cliente_busqueda" placeholder="Buscar por nombre o cédula..." class="glass-input flex-1 h-[42px]">
@@ -9,7 +9,7 @@
  <button type="button" onclick="limpiarClienteCaja()" class="btn-ghost px-3 h-[42px] flex items-center justify-center">✕</button>
  </div>
  <div id="cliente_resultados" class="mt-2 hidden space-y-1 max-h-40 overflow-y-auto glass-card p-2 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-lg"></div>
- <p class="text-[11px] font-medium text-indigo-500/80 dark:text-indigo-400/80 mt-2">Selecciona un cliente para autocompletar los campos. También puedes escribir directamente abajo.</p>
+ <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2">Selecciona un cliente para autocompletar los campos. También puedes escribir directamente abajo.</p>
  </div>
 
  {{-- Empresa o Persona (uno de los dos) --}}
@@ -102,8 +102,8 @@
  </select>
  </div>
  {{-- Campo oculto para nuevo concepto --}}
- <div id="nuevo-concepto-box" class="mt-3 hidden p-4 rounded-xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-700/30">
- <label class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-2 block">Crear Nuevo Concepto</label>
+ <div id="nuevo-concepto-box" class="mt-3 hidden p-4 rounded-xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md shadow-sm">
+ <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 block">Crear Nuevo Concepto</label>
  <div class="flex gap-2 items-center">
  <input type="text" id="nuevo_concepto_input" name="nuevo_concepto" placeholder="Nombre del nuevo concepto..." class="glass-input flex-1 h-[42px]">
  <button type="button" onclick="crearConcepto()" class="btn-primary h-[42px] flex items-center justify-center">Agregar</button>
@@ -213,7 +213,7 @@
  encontrados.forEach(c => {
  const btn = document.createElement('button');
  btn.type = 'button';
- btn.className = 'w-full text-left px-3 py-2 text-sm bg-transparent hover:bg-indigo-100 dark:hover:bg-indigo-900/40 rounded-lg transition-colors border-b border-gray-100 dark:border-white/5 last:border-0';
+ btn.className = 'w-full text-left px-3 py-2 text-sm bg-transparent hover:bg-blue-100/50 dark:hover:bg-slate-800/50 rounded-lg transition-colors border-b border-gray-100 dark:border-white/5 last:border-0';
  const icon = c.tipo_entidad === 'cliente' ? '👤' : '🏢';
  const typeLabel = c.tipo_entidad === 'cliente' ? 'Cliente' : 'Proveedor';
  btn.innerHTML = `<div class="font-bold text-slate-800 dark:text-white">${icon} ${c.nombre}</div> <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">${typeLabel} • ${c.identificacion || 'N/A'}</div>`;

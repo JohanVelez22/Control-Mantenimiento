@@ -80,7 +80,7 @@
  </div>
 
  <!-- Precio Compra -->
- <div class="p-4 bg-gray-50/50 dark:bg-gray-800/30 rounded-xl border border-gray-200/50 dark:border-white/5 md:col-span-2">
+ <div class="p-5 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm md:col-span-2">
  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
  <div>
  <label for="precio_compra_visual" class="field-label">P. Compra ($) *</label>

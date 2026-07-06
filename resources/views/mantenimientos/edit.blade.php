@@ -23,7 +23,7 @@
  </div>
 
  {{-- Equipo --}}
- <div class="md:col-span-2 min-w-0 p-4 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
+ <div class="md:col-span-2 min-w-0 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
  <label class="field-label flex items-center gap-2"><span>💻</span> Seleccionar Equipo *</label>
  <select name="equipo_id" required class="glass-input text-sm font-bold mt-1">
  @foreach($equipos as $equipo)
@@ -100,19 +100,19 @@
  </div>
  </div>
 
- {{-- Costo --}}
- <div class="md:col-span-2 p-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl border border-gray-200/50 dark:border-gray-700">
- <label class="field-label text-center mb-2 block text-sm">Costo Estimado / Final ($) *</label>
- <input type="text" name="costo_visual" id="costo_visual" value="{{ number_format(old('costo', $mantenimiento->costo), 0, ',', '.') }}" required class="glass-input text-3xl font-black text-center py-4 text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-900">
- <input type="hidden" name="costo" id="costo_real" value="{{ old('costo', $mantenimiento->costo) }}">
- </div>
-
  {{-- Descripción --}}
  <div class="md:col-span-2">
  <label class="field-label">Descripción del problema / trabajo *</label>
  <textarea name="descripcion" required rows="3" class="glass-input mt-1 resize-y @error('descripcion') border-red-500 @enderror">{{ old('descripcion', $mantenimiento->descripcion) }}</textarea>
  @error('descripcion') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
  </div>
+
+  {{-- Costo --}}
+  <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm mt-2">
+  <label class="field-label text-center mb-2 block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Costo Estimado / Final ($) *</label>
+  <input type="text" name="costo_visual" id="costo_visual" value="{{ number_format(old('costo', $mantenimiento->costo), 0, ',', '.') }}" required class="glass-input bg-white/50 dark:bg-slate-900/60 border-gray-200/50 dark:border-white/5 text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20">
+  <input type="hidden" name="costo" id="costo_real" value="{{ old('costo', $mantenimiento->costo) }}">
+  </div>
 
  </div>
 

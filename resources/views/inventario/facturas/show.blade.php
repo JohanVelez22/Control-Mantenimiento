@@ -59,7 +59,7 @@
  </div>
 
  {{-- Entidad (cliente o proveedor) --}}
- <div class="mb-8 p-5 rounded-2xl bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 backdrop-blur-sm flex items-start gap-4">
+ <div class="mb-8 p-5 rounded-2xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md flex items-start gap-4 shadow-sm">
  <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center text-white text-xl shadow-lg shrink-0">
  {{ $factura->tipo_movimiento === 'compra' ? '🏭' : '👤' }}
  </div>
@@ -107,7 +107,7 @@
  {{-- Notas --}}
  <div class="w-full md:w-1/2">
  @if($factura->observaciones)
- <div class="p-4 bg-gray-50/50 dark:bg-gray-800/30 rounded-xl border border-gray-200/50 dark:border-gray-700/50">
+  <div class="p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
  <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Observaciones</p>
  <p class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ $factura->observaciones }}</p>
  </div>

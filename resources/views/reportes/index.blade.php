@@ -93,14 +93,14 @@
   </div>
   
   <div class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-  <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
-  <span class="font-bold text-gray-600 dark:text-gray-300 text-sm">Valorización de Inventario (Costo)</span>
-  <span class="font-black text-gray-800 dark:text-white">${{ number_format($acumulado['inventario_costo'], 0, ',', '.') }}</span>
-  </div>
-  <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
-  <span class="font-bold text-gray-600 dark:text-gray-300 text-sm">Utilidad Esperada del Inventario</span>
-  <span class="font-black text-blue-600 dark:text-blue-400">${{ number_format($acumulado['inventario_utilidad_esperada'], 0, ',', '.') }}</span>
-  </div>
+   <div class="flex justify-between items-center bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 backdrop-blur-sm p-3 rounded-xl shadow-sm">
+   <span class="font-bold text-gray-600 dark:text-gray-300 text-sm">Valorización de Inventario (Costo)</span>
+   <span class="font-black text-gray-800 dark:text-white">${{ number_format($acumulado['inventario_costo'], 0, ',', '.') }}</span>
+   </div>
+   <div class="flex justify-between items-center bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 backdrop-blur-sm p-3 rounded-xl shadow-sm">
+   <span class="font-bold text-gray-600 dark:text-gray-300 text-sm">Utilidad Esperada del Inventario</span>
+   <span class="font-black text-blue-600 dark:text-blue-400">${{ number_format($acumulado['inventario_utilidad_esperada'], 0, ',', '.') }}</span>
+   </div>
   </div>
   </div>
 
@@ -115,7 +115,7 @@
   <p class="text-gray-500 mt-2">No se encontraron transacciones activas en este período.</p>
   </div>
   @else
-  <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+  <div class="overflow-x-auto pb-2">
   <table class="ts-table responsive-table">
   <thead>
   <tr>

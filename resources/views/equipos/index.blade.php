@@ -30,7 +30,7 @@
  </div>
  </div>
 
- <div class="overflow-x-auto rounded-2xl border border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-md">
+ <div class="overflow-x-auto pb-2">
  <table id="tabla-equipos" class="ts-table responsive-table">
  <thead>
  <tr>

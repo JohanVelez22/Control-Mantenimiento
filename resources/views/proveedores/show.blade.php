@@ -1,10 +1,9 @@
 @extends('layouts.app')
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
-
- {{-- Header --}}
- <div class="glass-card p-6 md:p-8">
- <div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 w-full">
+<div class="max-w-4xl mx-auto">
+    <div class="glass-card p-6 md:p-8">
+        {{-- Header --}}
+        <div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 w-full">
  <div class="flex items-start gap-4">
  <a href="{{ route('proveedores.index') }}" class="btn-ghost px-3 py-2 text-xl mt-1 shrink-0" title="Volver">⬅️</a>
  <div>
@@ -30,34 +29,34 @@
  @endif
  </div>
 
- <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-500/20">
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 rounded-2xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md shadow-sm">
  <div>
- <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest block mb-1">Identificación</span>
+ <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Identificación</span>
  <span class="font-mono font-bold text-slate-800 dark:text-white text-base">{{ $proveedor->identificacion }}</span>
  </div>
  <div>
- <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest block mb-1">Teléfono</span>
+ <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Teléfono</span>
  <span class="font-bold text-slate-800 dark:text-white">{{ $proveedor->telefono ?? '—' }}</span>
  </div>
  <div>
- <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest block mb-1">Correo Electrónico</span>
+ <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Correo Electrónico</span>
  <span class="font-bold text-slate-800 dark:text-white">{{ $proveedor->email ?? '—' }}</span>
  </div>
  <div>
- <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest block mb-1">Dirección</span>
+ <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Dirección</span>
  <span class="font-bold text-slate-800 dark:text-white">{{ $proveedor->direccion ?? '—' }}</span>
  </div>
  @if($proveedor->notas)
  <div class="md:col-span-2 mt-2 p-3 bg-white/40 dark:bg-slate-800/40 rounded-xl">
- <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest block mb-1">Notas</span>
+ <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Notas</span>
  <span class="font-medium text-slate-700 dark:text-slate-300">{{ $proveedor->notas }}</span>
  </div>
  @endif
  </div>
- </div>
 
- {{-- Resumen financiero --}}
- <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {{-- Resumen financiero --}}
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 mt-8">Resumen Financiero</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
  <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
  <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10">Total Comprado</p>
@@ -75,22 +74,20 @@
  <p class="text-[10px] font-black {{ $saldoProveedor > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10">Saldo Pendiente</p>
  <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($saldoProveedor, 0, ',', '.') }}</p>
  </div>
- </div>
+        </div>
 
- {{-- Artículos de inventario del proveedor --}}
- <div class="glass-card p-6 md:p-8">
- <div class="flex items-center gap-3 mb-6">
- <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">📦 Artículos Suministrados</h3>
- <span class="px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700 text-xs font-bold text-gray-600 dark:text-gray-300">{{ $proveedor->stocks->count() }}</span>
- </div>
- 
- @if($proveedor->stocks->isEmpty())
+        {{-- Artículos de inventario del proveedor --}}
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 mt-8 flex items-center gap-2">📦 Artículos Suministrados 
+            <span class="px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700 text-xs font-bold text-gray-600 dark:text-gray-300">{{ $proveedor->stocks->count() }}</span>
+        </h3>
+        
+        @if($proveedor->stocks->isEmpty())
  <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
  <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">📦</span>
  <p class="text-gray-500 font-medium">No hay artículos de inventario asociados a este proveedor.</p>
  </div>
  @else
- <div class="overflow-x-auto overflow-y-auto max-h-[400px] rounded-xl border border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 relative mb-2">
+ <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-2">
  <table class="ts-table mb-0">
  <thead class="sticky top-0 z-20 shadow-sm">
  <tr>
@@ -118,17 +115,14 @@
  </tbody>
  </table>
  </div>
- @endif
- </div>
+        @endif
 
- {{-- Historial de facturas/compras --}}
- <div class="glass-card p-6 md:p-8">
- <div class="flex items-center gap-3 mb-6">
- <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🧾 Historial de Compras</h3>
- <span class="px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700 text-xs font-bold text-gray-600 dark:text-gray-300">{{ $proveedor->facturas->count() }}</span>
- </div>
- 
- @if($proveedor->facturas->isEmpty())
+        {{-- Historial de facturas/compras --}}
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 mt-8 border-t border-gray-200/50 dark:border-white/10 pt-6 flex items-center gap-2">🧾 Historial de Compras
+            <span class="px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700 text-xs font-bold text-gray-600 dark:text-gray-300">{{ $proveedor->facturas->count() }}</span>
+        </h3>
+        
+        @if($proveedor->facturas->isEmpty())
  <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
  <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">🧾</span>
  <p class="text-gray-500 font-medium">No hay compras registradas con este proveedor.</p>
@@ -168,8 +162,7 @@
  </div>
  @endforeach
  </div>
- @endif
- </div>
-
+        @endif
+    </div>
 </div>
 @endsection

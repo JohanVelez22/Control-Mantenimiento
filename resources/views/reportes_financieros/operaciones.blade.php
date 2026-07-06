@@ -224,7 +224,7 @@
  
  {{-- Tabla Compras / Ventas --}}
  @else
-  <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+  <div class="overflow-x-auto pb-2">
   <table class="ts-table responsive-table w-full text-sm text-center">
   <thead>
   <tr>

@@ -94,14 +94,14 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-4 flex justify-between items-center p-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl border border-gray-200/50 dark:border-gray-700">
+                <div class="mt-4 flex justify-between items-center p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
                     <span class="font-bold text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">Nuevo Total Documento:</span>
                     <span class="text-2xl font-black text-blue-600 dark:text-blue-400" id="total_documento_display">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>
                 </div>
             </div>
 
             {{-- Total Pagado --}}
-            <div class="md:col-span-2 p-4 bg-white/40 dark:bg-slate-800/40 border border-gray-200/60 dark:border-gray-700/60 rounded-2xl">
+            <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
                 <label class="field-label text-center block text-sm">Total Pagado ($) *</label>
                 <input type="text" name="total_pagado" id="total_pagado" required value="{{ old('total_pagado', number_format($factura->total_pagado, 0, '', '.')) }}" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()" class="glass-input font-black text-2xl text-emerald-600 text-center py-3">
                 <p class="text-[11px] text-gray-400 mt-2 text-center" id="total_pagado_help">El monto total del documento es ${{ number_format($factura->total_documento, 0, ',', '.') }}. Modificar el pago ajustará el saldo y el estado automáticamente.</p>
