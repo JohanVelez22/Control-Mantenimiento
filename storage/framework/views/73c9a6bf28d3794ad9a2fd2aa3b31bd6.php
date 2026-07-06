@@ -73,7 +73,7 @@
  </div>
  <span class="text-xs font-bold px-3 py-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 rounded-full shadow-sm">Últimos 7 Días</span>
  </div>
- <div class="w-full flex-grow relative px-2 pb-6">
+ <div class="w-full flex-grow relative pl-8 pr-14 pb-6">
  <canvas id="barChart"></canvas>
  </div>
  </div>
@@ -104,7 +104,7 @@
  </div>
  <span class="text-xs font-bold px-3 py-1.5 bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200 rounded-full shadow-sm">Últimos 7 días</span>
  </div>
- <div class="w-full flex-grow relative px-2 pb-8">
+ <div class="w-full flex-grow relative pl-8 pr-14 pb-8">
  <canvas id="ingresosChart"></canvas>
  </div>
  </div>
