@@ -35,7 +35,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     
     <!-- CSS Propio (Liquid Glass) - va DESPUÉS para sobreescribir estilos base -->
-    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/glass.css')); ?>?v=<?php echo e(time()); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* Ajuste de placeholder para TomSelect nativo */
@@ -330,7 +330,7 @@
 </head>
 <body class="ts-bg text-gray-800 dark:text-gray-100 overflow-x-hidden antialiased">
 
-    @auth
+    <?php if(auth()->guard()->check()): ?>
     <!-- Envoltura Principal -->
     <div class="flex min-h-screen">
         
@@ -343,64 +343,64 @@
 
             <!-- Navegación -->
             <nav class="flex-1 flex flex-col justify-between overflow-y-auto overflow-x-hidden scrollbar-hide py-4 px-2 gap-1">
-                <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}" title="Dashboard">
+                <a href="<?php echo e(route('dashboard')); ?>" class="nav-item <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>" title="Dashboard">
                     <span class="nav-icon">📊</span>
                     <span class="nav-label">Dashboard</span>
                 </a>
-                <a href="{{ route('clientes.index') }}" class="nav-item {{ request()->routeIs('clientes.*') ? 'active' : '' }}" title="Clientes">
+                <a href="<?php echo e(route('clientes.index')); ?>" class="nav-item <?php echo e(request()->routeIs('clientes.*') ? 'active' : ''); ?>" title="Clientes">
                     <span class="nav-icon">👤</span>
                     <span class="nav-label">Clientes</span>
                 </a>
-                <a href="{{ route('equipos.index') }}" class="nav-item {{ request()->routeIs('equipos.*') ? 'active' : '' }}" title="Equipos">
+                <a href="<?php echo e(route('equipos.index')); ?>" class="nav-item <?php echo e(request()->routeIs('equipos.*') ? 'active' : ''); ?>" title="Equipos">
                     <span class="nav-icon">🖥️</span>
                     <span class="nav-label">Equipos</span>
                 </a>
-                <a href="{{ route('proveedores.index') }}" class="nav-item {{ request()->routeIs('proveedores.*') ? 'active' : '' }}" title="Proveedores">
+                <a href="<?php echo e(route('proveedores.index')); ?>" class="nav-item <?php echo e(request()->routeIs('proveedores.*') ? 'active' : ''); ?>" title="Proveedores">
                     <span class="nav-icon">🏭</span>
                     <span class="nav-label">Proveedores</span>
                 </a>
-                <a href="{{ route('tecnicos.index') }}" class="nav-item {{ request()->routeIs('tecnicos.*') ? 'active' : '' }}" title="Técnicos">
+                <a href="<?php echo e(route('tecnicos.index')); ?>" class="nav-item <?php echo e(request()->routeIs('tecnicos.*') ? 'active' : ''); ?>" title="Técnicos">
                     <span class="nav-icon">🛠️</span>
                     <span class="nav-label">Técnicos</span>
                 </a>
-                <a href="{{ route('stocks.index') }}" class="nav-item {{ request()->routeIs('stocks.*') && !request()->routeIs('stocks.reportes') ? 'active' : '' }}" title="Control Stock">
+                <a href="<?php echo e(route('stocks.index')); ?>" class="nav-item <?php echo e(request()->routeIs('stocks.*') && !request()->routeIs('stocks.reportes') ? 'active' : ''); ?>" title="Control Stock">
                     <span class="nav-icon">📦</span>
                     <span class="nav-label">Control Stock</span>
                 </a>
-                <a href="{{ route('inventario.facturas') }}" class="nav-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}" title="Operaciones (C/V)">
+                <a href="<?php echo e(route('inventario.facturas')); ?>" class="nav-item <?php echo e(request()->routeIs('inventario.*') ? 'active' : ''); ?>" title="Operaciones (C/V)">
                     <span class="nav-icon">🛒</span>
                     <span class="nav-label">Operaciones (C/V)</span>
                 </a>
-                <a href="{{ route('mantenimientos.index') }}" class="nav-item {{ request()->routeIs('mantenimientos.*') && !request()->routeIs('mantenimientos.reportes') ? 'active' : '' }}" title="Mantenimientos">
+                <a href="<?php echo e(route('mantenimientos.index')); ?>" class="nav-item <?php echo e(request()->routeIs('mantenimientos.*') && !request()->routeIs('mantenimientos.reportes') ? 'active' : ''); ?>" title="Mantenimientos">
                     <span class="nav-icon">⚙️</span>
                     <span class="nav-label">Mantenimientos</span>
                 </a>
-                <a href="{{ route('electronicas.index') }}" class="nav-item {{ request()->routeIs('electronicas.*') && !request()->routeIs('electronicas.reportes') ? 'active' : '' }}" title="Electrónica">
+                <a href="<?php echo e(route('electronicas.index')); ?>" class="nav-item <?php echo e(request()->routeIs('electronicas.*') && !request()->routeIs('electronicas.reportes') ? 'active' : ''); ?>" title="Electrónica">
                     <span class="nav-icon">⚡</span>
                     <span class="nav-label">Electrónica</span>
                 </a>
-                <a href="{{ route('caja.index') }}" class="nav-item {{ request()->routeIs('caja.*') ? 'active' : '' }}" title="Caja (Ing/Egr)">
+                <a href="<?php echo e(route('caja.index')); ?>" class="nav-item <?php echo e(request()->routeIs('caja.*') ? 'active' : ''); ?>" title="Caja (Ing/Egr)">
                     <span class="nav-icon">💵</span>
                     <span class="nav-label">Caja (Ing/Egr)</span>
                 </a>
-                <a href="{{ route('cierre.index') }}" class="nav-item {{ request()->routeIs('cierre.*') ? 'active' : '' }}" title="Arqueo / Cierre">
+                <a href="<?php echo e(route('cierre.index')); ?>" class="nav-item <?php echo e(request()->routeIs('cierre.*') ? 'active' : ''); ?>" title="Arqueo / Cierre">
                     <span class="nav-icon">🔒</span>
                     <span class="nav-label">Arqueo / Cierre</span>
                 </a>
-                <a href="{{ route('reportes.financiero.diario') }}" class="nav-item {{ request()->routeIs('reportes.*') || request()->routeIs('mantenimientos.reportes') || request()->routeIs('electronicas.reportes') || request()->routeIs('stocks.reportes') ? 'active' : '' }}" title="Info Operativos">
+                <a href="<?php echo e(route('reportes.financiero.diario')); ?>" class="nav-item <?php echo e(request()->routeIs('reportes.*') || request()->routeIs('mantenimientos.reportes') || request()->routeIs('electronicas.reportes') || request()->routeIs('stocks.reportes') ? 'active' : ''); ?>" title="Info Operativos">
                     <span class="nav-icon">📈</span>
                     <span class="nav-label">Info Operativos</span>
                 </a>
-                <a href="{{ route('configuracion.index') }}" class="nav-item {{ request()->routeIs('configuracion.*') ? 'active' : '' }}" title="Empresa">
+                <a href="<?php echo e(route('configuracion.index')); ?>" class="nav-item <?php echo e(request()->routeIs('configuracion.*') ? 'active' : ''); ?>" title="Empresa">
                     <span class="nav-icon">🏢</span>
                     <span class="nav-label">Empresa</span>
                 </a>
-                @if(auth()->user() && auth()->user()->isAdmin())
-                <a href="{{ route('eventos.index') }}" class="nav-item {{ request()->routeIs('eventos.*') ? 'active' : '' }}" title="Eventos (Auditoría)">
+                <?php if(auth()->user() && auth()->user()->isAdmin()): ?>
+                <a href="<?php echo e(route('eventos.index')); ?>" class="nav-item <?php echo e(request()->routeIs('eventos.*') ? 'active' : ''); ?>" title="Eventos (Auditoría)">
                     <span class="nav-icon">🕵️</span>
                     <span class="nav-label">Eventos</span>
                 </a>
-                @endif
+                <?php endif; ?>
             </nav>
             
             </aside>
@@ -419,7 +419,7 @@
 
                 <!-- Centro: Logo Centrado -->
                 <div class="topbar-logo-container hidden md:flex justify-center items-center">
-                    <a href="{{ route('dashboard') }}" class="text-[20px] font-black tracking-widest hover:scale-105 transition-transform duration-300 font-logo flex items-center gap-2">
+                    <a href="<?php echo e(route('dashboard')); ?>" class="text-[20px] font-black tracking-widest hover:scale-105 transition-transform duration-300 font-logo flex items-center gap-2">
                         <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
                         <span class="text-slate-800 dark:text-white">SYSTEMAS</span>
                     </a>
@@ -429,17 +429,18 @@
                 <div class="flex items-center gap-3">
                     
                     <!-- Avatar de Usuario (Clickeable hacia Usuarios) -->
-                    <a href="{{ route('usuarios.index') }}" class="flex items-center gap-2 pr-4 border-r border-gray-200 dark:border-white/10 hover:opacity-80 transition-opacity mr-2">
-                        @if(auth()->check() && auth()->user()->photo)
-                            <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Avatar" class="w-10 h-10 rounded-xl object-cover border-2 border-gray-200 dark:border-white/10">
-                        @elseif(auth()->check())
+                    <a href="<?php echo e(route('usuarios.index')); ?>" class="flex items-center gap-2 pr-4 border-r border-gray-200 dark:border-white/10 hover:opacity-80 transition-opacity mr-2">
+                        <?php if(auth()->check() && auth()->user()->photo): ?>
+                            <img src="<?php echo e(asset('storage/' . auth()->user()->photo)); ?>" alt="Avatar" class="w-10 h-10 rounded-xl object-cover border-2 border-gray-200 dark:border-white/10">
+                        <?php elseif(auth()->check()): ?>
                             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg">
-                                {{ substr(auth()->user()->name, 0, 1) }}
+                                <?php echo e(substr(auth()->user()->name, 0, 1)); ?>
+
                             </div>
-                        @endif
+                        <?php endif; ?>
                         <div class="hidden md:flex flex-col text-left ml-2">
-                            <span class="text-sm font-bold text-slate-800 dark:text-white leading-none">{{ auth()->check() ? auth()->user()->name : 'Invitado' }}</span>
-                            <span class="text-[10px] text-[#06B6D4] uppercase font-bold mt-1">{{ auth()->check() ? auth()->user()->role ?? 'Admin' : 'Invitado' }}</span>
+                            <span class="text-sm font-bold text-slate-800 dark:text-white leading-none"><?php echo e(auth()->check() ? auth()->user()->name : 'Invitado'); ?></span>
+                            <span class="text-[10px] text-[#06B6D4] uppercase font-bold mt-1"><?php echo e(auth()->check() ? auth()->user()->role ?? 'Admin' : 'Invitado'); ?></span>
                         </div>
                     </a>
 
@@ -447,12 +448,12 @@
                     <div class="relative">
                         <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg relative" onclick="toggleNotifDropdown()">
                             🔔
-                            @if(isset($totalPendientes) && $totalPendientes > 0)
+                            <?php if(isset($totalPendientes) && $totalPendientes > 0): ?>
                                 <span class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
                                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                                   <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border border-white dark:border-slate-800"></span>
                                 </span>
-                            @endif
+                            <?php endif; ?>
                         </button>
                         
                         <!-- Notification Dropdown - Acrylic Glass, centered, rectangular -->
@@ -471,40 +472,40 @@
                                 <div id="notif-header" class="px-3 py-2.5 relative border-b text-center"
                                      style="background:rgba(37,99,235,0.12); border-color:rgba(37,99,235,0.15);">
                                     <span id="notif-title" class="text-[11px] font-semibold tracking-[0.15em] font-logo inline-block uppercase" style="color:#06B6D4;">Pendientes</span>
-                                    @if(isset($totalPendientes) && $totalPendientes > 0)
-                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center min-w-[20px] h-[20px] px-1 rounded-full text-white text-[10px] font-black" style="background:#ef4444; box-shadow:0 2px 6px rgba(239,68,68,0.5)">{{ $totalPendientes }}</span>
-                                    @endif
+                                    <?php if(isset($totalPendientes) && $totalPendientes > 0): ?>
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center min-w-[20px] h-[20px] px-1 rounded-full text-white text-[10px] font-black" style="background:#ef4444; box-shadow:0 2px 6px rgba(239,68,68,0.5)"><?php echo e($totalPendientes); ?></span>
+                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Items -->
-                                @if(isset($totalPendientes) && $totalPendientes > 0)
+                                <?php if(isset($totalPendientes) && $totalPendientes > 0): ?>
                                 <div class="py-1">
-                                    @if($mantPendientes > 0)
+                                    <?php if($mantPendientes > 0): ?>
                                     <button onclick="openNotifModal('mant'); document.getElementById('notif-dropdown').classList.add('hidden');"
                                             class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/30"
                                             style="border-bottom:1px solid rgba(0,0,0,0.05);">
                                         <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(59,130,246,0.15);">🔧</div>
                                         <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Mantenimiento</span>
-                                        <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#3b82f6; box-shadow:0 2px 6px rgba(59,130,246,0.4)">{{ $mantPendientes }}</span>
+                                        <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#3b82f6; box-shadow:0 2px 6px rgba(59,130,246,0.4)"><?php echo e($mantPendientes); ?></span>
                                     </button>
-                                    @endif
-                                    @if($elecPendientes > 0)
+                                    <?php endif; ?>
+                                    <?php if($elecPendientes > 0): ?>
                                     <button onclick="openNotifModal('elec'); document.getElementById('notif-dropdown').classList.add('hidden');"
                                             class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-purple-50 dark:hover:bg-purple-900/30"
                                             style="border-bottom:1px solid rgba(0,0,0,0.05);">
                                         <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(168,85,247,0.15);">⚡</div>
                                         <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Electrónica</span>
-                                        <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#a855f7; box-shadow:0 2px 6px rgba(168,85,247,0.4)">{{ $elecPendientes }}</span>
+                                        <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#a855f7; box-shadow:0 2px 6px rgba(168,85,247,0.4)"><?php echo e($elecPendientes); ?></span>
                                     </button>
-                                    @endif
-                                    @if($cajaPendientes > 0)
+                                    <?php endif; ?>
+                                    <?php if($cajaPendientes > 0): ?>
                                     <button onclick="openNotifModal('caja'); document.getElementById('notif-dropdown').classList.add('hidden');"
                                             class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-amber-50 dark:hover:bg-amber-900/30">
                                         <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(245,158,11,0.15);">💰</div>
                                         <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Saldos / Caja</span>
-                                        <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#f59e0b; box-shadow:0 2px 6px rgba(245,158,11,0.4)">{{ $cajaPendientes }}</span>
+                                        <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#f59e0b; box-shadow:0 2px 6px rgba(245,158,11,0.4)"><?php echo e($cajaPendientes); ?></span>
                                     </button>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                                 <!-- Footer CTA -->
                                 <button id="notif-footer" onclick="openNotifModal('all'); document.getElementById('notif-dropdown').classList.add('hidden');"
@@ -512,7 +513,7 @@
                                         style="border-top:1px solid rgba(37,99,235,0.15); background:rgba(37,99,235,0.10); color:#1d4ed8;">
                                     Ver todos →
                                 </button>
-                                @else
+                                <?php else: ?>
                                 <div class="py-1">
                                     <div class="px-4 py-5 text-center">
                                         <div class="text-2xl mb-1">✅</div>
@@ -520,7 +521,7 @@
                                         <p class="text-xs mt-0.5" style="color:#9ca3af;">Sin tareas pendientes.</p>
                                     </div>
                                 </div>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -596,8 +597,8 @@
                     </button>
                     
                     <!-- Logout -->
-                    <form action="{{ route('logout') }}" method="POST" class="m-0 pl-1">
-                        @csrf
+                    <form action="<?php echo e(route('logout')); ?>" method="POST" class="m-0 pl-1">
+                        <?php echo csrf_field(); ?>
                         <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all group text-lg" title="Cerrar Sesión">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
@@ -612,17 +613,17 @@
 
             <!-- CONTENIDO DINÁMICO -->
             <main id="ts-main" class="flex-1 p-4 sm:p-6 lg:p-8 pb-[50vh] relative z-10">
-                @yield('content')
+                <?php echo $__env->yieldContent('content'); ?>
             </main>
         </div>
     </div>
-    @endauth
+    <?php endif; ?>
 
-    @guest
+    <?php if(auth()->guard()->guest()): ?>
         <div class="min-h-[100dvh] flex items-center justify-center p-4 pb-24 md:pb-32">
-            @yield('content')
+            <?php echo $__env->yieldContent('content'); ?>
         </div>
-    @endguest
+    <?php endif; ?>
 
     <!-- CONTENEDOR DE TOASTS (Notificaciones Glass) -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-[999] flex flex-col gap-3 pointer-events-none w-full max-w-sm"></div>
@@ -663,7 +664,7 @@
                     Ingresa tu contraseña para anular este registro. Se mantendrá el historial pero no afectará saldos.
                 </p>
                 <form id="global-anular-form" method="POST" class="space-y-4">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <div>
                         <input type="password" name="password_confirm" id="global-anular-input" required
                             placeholder="Contraseña..." 
@@ -727,9 +728,9 @@
         }
 
         // Leer sesiones de Laravel
-        @if(session('success')) showToast("{{ session('success') }}", 'success'); @endif
-        @if(session('error')) showToast("{{ session('error') }}", 'error'); @endif
-        @if($errors->any()) showToast("Verifica los campos obligatorios del formulario.", 'error'); @endif
+        <?php if(session('success')): ?> showToast("<?php echo e(session('success')); ?>", 'success'); <?php endif; ?>
+        <?php if(session('error')): ?> showToast("<?php echo e(session('error')); ?>", 'error'); <?php endif; ?>
+        <?php if($errors->any()): ?> showToast("Verifica los campos obligatorios del formulario.", 'error'); <?php endif; ?>
 
         // ─── MODAL GLOBAL DE CONFIRMACIÓN ─────────────────────────────
         let _pendingForm = null;
@@ -927,94 +928,95 @@
     </script>
 
     <!-- Modal de Notificaciones Pendientes (siempre disponible, abierto desde campana o al iniciar sesión) -->
-    @if(isset($totalPendientes) && $totalPendientes > 0)
+    <?php if(isset($totalPendientes) && $totalPendientes > 0): ?>
     <div id="ts-notif-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
         <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 md:p-8 flex flex-col transition-all duration-300 w-full max-w-lg mx-4">
 
-            {{-- Header --}}
+            
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center shrink-0">
                     <span class="text-2xl">🔔</span>
                 </div>
                 <div>
                     <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">¡Tienes tareas pendientes!</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalPendientes }} elemento(s) requieren atención</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400"><?php echo e($totalPendientes); ?> elemento(s) requieren atención</p>
                 </div>
             </div>
 
-            {{-- Filtros / Tabs --}}
+            
             <div class="flex flex-wrap gap-2 mb-4 w-full justify-center">
                 <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60">Todos</button>
-                @if($mantPendientes > 0)
+                <?php if($mantPendientes > 0): ?>
                 <button onclick="filterNotifs('mant')" id="btn-notif-mant" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60">Mantenimiento</button>
-                @endif
-                @if($elecPendientes > 0)
+                <?php endif; ?>
+                <?php if($elecPendientes > 0): ?>
                 <button onclick="filterNotifs('elec')" id="btn-notif-elec" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60">Electrónica</button>
-                @endif
-                @if($cajaPendientes > 0)
+                <?php endif; ?>
+                <?php if($cajaPendientes > 0): ?>
                 <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60">Saldos/Caja</button>
-                @endif
+                <?php endif; ?>
             </div>
 
-            {{-- Scrollable list of all pending items --}}
+            
             <div class="w-full max-h-[50vh] overflow-y-auto space-y-2 pr-1 scrollbar-hide mb-5">
 
-                {{-- Mantenimientos --}}
-                @foreach($mantList as $m)
-                <a href="{{ route('mantenimientos.show', $m->id) }}" onclick="closeNotifModal()" data-notif-type="mant"
+                
+                <?php $__currentLoopData = $mantList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <a href="<?php echo e(route('mantenimientos.show', $m->id)); ?>" onclick="closeNotifModal()" data-notif-type="mant"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-blue-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Mantenimiento</span>
-                            <span class="text-[10px] font-bold text-blue-500 dark:text-blue-300">{{ $m->id_orden }}</span>
+                            <span class="text-[10px] font-bold text-blue-500 dark:text-blue-300"><?php echo e($m->id_orden); ?></span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $m->equipo->nombre ?? 'N/A' }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $m->equipo->cliente->nombre ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate"><?php echo e($m->equipo->nombre ?? 'N/A'); ?></p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate"><?php echo e($m->equipo->cliente->nombre ?? '—'); ?></p>
                     </div>
                     <span class="shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                {{-- Electrónica --}}
-                @foreach($elecList as $e)
-                <a href="{{ route('electronicas.show', $e->id) }}" onclick="closeNotifModal()" data-notif-type="elec"
+                
+                <?php $__currentLoopData = $elecList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $e): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <a href="<?php echo e(route('electronicas.show', $e->id)); ?>" onclick="closeNotifModal()" data-notif-type="elec"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-purple-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Electrónica</span>
-                            <span class="text-[10px] font-bold text-purple-500 dark:text-purple-300">{{ $e->id_orden }}</span>
+                            <span class="text-[10px] font-bold text-purple-500 dark:text-purple-300"><?php echo e($e->id_orden); ?></span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $e->equipo->nombre ?? 'N/A' }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $e->equipo->cliente->nombre ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate"><?php echo e($e->equipo->nombre ?? 'N/A'); ?></p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate"><?php echo e($e->equipo->cliente->nombre ?? '—'); ?></p>
                     </div>
                     <span class="shrink-0 text-purple-500 dark:text-purple-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                {{-- Facturas con saldo pendiente --}}
-                @foreach($cajaList as $f)
-                <a href="{{ route('inventario.facturas.show', $f->id) }}" onclick="closeNotifModal()" data-notif-type="caja"
+                
+                <?php $__currentLoopData = $cajaList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $f): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <a href="<?php echo e(route('inventario.facturas.show', $f->id)); ?>" onclick="closeNotifModal()" data-notif-type="caja"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Factura</span>
-                            <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $f->numero_factura }}</span>
+                            <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300"><?php echo e($f->numero_factura); ?></span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate"><?php echo e($f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—'); ?></p>
                         <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
-                            Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}
+                            Saldo: $<?php echo e(number_format($f->saldo_pendiente, 0, ',', '.')); ?>
+
                         </p>
                     </div>
                     <span class="shrink-0 text-orange-500 dark:text-orange-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                {{-- Ingresos/Egresos con saldo pendiente --}}
-                @foreach($movimientosPendientes as $mov)
-                @php
+                
+                <?php $__currentLoopData = $movimientosPendientes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mov): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
                     $isIngreso = $mov->tipo_movimiento === 'ingreso';
                     $bgClass = $isIngreso ? 'bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border-emerald-100 dark:border-emerald-800' : 'bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 border-orange-100 dark:border-orange-800';
                     $barClass = $isIngreso ? 'bg-emerald-500' : 'bg-orange-500';
@@ -1022,23 +1024,24 @@
                     $idClass = $isIngreso ? 'text-emerald-500 dark:text-emerald-300' : 'text-orange-500 dark:text-orange-300';
                     $montoClass = $isIngreso ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400';
                     $arrowClass = $isIngreso ? 'text-emerald-500 dark:text-emerald-400' : 'text-orange-500 dark:text-orange-400';
-                @endphp
-                <a href="{{ route('caja.print', $mov->id) }}" onclick="closeNotifModal()" data-notif-type="caja"
-                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl border {{ $bgClass }} transition-colors group relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1 h-full {{ $barClass }} rounded-l-xl"></div>
+                ?>
+                <a href="<?php echo e(route('caja.print', $mov->id)); ?>" onclick="closeNotifModal()" data-notif-type="caja"
+                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl border <?php echo e($bgClass); ?> transition-colors group relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full <?php echo e($barClass); ?> rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
-                            <span class="text-[10px] font-black {{ $titleClass }} uppercase tracking-wider">Saldo {{ ucfirst($mov->tipo_movimiento) }}</span>
-                            <span class="text-[10px] font-bold {{ $idClass }}">#{{ str_pad($mov->id, 4, '0', STR_PAD_LEFT) }}</span>
+                            <span class="text-[10px] font-black <?php echo e($titleClass); ?> uppercase tracking-wider">Saldo <?php echo e(ucfirst($mov->tipo_movimiento)); ?></span>
+                            <span class="text-[10px] font-bold <?php echo e($idClass); ?>">#<?php echo e(str_pad($mov->id, 4, '0', STR_PAD_LEFT)); ?></span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $mov->concepto->nombre ?? '—' }} - {{ $mov->persona ?? '—' }}</p>
-                        <p class="text-xs {{ $montoClass }} font-semibold">
-                            Falta pagar: ${{ number_format($mov->monto_total - $mov->monto, 0, ',', '.') }}
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate"><?php echo e($mov->concepto->nombre ?? '—'); ?> - <?php echo e($mov->persona ?? '—'); ?></p>
+                        <p class="text-xs <?php echo e($montoClass); ?> font-semibold">
+                            Falta pagar: $<?php echo e(number_format($mov->monto_total - $mov->monto, 0, ',', '.')); ?>
+
                         </p>
                     </div>
-                    <span class="shrink-0 {{ $arrowClass }} group-hover:translate-x-1 transition-transform text-lg">→</span>
+                    <span class="shrink-0 <?php echo e($arrowClass); ?> group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             </div>
 
@@ -1137,11 +1140,11 @@
         }
 
         // Abrir automáticamente al iniciar sesión si hay alertas de sesión pendientes
-        @if(session('alertas_pendientes') && count(session('alertas_pendientes')) > 0)
+        <?php if(session('alertas_pendientes') && count(session('alertas_pendientes')) > 0): ?>
         document.addEventListener('DOMContentLoaded', () => openNotifModal());
-        @endif
+        <?php endif; ?>
     </script>
-    @endif
+    <?php endif; ?>
 
     <script>
         // Inicialización INMEDIATA sin esperar a DOMContentLoaded para evitar FOUC
@@ -1330,6 +1333,7 @@
             });
         })();
     </script>
-    @stack('modals')
+    <?php echo $__env->yieldPushContent('modals'); ?>
 </body>
 </html>
+<?php /**PATH C:\ServBay\www\control-mantenimiento-equipos\resources\views/layouts/app.blade.php ENDPATH**/ ?>

@@ -732,6 +732,7 @@ select.glass-input + .ts-wrapper .ts-control {
   outline: none !important;
   color: #0F172A !important;
   transition: all 0.22s ease !important;
+  height: 42px !important;
 }
 html.dark select.glass-input + .ts-wrapper .ts-control {
   background: rgba(15,23,42,0.60) !important;
@@ -1082,10 +1083,20 @@ html.dark .ts-modal-card {
 
 /* â”€â”€â”€ Animations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  /* SIN opacity: elementos NUNCA invisibles aunque la animación se reinicie */
+  from { transform: translateY(8px); }
+  to   { transform: translateY(0); }
 }
-.page-enter { animation: fadeSlideIn 0.28s cubic-bezier(0.22,1,0.36,1) both; }
+.page-enter { animation: fadeSlideIn 0.22s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* ─── Pricing Panel: siempre visible, sin animaciones ───────────────────────── */
+/* NOTA: sin transform:none para respetar translate de Tailwind en hijos */
+.pricing-panel,
+.pricing-panel * {
+  opacity: 1 !important;
+  visibility: visible !important;
+  animation: none !important;
+}
 
 /* â”€â”€â”€ WCAG: focus visible â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :focus-visible {
@@ -1469,7 +1480,7 @@ html.dark .ts-modal-card {
   transition: all 0.22s ease !important;
   display: flex !important;
   align-items: center !important;
-  min-height: 42px !important;
+  height: 42px !important;
 }
 
 html.dark .ts-wrapper.glass-input .ts-control {
