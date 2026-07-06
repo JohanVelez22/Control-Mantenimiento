@@ -2,13 +2,21 @@
 @section('content')
 <style>
   /* Fila resaltada al llegar por ancla (#electronica-id) */
-  tr.active-target {
-  background-color: rgba(168, 85, 247, 0.1) !important;
-  outline: 2px solid rgba(168, 85, 247, 0.5);
-  outline-offset: -2px;
+  tr.active-target td {
+    background-color: rgba(168, 85, 247, 0.08) !important;
+    border-top: 1.5px solid rgba(168, 85, 247, 0.3) !important;
+    border-bottom: 1.5px solid rgba(168, 85, 247, 0.3) !important;
   }
-  .dark tr.active-target {
-  background-color: rgba(168, 85, 247, 0.2) !important;
+  tr.active-target td:first-child {
+    border-left: 4px solid #a855f7 !important;
+  }
+  .dark tr.active-target td {
+    background-color: rgba(168, 85, 247, 0.15) !important;
+    border-top: 1.5px solid rgba(192, 132, 252, 0.4) !important;
+    border-bottom: 1.5px solid rgba(192, 132, 252, 0.4) !important;
+  }
+  .dark tr.active-target td:first-child {
+    border-left: 4px solid #c084fc !important;
   }
 </style>
 

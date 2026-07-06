@@ -99,7 +99,7 @@ html.dark .glass {
 html.dark .glass-card {
   background: rgba(15,23,42,0.65);
   border-color: rgba(255,255,255,0.07);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
 /* â”€â”€â”€ Liquid Glass Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -714,6 +714,13 @@ html.dark .glass-input:focus, html.dark .ts-wrapper.glass-input.focus {
 .glass-input.border-red-500 { border-color: #EF4444 !important; box-shadow: 0 0 0 3px rgba(239,68,68,0.12) !important; }
 
 /* â”€â”€â”€ TomSelect Fixes for Glass Input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Espaciado para los botones incrementales en inputs numéricos */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  margin-left: 8px;
+  cursor: pointer;
+}
+
 select.glass-input + .ts-wrapper {
   padding: 0 !important;
   border: none !important;
@@ -817,7 +824,7 @@ html.dark .field-label { color: #CBD5E1; }
 }
 html.dark .ts-table {
   background: rgba(15,23,42,0.65);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.07);
 }
 

@@ -2,13 +2,21 @@
 @section('content')
 <style>
   /* Fila resaltada al llegar por ancla (#mantenimiento-id) */
-  tr.active-target {
-  background-color: rgba(59, 130, 246, 0.1) !important;
-  outline: 2px solid rgba(59, 130, 246, 0.5);
-  outline-offset: -2px;
+  tr.active-target td {
+    background-color: rgba(59, 130, 246, 0.08) !important;
+    border-top: 1.5px solid rgba(59, 130, 246, 0.3) !important;
+    border-bottom: 1.5px solid rgba(59, 130, 246, 0.3) !important;
   }
-  .dark tr.active-target {
-  background-color: rgba(59, 130, 246, 0.2) !important;
+  tr.active-target td:first-child {
+    border-left: 4px solid #3b82f6 !important;
+  }
+  .dark tr.active-target td {
+    background-color: rgba(59, 130, 246, 0.15) !important;
+    border-top: 1.5px solid rgba(96, 165, 250, 0.4) !important;
+    border-bottom: 1.5px solid rgba(96, 165, 250, 0.4) !important;
+  }
+  .dark tr.active-target td:first-child {
+    border-left: 4px solid #60a5fa !important;
   }
 </style>
 

@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('content'); ?>
 <style>
 /* Altura uniforme de 42px para todos los inputs y selectores (incluyendo TomSelect) */
@@ -158,11 +160,11 @@ unset($__errorArgs, $__bag); ?>
  </div>
  <div>
  <label for="utilidad" class="field-label">Utilidad (%) *</label>
- <div class="relative">
- <input type="number" step="0.01" name="utilidad" id="utilidad"
-  value="<?php echo e(old('utilidad', $stock->utilidad ?? 30)); ?>" required min="0"
-  class="glass-input pr-8 text-right font-bold text-emerald-600 dark:text-emerald-400 dark:[color-scheme:dark]">
- <span class="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600 dark:text-emerald-400 font-bold text-sm pointer-events-none">%</span>
+ <div class="glass-input flex items-center justify-end pr-3">
+  <input type="number" step="1" name="utilidad" id="utilidad"
+   value="<?php echo e(old('utilidad', isset($stock) && $stock->utilidad !== null ? (int)$stock->utilidad : 30)); ?>" required min="0"
+   class="w-12 bg-transparent border-none outline-none focus:ring-0 text-left pl-1 font-bold text-slate-800 dark:text-white dark:[color-scheme:dark] p-0">
+  <span class="text-emerald-600 dark:text-emerald-400 font-bold text-sm ml-1">%</span>
  </div>
  <?php $__errorArgs = ['utilidad'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -177,7 +179,7 @@ unset($__errorArgs, $__bag); ?>
  <label for="precio_venta_visual" class="field-label">P. Venta (Manual)</label>
  <input type="text" id="precio_venta_visual"
   value="<?php echo e(old('precio_venta', isset($stock) && $stock->precio_venta ? number_format($stock->precio_venta, 0, '', '') : '')); ?>"
-  placeholder="Auto si vacío" class="glass-input text-right font-bold text-blue-600 dark:text-cyan-400">
+  placeholder="Automatico" class="glass-input text-right font-bold text-blue-600 dark:text-cyan-400">
  <input type="hidden" name="precio_venta" id="precio_venta_real"
   value="<?php echo e(old('precio_venta', isset($stock) && $stock->precio_venta ? intval($stock->precio_venta) : '')); ?>">
  <?php $__errorArgs = ['precio_venta'];
@@ -193,7 +195,7 @@ unset($__errorArgs, $__bag); ?>
  <label for="precio_tecnico_visual" class="field-label">P. Técnico (Manual)</label>
  <input type="text" id="precio_tecnico_visual"
   value="<?php echo e(old('precio_tecnico', isset($stock) && $stock->precio_tecnico ? number_format($stock->precio_tecnico, 0, '', '') : '')); ?>"
-  placeholder="Auto si vacío" class="glass-input text-right font-bold text-purple-600 dark:text-purple-400">
+  placeholder="Automatico" class="glass-input text-right font-bold text-purple-600 dark:text-purple-400">
  <input type="hidden" name="precio_tecnico" id="precio_tecnico_real"
   value="<?php echo e(old('precio_tecnico', isset($stock) && $stock->precio_tecnico ? intval($stock->precio_tecnico) : '')); ?>">
  <?php $__errorArgs = ['precio_tecnico'];
