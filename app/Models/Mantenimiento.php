@@ -58,6 +58,19 @@ class Mantenimiento extends Model
                     ->withTimestamps();
     }
 
+    // ─── Scopes ───────────────────────────────────────────────────
+
+    /**
+     * Scope: excluye registros anulados.
+     * Uso: Mantenimiento::activos()->where(...)
+     */
+    public function scopeActivos($query)
+    {
+        return $query->where('anulado', false);
+    }
+
+    // ─── Computed Attributes ──────────────────────────────────────
+
     /** Total abonado */
     public function getTotalAbonadoAttribute(): float
     {

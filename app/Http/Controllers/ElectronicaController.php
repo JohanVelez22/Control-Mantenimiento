@@ -81,16 +81,28 @@ class ElectronicaController extends Controller
             'tecnico_id'           => 'required|exists:tecnicos,id',
         ]);
 
-        if (empty($validated['id_orden'])) {
-            $validated['id_orden'] = self::nextOrdenId();
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+
+            if (empty($validated['id_orden'])) {
+                $last = Electronica::lockForUpdate()->orderBy('id', 'desc')->first();
+                $num = $last ? ((int) filter_var($last->id_orden, FILTER_SANITIZE_NUMBER_INT)) + 1 : 1;
+                $validated['id_orden'] = 'ELC-' . str_pad($num, 4, '0', STR_PAD_LEFT);
+            }
+
+            $validated['user_id'] = auth()->id();
+
+            Electronica::create($validated);
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            return redirect()->route('electronicas.index')
+                             ->with('success', "Registro electrónico {$validated['id_orden']} creado correctamente.");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Error registrando electrónica: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al registrar el equipo electrónico. Intente nuevamente.')->withInput();
         }
-
-        $validated['user_id'] = auth()->id();
-
-        Electronica::create($validated);
-
-        return redirect()->route('electronicas.index')
-                         ->with('success', "Registro electrónico {$validated['id_orden']} creado correctamente.");
     }
 
     public function show(Electronica $electronica)
@@ -170,12 +182,21 @@ class ElectronicaController extends Controller
                 $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
                 if ($concepto && $electronica->abonos->count() > 0) {
                     foreach ($electronica->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
-                            ->where('monto', $abono->monto)
-                            ->where('fecha', $abono->fecha->toDateString())
-                            ->where('descripcion', 'like', "%Orden " . $electronica->id_orden . "%")
-                            ->where('estado', 'activo')
-                            ->update(['anulado' => true]);
+                        \App\Models\MovimientoCaja::where(function($query) use ($abono, $concepto, $electronica) {
+                            $query->where('abono_id', $abono->id)
+                                  ->orWhere(function($sub) use ($abono, $concepto, $electronica) {
+                                      $sub->whereNull('abono_id')
+                                          ->where('concepto_id', $concepto->id)
+                                          ->where('monto', $abono->monto)
+                                          ->where('fecha', $abono->fecha->toDateString())
+                                          ->where(function($descQuery) use ($electronica) {
+                                              $descQuery->where('descripcion', 'like', "%ELC " . $electronica->id_orden . "%")
+                                                        ->orWhere('descripcion', 'like', "%Orden " . $electronica->id_orden . "%");
+                                          });
+                                  });
+                        })
+                        ->where('estado', 'activo')
+                        ->update(['anulado' => true]);
                     }
                 }
                 $msg = 'Registro electrónico anulado correctamente.';
@@ -189,11 +210,20 @@ class ElectronicaController extends Controller
                 $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
                 if ($concepto && $electronica->abonos->count() > 0) {
                     foreach ($electronica->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
-                            ->where('monto', $abono->monto)
-                            ->where('fecha', $abono->fecha->toDateString())
-                            ->where('descripcion', 'like', "%Orden " . $electronica->id_orden . "%")
-                            ->update(['anulado' => false]);
+                        \App\Models\MovimientoCaja::where(function($query) use ($abono, $concepto, $electronica) {
+                            $query->where('abono_id', $abono->id)
+                                  ->orWhere(function($sub) use ($abono, $concepto, $electronica) {
+                                      $sub->whereNull('abono_id')
+                                          ->where('concepto_id', $concepto->id)
+                                          ->where('monto', $abono->monto)
+                                          ->where('fecha', $abono->fecha->toDateString())
+                                          ->where(function($descQuery) use ($electronica) {
+                                              $descQuery->where('descripcion', 'like', "%ELC " . $electronica->id_orden . "%")
+                                                        ->orWhere('descripcion', 'like', "%Orden " . $electronica->id_orden . "%");
+                                          });
+                                  });
+                        })
+                        ->update(['anulado' => false]);
                     }
                 }
                 $msg = 'Registro electrónico reactivado correctamente.';

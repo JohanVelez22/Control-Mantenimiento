@@ -141,6 +141,7 @@ class MovimientoCajaController extends Controller
 
     public function edit(MovimientoCaja $movimiento)
     {
+        $movimiento->load('childPayments.user');
         $conceptos = ConceptoCaja::orderBy('nombre')->get();
         return view('caja.edit', compact('movimiento', 'conceptos'));
     }
@@ -220,6 +221,48 @@ class MovimientoCajaController extends Controller
                          ->with('success', 'Movimiento duplicado. Revisa y actualiza los datos antes de guardar.');
     }
 
+    /** Registrar un abono/pago parcial a este movimiento */
+    public function storeAbono(Request $request, MovimientoCaja $movimiento)
+    {
+        $validated = $request->validate([
+            'monto_abono' => 'required|numeric|min:0.01',
+            'fecha'       => 'required|date',
+            'tipo_pago'   => 'required|in:efectivo,consignacion',
+            'descripcion' => 'nullable|string|max:500',
+        ]);
+
+        if ($validated['monto_abono'] > $movimiento->saldo_pendiente) {
+            return back()->with('error', 'El abono supera el saldo pendiente de $' . number_format($movimiento->saldo_pendiente, 0, ',', '.') . '.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            MovimientoCaja::create([
+                'empresa'         => $movimiento->empresa,
+                'persona'         => $movimiento->persona,
+                'fecha'           => $validated['fecha'],
+                'concepto_id'     => $movimiento->concepto_id,
+                'tipo_movimiento' => $movimiento->tipo_movimiento,
+                'tipo_pago'       => $validated['tipo_pago'],
+                'monto'           => $validated['monto_abono'],
+                'monto_total'     => 0, // Los abonos parciales no tienen total propio
+                'descripcion'     => $validated['descripcion'] ?: 'Abono parcial a saldo de movimiento #' . $movimiento->id,
+                'estado'          => 'activo',
+                'user_id'         => auth()->id(),
+                'parent_id'       => $movimiento->id,
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Abono de $' . number_format($validated['monto_abono'], 0, ',', '.') . ' registrado correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error registrando abono de caja: ' . $e->getMessage());
+            return back()->with('error', 'Error al registrar el abono. Intente nuevamente.');
+        }
+    }
+
     public function anular(Request $request, MovimientoCaja $movimiento)
     {
         if (auth()->user()->role === 'invitado') {
@@ -244,9 +287,15 @@ class MovimientoCajaController extends Controller
         try {
             DB::beginTransaction();
             $esAnulacion = !$movimiento->anulado;
+            
+            // Anular movimiento principal
             $movimiento->update(['anulado' => $esAnulacion]);
+            
+            // Anular o restaurar todos los abonos asociados en cascada
+            $movimiento->childPayments()->update(['anulado' => $esAnulacion]);
+
             DB::commit();
-            return redirect()->back()->with('success', $esAnulacion ? 'Movimiento anulado correctamente.' : 'Movimiento reactivado correctamente.');
+            return redirect()->back()->with('success', $esAnulacion ? 'Movimiento y sus abonos anulados correctamente.' : 'Movimiento y sus abonos reactivados correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error anulando movimiento de caja: ' . $e->getMessage());

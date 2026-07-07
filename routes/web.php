@@ -106,6 +106,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::get( 'caja/{movimiento}/print',     [App\Http\Controllers\MovimientoCajaController::class, 'print'])->name('caja.print');
     Route::post('caja/{movimiento}/duplicate', [App\Http\Controllers\MovimientoCajaController::class, 'duplicate'])->name('caja.duplicate');
     Route::post('caja/{movimiento}/anular',    [App\Http\Controllers\MovimientoCajaController::class, 'anular'])->name('caja.anular');
+    Route::post('caja/{movimiento}/abonos',    [App\Http\Controllers\MovimientoCajaController::class, 'storeAbono'])->name('caja.abonos.store');
     Route::post('caja/concepto',               [App\Http\Controllers\MovimientoCajaController::class, 'storeConcepto'])->name('caja.concepto.store');
 
     Route::resource('conceptos', App\Http\Controllers\ConceptoCajaController::class)->only(['index', 'store', 'update', 'destroy']);

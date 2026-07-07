@@ -51,6 +51,17 @@ class Electronica extends Model
         return max(0, $this->costo - $this->total_abonado);
     }
 
+    // ─── Scopes ───────────────────────────────────────────────────
+
+    /**
+     * Scope: excluye registros anulados.
+     * Uso: Electronica::activos()->where(...)
+     */
+    public function scopeActivos($query)
+    {
+        return $query->where('anulado', false);
+    }
+
     public function equipo()
     {
         return $this->belongsTo(Equipo::class);

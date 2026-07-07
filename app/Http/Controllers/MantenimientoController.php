@@ -196,15 +196,17 @@ class MantenimientoController extends Controller
             'tecnico_id' => 'required|integer|exists:tecnicos,id',
         ]);
 
-        // Cálculo del siguiente número de orden basado en el último ID
-        $ultimo = Mantenimiento::orderByDesc('id')->first();
-        $siguiente = $ultimo ? intval(preg_replace('/[^0-9]/', '', $ultimo->id_orden)) + 1 : 1;
-        
-        $validated['id_orden'] = 'ORD-' . $siguiente;
-        $validated['user_id'] = Auth::id();
-
         try {
             DB::beginTransaction();
+
+            // Bloqueo pesimista: garantiza que solo UN request a la vez
+            // pueda leer el último id_orden e incrementarlo.
+            // Esto elimina el race condition en creación simultánea de órdenes.
+            $ultimo = Mantenimiento::lockForUpdate()->orderByDesc('id')->first();
+            $siguiente = $ultimo ? intval(preg_replace('/[^0-9]/', '', $ultimo->id_orden)) + 1 : 1;
+            $validated['id_orden'] = 'ORD-' . $siguiente;
+            $validated['user_id'] = Auth::id();
+
             Mantenimiento::create($validated);
             DB::commit();
             return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento registrado correctamente.');
@@ -307,12 +309,18 @@ class MantenimientoController extends Controller
                 $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Mantenimiento')->first();
                 if ($concepto && $mantenimiento->abonos->count() > 0) {
                     foreach ($mantenimiento->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
-                            ->where('monto', $abono->monto)
-                            ->where('fecha', $abono->fecha->toDateString())
-                            ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%")
-                            ->where('estado', 'activo')
-                            ->update(['anulado' => true]);
+                        \App\Models\MovimientoCaja::where(function($query) use ($abono, $concepto, $mantenimiento) {
+                            $query->where('abono_id', $abono->id)
+                                  ->orWhere(function($sub) use ($abono, $concepto, $mantenimiento) {
+                                      $sub->whereNull('abono_id')
+                                          ->where('concepto_id', $concepto->id)
+                                          ->where('monto', $abono->monto)
+                                          ->where('fecha', $abono->fecha->toDateString())
+                                          ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%");
+                                  });
+                        })
+                        ->where('estado', 'activo')
+                        ->update(['anulado' => true]);
                     }
                 }
                 $msg = 'Mantenimiento anulado correctamente. La transacción y stock asociados (si aplica) han sido revertidos.';
@@ -326,11 +334,17 @@ class MantenimientoController extends Controller
                 $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Mantenimiento')->first();
                 if ($concepto && $mantenimiento->abonos->count() > 0) {
                     foreach ($mantenimiento->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where('concepto_id', $concepto->id)
-                            ->where('monto', $abono->monto)
-                            ->where('fecha', $abono->fecha->toDateString())
-                            ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%")
-                            ->update(['anulado' => false]);
+                        \App\Models\MovimientoCaja::where(function($query) use ($abono, $concepto, $mantenimiento) {
+                            $query->where('abono_id', $abono->id)
+                                  ->orWhere(function($sub) use ($abono, $concepto, $mantenimiento) {
+                                      $sub->whereNull('abono_id')
+                                          ->where('concepto_id', $concepto->id)
+                                          ->where('monto', $abono->monto)
+                                          ->where('fecha', $abono->fecha->toDateString())
+                                          ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%");
+                                  });
+                        })
+                        ->update(['anulado' => false]);
                     }
                 }
                 $msg = 'Mantenimiento reactivado correctamente. El stock y caja han sido actualizados.';
