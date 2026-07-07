@@ -1023,7 +1023,7 @@
                     $montoClass = $isIngreso ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400';
                     $arrowClass = $isIngreso ? 'text-emerald-500 dark:text-emerald-400' : 'text-orange-500 dark:text-orange-400';
                 @endphp
-                <a href="{{ route('caja.print', $mov->id) }}" onclick="closeNotifModal()" data-notif-type="caja"
+                <a href="{{ route('caja.edit', $mov->id) }}" onclick="closeNotifModal()" data-notif-type="caja"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl border {{ $bgClass }} transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full {{ $barClass }} rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
