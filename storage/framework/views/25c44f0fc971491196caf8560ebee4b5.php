@@ -266,13 +266,8 @@ async function cargarMunicipios(departamento, seleccionado = '') {
     const ts = select.tomselect; // Obtener instancia de TomSelect si existe
 
     if (ts) {
-        ts.clearOptions();
-        ts.clear();
-        ts.disable();
-        ts.addOption({value: '', text: 'Cargando...'});
-        ts.setValue('');
+        ts.disable(); // Solo deshabilitamos mientras carga para evitar parpadeos visuales
     } else {
-        select.innerHTML = '<option value="">Cargando...</option>';
         select.disabled = true;
     }
 
@@ -295,22 +290,23 @@ async function cargarMunicipios(departamento, seleccionado = '') {
 
         if (ts) {
             ts.clearOptions();
-            ts.addOption({value: '', text: '— Seleccionar municipio —'});
             municipios.forEach(m => {
                 ts.addOption({value: m, text: m});
             });
             if (seleccionado && municipios.includes(seleccionado)) {
                 ts.setValue(seleccionado);
+            } else if (municipios.length > 0) {
+                ts.setValue(municipios[0]); // Seleccionar primera ciudad automáticamente
             } else {
                 ts.setValue('');
             }
         } else {
-            select.innerHTML = '<option value="">— Seleccionar municipio —</option>';
-            municipios.forEach(m => {
+            select.innerHTML = '';
+            municipios.forEach((m, index) => {
                 const opt = document.createElement('option');
                 opt.value = m;
                 opt.textContent = m;
-                if (m === seleccionado) opt.selected = true;
+                if (m === seleccionado || (index === 0 && !seleccionado)) opt.selected = true;
                 select.appendChild(opt);
             });
         }

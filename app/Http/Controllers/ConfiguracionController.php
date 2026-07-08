@@ -10,12 +10,20 @@ class ConfiguracionController extends Controller
 {
     public function index()
     {
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Acceso denegado. Solo administradores pueden ver la configuración.');
+        }
+
         $configuracion = Configuracion::first() ?? new Configuracion();
         return view('configuracion.index', compact('configuracion'));
     }
 
     public function update(Request $request)
     {
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Acceso denegado. Solo administradores pueden modificar la configuración.');
+        }
+
         $request->validate([
             'nombre' => 'required|string|max:255',
             'nit' => 'nullable|string|max:100',
