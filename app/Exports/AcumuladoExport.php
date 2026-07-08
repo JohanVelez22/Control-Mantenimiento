@@ -22,13 +22,13 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
     public function array(): array
     {
         return [
-            ['Mantenimientos', $this->acumulado['total_mantenimientos'] ?? 0, $this->acumulado['facturado_mant'] ?? 0],
-            ['Electrónica', $this->acumulado['total_electronicas'] ?? 0, $this->acumulado['facturado_elec'] ?? 0],
-            ['Compras de Inventario', $this->acumulado['total_compras'] ?? 0, $this->acumulado['compras_inventario'] ?? 0],
-            ['Ventas de Inventario', $this->acumulado['total_ventas'] ?? 0, $this->acumulado['ventas_inventario'] ?? 0],
-            ['Ingresos Reales (Caja)', $this->acumulado['total_ingresos'] ?? 0, $this->acumulado['ingresos_caja'] ?? 0],
-            ['Egresos Reales (Caja)', $this->acumulado['total_egresos'] ?? 0, $this->acumulado['egresos_caja'] ?? 0],
-            ['Movimientos Anulados', $this->acumulado['total_anulados'] ?? 0, $this->acumulado['total_costo_anulados'] ?? 0],
+            ['Mantenimientos', (int)($this->acumulado['total_mantenimientos'] ?? 0), (float)($this->acumulado['facturado_mant'] ?? 0)],
+            ['Electrónica', (int)($this->acumulado['total_electronicas'] ?? 0), (float)($this->acumulado['facturado_elec'] ?? 0)],
+            ['Compras de Inventario', (int)($this->acumulado['total_compras'] ?? 0), (float)($this->acumulado['compras_inventario'] ?? 0)],
+            ['Ventas de Inventario', (int)($this->acumulado['total_ventas'] ?? 0), (float)($this->acumulado['ventas_inventario'] ?? 0)],
+            ['Ingresos Reales (Caja)', (int)($this->acumulado['total_ingresos'] ?? 0), (float)($this->acumulado['ingresos_caja'] ?? 0)],
+            ['Egresos Reales (Caja)', (int)($this->acumulado['total_egresos'] ?? 0), (float)($this->acumulado['egresos_caja'] ?? 0)],
+            ['Movimientos Anulados', (int)($this->acumulado['total_anulados'] ?? 0), (float)($this->acumulado['total_costo_anulados'] ?? 0)],
         ];
     }
 
@@ -63,6 +63,9 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
+                // Configurar pie de página para impresión
+                $sheet->getHeaderFooter()->setOddFooter('&RPágina &P de &N');
+
                 $sheet->mergeCells('A1:C1');
                 $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
@@ -70,7 +73,7 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
                 $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
                 // Format amount column (C)
-                $sheet->getStyle('C5:C11')->getNumberFormat()->setFormatCode('"$"#,##0.00');
+                $sheet->getStyle('C5:C11')->getNumberFormat()->setFormatCode('"$"#,##0');
                 
                 // Strikethrough and orange color for Movimientos Anulados (Row 11)
                 $sheet->getStyle('A11:C11')->applyFromArray([
@@ -84,8 +87,8 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
                 $footerRow = $lastRow + 2;
 
                 $sheet->setCellValue("B{$footerRow}", 'Balance Neto del Período:');
-                $sheet->setCellValue("C{$footerRow}", $this->acumulado['balance_neto'] ?? 0);
-                $sheet->getStyle("C{$footerRow}")->getNumberFormat()->setFormatCode('"$"#,##0.00');
+                $sheet->setCellValue("C{$footerRow}", (float)($this->acumulado['balance_neto'] ?? 0));
+                $sheet->getStyle("C{$footerRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
 
                 $sheet->getStyle("B{$footerRow}:C{$footerRow}")->applyFromArray([
                     'font' => ['bold' => true, 'size' => 12],

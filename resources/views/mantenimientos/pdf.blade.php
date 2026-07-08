@@ -1,65 +1,88 @@
+@php
+    $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
+    $logoBase64 = null;
+    if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
+        $path = \Illuminate\Support\Facades\Storage::disk('public')->path($empresa->logo_path);
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Reporte de Mantenimientos – Tecni Systemas</title>
+    <title>Reporte de Mantenimientos – {{ $empresa->nombre }}</title>
     <style>
         @page {
             size: A4 portrait;
-            margin: 40px 50px;
+            margin: 25px 30px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: sans-serif;
             font-size: 8.2px;
-            color: #1e293b;
+            color: #000000;
             background: #fff;
             line-height: 1.35;
+            margin: 25px 30px !important;
         }
 
         /* ─── HEADER ─── */
         .report-header {
             display: table;
             width: 100%;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #1e3a5f;
+            border-bottom: 2px solid #2d3748;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
         }
-        .header-left  { display: table-cell; vertical-align: middle; width: 70%; }
-        .header-right { display: table-cell; vertical-align: middle; text-align: right; width: 30%; }
+        .header-logo-cell {
+            display: table-cell;
+            width: 40%;
+            vertical-align: middle;
+        }
+        .header-info-cell {
+            display: table-cell;
+            width: 60%;
+            text-align: right;
+            vertical-align: middle;
+            font-size: 8px;
+            color: #000000;
+            line-height: 1.3;
+        }
 
         .company-name {
             font-size: 18px;
             font-weight: 700;
-            color: #1e3a5f;
+            color: #2d3748;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
         .report-title {
             font-size: 11px;
             font-weight: 600;
-            color: #334155;
+            color: #000000;
             margin-top: 3px;
             letter-spacing: 0.3px;
         }
         .header-meta {
             font-size: 7.5px;
-            color: #64748b;
+            color: #000000;
             margin-top: 5px;
         }
         .header-badge {
             display: inline-block;
-            background: #1e3a5f;
+            background: #2d3748;
             color: #fff;
             font-size: 8px;
             font-weight: 700;
             padding: 3px 8px;
-            border-radius: 4px;
+            border-radius: 0px;
             letter-spacing: 0.5px;
         }
         .header-count {
             font-size: 9px;
-            color: #475569;
+            color: #000000;
             margin-top: 4px;
         }
 
@@ -70,7 +93,7 @@
             margin-bottom: 10px;
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
-            border-radius: 4px;
+            border-radius: 0px;
             padding: 6px 10px;
         }
         .summary-item {
@@ -78,8 +101,8 @@
             text-align: center;
             vertical-align: middle;
         }
-        .summary-label { font-size: 6.5px; color: #64748b; text-transform: uppercase; letter-spacing: 0.4px; }
-        .summary-value { font-size: 11px; font-weight: 800; color: #1e3a5f; }
+        .summary-label { font-size: 6.5px; color: #000000; text-transform: uppercase; letter-spacing: 0.4px; }
+        .summary-value { font-size: 11px; font-weight: 800; color: #000000; }
         .summary-divider {
             display: table-cell;
             width: 1px;
@@ -91,7 +114,7 @@
         table { width: 100%; border-collapse: collapse; }
 
         thead tr th {
-            background: #1e3a5f;
+            background: #2d3748;
             color: #fff;
             padding: 5px 4px;
             font-size: 6.5px;
@@ -99,16 +122,16 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             text-align: center;
-            border: 1px solid #152d4a;
+            border: 1px solid #cbd5e0;
         }
         thead tr th:first-child { border-radius: 0; }
 
         tbody tr td {
-            border: 1px solid #dde3ea;
+            border: 1px solid #cbd5e0;
             padding: 4px 4px;
             vertical-align: middle;
             font-size: 7.8px;
-            color: #1e293b;
+            color: #000000;
         }
         tbody tr:nth-child(even) td { background: #f8fafc; }
         tbody tr.anulado td {
@@ -126,67 +149,86 @@
         .badge {
             display: inline-block;
             padding: 1px 5px;
-            border-radius: 3px;
+            border-radius: 0px;
             font-size: 6px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            border: 1px solid;
+            border: none !important;
+            background: transparent !important;
+            color: #000000 !important;
             white-space: nowrap;
         }
-        .badge-preventivo { background:#dbeafe; color:#1e40af; border-color:#93c5fd; }
-        .badge-correctivo { background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
-        .badge-pendiente  { background:#fef9c3; color:#854d0e; border-color:#fde047; }
-        .badge-en_proceso { background:#dbeafe; color:#1e40af; border-color:#93c5fd; }
-        .badge-reparado   { background:#dcfce7; color:#166534; border-color:#86efac; }
-        .badge-terminado  { background:#d1fae5; color:#065f46; border-color:#6ee7b7; }
-        .badge-entregado  { background:#d1fae5; color:#065f46; border-color:#6ee7b7; }
-        .badge-activo     { background:#dcfce7; color:#166534; border-color:#86efac; }
-        .badge-anulado    { background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
+        .badge-preventivo { background:transparent; color:#000000; border-color:#000000; }
+        .badge-correctivo { background:transparent; color:#000000; border-color:#000000; }
+        .badge-pendiente  { background:transparent; color:#000000; border-color:#000000; }
+        .badge-en_proceso { background:transparent; color:#000000; border-color:#000000; }
+        .badge-reparado   { background:transparent; color:#000000; border-color:#000000; }
+        .badge-terminado  { background:transparent; color:#000000; border-color:#000000; }
+        .badge-entregado  { background:transparent; color:#000000; border-color:#000000; }
+        .badge-activo     { background:transparent; color:#000000; border-color:#000000; }
+        .badge-anulado    { background:transparent; color:#000000; border-color:#000000; }
 
-        .sub-text { font-size: 7px; color: #64748b; margin-top: 1px; }
+        .sub-text { font-size: 7px; color: #000000; margin-top: 1px; }
 
         /* ─── FOOTER TABLE ─── */
         tfoot tr td {
-            background: #1e3a5f;
+            background: #2d3748;
             color: #fff;
             font-weight: 700;
             font-size: 8px;
-            border: 1px solid #152d4a;
+            border: 1px solid #cbd5e0;
             padding: 5px 4px;
         }
 
-        .monto-cell { color: #16a34a; font-weight: 700; }
+        .monto-cell { color: #000000; font-weight: 700; }
 
         /* ─── DOCUMENT FOOTER ─── */
         .doc-footer {
             margin-top: 14px;
             padding-top: 7px;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #cbd5e0;
             display: table;
             width: 100%;
         }
-        .footer-left  { display: table-cell; font-size: 7px; color: #94a3b8; font-style: italic; }
-        .footer-right { display: table-cell; text-align: right; font-size: 7px; color: #94a3b8; }
+        .footer-left  { display: table-cell; font-size: 7px; color: #000000; font-style: italic; }
+        .footer-right { display: table-cell; text-align: right; font-size: 7px; color: #000000; }
 
         .page-number:before { content: "Página " counter(page) " de " counter(pages); }
     </style>
 </head>
 <body>
+    <script type="text/php">
+        if (isset($pdf)) {
+            $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+            $size = 7.5;
+            $color = array(0.44, 0.50, 0.59); // rgb(113, 128, 150)
+            $y = $pdf->get_height() - 24;
+            $x = $pdf->get_width() - 85;
+            $pdf->page_text($x, $y, "Página {PAGE_NUM} de {PAGE_COUNT}", $font, $size, $color);
+        }
+    </script>
 
     {{-- ── ENCABEZADO ── --}}
     <div class="report-header">
-        <div class="header-left">
-            <div class="company-name">⚙ Tecni Systemas</div>
-            <div class="report-title">Reporte Detallado de Mantenimientos</div>
-            <div class="header-meta">
-                Generado el {{ \Carbon\Carbon::now()->isoFormat('dddd D [de] MMMM [de] YYYY, h:mm A') }}
-            </div>
+        <div class="header-logo-cell">
+            @if($logoBase64)
+                <img src="{{ $logoBase64 }}" alt="Logo" style="max-height: 50px; max-width: 160px; object-fit: contain;">
+            @else
+                <span style="font-size: 14px; font-weight: bold; color: #2d3748; text-transform: uppercase;">{{ $empresa->nombre }}</span>
+            @endif
         </div>
-        <div class="header-right">
-            <div class="header-badge">MANTENIMIENTO</div>
-            <div class="header-count">{{ count($mantenimientos) }} registro(s) encontrados</div>
+        <div class="header-info-cell">
+            <div style="font-size: 11px; font-weight: bold; color: #2d3748; text-transform: uppercase; margin-bottom: 3px;">REPORTE DETALLADO DE MANTENIMIENTOS</div>
+            @if($empresa->nit)<div><strong>NIT:</strong> {{ $empresa->nit }}</div>@endif
+            @if($empresa->telefono)<div><strong>Tel:</strong> {{ $empresa->telefono }}</div>@endif
+            @if($empresa->direccion)<div><strong>Dir:</strong> {{ $empresa->direccion }}</div>@endif
         </div>
+    </div>
+
+    <div style="font-size: 9px; color: #000000; margin-bottom: 12px; padding: 4px 0;">
+        <strong>Generado:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }} &nbsp;|&nbsp;
+        <strong>Registros:</strong> {{ count($mantenimientos) }}
     </div>
 
     {{-- ── BARRA DE RESUMEN ── --}}
@@ -204,22 +246,22 @@
         <div class="summary-divider"></div>
         <div class="summary-item">
             <div class="summary-label">Activos</div>
-            <div class="summary-value" style="color:#166534">{{ $totalActivos }}</div>
+            <div class="summary-value" style="color:#000000">{{ $totalActivos }}</div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
             <div class="summary-label">Anulados</div>
-            <div class="summary-value" style="color:#991b1b">{{ $totalAnulados }}</div>
+            <div class="summary-value" style="color:#000000">{{ $totalAnulados }}</div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
             <div class="summary-label">Entregados</div>
-            <div class="summary-value" style="color:#0369a1">{{ $totalEntregados }}</div>
+            <div class="summary-value" style="color:#000000">{{ $totalEntregados }}</div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
             <div class="summary-label">Costo Total</div>
-            <div class="summary-value" style="color:#166534; font-size:9px">${{ number_format($totalCosto, 2) }}</div>
+            <div class="summary-value" style="color:#000000; font-size:9px">${{ number_format($totalCosto, 0, ',', '.') }}</div>
         </div>
     </div>
 
@@ -286,26 +328,19 @@
         @if(count($mantenimientos) > 0)
         <tfoot>
             <tr>
-                <td colspan="10" style="text-align:right; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px;">
-                    TOTAL — {{ count($mantenimientos) }} registros &nbsp;|&nbsp; Costo acumulado:
+                <td colspan="5" style="text-align:left; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px; padding-left:5px;">
+                    TOTAL: {{ count($mantenimientos) }} registros
+                </td>
+                <td colspan="5" style="text-align:right; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px;">
+                    Costo acumulado:
                 </td>
                 <td style="text-align:right; font-size:9px; font-weight:800;">
-                    ${{ number_format($mantenimientos->sum('costo'), 2) }}
+                    ${{ number_format($mantenimientos->sum('costo'), 0, ',', '.') }}
                 </td>
             </tr>
         </tfoot>
         @endif
     </table>
-
-    {{-- ── PIE DE DOCUMENTO ── --}}
-    <div class="doc-footer">
-        <div class="footer-left">
-            Sistema de Control de Mantenimiento &mdash; Reporte generado automáticamente. Documento de uso interno.
-        </div>
-        <div class="footer-right">
-            Tecni Systemas &copy; {{ date('Y') }}
-        </div>
-    </div>
 
 </body>
 </html>

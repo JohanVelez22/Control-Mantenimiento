@@ -54,11 +54,11 @@
        <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
        <span>🖨️</span> Imprimir
        </button>
-       <button type="button" onclick="exportarAcumuladoGeneral('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
-       <span>📄</span> PDF
-       </button>
        <button type="button" onclick="exportarAcumuladoGeneral('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">
        <span>📊</span> Excel
+       </button>
+       <button type="button" onclick="exportarAcumuladoGeneral('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
+       <span>📄</span> PDF
        </button>
    </div>
   </form>
@@ -151,8 +151,8 @@
   </td>
   <td class="text-center capitalize font-semibold">{{ $tx->tipo_pago }}</td>
   <td class="text-center">
-  <span class="font-black {{ $tx->tipo_movimiento === 'ingreso' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-  {{ $tx->tipo_movimiento === 'ingreso' ? '+' : '-' }}${{ number_format($tx->monto, 0, ',', '.') }}
+  <span class="font-black text-gray-900 dark:text-gray-100">
+  ${{ number_format($tx->monto, 0, ',', '.') }}
   </span>
   </td>
   <td class="text-center text-xs text-gray-500">{{ $tx->user->name ?? 'Sistema' }}</td>
@@ -182,12 +182,12 @@
  </div>
  <div class="p-3 space-y-2 text-sm">
  <div class="flex justify-between items-center">
- <span class="text-green-600 font-semibold">Ingresos en Efectivo</span>
- <span class="font-bold text-green-700">+${{ number_format($operaciones['ingresos_efectivo'], 0, ',', '.') }}</span>
+ <span class="text-gray-700 dark:text-gray-300 font-semibold">Ingresos en Efectivo</span>
+ <span class="font-bold text-gray-900 dark:text-gray-100">${{ number_format($operaciones['ingresos_efectivo'], 0, ',', '.') }}</span>
  </div>
  <div class="flex justify-between items-center">
- <span class="text-red-600 font-semibold">Egresos en Efectivo</span>
- <span class="font-bold text-red-700">-${{ number_format($operaciones['egresos_efectivo'], 0, ',', '.') }}</span>
+ <span class="text-gray-700 dark:text-gray-300 font-semibold">Egresos en Efectivo</span>
+ <span class="font-bold text-gray-900 dark:text-gray-100">${{ number_format($operaciones['egresos_efectivo'], 0, ',', '.') }}</span>
  </div>
  </div>
  </div>
@@ -200,12 +200,12 @@
  </div>
  <div class="p-3 space-y-2 text-sm">
  <div class="flex justify-between items-center">
- <span class="text-green-600 font-semibold">Ingresos por Banco</span>
- <span class="font-bold text-green-700">+${{ number_format($operaciones['ingresos_consignacion'], 0, ',', '.') }}</span>
+ <span class="text-gray-700 dark:text-gray-300 font-semibold">Ingresos por Banco</span>
+ <span class="font-bold text-gray-900 dark:text-gray-100">${{ number_format($operaciones['ingresos_consignacion'], 0, ',', '.') }}</span>
  </div>
  <div class="flex justify-between items-center">
- <span class="text-red-600 font-semibold">Egresos por Banco</span>
- <span class="font-bold text-red-700">-${{ number_format($operaciones['egresos_consignacion'], 0, ',', '.') }}</span>
+ <span class="text-gray-700 dark:text-gray-300 font-semibold">Egresos por Banco</span>
+ <span class="font-bold text-gray-900 dark:text-gray-100">${{ number_format($operaciones['egresos_consignacion'], 0, ',', '.') }}</span>
  </div>
  </div>
  </div>
@@ -217,17 +217,185 @@
 </div>
 <style>
 @media print {
-    @page { size: A4 portrait; margin: 15mm; }
-    html, body { width: 100% !important; margin: 0 !important; padding: 0 !important; background: #fff !important; color: #000 !important; font-size: 9pt !important; }
-    #ts-sidebar, #ts-topbar, .no-print, form, button, .pagination { display: none !important; }
-    #main-wrapper, #ts-main { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
-    .glass-card, .glass-panel, .container, .max-w-7xl, .mx-auto, .p-4, .p-6, .p-8, .shadow-lg, .shadow-xl { background: transparent !important; box-shadow: none !important; border: none !important; margin: 0 !important; padding: 0 !important; max-width: 100% !important; width: 100% !important; border-radius: 0 !important; }
-    table { width: 100% !important; border-collapse: collapse !important; display: table !important; }
-    tr { display: table-row !important; page-break-inside: avoid !important; }
-    th, td { display: table-cell !important; border: 1px solid #ddd !important; padding: 6px !important; }
-    .responsive-table td::before { display: none !important; }
-    thead { display: table-header-group !important; }
-    -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+    @page {
+        size: A4 portrait;
+        margin: 10mm 8mm 15mm 8mm;
+    }
+    
+    .no-print,
+    #ts-sidebar,
+    #ts-topbar,
+    header,
+    aside,
+    nav,
+    form,
+    button,
+    .btn,
+    .pagination,
+    a[href*="export"],
+    .flex.gap-4.mb-6.no-print {
+        display: none !important;
+    }
+    
+    html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+        font-size: 9pt !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    #main-wrapper {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    #ts-main, main {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 8mm 6mm !important; /* Force physical narrow margins */
+        box-sizing: border-box !important;
+    }
+    
+    .glass-card {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        margin-bottom: 20px !important;
+        padding: 0 !important;
+    }
+    
+    table, .ts-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-top: 15px !important;
+        margin-bottom: 15px !important;
+        font-size: 8.5pt !important;
+    }
+    
+    thead {
+        display: table-header-group !important;
+    }
+    
+    tr {
+        page-break-inside: avoid !important;
+    }
+    
+    th {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        border: 1px solid #1a202c !important;
+        padding: 8px 10px !important;
+        font-size: 8pt !important;
+    }
+    
+    td {
+        border: 1px solid #cbd5e0 !important;
+        padding: 7px 10px !important;
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        vertical-align: middle !important;
+    }
+    
+    tbody tr:nth-child(even) td {
+        background-color: #f8fafc !important;
+    }
+    
+    tfoot, .tfoot {
+        display: table-footer-group !important;
+        font-weight: bold !important;
+    }
+    
+    tfoot td {
+        border-top: 2px solid #2d3748 !important;
+        background-color: #e2e8f0 !important;
+        font-weight: bold !important;
+    }
+    
+    .grid {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 15px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .grid > div {
+        flex: 1 1 20% !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+        background-color: #f8fafc !important;
+        text-align: center !important;
+        box-shadow: none !important;
+    }
+    
+    .grid p {
+        margin: 0 !important;
+    }
+    
+    .grid p.text-xs {
+        font-size: 7.5pt !important;
+        color: #4a5568 !important;
+        font-weight: bold !important;
+    }
+    
+    .grid p.text-2xl, .grid p.text-3xl {
+        font-size: 14pt !important;
+        font-weight: 800 !important;
+        color: #1a202c !important;
+        margin-top: 5px !important;
+    }
+    
+    span.pill, .badge, table td span, .ts-table td span, .reportes-tabla-imprimir td span {
+        display: inline !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 8pt !important;
+        font-weight: normal !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #000000 !important;
+        text-transform: uppercase !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+    
+    .no-print-emoji, table td span.no-print-emoji, .grid p span, span.text-lg {
+        display: none !important;
+    }
+    
+    .responsive-table td::before {
+        display: none !important;
+    }
+    
+    h1, h2, h3 {
+        color: #1a202c !important;
+        font-weight: bold !important;
+    }
+    
+    h1 {
+        font-size: 16pt !important;
+        margin-bottom: 5px !important;
+    }
+    
+    h3 {
+        font-size: 11pt !important;
+        margin-bottom: 10px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding-bottom: 5px !important;
+    }
 }
 </style>
 

@@ -1,4 +1,4 @@
-@php
+<?php
     $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
     $logoBase64 = null;
     if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
@@ -7,12 +7,12 @@
         $data = file_get_contents($path);
         $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
     }
-@endphp
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Reporte de Electrónica – {{ $empresa->nombre }}</title>
+    <title>Reporte de Electrónica – <?php echo e($empresa->nombre); ?></title>
     <style>
         @page {
             size: A4 portrait;
@@ -169,7 +169,7 @@
             color: #fff;
             font-weight: 700;
             font-size: 8px;
-            border: 1px solid #cbd5e0;
+            border: 1px solid #1a202c;
             padding: 5px 4px;
         }
 
@@ -199,63 +199,64 @@
         }
     </script>
 
-    {{-- ── ENCABEZADO ── --}}
+    
     <div class="report-header">
         <div class="header-logo-cell">
-            @if($logoBase64)
-                <img src="{{ $logoBase64 }}" alt="Logo" style="max-height: 50px; max-width: 160px; object-fit: contain;">
-            @else
-                <span style="font-size: 14px; font-weight: bold; color: #2d3748; text-transform: uppercase;">{{ $empresa->nombre }}</span>
-            @endif
+            <?php if($logoBase64): ?>
+                <img src="<?php echo e($logoBase64); ?>" alt="Logo" style="max-height: 50px; max-width: 160px; object-fit: contain;">
+            <?php else: ?>
+                <span style="font-size: 14px; font-weight: bold; color: #2d3748; text-transform: uppercase;"><?php echo e($empresa->nombre); ?></span>
+            <?php endif; ?>
         </div>
         <div class="header-info-cell">
             <div style="font-size: 11px; font-weight: bold; color: #2d3748; text-transform: uppercase; margin-bottom: 3px;">REPORTE DETALLADO DE ELECTRÓNICA</div>
-            @if($empresa->nit)<div><strong>NIT:</strong> {{ $empresa->nit }}</div>@endif
-            @if($empresa->telefono)<div><strong>Tel:</strong> {{ $empresa->telefono }}</div>@endif
-            @if($empresa->direccion)<div><strong>Dir:</strong> {{ $empresa->direccion }}</div>@endif
+            <?php if($empresa->nit): ?><div><strong>NIT:</strong> <?php echo e($empresa->nit); ?></div><?php endif; ?>
+            <?php if($empresa->telefono): ?><div><strong>Tel:</strong> <?php echo e($empresa->telefono); ?></div><?php endif; ?>
+            <?php if($empresa->direccion): ?><div><strong>Dir:</strong> <?php echo e($empresa->direccion); ?></div><?php endif; ?>
         </div>
     </div>
 
     <div style="font-size: 9px; color: #000000; margin-bottom: 12px; padding: 4px 0;">
-        <strong>Generado:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }} &nbsp;|&nbsp;
-        <strong>Registros:</strong> {{ count($electronicas) }}
+        <strong>Generado:</strong> <?php echo e(\Carbon\Carbon::now()->format('d/m/Y H:i')); ?> &nbsp;|&nbsp;
+        <strong>Registros:</strong> <?php echo e(count($electronicas)); ?>
+
     </div>
 
-    {{-- ── BARRA DE RESUMEN ── --}}
-    @php
+    
+    <?php
         $totalCosto    = $electronicas->sum('costo');
         $totalActivos  = $electronicas->where('anulado', false)->count();
         $totalAnulados = $electronicas->where('anulado', true)->count();
         $totalEntregados = $electronicas->where('estado', 'entregado')->count();
-    @endphp
+    ?>
     <div class="summary-bar">
         <div class="summary-item">
             <div class="summary-label">Total Órdenes</div>
-            <div class="summary-value">{{ count($electronicas) }}</div>
+            <div class="summary-value"><?php echo e(count($electronicas)); ?></div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
             <div class="summary-label">Activos</div>
-            <div class="summary-value" style="color:#000000">{{ $totalActivos }}</div>
+            <div class="summary-value" style="color:#000000"><?php echo e($totalActivos); ?></div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
             <div class="summary-label">Anulados</div>
-            <div class="summary-value" style="color:#000000">{{ $totalAnulados }}</div>
+            <div class="summary-value" style="color:#000000"><?php echo e($totalAnulados); ?></div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
             <div class="summary-label">Entregados</div>
-            <div class="summary-value" style="color:#000000">{{ $totalEntregados }}</div>
+            <div class="summary-value" style="color:#000000"><?php echo e($totalEntregados); ?></div>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
             <div class="summary-label">Costo Total</div>
-            <div class="summary-value" style="color:#000000; font-size:9px">${{ number_format($totalCosto, 0, '', '.') }}</div>
+            <div class="summary-value" style="color:#000000; font-size:9px">$<?php echo e(number_format($totalCosto, 0, '', '.')); ?></div>
         </div>
     </div>
 
-    {{-- ── TABLA ── --}}
+    
     <table>
         <thead>
             <tr>
@@ -272,62 +273,65 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($electronicas as $e)
-            @php
+            <?php $__empty_1 = true; $__currentLoopData = $electronicas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $e): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <?php
                 $isAnulado = !empty($e->anulado);
                 $progreso  = strtolower($e->estado ?? '');
                 $tipo      = strtolower($e->tipo ?? '');
-            @endphp
-            <tr class="{{ $isAnulado ? 'anulado' : '' }}">
-                <td class="col-center col-bold">{{ $e->id_orden }}</td>
+            ?>
+            <tr class="<?php echo e($isAnulado ? 'anulado' : ''); ?>">
+                <td class="col-center col-bold"><?php echo e($e->id_orden); ?></td>
                 <td>
-                    <div class="col-bold">{{ $e->equipo->cliente->nombre ?? 'N/A' }}</div>
-                    <div class="sub-text">{{ $e->equipo->cliente->identificacion ?? '-' }}</div>
+                    <div class="col-bold"><?php echo e($e->equipo->cliente->nombre ?? 'N/A'); ?></div>
+                    <div class="sub-text"><?php echo e($e->equipo->cliente->identificacion ?? '-'); ?></div>
                 </td>
                 <td>
-                    <div class="col-bold">{{ $e->equipo->nombre ?? 'N/A' }}</div>
-                    <div class="sub-text">{{ $e->equipo->marca ?? '' }} {{ $e->equipo->modelo ?? '' }} &mdash; {{ strtoupper($e->equipo->serie ?? '') }}</div>
+                    <div class="col-bold"><?php echo e($e->equipo->nombre ?? 'N/A'); ?></div>
+                    <div class="sub-text"><?php echo e($e->equipo->marca ?? ''); ?> <?php echo e($e->equipo->modelo ?? ''); ?> &mdash; <?php echo e(strtoupper($e->equipo->serie ?? '')); ?></div>
                 </td>
-                <td class="col-center">{{ $e->tecnico->nombre ?? 'N/A' }}</td>
+                <td class="col-center"><?php echo e($e->tecnico->nombre ?? 'N/A'); ?></td>
                 <td class="col-center">
-                    <span class="badge badge-{{ $tipo ?: 'correctivo' }}">{{ ucfirst($tipo) ?: '—' }}</span>
-                </td>
-                <td class="col-center">
-                    <span class="badge badge-{{ $progreso ?: 'pendiente' }}">{{ ucfirst($progreso) ?: '—' }}</span>
+                    <span class="badge badge-<?php echo e($tipo ?: 'correctivo'); ?>"><?php echo e(ucfirst($tipo) ?: '—'); ?></span>
                 </td>
                 <td class="col-center">
-                    <span class="badge {{ $isAnulado ? 'badge-anulado' : 'badge-activo' }}">
-                        {{ $isAnulado ? 'Anulado' : 'Activo' }}
+                    <span class="badge badge-<?php echo e($progreso ?: 'pendiente'); ?>"><?php echo e(ucfirst($progreso) ?: '—'); ?></span>
+                </td>
+                <td class="col-center">
+                    <span class="badge <?php echo e($isAnulado ? 'badge-anulado' : 'badge-activo'); ?>">
+                        <?php echo e($isAnulado ? 'Anulado' : 'Activo'); ?>
+
                     </span>
                 </td>
-                <td class="col-center">{{ \Carbon\Carbon::parse($e->fecha_entrada)->format('d/m/Y') }}</td>
-                <td class="col-center">{{ $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : '—' }}</td>
-                <td class="col-right monto-cell">${{ number_format($e->costo, 0, '', '.') }}</td>
+                <td class="col-center"><?php echo e(\Carbon\Carbon::parse($e->fecha_entrada)->format('d/m/Y')); ?></td>
+                <td class="col-center"><?php echo e($e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : '—'); ?></td>
+                <td class="col-right monto-cell">$<?php echo e(number_format($e->costo, 0, '', '.')); ?></td>
             </tr>
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <tr>
                 <td colspan="10" style="text-align:center; padding:20px; color:#94a3b8; font-style:italic;">
                     No hay registros para mostrar con los filtros aplicados.
                 </td>
             </tr>
-            @endforelse
+            <?php endif; ?>
         </tbody>
-        @if(count($electronicas) > 0)
+        <?php if(count($electronicas) > 0): ?>
         <tfoot>
             <tr>
                 <td colspan="5" style="text-align:left; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px; padding-left:5px;">
-                    TOTAL: {{ count($electronicas) }} registros
+                    TOTAL: <?php echo e(count($electronicas)); ?> registros
                 </td>
                 <td colspan="4" style="text-align:right; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px;">
                     Costo acumulado:
                 </td>
                 <td style="text-align:right; font-size:9px; font-weight:800;">
-                    ${{ number_format($electronicas->sum('costo'), 0, '', '.') }}
+                    $<?php echo e(number_format($electronicas->sum('costo'), 0, '', '.')); ?>
+
                 </td>
             </tr>
         </tfoot>
-        @endif
+        <?php endif; ?>
     </table>
 
 </body>
 </html>
+<?php /**PATH C:\ServBay\www\control-mantenimiento-equipos\resources\views/electronicas/pdf.blade.php ENDPATH**/ ?>

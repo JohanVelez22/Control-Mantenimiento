@@ -1,11 +1,9 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="flex gap-4 mb-6 no-print">
- <a href="{{ route('reportes.financiero.diario') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">💵 Informes Financieros</a>
- <a href="{{ route('mantenimientos.reportes') }}" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold shadow-sm">⚙️ Reporte de Mantenimientos</a>
- <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Reporte de Electrónica</a>
- <a href="{{ route('stocks.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
+ <a href="<?php echo e(route('reportes.financiero.diario')); ?>" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">💵 Informes Financieros</a>
+ <a href="<?php echo e(route('mantenimientos.reportes')); ?>" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold shadow-sm">⚙️ Reporte de Mantenimientos</a>
+ <a href="<?php echo e(route('electronicas.reportes')); ?>" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Reporte de Electrónica</a>
+ <a href="<?php echo e(route('stocks.reportes')); ?>" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
 </div>
 
 <div class="glass-card p-6 mb-6">
@@ -30,94 +28,94 @@
  </div>
 
  <!-- Formulario de Filtros -->
- <form id="filtros-mantenimiento" action="{{ route('mantenimientos.reportes') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end mb-8 p-5 glass-card no-print relative z-50">
+ <form id="filtros-mantenimiento" action="<?php echo e(route('mantenimientos.reportes')); ?>" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end mb-8 p-5 glass-card no-print relative z-50">
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Cliente</label>
  <select name="cliente_id" class="glass-input">
  <option value="todos">Todos los clientes</option>
- @foreach($clientes as $c)
- <option value="{{ $c->id }}" {{ request('cliente_id') == $c->id ? 'selected' : '' }}>{{ $c->nombre }} ({{ $c->identificacion }})</option>
- @endforeach
+ <?php $__currentLoopData = $clientes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+ <option value="<?php echo e($c->id); ?>" <?php echo e(request('cliente_id') == $c->id ? 'selected' : ''); ?>><?php echo e($c->nombre); ?> (<?php echo e($c->identificacion); ?>)</option>
+ <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
  </select>
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Equipo</label>
  <select name="equipo_id" class="glass-input">
  <option value="todos">Todos los equipos</option>
- @foreach($equipos as $e)
- <option value="{{ $e->id }}" {{ request('equipo_id') == $e->id ? 'selected' : '' }}>{{ $e->nombre }} ({{ $e->modelo}}) {{ strtoupper($e->serie) }}</option>
- @endforeach
+ <?php $__currentLoopData = $equipos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $e): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+ <option value="<?php echo e($e->id); ?>" <?php echo e(request('equipo_id') == $e->id ? 'selected' : ''); ?>><?php echo e($e->nombre); ?> (<?php echo e($e->modelo); ?>) <?php echo e(strtoupper($e->serie)); ?></option>
+ <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
  </select>
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Técnico</label>
  <select name="tecnico_id" class="glass-input">
  <option value="todos">Todos los técnicos</option>
- @foreach($tecnicos as $t)
- <option value="{{ $t->id }}" {{ request('tecnico_id') == $t->id ? 'selected' : '' }}>{{ $t->nombre }}</option>
- @endforeach
+ <?php $__currentLoopData = $tecnicos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $t): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+ <option value="<?php echo e($t->id); ?>" <?php echo e(request('tecnico_id') == $t->id ? 'selected' : ''); ?>><?php echo e($t->nombre); ?></option>
+ <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
  </select>
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Registrado por</label>
  <select name="user_id" class="glass-input">
  <option value="todos">Cualquier usuario</option>
- @foreach($usuarios as $u)
- <option value="{{ $u->id }}" {{ request('user_id') == $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
- @endforeach
+ <?php $__currentLoopData = $usuarios; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $u): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+ <option value="<?php echo e($u->id); ?>" <?php echo e(request('user_id') == $u->id ? 'selected' : ''); ?>><?php echo e($u->name); ?></option>
+ <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
  </select>
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Desde</label>
- <input type="date" name="fecha_desde" class="glass-input" value="{{ request('fecha_desde', date('Y-m-01')) }}">
+ <input type="date" name="fecha_desde" class="glass-input" value="<?php echo e(request('fecha_desde', date('Y-m-01'))); ?>">
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Hasta</label>
- <input type="date" name="fecha_hasta" class="glass-input" value="{{ request('fecha_hasta', date('Y-m-d')) }}">
+ <input type="date" name="fecha_hasta" class="glass-input" value="<?php echo e(request('fecha_hasta', date('Y-m-d'))); ?>">
  </div>
    <div>
   <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Tipo/Rep</label>
   <select name="tipo_rep" class="glass-input no-search">
   <option value="todos">Todos</option>
-  <option value="preventivo" {{ request('tipo_rep') == 'preventivo' ? 'selected' : '' }}>Preventivo</option>
-  <option value="correctivo" {{ request('tipo_rep') == 'correctivo' ? 'selected' : '' }}>Correctivo</option>
-  <option value="software" {{ request('tipo_rep') == 'software' ? 'selected' : '' }}>Software</option>
-  <option value="hardware" {{ request('tipo_rep') == 'hardware' ? 'selected' : '' }}>Hardware</option>
+  <option value="preventivo" <?php echo e(request('tipo_rep') == 'preventivo' ? 'selected' : ''); ?>>Preventivo</option>
+  <option value="correctivo" <?php echo e(request('tipo_rep') == 'correctivo' ? 'selected' : ''); ?>>Correctivo</option>
+  <option value="software" <?php echo e(request('tipo_rep') == 'software' ? 'selected' : ''); ?>>Software</option>
+  <option value="hardware" <?php echo e(request('tipo_rep') == 'hardware' ? 'selected' : ''); ?>>Hardware</option>
   </select>
   </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Progreso</label>
  <select name="estado" class="glass-input no-search">
  <option value="todos">Todos</option>
- <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
- <option value="terminado" {{ request('estado') == 'terminado' ? 'selected' : '' }}>Terminado</option>
+ <option value="pendiente" <?php echo e(request('estado') == 'pendiente' ? 'selected' : ''); ?>>Pendiente</option>
+ <option value="terminado" <?php echo e(request('estado') == 'terminado' ? 'selected' : ''); ?>>Terminado</option>
  </select>
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Estado</label>
  <select name="anulado" class="glass-input no-search">
- <option value="todos" {{ request('anulado') === null || request('anulado') == 'todos' ? 'selected' : '' }}>Todos</option>
- <option value="activo" {{ request('anulado') == 'activo' ? 'selected' : '' }}>Activo</option>
- <option value="anulado" {{ request('anulado') == 'anulado' ? 'selected' : '' }}>Anulado</option>
+ <option value="todos" <?php echo e(request('anulado') === null || request('anulado') == 'todos' ? 'selected' : ''); ?>>Todos</option>
+ <option value="activo" <?php echo e(request('anulado') == 'activo' ? 'selected' : ''); ?>>Activo</option>
+ <option value="anulado" <?php echo e(request('anulado') == 'anulado' ? 'selected' : ''); ?>>Anulado</option>
  </select>
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Costo Mínimo</label>
- <input type="text" id="min_cost_visual" class="glass-input" value="{{ request('min_cost') ? number_format(request('min_cost'), 0, ',', '.') : '' }}" placeholder="0">
- <input type="hidden" name="min_cost" id="min_cost" value="{{ request('min_cost') }}">
+ <input type="text" id="min_cost_visual" class="glass-input" value="<?php echo e(request('min_cost') ? number_format(request('min_cost'), 0, ',', '.') : ''); ?>" placeholder="0">
+ <input type="hidden" name="min_cost" id="min_cost" value="<?php echo e(request('min_cost')); ?>">
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Costo Máximo</label>
- <input type="text" id="max_cost_visual" class="glass-input" value="{{ request('max_cost') ? number_format(request('max_cost'), 0, ',', '.') : '' }}" placeholder="0">
- <input type="hidden" name="max_cost" id="max_cost" value="{{ request('max_cost') }}">
+ <input type="text" id="max_cost_visual" class="glass-input" value="<?php echo e(request('max_cost') ? number_format(request('max_cost'), 0, ',', '.') : ''); ?>" placeholder="0">
+ <input type="hidden" name="max_cost" id="max_cost" value="<?php echo e(request('max_cost')); ?>">
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Búsqueda Rápida</label>
- <input type="text" name="search" id="real_time_search" class="glass-input" value="{{ request('search') }}" placeholder="Orden, Cliente, Equipo...">
+ <input type="text" name="search" id="real_time_search" class="glass-input" value="<?php echo e(request('search')); ?>" placeholder="Orden, Cliente, Equipo...">
  </div>
 
  <div class="lg:col-span-4 flex justify-end gap-2 mt-2">
- <a href="{{ route('mantenimientos.reportes') }}" class="btn-clean">
+ <a href="<?php echo e(route('mantenimientos.reportes')); ?>" class="btn-clean">
  🧹 Limpiar
  </a>
  <button type="submit" class="btn-primary">
@@ -128,7 +126,7 @@
 
   <!-- Encabezado solo visible al imprimir -->
   <div class="print-header hidden-screen">
-   <p style="text-align: center; margin-top: 0; font-size: 10px; color: #4a5568;">Generado el: {{ date('d/m/Y h:i A') }} &nbsp;|&nbsp; Período: {{ request('fecha_desde', date('Y-m-01')) }} al {{ request('fecha_hasta', date('Y-m-d')) }}</p>
+   <p style="text-align: center; margin-top: 0; font-size: 10px; color: #4a5568;">Generado el: <?php echo e(date('d/m/Y h:i A')); ?> &nbsp;|&nbsp; Período: <?php echo e(request('fecha_desde', date('Y-m-01'))); ?> al <?php echo e(request('fecha_hasta', date('Y-m-d'))); ?></p>
   </div>
 
  <!-- Tabla con Datos Independientes (vista en pantalla: como antes; impresión: clase reportes-tabla-imprimir) -->
@@ -149,75 +147,81 @@
  </tr>
  </thead>
  <tbody>
- @forelse($mantenimientos as $m)
- @php
+ <?php $__empty_1 = true; $__currentLoopData = $mantenimientos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+ <?php
     $isAnulado = !empty($m->anulado);
     $dim = $isAnulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
     $dimLight = $isAnulado ? 'opacity-60' : '';
- @endphp
+ ?>
  <tr>
- <td class="text-center font-bold whitespace-nowrap {{ $dim }}">
- <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors no-print-link">
- {{ $m->id_orden }}
+ <td class="text-center font-bold whitespace-nowrap <?php echo e($dim); ?>">
+ <a href="<?php echo e(route('mantenimientos.index', ['locate' => $m->id])); ?>" class="text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors no-print-link">
+ <?php echo e($m->id_orden); ?>
+
  </a>
  </td>
- <td class="{{ $dim }}">
- <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de clientes">
+ <td class="<?php echo e($dim); ?>">
+ <a href="<?php echo e(route('clientes.index')); ?>#cliente-<?php echo e($m->equipo->cliente_id ?? ''); ?>" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de clientes">
  <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
- {{ $m->equipo->cliente->nombre ?? 'N/A' }}
+ <?php echo e($m->equipo->cliente->nombre ?? 'N/A'); ?>
+
  </span>
  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
- {{ $m->equipo->cliente->identificacion ?? '-' }}
+ <?php echo e($m->equipo->cliente->identificacion ?? '-'); ?>
+
  </span>
  </a>
  </td>
  
  <!-- Columna Equipo: Nombre arriba, Marca/Modelo abajo -->
- <td class="{{ $dim }}">
- <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
- <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{{ $m->equipo->nombre ?? 'N/A' }}</span>
- <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
+ <td class="<?php echo e($dim); ?>">
+ <a href="<?php echo e(route('equipos.index')); ?>#equipo-<?php echo e($m->equipo_id); ?>" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
+ <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors"><?php echo e($m->equipo->nombre ?? 'N/A'); ?></span>
+ <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">(<?php echo e($m->equipo->marca ?? ''); ?> <?php echo e($m->equipo->modelo ?? ''); ?>) - 
  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
- {{ strtoupper($m->equipo->serie ?? '') }}
+ <?php echo e(strtoupper($m->equipo->serie ?? '')); ?>
+
  </span></span>
  </a>
  </td>
 
- <td class="text-center font-medium text-sm {{ $dim }}">{{ $m->tecnico->nombre ?? 'N/A' }}</td>
+ <td class="text-center font-medium text-sm <?php echo e($dim); ?>"><?php echo e($m->tecnico->nombre ?? 'N/A'); ?></td>
  
  <!-- Columna Tipo con Colores (Azul/Verde) -->
- <td class="text-center {{ $dimLight }}">
-  <span class="pill {{ $m->tipo == 'preventivo' ? 'pill-preventivo' : 'pill-correctivo' }}">
-  {{ ucfirst($m->tipo) }}
+ <td class="text-center <?php echo e($dimLight); ?>">
+  <span class="pill <?php echo e($m->tipo == 'preventivo' ? 'pill-preventivo' : 'pill-correctivo'); ?>">
+  <?php echo e(ucfirst($m->tipo)); ?>
+
   </span>
-  <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mt-1 {{ $dim }}">{{ $m->reparacion }}</div>
+  <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mt-1 <?php echo e($dim); ?>"><?php echo e($m->reparacion); ?></div>
   </td>
  
- <td class="text-center {{ $dimLight }}">
- @php
+ <td class="text-center <?php echo e($dimLight); ?>">
+ <?php
      $progreso = strtolower($m->estado ?? '');
      $pillClass = 'pill-pending';
      if(in_array($progreso, ['terminado', 'entregado'])) $pillClass = 'pill-done';
      elseif($progreso === 'preventivo') $pillClass = 'pill-preventivo';
      elseif($progreso === 'especialidad') $pillClass = 'pill-especialidad';
      elseif(in_array($progreso, ['en_proceso', 'reparado'])) $pillClass = 'pill-efectivo';
- @endphp
- <span class="pill {{ $pillClass }}">{{ ucfirst($m->estado) ?: '—' }}</span>
+ ?>
+ <span class="pill <?php echo e($pillClass); ?>"><?php echo e(ucfirst($m->estado) ?: '—'); ?></span>
  </td>
  
  <td class="text-center">
- <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
- {{ $isAnulado ? 'Anulado' : 'Activo' }}
+ <span class="pill <?php echo e($isAnulado ? 'pill-anulado' : 'pill-done'); ?>">
+ <?php echo e($isAnulado ? 'Anulado' : 'Activo'); ?>
+
  </span>
  </td>
 
- <td class="text-center font-medium text-sm {{ $dim }}">{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
+ <td class="text-center font-medium text-sm <?php echo e($dim); ?>"><?php echo e(\Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y')); ?></td>
  
  <!-- Salida Centrada -->
- <td class="text-center font-medium text-sm {{ $m->fecha_salida ? '' : 'text-gray-400 italic' }} {{ $dim }}">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}</td>
- <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">${{ number_format($m->costo, 0, '', '.') }}</td>
+ <td class="text-center font-medium text-sm <?php echo e($m->fecha_salida ? '' : 'text-gray-400 italic'); ?> <?php echo e($dim); ?>"><?php echo e($m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente'); ?></td>
+ <td class="text-center font-black text-green-600 dark:text-green-400 <?php echo e($dim); ?>">$<?php echo e(number_format($m->costo, 0, '', '.')); ?></td>
  </tr>
- @empty
+ <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
  <tr>
      <td colspan="10" class="p-12 text-center bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm">
          <div class="flex flex-col items-center justify-center space-y-3">
@@ -227,21 +231,22 @@
          </div>
      </td>
  </tr>
- @endforelse
+ <?php endif; ?>
  </tbody>
- @if($mantenimientos->count() > 0)
+ <?php if($mantenimientos->count() > 0): ?>
  <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
  <tr>
- <td class="text-center font-bold">Total: {{ $mantenimientos->count() }}</td>
+ <td class="text-center font-bold">Total: <?php echo e($mantenimientos->count()); ?></td>
  <td colspan="8" class="text-right uppercase text-xs">Totales Filtrados:</td>
- <td class="text-center font-black text-green-600 dark:text-green-400">${{ number_format($mantenimientos->sum('costo'), 0, '', '.') }}</td>
+ <td class="text-center font-black text-green-600 dark:text-green-400">$<?php echo e(number_format($mantenimientos->sum('costo'), 0, '', '.')); ?></td>
  </tr>
  </tfoot>
- @endif
+ <?php endif; ?>
  </table>
  </div>
  <div class="mt-4 no-print">
-  {{ $mantenimientos->appends(request()->query())->links() }}
+  <?php echo e($mantenimientos->appends(request()->query())->links()); ?>
+
  </div>
 </div>
 
@@ -445,7 +450,42 @@
         font-weight: bold !important;
     }
     
-     span.pill, .badge, .pill, .pill-pending, .pill-done, .pill-preventivo, .pill-especialidad, .pill-efectivo, .pill-anulado, table td span, .ts-table td span, .reportes-tabla-imprimir td span {
+    .grid {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 15px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .grid > div {
+        flex: 1 1 20% !important;
+        border: 1px solid #cbd5e0 !important;
+        border-radius: 0 !important;
+        padding: 12px !important;
+        background-color: #f8fafc !important;
+        text-align: center !important;
+        box-shadow: none !important;
+    }
+    
+    .grid p {
+        margin: 0 !important;
+    }
+    
+    .grid p.text-xs {
+        font-size: 7.5pt !important;
+        color: #4a5568 !important;
+        font-weight: bold !important;
+    }
+    
+    .grid p.text-2xl, .grid p.text-3xl {
+        font-size: 14pt !important;
+        font-weight: 800 !important;
+        color: #1a202c !important;
+        margin-top: 5px !important;
+    }
+    
+    span.pill, .badge, .pill, .pill-pending, .pill-done, .pill-preventivo, .pill-especialidad, .pill-efectivo, .pill-anulado, table td span, .ts-table td span, .reportes-tabla-imprimir td span {
         display: inline !important;
         border: none !important;
         background: none !important;
@@ -459,7 +499,7 @@
         border-radius: 0 !important;
     }
 
-    .no-print-emoji, table td span.no-print-emoji {
+    .no-print-emoji, table td span.no-print-emoji, .grid p span {
         display: none !important;
     }
     
@@ -485,4 +525,6 @@
     }
 }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\ServBay\www\control-mantenimiento-equipos\resources\views/mantenimientos/reportes.blade.php ENDPATH**/ ?>

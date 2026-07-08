@@ -29,6 +29,9 @@ class ElectronicasExport implements FromCollection, WithHeadings, WithMapping, S
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
                 
+                // Configurar pie de página para impresión
+                $sheet->getHeaderFooter()->setOddFooter('&RPágina &P de &N');
+
                 // Centrar y combinar título (Fila 1)
                 $sheet->mergeCells('A1:N1');
                 $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -43,11 +46,14 @@ class ElectronicasExport implements FromCollection, WithHeadings, WithMapping, S
                 $totalRegistros = count($this->electronicas);
                 $costoTotal = $this->electronicas->sum('costo');
 
+                // Aplicar formato de miles a la columna L (Costo)
+                $sheet->getStyle("L5:L{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
+
                 // Escribir el total de registros bajo la columna "Orden" (Columna A)
                 $sheet->setCellValue("A{$footerRow}", "Total: {$totalRegistros}");
                 
                 // Escribir el costo total bajo la columna "Costo" (Columna L)
-                $sheet->setCellValue("L{$footerRow}", "Total: $" . number_format($costoTotal, 0, '', '.'));
+                $sheet->setCellValue("L{$footerRow}", "Total: $" . number_format($costoTotal, 0, ',', '.'));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:L{$footerRow}")->applyFromArray([
@@ -125,7 +131,7 @@ class ElectronicasExport implements FromCollection, WithHeadings, WithMapping, S
             ucfirst($e->tipo),
             ucfirst($e->estado),
             $e->anulado ? 'Anulado' : 'Activo',
-            $e->costo,
+            (float) $e->costo,
             \Carbon\Carbon::parse($e->fecha_entrada)->format('d/m/Y'),
             $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : 'Pendiente',
         ];

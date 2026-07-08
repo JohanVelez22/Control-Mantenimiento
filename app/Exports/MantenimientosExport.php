@@ -43,11 +43,14 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
                 $totalRegistros = count($this->mantenimientos);
                 $costoTotal = $this->mantenimientos->sum('costo');
 
+                // Aplicar formato de miles a la columna M (Costo)
+                $sheet->getStyle("M5:M{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
+
                 // Escribir el total de registros bajo la columna "Orden" (Columna A)
                 $sheet->setCellValue("A{$footerRow}", "Total: {$totalRegistros}");
                 
                 // Escribir el costo total bajo la columna "Costo" (Columna M)
-                $sheet->setCellValue("M{$footerRow}", "Total: $" . number_format($costoTotal, 0, '', '.'));
+                $sheet->setCellValue("M{$footerRow}", "Total: $" . number_format($costoTotal, 0, ',', '.'));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:M{$footerRow}")->applyFromArray([
@@ -127,7 +130,7 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
             ucfirst($m->reparacion),
             ucfirst($m->estado),
             $m->anulado ? 'Anulado' : 'Activo',
-            $m->costo,
+            (float) $m->costo,
             \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y'),
             $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente',
         ];

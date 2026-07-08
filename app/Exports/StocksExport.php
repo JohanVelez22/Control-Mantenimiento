@@ -26,6 +26,9 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
                 
+                // Configurar pie de página para impresión
+                $sheet->getHeaderFooter()->setOddFooter('&RPágina &P de &N');
+                
                 // Centrar y combinar título (Fila 1)
                 $sheet->mergeCells('A1:J1');
                 $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -43,12 +46,17 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                 $ventaTotal = $this->stocks->sum('precio_venta');
                 $tecnicoTotal = $this->stocks->sum('precio_tecnico');
 
+                // Aplicar formato de miles a las columnas G, I y J
+                $sheet->getStyle("G5:G{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
+                $sheet->getStyle("I5:I{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
+                $sheet->getStyle("J5:J{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
+
                 // Escribir totales
                 $sheet->setCellValue("A{$footerRow}", "Total Registros: {$totalRegistros}");
                 $sheet->setCellValue("F{$footerRow}", "Cant. Total: {$cantidadTotal}");
-                $sheet->setCellValue("G{$footerRow}", "T. Compra: $" . number_format($compraTotal, 0, '', '.'));
-                $sheet->setCellValue("I{$footerRow}", "T. Venta: $" . number_format($ventaTotal, 0, '', '.'));
-                $sheet->setCellValue("J{$footerRow}", "T. Técnico: $" . number_format($tecnicoTotal, 0, '', '.'));
+                $sheet->setCellValue("G{$footerRow}", "T. Compra: $" . number_format($compraTotal, 0, ',', '.'));
+                $sheet->setCellValue("I{$footerRow}", "T. Venta: $" . number_format($ventaTotal, 0, ',', '.'));
+                $sheet->setCellValue("J{$footerRow}", "T. Técnico: $" . number_format($tecnicoTotal, 0, ',', '.'));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:J{$footerRow}")->applyFromArray([
@@ -116,10 +124,10 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             $s->subcategoria ?? '-',
             $s->proveedor_id ? ($s->getRelationValue('proveedor')->nombre_razon_social ?? 'N/A') : ($s->getRawOriginal('proveedor') ?: 'N/A'),
             $s->cantidad,
-            $s->precio_compra,
+            (float) $s->precio_compra,
             $s->utilidad,
-            $s->precio_venta,
-            $s->precio_tecnico,
+            (float) $s->precio_venta,
+            (float) $s->precio_tecnico,
             $s->active ? 'Activo' : 'Inactivo',
         ];
     }

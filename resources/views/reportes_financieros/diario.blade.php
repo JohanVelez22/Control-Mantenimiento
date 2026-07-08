@@ -44,11 +44,11 @@
        <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
        <span>🖨️</span> Imprimir
        </button>
-       <button type="button" onclick="exportarDiario('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
-       <span>📄</span> PDF
-       </button>
        <button type="button" onclick="exportarDiario('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">
-       <span>📊</span> Excel
+       <span class="no-print-emoji">📊</span> Excel
+       </button>
+       <button type="button" onclick="exportarDiario('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
+       <span class="no-print-emoji">📄</span> PDF
        </button>
    </div>
  </form>
@@ -58,22 +58,22 @@
  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
  <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
- <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📈</span> Ingresos</p>
+ <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_ingresos'], 0, ',', '.') }}</p>
  </div>
  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
  <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-500/20 rounded-full blur-2xl group-hover:bg-red-500/30 transition-all"></div>
- <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📉</span> Egresos</p>
+ <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_egresos'], 0, ',', '.') }}</p>
  </div>
  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
  <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
- <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🔧</span> Mantenimientos</p>
+ <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🔧</span> Mantenimientos</p>
  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_mantenimientos'], 0, ',', '.') }}</p>
  </div>
  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
  <div class="absolute -right-6 -top-6 w-24 h-24 bg-gray-500/20 rounded-full blur-2xl group-hover:bg-gray-500/30 transition-all"></div>
- <p class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🚫</span> Anulados</p>
+ <p class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🚫</span> Anulados</p>
  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $resumen['total_anulados'] }}</p>
  </div>
  </div>
@@ -111,11 +111,9 @@
  @endphp
  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center">
  <td class="p-3 {{ $dimLight }}">
- <span class="px-2 py-0.5 rounded-lg text-xs font-bold
- bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800
- dark:bg-{{ $mov['color'] }}-900/40 dark:text-{{ $mov['color'] }}-300">
- {{ $mov['icono'] }} {{ ucfirst($mov['tipo']) }}
- </span>
+   <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800 dark:bg-{{ $mov['color'] }}-900/40 dark:text-{{ $mov['color'] }}-300">
+   <span class="no-print-emoji">{{ $mov['icono'] }}</span> {{ ucfirst($mov['tipo']) }}
+   </span>
  </td>
  <td class="p-3 text-left text-gray-700 dark:text-gray-300 {{ $dim }}">{{ $mov['descripcion'] }}</td>
    <td class="p-3 {{ $dimLight }}">
@@ -139,7 +137,7 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-3 text-center font-bold {{ $isAnulado ? '' : (in_array($mov['tipo'], ['ingreso','venta','mantenimiento','electronica']) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400') }} {{ $isAnulado ? '' : $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>
+ <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">
  ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
  </td>
  </tr>
@@ -150,11 +148,10 @@
         @php
             $neto = $movimientos->where('anulado', false)->whereIn('tipo', ['ingreso','venta','mantenimiento','electronica'])->sum('monto') 
                   - $movimientos->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
-            $color = $neto >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600 dark:text-red-400';
         @endphp
         <td class="text-center font-bold text-xs">Total: {{ $movimientos->count() }}</td>
         <td colspan="3" class="text-right uppercase text-xs">Balance Neto del Día:</td>
-        <td class="text-center font-black text-lg {{ $color }}">${{ number_format($neto, 0, ',', '.') }}</td>
+        <td class="text-center font-black text-lg text-gray-900 dark:text-gray-100">${{ number_format($neto, 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>
@@ -214,17 +211,199 @@ function exportarDiario(tipo, btn) {
 
 <style>
 @media print {
-    @page { size: A4 portrait; margin: 15mm; }
-    html, body { width: 100% !important; margin: 0 !important; padding: 0 !important; background: #fff !important; color: #000 !important; font-size: 9pt !important; }
-    #ts-sidebar, #ts-topbar, .no-print, form, button, .pagination { display: none !important; }
-    #main-wrapper, #ts-main { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
-    .glass-card, .glass-panel, .container, .max-w-7xl, .mx-auto, .p-4, .p-6, .p-8, .shadow-lg, .shadow-xl { background: transparent !important; box-shadow: none !important; border: none !important; margin: 0 !important; padding: 0 !important; max-width: 100% !important; width: 100% !important; border-radius: 0 !important; }
-    table { width: 100% !important; border-collapse: collapse !important; display: table !important; }
-    tr { display: table-row !important; page-break-inside: avoid !important; }
-    th, td { display: table-cell !important; border: 1px solid #ddd !important; padding: 6px !important; }
-    .responsive-table td::before { display: none !important; }
-    thead { display: table-header-group !important; }
-    -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+    @page {
+        size: A4 portrait;
+        margin: 10mm 8mm;
+    }
+    
+    .no-print,
+    #ts-sidebar,
+    #ts-topbar,
+    header,
+    aside,
+    nav,
+    form,
+    button,
+    .btn,
+    .pagination,
+    a[href*="export"],
+    .flex.gap-4.mb-6.no-print {
+        display: none !important;
+    }
+    
+    /* Disable flexbox layouts during print to prevent desktop viewport scaling and right-side clipping */
+    .flex.min-h-screen,
+    #main-wrapper {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    #ts-main,
+    main {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 8mm 6mm !important; /* Force physical narrow margins */
+        box-sizing: border-box !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+        font-size: 9pt !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    .glass-card {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        margin-bottom: 20px !important;
+        padding: 0 !important;
+    }
+    
+    table, .ts-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-top: 15px !important;
+        margin-bottom: 15px !important;
+        font-size: 8.5pt !important;
+    }
+    
+    thead {
+        display: table-header-group !important;
+    }
+    
+    tr {
+        page-break-inside: avoid !important;
+    }
+    
+    th {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        border: 1px solid #cbd5e0 !important;
+        padding: 8px 10px !important;
+        font-size: 8pt !important;
+    }
+    
+    td {
+        border: 1px solid #cbd5e0 !important;
+        padding: 7px 10px !important;
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        vertical-align: middle !important;
+    }
+    
+    tbody tr:nth-child(even) td {
+        background-color: #f8fafc !important;
+    }
+    
+    tfoot, .tfoot {
+        display: table-footer-group !important;
+        font-weight: bold !important;
+    }
+    
+    tfoot td {
+        border: 1px solid #cbd5e0 !important;
+        border-top: 1px solid #cbd5e0 !important;
+        background-color: #e2e8f0 !important;
+        font-weight: bold !important;
+    }
+    
+    .grid {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 15px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .grid > div {
+        flex: 1 1 20% !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+        background-color: #f8fafc !important;
+        text-align: center !important;
+        box-shadow: none !important;
+    }
+    
+    .grid p {
+        margin: 0 !important;
+    }
+    
+    .grid p.text-xs {
+        font-size: 7.5pt !important;
+        color: #4a5568 !important;
+        font-weight: bold !important;
+    }
+    
+    .grid p.text-2xl, .grid p.text-3xl {
+        font-size: 14pt !important;
+        font-weight: 800 !important;
+        color: #1a202c !important;
+        margin-top: 5px !important;
+    }
+    
+    span.pill, .badge, table td span, .ts-table td span, .reportes-tabla-imprimir td span {
+        display: inline !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 8pt !important;
+        font-weight: normal !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #000000 !important;
+        text-transform: uppercase !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+    
+    .no-print-emoji, table td span.no-print-emoji, .grid p span {
+        display: none !important;
+    }
+    
+    .responsive-table td::before {
+        display: none !important;
+    }
+    
+    h1, h2, h3 {
+        color: #1a202c !important;
+        font-weight: bold !important;
+    }
+    
+    h1 {
+        font-size: 16pt !important;
+        margin-bottom: 5px !important;
+    }
+    
+    h3 {
+        font-size: 11pt !important;
+        margin-bottom: 10px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding-bottom: 5px !important;
+    }
 }
 </style>
 @endsection

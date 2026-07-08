@@ -1,3 +1,13 @@
+@php
+    $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
+    $logoBase64 = null;
+    if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
+        $path = \Illuminate\Support\Facades\Storage::disk('public')->path($empresa->logo_path);
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,18 +16,31 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @page {
-            margin: 40px 50px;
+            margin: 25px 30px;
         }
-        body { font-family: sans-serif; font-size: 9px; color: #1a202c; background: #fff; }
+        body { font-family: sans-serif; font-size: 9px; color: #1a202c; background: #fff; margin: 25px 30px !important; }
 
-        .header {
-            text-align: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid #2d3748;
+        .report-header {
+            display: table;
+            width: 100%;
+            border-bottom: 2px solid #2d3748;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
         }
-        .header h1 { font-size: 16px; font-weight: 700; color: #1a202c; letter-spacing: 1px; text-transform: uppercase; }
-        .header p  { font-size: 9px; color: #4a5568; margin-top: 4px; }
+        .header-logo-cell {
+            display: table-cell;
+            width: 40%;
+            vertical-align: middle;
+        }
+        .header-info-cell {
+            display: table-cell;
+            width: 60%;
+            text-align: right;
+            vertical-align: middle;
+            font-size: 8px;
+            color: #4a5568;
+            line-height: 1.3;
+        }
 
         /* Tarjetas resumen */
         .summary { display: table; width: 100%; margin-bottom: 16px; }
@@ -25,9 +48,9 @@
         .summary-cell { display: table-cell; width: 25%; padding: 6px 8px; text-align: center; vertical-align: middle; border: 1.5px solid #e2e8f0; border-radius: 4px; }
         .summary-label { font-size: 7px; font-weight: 700; text-transform: uppercase; color: #718096; margin-bottom: 3px; }
         .summary-value { font-size: 13px; font-weight: 800; }
-        .green { color: #276749; }
-        .red   { color: #9b2c2c; }
-        .blue  { color: #1a365d; }
+        .green { color: #000000; }
+        .red   { color: #000000; }
+        .blue  { color: #000000; }
 
         .section-title {
             font-size: 10px; font-weight: 700; color: #2d3748;
@@ -43,7 +66,7 @@
             background-color: #2d3748; color: #fff;
             padding: 5px 6px;
             text-transform: uppercase; font-size: 7px; letter-spacing: 0.4px;
-            text-align: center; border: 1px solid #1a202c;
+            text-align: center; border: 1px solid #cbd5e0;
         }
         tbody tr td {
             border: 1px solid #cbd5e0; padding: 4px 6px;
@@ -54,20 +77,46 @@
 
         td.center { text-align: center; }
         td.right  { text-align: right; }
-        td.ingreso { color: #276749; font-weight: 700; }
-        td.egreso  { color: #9b2c2c; font-weight: 700; }
+        td.ingreso { color: #000000; font-weight: 700; }
+        td.egreso  { color: #000000; font-weight: 700; }
 
         tfoot tr td {
             background: #edf2f7; font-weight: 800; font-size: 9px;
-            border: 1px solid #a0aec0; padding: 4px 6px;
+            border: 1px solid #cbd5e0; padding: 4px 6px;
         }
         .footer { margin-top: 14px; text-align: right; font-size: 7.5px; color: #718096; font-style: italic; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>💵 Informe Financiero Mensual</h1>
-        <p>Período: {{ $mes }}/{{ $anio }} &nbsp;|&nbsp; Generado el: {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</p>
+    <script type="text/php">
+        if (isset($pdf)) {
+            $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+            $size = 7.5;
+            $color = array(0.44, 0.50, 0.59); // rgb(113, 128, 150)
+            $y = $pdf->get_height() - 24;
+            $x = $pdf->get_width() - 85;
+            $pdf->page_text($x, $y, "Página {PAGE_NUM} de {PAGE_COUNT}", $font, $size, $color);
+        }
+    </script>
+    <div class="report-header">
+        <div class="header-logo-cell">
+            @if($logoBase64)
+                <img src="{{ $logoBase64 }}" alt="Logo" style="max-height: 50px; max-width: 160px; object-fit: contain;">
+            @else
+                <span style="font-size: 14px; font-weight: bold; color: #1a202c; text-transform: uppercase;">{{ $empresa->nombre }}</span>
+            @endif
+        </div>
+        <div class="header-info-cell">
+            <div style="font-size: 11px; font-weight: bold; color: #1a202c; text-transform: uppercase; margin-bottom: 3px;">INFORME FINANCIERO MENSUAL</div>
+            @if($empresa->nit)<div><strong>NIT:</strong> {{ $empresa->nit }}</div>@endif
+            @if($empresa->telefono)<div><strong>Tel:</strong> {{ $empresa->telefono }}</div>@endif
+            @if($empresa->direccion)<div><strong>Dir:</strong> {{ $empresa->direccion }}</div>@endif
+        </div>
+    </div>
+
+    <div style="font-size: 9px; color: #4a5568; margin-bottom: 12px; padding: 4px 0;">
+        <strong>Período:</strong> {{ $mes }}/{{ $anio }} &nbsp;|&nbsp;
+        <strong>Generado:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}
     </div>
 
     {{-- 1. Resumen Acumulado --}}
@@ -75,20 +124,20 @@
     <div class="summary">
         <div class="summary-row">
             <div class="summary-cell">
-                <div class="summary-label">📈 Ingresos Totales</div>
-                <div class="summary-value green">${{ number_format($acumulado['ingresos'], 2) }}</div>
+                <div class="summary-label">Ingresos Totales</div>
+                <div class="summary-value green">${{ number_format($acumulado['ingresos'], 0, ',', '.') }}</div>
             </div>
             <div class="summary-cell">
-                <div class="summary-label">📉 Egresos Totales</div>
-                <div class="summary-value red">${{ number_format($acumulado['egresos'], 2) }}</div>
+                <div class="summary-label">Egresos Totales</div>
+                <div class="summary-value red">${{ number_format($acumulado['egresos'], 0, ',', '.') }}</div>
             </div>
             <div class="summary-cell">
-                <div class="summary-label">🏭 Facturación Total</div>
-                <div class="summary-value blue">${{ number_format($acumulado['facturado_total'], 2) }}</div>
+                <div class="summary-label">Facturación Total</div>
+                <div class="summary-value blue">${{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</div>
             </div>
             <div class="summary-cell">
-                <div class="summary-label">💰 Utilidad Neta</div>
-                <div class="summary-value {{ $acumulado['utilidad_neta'] >= 0 ? 'green' : 'red' }}">${{ number_format($acumulado['utilidad_neta'], 2) }}</div>
+                <div class="summary-label">Utilidad Neta</div>
+                <div class="summary-value green">${{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</div>
             </div>
         </div>
     </div>
@@ -106,16 +155,16 @@
         </thead>
         <tbody>
             <tr>
-                <td><strong>💵 Efectivo</strong></td>
-                <td class="ingreso">+${{ number_format($operaciones['ingresos_efectivo'], 2) }}</td>
-                <td class="egreso">-${{ number_format($operaciones['egresos_efectivo'], 2) }}</td>
-                <td class="right {{ $operaciones['efectivo'] >= 0 ? 'ingreso' : 'egreso' }}">${{ number_format($operaciones['efectivo'], 2) }}</td>
+                <td><strong>Efectivo</strong></td>
+                <td class="ingreso">${{ number_format($operaciones['ingresos_efectivo'], 0, ',', '.') }}</td>
+                <td class="egreso">${{ number_format($operaciones['egresos_efectivo'], 0, ',', '.') }}</td>
+                <td class="right">${{ number_format($operaciones['efectivo'], 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td><strong>🏦 Consignación / Banco</strong></td>
-                <td class="ingreso">+${{ number_format($operaciones['ingresos_consignacion'], 2) }}</td>
-                <td class="egreso">-${{ number_format($operaciones['egresos_consignacion'], 2) }}</td>
-                <td class="right {{ $operaciones['consignacion'] >= 0 ? 'ingreso' : 'egreso' }}">${{ number_format($operaciones['consignacion'], 2) }}</td>
+                <td><strong>Consignación / Banco</strong></td>
+                <td class="ingreso">${{ number_format($operaciones['ingresos_consignacion'], 0, ',', '.') }}</td>
+                <td class="egreso">${{ number_format($operaciones['egresos_consignacion'], 0, ',', '.') }}</td>
+                <td class="right">${{ number_format($operaciones['consignacion'], 0, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>
@@ -151,8 +200,8 @@
                 </td>
                 <td class="center">{{ ucfirst($tx->tipo_movimiento) }}</td>
                 <td class="center">{{ ucfirst($tx->tipo_pago) }}</td>
-                <td class="right {{ $tx->tipo_movimiento == 'ingreso' ? 'ingreso' : 'egreso' }}">
-                    {{ $tx->tipo_movimiento == 'ingreso' ? '+' : '-' }}${{ number_format($tx->monto, 2) }}
+                <td class="right">
+                    ${{ number_format($tx->monto, 0, ',', '.') }}
                 </td>
             </tr>
             @empty
@@ -165,12 +214,11 @@
         <tfoot>
             <tr>
                 <td colspan="5" style="text-align:right; text-transform:uppercase; font-size:8px;">Total ingresos / egresos del período:</td>
-                <td style="text-align:right; color:#276749">+${{ number_format($acumulado['ingresos'], 2) }} / <span style="color:#9b2c2c">-${{ number_format($acumulado['egresos'], 2) }}</span></td>
+                <td style="text-align:right; color:#000000;">${{ number_format($acumulado['ingresos'], 0, ',', '.') }} / ${{ number_format($acumulado['egresos'], 0, ',', '.') }}</td>
             </tr>
         </tfoot>
         @endif
     </table>
 
-    <div class="footer">Sistema de Control de Mantenimiento &mdash; Informe generado automáticamente</div>
 </body>
 </html>

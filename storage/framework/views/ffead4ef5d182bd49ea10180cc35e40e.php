@@ -1,3 +1,13 @@
+<?php
+    $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
+    $logoBase64 = null;
+    if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
+        $path = \Illuminate\Support\Facades\Storage::disk('public')->path($empresa->logo_path);
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
+?>
 <!DOCTYPE html>
 <html lang="es" class="preload">
 <head>
@@ -311,6 +321,174 @@
                 left: 50% !important;
             }
         }
+
+        /* ─── PRINT MEDIA QUERIES ─── */
+        .hidden-screen {
+            display: none !important;
+        }
+
+        @media print {
+            .no-print,
+            header,
+            aside,
+            nav,
+            .btn,
+            button,
+            .btn-primary,
+            .btn-secondary,
+            .btn-danger,
+            .btn-ghost,
+            a[href*="export"],
+            .filters-section,
+            .filter-container,
+            .search-bar,
+            form,
+            .ts-dropdown,
+            .ts-wrapper,
+            .ts-control,
+            .pagination,
+            .breadcrumbs,
+            .actions,
+            #toast-container,
+            #ts-modal,
+            #global-anular-modal,
+            #ts-notif-modal {
+                display: none !important;
+            }
+
+            .hidden-screen {
+                display: block !important;
+            }
+
+            @page {
+                margin: 10mm 8mm 15mm 8mm;
+            }
+
+            html, body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                counter-reset: page 0;
+            }
+
+            /* Disable flexbox layouts during print to prevent desktop viewport scaling and right-side clipping */
+            .flex.min-h-screen,
+            #main-wrapper {
+                display: block !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+
+            #ts-main,
+            main {
+                display: block !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                margin: 0 !important;
+                padding: 8mm 6mm !important; /* Force physical margins even if browser margin is set to None */
+                box-sizing: border-box !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+
+            span.pill, .badge, .pill, .pill-pending, .pill-done, .pill-preventivo, .pill-especialidad, .pill-efectivo, .pill-anulado, table td span, .ts-table td span, .reportes-tabla-imprimir td span {
+                display: inline !important;
+                border: none !important;
+                background: none !important;
+                background-color: transparent !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                color: #000000 !important;
+                font-weight: normal !important;
+                text-transform: uppercase !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+
+            .no-print-emoji, 
+            table td span.no-print-emoji,
+            .ts-table td span.no-print-emoji,
+            .reportes-tabla-imprimir td span.no-print-emoji,
+            .grid p span, 
+            .ts-table td span.mr-2,
+            .reportes-tabla-imprimir td span.mr-2,
+            span.text-lg {
+                display: none !important;
+            }
+
+            /* Forzar visualización de tablas completas */
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                margin-top: 15px !important;
+                font-size: 9px !important;
+            }
+            th, td {
+                border: 1px solid #cbd5e0 !important;
+                padding: 5px 6px !important;
+                color: #000000 !important;
+                background-color: #ffffff !important;
+            }
+            th {
+                background-color: #2d3748 !important;
+                color: #ffffff !important;
+                font-weight: bold !important;
+                text-transform: uppercase !important;
+            }
+            tbody tr:nth-child(even) td {
+                background-color: #f7fafc !important;
+            }
+            tr {
+                page-break-inside: avoid !important;
+            }
+
+            /* Convertir glass-cards en contenedores limpios */
+            .glass-card {
+                background: none !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin-bottom: 20px !important;
+            }
+
+            /* Ocultar sombras e inputs */
+            input, select, textarea {
+                border: none !important;
+                background: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+            }
+
+            /* Footer de impresión */
+            .print-footer {
+                display: block !important;
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                height: 30px !important;
+                border-top: 1px solid #cbd5e0 !important;
+                padding-top: 8px !important;
+                font-size: 8pt !important;
+                color: #4a5568 !important;
+                background-color: #ffffff !important;
+                z-index: 9999 !important;
+            }
+            .print-page-number::after {
+                counter-increment: page;
+                content: counter(page) !important;
+            }
+        }
     </style>
     
     <!-- Lógica de Tema Temprana para evitar Flash de Contenido No Estilizado (FOUC) -->
@@ -613,6 +791,27 @@
 
             <!-- CONTENIDO DINÁMICO -->
             <main id="ts-main" class="flex-1 p-4 sm:p-6 lg:p-8 pb-[50vh] relative z-10">
+                <!-- Encabezado de Impresión -->
+                <div class="print-header hidden-screen" style="margin-bottom: 20px;">
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; border-bottom: 2px solid #000000;">
+                        <tr>
+                            <td style="width: 35%; border: none !important; padding: 0 0 10px 0 !important; vertical-align: middle;">
+                                <?php if($logoBase64): ?>
+                                    <img src="<?php echo e($logoBase64); ?>" alt="Logo" style="max-height: 55px; max-width: 180px; object-fit: contain;">
+                                <?php else: ?>
+                                    <span style="font-size: 16px; font-weight: bold; color: #000000; text-transform: uppercase;"><?php echo e($empresa->nombre); ?></span>
+                                <?php endif; ?>
+                            </td>
+                            <td style="width: 65%; border: none !important; padding: 0 0 10px 0 !important; text-align: right; vertical-align: middle; font-size: 9px; color: #1e293b; line-height: 1.35;">
+                                <div style="font-size: 13px; font-weight: bold; color: #1e3a5f; text-transform: uppercase; margin-bottom: 3px;" id="print-page-title">INFORME DEL SISTEMA</div>
+                                <?php if($empresa->nit): ?><div><strong>NIT:</strong> <?php echo e($empresa->nit); ?></div><?php endif; ?>
+                                <?php if($empresa->telefono): ?><div><strong>Tel:</strong> <?php echo e($empresa->telefono); ?></div><?php endif; ?>
+                                <?php if($empresa->direccion): ?><div><strong>Dir:</strong> <?php echo e($empresa->direccion); ?></div><?php endif; ?>
+                                <div><strong>Fecha Impresión:</strong> <?php echo e(\Carbon\Carbon::now()->format('d/m/Y H:i')); ?></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <?php echo $__env->yieldContent('content'); ?>
             </main>
         </div>
@@ -781,7 +980,7 @@
             if (isReactivation) {
                 // Modo Activación
                 title.textContent = 'Confirmar Activación';
-                msg.textContent = 'Ingresa tu contraseña para activar y rehabilitar este registro.';
+                msg.textContent = 'Ingresa tu contraseña para activar este registro.';
                 icon.textContent = '✅';
                 iconContainer.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center text-3xl mx-auto mb-4';
                 submitBtn.innerHTML = '✅ Activar';
@@ -1360,6 +1559,26 @@
             });
         })();
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const titleEl = document.querySelector('h1') || document.querySelector('.glass-card h2') || document.querySelector('h2');
+            const printTitle = document.getElementById('print-page-title');
+            if (titleEl && printTitle) {
+                printTitle.innerText = titleEl.innerText.replace(/[📊⚙️⚡📦📈📋💵]/g, '').trim().toUpperCase();
+            }
+        });
+    </script>
+    <!-- Footer de impresión para el navegador -->
+    <div class="hidden-screen print-footer" style="display: none;">
+        <table style="width: 100%; border: none !important; margin: 0 !important; background: transparent !important;">
+            <tr style="border: none !important; background: transparent !important;">
+                <td style="border: none !important; text-align: right; padding: 0 !important; font-size: 8pt !important; color: #4a5568 !important; background: transparent !important;">
+                    Página <span class="print-page-number"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <?php echo $__env->yieldPushContent('modals'); ?>
 </body>
 </html>

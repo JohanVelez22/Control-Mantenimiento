@@ -26,6 +26,9 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
+                
+                // Configurar pie de página para impresión
+                $sheet->getHeaderFooter()->setOddFooter('&RPágina &P de &N');
 
                 // Centrar y combinar título (Fila 1)
                 $sheet->mergeCells('A1:F1');
@@ -52,8 +55,11 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
 
                 $total = $ingresos - $egresos;
 
+                // Aplicar formato de miles a la columna D (Costo)
+                $sheet->getStyle("D5:D{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
+
                 $sheet->setCellValue("A{$footerRow}", 'Total registros: ' . $this->transacciones->count());
-                $sheet->setCellValue("D{$footerRow}", 'Balance Neto: $' . number_format($total, 2));
+                $sheet->setCellValue("D{$footerRow}", 'Balance Neto: $' . number_format($total, 0, ',', '.'));
 
                 $sheet->getStyle("A{$footerRow}:F{$footerRow}")->applyFromArray([
                     'font' => ['bold' => true, 'size' => 11],
@@ -110,7 +116,7 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
             $fecha ? \Carbon\Carbon::parse($fecha)->format('d/m/Y') : '—',
             ucfirst($tipo),
             $desc,
-            number_format((float) $monto, 2),
+            (float) $monto,
             ucfirst($estado),
             $anulado,
         ];

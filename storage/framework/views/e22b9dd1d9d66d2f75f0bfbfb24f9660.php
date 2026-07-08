@@ -1,4 +1,4 @@
-@php
+<?php
     $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
     $logoBase64 = null;
     if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
@@ -7,7 +7,7 @@
         $data = file_get_contents($path);
         $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
     }
-@endphp
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -119,59 +119,60 @@
     </script>
     <div class="report-header">
         <div class="header-logo-cell">
-            @if($logoBase64)
-                <img src="{{ $logoBase64 }}" alt="Logo" style="max-height: 50px; max-width: 160px; object-fit: contain;">
-            @else
-                <span style="font-size: 14px; font-weight: bold; color: #1a202c; text-transform: uppercase;">{{ $empresa->nombre }}</span>
-            @endif
+            <?php if($logoBase64): ?>
+                <img src="<?php echo e($logoBase64); ?>" alt="Logo" style="max-height: 50px; max-width: 160px; object-fit: contain;">
+            <?php else: ?>
+                <span style="font-size: 14px; font-weight: bold; color: #1a202c; text-transform: uppercase;"><?php echo e($empresa->nombre); ?></span>
+            <?php endif; ?>
         </div>
         <div class="header-info-cell">
             <div style="font-size: 11px; font-weight: bold; color: #1a202c; text-transform: uppercase; margin-bottom: 3px;">INFORME FINANCIERO ACUMULADO</div>
-            @if($empresa->nit)<div><strong>NIT:</strong> {{ $empresa->nit }}</div>@endif
-            @if($empresa->telefono)<div><strong>Tel:</strong> {{ $empresa->telefono }}</div>@endif
-            @if($empresa->direccion)<div><strong>Dir:</strong> {{ $empresa->direccion }}</div>@endif
+            <?php if($empresa->nit): ?><div><strong>NIT:</strong> <?php echo e($empresa->nit); ?></div><?php endif; ?>
+            <?php if($empresa->telefono): ?><div><strong>Tel:</strong> <?php echo e($empresa->telefono); ?></div><?php endif; ?>
+            <?php if($empresa->direccion): ?><div><strong>Dir:</strong> <?php echo e($empresa->direccion); ?></div><?php endif; ?>
         </div>
     </div>
 
     <div style="font-size: 9px; color: #4a5568; margin-bottom: 12px; padding: 4px 0;">
-        @if(isset($fecha))<strong>Período:</strong> {{ $fecha }} &nbsp;|&nbsp; @endif
-        <strong>Generado:</strong> {{ date('d/m/Y h:i A') }}
+        <?php if(isset($fecha)): ?><strong>Período:</strong> <?php echo e($fecha); ?> &nbsp;|&nbsp; <?php endif; ?>
+        <strong>Generado:</strong> <?php echo e(date('d/m/Y h:i A')); ?>
+
     </div>
 
-    @if(isset($acumulado))
+    <?php if(isset($acumulado)): ?>
     <div class="summary-grid" style="margin-bottom: 8px;">
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Mantenimientos</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['facturado_mant'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$<?php echo e(number_format($acumulado['facturado_mant'] ?? 0, 0, ',', '.')); ?></div>
         </div>
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Electrónica</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['facturado_elec'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$<?php echo e(number_format($acumulado['facturado_elec'] ?? 0, 0, ',', '.')); ?></div>
         </div>
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Compras</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['compras_inventario'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$<?php echo e(number_format($acumulado['compras_inventario'] ?? 0, 0, ',', '.')); ?></div>
         </div>
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Ventas</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['ventas_inventario'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$<?php echo e(number_format($acumulado['ventas_inventario'] ?? 0, 0, ',', '.')); ?></div>
         </div>
     </div>
     <div class="summary-grid">
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Ingresos Reales</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['ingresos_caja'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$<?php echo e(number_format($acumulado['ingresos_caja'] ?? 0, 0, ',', '.')); ?></div>
         </div>
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Egresos Reales</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['egresos_caja'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$<?php echo e(number_format($acumulado['egresos_caja'] ?? 0, 0, ',', '.')); ?></div>
         </div>
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Balance Neto</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$<?php echo e(number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.')); ?></div>
         </div>
     </div>
-    @endif
+    <?php endif; ?>
 
         <p class="section-title">Resumen Consolidado del Período</p>
 
@@ -186,47 +187,48 @@
         <tbody>
             <tr>
                 <td>Mantenimientos</td>
-                <td style="text-align:center">{{ $acumulado['total_mantenimientos'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['facturado_mant'] ?? 0, 0, ',', '.') }}</td>
+                <td style="text-align:center"><?php echo e($acumulado['total_mantenimientos'] ?? 0); ?></td>
+                <td class="monto" style="text-align:center">$<?php echo e(number_format($acumulado['facturado_mant'] ?? 0, 0, ',', '.')); ?></td>
             </tr>
             <tr>
                 <td>Electrónica</td>
-                <td style="text-align:center">{{ $acumulado['total_electronicas'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['facturado_elec'] ?? 0, 0, ',', '.') }}</td>
+                <td style="text-align:center"><?php echo e($acumulado['total_electronicas'] ?? 0); ?></td>
+                <td class="monto" style="text-align:center">$<?php echo e(number_format($acumulado['facturado_elec'] ?? 0, 0, ',', '.')); ?></td>
             </tr>
             <tr>
                 <td>Compras de Inventario</td>
-                <td style="text-align:center">{{ $acumulado['total_compras'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['compras_inventario'] ?? 0, 0, ',', '.') }}</td>
+                <td style="text-align:center"><?php echo e($acumulado['total_compras'] ?? 0); ?></td>
+                <td class="monto" style="text-align:center">$<?php echo e(number_format($acumulado['compras_inventario'] ?? 0, 0, ',', '.')); ?></td>
             </tr>
             <tr>
                 <td>Ventas de Inventario</td>
-                <td style="text-align:center">{{ $acumulado['total_ventas'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['ventas_inventario'] ?? 0, 0, ',', '.') }}</td>
+                <td style="text-align:center"><?php echo e($acumulado['total_ventas'] ?? 0); ?></td>
+                <td class="monto" style="text-align:center">$<?php echo e(number_format($acumulado['ventas_inventario'] ?? 0, 0, ',', '.')); ?></td>
             </tr>
             <tr>
                 <td>Ingresos Reales (Caja)</td>
-                <td style="text-align:center">{{ $acumulado['total_ingresos'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['ingresos_caja'] ?? 0, 0, ',', '.') }}</td>
+                <td style="text-align:center"><?php echo e($acumulado['total_ingresos'] ?? 0); ?></td>
+                <td class="monto" style="text-align:center">$<?php echo e(number_format($acumulado['ingresos_caja'] ?? 0, 0, ',', '.')); ?></td>
             </tr>
             <tr>
                 <td>Egresos Reales (Caja)</td>
-                <td style="text-align:center">{{ $acumulado['total_egresos'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['egresos_caja'] ?? 0, 0, ',', '.') }}</td>
+                <td style="text-align:center"><?php echo e($acumulado['total_egresos'] ?? 0); ?></td>
+                <td class="monto" style="text-align:center">$<?php echo e(number_format($acumulado['egresos_caja'] ?? 0, 0, ',', '.')); ?></td>
             </tr>
             <tr class="anulado">
                 <td style="color:#718096">Movimientos Anulados</td>
-                <td style="text-align:center; color:#718096">{{ $acumulado['total_anulados'] ?? 0 }}</td>
-                <td style="text-align:center; color:#000000;">${{ number_format($acumulado['total_costo_anulados'] ?? 0, 0, ',', '.') }}</td>
+                <td style="text-align:center; color:#718096"><?php echo e($acumulado['total_anulados'] ?? 0); ?></td>
+                <td style="text-align:center; color:#000000;">$<?php echo e(number_format($acumulado['total_costo_anulados'] ?? 0, 0, ',', '.')); ?></td>
             </tr>
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="2" style="text-align:right">Balance Neto del Período:</td>
-                <td style="text-align:center; color: #000000; font-weight: bold;">${{ number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</td>
+                <td style="text-align:center; color: #000000; font-weight: bold;">$<?php echo e(number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.')); ?></td>
             </tr>
         </tfoot>
     </table>
 
 </body>
 </html>
+<?php /**PATH C:\ServBay\www\control-mantenimiento-equipos\resources\views/reportes_financieros/pdf_acumulado.blade.php ENDPATH**/ ?>
