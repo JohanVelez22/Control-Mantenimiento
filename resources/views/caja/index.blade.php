@@ -158,7 +158,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('caja.edit', $m->id) }}" class="btn-ghost px-3 py-1.5 text-xs" title="Editar">✏️</a>
 
- <button type="button" onclick="openAnularModal('{{ route('caja.anular', $m->id) }}')" class="btn-ghost px-3 py-1.5 text-xs {{ $m->anulado ? 'grayscale opacity-60 hover:bg-gray-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $m->anulado ? 'Reactivar movimiento' : 'Anular movimiento' }}">
+                        <button type="button" onclick="openAnularModal('{{ route('caja.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost px-3 py-1.5 text-xs {{ $m->anulado ? 'grayscale opacity-60 hover:bg-gray-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $m->anulado ? 'Reactivar movimiento' : 'Anular movimiento' }}">
  {{ $m->anulado ? '✅' : '🚫' }}
  </button>
  @endif </div>

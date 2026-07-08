@@ -130,7 +130,8 @@ class MantenimientoController extends Controller
                          ->orWhere('modelo', 'like', "%{$search}%")
                          ->orWhere('serie', 'like', "%{$search}%")
                          ->orWhereHas('cliente', function($q3) use ($search) {
-                             $q3->where('nombre', 'like', "%{$search}%");
+                             $q3->where('nombres', 'like', "%{$search}%")
+                                ->orWhere('apellidos', 'like', "%{$search}%");
                          });
                   });
             });
@@ -150,7 +151,7 @@ class MantenimientoController extends Controller
 
         $mantenimientos = $query->orderBy('id', 'desc')->paginate(10);
 
-        $clientes = Cliente::orderBy('nombre')->get(['id', 'nombre', 'identificacion']);
+        $clientes = Cliente::orderBy('nombres')->orderBy('apellidos')->get(['id', 'nombres', 'apellidos', 'identificacion']);
         $equipos  = Equipo::orderBy('nombre')->get(['id', 'nombre', 'modelo', 'serie']);
         $tecnicos = Tecnico::orderBy('nombre')->get(['id', 'nombre']);
         $usuarios = User::orderBy('name')->get(['id', 'name']);

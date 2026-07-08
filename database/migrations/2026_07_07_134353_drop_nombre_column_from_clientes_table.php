@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('proveedores', function (Blueprint $table) {
-            $table->boolean('active')->default(true)->after('id');
-        });
         Schema::table('clientes', function (Blueprint $table) {
-            $table->boolean('active')->default(true)->after('id');
+            $table->dropColumn('nombre');
         });
     }
 
@@ -24,11 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('proveedores', function (Blueprint $table) {
-            $table->dropColumn('active');
-        });
         Schema::table('clientes', function (Blueprint $table) {
-            $table->dropColumn('active');
+            $table->string('nombre')->after('id');
         });
     }
 };

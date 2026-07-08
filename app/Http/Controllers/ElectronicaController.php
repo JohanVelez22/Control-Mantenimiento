@@ -43,9 +43,10 @@ class ElectronicaController extends Controller
                        ->orWhere('marca', 'like', "%{$s}%")
                        ->orWhere('modelo', 'like', "%{$s}%")
                        ->orWhere('serie', 'like', "%{$s}%")
-                       ->orWhereHas('cliente', function ($q3) use ($s) {
-                           $q3->where('nombre', 'like', "%{$s}%");
-                       });
+                        ->orWhereHas('cliente', function ($q3) use ($s) {
+                            $q3->where('nombres', 'like', "%{$s}%")
+                               ->orWhere('apellidos', 'like', "%{$s}%");
+                        });
                 })->orWhere('id_orden', 'like', "%{$s}%");
             });
         }
@@ -298,10 +299,11 @@ class ElectronicaController extends Controller
                          ->orWhere('marca', 'like', "%{$search}%")
                          ->orWhere('modelo', 'like', "%{$search}%")
                          ->orWhere('serie', 'like', "%{$search}%")
-                         ->orWhereHas('cliente', function($q3) use ($search) {
-                             $q3->where('nombre', 'like', "%{$search}%")
-                                ->orWhere('identificacion', 'like', "%{$search}%");
-                         });
+                          ->orWhereHas('cliente', function($q3) use ($search) {
+                              $q3->where('nombres', 'like', "%{$search}%")
+                                 ->orWhere('apellidos', 'like', "%{$search}%")
+                                 ->orWhere('identificacion', 'like', "%{$search}%");
+                          });
                   });
             });
         }
@@ -325,7 +327,7 @@ class ElectronicaController extends Controller
 
         $registros = $query->with(['tecnico', 'user', 'equipo.cliente'])->orderBy('id', 'desc')->paginate(10);
         $tecnicos = Tecnico::orderBy('nombre')->get(['id', 'nombre']);
-        $clientes = Cliente::orderBy('nombre')->get(['id', 'nombre', 'identificacion']);
+        $clientes = Cliente::orderBy('nombres')->orderBy('apellidos')->get(['id', 'nombres', 'apellidos', 'identificacion']);
         $equipos  = Equipo::orderBy('nombre')->get(['id', 'nombre', 'modelo', 'serie']);
         $usuarios = User::orderBy('name')->get(['id', 'name']);
 

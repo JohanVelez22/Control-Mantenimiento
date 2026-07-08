@@ -59,6 +59,7 @@ Route::middleware(['auth', \App\Http\Middleware\PreventBackHistory::class])->gro
     Route::get('/mantenimientos/{mantenimiento}/factura', [MantenimientoController::class, 'factura'])->name('mantenimientos.factura');
 
     // ─── Módulos generales ────────────────────────────────────────────
+    Route::get('api/municipios', [ClienteController::class, 'municipios'])->name('api.municipios');
     Route::resource('clientes', ClienteController::class)->except(['destroy']);
     Route::post('clientes/{cliente}/anular', [ClienteController::class, 'anular'])->name('clientes.anular');
     

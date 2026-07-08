@@ -32,48 +32,43 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('layouts.app', function ($view) {
             // ─────────────────────────────────────────────────────────────────
-            // Cache de notificaciones pendientes: se invalida cada 90 segundos.
-            // Esto evita ejecutar 4 queries en CADA request autenticado.
-            // La cache se limpia manualmente desde CacheHelper cuando hay cambios.
+            // Las notificaciones se consultan en tiempo real para evitar 
+            // problemas de serialización (__PHP_Incomplete_Class) con la caché.
             // ─────────────────────────────────────────────────────────────────
-            $userId = auth()->id() ?? 0;
-            $cacheKey = "notificaciones_pendientes_u{$userId}";
+            
+            $mantList = Mantenimiento::activos()
+                ->where('estado', 'pendiente')
+                ->select('id', 'id_orden', 'equipo_id', 'estado')
+                ->with('equipo.cliente:id,nombres,apellidos')
+                ->latest()
+                ->get();
 
-            $data = Cache::remember($cacheKey, 90, function () {
-                $mantList = Mantenimiento::activos()
-                    ->where('estado', 'pendiente')
-                    ->select('id', 'id_orden', 'equipo_id', 'estado')
-                    ->with('equipo.cliente:id,nombre')
-                    ->latest()
-                    ->get();
+            $elecList = Electronica::activos()
+                ->where('estado', 'pendiente')
+                ->select('id', 'id_orden', 'equipo_id', 'estado')
+                ->with('equipo.cliente:id,nombres,apellidos')
+                ->latest()
+                ->get();
 
-                $elecList = Electronica::activos()
-                    ->where('estado', 'pendiente')
-                    ->select('id', 'id_orden', 'equipo_id', 'estado')
-                    ->with('equipo.cliente:id,nombre')
-                    ->latest()
-                    ->get();
+            $cajaList = Factura::where('estado', '!=', 'anulada')
+                ->where('saldo_pendiente', '>', 0)
+                ->select('id', 'numero_factura', 'tipo_movimiento', 'saldo_pendiente', 'total_documento', 'facturable_id', 'facturable_type')
+                ->with('facturable')
+                ->latest()
+                ->get();
 
-                $cajaList = Factura::where('estado', '!=', 'anulada')
-                    ->where('saldo_pendiente', '>', 0)
-                    ->select('id', 'numero_factura', 'tipo_movimiento', 'saldo_pendiente', 'total_documento', 'facturable_id', 'facturable_type')
-                    ->with('facturable')
-                    ->latest()
-                    ->get();
+            $movimientosPendientes = MovimientoCaja::where('anulado', false)
+                ->whereNull('parent_id')
+                ->whereRaw('monto_total > monto')
+                ->with(['concepto', 'childPayments'])
+                ->latest()
+                ->get()
+                ->filter(function($m) {
+                    return $m->saldo_pendiente > 0;
+                })
+                ->values();
 
-                $movimientosPendientes = MovimientoCaja::where('anulado', false)
-                    ->whereNull('parent_id')
-                    ->whereRaw('monto_total > monto')
-                    ->with(['concepto', 'childPayments'])
-                    ->latest()
-                    ->get()
-                    ->filter(function($m) {
-                        return $m->saldo_pendiente > 0;
-                    })
-                    ->values();
-
-                return compact('mantList', 'elecList', 'cajaList', 'movimientosPendientes');
-            });
+            $data = compact('mantList', 'elecList', 'cajaList', 'movimientosPendientes');
 
             $view->with([
                 'mantList'              => $data['mantList'],

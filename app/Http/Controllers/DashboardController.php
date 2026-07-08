@@ -147,7 +147,7 @@ class DashboardController extends Controller
         $electronicaRecientes = $electronicaRecientes;
 
         // Listas para selects (solo columnas necesarias)
-        $clientes = Cliente::orderBy('nombre')->get(['id', 'nombre']);
+        $clientes = Cliente::orderBy('nombres')->orderBy('apellidos')->get(['id', 'nombres', 'apellidos']);
         $tecnicos = Tecnico::orderBy('nombre')->get(['id', 'nombre']);
 
         return view('dashboard', compact(

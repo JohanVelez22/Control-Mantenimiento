@@ -50,11 +50,11 @@
  🖨️ Imprimir
  </a>
  
- @if($factura->estado !== 'anulada' && !auth()->user()->isInvitado())
- <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $factura->id) }}')" class="btn-danger">
- 🚫 Anular
- </button>
- @endif
+	@if($factura->estado !== 'anulada' && !auth()->user()->isInvitado())
+	<button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $factura->id) }}', false)" class="btn-danger">
+		🚫 Anular
+	</button>
+	@endif
  </div>
  </div>
 

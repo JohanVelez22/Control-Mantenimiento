@@ -56,17 +56,17 @@
  </span>
  </td>
  <td class="text-center <?php echo e($dim); ?>">
- <div class="flex justify-center items-center gap-1">
- <?php if(!auth()->user()->isInvitado()): ?>
- <a href="<?php echo e(route('clientes.edit', $cliente->id)); ?>" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
- <button type="button" onclick="openAnularModal('<?php echo e(route('clientes.anular', $cliente->id)); ?>')" class="btn-ghost px-2.5 py-1.5 text-xs <?php echo e($cliente->active ? 'text-red-600' : 'text-emerald-600'); ?>" title="<?php echo e($cliente->active ? 'Anular Cliente' : 'Reactivar Cliente'); ?>">
- <?php echo e($cliente->active ? '🚫' : '✅'); ?>
+						<div class="flex justify-center items-center gap-1">
+							<?php if(!auth()->user()->isInvitado()): ?>
+							<a href="<?php echo e(route('clientes.edit', $cliente->id)); ?>" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
+							<button type="button" onclick="openAnularModal('<?php echo e(route('clientes.anular', $cliente->id)); ?>', <?php echo e(!$cliente->active ? 'true' : 'false'); ?>)" class="btn-ghost px-2.5 py-1.5 text-xs <?php echo e($cliente->active ? 'text-red-600' : 'text-emerald-600'); ?>" title="<?php echo e($cliente->active ? 'Anular Cliente' : 'Reactivar Cliente'); ?>">
+								<?php echo e($cliente->active ? '🚫' : '✅'); ?>
 
- </button>
- <?php else: ?>
- <span class="text-gray-400 text-sm">👁️ Lectura</span>
- <?php endif; ?>
- </div>
+							</button>
+							<?php else: ?>
+							<span class="text-gray-400 text-sm">👁️ Lectura</span>
+							<?php endif; ?>
+						</div>
  </td>
  </tr>
  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>

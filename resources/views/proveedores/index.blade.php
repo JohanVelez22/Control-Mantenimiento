@@ -81,7 +81,7 @@
  <a href="{{ route('proveedores.show', $p->id) }}" class="btn-ghost px-3 py-1.5 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('proveedores.edit', $p->id) }}" class="btn-ghost px-3 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
- <button type="button" onclick="openAnularModal('{{ route('proveedores.anular', $p->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs {{ $p->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $p->active ? 'Anular Proveedor' : 'Reactivar Proveedor' }}">
+                                    <button type="button" onclick="openAnularModal('{{ route('proveedores.anular', $p->id) }}', {{ !$p->active ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $p->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $p->active ? 'Anular Proveedor' : 'Reactivar Proveedor' }}">
  {{ $p->active ? '🚫' : '✅' }}
  </button>
  @endif

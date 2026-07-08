@@ -180,10 +180,11 @@
 
  // --- BÚSQUEDA DE CLIENTES Y PROVEEDORES ---
  @php
- $clientesData = \App\Models\Cliente::orderBy('nombre')->get(['id','nombre','identificacion','movil'])->map(function($c) {
-     $c->tipo_entidad = 'cliente';
-     return $c;
- });
+  $clientesData = \App\Models\Cliente::orderBy('nombres')->orderBy('apellidos')->get(['id','nombres','apellidos','identificacion','movil'])->map(function($c) {
+      $c->tipo_entidad = 'cliente';
+      $c->nombre = $c->nombre; // accessor
+      return $c;
+  });
  $proveedoresData = \App\Models\Proveedor::orderBy('nombre_razon_social')->get(['id','nombre_razon_social as nombre','identificacion','telefono as movil'])->map(function($p) {
      $p->tipo_entidad = 'proveedor';
      return $p;

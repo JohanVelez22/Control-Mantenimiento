@@ -69,7 +69,7 @@
  <div class="flex justify-center items-center gap-1">
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
- <button type="button" onclick="openAnularModal('{{ route('tecnicos.anular', $tecnico->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs {{ $tecnico->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $tecnico->active ? 'Anular Técnico' : 'Reactivar Técnico' }}">
+                            <button type="button" onclick="openAnularModal('{{ route('tecnicos.anular', $tecnico->id) }}', {{ !$tecnico->active ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $tecnico->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $tecnico->active ? 'Anular Técnico' : 'Reactivar Técnico' }}">
  {{ $tecnico->active ? '🚫' : '✅' }}
  </button>
  @else

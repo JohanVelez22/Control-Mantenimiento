@@ -83,7 +83,7 @@
  <a href="<?php echo e(route('proveedores.show', $p->id)); ?>" class="btn-ghost px-3 py-1.5 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
  <?php if(!auth()->user()->isInvitado()): ?>
  <a href="<?php echo e(route('proveedores.edit', $p->id)); ?>" class="btn-ghost px-3 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
- <button type="button" onclick="openAnularModal('<?php echo e(route('proveedores.anular', $p->id)); ?>')" class="btn-ghost px-2.5 py-1.5 text-xs <?php echo e($p->active ? 'text-red-600' : 'text-emerald-600'); ?>" title="<?php echo e($p->active ? 'Anular Proveedor' : 'Reactivar Proveedor'); ?>">
+                                    <button type="button" onclick="openAnularModal('<?php echo e(route('proveedores.anular', $p->id)); ?>', <?php echo e(!$p->active ? 'true' : 'false'); ?>)" class="btn-ghost px-2.5 py-1.5 text-xs <?php echo e($p->active ? 'text-red-600' : 'text-emerald-600'); ?>" title="<?php echo e($p->active ? 'Anular Proveedor' : 'Reactivar Proveedor'); ?>">
  <?php echo e($p->active ? '🚫' : '✅'); ?>
 
  </button>

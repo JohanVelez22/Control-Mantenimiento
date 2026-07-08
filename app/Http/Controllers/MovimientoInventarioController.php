@@ -25,7 +25,7 @@ class MovimientoInventarioController extends Controller
     public function createCompra(): View
     {
         $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
-        $clientes    = Cliente::orderBy('nombre')->get();
+        $clientes    = Cliente::orderBy('nombres')->orderBy('apellidos')->get();
         $stocks      = Stock::orderBy('producto')->get();
         $nextNumero  = Factura::siguienteNumero('CP-');
 
@@ -138,7 +138,7 @@ class MovimientoInventarioController extends Controller
 
     public function createVenta(): View
     {
-        $clientes    = Cliente::orderBy('nombre')->get();
+        $clientes    = Cliente::orderBy('nombres')->orderBy('apellidos')->get();
         $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
         $stocks      = Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
         $nextNumero  = Factura::siguienteNumero('VT-');
@@ -372,7 +372,7 @@ class MovimientoInventarioController extends Controller
     public function editFactura(Factura $factura): View
     {
         $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
-        $clientes    = Cliente::orderBy('nombre')->get();
+        $clientes    = Cliente::orderBy('nombres')->orderBy('apellidos')->get();
         $stocks      = Stock::orderBy('producto')->get();
         $factura->load('items.stock');
         return view('inventario.facturas.edit', compact('factura', 'proveedores', 'clientes', 'stocks'));

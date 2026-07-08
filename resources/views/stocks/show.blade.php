@@ -41,7 +41,7 @@
                 <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
                     ✏️ Editar
                 </a>
-                <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}')" class="btn-danger">
+                <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-danger">
                     {{ $stock->active ? '🚫 Anular' : '✅ Reactivar' }}
                 </button>
                 @endif

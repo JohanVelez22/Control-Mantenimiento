@@ -26,7 +26,7 @@ class EquipoController extends Controller
         if (Auth::user()->role === 'invitado') {
             return redirect()->route('equipos.index')->with('error', 'No tienes permisos para crear.');
         }
-        $clientes = Cliente::orderBy('nombre', 'asc')->get();
+        $clientes = Cliente::orderBy('nombres')->orderBy('apellidos')->get();
         return view('equipos.create', compact('clientes'));
     }
 
@@ -58,7 +58,7 @@ class EquipoController extends Controller
             return redirect()->route('equipos.index')->with('error', 'No tienes permisos para editar.');
         }
         
-        $clientes = Cliente::orderBy('nombre', 'asc')->get();
+        $clientes = Cliente::orderBy('nombres')->orderBy('apellidos')->get();
         return view('equipos.edit', compact('equipo', 'clientes'));
     }
 

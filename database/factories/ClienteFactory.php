@@ -37,11 +37,18 @@ class ClienteFactory extends Factory
         $email = Str::lower(Str::ascii($nombre)) . '.' . Str::lower(Str::ascii($apellido1)) . $faker->numberBetween(1, 99) . '@' . $faker->freeEmailDomain();
 
         return [
-            'nombre' => $nombreCompleto,
+            'nombres' => $nombre,
+            'apellidos' => $apellido1 . ' ' . $apellido2,
+            'tipo_identificacion' => 'cedula_ciudadania',
+            'genero' => $faker->randomElement(['masculino', 'femenino', 'indefinido']),
+            'tipo_cliente' => $faker->randomElement(['cliente', 'tecnico']),
             'identificacion' => $faker->unique()->numerify('10########'), // Cédula de 10 dígitos
             'movil' => '3' . $faker->numerify('#########'), // Celular colombiano
             'email' => $email,
-            'direccion' => $faker->randomElement($direcciones) . ', ' . $faker->randomElement($ciudades),
+            'direccion' => $faker->randomElement($direcciones),
+            'departamento' => 'Risaralda',
+            'municipio' => $faker->randomElement($ciudades),
+            'active' => true,
         ];
     }
 }

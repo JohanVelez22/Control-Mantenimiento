@@ -652,14 +652,14 @@
     </div>
 
     <!-- MODAL GLOBAL DE ANULACIÓN (fuera del main-wrapper para centrado correcto) -->
-    <div id="global-anular-modal" class="ts-modal-overlay hidden opacity-0">
-        <div class="ts-modal-card scale-95 opacity-0" id="global-anular-card">
+    <div id="global-anular-modal" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
+        <div class="ts-modal-card scale-95 opacity-0 transition-all duration-300" id="global-anular-card">
             <div class="p-6">
-                <div class="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4">
-                    🚫
+                <div id="global-anular-icon-container" class="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4">
+                    <span id="global-anular-icon">🚫</span>
                 </div>
-                <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Anulación</h3>
-                <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+                <h3 id="global-anular-title" class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Anulación</h3>
+                <p id="global-anular-msg" class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
                     Ingresa tu contraseña para anular este registro. Se mantendrá el historial pero no afectará saldos.
                 </p>
                 <form id="global-anular-form" method="POST" class="space-y-4">
@@ -671,7 +671,7 @@
                     </div>
                     <div class="flex gap-3 pt-2">
                         <button type="button" onclick="closeAnularModal()" class="flex-1 btn-ghost justify-center">Cancelar</button>
-                        <button type="submit" class="flex-1 btn-danger justify-center">🚫 Anular</button>
+                        <button type="submit" id="global-anular-submit" class="flex-1 btn-danger justify-center font-bold">🚫 Anular</button>
                     </div>
                 </form>
             </div>
@@ -763,13 +763,40 @@
         }
 
         // ─── MODAL GLOBAL DE ANULACIÓN ───────────────────────────────────
-        function openAnularModal(actionUrl) {
+        function openAnularModal(actionUrl, isReactivation = false) {
             const modal = document.getElementById('global-anular-modal');
             const card  = document.getElementById('global-anular-card');
             const form  = document.getElementById('global-anular-form');
             const input = document.getElementById('global-anular-input');
+            const iconContainer = document.getElementById('global-anular-icon-container');
+            const icon = document.getElementById('global-anular-icon');
+            const title = document.getElementById('global-anular-title');
+            const msg = document.getElementById('global-anular-msg');
+            const submitBtn = document.getElementById('global-anular-submit');
+
             form.action  = actionUrl;
             input.value  = '';
+
+            if (isReactivation) {
+                // Modo Activación
+                title.textContent = 'Confirmar Activación';
+                msg.textContent = 'Ingresa tu contraseña para activar y rehabilitar este registro.';
+                icon.textContent = '✅';
+                iconContainer.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center text-3xl mx-auto mb-4';
+                submitBtn.innerHTML = '✅ Activar';
+                submitBtn.className = 'flex-1 btn-primary justify-center text-white font-bold py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20';
+                input.className = 'glass-input text-center tracking-widest text-lg focus:ring-emerald-500';
+            } else {
+                // Modo Anulación
+                title.textContent = 'Confirmar Anulación';
+                msg.textContent = 'Ingresa tu contraseña para anular este registro. Se mantendrá el historial pero no afectará saldos.';
+                icon.textContent = '🚫';
+                iconContainer.className = 'w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4';
+                submitBtn.innerHTML = '🚫 Anular';
+                submitBtn.className = 'flex-1 btn-danger justify-center font-bold py-2.5 rounded-xl';
+                input.className = 'glass-input text-center tracking-widest text-lg focus:ring-orange-500';
+            }
+
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modal.classList.remove('opacity-0');

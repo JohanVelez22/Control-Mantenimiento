@@ -115,7 +115,7 @@
  <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost px-3 py-1.5 text-xs text-gray-600" title="Imprimir">🖨️</a>
  @if(!auth()->user()->isInvitado())
  <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost px-3 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
- <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}')" class="btn-ghost px-3 py-1.5 text-xs {{ $stock->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $stock->active ? 'Anular Producto' : 'Reactivar Producto' }}">
+                            <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-ghost px-3 py-1.5 text-xs {{ $stock->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $stock->active ? 'Anular Producto' : 'Reactivar Producto' }}">
  {{ $stock->active ? '🚫' : '✅' }}
  </button>
  @else

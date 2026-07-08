@@ -163,7 +163,7 @@
   @if(!auth()->user()->isInvitado())
   <a href="{{ route('mantenimientos.edit', $m->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
 
-  <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}')" class="btn-ghost px-2.5 py-1.5 text-xs {{ $m->anulado ? 'text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $m->anulado ? 'Reactivar orden' : 'Anular orden' }}">
+  <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $m->anulado ? 'text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $m->anulado ? 'Reactivar orden' : 'Anular orden' }}">
   {{ $m->anulado ? '✅' : '🚫' }}
   </button>
   @endif
