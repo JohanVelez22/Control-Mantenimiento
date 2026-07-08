@@ -1,8 +1,0 @@
-HTTP/1.1 301 Moved Permanently
-Server: nginx/1.30.0
-Date: Mon, 22 Jun 2026 15:23:49 GMT
-Content-Type: text/html
-Content-Length: 169
-Connection: keep-alive
-Location: https://tecny-sistemas.local/mantenimientos/reportes?export=pdf
-
