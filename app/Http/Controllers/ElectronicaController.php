@@ -241,7 +241,10 @@ class ElectronicaController extends Controller
 
     public function factura(Electronica $electronica)
     {
-        return view('electronicas.factura', compact('electronica'));
+        $electronica->load(['equipo.cliente', 'tecnico', 'user']);
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('electronicas.factura', compact('electronica'));
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->stream('factura_electronica_' . $electronica->id_orden . '.pdf');
     }
 
     public function reportes(Request $request)

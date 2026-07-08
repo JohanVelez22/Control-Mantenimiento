@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Informe Financiero Mensual</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DejaVu Sans', Helvetica, Arial, sans-serif; font-size: 9px; color: #1a202c; background: #fff; }
+        @page {
+            margin: 40px 50px;
+        }
+        body { font-family: sans-serif; font-size: 9px; color: #1a202c; background: #fff; }
 
         .header {
             text-align: center;

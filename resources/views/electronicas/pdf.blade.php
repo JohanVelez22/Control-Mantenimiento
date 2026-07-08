@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Reporte de Electrónica – Tecni Systemas</title>
     <style>
         @page {
             size: A4 portrait;
-            margin: 18mm 15mm 18mm 15mm;
+            margin: 40px 50px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-family: sans-serif;
             font-size: 8.2px;
             color: #1e293b;
             background: #fff;

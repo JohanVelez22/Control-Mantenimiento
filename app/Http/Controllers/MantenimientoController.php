@@ -272,8 +272,7 @@ class MantenimientoController extends Controller
         $mantenimiento->load(['equipo.cliente', 'tecnico', 'user']);
         
         $pdf = Pdf::loadView('mantenimientos.factura', compact('mantenimiento'));
-        // Tamaño POS 80mm = ~226.77 pt de ancho. Largo dinámico pero pondremos un valor alto o [0,0,226.77,600]
-        $pdf->setPaper([0, 0, 226.77, 800], 'portrait');
+        $pdf->setPaper('a4', 'portrait');
         
         return $pdf->stream('factura_' . $mantenimiento->id_orden . '.pdf');
     }

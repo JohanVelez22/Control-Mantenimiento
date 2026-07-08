@@ -196,7 +196,9 @@ class MovimientoCajaController extends Controller
     public function print(MovimientoCaja $movimiento)
     {
         $movimiento->load('concepto', 'user');
-        return view('caja.print', compact('movimiento'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('caja.print', compact('movimiento'));
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->stream('comprobante_caja_' . $movimiento->id . '.pdf');
     }
 
     /**

@@ -24,12 +24,12 @@
     <strong>Detalles del Dispositivo:</strong><br>
     Equipo: {{ $electronica->equipo->nombre ?? 'N/A' }} | 
     Marca/Modelo: {{ trim(($electronica->equipo->marca ?? '') . ' ' . ($electronica->equipo->modelo ?? '')) ?: '—' }} | 
-    Serie: {{ strtoupper($electronica->equipo->serie ?? 'N/A') }}
+    Serie: {{ Str::upper($electronica->equipo->serie ?? 'N/A') }}
 </div>
 
 <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; background: #fafafa;">
-    <strong>Falla Principal:</strong> {{ strtoupper($electronica->falla_reportada ?: 'Sin reporte de falla.') }}<br>
-    <strong>Diagnóstico / Problema:</strong> {{ strtoupper($electronica->descripcion_problema ?: 'Pendiente de diagnóstico.') }}
+    <strong>Falla Principal:</strong> {{ Str::upper($electronica->falla_reportada ?: 'Sin reporte de falla.') }}<br>
+    <strong>Diagnóstico / Problema:</strong> {{ Str::upper($electronica->descripcion_problema ?: 'Pendiente de diagnóstico.') }}
 </div>
 
 @if($electronica->stocks->count() > 0)

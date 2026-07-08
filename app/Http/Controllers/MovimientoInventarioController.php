@@ -291,10 +291,12 @@ class MovimientoInventarioController extends Controller
         return view('inventario.facturas.show', compact('factura'));
     }
 
-    public function printFactura(Factura $factura): View
+    public function printFactura(Factura $factura)
     {
         $factura->load(['facturable', 'items.stock', 'user']);
-        return view('inventario.facturas.print', compact('factura'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('inventario.facturas.print', compact('factura'));
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->stream('factura_inventario_' . $factura->numero_factura . '.pdf');
     }
 
     public function anularFactura(Request $request, Factura $factura): RedirectResponse

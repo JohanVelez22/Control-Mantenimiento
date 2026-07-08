@@ -5,7 +5,7 @@
 @section('watermark_class', $movimiento->anulado ? 'anulado' : '')
 
 @section('doc_title')
-    COMPROBANTE DE {{ strtoupper($movimiento->tipo_movimiento) }} A CAJA - #{{ str_pad($movimiento->id, 5, '0', STR_PAD_LEFT) }}
+    COMPROBANTE DE {{ Str::upper($movimiento->tipo_movimiento) }} A CAJA - #{{ str_pad($movimiento->id, 5, '0', STR_PAD_LEFT) }}
 @endsection
 
 @section('content')
@@ -60,11 +60,11 @@
     </table>
 </div>
 
-<div style="margin-top: 60px; display: flex; justify-content: space-around;">
-    <div style="text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px;">
+<div class="clearfix" style="margin-top: 45px;">
+    <div style="float: left; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
         <strong>Firma Cliente / Recibe</strong>
     </div>
-    <div style="text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px;">
+    <div style="float: right; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
         <strong>Firma Autorizada</strong>
     </div>
 </div>

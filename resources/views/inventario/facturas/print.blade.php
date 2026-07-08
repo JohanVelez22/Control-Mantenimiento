@@ -5,7 +5,7 @@
 @section('watermark_class', $factura->estado === 'anulada' ? 'anulado' : '')
 
 @section('doc_title')
-    FACTURA DE {{ strtoupper($factura->tipo_movimiento) }} - {{ $factura->numero_factura }}
+    FACTURA DE {{ Str::upper($factura->tipo_movimiento) }} - {{ $factura->numero_factura }}
 @endsection
 
 @section('content')

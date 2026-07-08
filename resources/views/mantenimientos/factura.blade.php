@@ -24,12 +24,12 @@
     <strong>Detalles del Equipo:</strong><br>
     Equipo: {{ $mantenimiento->equipo->nombre ?? 'N/A' }} | 
     Marca/Modelo: {{ trim(($mantenimiento->equipo->marca ?? '') . ' ' . ($mantenimiento->equipo->modelo ?? '')) ?: '—' }} | 
-    Serie: {{ strtoupper($mantenimiento->equipo->serie ?? 'N/A') }}
+    Serie: {{ Str::upper($mantenimiento->equipo->serie ?? 'N/A') }}
 </div>
 
 <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; background: #fafafa;">
-    <strong>Servicio:</strong> {{ strtoupper($mantenimiento->tipo) }} — {{ strtoupper($mantenimiento->reparacion) }}<br>
-    <strong>Observaciones:</strong> {{ strtoupper($mantenimiento->descripcion ?: 'Sin observaciones adicionales.') }}
+    <strong>Servicio:</strong> {{ Str::upper($mantenimiento->tipo) }} — {{ Str::upper($mantenimiento->reparacion) }}<br>
+    <strong>Observaciones:</strong> {{ Str::upper($mantenimiento->descripcion ?: 'Sin observaciones adicionales.') }}
 </div>
 
 @if($mantenimiento->stocks->count() > 0)
