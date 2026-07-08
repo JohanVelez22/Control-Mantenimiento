@@ -263,12 +263,29 @@ unset($__errorArgs, $__bag); ?>
 <script>
 async function cargarMunicipios(departamento, seleccionado = '') {
     const select = document.getElementById('select_municipio');
-    select.innerHTML = '<option value="">Cargando...</option>';
-    select.disabled = true;
+    const ts = select.tomselect; // Obtener instancia de TomSelect si existe
+
+    if (ts) {
+        ts.clearOptions();
+        ts.clear();
+        ts.disable();
+        ts.addOption({value: '', text: 'Cargando...'});
+        ts.setValue('');
+    } else {
+        select.innerHTML = '<option value="">Cargando...</option>';
+        select.disabled = true;
+    }
 
     if (!departamento) {
-        select.innerHTML = '<option value="">— Primero selecciona un departamento —</option>';
-        select.disabled = false;
+        if (ts) {
+            ts.clearOptions();
+            ts.addOption({value: '', text: '— Primero selecciona un departamento —'});
+            ts.setValue('');
+            ts.enable();
+        } else {
+            select.innerHTML = '<option value="">— Primero selecciona un departamento —</option>';
+            select.disabled = false;
+        }
         return;
     }
 
@@ -276,18 +293,42 @@ async function cargarMunicipios(departamento, seleccionado = '') {
         const res = await fetch(`<?php echo e(route('api.municipios')); ?>?departamento=` + encodeURIComponent(departamento));
         const municipios = await res.json();
 
-        select.innerHTML = '<option value="">— Seleccionar municipio —</option>';
-        municipios.forEach(m => {
-            const opt = document.createElement('option');
-            opt.value = m;
-            opt.textContent = m;
-            if (m === seleccionado) opt.selected = true;
-            select.appendChild(opt);
-        });
+        if (ts) {
+            ts.clearOptions();
+            ts.addOption({value: '', text: '— Seleccionar municipio —'});
+            municipios.forEach(m => {
+                ts.addOption({value: m, text: m});
+            });
+            if (seleccionado && municipios.includes(seleccionado)) {
+                ts.setValue(seleccionado);
+            } else {
+                ts.setValue('');
+            }
+        } else {
+            select.innerHTML = '<option value="">— Seleccionar municipio —</option>';
+            municipios.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = m;
+                if (m === seleccionado) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
     } catch(e) {
-        select.innerHTML = '<option value="">Error cargando municipios</option>';
+        if (ts) {
+            ts.clearOptions();
+            ts.addOption({value: '', text: 'Error cargando municipios'});
+            ts.setValue('');
+        } else {
+            select.innerHTML = '<option value="">Error cargando municipios</option>';
+        }
     }
-    select.disabled = false;
+    
+    if (ts) {
+        ts.enable();
+    } else {
+        select.disabled = false;
+    }
 }
 
 // Al cargar la página, si ya hay un departamento seleccionado, cargar sus municipios
@@ -296,6 +337,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const munSeleccionado = '<?php echo e($selMun); ?>';
     if (dep) {
         cargarMunicipios(dep, munSeleccionado);
+    }
+
+    // Radio button dynamic styling
+    const radios = document.querySelectorAll('input[name="tipo_cliente"]');
+    if (radios.length > 0) {
+        radios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const clienteLabel = document.querySelector('input[value="cliente"]').closest('label');
+                const tecnicoLabel = document.querySelector('input[value="tecnico"]').closest('label');
+                
+                if (this.value === 'cliente') {
+                    clienteLabel.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-blue-500 bg-blue-50/50 dark:bg-blue-900/20";
+                    clienteLabel.querySelector('span').className = "font-bold text-blue-700 dark:text-blue-400";
+                    clienteLabel.querySelector('span').innerHTML = "👤 Cliente Normal";
+                    
+                    tecnicoLabel.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30";
+                    tecnicoLabel.querySelector('span').className = "font-bold text-slate-600 dark:text-slate-400";
+                    tecnicoLabel.querySelector('span').innerHTML = "🔧 Técnico";
+                } else {
+                    tecnicoLabel.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-orange-500 bg-orange-50/50 dark:bg-orange-900/20";
+                    tecnicoLabel.querySelector('span').className = "font-bold text-orange-700 dark:text-orange-400";
+                    tecnicoLabel.querySelector('span').innerHTML = "🔧 Técnico";
+                    
+                    clienteLabel.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30";
+                    clienteLabel.querySelector('span').className = "font-bold text-slate-600 dark:text-slate-400";
+                    clienteLabel.querySelector('span').innerHTML = "👤 Cliente Normal";
+                }
+            });
+        });
     }
 });
 </script>

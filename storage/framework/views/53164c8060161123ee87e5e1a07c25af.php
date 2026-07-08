@@ -229,29 +229,71 @@ unset($__errorArgs, $__bag); ?>
 <script>
 async function cargarMunicipiosProv(departamento, seleccionado = '') {
     const select = document.getElementById('prov_municipio');
-    select.innerHTML = '<option value="">Cargando...</option>';
-    select.disabled = true;
+    const ts = select.tomselect; // Obtener instancia de TomSelect si existe
+
+    if (ts) {
+        ts.clearOptions();
+        ts.clear();
+        ts.disable();
+        ts.addOption({value: '', text: 'Cargando...'});
+        ts.setValue('');
+    } else {
+        select.innerHTML = '<option value="">Cargando...</option>';
+        select.disabled = true;
+    }
 
     if (!departamento) {
-        select.innerHTML = '<option value="">— Primero selecciona un departamento —</option>';
-        select.disabled = false;
+        if (ts) {
+            ts.clearOptions();
+            ts.addOption({value: '', text: '— Primero selecciona un departamento —'});
+            ts.setValue('');
+            ts.enable();
+        } else {
+            select.innerHTML = '<option value="">— Primero selecciona un departamento —</option>';
+            select.disabled = false;
+        }
         return;
     }
 
     try {
         const res  = await fetch(`<?php echo e(route('api.municipios')); ?>?departamento=` + encodeURIComponent(departamento));
-        const muns = await res.json();
-        select.innerHTML = '<option value="">— Seleccionar municipio —</option>';
-        muns.forEach(m => {
-            const opt = document.createElement('option');
-            opt.value = m; opt.textContent = m;
-            if (m === seleccionado) opt.selected = true;
-            select.appendChild(opt);
-        });
+        const municipios = await res.json();
+        
+        if (ts) {
+            ts.clearOptions();
+            ts.addOption({value: '', text: '— Seleccionar municipio —'});
+            municipios.forEach(m => {
+                ts.addOption({value: m, text: m});
+            });
+            if (seleccionado && municipios.includes(seleccionado)) {
+                ts.setValue(seleccionado);
+            } else {
+                ts.setValue('');
+            }
+        } else {
+            select.innerHTML = '<option value="">— Seleccionar municipio —</option>';
+            municipios.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m; opt.textContent = m;
+                if (m === seleccionado) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
     } catch(e) {
-        select.innerHTML = '<option value="">Error cargando municipios</option>';
+        if (ts) {
+            ts.clearOptions();
+            ts.addOption({value: '', text: 'Error cargando municipios'});
+            ts.setValue('');
+        } else {
+            select.innerHTML = '<option value="">Error cargando municipios</option>';
+        }
     }
-    select.disabled = false;
+    
+    if (ts) {
+        ts.enable();
+    } else {
+        select.disabled = false;
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
