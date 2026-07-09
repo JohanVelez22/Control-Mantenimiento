@@ -81,7 +81,7 @@
         td.egreso  { color: #000000; font-weight: 700; }
 
         tfoot tr td {
-            background: #edf2f7; font-weight: 800; font-size: 9px;
+            background: #edf2f7; font-weight: 800; font-size: 8.5px;
             border: 1px solid #cbd5e0; padding: 4px 6px;
         }
         .footer { margin-top: 14px; text-align: right; font-size: 7.5px; color: #718096; font-style: italic; }

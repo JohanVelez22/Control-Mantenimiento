@@ -212,18 +212,16 @@
             @if($stocks->count() > 0)
             <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
                 <tr>
-                    <td colspan="2" class="text-left uppercase text-xs font-bold pt-2 pl-4">
-                        <div class="flex items-center">
-                            <span>Total: <span class="text-slate-800 dark:text-white">{{ $stocks->total() }}</span></span>
-                        </div>
+                    <td colspan="2" class="text-center uppercase text-xs font-bold whitespace-nowrap">
+                        TOTAL: {{ $stocks->total() }}
                     </td>
-                    <td class="text-right uppercase text-xs pt-2">Totales:</td>
-                    <td class="text-center font-bold pt-2">{{ $stocks->sum('cantidad') }}</td>
-                    <td class="pt-2"></td>
-                    <td class="text-center font-black text-slate-800 dark:text-slate-200 pt-2">${{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}</td>
-                    <td class="pt-2"></td>
-                    <td class="text-center font-black text-slate-800 dark:text-slate-200 pt-2">${{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}</td>
-                    <td class="text-center font-black text-slate-800 dark:text-slate-200 pt-2">${{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}</td>
+                    <td class="text-right uppercase text-xs"></td>
+                    <td class="text-center font-bold text-xs">{{ $stocks->sum('cantidad') }}</td>
+                    <td></td>
+                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}</td>
+                    <td></td>
+                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}</td>
+                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}</td>
                 </tr>
             </tfoot>
             @endif
@@ -238,7 +236,7 @@
 /* ── Bloque de estilos solo para impresión ── */
 @media print {
     @page {
-        size: A4 landscape;
+        size: A4 portrait;
         margin: 10mm 8mm 15mm 8mm;
     }
     
@@ -313,42 +311,33 @@
         margin-bottom: 4mm;
     }
     
+    table, .ts-table,
+    th, td, tfoot td,
+    thead th:first-child, thead th:last-child,
+    tbody tr:last-child td:first-child, tbody tr:last-child td:last-child,
+    tfoot tr:last-child td:first-child, tfoot tr:last-child td:last-child {
+        border-radius: 0 !important;
+    }
+
     table, .ts-table {
+        display: table !important;
         width: 100% !important;
         border-collapse: collapse !important;
         margin-top: 15px !important;
         margin-bottom: 15px !important;
         font-size: 8pt !important;
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        filter: none !important;
     }
     
     thead {
         display: table-header-group !important;
     }
     
-    tr {
-        page-break-inside: avoid !important;
-    }
-    
-    th {
-        background-color: #2d3748 !important;
-        color: #ffffff !important;
-        font-weight: bold !important;
-        text-transform: uppercase !important;
-        border: 1px solid #cbd5e0 !important;
-        padding: 8px 10px !important;
-        font-size: 7.5pt !important;
-    }
-    
-    td {
-        border: 1px solid #cbd5e0 !important;
-        padding: 7px 10px !important;
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        vertical-align: middle !important;
-    }
-    
-    tbody tr:nth-child(even) td {
-        background-color: #f8fafc !important;
+    tbody {
+        display: table-row-group !important;
     }
     
     tfoot, .tfoot {
@@ -356,11 +345,50 @@
         font-weight: bold !important;
     }
     
-    tfoot td {
-        border: 1px solid #cbd5e0 !important;
-        border-top: 1px solid #cbd5e0 !important;
-        background-color: #e2e8f0 !important;
+    tr {
+        display: table-row !important;
+        page-break-inside: avoid !important;
+    }
+    
+    table th, .ts-table th, table td, .ts-table td, tfoot td, .tfoot td {
+        display: table-cell !important;
+        border: none !important;
+        padding: 7px 10px !important;
+        vertical-align: middle !important;
+    }
+    
+    table tbody td, .ts-table tbody td {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+    
+    table th, .ts-table th, table thead th {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
         font-weight: bold !important;
+        text-transform: uppercase !important;
+        font-size: 7.5pt !important;
+    }
+    
+    table tbody tr:nth-child(even) td, .ts-table tbody tr:nth-child(even) td {
+        background-color: #f7fafc !important;
+    }
+    
+    table tfoot td, .ts-table tfoot td, table .tfoot td, .ts-table .tfoot td {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+        font-size: 8pt !important;
+    }
+    
+    tfoot td *, .tfoot td *, tfoot td span, .tfoot td span, tfoot td div, .tfoot td div, tfoot td strong, .tfoot td strong {
+        display: inline !important;
+        border: none !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #ffffff !important;
+        font-size: inherit !important;
+        box-shadow: none !important;
     }
     
     span.pill, .badge, table td span, .ts-table td span, .reportes-tabla-imprimir td span {

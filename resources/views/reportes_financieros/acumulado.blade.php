@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Informes y Reportes - Acumulado')
+@section('title', 'Informes y Reportes')
 
 @section('content')
 <div class="flex gap-4 mb-6 no-print">
@@ -9,7 +9,7 @@
  <a href="{{ route('stocks.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
 </div>
 
-<div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-4">
+<div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-4 no-print">
  <div>
  <h1 class="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-2">
  📊 Informes y Reportes
@@ -132,7 +132,10 @@
   {{-- Tabla consolidada del período --}}
  <div class="glass-card p-6 md:p-8 mt-4">
     <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-bold">Resumen Consolidado del Período</h3>
+        <div>
+            <h3 class="text-lg font-bold">Resumen Consolidado del Período</h3>
+            <div class="print-date hidden-screen text-xs text-gray-500 font-semibold mt-0.5"><strong>Fecha Impresión:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y h:i A') }}</div>
+        </div>
     </div>
     
     <div class="overflow-x-auto pb-2">
@@ -175,29 +178,26 @@
                     <td class="p-3 text-center">{{ $acumulado['total_egresos'] ?? 0 }}</td>
                     <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">${{ number_format($acumulado['egresos_caja'], 0, ',', '.') }}</td>
                 </tr>
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 opacity-70">
-                    <td class="p-3 font-semibold text-gray-500"><span class="mr-2">🚫</span>Movimientos Anulados</td>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300"><span class="mr-2">🚫</span>Movimientos Anulados</td>
                     <td class="p-3 text-center">{{ $acumulado['total_anulados'] ?? 0 }}</td>
                     <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100" title="Este valor no suma al balance">${{ number_format($acumulado['total_costo_anulados'] ?? 0, 0, ',', '.') }}</td>
                 </tr>
             </tbody>
                                     <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
+                @php
+                    $totalRegistros = ($acumulado['total_mantenimientos'] ?? 0)
+                                    + ($acumulado['total_electronicas'] ?? 0)
+                                    + ($acumulado['total_compras'] ?? 0)
+                                    + ($acumulado['total_ventas'] ?? 0)
+                                    + ($acumulado['total_ingresos'] ?? 0)
+                                    + ($acumulado['total_egresos'] ?? 0)
+                                    + ($acumulado['total_anulados'] ?? 0);
+                @endphp
                 <tr>
-                    <td class="text-center font-bold text-xs">Total: 7</td>
-                    <td class="text-center">
-                        <div class="relative inline-block">
-                            <span class="absolute right-full mr-2 font-bold text-xs whitespace-nowrap">Total Registros:</span>
-                            <span class="font-bold text-xs">{{ ($acumulado['total_mantenimientos'] ?? 0) + ($acumulado['total_electronicas'] ?? 0) + ($acumulado['total_compras'] ?? 0) + ($acumulado['total_ventas'] ?? 0) + ($acumulado['total_ingresos'] ?? 0) + ($acumulado['total_egresos'] ?? 0) + ($acumulado['total_anulados'] ?? 0) }}</span>
-                        </div>
-                    </td>
-                    <td class="text-center">
-                        <div class="relative inline-block">
-                            <span class="absolute right-full mr-3 top-1/2 -translate-y-1/2 uppercase text-xs whitespace-nowrap">Balance Neto:</span>
-                            <span class="font-black text-lg text-gray-900 dark:text-gray-100">
-                                ${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}
-                            </span>
-                        </div>
-                    </td>
+                    <td class="text-center font-bold text-xs uppercase">TOTAL: 7</td>
+                    <td class="text-center font-bold text-xs uppercase whitespace-nowrap">TOTAL REGISTROS: {{ $totalRegistros }}</td>
+                    <td class="text-center font-bold text-xs uppercase whitespace-nowrap">BALANCE NETO: ${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}</td>
                 </tr>
             </tfoot>
         </table>
@@ -326,41 +326,24 @@ function exportarAcumulado(tipo, btn) {
     }
     
     table, .ts-table {
+        display: table !important;
         width: 100% !important;
         border-collapse: collapse !important;
-        margin-top: 15px !important;
+        margin-top: 4px !important;
         margin-bottom: 15px !important;
         font-size: 8.5pt !important;
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        filter: none !important;
     }
     
     thead {
         display: table-header-group !important;
     }
     
-    tr {
-        page-break-inside: avoid !important;
-    }
-    
-    th {
-        background-color: #2d3748 !important;
-        color: #ffffff !important;
-        font-weight: bold !important;
-        text-transform: uppercase !important;
-        border: 1px solid #cbd5e0 !important;
-        padding: 8px 10px !important;
-        font-size: 8pt !important;
-    }
-    
-    td {
-        border: 1px solid #cbd5e0 !important;
-        padding: 7px 10px !important;
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        vertical-align: middle !important;
-    }
-    
-    tbody tr:nth-child(even) td {
-        background-color: #f8fafc !important;
+    tbody {
+        display: table-row-group !important;
     }
     
     tfoot, .tfoot {
@@ -368,26 +351,65 @@ function exportarAcumulado(tipo, btn) {
         font-weight: bold !important;
     }
     
-    tfoot td {
-        border: 1px solid #cbd5e0 !important;
-        border-top: 1px solid #cbd5e0 !important;
-        background-color: #e2e8f0 !important;
+    tr {
+        display: table-row !important;
+        page-break-inside: avoid !important;
+    }
+    
+    table th, .ts-table th, table td, .ts-table td, tfoot td, .tfoot td {
+        display: table-cell !important;
+        border: none !important;
+        padding: 7px 10px !important;
+        vertical-align: middle !important;
+    }
+    
+    table tbody td, .ts-table tbody td {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+    
+    table th, .ts-table th, table thead th {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
         font-weight: bold !important;
+        text-transform: uppercase !important;
+        font-size: 8pt !important;
+    }
+    
+    table tbody tr:nth-child(even) td, .ts-table tbody tr:nth-child(even) td {
+        background-color: #f7fafc !important;
+    }
+    
+    table tfoot td, .ts-table tfoot td, table .tfoot td, .ts-table .tfoot td {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+        font-size: 8pt !important;
+    }
+    
+    tfoot td *, .tfoot td *, tfoot td span, .tfoot td span, tfoot td div, .tfoot td div, tfoot td strong, .tfoot td strong {
+        display: inline !important;
+        border: none !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #ffffff !important;
+        font-size: inherit !important;
+        box-shadow: none !important;
     }
     
     .grid {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: wrap !important;
-        gap: 15px !important;
-        margin-bottom: 20px !important;
+        gap: 8px !important;
+        margin-bottom: 4px !important;
     }
     
     .grid > div {
         flex: 1 1 20% !important;
         border: 1px solid #e2e8f0 !important;
         border-radius: 8px !important;
-        padding: 12px !important;
+        padding: 6px 10px !important;
         background-color: #f8fafc !important;
         text-align: center !important;
         box-shadow: none !important;
@@ -398,16 +420,16 @@ function exportarAcumulado(tipo, btn) {
     }
     
     .grid p.text-xs {
-        font-size: 7.5pt !important;
+        font-size: 6.5pt !important;
         color: #4a5568 !important;
         font-weight: bold !important;
     }
     
     .grid p.text-2xl, .grid p.text-3xl {
-        font-size: 14pt !important;
+        font-size: 11pt !important;
         font-weight: 800 !important;
         color: #1a202c !important;
-        margin-top: 5px !important;
+        margin-top: 2px !important;
     }
     
     span.pill, .badge, table td span, .ts-table td span, .reportes-tabla-imprimir td span {
@@ -445,9 +467,45 @@ function exportarAcumulado(tipo, btn) {
     
     h3 {
         font-size: 11pt !important;
-        margin-bottom: 10px !important;
+        margin-bottom: 4px !important;
         border-bottom: 1px solid #e2e8f0 !important;
-        padding-bottom: 5px !important;
+        padding-bottom: 3px !important;
+    }
+
+    .flex, .flex-col, .flex-wrap, .items-center, .justify-between {
+        display: block !important;
+    }
+    .mb-4 {
+        margin-bottom: 4px !important;
+    }
+    .overflow-x-auto {
+        overflow: visible !important;
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+    .print-date {
+        display: block !important;
+        font-size: 8pt !important;
+        color: #4a5568 !important;
+        margin-top: 2px !important;
+        margin-bottom: 6px !important;
+        font-weight: bold !important;
+    }
+    .glass-card {
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
+    }
+    .space-y-5 > * + *,
+    .space-y-5 > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 4px !important;
+    }
+    .space-y-5, .space-y-5 > div, .space-y-5 > .grid, .space-y-5 > .glass-card, .glass-card.mt-4 {
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
     }
 }
 </style>

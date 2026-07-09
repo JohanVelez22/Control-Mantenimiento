@@ -324,7 +324,7 @@ class ElectronicaController extends Controller
         if ($request->get('export') == 'pdf') {
             $electronicas = $query->orderBy('id', 'desc')->get();
             return Pdf::loadView('electronicas.pdf', compact('electronicas'))
-                ->setPaper('a4', 'portrait')
+                ->setPaper('a4', 'landscape')
                 ->download('Reporte_Electronica_' . date('Y-m-d_His') . '.pdf');
         }
 

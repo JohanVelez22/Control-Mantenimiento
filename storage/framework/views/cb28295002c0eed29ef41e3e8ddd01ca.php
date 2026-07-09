@@ -14,17 +14,17 @@
  <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Reporte Detallado de Mantenimientos</h2>
  </div>
  
- <div class="flex flex-wrap gap-2 no-print">
- <button type="button" onclick="window.print()" class="btn-print">
- <span>🖨️</span> Imprimir
- </button>
- <button type="button" onclick="exportarReporte('excel', this)" class="btn-excel">
- <span>📊</span> Excel
- </button>
- <button type="button" onclick="exportarReporte('pdf', this)" class="btn-pdf">
- <span>📄</span> PDF
- </button>
- </div>
+  <div class="flex flex-wrap gap-2 no-print">
+  <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
+  <span>🖨️</span> Imprimir
+  </button>
+  <button type="button" onclick="exportarReporte('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">
+  <span>📊</span> Excel
+  </button>
+  <button type="button" onclick="exportarReporte('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
+  <span>📄</span> PDF
+  </button>
+  </div>
  </div>
 
  <!-- Formulario de Filtros -->
@@ -236,9 +236,9 @@
  <?php if($mantenimientos->count() > 0): ?>
  <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
  <tr>
- <td class="text-center font-bold">Total: <?php echo e($mantenimientos->count()); ?></td>
- <td colspan="8" class="text-right uppercase text-xs">Totales Filtrados:</td>
- <td class="text-center font-black text-green-600 dark:text-green-400">$<?php echo e(number_format($mantenimientos->sum('costo'), 0, '', '.')); ?></td>
+ <td colspan="2" class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($mantenimientos->count()); ?></td>
+ <td colspan="7" class="text-right uppercase text-xs">TOTALES FILTRADOS:</td>
+ <td class="text-center font-bold text-xs text-green-600 dark:text-green-400">$<?php echo e(number_format($mantenimientos->sum('costo'), 0, '', '.')); ?></td>
  </tr>
  </tfoot>
  <?php endif; ?>
@@ -345,8 +345,8 @@
 <style>
 @media print {
     @page {
-        size: A4 portrait;
-        margin: 10mm 8mm 15mm 8mm;
+        size: A4 landscape;
+        margin: 6mm 6mm 8mm 6mm;
     }
     
     .no-print,
@@ -370,11 +370,39 @@
         margin-bottom: 4mm;
     }
     
+    /* Disable flexbox layouts during print to prevent desktop viewport scaling and right-side clipping */
+    .flex.min-h-screen,
+    #main-wrapper {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    #ts-main,
+    main {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 6mm 4mm !important; /* Force physical margins */
+        box-sizing: border-box !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
     html, body {
         background: #ffffff !important;
         color: #000000 !important;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
-        font-size: 9pt !important;
+        font-size: 8pt !important;
         width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
@@ -382,60 +410,42 @@
         print-color-adjust: exact !important;
     }
     
-    #main-wrapper,
-    #ts-main {
-        display: block !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 8mm 6mm !important;
-        box-sizing: border-box !important;
-    }
-    
     .glass-card {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
         backdrop-filter: none !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 10px !important;
         padding: 0 !important;
     }
     
+    table, .ts-table,
+    th, td, tfoot td,
+    thead th:first-child, thead th:last-child,
+    tbody tr:last-child td:first-child, tbody tr:last-child td:last-child,
+    tfoot tr:last-child td:first-child, tfoot tr:last-child td:last-child {
+        border-radius: 0 !important;
+    }
+
     table, .ts-table {
+        display: table !important;
         width: 100% !important;
         border-collapse: collapse !important;
-        margin-top: 15px !important;
-        margin-bottom: 15px !important;
-        font-size: 8.5pt !important;
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+        font-size: 8pt !important;
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        filter: none !important;
     }
     
     thead {
         display: table-header-group !important;
     }
     
-    tr {
-        page-break-inside: avoid !important;
-    }
-    
-    th {
-        background-color: #2d3748 !important;
-        color: #ffffff !important;
-        font-weight: bold !important;
-        text-transform: uppercase !important;
-        border: 1px solid #cbd5e0 !important;
-        padding: 8px 10px !important;
-        font-size: 8pt !important;
-    }
-    
-    td {
-        border: 1px solid #cbd5e0 !important;
-        padding: 7px 10px !important;
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        vertical-align: middle !important;
-    }
-    
-    tbody tr:nth-child(even) td {
-        background-color: #f8fafc !important;
+    tbody {
+        display: table-row-group !important;
     }
     
     tfoot, .tfoot {
@@ -443,49 +453,53 @@
         font-weight: bold !important;
     }
     
-    tfoot td {
-        border: 1px solid #cbd5e0 !important;
-        border-top: 1px solid #cbd5e0 !important;
-        background-color: #e2e8f0 !important;
+    tr {
+        display: table-row !important;
+        page-break-inside: avoid !important;
+    }
+    
+    table th, .ts-table th, table td, .ts-table td, tfoot td, .tfoot td {
+        display: table-cell !important;
+        border: none !important;
+        padding: 5px 6px !important;
+        vertical-align: middle !important;
+    }
+    
+    table tbody td, .ts-table tbody td {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+    
+    table th, .ts-table th, table thead th {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
         font-weight: bold !important;
+        text-transform: uppercase !important;
+        font-size: 7.5pt !important;
     }
     
-    .grid {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        gap: 15px !important;
-        margin-bottom: 20px !important;
+    table tbody tr:nth-child(even) td, .ts-table tbody tr:nth-child(even) td {
+        background-color: #f7fafc !important;
     }
     
-    .grid > div {
-        flex: 1 1 20% !important;
-        border: 1px solid #cbd5e0 !important;
-        border-radius: 0 !important;
-        padding: 12px !important;
-        background-color: #f8fafc !important;
-        text-align: center !important;
+    table tfoot td, .ts-table tfoot td, table .tfoot td, .ts-table .tfoot td {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+        font-size: 8pt !important;
+    }
+    
+    tfoot td *, .tfoot td *, tfoot td span, .tfoot td span, tfoot td div, .tfoot td div, tfoot td strong, .tfoot td strong {
+        display: inline !important;
+        border: none !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #ffffff !important;
+        font-size: inherit !important;
         box-shadow: none !important;
     }
     
-    .grid p {
-        margin: 0 !important;
-    }
-    
-    .grid p.text-xs {
-        font-size: 7.5pt !important;
-        color: #4a5568 !important;
-        font-weight: bold !important;
-    }
-    
-    .grid p.text-2xl, .grid p.text-3xl {
-        font-size: 14pt !important;
-        font-weight: 800 !important;
-        color: #1a202c !important;
-        margin-top: 5px !important;
-    }
-    
-    span.pill, .badge, .pill, .pill-pending, .pill-done, .pill-preventivo, .pill-especialidad, .pill-efectivo, .pill-anulado, table td span, .ts-table td span, .reportes-tabla-imprimir td span {
+     span.pill, .badge, .pill, .pill-pending, .pill-done, .pill-preventivo, .pill-especialidad, .pill-efectivo, .pill-anulado, table td span, .ts-table td span, .reportes-tabla-imprimir td span {
         display: inline !important;
         border: none !important;
         background: none !important;
@@ -499,7 +513,7 @@
         border-radius: 0 !important;
     }
 
-    .no-print-emoji, table td span.no-print-emoji, .grid p span {
+    .no-print-emoji, table td span.no-print-emoji {
         display: none !important;
     }
     

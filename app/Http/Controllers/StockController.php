@@ -154,7 +154,7 @@ class StockController extends Controller
         if ($request->has('export') && $request->export === 'pdf') {
             $stocks = $query->get();
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('stocks.pdf_reportes', compact('stocks'))
-                                             ->setPaper('a4', 'landscape');
+                                             ->setPaper('a4', 'portrait');
             return $pdf->download('Reporte_Inventario_' . date('Ymd_Hi') . '.pdf');
         }
 

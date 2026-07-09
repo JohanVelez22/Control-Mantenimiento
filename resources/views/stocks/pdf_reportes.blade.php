@@ -15,7 +15,7 @@
     <title>Reporte de Inventario – {{ $empresa->nombre }}</title>
     <style>
         @page {
-            size: A4 landscape;
+            size: A4 portrait;
             margin: 20px 25px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -162,8 +162,8 @@
             background: #2d3748;
             color: #fff;
             font-weight: 700;
-            font-size: 8px;
-            border: 1px solid #cbd5e0;
+            font-size: 7.8px;
+            border: none !important;
             padding: 5px 4px;
         }
 
@@ -307,21 +307,22 @@
         @if(count($stocks) > 0)
         <tfoot>
             <tr>
-                <td colspan="3" style="text-align:left; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px; padding-left:10px; font-weight:800;">
+                <td colspan="2" class="col-center" style="letter-spacing:0.5px; text-transform:uppercase; font-weight:800;">
                     TOTAL: {{ count($stocks) }}
                 </td>
-                <td class="col-center" style="font-size:9px; font-weight:800;">
+                <td></td>
+                <td class="col-center" style="font-weight:800;">
                     {{ $stocks->sum('cantidad') }}
                 </td>
                 <td></td>
-                <td class="col-right" style="font-size:9px; font-weight:800;">
+                <td class="col-right" style="font-weight:800;">
                     ${{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}
                 </td>
                 <td style="text-align:center;"></td>
-                <td class="col-right" style="font-size:9px; font-weight:800;">
+                <td class="col-right" style="font-weight:800;">
                     ${{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}
                 </td>
-                <td class="col-right" style="font-size:9px; font-weight:800;">
+                <td class="col-right" style="font-weight:800;">
                     ${{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}
                 </td>
             </tr>

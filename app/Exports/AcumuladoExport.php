@@ -74,12 +74,21 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
 
                 // Format amount column (C)
                 $sheet->getStyle('C5:C11')->getNumberFormat()->setFormatCode('"$"#,##0');
+
+                // Force B11 and C11 cell values to show "0" and "$0" as strings if they are 0
+                if (($this->acumulado['total_anulados'] ?? 0) == 0) {
+                    $sheet->setCellValueExplicit('B11', '0', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                }
+                if (($this->acumulado['total_costo_anulados'] ?? 0) == 0) {
+                    $sheet->setCellValueExplicit('C11', '$0', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                }
+                $sheet->getStyle('B11:C11')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                 
-                // Strikethrough and orange color for Movimientos Anulados (Row 11)
+                // Black color for Movimientos Anulados (Row 11)
                 $sheet->getStyle('A11:C11')->applyFromArray([
                     'font' => [
                         
-                        'color' => ['rgb' => 'E53E3E']
+                        'color' => ['rgb' => '000000']
                     ]
                 ]);
 

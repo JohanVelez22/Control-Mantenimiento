@@ -1138,7 +1138,7 @@ html.dark .ts-modal-card {
 @media print {
   #ts-sidebar, #ts-topbar, #nav-progress, .no-print { display: none !important; }
   #ts-main { margin-left: 0 !important; }
-  .glass-card { border: 1px solid #E2E8F0 !important; background: white !important; backdrop-filter: none !important; }
+  .glass-card { border: none !important; background: transparent !important; backdrop-filter: none !important; box-shadow: none !important; filter: none !important; }
 }
 
 /* â”€â”€â”€ Responsive tables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */

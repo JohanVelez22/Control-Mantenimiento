@@ -15,17 +15,17 @@
     <title>Reporte de Electrónica – {{ $empresa->nombre }}</title>
     <style>
         @page {
-            size: A4 portrait;
-            margin: 25px 30px;
+            size: A4 {{ $orientation ?? 'landscape' }};
+            margin: 20px 25px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-                body {
+        body {
             font-family: sans-serif;
             font-size: 8.2px;
             color: #000000;
             background: #fff;
             line-height: 1.35;
-            margin: 25px 30px !important;
+            margin: 20px 25px !important;
         }
 
         /* ─── HEADER ─── */
@@ -149,17 +149,17 @@
             color: #000000 !important;
             white-space: nowrap;
         }
-        .badge-pendiente   { background:transparent; color:#000000; border-color:#000000; }
-        .badge-en_proceso  { background:transparent; color:#000000; border-color:#000000; }
-        .badge-reparado    { background:transparent; color:#000000; border-color:#000000; }
-        .badge-terminado   { background:transparent; color:#000000; border-color:#000000; }
-        .badge-entregado   { background:transparent; color:#000000; border-color:#000000; }
-        .badge-activo      { background:transparent; color:#000000; border-color:#000000; }
-        .badge-anulado     { background:transparent; color:#000000; border-color:#000000; }
-        .badge-correctivo  { background:transparent; color:#000000; border-color:#000000; }
-        .badge-preventivo  { background:transparent; color:#000000; border-color:#000000; }
-        .badge-diagnostico { background:transparent; color:#000000; border-color:#000000; }
-        .badge-instalacion { background:transparent; color:#000000; border-color:#000000; }
+        .badge-pendiente   { background:transparent; color:#000000; }
+        .badge-en_proceso  { background:transparent; color:#000000; }
+        .badge-reparado    { background:transparent; color:#000000; }
+        .badge-terminado   { background:transparent; color:#000000; }
+        .badge-entregado   { background:transparent; color:#000000; }
+        .badge-activo      { background:transparent; color:#000000; }
+        .badge-anulado     { background:transparent; color:#000000; }
+        .badge-correctivo  { background:transparent; color:#000000; }
+        .badge-preventivo  { background:transparent; color:#000000; }
+        .badge-diagnostico { background:transparent; color:#000000; }
+        .badge-instalacion { background:transparent; color:#000000; }
 
         .sub-text { font-size: 7px; color: #000000; margin-top: 1px; }
 
@@ -168,8 +168,8 @@
             background: #2d3748;
             color: #fff;
             font-weight: 700;
-            font-size: 8px;
-            border: 1px solid #cbd5e0;
+            font-size: 7.8px;
+            border: none !important;
             padding: 5px 4px;
         }
 
@@ -315,13 +315,11 @@
         @if(count($electronicas) > 0)
         <tfoot>
             <tr>
-                <td colspan="5" style="text-align:left; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px; padding-left:5px;">
-                    TOTAL: {{ count($electronicas) }} registros
+                <td colspan="9" style="text-align:left; letter-spacing:0.5px; text-transform:uppercase; padding: 5px 6px; border:none !important;">
+                    <span style="float:left; font-weight:700;">TOTAL: {{ count($electronicas) }} REGISTROS</span>
+                    <span style="float:right; font-weight:700;">COSTO ACUMULADO:</span>
                 </td>
-                <td colspan="4" style="text-align:right; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px;">
-                    Costo acumulado:
-                </td>
-                <td style="text-align:right; font-size:9px; font-weight:800;">
+                <td style="text-align:right; font-weight:800; padding: 5px 6px; border:none !important;">
                     ${{ number_format($electronicas->sum('costo'), 0, '', '.') }}
                 </td>
             </tr>

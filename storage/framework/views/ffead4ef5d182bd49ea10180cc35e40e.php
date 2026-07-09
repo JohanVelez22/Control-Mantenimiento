@@ -427,29 +427,87 @@
             }
 
             /* Forzar visualización de tablas completas */
-            table {
+            table, .ts-table,
+            th, td, tfoot td,
+            thead th:first-child, thead th:last-child,
+            tbody tr:last-child td:first-child, tbody tr:last-child td:last-child,
+            tfoot tr:last-child td:first-child, tfoot tr:last-child td:last-child {
+                border-radius: 0 !important;
+            }
+            table, .ts-table {
+                display: table !important;
                 width: 100% !important;
                 border-collapse: collapse !important;
                 margin-top: 15px !important;
-                font-size: 9px !important;
+                font-size: 8pt !important;
+                box-shadow: none !important;
+                filter: none !important;
+                border: none !important;
             }
-            th, td {
-                border: 1px solid #cbd5e0 !important;
+            thead {
+                display: table-header-group !important;
+            }
+            tbody {
+                display: table-row-group !important;
+            }
+            tfoot {
+                display: table-footer-group !important;
+            }
+            tr {
+                display: table-row !important;
+            }
+            table, .ts-table, th, td {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            table th, .ts-table th, table td, .ts-table td, tfoot td, .tfoot td {
+                display: table-cell !important;
+                border: none !important;
                 padding: 5px 6px !important;
-                color: #000000 !important;
-                background-color: #ffffff !important;
+                font-size: 8pt !important;
+                vertical-align: middle !important;
             }
-            th {
+            table tbody td, .ts-table tbody td {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+            }
+            table th, .ts-table th, table thead th {
                 background-color: #2d3748 !important;
                 color: #ffffff !important;
                 font-weight: bold !important;
                 text-transform: uppercase !important;
             }
-            tbody tr:nth-child(even) td {
+            table tfoot td, .ts-table tfoot td, table .tfoot td, .ts-table .tfoot td {
+                background-color: #2d3748 !important;
+                color: #ffffff !important;
+                font-weight: bold !important;
+                font-size: 8pt !important;
+                border: none !important;
+            }
+            tfoot td *, .tfoot td *, tfoot td span, .tfoot td span, tfoot td div, .tfoot td div, tfoot td strong, .tfoot td strong {
+                display: inline !important;
+                color: #ffffff !important;
+                font-size: inherit !important;
+                background: transparent !important;
+                background-color: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            table tbody tr:nth-child(even) td, .ts-table tbody tr:nth-child(even) td {
                 background-color: #f7fafc !important;
             }
             tr {
                 page-break-inside: avoid !important;
+            }
+            
+            .print-header, .print-header table, .print-header tr, .print-header td {
+                border: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                background-color: transparent !important;
+            }
+            .print-header table {
+                border-bottom: none !important;
             }
 
             /* Convertir glass-cards en contenedores limpios */
@@ -473,9 +531,9 @@
             .print-footer {
                 display: block !important;
                 position: fixed !important;
-                bottom: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
+                bottom: 8mm !important;
+                left: 8mm !important;
+                right: 8mm !important;
                 height: 30px !important;
                 border-top: 1px solid #cbd5e0 !important;
                 padding-top: 8px !important;
@@ -807,7 +865,6 @@
                                 <?php if($empresa->nit): ?><div><strong>NIT:</strong> <?php echo e($empresa->nit); ?></div><?php endif; ?>
                                 <?php if($empresa->telefono): ?><div><strong>Tel:</strong> <?php echo e($empresa->telefono); ?></div><?php endif; ?>
                                 <?php if($empresa->direccion): ?><div><strong>Dir:</strong> <?php echo e($empresa->direccion); ?></div><?php endif; ?>
-                                <div><strong>Fecha Impresión:</strong> <?php echo e(\Carbon\Carbon::now()->format('d/m/Y H:i')); ?></div>
                             </td>
                         </tr>
                     </table>

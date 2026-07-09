@@ -1,5 +1,5 @@
 
-<?php $__env->startSection('title', 'Informes y Reportes - Operaciones'); ?>
+<?php $__env->startSection('title', 'Informes y Reportes'); ?>
 
 <?php $__env->startSection('content'); ?>
 <div class="flex gap-4 mb-6 no-print">
@@ -9,7 +9,7 @@
  <a href="<?php echo e(route('stocks.reportes')); ?>" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
 </div>
 
-<div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-4">
+<div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-4 no-print">
  <div>
  <h1 class="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-2">
  📊 Informes y Reportes
@@ -68,9 +68,12 @@
      <p class="text-sm font-medium text-slate-500 dark:text-slate-400">No se encontraron operaciones en este período.</p>
  </div>
  <?php else: ?>
- <div class="flex justify-between items-center mb-4">
- <h3 class="text-lg font-bold"><?php echo e($tipoLabels[$tipo]); ?> <span class="text-sm font-normal text-gray-500">(<?php echo e($registros->total()); ?> registros)</span></h3>
- </div>
+  <div class="flex justify-between items-center mb-4">
+     <div>
+         <h3 class="text-lg font-bold"><?php echo e($tipoLabels[$tipo]); ?> <span class="text-sm font-normal text-gray-500">(<?php echo e($registros->total()); ?> registros)</span></h3>
+         <div class="print-date hidden-screen text-xs text-gray-500 font-semibold mt-0.5"><strong>Fecha Impresión:</strong> <?php echo e(\Carbon\Carbon::now()->format('d/m/Y h:i A')); ?></div>
+     </div>
+  </div>
 
  
  <?php if($tipo === 'solo_mantenimientos'): ?>
@@ -120,9 +123,9 @@
  </tbody>
   <tfoot>
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
-        <td class="text-center font-bold text-xs">Total: <?php echo e($registros->count()); ?></td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($registros->count()); ?></td>
         <td colspan="5" class="text-right uppercase text-xs">Total Costos Mantenimientos:</td>
-        <td class="text-center font-black text-lg text-gray-900 dark:text-gray-100">$<?php echo e(number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.')); ?></td>
+        <td class="text-center font-bold text-xs">$<?php echo e(number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
  </table>
@@ -176,9 +179,9 @@
  </tbody>
   <tfoot>
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
-        <td class="text-center font-bold text-xs">Total: <?php echo e($registros->count()); ?></td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($registros->count()); ?></td>
         <td colspan="5" class="text-right uppercase text-xs">Total Costos Electrónica:</td>
-        <td class="text-center font-black text-lg text-gray-900 dark:text-gray-100">$<?php echo e(number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.')); ?></td>
+        <td class="text-center font-bold text-xs">$<?php echo e(number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
  </table>
@@ -220,8 +223,9 @@
  </tbody>
  <tfoot>
     <tr class="bg-gray-100 dark:bg-gray-800">
-        <td colspan="6" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Total Monto:</td>
-        <td class="text-center font-black text-lg text-gray-900 dark:text-gray-100">$<?php echo e(number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.')); ?></td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($registros->count()); ?></td>
+        <td colspan="5" class="text-right uppercase text-xs">TOTAL MONTO:</td>
+        <td class="text-center font-bold text-xs">$<?php echo e(number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
  </table>
@@ -270,8 +274,9 @@
   </tbody>
  <tfoot>
     <tr class="bg-gray-100 dark:bg-gray-800">
-        <td colspan="5" class="p-3 text-right font-bold uppercase tracking-wider text-sm">Total Documentos:</td>
-        <td class="text-center font-black text-lg text-gray-900 dark:text-gray-100">$<?php echo e(number_format($registros->filter(function($i) { return $i->estado !== 'anulada'; })->sum('total_documento'), 0, ',', '.')); ?></td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($registros->count()); ?></td>
+        <td colspan="4" class="text-right uppercase text-xs font-bold">TOTAL INVENTARIO:</td>
+        <td class="text-center font-bold text-xs">$<?php echo e(number_format($registros->filter(function($i) { return $i->estado !== 'anulada'; })->sum('total_documento'), 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
  </table>
@@ -355,42 +360,33 @@
         padding: 0 !important;
     }
     
+    table, .ts-table,
+    th, td, tfoot td,
+    thead th:first-child, thead th:last-child,
+    tbody tr:last-child td:first-child, tbody tr:last-child td:last-child,
+    tfoot tr:last-child td:first-child, tfoot tr:last-child td:last-child {
+        border-radius: 0 !important;
+    }
+
     table, .ts-table {
+        display: table !important;
         width: 100% !important;
         border-collapse: collapse !important;
-        margin-top: 15px !important;
+        margin-top: 4px !important;
         margin-bottom: 15px !important;
         font-size: 8.5pt !important;
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        filter: none !important;
     }
     
     thead {
         display: table-header-group !important;
     }
     
-    tr {
-        page-break-inside: avoid !important;
-    }
-    
-    th {
-        background-color: #2d3748 !important;
-        color: #ffffff !important;
-        font-weight: bold !important;
-        text-transform: uppercase !important;
-        border: 1px solid #cbd5e0 !important;
-        padding: 8px 10px !important;
-        font-size: 8pt !important;
-    }
-    
-    td {
-        border: 1px solid #cbd5e0 !important;
-        padding: 7px 10px !important;
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        vertical-align: middle !important;
-    }
-    
-    tbody tr:nth-child(even) td {
-        background-color: #f8fafc !important;
+    tbody {
+        display: table-row-group !important;
     }
     
     tfoot, .tfoot {
@@ -398,11 +394,50 @@
         font-weight: bold !important;
     }
     
-    tfoot td {
-        border: 1px solid #cbd5e0 !important;
-        border-top: 1px solid #cbd5e0 !important;
-        background-color: #e2e8f0 !important;
+    tr {
+        display: table-row !important;
+        page-break-inside: avoid !important;
+    }
+    
+    table th, .ts-table th, table td, .ts-table td, tfoot td, .tfoot td {
+        display: table-cell !important;
+        border: none !important;
+        padding: 7px 10px !important;
+        vertical-align: middle !important;
+    }
+    
+    table tbody td, .ts-table tbody td {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+    
+    table th, .ts-table th, table thead th {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
         font-weight: bold !important;
+        text-transform: uppercase !important;
+        font-size: 8pt !important;
+    }
+    
+    table tbody tr:nth-child(even) td, .ts-table tbody tr:nth-child(even) td {
+        background-color: #f7fafc !important;
+    }
+    
+    table tfoot td, .ts-table tfoot td, table .tfoot td, .ts-table .tfoot td {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+        font-size: 8pt !important;
+    }
+    
+    tfoot td *, .tfoot td *, tfoot td span, .tfoot td span, tfoot td div, .tfoot td div, tfoot td strong, .tfoot td strong {
+        display: inline !important;
+        border: none !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #ffffff !important;
+        font-size: inherit !important;
+        box-shadow: none !important;
     }
     
     .grid {
@@ -475,9 +510,37 @@
     
     h3 {
         font-size: 11pt !important;
-        margin-bottom: 10px !important;
+        margin-bottom: 4px !important;
         border-bottom: 1px solid #e2e8f0 !important;
-        padding-bottom: 5px !important;
+        padding-bottom: 3px !important;
+    }
+
+    .flex, .flex-col, .flex-wrap, .items-center, .justify-between {
+        display: block !important;
+    }
+    .mb-4 {
+        margin-bottom: 4px !important;
+    }
+    .overflow-x-auto {
+        overflow: visible !important;
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+    .print-date {
+        display: block !important;
+        font-size: 8pt !important;
+        color: #4a5568 !important;
+        margin-top: 2px !important;
+        margin-bottom: 6px !important;
+        font-weight: bold !important;
+    }
+    .glass-card {
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
     }
 }
 </style>

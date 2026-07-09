@@ -16,7 +16,7 @@
     <style>
         @page {
             size: A4 portrait;
-            margin: 25px 30px;
+            margin: 20px 25px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -25,7 +25,7 @@
             color: #000000;
             background: #fff;
             line-height: 1.35;
-            margin: 25px 30px !important;
+            margin: 20px 25px !important;
         }
 
         /* ─── HEADER ─── */
@@ -122,7 +122,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             text-align: center;
-            border: 1px solid #1a202c;
+            border: 1px solid #cbd5e0;
         }
         thead tr th:first-child { border-radius: 0; }
 
@@ -162,8 +162,8 @@
             background: #2d3748;
             color: #fff;
             font-weight: 700;
-            font-size: 8px;
-            border: 1px solid #1a202c;
+            font-size: 7.8px;
+            border: none !important;
             padding: 5px 4px;
         }
 
@@ -281,7 +281,7 @@
                     <?php endif; ?>
                 </td>
                 <td class="col-center">
-                    <div><?php echo e($stock->proveedor_id ? ($stock->getRelationValue('proveedor')->nombre_razon_social ?? 'N/A') : ($stock->getRawOriginal('proveedor') ?: 'N/A')); ?></div>
+                    <div><?php echo e($stock->proveedor_id ? ($stock->getRelationValue('proveedor')->nombre_razon_social ?: '-') : ($stock->getRawOriginal('proveedor') ?: '-')); ?></div>
                     <?php if(optional($stock->getRelationValue('proveedor'))->identificacion): ?>
                     <div class="sub-text"><?php echo e($stock->getRelationValue('proveedor')->identificacion); ?></div>
                     <?php endif; ?>
@@ -309,25 +309,26 @@
         <?php if(count($stocks) > 0): ?>
         <tfoot>
             <tr>
-                <td colspan="3" style="text-align:left; letter-spacing:0.5px; text-transform:uppercase; font-size:7.5px; padding-left:10px; font-weight:800;">
+                <td colspan="2" class="col-center" style="letter-spacing:0.5px; text-transform:uppercase; font-weight:800;">
                     TOTAL: <?php echo e(count($stocks)); ?>
 
                 </td>
-                <td class="col-center" style="font-size:9px; font-weight:800;">
+                <td></td>
+                <td class="col-center" style="font-weight:800;">
                     <?php echo e($stocks->sum('cantidad')); ?>
 
                 </td>
                 <td></td>
-                <td class="col-right" style="font-size:9px; font-weight:800;">
+                <td class="col-right" style="font-weight:800;">
                     $<?php echo e(number_format($stocks->sum('precio_compra'), 0, '', '.')); ?>
 
                 </td>
                 <td style="text-align:center;"></td>
-                <td class="col-right" style="font-size:9px; font-weight:800;">
+                <td class="col-right" style="font-weight:800;">
                     $<?php echo e(number_format($stocks->sum('precio_venta'), 0, '', '.')); ?>
 
                 </td>
-                <td class="col-right" style="font-size:9px; font-weight:800;">
+                <td class="col-right" style="font-weight:800;">
                     $<?php echo e(number_format($stocks->sum('precio_tecnico'), 0, '', '.')); ?>
 
                 </td>

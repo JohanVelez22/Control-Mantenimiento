@@ -80,7 +80,7 @@
             font-size: 8.5px;
         }
         tbody tr:nth-child(even) { background-color: #f7fafc; }
-        tbody tr.anulado { opacity: 0.55; }
+        tbody tr.anulado { opacity: 1.0; }
 
         td.tipo-badge { text-align: left; }
         .badge {
@@ -96,10 +96,11 @@
         td.monto.negativo { color: #000000; }
 
         tfoot tr td {
-            background: #edf2f7;
+            background: #2d3748;
+            color: #ffffff;
             font-weight: 800;
-            font-size: 9px;
-            border: 1px solid #cbd5e0;
+            font-size: 8.5px;
+            border: none !important;
             padding: 5px 6px;
         }
 
@@ -214,16 +215,26 @@
                 <td style="text-align:center">{{ $acumulado['total_egresos'] ?? 0 }}</td>
                 <td class="monto" style="text-align:center">${{ number_format($acumulado['egresos_caja'] ?? 0, 0, ',', '.') }}</td>
             </tr>
-            <tr class="anulado">
-                <td style="color:#718096">Movimientos Anulados</td>
-                <td style="text-align:center; color:#718096">{{ $acumulado['total_anulados'] ?? 0 }}</td>
-                <td style="text-align:center; color:#000000;">${{ number_format($acumulado['total_costo_anulados'] ?? 0, 0, ',', '.') }}</td>
+            <tr>
+                <td>Movimientos Anulados</td>
+                <td style="text-align:center">{{ $acumulado['total_anulados'] ?? 0 }}</td>
+                <td class="monto" style="text-align:center">$0</td>
             </tr>
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="2" style="text-align:right">Balance Neto del Período:</td>
-                <td style="text-align:center; color: #000000; font-weight: bold;">${{ number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</td>
+                @php
+                    $totalRegistros = ($acumulado['total_mantenimientos'] ?? 0)
+                                    + ($acumulado['total_electronicas'] ?? 0)
+                                    + ($acumulado['total_compras'] ?? 0)
+                                    + ($acumulado['total_ventas'] ?? 0)
+                                    + ($acumulado['total_ingresos'] ?? 0)
+                                    + ($acumulado['total_egresos'] ?? 0)
+                                    + ($acumulado['total_anulados'] ?? 0);
+                @endphp
+                <td style="text-align:center; padding: 5px 6px; color:#ffffff; font-weight:800;">TOTAL: 7</td>
+                <td style="text-align:center; padding: 5px 6px; color:#ffffff; font-weight:800;">TOTAL REGISTROS: {{ $totalRegistros }}</td>
+                <td style="text-align:center; padding: 5px 6px; color:#ffffff; font-weight:800;">BALANCE NETO: ${{ number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</td>
             </tr>
         </tfoot>
     </table>

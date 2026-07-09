@@ -78,11 +78,12 @@
             padding: 4px 6px;
             vertical-align: middle;
             font-size: 8.5px;
+            text-align: center;
         }
         tbody tr:nth-child(even) { background-color: #f7fafc; }
-        tbody tr.anulado { opacity: 0.55; }
+        tbody tr.anulado { opacity: 1.0; }
 
-        td.tipo-badge { text-align: left; }
+        td.tipo-badge { text-align: center; }
         .badge {
             font-size: 8.5px;
             font-weight: normal;
@@ -96,10 +97,11 @@
         td.monto.negativo { color: #000000; }
 
         tfoot tr td {
-            background: #edf2f7;
+            background: #2d3748;
+            color: #ffffff;
             font-weight: 800;
-            font-size: 9px;
-            border: 1px solid #cbd5e0;
+            font-size: 8.5px;
+            border: none !important;
             padding: 5px 6px;
         }
 
@@ -220,8 +222,13 @@
                     $neto = collect($movimientos)->where('anulado', false)->whereIn('tipo', ['ingreso','venta','mantenimiento','electronica'])->sum('monto')
                           - collect($movimientos)->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
                 @endphp
-                <td colspan="5" style="text-align:right">Balance Neto:</td>
-                <td style="text-align:center; color: #000000;">${{ number_format($neto, 0, ',', '.') }}</td>
+                <td colspan="5" style="text-align:left; border:none !important; padding: 5px 6px;">
+                    <span style="float:left; font-weight:700; color:#ffffff;">TOTAL: {{ count($movimientos) }} REGISTROS</span>
+                    <span style="float:right; font-weight:700; color:#ffffff;">BALANCE NETO DEL DÍA:</span>
+                </td>
+                <td style="text-align:center; border:none !important; padding: 5px 6px; color:#ffffff; font-weight:800;">
+                    ${{ number_format($neto, 0, ',', '.') }}
+                </td>
             </tr>
         </tfoot>
         @endif

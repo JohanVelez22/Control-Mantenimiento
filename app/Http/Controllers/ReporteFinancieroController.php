@@ -409,11 +409,17 @@ class ReporteFinancieroController extends Controller
 
             if ($request->get('export') === 'pdf') {
                 if ($tipo === 'solo_mantenimientos') {
-                    return \Barryvdh\DomPDF\Facade\Pdf::loadView('mantenimientos.pdf', ['mantenimientos' => $exportData])
+                    return \Barryvdh\DomPDF\Facade\Pdf::loadView('mantenimientos.pdf', [
+                        'mantenimientos' => $exportData,
+                        'orientation'    => 'portrait'
+                    ])
                         ->setPaper('a4', 'portrait')
                         ->download('Reporte_Operaciones_' . date('Y-m-d_His') . '.pdf');
                 } elseif ($tipo === 'solo_electronica') {
-                    return \Barryvdh\DomPDF\Facade\Pdf::loadView('electronicas.pdf', ['electronicas' => $exportData])
+                    return \Barryvdh\DomPDF\Facade\Pdf::loadView('electronicas.pdf', [
+                        'electronicas' => $exportData,
+                        'orientation'  => 'portrait'
+                    ])
                         ->setPaper('a4', 'portrait')
                         ->download('Reporte_Operaciones_' . date('Y-m-d_His') . '.pdf');
                 } else {
