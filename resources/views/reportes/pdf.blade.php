@@ -25,7 +25,7 @@
             width: 100%;
             border-bottom: 2px solid #2d3748;
             padding-bottom: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         .header-logo-cell {
             display: table-cell;
@@ -43,18 +43,18 @@
         }
 
         /* Tarjetas resumen */
-        .summary { display: table; width: 100%; margin-bottom: 16px; }
+        .summary { display: table; width: 100%; margin-bottom: 4px; }
         .summary-row { display: table-row; }
-        .summary-cell { display: table-cell; width: 25%; padding: 6px 8px; text-align: center; vertical-align: middle; border: 1.5px solid #e2e8f0; border-radius: 4px; }
-        .summary-label { font-size: 7px; font-weight: 700; text-transform: uppercase; color: #718096; margin-bottom: 3px; }
-        .summary-value { font-size: 13px; font-weight: 800; }
+        .summary-cell { display: table-cell; width: 25%; padding: 4px 6px; text-align: center; vertical-align: middle; border: 1px solid #e2e8f0; border-radius: 4px; }
+        .summary-label { font-size: 6.5px; font-weight: 700; text-transform: uppercase; color: #718096; margin-bottom: 2px; }
+        .summary-value { font-size: 11px; font-weight: 800; }
         .green { color: #000000; }
         .red   { color: #000000; }
         .blue  { color: #000000; }
 
         .section-title {
             font-size: 10px; font-weight: 700; color: #2d3748;
-            margin: 14px 0 6px 0;
+            margin: 8px 0 4px 0;
             padding-bottom: 3px;
             border-bottom: 1.5px solid #e2e8f0;
             text-transform: uppercase;
@@ -114,7 +114,7 @@
         </div>
     </div>
 
-    <div style="font-size: 9px; color: #4a5568; margin-bottom: 12px; padding: 4px 0;">
+    <div style="font-size: 9px; color: #4a5568; margin-bottom: 6px; padding: 2px 0;">
         <strong>Período:</strong> {{ $mes }}/{{ $anio }} &nbsp;|&nbsp;
         <strong>Generado:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}
     </div>

@@ -127,8 +127,8 @@
  </form>
 
   <!-- Encabezado solo visible al imprimir -->
-  <div class="print-header hidden-screen">
-   <p style="text-align: center; margin-top: 0; font-size: 10px; color: #4a5568;">Generado el: {{ date('d/m/Y h:i A') }} &nbsp;|&nbsp; Período: {{ request('fecha_desde', date('Y-m-01')) }} al {{ request('fecha_hasta', date('Y-m-d')) }}</p>
+  <div class="print-date hidden-screen">
+   <p style="text-align: center; margin-top: 0; margin-bottom: 0; font-size: 10px; color: #4a5568;">Generado el: {{ date('d/m/Y h:i A') }} &nbsp;|&nbsp; Período: {{ request('fecha_desde', date('Y-m-01')) }} al {{ request('fecha_hasta', date('Y-m-d')) }}</p>
   </div>
 
  <!-- Tabla con Datos Independientes (vista en pantalla: como antes; impresión: clase reportes-tabla-imprimir) -->
@@ -246,7 +246,7 @@
 </div>
 
 <style>
-.print-header { display: none; }
+.print-date { display: none; }
 </style>
 
 <script>
@@ -359,10 +359,11 @@
         display: none !important;
     }
     
-    .print-header {
+    .print-date {
         display: block !important;
         text-align: center;
-        margin-bottom: 4mm;
+        margin-top: 2px !important;
+        margin-bottom: 6px !important;
     }
     
     /* Disable flexbox layouts during print to prevent desktop viewport scaling and right-side clipping */
@@ -433,7 +434,7 @@
         display: table !important;
         width: 100% !important;
         border-collapse: collapse !important;
-        margin-top: 10px !important;
+        margin-top: 4px !important;
         margin-bottom: 10px !important;
         font-size: 8pt !important;
         background-color: #ffffff !important;

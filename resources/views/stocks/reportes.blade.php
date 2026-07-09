@@ -115,8 +115,8 @@
     </form>
 
     <!-- Encabezado solo visible al imprimir -->
-    <div class="print-header hidden-screen">
-        <p style="text-align: center; margin-top: 0; font-size: 10px; color: #4a5568;">Generado el: {{ date('d/m/Y h:i A') }}</p>
+    <div class="print-date hidden-screen">
+        <p style="text-align: center; margin-top: 0; margin-bottom: 0; font-size: 10px; color: #4a5568;">Generado el: {{ date('d/m/Y h:i A') }}</p>
     </div>
 
     <!-- Tabla con Datos -->
@@ -311,10 +311,11 @@
     }
     
     /* Encabezado visible al imprimir */
-    .print-header {
+    .print-date {
         display: block !important;
         text-align: center;
-        margin-bottom: 4mm;
+        margin-top: 2px !important;
+        margin-bottom: 6px !important;
     }
     
     table, .ts-table,
@@ -329,7 +330,7 @@
         display: table !important;
         width: 100% !important;
         border-collapse: collapse !important;
-        margin-top: 15px !important;
+        margin-top: 4px !important;
         margin-bottom: 15px !important;
         font-size: 8pt !important;
         background-color: #ffffff !important;

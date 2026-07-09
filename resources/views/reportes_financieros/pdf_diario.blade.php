@@ -23,7 +23,7 @@
             width: 100%;
             border-bottom: 2px solid #2d3748;
             padding-bottom: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         .header-logo-cell {
             display: table-cell;
@@ -41,10 +41,10 @@
         }
 
         /* Tarjetas resumen */
-        .summary-grid { display: table; width: 100%; margin-bottom: 16px; border-spacing: 6px; }
-        .summary-grid .card { display: table-cell; width: 25%; border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; text-align: center; vertical-align: middle; }
-        .card .card-label { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #718096; margin-bottom: 3px; }
-        .card .card-value { font-size: 13px; font-weight: 800; }
+        .summary-grid { display: table; width: 100%; margin-bottom: 4px; border-spacing: 4px; }
+        .summary-grid .card { display: table-cell; width: 25%; border: 1px solid #e2e8f0; border-radius: 4px; padding: 5px 8px; text-align: center; vertical-align: middle; }
+        .card .card-label { font-size: 6.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #718096; margin-bottom: 2px; }
+        .card .card-value { font-size: 11px; font-weight: 800; }
         .card.ingresos .card-value { color: #000000; }
         .card.egresos  .card-value { color: #000000; }
         .card.mantenimientos .card-value { color: #000000; }
@@ -55,7 +55,7 @@
             font-size: 10px;
             font-weight: 700;
             color: #2d3748;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             padding-bottom: 3px;
             border-bottom: 1.5px solid #e2e8f0;
             text-transform: uppercase;
@@ -135,7 +135,7 @@
         </div>
     </div>
 
-    <div style="font-size: 9px; color: #4a5568; margin-bottom: 12px; padding: 4px 0;">
+    <div style="font-size: 9px; color: #4a5568; margin-bottom: 6px; padding: 2px 0;">
         @if(isset($fecha))<strong>Período:</strong> {{ $fecha }} &nbsp;|&nbsp; @endif
         <strong>Generado:</strong> {{ date('d/m/Y h:i A') }}
     </div>

@@ -34,7 +34,7 @@
             width: 100%;
             border-bottom: 2px solid #2d3748;
             padding-bottom: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         .header-logo-cell {
             display: table-cell;
@@ -90,7 +90,7 @@
         .summary-bar {
             display: table;
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
             border-radius: 0px;
@@ -216,7 +216,7 @@
         </div>
     </div>
 
-    <div style="font-size: 9px; color: #000000; margin-bottom: 12px; padding: 4px 0;">
+    <div style="font-size: 9px; color: #000000; margin-bottom: 6px; padding: 2px 0;">
         <strong>Generado:</strong> <?php echo e(\Carbon\Carbon::now()->format('d/m/Y H:i')); ?> &nbsp;|&nbsp;
         <strong>Registros:</strong> <?php echo e(count($electronicas)); ?>
 
