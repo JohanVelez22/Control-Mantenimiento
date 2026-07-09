@@ -243,6 +243,8 @@ function exportarDiario(tipo, btn) {
         display: block !important;
         width: 100% !important;
         min-width: 0 !important;
+        min-height: auto !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         box-shadow: none !important;
@@ -256,6 +258,8 @@ function exportarDiario(tipo, btn) {
         display: block !important;
         width: 100% !important;
         min-width: 0 !important;
+        min-height: auto !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 8mm 6mm !important; /* Force physical narrow margins */
         box-sizing: border-box !important;
@@ -271,6 +275,8 @@ function exportarDiario(tipo, btn) {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
         font-size: 9pt !important;
         width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         -webkit-print-color-adjust: exact !important;

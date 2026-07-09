@@ -261,6 +261,8 @@
         display: block !important;
         width: 100% !important;
         min-width: 0 !important;
+        min-height: auto !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         box-shadow: none !important;
@@ -274,6 +276,8 @@
         display: block !important;
         width: 100% !important;
         min-width: 0 !important;
+        min-height: auto !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 8mm 6mm !important; /* Force physical narrow margins */
         box-sizing: border-box !important;
@@ -289,6 +293,8 @@
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
         font-size: 8pt !important;
         width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         -webkit-print-color-adjust: exact !important;

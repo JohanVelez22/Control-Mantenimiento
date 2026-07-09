@@ -128,6 +128,7 @@
   </div>
 
  <!-- Tabla con Datos Independientes -->
+ <div class="overflow-x-auto pb-2">
  <table class="ts-table table-electronica responsive-table reportes-tabla-imprimir w-full">
   <thead>
   <tr>
@@ -361,6 +362,8 @@
         display: block !important;
         width: 100% !important;
         min-width: 0 !important;
+        min-height: auto !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         box-shadow: none !important;
@@ -374,6 +377,8 @@
         display: block !important;
         width: 100% !important;
         min-width: 0 !important;
+        min-height: auto !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 6mm 4mm !important; /* Force physical margins */
         box-sizing: border-box !important;
@@ -389,10 +394,13 @@
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
         font-size: 8pt !important;
         width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
+        counter-reset: page 0;
     }
     
     .glass-card {
@@ -521,6 +529,12 @@
         margin-bottom: 10px !important;
         border-bottom: 1px solid #e2e8f0 !important;
         padding-bottom: 5px !important;
+    }
+
+    .print-footer {
+        bottom: 2mm !important;
+        left: 6mm !important;
+        right: 6mm !important;
     }
 }
 </style>

@@ -364,13 +364,20 @@
                 margin: 10mm 8mm 15mm 8mm;
             }
 
-            html, body {
+            html {
+                counter-reset: page 0;
+                min-height: auto !important;
+                height: auto !important;
+            }
+
+            body {
                 background: #ffffff !important;
                 color: #000000 !important;
                 width: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                counter-reset: page 0;
+                min-height: auto !important;
+                height: auto !important;
             }
 
             /* Disable flexbox layouts during print to prevent desktop viewport scaling and right-side clipping */
@@ -379,6 +386,8 @@
                 display: block !important;
                 width: 100% !important;
                 min-width: 0 !important;
+                min-height: auto !important;
+                height: auto !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 box-shadow: none !important;
