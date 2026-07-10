@@ -81,13 +81,26 @@
             overflow: hidden !important;
             text-overflow: ellipsis !important;
             max-width: 100% !important;
+            min-width: 0 !important;
+            flex-shrink: 1 !important;
             display: inline-block !important;
             pointer-events: none; /* Que el clic pase al control */
+        }
+        /* Limitar la altura de los desplegables de stock a exactamente 3 ítems */
+        .stock-select-dropdown .ts-dropdown-content {
+            max-height: 200px !important;
+        }
+        /* Evitar que el select ensanche la celda de la tabla al enfocarse */
+        .ts-table .ts-wrapper.glass-input {
+            width: 0 !important;
+            min-width: 100% !important;
         }
         .ts-item-display {
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
+            min-width: 0 !important;
+            flex-shrink: 1 !important;
             display: inline-block !important;
             max-width: 100% !important;
         }
@@ -1517,6 +1530,11 @@
                 // si debe ocultar el item al abrir el dropdown.
                 if (isNoSearch && tsInstance.wrapper) {
                     tsInstance.wrapper.classList.add('no-search');
+                }
+
+                if (el.classList.contains('stock-select')) {
+                    if (tsInstance.wrapper) tsInstance.wrapper.classList.add('stock-select-wrapper');
+                    if (tsInstance.dropdown) tsInstance.dropdown.classList.add('stock-select-dropdown');
                 }
 
                 if (!isNoSearch && tsInstance.options[""]) {

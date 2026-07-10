@@ -57,7 +57,7 @@
  <table class="ts-table" id="items-table">
  <thead>
  <tr>
- <th>Artículo del Stock</th>
+ <th class="w-[45%]">Artículo del Stock</th>
  <th class="w-24 text-center">Cant.</th>
  <th class="min-w-[160px] text-right">Precio Un. ($)</th>
  <th class="min-w-[160px] text-right">Subtotal</th>

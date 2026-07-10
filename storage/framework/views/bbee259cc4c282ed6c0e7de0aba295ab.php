@@ -71,7 +71,7 @@ unset($__errorArgs, $__bag); ?>
                     <table class="ts-table">
                         <thead>
                             <tr>
-                                <th>Artículo</th>
+                                <th class="w-[45%]">Artículo</th>
                                 <th class="w-24 text-center">Cantidad</th>
                                 <th class="min-w-[160px] text-right">Precio Unitario ($)</th>
                                 <th class="min-w-[160px] text-right">Subtotal</th>
@@ -83,7 +83,7 @@ unset($__errorArgs, $__bag); ?>
                                 <tr class="existing-row">
                                     <td>
                                         <input type="hidden" name="existing_items[<?php echo e($index); ?>][id]" value="<?php echo e($item->id); ?>">
-                                        <select name="existing_items[<?php echo e($index); ?>][stock_id]" required class="glass-input py-1.5 focus:ring-orange-500" onchange="actualizarPrecio(this)">
+                                        <select name="existing_items[<?php echo e($index); ?>][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-orange-500" onchange="actualizarPrecio(this)">
                                             <option value="">Seleccionar producto...</option>
                                             <?php $__currentLoopData = $stocks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $s): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <option value="<?php echo e($s->id); ?>" data-precio="<?php echo e($factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta); ?>" <?php echo e($item->stock_id == $s->id ? 'selected' : ''); ?>>
@@ -169,7 +169,7 @@ function agregarFila() {
     tr.className = 'new-row bg-blue-50/20 dark:bg-blue-900/10';
     tr.innerHTML = `
         <td>
-            <select name="new_items[${filaIndex}][stock_id]" required class="glass-input py-1.5 focus:ring-blue-500" onchange="actualizarPrecio(this)">
+            <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-blue-500" onchange="actualizarPrecio(this)">
                 ${optionsHtml}
             </select>
         </td>
@@ -187,7 +187,12 @@ function agregarFila() {
         </td>
     `;
     document.getElementById('items-body').appendChild(tr);
-    // Initialize TomSelect if needed, but standard select is fine here for dynamically added rows.
+    
+    // Inicializar TomSelect en el nuevo select
+    const newSelect = tr.querySelector('.stock-select');
+    if (newSelect && typeof window.initGlassTomSelect === 'function') {
+        window.initGlassTomSelect(newSelect);
+    }
 }
 
 function eliminarFilaNueva(btn) {
