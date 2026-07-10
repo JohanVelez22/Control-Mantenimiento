@@ -276,6 +276,10 @@ class MovimientoInventarioController extends Controller
         if ($request->filled('estado') && $request->estado !== 'todos') {
             $query->where('estado', $request->estado);
         }
+        if ($request->filled('valor_total')) {
+            $valor_total = str_replace('.', '', $request->input('valor_total'));
+            $query->where('total_documento', '=', $valor_total);
+        }
         
         $query->whereDate('fecha', '>=', $fecha_desde);
         $query->whereDate('fecha', '<=', $fecha_hasta);

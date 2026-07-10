@@ -37,6 +37,7 @@
  <option value="pendiente_pago" <?php echo e(request('estado') === 'pendiente_pago' ? 'selected' : ''); ?>>⏳ Pendiente</option>
  <option value="anulada" <?php echo e(request('estado') === 'anulada' ? 'selected' : ''); ?>>🚫 Anulada</option>
  </select>
+ <input type="text" name="valor_total" value="<?php echo e(request('valor_total')); ?>" placeholder="Valor Total" class="glass-input w-40 font-semibold" oninput="let val = this.value.replace(/\D/g, ''); this.value = val === '' ? '' : parseInt(val, 10).toLocaleString('es-CO');">
  <div class="flex items-center gap-2">
  <input type="date" name="fecha_desde" value="<?php echo e(request('fecha_desde', date('Y-m-01'))); ?>" class="glass-input w-44">
  <span class="text-gray-400 text-sm">a</span>

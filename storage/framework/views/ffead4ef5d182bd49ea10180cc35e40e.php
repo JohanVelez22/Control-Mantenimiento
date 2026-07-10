@@ -1484,6 +1484,7 @@
                     maxOptions: 100,
                     placeholder: defaultPlaceholder,
                     highlight: false,
+                    dropdownParent: 'body',
                     plugins: isNoSearch ? [] : ['clear_button'],
                     render: {
                         option: function(data, escape) {
