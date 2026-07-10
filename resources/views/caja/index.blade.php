@@ -147,7 +147,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
  </span>
  </td>
  <td data-label="Monto:" class="text-right font-black text-lg {{ $m->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} {{ $dim }}">
- {{ $m->tipo_movimiento === 'ingreso' ? '+' : '-' }}${{ number_format($m->monto, 0, ',', '.') }}
+ ${{ number_format($m->monto, 0, ',', '.') }}
  @if($m->saldo_pendiente > 0)
  <div class="text-[10px] text-orange-500 font-bold uppercase mt-1">Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }}</div>
  @endif

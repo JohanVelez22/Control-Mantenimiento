@@ -53,7 +53,7 @@
             <tr class="grand-total">
                 <td class="lbl">MONTO TOTAL:</td>
                 <td class="val" style="font-size: 14pt; {{ $movimiento->tipo_movimiento === 'ingreso' ? 'color: green;' : 'color: red;' }}">
-                    {{ $movimiento->tipo_movimiento === 'ingreso' ? '+' : '-' }} ${{ number_format($movimiento->monto, 0, ',', '.') }}
+                    ${{ number_format($movimiento->monto, 0, ',', '.') }}
                 </td>
             </tr>
         @endif

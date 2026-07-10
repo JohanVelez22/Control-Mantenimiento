@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Comprobante de Caja ' . str_pad($movimiento->id, 5, '0', STR_PAD_LEFT)); ?>
 
 <?php $__env->startSection('watermark_class', $movimiento->anulado ? 'anulado' : ''); ?>
@@ -56,7 +54,7 @@
             <tr class="grand-total">
                 <td class="lbl">MONTO TOTAL:</td>
                 <td class="val" style="font-size: 14pt; <?php echo e($movimiento->tipo_movimiento === 'ingreso' ? 'color: green;' : 'color: red;'); ?>">
-                    <?php echo e($movimiento->tipo_movimiento === 'ingreso' ? '+' : '-'); ?> $<?php echo e(number_format($movimiento->monto, 0, ',', '.')); ?>
+                    $<?php echo e(number_format($movimiento->monto, 0, ',', '.')); ?>
 
                 </td>
             </tr>
