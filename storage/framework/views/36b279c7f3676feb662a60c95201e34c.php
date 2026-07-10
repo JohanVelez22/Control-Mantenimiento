@@ -81,7 +81,7 @@
  <thead>
  <tr>
  <th class="p-2 text-center">Orden</th><th class="p-2 text-left">Equipo / Cliente</th>
- <th class="p-2 text-center">Técnico</th><th class="p-2 text-center">Entrada</th>
+ <th class="p-2 text-center">Técnico</th><th class="p-2 text-center">Entrada</th><th class="p-2 text-center">Salida</th>
  <th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th><th class="p-2 text-center">Costo</th>
  </tr>
  </thead>
@@ -103,6 +103,7 @@
  </td>
  <td class="p-2 <?php echo e($dim); ?>"><?php echo e($m->tecnico->nombre ?? '—'); ?></td>
  <td class="p-2 <?php echo e($dim); ?>"><?php echo e($m->fecha_entrada->format('d/m/Y')); ?></td>
+ <td class="p-2 <?php echo e($dim); ?>"><?php echo e($m->fecha_salida ? $m->fecha_salida->format('d/m/Y') : 'Pendiente'); ?></td>
  <td class="p-2 <?php echo e($dimLight); ?>"><span class="pill pill-efectivo <?php echo e($isAnulado ? 'opacity-70' : ''); ?>"><?php echo e(ucfirst($m->estado)); ?></span></td>
  <td class="p-2">
  <span class="pill <?php echo e($isAnulado ? 'pill-anulado' : 'pill-done'); ?>">
@@ -117,7 +118,7 @@
   <tfoot>
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
         <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($registros->count()); ?></td>
-        <td colspan="5" class="text-right uppercase text-xs">Total Costos Mantenimientos:</td>
+        <td colspan="6" class="text-right uppercase text-xs">Total Costos Mantenimientos:</td>
         <td class="text-center font-bold text-xs">$<?php echo e(number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
@@ -131,7 +132,7 @@
  <thead>
  <tr>
  <th class="p-2 text-center">Orden</th><th class="p-2 text-left">Dispositivo / Cliente</th>
- <th class="p-2 text-center">Técnico</th><th class="p-2 text-center">Entrada</th>
+ <th class="p-2 text-center">Técnico</th><th class="p-2 text-center">Entrada</th><th class="p-2 text-center">Salida</th>
  <th class="p-2 text-center">Progreso</th><th class="p-2 text-center">Estado</th><th class="p-2 text-center">Costo</th>
  </tr>
  </thead>
@@ -153,6 +154,7 @@
  </td>
  <td class="p-2 <?php echo e($dim); ?>"><?php echo e($e->tecnico->nombre ?? '—'); ?></td>
  <td class="p-2 <?php echo e($dim); ?>"><?php echo e($e->fecha_entrada->format('d/m/Y')); ?></td>
+ <td class="p-2 <?php echo e($dim); ?>"><?php echo e($e->fecha_salida ? $e->fecha_salida->format('d/m/Y') : 'Pendiente'); ?></td>
  <td class="p-2 <?php echo e($dimLight); ?>"><span class="pill pill-pending <?php echo e($isAnulado ? 'opacity-70' : ''); ?>"><?php echo e(ucfirst($e->estado)); ?></span></td>
  <td class="p-2">
  <span class="pill <?php echo e($isAnulado ? 'pill-anulado' : 'pill-done'); ?>">
@@ -167,7 +169,7 @@
   <tfoot>
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
         <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($registros->count()); ?></td>
-        <td colspan="5" class="text-right uppercase text-xs">Total Costos Electrónica:</td>
+        <td colspan="6" class="text-right uppercase text-xs">Total Costos Electrónica:</td>
         <td class="text-center font-bold text-xs">$<?php echo e(number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
@@ -230,8 +232,8 @@
   <table class="ts-table responsive-table w-full text-sm text-center">
   <thead>
   <tr>
-  <th class="p-2 text-center">Fecha</th>
   <th class="p-2 text-center">Factura Nº</th>
+  <th class="p-2 text-center">Fecha</th>
   <th class="p-2 text-left">Persona / Empresa</th>
   <th class="p-2 text-center">Pagado</th>
  <th class="p-2 text-center">Estado</th>
@@ -251,8 +253,8 @@
     if($f->estado === 'pendiente_pago') $label = 'Pendiente';
   ?>
   <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-  <td class="p-2 <?php echo e($dim); ?>"><?php echo e($f->fecha->format('d/m/Y')); ?></td>
   <td class="p-2 font-mono font-bold <?php echo e($dim); ?>"><?php echo e($f->numero_factura); ?></td>
+  <td class="p-2 <?php echo e($dim); ?>"><?php echo e($f->fecha->format('d/m/Y')); ?></td>
   <td class="p-2 text-left <?php echo e($dim); ?>"><?php echo e($f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—'); ?></td>
   <td class="p-2 font-semibold text-gray-900 dark:text-gray-100 <?php echo e($dim); ?>">$<?php echo e(number_format($f->total_pagado, 0, ',', '.')); ?></td>
   <td class="p-2">

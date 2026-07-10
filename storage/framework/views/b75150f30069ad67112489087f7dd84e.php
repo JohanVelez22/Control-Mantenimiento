@@ -1,12 +1,11 @@
-@extends('layouts.app')
-@section('title', 'Informes y Reportes')
+<?php $__env->startSection('title', 'Informes y Reportes'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="flex gap-4 mb-6 no-print">
- <a href="{{ route('reportes.financiero.diario') }}" class="bg-amber-500 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💵 Informes Financieros</a>
- <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
- <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Reporte de Electrónica</a>
- <a href="{{ route('stocks.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
+ <a href="<?php echo e(route('reportes.financiero.diario')); ?>" class="bg-amber-500 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💵 Informes Financieros</a>
+ <a href="<?php echo e(route('mantenimientos.reportes')); ?>" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
+ <a href="<?php echo e(route('electronicas.reportes')); ?>" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Reporte de Electrónica</a>
+ <a href="<?php echo e(route('stocks.reportes')); ?>" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
 </div>
 
 <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-4 no-print">
@@ -14,20 +13,20 @@
  <h1 class="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-2">
  📊 Informes y Reportes
  </h1>
- <p class="text-gray-500 dark:text-gray-400 font-semibold mt-1">Mostrando todos los movimientos del <strong>{{ \Carbon\Carbon::parse($fecha)->isoFormat('dddd D [de] MMMM [de] YYYY') }}</strong>.</p>
+ <p class="text-gray-500 dark:text-gray-400 font-semibold mt-1">Mostrando todos los movimientos del <strong><?php echo e(\Carbon\Carbon::parse($fecha)->isoFormat('dddd D [de] MMMM [de] YYYY')); ?></strong>.</p>
  </div>
 </div>
 
 <div class="glass-card p-4 mb-6 flex flex-wrap items-center gap-2 no-print">
- <a href="{{ route('reportes.financiero.diario') }}"
+ <a href="<?php echo e(route('reportes.financiero.diario')); ?>"
  class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-blue-500 text-white shadow-lg ">
  📅 Diario
  </a>
- <a href="{{ route('reportes.financiero.acumulado') }}"
+ <a href="<?php echo e(route('reportes.financiero.acumulado')); ?>"
  class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-500/20">
  📈 Acumulado
  </a>
- <a href="{{ route('reportes.financiero.operaciones') }}"
+ <a href="<?php echo e(route('reportes.financiero.operaciones')); ?>"
  class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20">
  📋 Operaciones
  </a>
@@ -36,9 +35,9 @@
 <div class="glass-card p-5 mb-4 no-print">
  <form id="filtros-diario" method="GET" class="flex flex-wrap items-center gap-3">
    <label class="font-semibold text-sm">📅 Fecha:</label>
-   <input type="date" name="fecha" value="{{ $fecha }}" class="glass-input w-44">
+   <input type="date" name="fecha" value="<?php echo e($fecha); ?>" class="glass-input w-44">
    <button class="btn-primary py-2 px-5 text-sm" title="Filtrar">Ver Día</button>
-   <a href="{{ route('reportes.financiero.diario') }}" class="btn-clean text-sm">Hoy</a>
+   <a href="<?php echo e(route('reportes.financiero.diario')); ?>" class="btn-clean text-sm">Hoy</a>
   
    <div class="flex items-center gap-2 ml-auto">
        <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
@@ -54,46 +53,46 @@
  </form>
 </div>
 
- {{-- Tarjetas de resumen --}}
+ 
  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
  <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
  <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
- <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_ingresos'], 0, ',', '.') }}</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$<?php echo e(number_format($resumen['total_ingresos'], 0, ',', '.')); ?></p>
  </div>
  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
  <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-500/20 rounded-full blur-2xl group-hover:bg-red-500/30 transition-all"></div>
  <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
- <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_egresos'], 0, ',', '.') }}</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$<?php echo e(number_format($resumen['total_egresos'], 0, ',', '.')); ?></p>
  </div>
  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
  <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
  <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🔧</span> Mantenimientos</p>
- <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_mantenimientos'], 0, ',', '.') }}</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$<?php echo e(number_format($resumen['total_mantenimientos'], 0, ',', '.')); ?></p>
  </div>
  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
  <div class="absolute -right-6 -top-6 w-24 h-24 bg-gray-500/20 rounded-full blur-2xl group-hover:bg-gray-500/30 transition-all"></div>
  <p class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🚫</span> Anulados</p>
- <p class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $resumen['total_anulados'] }}</p>
+ <p class="text-2xl font-black text-slate-800 dark:text-white z-10"><?php echo e($resumen['total_anulados']); ?></p>
  </div>
  </div>
 
- {{-- Tabla de movimientos del día --}}
+ 
  <div class="glass-card p-6 md:p-8 mt-4">
   <div class="flex justify-between items-center mb-4">
      <div>
-         <h3 class="text-lg font-bold">Movimientos del Día ({{ $movimientos->count() }})</h3>
-         <div class="print-date hidden-screen text-xs text-gray-500 font-semibold mt-0.5"><strong>Fecha Impresión:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y h:i A') }}</div>
+         <h3 class="text-lg font-bold">Movimientos del Día (<?php echo e($movimientos->count()); ?>)</h3>
+         <div class="print-date hidden-screen text-xs text-gray-500 font-semibold mt-0.5"><strong>Fecha Impresión:</strong> <?php echo e(\Carbon\Carbon::now()->format('d/m/Y h:i A')); ?></div>
      </div>
   </div>
 
- @if($movimientos->isEmpty())
+ <?php if($movimientos->isEmpty()): ?>
  <div class="flex flex-col items-center justify-center space-y-3 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm p-12 rounded-2xl border border-white/20 my-4">
      <div class="text-5xl opacity-80">📭</div>
      <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
      <p class="text-sm font-medium text-slate-500 dark:text-slate-400">No hubo movimientos en esta fecha.</p>
  </div>
- @else
+ <?php else: ?>
  <div class="overflow-x-auto pb-2">
  <table class="ts-table responsive-table w-full text-sm">
  <thead>
@@ -107,22 +106,23 @@
  </tr>
  </thead>
  <tbody>
- @foreach($movimientos as $mov)
- @php
+ <?php $__currentLoopData = $movimientos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mov): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+ <?php
    $isAnulado = !empty($mov['anulado']);
    $dim = $isAnulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
    $dimLight = $isAnulado ? 'opacity-60' : '';
- @endphp
+ ?>
  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center">
- <td class="p-3 font-bold {{ $dim }}">{{ $mov['codigo'] ?? '—' }}</td>
- <td class="p-3 {{ $dimLight }}">
-   <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800 dark:bg-{{ $mov['color'] }}-900/40 dark:text-{{ $mov['color'] }}-300">
-   <span class="no-print-emoji">{{ $mov['icono'] }}</span> {{ ucfirst($mov['tipo']) }}
+ <td class="p-3 font-bold <?php echo e($dim); ?>"><?php echo e($mov['codigo'] ?? '—'); ?></td>
+ <td class="p-3 <?php echo e($dimLight); ?>">
+   <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-<?php echo e($mov['color']); ?>-100 text-<?php echo e($mov['color']); ?>-800 dark:bg-<?php echo e($mov['color']); ?>-900/40 dark:text-<?php echo e($mov['color']); ?>-300">
+   <span class="no-print-emoji"><?php echo e($mov['icono']); ?></span> <?php echo e(ucfirst($mov['tipo'])); ?>
+
    </span>
  </td>
- <td class="p-3 text-left text-gray-700 dark:text-gray-300 {{ $dim }}">{{ $mov['descripcion'] }}</td>
-   <td class="p-3 {{ $dimLight }}">
-   @php
+ <td class="p-3 text-left text-gray-700 dark:text-gray-300 <?php echo e($dim); ?>"><?php echo e($mov['descripcion']); ?></td>
+   <td class="p-3 <?php echo e($dimLight); ?>">
+   <?php
        $progreso = strtolower($mov['estado'] ?? '');
        
        // Clarificar el "progreso" para transacciones que no son mantenimientos
@@ -134,34 +134,36 @@
        elseif($progreso === 'emitida') $pillClass = 'pill-preventivo';
        elseif($progreso === 'procesado') $pillClass = 'pill-especialidad';
        elseif(in_array($progreso, ['en_proceso', 'reparado'])) $pillClass = 'pill-efectivo';
-   @endphp
-   <span class="pill {{ $pillClass }} {{ $isAnulado ? 'opacity-70' : '' }}">{{ ucfirst($progreso) ?: '—' }}</span>
+   ?>
+   <span class="pill <?php echo e($pillClass); ?> <?php echo e($isAnulado ? 'opacity-70' : ''); ?>"><?php echo e(ucfirst($progreso) ?: '—'); ?></span>
    </td>
  <td class="p-3">
- <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
- {{ $isAnulado ? 'Anulado' : 'Activo' }}
+ <span class="pill <?php echo e($isAnulado ? 'pill-anulado' : 'pill-done'); ?>">
+ <?php echo e($isAnulado ? 'Anulado' : 'Activo'); ?>
+
  </span>
  </td>
  <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">
- ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
+ $<?php echo e(number_format($mov['monto'] ?? 0, 0, ',', '.')); ?>
+
  </td>
  </tr>
- @endforeach
+ <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
  </tbody>
    <tfoot>
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
-        @php
+        <?php
             $neto = $movimientos->where('anulado', false)->whereIn('tipo', ['ingreso','venta','mantenimiento','electronica'])->sum('monto') 
                   - $movimientos->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
-        @endphp
-        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $movimientos->count() }}</td>
+        ?>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($movimientos->count()); ?></td>
         <td colspan="4" class="text-right uppercase text-xs">Balance Neto del Día:</td>
-        <td class="text-center font-bold text-xs">${{ number_format($neto, 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs">$<?php echo e(number_format($neto, 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
  </table>
  </div>
- @endif
+ <?php endif; ?>
  </div>
 
 </div>
@@ -475,4 +477,6 @@ function exportarDiario(tipo, btn) {
     }
 }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\ServBay\www\control-mantenimiento-equipos\resources\views/reportes_financieros/diario.blade.php ENDPATH**/ ?>

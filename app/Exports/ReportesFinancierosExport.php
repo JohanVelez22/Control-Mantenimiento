@@ -58,6 +58,9 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
                 // Aplicar formato de miles a la columna E (Costo)
                 $sheet->getStyle("E5:E{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
 
+                // Alinear columna A (Código) a la izquierda para consistencia
+                $sheet->getStyle("A5:A{$lastRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+
                 $sheet->setCellValue("A{$footerRow}", 'Total registros: ' . $this->transacciones->count());
                 $sheet->setCellValue("E{$footerRow}", 'Balance Neto: $' . number_format($total, 0, ',', '.'));
 
