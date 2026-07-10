@@ -162,14 +162,14 @@
     @endif
 
     <p class="section-title">Movimientos Detallados ({{ count($movimientos) }} registros)</p>
-
     <table>
         <thead>
             <tr>
+                <th style="width:12%">Código</th>
                 <th style="width:12%">Tipo</th>
                 <th style="width:30%">Descripción</th>
                 <th style="width:12%">Fecha</th>
-                <th style="width:14%">Progreso</th>
+                <th style="width:12%">Progreso</th>
                 <th style="width:12%">Estado</th>
                 <th style="width:10%; text-align:center">Costo</th>
             </tr>
@@ -192,6 +192,7 @@
                 $progreso = ucfirst($mov['estado'] ?? '—');
             @endphp
             <tr class="{{ $isAnulado ? 'anulado' : '' }}">
+                <td style="text-align:center; font-weight:bold;">{{ $mov['codigo'] ?? '—' }}</td>
                 <td class="tipo-badge">
                     <span class="badge">{{ ucfirst($tipo) }}</span>
                 </td>
@@ -211,7 +212,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6" style="text-align:center; padding:20px; color:#718096;">No hay movimientos en este período.</td>
+                <td colspan="7" style="text-align:center; padding:20px; color:#718096;">No hay movimientos en este período.</td>
             </tr>
             @endforelse
         </tbody>
@@ -222,7 +223,7 @@
                     $neto = collect($movimientos)->where('anulado', false)->whereIn('tipo', ['ingreso','venta','mantenimiento','electronica'])->sum('monto')
                           - collect($movimientos)->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
                 @endphp
-                <td colspan="5" style="text-align:left; border:none !important; padding: 5px 6px;">
+                <td colspan="6" style="text-align:left; border:none !important; padding: 5px 6px;">
                     <span style="float:left; font-weight:700; color:#ffffff;">TOTAL: {{ count($movimientos) }} REGISTROS</span>
                     <span style="float:right; font-weight:700; color:#ffffff;">BALANCE NETO DEL DÍA:</span>
                 </td>

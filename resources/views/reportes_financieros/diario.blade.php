@@ -98,6 +98,7 @@
  <table class="ts-table responsive-table w-full text-sm">
  <thead>
  <tr>
+ <th class="p-3 text-center">Código</th>
  <th class="p-3 text-center">Tipo</th>
  <th class="p-3 text-left">Descripción</th>
  <th class="p-3 text-center">Progreso</th>
@@ -113,6 +114,7 @@
    $dimLight = $isAnulado ? 'opacity-60' : '';
  @endphp
  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-center">
+ <td class="p-3 font-bold {{ $dim }}">{{ $mov['codigo'] ?? '—' }}</td>
  <td class="p-3 {{ $dimLight }}">
    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-{{ $mov['color'] }}-100 text-{{ $mov['color'] }}-800 dark:bg-{{ $mov['color'] }}-900/40 dark:text-{{ $mov['color'] }}-300">
    <span class="no-print-emoji">{{ $mov['icono'] }}</span> {{ ucfirst($mov['tipo']) }}
@@ -153,7 +155,7 @@
                   - $movimientos->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
         @endphp
         <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $movimientos->count() }}</td>
-        <td colspan="3" class="text-right uppercase text-xs">Balance Neto del Día:</td>
+        <td colspan="4" class="text-right uppercase text-xs">Balance Neto del Día:</td>
         <td class="text-center font-bold text-xs">${{ number_format($neto, 0, ',', '.') }}</td>
     </tr>
  </tfoot>

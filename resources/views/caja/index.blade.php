@@ -87,6 +87,7 @@
 <table class="ts-table responsive-table w-full">
 <thead>
 <tr>
+<th class="text-center">Código</th>
 <th class="text-center">Fecha</th>
 <th>Persona / Empresa</th>
 <th>Concepto</th>
@@ -104,6 +105,7 @@ $dim = $m->anulado ? 'opacity-60 grayscale' : '';
 $dimLight = $m->anulado ? 'opacity-60' : '';
 @endphp
 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+<td data-label="Código:" class="text-center font-bold {{ $dim }}">{{ $m->id }}</td>
 <td data-label="Fecha:" class="text-center font-medium {{ $dim }}">{{ $m->fecha->format('d/m/Y') }}</td>
  <td data-label="Entidad:" class="{{ $dim }}">
  @if($m->persona)
@@ -166,7 +168,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
  </tr>
  @empty
  <tr>
- <td colspan="8" class="p-16 text-center">
+ <td colspan="9" class="p-16 text-center">
  <div class="flex flex-col items-center justify-center gap-3">
  <div class="text-6xl drop-shadow-md mb-2">💸</div>
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Caja vacía</h3>

@@ -201,7 +201,17 @@
   </span>
   </td>
 
-    <td class="text-center font-medium text-sm {{ $dim }}">{{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}</td>
+   <td class="text-center font-medium text-sm {{ $dim }}">
+   {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}
+   @php 
+   $fechaEntrada = \Carbon\Carbon::parse($m->fecha_entrada)->startOfDay();
+   $fechaFin = $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->startOfDay() : \Carbon\Carbon::now()->startOfDay();
+   $dias = $fechaEntrada->diffInDays($fechaFin);
+   @endphp
+   <div class="mt-1 text-xs font-bold {{ $dias > 14 ? 'text-red-600 dark:text-red-400' : ($dias > 7 ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-500 dark:text-gray-400') }}">
+   ({{ $dias }} d)
+   </div>
+   </td>
   <td class="text-center font-medium text-sm {{ $m->fecha_salida ? '' : 'text-gray-400 italic' }} {{ $dim }}">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}</td>
   <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">${{ number_format($m->costo, 0, '', '.') }}</td>
   </tr>

@@ -1,12 +1,11 @@
-@extends('layouts.app')
-@section('title', 'Informes y Reportes')
+<?php $__env->startSection('title', 'Informes y Reportes'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="flex gap-4 mb-6 no-print">
- <a href="{{ route('reportes.financiero.diario') }}" class="bg-amber-500 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💵 Informes Financieros</a>
- <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
- <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Reporte de Electrónica</a>
- <a href="{{ route('stocks.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
+ <a href="<?php echo e(route('reportes.financiero.diario')); ?>" class="bg-amber-500 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💵 Informes Financieros</a>
+ <a href="<?php echo e(route('mantenimientos.reportes')); ?>" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
+ <a href="<?php echo e(route('electronicas.reportes')); ?>" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Reporte de Electrónica</a>
+ <a href="<?php echo e(route('stocks.reportes')); ?>" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
 </div>
 
 <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-4 no-print">
@@ -19,15 +18,15 @@
 </div>
 
 <div class="glass-card p-4 mb-6 flex flex-wrap items-center gap-2 no-print">
- <a href="{{ route('reportes.financiero.diario') }}"
+ <a href="<?php echo e(route('reportes.financiero.diario')); ?>"
  class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20">
  📅 Diario
  </a>
- <a href="{{ route('reportes.financiero.acumulado') }}"
+ <a href="<?php echo e(route('reportes.financiero.acumulado')); ?>"
  class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-500/20">
  📈 Acumulado
  </a>
- <a href="{{ route('reportes.financiero.operaciones') }}"
+ <a href="<?php echo e(route('reportes.financiero.operaciones')); ?>"
  class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-teal-500 text-white shadow-lg ">
  📋 Operaciones
  </a>
@@ -36,14 +35,14 @@
 <div class="glass-card p-5 mb-4 no-print relative z-50">
  <form id="filtros-operaciones" method="GET" class="flex flex-wrap items-center gap-3">
    <select name="tipo" class="glass-input no-search w-72 font-semibold">
-   @foreach($tipoLabels as $val => $label)
-   <option value="{{ $val }}" {{ $tipo === $val ? 'selected' : '' }}>{{ $label }}</option>
-   @endforeach
+   <?php $__currentLoopData = $tipoLabels; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+   <option value="<?php echo e($val); ?>" <?php echo e($tipo === $val ? 'selected' : ''); ?>><?php echo e($label); ?></option>
+   <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
    </select>
    <label class="font-semibold text-sm">Desde:</label>
-   <input type="date" name="desde" value="{{ $desde->toDateString() }}" class="glass-input w-36">
+   <input type="date" name="desde" value="<?php echo e($desde->toDateString()); ?>" class="glass-input w-36">
    <label class="font-semibold text-sm">Hasta:</label>
-   <input type="date" name="hasta" value="{{ $hasta->toDateString() }}" class="glass-input w-36">
+   <input type="date" name="hasta" value="<?php echo e($hasta->toDateString()); ?>" class="glass-input w-36">
    <button class="btn-primary py-2 px-4 text-sm" title="Filtrar">🔍 Filtrar</button>
    <div class="flex items-center gap-2 ml-auto">
         <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
@@ -59,24 +58,24 @@
  </form>
 </div>
 
-{{-- Resultados --}}
+
 <div class="glass-card p-6">
- @if($registros->isEmpty())
+ <?php if($registros->isEmpty()): ?>
  <div class="flex flex-col items-center justify-center space-y-3 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm p-12 rounded-2xl border border-white/20 my-4">
      <div class="text-5xl opacity-80">📭</div>
      <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
      <p class="text-sm font-medium text-slate-500 dark:text-slate-400">No se encontraron operaciones en este período.</p>
  </div>
- @else
+ <?php else: ?>
   <div class="flex justify-between items-center mb-4">
      <div>
-         <h3 class="text-lg font-bold">{{ $tipoLabels[$tipo] }} <span class="text-sm font-normal text-gray-500">({{ $registros->total() }} registros)</span></h3>
-         <div class="print-date hidden-screen text-xs text-gray-500 font-semibold mt-0.5"><strong>Fecha Impresión:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y h:i A') }}</div>
+         <h3 class="text-lg font-bold"><?php echo e($tipoLabels[$tipo]); ?> <span class="text-sm font-normal text-gray-500">(<?php echo e($registros->total()); ?> registros)</span></h3>
+         <div class="print-date hidden-screen text-xs text-gray-500 font-semibold mt-0.5"><strong>Fecha Impresión:</strong> <?php echo e(\Carbon\Carbon::now()->format('d/m/Y h:i A')); ?></div>
      </div>
   </div>
 
- {{-- Tabla Mantenimientos --}}
- @if($tipo === 'solo_mantenimientos')
+ 
+ <?php if($tipo === 'solo_mantenimientos'): ?>
  <div class="overflow-x-auto pb-2">
  <table class="ts-table responsive-table w-full text-sm text-center">
  <thead>
@@ -87,44 +86,46 @@
  </tr>
  </thead>
  <tbody>
- @foreach($registros as $m)
- @php
+ <?php $__currentLoopData = $registros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+ <?php
    $isAnulado = !empty($m->anulado);
    $dim = $isAnulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
    $dimLight = $isAnulado ? 'opacity-60' : '';
- @endphp
+ ?>
  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
- <td class="p-2 font-mono font-bold whitespace-nowrap {{ $dim }}">
- {{ $m->id_orden }}
+ <td class="p-2 font-mono font-bold whitespace-nowrap <?php echo e($dim); ?>">
+ <?php echo e($m->id_orden); ?>
+
  </td>
- <td class="p-2 text-left {{ $dim }}">
- <span class="font-bold text-slate-800 dark:text-white">{{ $m->equipo->nombre ?? '—' }}</span>
- <span class="text-xs text-gray-500 font-semibold">({{ $m->equipo->cliente->nombre ?? '—' }})</span>
+ <td class="p-2 text-left <?php echo e($dim); ?>">
+ <span class="font-bold text-slate-800 dark:text-white"><?php echo e($m->equipo->nombre ?? '—'); ?></span>
+ <span class="text-xs text-gray-500 font-semibold">(<?php echo e($m->equipo->cliente->nombre ?? '—'); ?>)</span>
  </td>
- <td class="p-2 {{ $dim }}">{{ $m->tecnico->nombre ?? '—' }}</td>
- <td class="p-2 {{ $dim }}">{{ $m->fecha_entrada->format('d/m/Y') }}</td>
- <td class="p-2 {{ $dimLight }}"><span class="pill pill-efectivo {{ $isAnulado ? 'opacity-70' : '' }}">{{ ucfirst($m->estado) }}</span></td>
+ <td class="p-2 <?php echo e($dim); ?>"><?php echo e($m->tecnico->nombre ?? '—'); ?></td>
+ <td class="p-2 <?php echo e($dim); ?>"><?php echo e($m->fecha_entrada->format('d/m/Y')); ?></td>
+ <td class="p-2 <?php echo e($dimLight); ?>"><span class="pill pill-efectivo <?php echo e($isAnulado ? 'opacity-70' : ''); ?>"><?php echo e(ucfirst($m->estado)); ?></span></td>
  <td class="p-2">
- <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
- {{ $isAnulado ? 'Anulado' : 'Activo' }}
+ <span class="pill <?php echo e($isAnulado ? 'pill-anulado' : 'pill-done'); ?>">
+ <?php echo e($isAnulado ? 'Anulado' : 'Activo'); ?>
+
  </span>
  </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($m->costo, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 <?php echo e($dim); ?>" <?php echo $isAnulado ? 'style="color: #dd6b20 !important;"' : ''; ?>>$<?php echo e(number_format($m->costo, 0, ',', '.')); ?></td>
  </tr>
- @endforeach
+ <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
  </tbody>
   <tfoot>
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
-        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($registros->count()); ?></td>
         <td colspan="5" class="text-right uppercase text-xs">Total Costos Mantenimientos:</td>
-        <td class="text-center font-bold text-xs">${{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs">$<?php echo e(number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
  </table>
  </div>
  
- {{-- Tabla Electrónica --}}
- @elseif($tipo === 'solo_electronica')
+ 
+ <?php elseif($tipo === 'solo_electronica'): ?>
  <div class="overflow-x-auto pb-2">
  <table class="ts-table table-electronica responsive-table w-full text-sm text-center">
  <thead>
@@ -135,44 +136,46 @@
  </tr>
  </thead>
  <tbody>
- @foreach($registros as $e)
- @php
+ <?php $__currentLoopData = $registros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $e): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+ <?php
    $isAnulado = !empty($e->anulado);
    $dim = $isAnulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
    $dimLight = $isAnulado ? 'opacity-60' : '';
- @endphp
+ ?>
  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
- <td class="p-2 font-mono font-bold whitespace-nowrap {{ $dim }}">
- {{ $e->id_orden }}
+ <td class="p-2 font-mono font-bold whitespace-nowrap <?php echo e($dim); ?>">
+ <?php echo e($e->id_orden); ?>
+
  </td>
- <td class="p-2 text-left {{ $dim }}">
- <span class="font-bold text-slate-800 dark:text-white">{{ $e->equipo->nombre ?? '—' }}</span>
- <span class="text-xs text-gray-500 font-semibold">({{ $e->equipo->cliente->nombre ?? '—' }})</span>
+ <td class="p-2 text-left <?php echo e($dim); ?>">
+ <span class="font-bold text-slate-800 dark:text-white"><?php echo e($e->equipo->nombre ?? '—'); ?></span>
+ <span class="text-xs text-gray-500 font-semibold">(<?php echo e($e->equipo->cliente->nombre ?? '—'); ?>)</span>
  </td>
- <td class="p-2 {{ $dim }}">{{ $e->tecnico->nombre ?? '—' }}</td>
- <td class="p-2 {{ $dim }}">{{ $e->fecha_entrada->format('d/m/Y') }}</td>
- <td class="p-2 {{ $dimLight }}"><span class="pill pill-pending {{ $isAnulado ? 'opacity-70' : '' }}">{{ ucfirst($e->estado) }}</span></td>
+ <td class="p-2 <?php echo e($dim); ?>"><?php echo e($e->tecnico->nombre ?? '—'); ?></td>
+ <td class="p-2 <?php echo e($dim); ?>"><?php echo e($e->fecha_entrada->format('d/m/Y')); ?></td>
+ <td class="p-2 <?php echo e($dimLight); ?>"><span class="pill pill-pending <?php echo e($isAnulado ? 'opacity-70' : ''); ?>"><?php echo e(ucfirst($e->estado)); ?></span></td>
  <td class="p-2">
- <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
- {{ $isAnulado ? 'Anulado' : 'Activo' }}
+ <span class="pill <?php echo e($isAnulado ? 'pill-anulado' : 'pill-done'); ?>">
+ <?php echo e($isAnulado ? 'Anulado' : 'Activo'); ?>
+
  </span>
  </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($e->costo, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 <?php echo e($dim); ?>" <?php echo $isAnulado ? 'style="color: #dd6b20 !important;"' : ''; ?>>$<?php echo e(number_format($e->costo, 0, ',', '.')); ?></td>
  </tr>
- @endforeach
+ <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
  </tbody>
   <tfoot>
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
-        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($registros->count()); ?></td>
         <td colspan="5" class="text-right uppercase text-xs">Total Costos Electrónica:</td>
-        <td class="text-center font-bold text-xs">${{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs">$<?php echo e(number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
  </table>
  </div>
  
- {{-- Tabla Ingresos / Egresos --}}
- @elseif(in_array($tipo, ['solo_ingresos', 'solo_egresos']))
+ 
+ <?php elseif(in_array($tipo, ['solo_ingresos', 'solo_egresos'])): ?>
  <div class="overflow-x-auto pb-2">
  <table class="ts-table responsive-table w-full text-sm text-center">
  <thead>
@@ -188,40 +191,41 @@
  </tr>
  </thead>
  <tbody>
- @foreach($registros as $c)
- @php
+ <?php $__currentLoopData = $registros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+ <?php
    $isAnulado = !empty($c->anulado);
    $dim = $isAnulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
    $dimLight = $isAnulado ? 'opacity-60' : '';
- @endphp
+ ?>
  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
- <td class="p-2 font-bold {{ $dim }}">{{ $c->id }}</td>
- <td class="p-2 {{ $dim }}">{{ $c->fecha->format('d/m/Y') }}</td>
- <td class="p-2 text-left {{ $dim }}">{{ $c->persona ?? $c->empresa ?? '—' }}</td>
- <td class="p-2 text-xs {{ $dim }}">{{ $c->concepto->nombre ?? '—' }}</td>
- <td class="p-2 text-xs capitalize {{ $dim }}">{{ $c->tipo_pago }}</td>
- <td class="p-2 {{ $dimLight }}"><span class="pill pill-especialidad {{ $isAnulado ? 'opacity-70' : '' }}">Procesado</span></td>
+ <td class="p-2 font-bold <?php echo e($dim); ?>"><?php echo e($c->id); ?></td>
+ <td class="p-2 <?php echo e($dim); ?>"><?php echo e($c->fecha->format('d/m/Y')); ?></td>
+ <td class="p-2 text-left <?php echo e($dim); ?>"><?php echo e($c->persona ?? $c->empresa ?? '—'); ?></td>
+ <td class="p-2 text-xs <?php echo e($dim); ?>"><?php echo e($c->concepto->nombre ?? '—'); ?></td>
+ <td class="p-2 text-xs capitalize <?php echo e($dim); ?>"><?php echo e($c->tipo_pago); ?></td>
+ <td class="p-2 <?php echo e($dimLight); ?>"><span class="pill pill-especialidad <?php echo e($isAnulado ? 'opacity-70' : ''); ?>">Procesado</span></td>
  <td class="p-2">
- <span class="pill {{ $isAnulado ? 'pill-anulado' : 'pill-done' }}">
- {{ $isAnulado ? 'Anulado' : 'Activo' }}
+ <span class="pill <?php echo e($isAnulado ? 'pill-anulado' : 'pill-done'); ?>">
+ <?php echo e($isAnulado ? 'Anulado' : 'Activo'); ?>
+
  </span>
  </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($c->monto, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 <?php echo e($dim); ?>" <?php echo $isAnulado ? 'style="color: #dd6b20 !important;"' : ''; ?>>$<?php echo e(number_format($c->monto, 0, ',', '.')); ?></td>
  </tr>
- @endforeach
+ <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
  </tbody>
  <tfoot>
     <tr class="bg-gray-100 dark:bg-gray-800">
-        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($registros->count()); ?></td>
         <td colspan="6" class="text-right uppercase text-xs">TOTAL MONTO:</td>
-        <td class="text-center font-bold text-xs">${{ number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs">$<?php echo e(number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
  </table>
  </div>
  
- {{-- Tabla Compras / Ventas --}}
- @else
+ 
+ <?php else: ?>
   <div class="overflow-x-auto pb-2">
   <table class="ts-table responsive-table w-full text-sm text-center">
   <thead>
@@ -235,8 +239,8 @@
   </tr>
   </thead>
   <tbody>
-  @foreach($registros as $f)
-  @php
+  <?php $__currentLoopData = $registros; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $f): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+  <?php
     $isAnulado = $f->estado === 'anulada';
     $dim = $isAnulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
     $stClass = 'pill-pending';
@@ -245,35 +249,37 @@
     
     $label = ucfirst(str_replace('_', ' ', $f->estado));
     if($f->estado === 'pendiente_pago') $label = 'Pendiente';
-  @endphp
+  ?>
   <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-  <td class="p-2 {{ $dim }}">{{ $f->fecha->format('d/m/Y') }}</td>
-  <td class="p-2 font-mono font-bold {{ $dim }}">{{ $f->numero_factura }}</td>
-  <td class="p-2 text-left {{ $dim }}">{{ $f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—' }}</td>
-  <td class="p-2 font-semibold text-gray-900 dark:text-gray-100 {{ $dim }}">${{ number_format($f->total_pagado, 0, ',', '.') }}</td>
+  <td class="p-2 <?php echo e($dim); ?>"><?php echo e($f->fecha->format('d/m/Y')); ?></td>
+  <td class="p-2 font-mono font-bold <?php echo e($dim); ?>"><?php echo e($f->numero_factura); ?></td>
+  <td class="p-2 text-left <?php echo e($dim); ?>"><?php echo e($f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—'); ?></td>
+  <td class="p-2 font-semibold text-gray-900 dark:text-gray-100 <?php echo e($dim); ?>">$<?php echo e(number_format($f->total_pagado, 0, ',', '.')); ?></td>
   <td class="p-2">
-  <span class="pill {{ $stClass }}">
-  {{ $label }}
+  <span class="pill <?php echo e($stClass); ?>">
+  <?php echo e($label); ?>
+
   </span>
   </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($f->total_documento, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 <?php echo e($dim); ?>" <?php echo $isAnulado ? 'style="color: #dd6b20 !important;"' : ''; ?>>$<?php echo e(number_format($f->total_documento, 0, ',', '.')); ?></td>
   </tr>
-  @endforeach
+  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
   </tbody>
  <tfoot>
     <tr class="bg-gray-100 dark:bg-gray-800">
-        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: <?php echo e($registros->count()); ?></td>
         <td colspan="4" class="text-right uppercase text-xs font-bold">TOTAL INVENTARIO:</td>
-        <td class="text-center font-bold text-xs">${{ number_format($registros->filter(function($i) { return $i->estado !== 'anulada'; })->sum('total_documento'), 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs">$<?php echo e(number_format($registros->filter(function($i) { return $i->estado !== 'anulada'; })->sum('total_documento'), 0, ',', '.')); ?></td>
     </tr>
  </tfoot>
  </table>
  </div>
  <div class="mt-6 flex justify-end">
-  {{ $registros->appends(request()->query())->links() }}
+  <?php echo e($registros->appends(request()->query())->links()); ?>
+
   </div>
-  @endif
-  @endif
+  <?php endif; ?>
+  <?php endif; ?>
 </div>
 
 <style>
@@ -537,7 +543,7 @@
     }
 }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
 <script>
 function exportarOperaciones(tipo, btn) {
@@ -587,3 +593,5 @@ function exportarOperaciones(tipo, btn) {
 }
 </script>
 
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\ServBay\www\control-mantenimiento-equipos\resources\views/reportes_financieros/operaciones.blade.php ENDPATH**/ ?>

@@ -35,7 +35,8 @@ class ReporteFinancieroController extends Controller
                 return [
                     'tipo'        => 'mantenimiento',
                     'fecha'       => $m->fecha_entrada,
-                    'descripcion' => "{$m->id_orden} — {$equipo} ({$cliente})",
+                    'codigo'      => $m->id_orden,
+                    'descripcion' => "{$equipo} ({$cliente})",
                     'monto'       => $m->costo,
                     'estado'      => $m->estado,
                     'anulado'     => $m->anulado,
@@ -55,7 +56,8 @@ class ReporteFinancieroController extends Controller
                 return [
                     'tipo'        => 'electronica',
                     'fecha'       => $e->fecha_entrada,
-                    'descripcion' => "{$e->id_orden} — {$equipo} ({$cliente})",
+                    'codigo'      => $e->id_orden,
+                    'descripcion' => "{$equipo} ({$cliente})",
                     'monto'       => $e->costo,
                     'estado'      => $e->estado,
                     'anulado'     => $e->anulado,
@@ -74,7 +76,8 @@ class ReporteFinancieroController extends Controller
                 return [
                     'tipo'        => $f->tipo_movimiento,
                     'fecha'       => $f->fecha,
-                    'descripcion' => "#{$f->numero_factura} — {$nombre}",
+                    'codigo'      => $f->numero_factura,
+                    'descripcion' => "{$nombre}",
                     'monto'       => $f->total_documento,
                     'estado'      => $f->estado,
                     'anulado'     => $f->estado === 'anulada',
@@ -94,6 +97,7 @@ class ReporteFinancieroController extends Controller
                 return [
                     'tipo'        => $c->tipo_movimiento,
                     'fecha'       => $c->fecha,
+                    'codigo'      => $c->id,
                     'descripcion' => "{$quien} — {$concepto}",
                     'monto'       => $c->monto,
                     'estado'      => $c->estado,
@@ -215,7 +219,8 @@ class ReporteFinancieroController extends Controller
                 return [
                     'tipo'        => 'mantenimiento',
                     'fecha'       => $m->fecha_entrada,
-                    'descripcion' => "{$m->id_orden} — {$equipo} ({$cliente})",
+                    'codigo'      => $m->id_orden,
+                    'descripcion' => "{$equipo} ({$cliente})",
                     'monto'       => $m->costo,
                     'estado'      => $m->estado,
                     'anulado'     => $m->anulado,
@@ -235,7 +240,8 @@ class ReporteFinancieroController extends Controller
                 return [
                     'tipo'        => 'electronica',
                     'fecha'       => $e->fecha_entrada,
-                    'descripcion' => "{$e->id_orden} — {$equipo} ({$cliente})",
+                    'codigo'      => $e->id_orden,
+                    'descripcion' => "{$equipo} ({$cliente})",
                     'monto'       => $e->costo,
                     'estado'      => $e->estado,
                     'anulado'     => $e->anulado,
@@ -254,7 +260,8 @@ class ReporteFinancieroController extends Controller
                 return [
                     'tipo'        => $f->tipo_movimiento,
                     'fecha'       => $f->fecha,
-                    'descripcion' => "#{$f->numero_factura} — {$nombre}",
+                    'codigo'      => $f->numero_factura,
+                    'descripcion' => "{$nombre}",
                     'monto'       => $f->total_documento,
                     'estado'      => $f->estado,
                     'anulado'     => $f->estado === 'anulada',
@@ -274,6 +281,7 @@ class ReporteFinancieroController extends Controller
                 return [
                     'tipo'        => $c->tipo_movimiento,
                     'fecha'       => $c->fecha,
+                    'codigo'      => $c->id,
                     'descripcion' => "{$quien} — {$concepto}",
                     'monto'       => $c->monto,
                     'estado'      => $c->estado,
@@ -424,7 +432,14 @@ class ReporteFinancieroController extends Controller
                         ->download('Reporte_Operaciones_' . date('Y-m-d_His') . '.pdf');
                 } else {
                     $movimientosMapped = $exportData->map(function($tx) use ($tipo) {
+                        $codigo = '—';
+                        if ($tx instanceof \App\Models\MovimientoCaja) {
+                            $codigo = $tx->id;
+                        } elseif ($tx instanceof \App\Models\Factura) {
+                            $codigo = $tx->numero_factura;
+                        }
                         return [
+                            'codigo'      => $codigo,
                             'fecha'       => $tx->fecha ?? $tx->fecha_entrada,
                             'tipo'        => $tx->tipo_movimiento ?? str_replace('solo_', '', $tipo),
                             'descripcion' => $tx->concepto->nombre ?? $tx->persona ?? ($tx->facturable->nombre ?? 'N/A'),

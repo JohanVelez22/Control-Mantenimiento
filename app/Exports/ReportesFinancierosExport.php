@@ -30,12 +30,12 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
                 // Configurar pie de página para impresión
                 $sheet->getHeaderFooter()->setOddFooter('&RPágina &P de &N');
 
-                // Centrar y combinar título (Fila 1)
-                $sheet->mergeCells('A1:F1');
+                 // Centrar y combinar título (Fila 1)
+                $sheet->mergeCells('A1:G1');
                 $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
                 // Centrar y combinar fecha (Fila 2)
-                $sheet->mergeCells('A2:F2');
+                $sheet->mergeCells('A2:G2');
                 $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
                 $lastRow   = $sheet->getHighestRow();
@@ -55,16 +55,16 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
 
                 $total = $ingresos - $egresos;
 
-                // Aplicar formato de miles a la columna D (Costo)
-                $sheet->getStyle("D5:D{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
+                // Aplicar formato de miles a la columna E (Costo)
+                $sheet->getStyle("E5:E{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
 
                 $sheet->setCellValue("A{$footerRow}", 'Total registros: ' . $this->transacciones->count());
-                $sheet->setCellValue("D{$footerRow}", 'Balance Neto: $' . number_format($total, 0, ',', '.'));
+                $sheet->setCellValue("E{$footerRow}", 'Balance Neto: $' . number_format($total, 0, ',', '.'));
 
-                $sheet->getStyle("A{$footerRow}:F{$footerRow}")->applyFromArray([
+                $sheet->getStyle("A{$footerRow}:G{$footerRow}")->applyFromArray([
                     'font' => ['bold' => true, 'size' => 11],
                 ]);
-                $sheet->getStyle("D{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("E{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             },
         ];
     }
@@ -89,13 +89,13 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
         return $this->transacciones;
     }
 
-    public function headings(): array
+     public function headings(): array
     {
         return [
             ['INFORME FINANCIERO'],
             ['Generado el: ' . date('d/m/Y h:i A')],
             [''],
-            ['Fecha', 'Tipo', 'Descripción / Concepto', 'Costo', 'Estado', 'Anulado'],
+            ['Código', 'Fecha', 'Tipo', 'Descripción / Concepto', 'Costo', 'Estado', 'Anulado'],
         ];
     }
 
@@ -105,14 +105,41 @@ class ReportesFinancierosExport implements FromCollection, WithHeadings, WithMap
 
         $fecha = $isArr ? ($tx['fecha'] ?? '') : ($tx->fecha ?? $tx->fecha_entrada ?? '');
         $tipo  = $isArr ? ($tx['tipo'] ?? 'N/A') : ($tx->tipo_movimiento ?? 'N/A');
-        $desc  = $isArr
-            ? ($tx['descripcion'] ?? '—')
-            : ($tx->concepto->nombre ?? $tx->persona ?? $tx->empresa ?? 'N/A');
+        
+        $codigo = '—';
+        if ($isArr) {
+            $codigo = $tx['codigo'] ?? '—';
+            $desc = $tx['descripcion'] ?? '—';
+        } else {
+            if ($tx instanceof \App\Models\Mantenimiento) {
+                $codigo = $tx->id_orden;
+                $equipo  = $tx->equipo->nombre  ?? '—';
+                $cliente = $tx->equipo->cliente->nombre ?? '—';
+                $desc = "{$equipo} ({$cliente})";
+            } elseif ($tx instanceof \App\Models\Electronica) {
+                $codigo = $tx->id_orden;
+                $equipo  = $tx->equipo->nombre  ?? '—';
+                $cliente = $tx->equipo->cliente->nombre ?? '—';
+                $desc = "{$equipo} ({$cliente})";
+            } elseif ($tx instanceof \App\Models\Factura) {
+                $codigo = $tx->numero_factura;
+                $desc = $tx->facturable->nombre ?? $tx->facturable->nombre_razon_social ?? '—';
+            } elseif ($tx instanceof \App\Models\MovimientoCaja) {
+                $codigo = $tx->id;
+                $quien    = $tx->persona ?? $tx->empresa ?? 'Anónimo';
+                $concepto = $tx->concepto->nombre ?? '—';
+                $desc = "{$quien} — {$concepto}";
+            } else {
+                $desc = '—';
+            }
+        }
+
         $monto   = $isArr ? ($tx['monto'] ?? 0) : ($tx->monto ?? $tx->total_documento ?? 0);
         $estado  = $isArr ? ($tx['estado'] ?? '—') : ($tx->estado ?? '—');
         $anulado = $isArr ? (!empty($tx['anulado']) ? 'Sí' : 'No') : ($tx->anulado ? 'Sí' : 'No');
 
         return [
+            $codigo,
             $fecha ? \Carbon\Carbon::parse($fecha)->format('d/m/Y') : '—',
             ucfirst($tipo),
             $desc,
