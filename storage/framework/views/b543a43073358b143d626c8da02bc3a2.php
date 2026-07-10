@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Documento')</title>
+    <title><?php echo $__env->yieldContent('title', 'Documento'); ?></title>
     <style>
         * {
             box-sizing: border-box;
@@ -156,7 +156,7 @@
     </style>
 </head>
 <body onload="window.print()">
-    @php
+    <?php
         $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
         $logoBase64 = null;
         if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
@@ -165,41 +165,42 @@
             $data = file_get_contents($path);
             $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
-    @endphp
+    ?>
 
     <div class="invoice-wrapper">
-        <div class="watermark-container @yield('watermark_class')">
+        <div class="watermark-container <?php echo $__env->yieldContent('watermark_class'); ?>">
             <div class="header">
-                @if($logoBase64)
+                <?php if($logoBase64): ?>
                     <div style="display: inline-block; width: 38%; vertical-align: top;">
-                        <img src="{{ $logoBase64 }}" alt="Logo" class="header-logo">
+                        <img src="<?php echo e($logoBase64); ?>" alt="Logo" class="header-logo">
                     </div>
-                @else
+                <?php else: ?>
                     <div style="display: inline-block; width: 38%; vertical-align: top;">
                         <div class="header-logo" style="width: 180px; height: 75px; line-height: 75px; text-align: center; background: #eee; font-size: 10pt; color: #666; font-weight: bold;">SIN LOGO</div>
                     </div>
-                @endif
+                <?php endif; ?>
                 <div class="header-info" style="display: inline-block; width: 60%; text-align: right; vertical-align: top;">
-                    @if(!$logoBase64)
-                        <h1>{{ Str::upper($empresa->nombre) }}</h1>
-                    @endif
-                    @if($empresa->nit)<p><strong>NIT:</strong> {{ $empresa->nit }}</p>@endif
-                    @if($empresa->telefono)<p><strong>Tel:</strong> {{ $empresa->telefono }}</p>@endif
-                    @if($empresa->direccion)<p><strong>Dir:</strong> {{ $empresa->direccion }}</p>@endif
-                    @if($empresa->correo)<p><strong>Email:</strong> {{ $empresa->correo }}</p>@endif
+                    <?php if(!$logoBase64): ?>
+                        <h1><?php echo e(Str::upper($empresa->nombre)); ?></h1>
+                    <?php endif; ?>
+                    <?php if($empresa->nit): ?><p><strong>NIT:</strong> <?php echo e($empresa->nit); ?></p><?php endif; ?>
+                    <?php if($empresa->telefono): ?><p><strong>Tel:</strong> <?php echo e($empresa->telefono); ?></p><?php endif; ?>
+                    <?php if($empresa->direccion): ?><p><strong>Dir:</strong> <?php echo e($empresa->direccion); ?></p><?php endif; ?>
+                    <?php if($empresa->correo): ?><p><strong>Email:</strong> <?php echo e($empresa->correo); ?></p><?php endif; ?>
                 </div>
             </div>
 
         <div class="doc-title">
-            @yield('doc_title', 'DOCUMENTO')
+            <?php echo $__env->yieldContent('doc_title', 'DOCUMENTO'); ?>
         </div>
 
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
 
         <div class="footer">
-            <p>{{ $empresa->pie_pagina_factura ?? 'Gracias por preferirnos.' }}</p>
+            <p><?php echo e($empresa->pie_pagina_factura ?? 'Gracias por preferirnos.'); ?></p>
         </div>
         </div>
     </div>
 </body>
 </html>
+<?php /**PATH C:\ServBay\www\control-mantenimiento-equipos\resources\views/layouts/print.blade.php ENDPATH**/ ?>
