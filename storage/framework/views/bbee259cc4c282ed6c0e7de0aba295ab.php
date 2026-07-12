@@ -96,7 +96,7 @@ unset($__errorArgs, $__bag); ?>
                                         <input type="number" name="existing_items[<?php echo e($index); ?>][cantidad]" min="1" value="<?php echo e((int)$item->cantidad); ?>" required class="glass-input text-center py-1.5 focus:ring-orange-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
                                     </td>
                                     <td>
-                                        <input type="text" name="existing_items[<?php echo e($index); ?>][precio_unitario]" value="<?php echo e(number_format((float)$item->precio_unitario, 0, '', '.')); ?>" required class="glass-input text-right py-1.5 focus:ring-orange-500 font-mono price-input" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
+                                        <input type="text" name="existing_items[<?php echo e($index); ?>][precio_unitario]" value="<?php echo e(number_format((float)$item->precio_unitario, 0, ',', '.')); ?>" required class="glass-input text-right py-1.5 focus:ring-orange-500 font-mono price-input" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
                                     </td>
                                     <td class="text-right font-mono subtotal-display py-1.5 align-middle font-bold text-slate-800 dark:text-white">
                                         $<?php echo e(number_format($item->cantidad * $item->precio_unitario, 0, ',', '.')); ?>
@@ -117,7 +117,7 @@ unset($__errorArgs, $__bag); ?>
             
             <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
                 <label class="field-label text-center block text-sm">Total Pagado ($) *</label>
-                <input type="text" name="total_pagado" id="total_pagado" required value="<?php echo e(old('total_pagado', number_format($factura->total_pagado, 0, '', '.'))); ?>" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()" class="glass-input font-black text-2xl text-emerald-600 text-center py-3">
+                <input type="text" name="total_pagado" id="total_pagado" required value="<?php echo e(old('total_pagado', number_format($factura->total_pagado, 0, ',', '.'))); ?>" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()" class="glass-input font-black text-2xl text-emerald-600 text-center py-3">
                 <p class="text-[11px] text-gray-400 mt-2 text-center" id="total_pagado_help">El monto total del documento es $<?php echo e(number_format($factura->total_documento, 0, ',', '.')); ?>. Modificar el pago ajustará el saldo y el estado automáticamente.</p>
                 <?php $__errorArgs = ['total_pagado'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -224,19 +224,19 @@ function recalcularTotalesEdicion() {
             const price = parseFloat(priceInput.value.replace(/\./g, '')) || 0;
             const sub = qty * price;
             const subtotalCell = row.querySelector('.subtotal-display');
-            if (subtotalCell) {
-                subtotalCell.textContent = '$' + sub.toLocaleString('es-CO');
-            }
+        if (subtotalCell) {
+            subtotalCell.textContent = '$' + window.formatNumber(sub);
+        }
             totalDoc += sub;
         }
     });
     
-    document.getElementById('total_documento_display').textContent = '$' + totalDoc.toLocaleString('es-CO');
+    document.getElementById('total_documento_display').textContent = '$' + window.formatNumber(totalDoc);
     
     // Update the help text of total pagado
     const helpText = document.getElementById('total_pagado_help');
     if (helpText) {
-        helpText.textContent = `El monto total del documento es $${totalDoc.toLocaleString('es-CO')}. Modificar el pago ajustará el saldo y el estado automáticamente.`;
+        helpText.textContent = `El monto total del documento es $${window.formatNumber(totalDoc)}. Modificar el pago ajustará el saldo y el estado automáticamente.`;
     }
 }
 </script>

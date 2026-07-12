@@ -157,9 +157,9 @@ let filaIndex = 1;
 const stocksData = <?php echo json_encode($stocksJson, 15, 512) ?>;
 
 function stockSelectOptions() {
- return stocksData.map(s =>
- `<option value="${s.id}" data-precio="${s.precio}" data-stock="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — P.Venta: $${s.precio.toLocaleString('es-CO')}</option>`
- ).join('');
+    return stocksData.map(s =>
+      `<option value="${s.id}" data-precio="${s.precio}" data-stock="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — P.Venta: $${window.formatNumber(s.precio)}</option>`
+    ).join('');
 }
 
 function agregarFila() {
@@ -218,7 +218,7 @@ function actualizarSubtotal(tr) {
  const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
  const precioText = tr.querySelector('.precio-input').value.replace(/\./g, '');
  const precio = parseFloat(precioText) || 0;
- tr.querySelector('.subtotal-cell').textContent = '$' + (cant * precio).toLocaleString('es-CO');
+  tr.querySelector('.subtotal-cell').textContent = '$' + window.formatNumber(cant * precio);
  recalcular();
 }
 
@@ -230,12 +230,12 @@ function recalcular() {
  const p = parseFloat(pText) || 0;
  total += cant * p;
  });
- document.getElementById('total-display').textContent = '$' + total.toLocaleString('es-CO');
- 
- // Auto-fill o alertar
- const totalText = document.getElementById('total-display').textContent.replace(/[^0-9,-]+/g,""); 
- const tot = parseFloat(totalText) || 0;
- calcularSaldo(tot);
+  document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
+  
+  // Auto-fill o alertar
+  const totalText = document.getElementById('total-display').textContent.replace(/[^0-9,-]+/g,""); 
+  const tot = parseFloat(totalText) || 0;
+  calcularSaldo(tot);
 }
 
 function calcularSaldo(total) {
@@ -243,8 +243,8 @@ function calcularSaldo(total) {
  const pagado = parseFloat(pagadoText) || 0;
  const saldo = total - pagado;
  const box = document.getElementById('saldo-preview');
- if (saldo > 0.01) {
- document.getElementById('saldo-display').textContent = '$' + saldo.toLocaleString('es-CO', {minimumFractionDigits: 0});
+  if (saldo > 0.01) {
+  document.getElementById('saldo-display').textContent = '$' + window.formatNumber(Math.round(saldo));
  box.classList.remove('hidden');
  box.classList.add('flex');
  } else {

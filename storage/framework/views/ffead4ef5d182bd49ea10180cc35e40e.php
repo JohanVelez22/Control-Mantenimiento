@@ -1567,26 +1567,35 @@
 
             // Formateador global de moneda (separadores de miles)
             window.formatCurrencyInput = function(input) {
-                // Si el input está centrado (ej: total a pagar) y se borra todo, dejar un '0'
-                let val = input.value.replace(/\D/g, ''); 
+                let val = input.value.replace(/[^0-9]/g, '');
                 if (val === '') val = '0';
                 
-                // Si el primer carácter es 0 y hay más números, quitamos el 0 a la izquierda
                 if (val.length > 1 && val.startsWith('0')) {
                     val = val.substring(1);
                 }
 
-                input.value = parseInt(val, 10).toLocaleString('es-CO');
+                const num = parseInt(val, 10);
+                if (isNaN(num)) {
+                    input.value = '0';
+                } else {
+                    input.value = window.formatNumber(num);
+                }
                 
                 if (typeof window.recalcular === 'function') {
                     window.recalcular();
                 }
             };
 
+            window.formatNumber = function(num) {
+                const parts = num.toString().split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                return parts.join('.');
+            };
+
             // Remover el formato antes de enviar cualquier formulario que tenga inputs de moneda
             document.querySelectorAll('form').forEach(form => {
                 form.addEventListener('submit', function() {
-                    this.querySelectorAll('.precio-input, #total_pagado').forEach(input => {
+                    this.querySelectorAll('.precio-input, .price-input, #total_pagado').forEach(input => {
                         input.value = input.value.replace(/\./g, '');
                     });
                 });

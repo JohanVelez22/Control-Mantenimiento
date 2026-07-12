@@ -168,9 +168,9 @@ let filaIndex = 1;
 const stocksData = <?php echo json_encode($stocksJson, 15, 512) ?>;
 
 function stockSelectOptions() {
- return stocksData.map(s =>
- `<option value="${s.id}" data-precio="${s.precio}">${s.nombre} (Stock: ${s.cantidad}) — P.Compra: $${s.precio.toLocaleString('es-CO')}</option>`
- ).join('');
+    return stocksData.map(s =>
+      `<option value="${s.id}" data-precio="${s.precio}">${s.nombre} (Stock: ${s.cantidad}) — P.Compra: $${window.formatNumber(s.precio)}</option>`
+    ).join('');
 }
 
 function agregarFila() {
@@ -229,7 +229,7 @@ function actualizarSubtotal(tr) {
  const precioText = tr.querySelector('.precio-input').value.replace(/\./g, '');
  const precio = parseFloat(precioText) || 0;
  const sub = cant * precio;
- tr.querySelector('.subtotal-cell').textContent = '$' + sub.toLocaleString('es-CO');
+  tr.querySelector('.subtotal-cell').textContent = '$' + window.formatNumber(sub);
  recalcular();
 }
 
@@ -241,9 +241,9 @@ function recalcular() {
  const precio = parseFloat(precioText) || 0;
  total += cant * precio;
  });
- document.getElementById('total-display').textContent = '$' + total.toLocaleString('es-CO');
- 
- calcularSaldo(total);
+  document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
+  
+  calcularSaldo(total);
 }
 
 function calcularSaldo(total) {
@@ -251,8 +251,8 @@ function calcularSaldo(total) {
  const pagado = parseFloat(pagadoText) || 0;
  const saldo = total - pagado;
  const box = document.getElementById('saldo-preview');
- if (saldo > 0.01) {
- document.getElementById('saldo-display').textContent = '$' + saldo.toLocaleString('es-CO', {minimumFractionDigits: 0});
+  if (saldo > 0.01) {
+  document.getElementById('saldo-display').textContent = '$' + window.formatNumber(Math.round(saldo));
  box.classList.remove('hidden');
  box.classList.add('flex');
  } else {
