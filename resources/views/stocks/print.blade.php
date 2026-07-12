@@ -29,7 +29,7 @@
 </div>
 
 <p class="font-bold mb-4">Estructura de Precios y Costos:</p>
-<table class="items-table" style="border-bottom: none !important;">
+<table class="items-table">
     <thead>
         <tr>
             <th>CONCEPTO / TARIFA</th>
@@ -51,15 +51,15 @@
             <td class="text-center" style="font-weight: bold;">+{{ number_format($utilidadTecnico, 0) }}%</td>
             <td class="text-right" style="font-weight: bold;">${{ number_format($stock->precio_tecnico, 0, ',', '.') }}</td>
         </tr>
-        <tr style="background-color: #fafafa; border-bottom: none !important;">
-            <td class="font-bold" style="border-bottom: none !important;">Precio de Venta Público (PVP)</td>
-            <td class="text-center font-bold" style="border-bottom: none !important;">+{{ number_format($stock->utilidad ?? 0, 0) }}%</td>
-            <td class="text-right font-bold" style="border-bottom: none !important;">${{ number_format($stock->precio_venta, 0, ',', '.') }}</td>
+        <tr>
+            <td class="font-bold" style="background-color: #fafafa;">Precio de Venta Público (PVP)</td>
+            <td class="text-center font-bold" style="background-color: #fafafa;">+{{ number_format($stock->utilidad ?? 0, 0) }}%</td>
+            <td class="text-right font-bold" style="background-color: #fafafa;">${{ number_format($stock->precio_venta, 0, ',', '.') }}</td>
         </tr>
     </tbody>
 </table>
 
-<div class="clearfix" style="margin-top: 35px; margin-bottom: 15px;">
+<div class="clearfix" style="margin-top: 70px; margin-bottom: 10px;">
     <div style="float: left; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
         <strong>Responsable de Inventario</strong>
     </div>
