@@ -193,7 +193,9 @@ class StockController extends Controller
     public function print(Stock $stock)
     {
         $proveedor = $stock->proveedor()->first();
-        return view('stocks.print', compact('stock', 'proveedor'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('stocks.print', compact('stock', 'proveedor'));
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->stream('ficha_stock_' . ($stock->codigo ?? $stock->id) . '.pdf');
     }
 
     public function anular(Stock $stock)

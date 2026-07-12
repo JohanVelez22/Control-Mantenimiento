@@ -17,7 +17,7 @@
     <div class="info-col">
         <p><strong>Fecha Emisión:</strong> <?php echo e(\Carbon\Carbon::parse($factura->fecha)->format('d/m/Y')); ?></p>
         <p><strong>Estado:</strong> <span style="text-transform: uppercase;"><?php echo e(str_replace('_', ' ', $factura->estado)); ?></span></p>
-        <p><strong>Vendedor:</strong> <?php echo e($factura->user->name ?? 'Sistema'); ?></p>
+        <p><strong>Registrado por:</strong> <?php echo e($factura->user->name ?? 'Sistema'); ?></p>
     </div>
 </div>
 
@@ -43,12 +43,12 @@
 </table>
 
 <div class="clearfix">
-    <div style="float: left; width: 45%; border: 1px solid #ccc; padding: 10px; background: #fafafa; font-size: 8pt; margin-top: 10px;">
+    <div style="float: left; width: 45%; border: 1px solid #ccc; padding: 10px; background: #fafafa; font-size: 8pt; min-height: 60px;">
         <strong>Observaciones:</strong><br>
         <?php echo nl2br(e($factura->observaciones ?: 'Sin observaciones.')); ?>
 
     </div>
-    
+
     <table class="totals">
         <tr>
             <td class="lbl">Total Documento:</td>
@@ -66,6 +66,15 @@
             </td>
         </tr>
     </table>
+</div>
+
+<div class="clearfix" style="margin-top: 45px;">
+    <div style="float: left; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
+        <strong>Firma <?php echo e($factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente'); ?></strong>
+    </div>
+    <div style="float: right; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
+        <strong>Firma Autorizada</strong>
+    </div>
 </div>
 <?php $__env->stopSection(); ?>
 

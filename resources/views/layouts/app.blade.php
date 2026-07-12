@@ -90,6 +90,26 @@
         .stock-select-dropdown .ts-dropdown-content {
             max-height: 200px !important;
         }
+        /* Estilizar barra de desplazamiento en los desplegables de TomSelect */
+        .ts-dropdown-content {
+            scrollbar-width: thin !important;
+            scrollbar-color: rgba(44, 107, 241, 0.54) transparent !important;
+        }
+        .ts-dropdown-content::-webkit-scrollbar {
+            width: 6px !important;
+            height: 6px !important;
+        }
+        .ts-dropdown-content::-webkit-scrollbar-track {
+            background: transparent !important;
+        }
+        .ts-dropdown-content::-webkit-scrollbar-thumb {
+            background: rgba(37, 99, 235, 0.25) !important;
+            border-radius: 10px !important;
+            transition: background 0.2s ease !important;
+        }
+        .ts-dropdown-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(37, 99, 235, 0.45) !important;
+        }
         /* Evitar que el select ensanche la celda de la tabla al enfocarse */
         .ts-table .ts-wrapper.glass-input {
             width: 0 !important;
