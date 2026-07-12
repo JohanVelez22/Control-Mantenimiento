@@ -196,7 +196,7 @@ function bindFila(tr) {
  const precio = tr.querySelector('.precio-input');
  sel.addEventListener('change', () => {
  const opt = sel.options[sel.selectedIndex];
- precio.value = parseInt(opt.dataset.precio || 0).toLocaleString('es-CO');
+  precio.value = window.formatNumber(parseInt(opt.dataset.precio || 0));
  actualizarSubtotal(tr);
  });
  cant.addEventListener('input', () => actualizarSubtotal(tr));

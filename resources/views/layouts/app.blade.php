@@ -1589,13 +1589,13 @@
                 return parts.join('.');
             };
 
-            // Remover el formato antes de enviar cualquier formulario que tenga inputs de moneda
-            document.querySelectorAll('form').forEach(form => {
-                form.addEventListener('submit', function() {
-                    this.querySelectorAll('.precio-input, .price-input, #total_pagado').forEach(input => {
-                        input.value = input.value.replace(/\./g, '');
-                    });
-                });
+            // Formatear inputs monetarios al cargar la página
+            document.querySelectorAll('.precio-input, .price-input, #total_pagado').forEach(function(input) {
+                const raw = input.value.replace(/\./g, '');
+                const num = parseInt(raw, 10);
+                if (!isNaN(num) && raw !== '') {
+                    input.value = window.formatNumber(num);
+                }
             });
 
             // 2. Tom Select para selects con clase glass-input en carga de página
