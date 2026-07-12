@@ -513,12 +513,20 @@ class MovimientoInventarioController extends Controller
             $saldo = $totalDocumento - $totalPagado;
             $estado = $shouldBeAnulada ? 'anulada' : ($saldo > 0.01 ? 'pendiente_pago' : 'emitida');
 
+            // Extraer historial de anulaciones/reactivaciones de la observación actual
+            $historial = collect(explode("\n", $factura->observaciones ?? ''))
+                ->filter(fn($line) => str_starts_with($line, '[ANULADA') || str_starts_with($line, '[REACTIVADA'))
+                ->implode("\n");
+
+            // Regenerar observación: texto del usuario + saldo pendiente (si aplica) + historial
+            $nuevaObservacion = $this->buildObservaciones($request->observaciones, $saldo, $historial ?: null);
+
             $factura->update([
                 'fecha'           => $request->fecha,
                 'total_pagado'    => $totalPagado,
                 'total_documento' => $totalDocumento,
                 'estado'          => $estado,
-                'observaciones'   => $request->observaciones,
+                'observaciones'   => $nuevaObservacion,
                 'facturable_id'   => $entity->id,
                 'facturable_type' => $facturableType,
             ]);
@@ -543,11 +551,14 @@ class MovimientoInventarioController extends Controller
         return collect($items)->sum(fn($i) => (float) $i['cantidad'] * (float) $i['precio_unitario']);
     }
 
-    private function buildObservaciones(?string $obs, float $saldo): ?string
+    private function buildObservaciones(?string $obs, float $saldo, ?string $historial = null): ?string
     {
         $parts = array_filter([$obs]);
         if ($saldo > 0.01) {
             $parts[] = "⚠️ SALDO PENDIENTE: $" . number_format($saldo, 2, '.', ',');
+        }
+        if ($historial) {
+            $parts[] = $historial;
         }
         return implode("\n", $parts) ?: null;
     }

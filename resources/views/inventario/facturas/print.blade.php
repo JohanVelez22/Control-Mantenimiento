@@ -67,7 +67,7 @@
     </table>
 </div>
 
-<div class="clearfix" style="margin-top: 45px;">
+<div class="clearfix" style="margin-top: 65px;">
     <div style="float: left; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
         <strong>Firma {{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}</strong>
     </div>
