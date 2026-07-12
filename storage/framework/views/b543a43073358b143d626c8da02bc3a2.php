@@ -124,7 +124,6 @@
             left: 0;
             width: 100%;
             padding-top: 5px;
-            border-top: 1px solid #000;
             text-align: center;
             font-size: 7.5pt;
             color: #555;
