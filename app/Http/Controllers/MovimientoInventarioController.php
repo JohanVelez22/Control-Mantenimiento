@@ -553,9 +553,13 @@ class MovimientoInventarioController extends Controller
 
     private function buildObservaciones(?string $obs, float $saldo, ?string $historial = null): ?string
     {
-        $parts = array_filter([$obs]);
+        // Limpiar líneas de saldo pendiente anteriores para no duplicarlas
+        $lineas = array_filter(explode("\n", $obs ?? ''), fn($l) => !str_starts_with($l, '⚠️ SALDO PENDIENTE:'));
+        $obsLimpia = implode("\n", $lineas);
+
+        $parts = array_filter([$obsLimpia]);
         if ($saldo > 0.01) {
-            $parts[] = "⚠️ SALDO PENDIENTE: $" . number_format($saldo, 2, '.', ',');
+            $parts[] = "⚠️ SALDO PENDIENTE: $" . number_format($saldo, 0, ',', '.');
         }
         if ($historial) {
             $parts[] = $historial;
