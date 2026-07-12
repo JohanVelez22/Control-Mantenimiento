@@ -120,7 +120,7 @@
 
         .footer {
             position: absolute;
-            bottom: 5px;
+            bottom: -15px;
             left: 0;
             width: 100%;
             padding-top: 5px;

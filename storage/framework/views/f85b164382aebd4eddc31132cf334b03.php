@@ -20,40 +20,40 @@
     </div>
 </div>
 
-<div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; background: #fafafa;">
+<div style="padding: 10px; border: 1px solid #ccc; background: #fafafa;">
     <strong>Información de Registro:</strong><br>
     Fecha de Registro: <?php echo e($stock->created_at ? \Carbon\Carbon::parse($stock->created_at)->format('d/m/Y h:i A') : '—'); ?> &nbsp;|&nbsp; 
     Identificación Proveedor: <?php echo e($proveedor->identificacion ?? '—'); ?>
 
 </div>
 
-<p class="font-bold mb-4">Estructura de Precios y Costos:</p>
-<table class="items-table" style="border-bottom: none !important;">
+<p class="font-bold" style="margin: 0 0 4px 0;">Estructura de Precios y Costos:</p>
+<table class="items-table" style="margin-bottom: 0;">
     <thead>
         <tr>
-            <th>CONCEPTO / TARIFA</th>
-            <th class="text-center" style="width: 25%;">UTILIDAD / MARGEN</th>
-            <th class="text-right" style="width: 25%;">VALOR UNITARIO</th>
+            <th style="padding: 4px 5px; font-size: 8.5pt;">CONCEPTO / TARIFA</th>
+            <th class="text-center" style="width: 25%; padding: 4px 5px; font-size: 8.5pt;">UTILIDAD / MARGEN</th>
+            <th class="text-right" style="width: 25%; padding: 4px 5px; font-size: 8.5pt;">VALOR UNITARIO</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>Costo de Compra (Precio Proveedor)</td>
-            <td class="text-center text-gray-500">—</td>
-            <td class="text-right">$<?php echo e(number_format($stock->precio_compra, 0, ',', '.')); ?></td>
+            <td style="padding: 4px 5px; font-size: 8.5pt;">Costo de Compra (Precio Proveedor)</td>
+            <td class="text-center text-gray-500" style="padding: 4px 5px; font-size: 8.5pt;">—</td>
+            <td class="text-right" style="padding: 4px 5px; font-size: 8.5pt;">$<?php echo e(number_format($stock->precio_compra, 0, ',', '.')); ?></td>
         </tr>
         <tr>
-            <td>Precio Especial a Técnico</td>
+            <td style="padding: 4px 5px; font-size: 8.5pt;">Precio Especial a Técnico</td>
             <?php
                 $utilidadTecnico = $stock->precio_compra > 0 ? (($stock->precio_tecnico - $stock->precio_compra) / $stock->precio_compra) * 100 : 0;
             ?>
-            <td class="text-center" style="font-weight: bold;">+<?php echo e(number_format($utilidadTecnico, 0)); ?>%</td>
-            <td class="text-right" style="font-weight: bold;">$<?php echo e(number_format($stock->precio_tecnico, 0, ',', '.')); ?></td>
+            <td class="text-center" style="padding: 4px 5px; font-size: 8.5pt; font-weight: bold;">+<?php echo e(number_format($utilidadTecnico, 0)); ?>%</td>
+            <td class="text-right" style="padding: 4px 5px; font-size: 8.5pt; font-weight: bold;">$<?php echo e(number_format($stock->precio_tecnico, 0, ',', '.')); ?></td>
         </tr>
-        <tr style="background-color: #fafafa; border-bottom: none !important;">
-            <td class="font-bold" style="border-bottom: none !important;">Precio de Venta Público (PVP)</td>
-            <td class="text-center font-bold" style="border-bottom: none !important;">+<?php echo e(number_format($stock->utilidad ?? 0, 0)); ?>%</td>
-            <td class="text-right font-bold" style="border-bottom: none !important;">$<?php echo e(number_format($stock->precio_venta, 0, ',', '.')); ?></td>
+        <tr style="background-color: #fafafa;">
+            <td class="font-bold" style="padding: 4px 5px; font-size: 8.5pt;">Precio de Venta Público (PVP)</td>
+            <td class="text-center font-bold" style="padding: 4px 5px; font-size: 8.5pt;">+<?php echo e(number_format($stock->utilidad ?? 0, 0)); ?>%</td>
+            <td class="text-right font-bold" style="padding: 4px 5px; font-size: 8.5pt;">$<?php echo e(number_format($stock->precio_venta, 0, ',', '.')); ?></td>
         </tr>
     </tbody>
 </table>
