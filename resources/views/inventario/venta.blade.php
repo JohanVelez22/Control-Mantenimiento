@@ -65,30 +65,31 @@
  </tr>
  </thead>
  <tbody id="items-body">
- <tr class="item-row bg-transparent">
- <td>
- <select name="items[0][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500">
- <option value="">Seleccionar producto...</option>
- @foreach($stocks as $s)
- <option value="{{ $s->id }}" data-precio="{{ $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
- {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
- </option>
- @endforeach
- </select>
- </td>
- <td>
- <input type="number" name="items[0][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-emerald-500">
- </td>
- <td>
- <input type="text" name="items[0][precio_unitario]" value="0" oninput="window.formatCurrencyInput(this); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-mono">
- </td>
- <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell align-middle pr-4">
- $0
- </td>
- <td class="text-center align-middle">
- <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 transition-colors p-2" title="Eliminar">✕</button>
- </td>
- </tr>
+<tr class="item-row bg-transparent">
+  <td>
+  <select name="items[0][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500">
+  <option value="">Seleccionar producto...</option>
+  @foreach($stocks as $s)
+  <option value="{{ $s->id }}" data-precio="{{ $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
+  {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
+  </option>
+  @endforeach
+  </select>
+  </td>
+  <td>
+  <input type="number" name="items[0][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-emerald-500">
+  </td>
+  <td>
+  <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
+  <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-mono">
+  </td>
+  <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell align-middle pr-4">
+  $0
+  </td>
+  <td class="text-center align-middle">
+  <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 transition-colors p-2" title="Eliminar">✕</button>
+  </td>
+  </tr>
  </tbody>
  <tfoot>
  <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
@@ -103,12 +104,13 @@
 
  {{-- Pago y observaciones --}}
  <div class="flex flex-col md:flex-row justify-center gap-5 p-5 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
- <div class="text-center w-full md:w-1/2">
- <label class="field-label text-center block">Total Recibido Ahora ($) *</label>
- <input type="text" name="total_pagado" id="total_pagado" value="0" oninput="window.formatCurrencyInput(this); recalcular()" required 
- class="glass-input text-2xl font-black text-center focus:ring-emerald-500 py-3 text-emerald-600 dark:text-emerald-400">
- <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2 font-medium leading-tight">Si recibes menos del total, el estado quedará como <strong>Pendiente de Cobro</strong> y se registrará la deuda contable del cliente.</p>
- </div>
+<div class="text-center w-full md:w-1/2">
+  <label class="field-label text-center block">Total Recibido Ahora ($) *</label>
+  <input type="text" name="total_pagado" id="total_pagado_real" value="0" required class="hidden">
+  <input type="text" id="total_pagado_visual" value="0" oninput="window.formatCurrencyDual(this, 'total_pagado_real'); recalcular()" required 
+  class="glass-input text-2xl font-black text-center focus:ring-emerald-500 py-3 text-emerald-600 dark:text-emerald-400">
+  <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2 font-medium leading-tight">Si recibes menos del total, el estado quedará como <strong>Pendiente de Cobro</strong> y se registrará la deuda contable del cliente.</p>
+</div>
  <div id="saldo-preview" class="hidden w-full md:w-1/2 flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">
  <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 mb-1 tracking-wide uppercase">⚠️ Saldo por Cobrar</p>
  <p class="text-3xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$0</p>
@@ -149,35 +151,36 @@ function stockSelectOptions() {
 }
 
 function agregarFila() {
- const tbody = document.getElementById('items-body');
- const tr = document.createElement('tr');
- tr.className = 'item-row bg-transparent border-t border-gray-200 dark:border-gray-700/50';
- tr.innerHTML = `
- <td>
- <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500">
- <option value="">Seleccionar producto...</option>
- ${stockSelectOptions()}
- </select>
- </td>
- <td>
- <input type="number" name="items[${filaIndex}][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-emerald-500">
- </td>
- <td>
- <input type="text" name="items[${filaIndex}][precio_unitario]" value="0" oninput="window.formatCurrencyInput(this); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-mono">
- </td>
- <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell align-middle pr-4">$0</td>
- <td class="text-center align-middle">
- <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 p-2">✕</button>
- </td>`;
- tbody.appendChild(tr);
- filaIndex++;
- bindFila(tr);
+  const tbody = document.getElementById('items-body');
+  const tr = document.createElement('tr');
+  tr.className = 'item-row bg-transparent border-t border-gray-200 dark:border-gray-700/50';
+  tr.innerHTML = `
+  <td>
+  <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500">
+  <option value="">Seleccionar producto...</option>
+  ${stockSelectOptions()}
+  </select>
+  </td>
+  <td>
+  <input type="number" name="items[${filaIndex}][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-emerald-500">
+  </td>
+  <td>
+  <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="0" required class="hidden">
+  <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-mono">
+  </td>
+  <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell align-middle pr-4">$0</td>
+  <td class="text-center align-middle">
+  <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 p-2">✕</button>
+  </td>`;
+  tbody.appendChild(tr);
+  filaIndex++;
+  bindFila(tr);
 
- // Inicializar TomSelect en el nuevo select
- const newSelect = tr.querySelector('.stock-select');
- if (newSelect && typeof window.initGlassTomSelect === 'function') {
- window.initGlassTomSelect(newSelect);
- }
+  // Inicializar TomSelect en el nuevo select
+  const newSelect = tr.querySelector('.stock-select');
+  if (newSelect && typeof window.initGlassTomSelect === 'function') {
+  window.initGlassTomSelect(newSelect);
+  }
 }
 
 function eliminarFila(btn) {
@@ -187,17 +190,54 @@ function eliminarFila(btn) {
 }
 
 function bindFila(tr) {
- const sel = tr.querySelector('.stock-select');
- const cant = tr.querySelector('.cantidad-input');
- const precio = tr.querySelector('.precio-input');
- sel.addEventListener('change', () => {
- const opt = sel.options[sel.selectedIndex];
-  precio.value = window.formatNumber(parseInt(opt.dataset.precio || 0));
- const maxStock = parseInt(opt.dataset.stock) || 0;
- cant.max = maxStock;
- actualizarSubtotal(tr);
- });
- cant.addEventListener('input', () => actualizarSubtotal(tr));
+  const sel = tr.querySelector('.stock-select');
+  const cant = tr.querySelector('.cantidad-input');
+  const precioVisual = tr.querySelector('[id^="precio_unitario_visual_"]');
+  const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
+  sel.addEventListener('change', () => {
+    const opt = sel.options[sel.selectedIndex];
+    const precio = parseInt(opt.dataset.precio || 0);
+    if (precioReal) precioReal.value = precio;
+    if (precioVisual) precioVisual.value = window.formatNumber(precio);
+    actualizarSubtotal(tr);
+  });
+  cant.addEventListener('input', () => actualizarSubtotal(tr));
+}
+
+function actualizarSubtotal(tr) {
+  const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
+  const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
+  const precio = parseFloat(precioReal?.value || '0') || 0;
+  tr.querySelector('.subtotal-cell').textContent = '$' + window.formatNumber(cant * precio);
+  recalcular();
+}
+
+function recalcular() {
+  let total = 0;
+  document.querySelectorAll('.item-row').forEach(tr => {
+    const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
+    const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
+    const precio = parseFloat(precioReal?.value || '0') || 0;
+    total += cant * precio;
+  });
+  document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
+  
+  calcularSaldo(total);
+}
+
+function calcularSaldo(total) {
+  const pagadoReal = document.getElementById('total_pagado_real');
+  const pagado = parseFloat(pagadoReal?.value || '0') || 0;
+  const saldo = total - pagado;
+  const box = document.getElementById('saldo-preview');
+  if (saldo > 0.01) {
+    document.getElementById('saldo-display').textContent = '$' + window.formatNumber(Math.round(saldo));
+    box.classList.remove('hidden');
+    box.classList.add('flex');
+  } else {
+    box.classList.add('hidden');
+    box.classList.remove('flex');
+  }
 }
 
 function actualizarSubtotal(tr) {

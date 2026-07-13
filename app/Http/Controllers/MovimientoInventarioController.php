@@ -60,7 +60,7 @@ class MovimientoInventarioController extends Controller
             }
 
             $totalDocumento = $this->calcularTotal($request->items);
-            $totalPagado    = (float) str_replace('.', '', $request->total_pagado);
+            $totalPagado    = (float) $request->total_pagado;
 
             // No permitir pagar más de lo debido (evita saldos negativos)
             if ($totalPagado > $totalDocumento + 0.001) {
@@ -93,7 +93,7 @@ class MovimientoInventarioController extends Controller
                     'factura_id'      => $factura->id,
                     'stock_id'        => $stock->id,
                     'cantidad'        => $item['cantidad'],
-                    'precio_unitario' => (float) str_replace('.', '', $item['precio_unitario']),
+                    'precio_unitario' => (float) $item['precio_unitario'],
                 ]);
 
                 // Actualizar proveedor del artículo si es Proveedor
@@ -181,7 +181,7 @@ class MovimientoInventarioController extends Controller
             }
 
             $totalDocumento = $this->calcularTotal($request->items);
-            $totalPagado    = (float) str_replace('.', '', $request->total_pagado);
+            $totalPagado    = (float) $request->total_pagado;
 
             // No permitir cobrar más de lo debido (evita saldos negativos)
             if ($totalPagado > $totalDocumento + 0.001) {
@@ -224,7 +224,7 @@ class MovimientoInventarioController extends Controller
                     'factura_id'      => $factura->id,
                     'stock_id'        => $stock->id,
                     'cantidad'        => $item['cantidad'],
-                    'precio_unitario' => (float) str_replace('.', '', $item['precio_unitario']),
+                    'precio_unitario' => (float) $item['precio_unitario'],
                 ]);
 
                 $stock->decrementarStock((int) $item['cantidad']);
@@ -442,7 +442,7 @@ class MovimientoInventarioController extends Controller
             $facturableType = Cliente::class;
         }
 
-        $totalPagado = (float) str_replace('.', '', $request->total_pagado);
+        $totalPagado = (float) $request->total_pagado;
         
         $wasAnulada = $factura->estado === 'anulada';
         $shouldBeAnulada = $wasAnulada; // State change happens in anularFactura now
@@ -459,7 +459,7 @@ class MovimientoInventarioController extends Controller
                     
                     $newStockId = (int) $itemData['stock_id'];
                     $newQty = (int) $itemData['cantidad'];
-                    $newPrice = (float) str_replace('.', '', $itemData['precio_unitario']);
+                    $newPrice = (float) $itemData['precio_unitario'];
 
                     if ($oldStock) {
                         if ($oldStock->id !== $newStockId) {
@@ -515,7 +515,7 @@ class MovimientoInventarioController extends Controller
                         'factura_id'      => $factura->id,
                         'stock_id'        => $stock->id,
                         'cantidad'        => $itemData['cantidad'],
-                        'precio_unitario' => (float) str_replace('.', '', $itemData['precio_unitario']),
+                        'precio_unitario' => (float) $itemData['precio_unitario'],
                     ]);
 
                     if ($factura->tipo_movimiento === 'compra') {

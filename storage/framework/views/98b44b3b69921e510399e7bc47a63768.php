@@ -5,7 +5,7 @@
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
             <h1 class="text-3xl font-black text-slate-800 dark:text-white flex items-center gap-3">
-                <span class="text-4xl">🕵🏻</span> Registro de Eventos
+                <span class="text-4xl">🕵️</span> Registro de Eventos
             </h1>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
                 Auditoría del sistema y control de movimientos

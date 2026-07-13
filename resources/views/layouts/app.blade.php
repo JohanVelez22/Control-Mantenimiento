@@ -1624,6 +1624,29 @@
                 }
             };
 
+            // Formateador dual-input: visual (con puntos) + hidden (solo números)
+            // Uso: oninput="formatCurrencyDual(this, 'hidden_input_id')"
+            window.formatCurrencyDual = function(visualInput, realInputId) {
+                const realInput = document.getElementById(realInputId);
+                if (!realInput) return;
+                
+                // Solo dígitos en el valor real (hidden)
+                let raw = visualInput.value.replace(/\D/g, '');
+                realInput.value = raw || '0';
+                
+                // Formatear visual con puntos de miles (es-CO)
+                if (raw !== '') {
+                    const num = parseInt(raw, 10);
+                    visualInput.value = num.toLocaleString('es-CO');
+                } else {
+                    visualInput.value = '0';
+                }
+                
+                if (typeof window.recalcular === 'function') {
+                    window.recalcular();
+                }
+            };
+
             window.formatNumber = function(num) {
                 const parts = num.toString().split('.');
                 parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');

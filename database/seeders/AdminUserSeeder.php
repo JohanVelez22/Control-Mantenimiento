@@ -17,21 +17,21 @@ class AdminUserSeeder extends Seeder
     {
         // Admin principal
         User::updateOrCreate(
-            ['email' => 'admin@tusistema.com'],
+            ['email' => 'admin@example.com'],
             [
                 'name' => 'Administrador',
-                'password' => Hash::make(env('ADMIN_DEFAULT_PASSWORD', 'AdminSeguro2026!')),
+                'password' => Hash::make(env('ADMIN_DEFAULT_PASSWORD', 'Admin123*')),
                 'role' => 'admin',
                 'active' => true,
             ]
         );
 
-// Técnico demo
+        // Técnico demo
         User::updateOrCreate(
-            ['email' => 'tecnico@tusistema.com'],
+            ['email' => 'tecnico@example.com'],
             [
                 'name' => 'Técnico Demo',
-                'password' => Hash::make(env('TECNICO_DEFAULT_PASSWORD', 'TecnicoSeguro2026!')),
+                'password' => Hash::make(env('TECNICO_DEFAULT_PASSWORD', 'Tecny123*')),
                 'role' => 'tecnico',
                 'active' => true,
             ]
@@ -39,10 +39,10 @@ class AdminUserSeeder extends Seeder
 
         // Invitado demo (solo consulta)
         User::updateOrCreate(
-            ['email' => 'invitado@tusistema.com'],
+            ['email' => 'invitado@example.com'],
             [
                 'name' => 'Invitado Demo',
-                'password' => Hash::make(env('INVITADO_DEFAULT_PASSWORD', 'Invitado2026!')),
+                'password' => Hash::make(env('INVITADO_DEFAULT_PASSWORD', 'Invit123*')),
                 'role' => 'invitado',
                 'active' => true,
             ]

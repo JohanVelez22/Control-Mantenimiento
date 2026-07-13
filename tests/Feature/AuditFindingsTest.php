@@ -161,10 +161,10 @@ class AuditFindingsTest extends TestCase
             ->post(route('inventario.compra.store'), [
                 'facturable_global' => "Proveedor:{$this->proveedor->id}",
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '3.000', // 3000 (2 * 1500)
+                'total_pagado' => '3000', // 3000 (2 * 1500)
                 'observaciones' => 'Test compra',
                 'items' => [
-                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1.500'],
+                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1500'],
                 ],
             ])
             ->assertRedirect()
@@ -197,10 +197,10 @@ class AuditFindingsTest extends TestCase
             ->post(route('inventario.compra.store'), [
                 'facturable_global' => "Proveedor:{$this->proveedor->id}",
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '1.000', // 1000 de 3000
+                'total_pagado' => '1000', // 1000 de 3000
                 'observaciones' => 'Test compra parcial',
                 'items' => [
-                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1.500'],
+                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1500'],
                 ],
             ])
             ->assertRedirect()
@@ -229,10 +229,10 @@ class AuditFindingsTest extends TestCase
             ->post(route('inventario.compra.store'), [
                 'facturable_global' => "Proveedor:{$this->proveedor->id}",
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '5.000', // 5000 > 3000
+                'total_pagado' => '5000', // 5000 > 3000
                 'observaciones' => 'Test error',
                 'items' => [
-                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1.500'],
+                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1500'],
                 ],
             ]);
 
@@ -266,10 +266,10 @@ class AuditFindingsTest extends TestCase
             ->post(route('inventario.compra.store'), [
                 'facturable_global' => "Proveedor:{$this->proveedor->id}",
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '8.000', // 3*1000 + 2*2500 = 8000
+                'total_pagado' => '8000', // 3*1000 + 2*2500 = 8000
                 'items' => [
-                    ['stock_id' => $stock1->id, 'cantidad' => 3, 'precio_unitario' => '1.000'],
-                    ['stock_id' => $stock2->id, 'cantidad' => 2, 'precio_unitario' => '2.500'],
+                    ['stock_id' => $stock1->id, 'cantidad' => 3, 'precio_unitario' => '1000'],
+                    ['stock_id' => $stock2->id, 'cantidad' => 2, 'precio_unitario' => '2500'],
                 ],
             ])
             ->assertRedirect()
@@ -301,10 +301,10 @@ class AuditFindingsTest extends TestCase
             ->post(route('inventario.venta.store'), [
                 'facturable_global' => "Cliente:{$this->cliente->id}",
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '3.000', // 2 * 1500
+                'total_pagado' => '3000', // 2 * 1500
                 'observaciones' => 'Test venta',
                 'items' => [
-                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1.500'],
+                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1500'],
                 ],
             ])
             ->assertRedirect()
@@ -336,9 +336,9 @@ class AuditFindingsTest extends TestCase
             ->post(route('inventario.venta.store'), [
                 'facturable_global' => "Cliente:{$this->cliente->id}",
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '4.500',
+                'total_pagado' => '4500',
                 'items' => [
-                    ['stock_id' => $stock->id, 'cantidad' => 5, 'precio_unitario' => '1.500'], // Pide 5, hay 2
+                    ['stock_id' => $stock->id, 'cantidad' => 5, 'precio_unitario' => '1500'], // Pide 5, hay 2
                 ],
             ]);
 
@@ -362,9 +362,9 @@ class AuditFindingsTest extends TestCase
             ->post(route('inventario.venta.store'), [
                 'facturable_global' => "Cliente:{$this->cliente->id}",
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '1.000', // 1000 de 3000
+                'total_pagado' => '1000', // 1000 de 3000
                 'items' => [
-                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1.500'],
+                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1500'],
                 ],
             ])
             ->assertRedirect()
@@ -391,9 +391,9 @@ class AuditFindingsTest extends TestCase
             ->post(route('inventario.venta.store'), [
                 'facturable_global' => "Cliente:{$this->cliente->id}",
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '5.000', // 5000 > 3000
+                'total_pagado' => '5000', // 5000 > 3000
                 'items' => [
-                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1.500'],
+                    ['stock_id' => $stock->id, 'cantidad' => 2, 'precio_unitario' => '1500'],
                 ],
             ]);
 
@@ -653,14 +653,14 @@ class AuditFindingsTest extends TestCase
         $this->actingAs($this->admin)
             ->put(route('inventario.facturas.update', $factura), [
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '5.000', // 5 * 1000
+                'total_pagado' => '5000', // 5 * 1000
                 'facturable_global' => "Proveedor:{$this->proveedor->id}",
                 'existing_items' => [
                     [
                         'id' => $item->id,
                         'stock_id' => $stock->id,
                         'cantidad' => 5,
-                        'precio_unitario' => '1.000',
+                        'precio_unitario' => '1000',
                     ],
                 ],
             ])
@@ -712,14 +712,14 @@ class AuditFindingsTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->put(route('inventario.facturas.update', $factura), [
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '5.000',
+                'total_pagado' => '5000',
                 'facturable_global' => "Proveedor:{$this->proveedor->id}",
                 'existing_items' => [
                     [
                         'id' => $item->id,
                         'stock_id' => $stock->id,
                         'cantidad' => 2,
-                        'precio_unitario' => '1.000',
+                        'precio_unitario' => '1000',
                     ],
                 ],
             ]);
@@ -1025,9 +1025,9 @@ public function testSaldoPendienteNuncaNegativo()
             ->post(route('inventario.compra.store'), [
                 'facturable_global' => "Proveedor:{$this->proveedor->id}",
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '10.000', // 10 * 1000
+                'total_pagado' => '10000', // 10 * 1000
                 'items' => [
-                    ['stock_id' => $stock->id, 'cantidad' => 10, 'precio_unitario' => '1.000'],
+                    ['stock_id' => $stock->id, 'cantidad' => 10, 'precio_unitario' => '1000'],
                 ],
             ])
             ->assertSessionHas('success');
@@ -1040,9 +1040,9 @@ public function testSaldoPendienteNuncaNegativo()
             ->post(route('inventario.venta.store'), [
                 'facturable_global' => "Cliente:{$this->cliente->id}",
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '4.500', // 3 * 1500
+                'total_pagado' => '4500', // 3 * 1500
                 'items' => [
-                    ['stock_id' => $stock->id, 'cantidad' => 3, 'precio_unitario' => '1.500'],
+                    ['stock_id' => $stock->id, 'cantidad' => 3, 'precio_unitario' => '1500'],
                 ],
             ])
             ->assertSessionHas('success');

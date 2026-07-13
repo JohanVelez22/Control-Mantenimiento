@@ -43,12 +43,14 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   width: 6px;
   height: 6px;
 }
+
 #notif-panel::-webkit-scrollbar-track,
 #ts-main::-webkit-scrollbar-track,
 .main-content::-webkit-scrollbar-track,
 .content-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
+
 #notif-panel::-webkit-scrollbar-thumb,
 #ts-main::-webkit-scrollbar-thumb,
 .main-content::-webkit-scrollbar-thumb,
@@ -57,18 +59,21 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   border-radius: 8px;
   transition: background 0.3s ease;
 }
+
 #notif-panel::-webkit-scrollbar-thumb:hover,
 #ts-main::-webkit-scrollbar-thumb:hover,
 .main-content::-webkit-scrollbar-thumb:hover,
 .content-scroll::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, rgba(37, 99, 235, 0.5), rgba(6, 182, 212, 0.5));
 }
+
 html.dark #notif-panel::-webkit-scrollbar-thumb,
 html.dark #ts-main::-webkit-scrollbar-thumb,
 html.dark .main-content::-webkit-scrollbar-thumb,
 html.dark .content-scroll::-webkit-scrollbar-thumb {
   background: linear-gradient(to bottom, rgba(37, 99, 235, 0.35), rgba(6, 182, 212, 0.35));
 }
+
 html.dark #notif-panel::-webkit-scrollbar-thumb:hover,
 html.dark #ts-main::-webkit-scrollbar-thumb:hover,
 html.dark .main-content::-webkit-scrollbar-thumb:hover,
@@ -257,7 +262,7 @@ html.dark #ts-sidebar {
   padding: 10px 12px;
   border-radius: 14px;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 18px;
   color: #1E293B;
   transition: color 0.4s ease;
 }
@@ -273,7 +278,7 @@ html.dark .brand-text {
   padding: 8px 10px;
   border-radius: 12px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
   color: #475569;
   text-decoration: none;
   white-space: nowrap;
@@ -367,6 +372,8 @@ html.dark .nav-item.active {
 }
 
 .nav-label {
+  font-size: 15px;
+  font-weight: 600;
   opacity: 0;
   transform: translateX(-8px);
   transition: opacity 0.22s ease, transform 0.22s ease, color 0.4s ease;
@@ -1479,13 +1486,13 @@ html.dark .pill-especialidad {
    ================================================================ */
 @media print {
 
-/* --- 1. Tamano y margenes de pagina -------------------------------------------------- */
+  /* --- 1. Tamano y margenes de pagina -------------------------------------------------- */
   @page {
     size: A4 portrait;
     margin: 15mm 12mm 15mm 12mm;
   }
 
-/* --- 2. Reset total del body -------------------------------------------------- */
+  /* --- 2. Reset total del body -------------------------------------------------- */
   html,
   body {
     width: 100% !important;
@@ -1496,7 +1503,7 @@ html.dark .pill-especialidad {
     font-size: 9pt !important;
   }
 
-/* ================================================================
+  /* ================================================================
    3. Ocultar toda la UI de navegacion y controles
    ================================================================ */
   #ts-sidebar,
@@ -1517,7 +1524,7 @@ html.dark .pill-especialidad {
     display: none !important;
   }
 
-/* --- 4. Resetear el layout flex principal -------------------------------------------------- */
+  /* --- 4. Resetear el layout flex principal -------------------------------------------------- */
   .flex.min-h-screen,
   .flex.min-h-screen>div {
     display: block !important;
@@ -1533,7 +1540,7 @@ html.dark .pill-especialidad {
     flex: none !important;
   }
 
-/* ================================================================
+  /* ================================================================
    5. Contenido principal: sin padding ni padding-bottom gigante
    ================================================================ */
   #ts-main {
@@ -1549,7 +1556,7 @@ html.dark .pill-especialidad {
     padding-bottom: 0 !important;
   }
 
-/* ================================================================
+  /* ================================================================
    6. Glassmorphism → papel blanco
    ================================================================ */
   .glass-card,
@@ -1565,12 +1572,12 @@ html.dark .pill-especialidad {
     padding: 0 !important;
   }
 
-/* --- ESTILOS DE IMPRESIÓN -------------------------------------------------- */
+  /* --- ESTILOS DE IMPRESIÓN -------------------------------------------------- */
   .print-header {
     display: block !important;
   }
 
-/* --- 8. Tablas: ancho completo y sin cortes -------------------------------------------------- */
+  /* --- 8. Tablas: ancho completo y sin cortes -------------------------------------------------- */
   table {
     width: 100% !important;
     border-collapse: collapse !important;
@@ -1589,13 +1596,13 @@ html.dark .pill-especialidad {
     page-break-inside: avoid !important;
   }
 
-/* --- 9. Links sin decoracion -------------------------------------------------- */
+  /* --- 9. Links sin decoracion -------------------------------------------------- */
   a {
     color: inherit !important;
     text-decoration: none !important;
   }
 
-/* ================================================================
+  /* ================================================================
    10. Colores forzados en encabezados de tabla
    ================================================================ */
   -webkit-print-color-adjust: exact !important;
@@ -1806,8 +1813,7 @@ html.dark .ts-modal-card {
 
 
 /* --- - -------------------------------------------------- */
-   GLASSMORPHISM: TOM-SELECT
-   ------------------------------------------------------------------- */
+GLASSMORPHISM: TOM-SELECT ------------------------------------------------------------------- */
 
 /* ---- Wrapper: eliminar fondo/borde evitar cuadro en cuadro ---- */
 .ts-wrapper {
@@ -1935,10 +1941,7 @@ select.tomselected {
 
 
 /* --- - -------------------------------------------------- */
-   GLASSMORPHISM: FLATPICKR CALENDAR
-   ------------------------------------------------------------------- */
-
-.flatpickr-calendar {
+GLASSMORPHISM: FLATPICKR CALENDAR ------------------------------------------------------------------- */ .flatpickr-calendar {
   background: rgba(255, 255, 255, 0.70) !important;
   backdrop-filter: blur(28px) saturate(200%) !important;
   -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
