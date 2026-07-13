@@ -743,7 +743,7 @@
                             </div>
 
                             <!-- Acrylic panel -->
-                            <div id="notif-panel" class="rounded-lg overflow-hidden"
+                            <div id="notif-panel" class="rounded-lg overflow-hidden content-scroll"
                                  style="background:rgba(255,255,255,0.82); border:1px solid rgba(255,255,255,0.5); backdrop-filter:blur(32px) saturate(200%); -webkit-backdrop-filter:blur(32px) saturate(200%); box-shadow:0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.6);">
 
                                 <!-- Header -->
@@ -890,7 +890,7 @@
             <div id="nav-progress" class="no-print"></div>
 
             <!-- CONTENIDO DINÁMICO -->
-            <main id="ts-main" class="flex-1 p-4 sm:p-6 lg:p-8 pb-[50vh] relative z-10">
+            <main id="ts-main" class="flex-1 p-4 sm:p-6 lg:p-8 pb-[50vh] relative z-10 content-scroll">
                 <!-- Encabezado de Impresión -->
                 <div class="print-header hidden-screen" style="margin-bottom: 20px;">
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; border-bottom: 2px solid #000000;">
@@ -1320,7 +1320,7 @@
             </div>
 
             
-            <div class="w-full max-h-[50vh] overflow-y-auto space-y-2 pr-1 mb-5">
+            <div class="w-full max-h-[50vh] overflow-y-auto space-y-2 pr-1 mb-5 content-scroll">
 
                 
                 <?php $__currentLoopData = $mantList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
