@@ -24,7 +24,7 @@
 
 <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; text-align: center;">
     <h3 style="margin: 0 0 6px; font-size: 10pt; text-transform: uppercase;">Concepto del Movimiento</h3>
-    <p style="font-size: 11pt; font-weight: bold; margin: 0; color: #222;">
+    <p style="font-size: 11pt; font-weight: normal; margin: 0; color: #222;">
         {{ $movimiento->concepto->nombre ?? 'Concepto Desconocido' }}
     </p>
 </div>
