@@ -51,11 +51,11 @@ class MantenimientoController extends Controller
             return redirect()->route('mantenimientos.index')->with('error', 'Sin permisos para duplicar.');
         }
 
-        $ultimo = Mantenimiento::orderByDesc('id')->first();
-        $siguiente = $ultimo ? intval(preg_replace('/[^0-9]/', '', $ultimo->id_orden)) + 1 : 1;
+        // Número de orden atómico para la copia (evita colisión con otra creación/duplicado).
+        $siguiente = app(\App\Services\OrdenService::class)->siguiente('ORD-', Mantenimiento::class);
 
         $nuevo = $mantenimiento->replicate();
-        $nuevo->id_orden     = 'ORD-' . $siguiente;
+        $nuevo->id_orden     = $siguiente;
         $nuevo->fecha_entrada = now()->toDateString();
         $nuevo->fecha_salida  = null;
         $nuevo->estado        = 'pendiente';
@@ -75,7 +75,7 @@ class MantenimientoController extends Controller
         $fecha_desde = $request->input('fecha_desde', date('Y-m-01'));
         $fecha_hasta = $request->input('fecha_hasta', date('Y-m-d'));
 
-        // Merge back to request so Blade matches
+        // Sincroniza con el request para que Blade coincida
         $request->merge([
             'fecha_desde' => $fecha_desde,
             'fecha_hasta' => $fecha_hasta,
@@ -167,10 +167,10 @@ class MantenimientoController extends Controller
         $equipos  = Equipo::with('cliente')->orderBy('nombre')->get();
         $tecnicos = Tecnico::orderBy('nombre')->get();
 
-        // Calcular el siguiente consecutivo para mostrarlo en el formulario
-        $ultimo     = Mantenimiento::orderByDesc('id')->first();
-        $siguiente  = $ultimo ? intval(preg_replace('/[^0-9]/', '', $ultimo->id_orden)) + 1 : 1;
-        $nextOrden  = 'ORD-' . $siguiente;
+        // Consecutivo preview (sin bloqueo) para mostrar en el formulario.
+        // El valor definitivo se recalcula con lockForUpdate en store().
+        $nextOrden = app(\App\Services\OrdenService::class)
+            ->siguiente('ORD-', Mantenimiento::class, 'id_orden', null, false);
 
         return view('mantenimientos.create', compact('equipos', 'tecnicos', 'nextOrden'));
     }
@@ -200,12 +200,10 @@ class MantenimientoController extends Controller
         try {
             DB::beginTransaction();
 
-            // Bloqueo pesimista: garantiza que solo UN request a la vez
-            // pueda leer el último id_orden e incrementarlo.
-            // Esto elimina el race condition en creación simultánea de órdenes.
-            $ultimo = Mantenimiento::lockForUpdate()->orderByDesc('id')->first();
-            $siguiente = $ultimo ? intval(preg_replace('/[^0-9]/', '', $ultimo->id_orden)) + 1 : 1;
-            $validated['id_orden'] = 'ORD-' . $siguiente;
+            // Número de orden atómico: OrdenService usa lockForUpdate dentro
+            // de la transacción para eliminar la condición de carrera (race condition).
+            $validated['id_orden'] = app(\App\Services\OrdenService::class)
+                ->siguiente('ORD-', Mantenimiento::class);
             $validated['user_id'] = Auth::id();
 
             Mantenimiento::create($validated);
@@ -233,8 +231,9 @@ class MantenimientoController extends Controller
         if (Auth::user()->role === 'invitado') {
             return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para actualizar.');
         }
-        
-        $validated = $request->validate([
+
+        // El técnico puede editar, pero debe confirmar con la contraseña de un admin.
+        $reglas = [
             'fecha_entrada' => 'required|date',
             'fecha_salida'  => 'nullable|date|after_or_equal:fecha_entrada',
             'tipo' => 'required|in:preventivo,correctivo',
@@ -244,12 +243,21 @@ class MantenimientoController extends Controller
             'estado' => 'required|in:pendiente,terminado',
             'equipo_id' => 'required|integer|exists:equipos,id',
             'tecnico_id' => 'required|integer|exists:tecnicos,id',
-        ]);
+        ];
+
+        if (Auth::user()->isTecnico()) {
+            $reglas['admin_password'] = 'required';
+        }
+
+        $validated = $request->validate($reglas);
+
+        if (Auth::user()->isTecnico() &&
+            !app(\App\Services\AnulacionService::class)->adminPasswordValida($validated['admin_password'])) {
+            return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para editar.')->withInput();
+        }
 
         try {
             DB::beginTransaction();
-
-
 
             $mantenimiento->update($validated);
             DB::commit();
@@ -283,72 +291,32 @@ class MantenimientoController extends Controller
             return redirect()->back()->with('error', 'No tienes permisos para anular.');
         }
 
-        $request->validate([
-            'password_confirm' => 'required'
-        ]);
-
-        $adminPassword = \App\Models\User::where('role', 'admin')->value('password');
-        if (!\Hash::check($request->password_confirm, Auth::user()->password) && 
-            !\Hash::check($request->password_confirm, $adminPassword)) {
-            return redirect()->back()->with('error', 'Contraseña incorrecta.');
+        // Técnico requiere contraseña de admin; admin usa su propia o la de admin.
+        if (Auth::user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para anular.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+                return redirect()->back()->with('error', 'Contraseña incorrecta.');
+            }
         }
 
         try {
             DB::beginTransaction();
-            
+
             $esAnulacion = !$mantenimiento->anulado;
             $mantenimiento->update(['anulado' => $esAnulacion]);
 
-            if ($esAnulacion) {
-                // Revertir stock
-                foreach ($mantenimiento->stocks as $stock) {
-                    \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
-                }
+            // Reversión centralizada de stock y abonos en caja
+            app(\App\Services\AnulacionService::class)
+                ->revertirStockYAbonos($mantenimiento, $esAnulacion, 'Abono Mantenimiento', ['Orden']);
 
-                // Revertir abonos en Caja
-                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Mantenimiento')->first();
-                if ($concepto && $mantenimiento->abonos->count() > 0) {
-                    foreach ($mantenimiento->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where(function($query) use ($abono, $concepto, $mantenimiento) {
-                            $query->where('abono_id', $abono->id)
-                                  ->orWhere(function($sub) use ($abono, $concepto, $mantenimiento) {
-                                      $sub->whereNull('abono_id')
-                                          ->where('concepto_id', $concepto->id)
-                                          ->where('monto', $abono->monto)
-                                          ->where('fecha', $abono->fecha->toDateString())
-                                          ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%");
-                                  });
-                        })
-                        ->where('estado', 'activo')
-                        ->update(['anulado' => true]);
-                    }
-                }
-                $msg = 'Mantenimiento anulado correctamente. La transacción y stock asociados (si aplica) han sido revertidos.';
-            } else {
-                // Reactivar stock
-                foreach ($mantenimiento->stocks as $stock) {
-                    \App\Models\Stock::where('id', $stock->id)->decrement('cantidad', $stock->pivot->cantidad);
-                }
-
-                // Reactivar abonos en Caja
-                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Mantenimiento')->first();
-                if ($concepto && $mantenimiento->abonos->count() > 0) {
-                    foreach ($mantenimiento->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where(function($query) use ($abono, $concepto, $mantenimiento) {
-                            $query->where('abono_id', $abono->id)
-                                  ->orWhere(function($sub) use ($abono, $concepto, $mantenimiento) {
-                                      $sub->whereNull('abono_id')
-                                          ->where('concepto_id', $concepto->id)
-                                          ->where('monto', $abono->monto)
-                                          ->where('fecha', $abono->fecha->toDateString())
-                                          ->where('descripcion', 'like', "%Orden " . $mantenimiento->id_orden . "%");
-                                  });
-                        })
-                        ->update(['anulado' => false]);
-                    }
-                }
-                $msg = 'Mantenimiento reactivado correctamente. El stock y caja han sido actualizados.';
-            }
+            $msg = $esAnulacion
+                ? 'Mantenimiento anulado correctamente. La transacción y stock asociados (si aplica) han sido revertidos.'
+                : 'Mantenimiento reactivado correctamente. El stock y caja han sido actualizados.';
 
             DB::commit();
             return redirect()->back()->with('success', $msg);

@@ -72,20 +72,21 @@ class Stock extends Model
         return $this->cantidad >= $cantidad;
     }
 
-    /** Incrementa el stock de forma atómica */
+    /** Incrementa el stock de forma atómica (delega en StockService) */
     public function incrementarStock(int $cantidad): void
     {
-        $this->increment('cantidad', $cantidad);
+        app(\App\Services\StockService::class)->entrada($this, $cantidad);
     }
 
     /** Decrementa el stock de forma atómica (lanza excepción si no hay suficiente) */
     public function decrementarStock(int $cantidad): void
     {
-        if (!$this->tieneDisponible($cantidad)) {
-            throw new \DomainException(
-                "Stock insuficiente para '{$this->producto}'. Disponible: {$this->cantidad}, solicitado: {$cantidad}."
-            );
-        }
-        $this->decrement('cantidad', $cantidad);
+        app(\App\Services\StockService::class)->salida($this, $cantidad);
+    }
+
+    /** Scope: solo artículos activos (no dados de baja lógicamente) */
+    public function scopeActivos($query)
+    {
+        return $query->where('active', true);
     }
 }

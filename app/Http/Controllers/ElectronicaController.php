@@ -12,17 +12,12 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ElectronicasExport;
+use App\Services\OrdenService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ElectronicaController extends Controller
 {
-    // Contador de orden, igual que en mantenimientos
-    private static function nextOrdenId(): string
-    {
-        $last = Electronica::orderBy('id', 'desc')->first();
-        $num = $last ? ((int) filter_var($last->id_orden, FILTER_SANITIZE_NUMBER_INT)) + 1 : 1;
-        return 'ELC-' . str_pad($num, 4, '0', STR_PAD_LEFT);
-    }
-
     public function index(Request $request)
     {
         if ($request->has('locate')) {
@@ -64,7 +59,12 @@ class ElectronicaController extends Controller
     {
         $tecnicos = Tecnico::orderBy('nombre')->get();
         $equipos = Equipo::with('cliente')->orderBy('nombre')->get();
-        $nextOrden = self::nextOrdenId();
+
+        // Consecutivo preview (sin bloqueo) para mostrar en el formulario.
+        // El valor definitivo se recalcula con lockForUpdate en store().
+        $nextOrden = app(OrdenService::class)
+            ->siguiente('ELC-', Electronica::class, 'id_orden', 4, false);
+
         return view('electronicas.create', compact('tecnicos', 'equipos', 'nextOrden'));
     }
 
@@ -83,25 +83,26 @@ class ElectronicaController extends Controller
         ]);
 
         try {
-            \Illuminate\Support\Facades\DB::beginTransaction();
+            DB::beginTransaction();
 
+            // Número de orden atómico: OrdenService usa lockForUpdate dentro
+            // de la transacción para eliminar la condición de carrera (race condition).
             if (empty($validated['id_orden'])) {
-                $last = Electronica::lockForUpdate()->orderBy('id', 'desc')->first();
-                $num = $last ? ((int) filter_var($last->id_orden, FILTER_SANITIZE_NUMBER_INT)) + 1 : 1;
-                $validated['id_orden'] = 'ELC-' . str_pad($num, 4, '0', STR_PAD_LEFT);
+                $validated['id_orden'] = app(OrdenService::class)
+                    ->siguiente('ELC-', Electronica::class, 'id_orden', 4);
             }
 
             $validated['user_id'] = auth()->id();
 
             Electronica::create($validated);
 
-            \Illuminate\Support\Facades\DB::commit();
+            DB::commit();
 
             return redirect()->route('electronicas.index')
                              ->with('success', "Registro electrónico {$validated['id_orden']} creado correctamente.");
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\DB::rollBack();
-            \Illuminate\Support\Facades\Log::error('Error registrando electrónica: ' . $e->getMessage());
+            DB::rollBack();
+            Log::error('Error registrando electrónica: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al registrar el equipo electrónico. Intente nuevamente.')->withInput();
         }
     }
@@ -122,7 +123,8 @@ class ElectronicaController extends Controller
 
     public function update(Request $request, Electronica $electronica)
     {
-        $validated = $request->validate([
+        // El técnico puede editar, pero debe confirmar con la contraseña de un admin.
+        $reglas = [
             'id_orden'             => 'nullable|string|unique:electronicas,id_orden,' . $electronica->id,
             'equipo_id'            => 'required|exists:equipos,id',
             'descripcion_problema' => 'required|string',
@@ -132,21 +134,30 @@ class ElectronicaController extends Controller
             'fecha_entrada'        => 'required|date',
             'fecha_salida'         => 'nullable|date|after_or_equal:fecha_entrada',
             'tecnico_id'           => 'required|exists:tecnicos,id',
-        ]);
+        ];
+
+        if (auth()->user()->isTecnico()) {
+            $reglas['admin_password'] = 'required';
+        }
+
+        $validated = $request->validate($reglas);
+
+        if (auth()->user()->isTecnico() &&
+            !app(AnulacionService::class)->adminPasswordValida($validated['admin_password'])) {
+            return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para editar.')->withInput();
+        }
 
         try {
-            \Illuminate\Support\Facades\DB::beginTransaction();
-
-
+            DB::beginTransaction();
 
             $electronica->update($validated);
-            \Illuminate\Support\Facades\DB::commit();
+            DB::commit();
 
             return redirect()->route('electronicas.index')
                              ->with('success', 'Registro electrónico actualizado correctamente.');
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\DB::rollBack();
-            \Illuminate\Support\Facades\Log::error('Error actualizando electrónica: ' . $e->getMessage());
+            DB::rollBack();
+            Log::error('Error actualizando electrónica: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al actualizar el registro electrónico.')->withInput();
         }
     }
@@ -157,84 +168,38 @@ class ElectronicaController extends Controller
             return redirect()->back()->with('error', 'No tienes permisos para anular.');
         }
 
-        $request->validate([
-            'password_confirm' => 'required'
-        ]);
-
-        $adminPassword = \App\Models\User::where('role', 'admin')->value('password');
-        if (!\Hash::check($request->password_confirm, auth()->user()->password) && 
-            !\Hash::check($request->password_confirm, $adminPassword)) {
-            return redirect()->back()->with('error', 'Contraseña incorrecta.');
+        // Técnico requiere contraseña de admin; admin usa su propia o la de admin.
+        if (auth()->user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required']);
+            if (!app(AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para anular.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required']);
+            if (!app(AnulacionService::class)->passwordValida($request->password_confirm)) {
+                return redirect()->back()->with('error', 'Contraseña incorrecta.');
+            }
         }
 
         try {
-            \Illuminate\Support\Facades\DB::beginTransaction();
-            
+            DB::beginTransaction();
+
             $esAnulacion = !$electronica->anulado;
             $electronica->update(['anulado' => $esAnulacion]);
 
-            if ($esAnulacion) {
-                // Revertir stock
-                foreach ($electronica->stocks as $stock) {
-                    \App\Models\Stock::where('id', $stock->id)->increment('cantidad', $stock->pivot->cantidad);
-                }
+            // Reversión centralizada de stock y abonos en caja
+            app(AnulacionService::class)
+                ->revertirStockYAbonos($electronica, $esAnulacion, 'Abono Electrónica', ['ELC', 'Orden']);
 
-                // Revertir abonos en Caja
-                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
-                if ($concepto && $electronica->abonos->count() > 0) {
-                    foreach ($electronica->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where(function($query) use ($abono, $concepto, $electronica) {
-                            $query->where('abono_id', $abono->id)
-                                  ->orWhere(function($sub) use ($abono, $concepto, $electronica) {
-                                      $sub->whereNull('abono_id')
-                                          ->where('concepto_id', $concepto->id)
-                                          ->where('monto', $abono->monto)
-                                          ->where('fecha', $abono->fecha->toDateString())
-                                          ->where(function($descQuery) use ($electronica) {
-                                              $descQuery->where('descripcion', 'like', "%ELC " . $electronica->id_orden . "%")
-                                                        ->orWhere('descripcion', 'like', "%Orden " . $electronica->id_orden . "%");
-                                          });
-                                  });
-                        })
-                        ->where('estado', 'activo')
-                        ->update(['anulado' => true]);
-                    }
-                }
-                $msg = 'Registro electrónico anulado correctamente.';
-            } else {
-                // Reactivar stock
-                foreach ($electronica->stocks as $stock) {
-                    \App\Models\Stock::where('id', $stock->id)->decrement('cantidad', $stock->pivot->cantidad);
-                }
+            $msg = $esAnulacion
+                ? 'Registro electrónico anulado correctamente.'
+                : 'Registro electrónico reactivado correctamente.';
 
-                // Reactivar abonos en Caja
-                $concepto = \App\Models\ConceptoCaja::where('nombre', 'Abono Electrónica')->first();
-                if ($concepto && $electronica->abonos->count() > 0) {
-                    foreach ($electronica->abonos as $abono) {
-                        \App\Models\MovimientoCaja::where(function($query) use ($abono, $concepto, $electronica) {
-                            $query->where('abono_id', $abono->id)
-                                  ->orWhere(function($sub) use ($abono, $concepto, $electronica) {
-                                      $sub->whereNull('abono_id')
-                                          ->where('concepto_id', $concepto->id)
-                                          ->where('monto', $abono->monto)
-                                          ->where('fecha', $abono->fecha->toDateString())
-                                          ->where(function($descQuery) use ($electronica) {
-                                              $descQuery->where('descripcion', 'like', "%ELC " . $electronica->id_orden . "%")
-                                                        ->orWhere('descripcion', 'like', "%Orden " . $electronica->id_orden . "%");
-                                          });
-                                  });
-                        })
-                        ->update(['anulado' => false]);
-                    }
-                }
-                $msg = 'Registro electrónico reactivado correctamente.';
-            }
-
-            \Illuminate\Support\Facades\DB::commit();
+            DB::commit();
             return redirect()->back()->with('success', $msg);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\DB::rollBack();
-            \Illuminate\Support\Facades\Log::error('Error anulando/reactivando electrónica: ' . $e->getMessage());
+            DB::rollBack();
+            Log::error('Error anulando/reactivando electrónica: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al cambiar estado.');
         }
     }

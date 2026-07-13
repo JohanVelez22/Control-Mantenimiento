@@ -368,10 +368,10 @@
 
 <script>
 function switchDashTab(tab) {
- // Panels
+ // Paneles
  document.getElementById('tabPanelMant').classList.toggle('hidden', tab !== 'mant');
  document.getElementById('tabPanelElec').classList.toggle('hidden', tab !== 'elec');
- // Buttons
+ // Botones
  const btnMant = document.getElementById('tabBtnMant');
  const btnElec = document.getElementById('tabBtnElec');
  const activeClasses = 'border-b-[3px] text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 border-blue-600';

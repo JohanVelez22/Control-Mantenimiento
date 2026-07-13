@@ -57,17 +57,22 @@
  <textarea name="direccion" rows="3" class="glass-input mt-1 resize-y">{{ old('direccion', $tecnico->direccion) }}</textarea>
  </div>
 
- <div>
- <label class="field-label">Foto del Técnico</label>
- @if($tecnico->photo)
- <div class="mb-3">
- <img src="{{ asset('storage/' . $tecnico->photo) }}" width="100" height="100" class="rounded-xl object-cover border-2 border-gray-300 dark:border-gray-600 shadow-md">
- </div>
- @endif
- <input type="file" name="photo" accept="image/*" class="glass-input mt-1 @error('photo') border-red-500 @enderror">
- <p class="text-xs text-gray-500 mt-1">Sube una nueva imagen para actualizar la foto.</p>
- @error('photo') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
- </div>
+<div>
+  <label class="field-label">Foto del Técnico</label>
+  @if($tecnico->photo)
+  <div class="mb-3">
+  <img src="{{ asset('storage/' . $tecnico->photo) }}" width="100" height="100" class="rounded-xl object-cover border-2 border-gray-300 dark:border-gray-600 shadow-md cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $tecnico->photo) }}', '{{ addslashes($tecnico->nombre) }}', this)">
+  </div>
+  @endif
+  <input type="file" name="photo" accept="image/*" class="glass-input mt-1 @error('photo') border-red-500 @enderror">
+  <p class="text-xs text-gray-500 mt-1">Sube una nueva imagen para actualizar la foto.</p>
+  @error('photo') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+  </div>
+  @endif
+  <input type="file" name="photo" accept="image/*" class="glass-input mt-1 @error('photo') border-red-500 @enderror">
+  <p class="text-xs text-gray-500 mt-1">Sube una nueva imagen para actualizar la foto.</p>
+  @error('photo') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+  </div>
 
 
 

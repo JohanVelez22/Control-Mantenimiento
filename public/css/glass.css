@@ -8,24 +8,25 @@
 
 /* Custom Scrollbar (Global) */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.4);
-  border-radius: 10px;
+  background: linear-gradient(to bottom, rgba(37,99,235,0.35), rgba(6,182,212,0.35));
+  border-radius: 8px;
+  transition: background 0.3s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(107, 114, 128, 0.7);
+  background: linear-gradient(to bottom, rgba(37,99,235,0.5), rgba(6,182,212,0.5));
 }
 html.dark ::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.2);
+  background: linear-gradient(to bottom, rgba(37,99,235,0.35), rgba(6,182,212,0.35));
 }
 html.dark ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.5);
+  background: linear-gradient(to bottom, rgba(37,99,235,0.5), rgba(6,182,212,0.5));
 }
 
 /* â”€â”€â”€ Design Tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -674,7 +675,7 @@ html.dark .btn-ghost { color: #CBD5E1; background: rgba(255,255,255,0.06); borde
 .btn-ghost:hover { background: rgba(37,99,235,0.10); border-color: rgba(37,99,235,0.25); color: #1D4ED8; }
 html.dark .btn-ghost:hover { background: rgba(37,99,235,0.18); color: #93C5FD; }
 
-/* Overrides para botones de acción con colores específicos */
+/* Overrides para botones de accion con colores especificos */
 .btn-ghost.text-yellow-600:hover { color: #D97706 !important; border-color: rgba(217,119,6,0.3) !important; background: rgba(245,158,11,0.1) !important; }
 .btn-ghost.text-green-600:hover { color: #16A34A !important; border-color: rgba(22,163,74,0.3) !important; background: rgba(34,197,94,0.1) !important; }
 .btn-ghost.text-red-600:hover { color: #DC2626 !important; border-color: rgba(220,38,38,0.3) !important; background: rgba(239,68,68,0.1) !important; }
@@ -736,7 +737,7 @@ html.dark .glass-input:focus, html.dark .ts-wrapper.glass-input.focus {
 .glass-input.border-red-500 { border-color: #EF4444 !important; box-shadow: 0 0 0 3px rgba(239,68,68,0.12) !important; }
 
 /* â”€â”€â”€ TomSelect Fixes for Glass Input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-/* Espaciado para los botones incrementales en inputs numéricos */
+/* Espaciado para los botones incrementales en inputs numericos */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   margin-left: 8px;
@@ -950,15 +951,15 @@ html.dark .pill-correctivo { color: #FDBA74; border-color: rgba(249,115,22,0.40)
 html.dark .pill-preventivo { color: #93C5FD; border-color: rgba(37,99,235,0.40); background: rgba(37,99,235,0.15); }
 html.dark .pill-especialidad { color: #A5B4FC; border-color: rgba(99,102,241,0.40); background: rgba(99,102,241,0.15); }
 
-/* ─── Print ─────────────────────────────────────────────────────────────── */
+/* --- Print --------------------------------------------------------------- */
 @media print {
-  /* ── 1. Tamaño y márgenes de página ── */
+  /* -- 1. Tamano y margenes de pagina -- */
   @page {
     size: A4 portrait;
     margin: 15mm 12mm 15mm 12mm;
   }
 
-  /* ── 2. Reset total del body ── */
+  /* -- 2. Reset total del body -- */
   html, body {
     width: 100% !important;
     margin: 0 !important;
@@ -968,7 +969,7 @@ html.dark .pill-especialidad { color: #A5B4FC; border-color: rgba(99,102,241,0.4
     font-size: 9pt !important;
   }
 
-  /* ── 3. Ocultar toda la UI de navegación y controles ── */
+  /* -- 3. Ocultar toda la UI de navegacion y controles -- */
   #ts-sidebar,
   #ts-topbar,
   #nav-progress,
@@ -985,7 +986,7 @@ html.dark .pill-especialidad { color: #A5B4FC; border-color: rgba(99,102,241,0.4
   .modal,
   .ts-modal-overlay { display: none !important; }
 
-  /* ── 4. Resetear el layout flex principal ── */
+  /* -- 4. Resetear el layout flex principal -- */
   .flex.min-h-screen,
   .flex.min-h-screen > div {
     display: block !important;
@@ -1001,7 +1002,7 @@ html.dark .pill-especialidad { color: #A5B4FC; border-color: rgba(99,102,241,0.4
     flex: none !important;
   }
 
-  /* ── 5. Contenido principal: sin padding ni padding-bottom gigante ── */
+  /* -- 5. Contenido principal: sin padding ni padding-bottom gigante -- */
   #ts-main {
     display: block !important;
     width: 100% !important;
@@ -1013,7 +1014,7 @@ html.dark .pill-especialidad { color: #A5B4FC; border-color: rgba(99,102,241,0.4
   /* Eliminar el pb-[50vh] de Tailwind que crea espacio enorme al imprimir */
   [class*="pb-"] { padding-bottom: 0 !important; }
 
-  /* ── 6. Glassmorphism → papel blanco ── */
+  /* -- 6. Glassmorphism → papel blanco -- */
   .glass-card,
   .glass-input,
   [class*="glass"] {
@@ -1027,10 +1028,10 @@ html.dark .pill-especialidad { color: #A5B4FC; border-color: rgba(99,102,241,0.4
     padding: 0 !important;
   }
 
-  /* ── 7. Encabezado de impresión (print-header) visible ── */
+  /* -- 7. Encabezado de impresion (print-header) visible -- */
   .print-header { display: block !important; }
 
-  /* ── 8. Tablas: ancho completo y sin cortes ── */
+  /* -- 8. Tablas: ancho completo y sin cortes -- */
   table {
     width: 100% !important;
     border-collapse: collapse !important;
@@ -1040,10 +1041,10 @@ html.dark .pill-especialidad { color: #A5B4FC; border-color: rgba(99,102,241,0.4
   tfoot { display: table-footer-group !important; }
   tr    { page-break-inside: avoid !important; }
 
-  /* ── 9. Links sin decoración ── */
+  /* -- 9. Links sin decoracion -- */
   a { color: inherit !important; text-decoration: none !important; }
 
-  /* ── 10. Colores forzados en encabezados de tabla ── */
+  /* -- 10. Colores forzados en encabezados de tabla -- */
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
 }
@@ -1112,13 +1113,13 @@ html.dark .ts-modal-card {
 
 /* â”€â”€â”€ Animations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes fadeSlideIn {
-  /* SIN opacity: elementos NUNCA invisibles aunque la animación se reinicie */
+  /* SIN opacity: elementos NUNCA invisibles aunque la animacion se reinicie */
   from { transform: translateY(8px); }
   to   { transform: translateY(0); }
 }
 .page-enter { animation: fadeSlideIn 0.22s cubic-bezier(0.22,1,0.36,1) both; }
 
-/* ─── Pricing Panel: siempre visible, sin animaciones ───────────────────────── */
+/* --- Pricing Panel: siempre visible, sin animaciones ------------------------- */
 /* NOTA: sin transform:none para respetar translate de Tailwind en hijos */
 .pricing-panel,
 .pricing-panel * {
@@ -1447,7 +1448,7 @@ html.dark input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s !important;
 }
 
-/* ─── Modal Overlay (Liquid Glass) ────────────────────────────── */
+/* --- Modal Overlay (Liquid Glass) ------------------------------ */
 .ts-modal-overlay {
   position: fixed;
   inset: 0;
@@ -1536,4 +1537,24 @@ html.dark .ts-wrapper.glass-input.dropdown-active .ts-control {
   font-size: 14px !important;
   font-weight: 500 !important;
   color: inherit !important;
+}
+
+/* Glass Backdrop for Lightbox */
+.glass-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2vh 2vw;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+html.dark .glass-backdrop {
+  background: rgba(15,23,42,0.2);
 }

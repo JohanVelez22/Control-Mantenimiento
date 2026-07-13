@@ -66,18 +66,25 @@
  <?php echo e($stock->codigo ?? '-'); ?>
 
  </td>
- <td data-label="Producto:" class="<?php echo e($dim); ?>">
- <div class="font-bold text-slate-800 dark:text-white leading-tight">
- <?php echo e($stock->producto); ?>
+  <td data-label="Producto:" class="<?php echo e($dim); ?>">
+  <div class="flex items-center gap-3">
+<?php if($stock->photo): ?>
+  <img src="<?php echo e(asset('storage/' . $stock->photo)); ?>" alt="<?php echo e($stock->producto); ?>"
+       onclick="openImageLightbox('<?php echo e(asset('storage/' . $stock->photo)); ?>', '<?php echo e(addslashes($stock->producto)); ?>', this)"
+       class="w-11 h-11 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm flex-shrink-0 hover:opacity-80 transition">
+<?php endif; ?>
+  <div class="font-bold text-slate-800 dark:text-white leading-tight">
+  <?php echo e($stock->producto); ?>
 
- </div>
- <?php if($stock->categoria || $stock->subcategoria): ?>
- <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-1">
- <?php echo e($stock->categoria ?? 'Sin Categoría'); ?> <?php echo e($stock->subcategoria ? ' / ' . $stock->subcategoria : ''); ?>
+  </div>
+  </div>
+  <?php if($stock->categoria || $stock->subcategoria): ?>
+  <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-1">
+  <?php echo e($stock->categoria ?? 'Sin Categoría'); ?> <?php echo e($stock->subcategoria ? ' / ' . $stock->subcategoria : ''); ?>
 
- </div>
- <?php endif; ?>
- </td>
+  </div>
+  <?php endif; ?>
+  </td>
  <td data-label="Cantidad:" class="text-center <?php echo e($dim); ?>">
  <span class="pill <?php echo e($stock->cantidad > 5 ? 'pill-done' : 'pill-anulado'); ?>">
  <?php echo e($stock->cantidad); ?>

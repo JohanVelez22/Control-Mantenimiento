@@ -11,7 +11,7 @@ class ClienteController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Cliente::query();
+        $query = Cliente::query()->activos();
 
         if ($request->filled('search')) {
             $s = $request->search;

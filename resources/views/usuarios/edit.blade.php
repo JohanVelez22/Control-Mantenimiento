@@ -46,11 +46,11 @@
  {{-- Foto de Perfil --}}
  <div class="mb-5">
  <label class="field-label">Foto de Perfil</label>
- @if($user->photo)
- <div class="mb-3">
- <img src="{{ asset('storage/' . $user->photo) }}" width="100" height="100" class="rounded-full object-cover border-2 border-gray-300 dark:border-gray-600">
- </div>
- @endif
+@if($user->photo)
+  <div class="mb-3">
+  <img src="{{ asset('storage/' . $user->photo) }}" width="100" height="100" class="rounded-full object-cover border-2 border-gray-300 dark:border-gray-600 shadow-md cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $user->photo) }}', '{{ addslashes($user->name) }}', this)">
+  </div>
+@endif
  <input type="file" name="photo" accept="image/*" class="glass-input @error('photo') border-red-500 @enderror">
  <p class="text-xs text-gray-500 mt-1">Selecciona una imagen para actualizar tu foto actual.</p>
  @error('photo') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
@@ -58,9 +58,18 @@
 
 
 
- <hr class="my-6 border-gray-200 dark:border-gray-700">
+  <hr class="my-6 border-gray-200 dark:border-gray-700">
 
- {{-- Password --}}
+  {{-- Contraseña actual (solo auto-edición, por seguridad) --}}
+  @if(auth()->id() === $user->id)
+  <div class="mb-4">
+  <label class="block text-sm font-medium mb-2 text-gray-500">Contraseña Actual *</label>
+  <input type="password" id="current_password" name="current_password" placeholder="Requerida para cambiar tu contraseña" class="glass-input @error('current_password') border-red-500 @enderror">
+  @error('current_password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+  </div>
+  @endif
+
+  {{-- Password --}}
  <div class="mb-4">
  <label class="block text-sm font-medium mb-2 text-gray-500">Cambiar Contraseña del Usuario (opcional)</label>
  <input type="password" id="password" name="password" placeholder="Dejar en blanco para no cambiar" class="glass-input @error('password') border-red-500 @enderror">
@@ -168,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
  });
  }
 
- // Prevent form submission if requirements are not met
+ // Evita el envío del formulario si no se cumplen los requisitos
  var form = document.querySelector('form');
  if (form && passwordInput) {
  form.addEventListener('submit', function(e) {

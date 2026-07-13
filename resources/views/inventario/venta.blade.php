@@ -53,7 +53,7 @@
  </button>
  </div>
 
- <div class="overflow-x-auto pb-2">
+ <div class="overflow-x-auto pb-2 max-h-[420px] overflow-y-auto">
  <table class="ts-table" id="items-table">
  <thead>
  <tr>

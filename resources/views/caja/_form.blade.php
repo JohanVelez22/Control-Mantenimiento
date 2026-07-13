@@ -172,7 +172,7 @@
  }
  }
  
- // Trigger initial
+ // Ejecuta inicial
  updateAmountColor();
  }
  formatInput('monto_visual', 'monto_real');

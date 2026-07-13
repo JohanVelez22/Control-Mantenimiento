@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
  confirmInput.addEventListener('input', checkMatch);
  }
 
- // Prevent form submission if requirements are not met
+ // Evita el envío del formulario si no se cumplen los requisitos
  var form = document.querySelector('form');
  if (form && passwordInput) {
  form.addEventListener('submit', function(e) {

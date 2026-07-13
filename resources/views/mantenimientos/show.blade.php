@@ -262,7 +262,7 @@
  }
  });
  
- // Validation before submit for the Abono form
+ // Validación antes de enviar el formulario de Abono
  const formAbono = abonoVisual.closest('form');
  if (formAbono) {
  formAbono.addEventListener('submit', function() {

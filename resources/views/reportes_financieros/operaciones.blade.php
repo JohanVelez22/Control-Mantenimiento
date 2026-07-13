@@ -300,7 +300,7 @@
         display: none !important;
     }
     
-    /* Disable flexbox layouts during print to prevent desktop viewport scaling and right-side clipping */
+    /* Desactiva diseños flexbox durante la impresión para evitar escalado de vista de escritorio y recorte lateral derecho */
     .flex.min-h-screen,
     #main-wrapper {
         display: block !important;

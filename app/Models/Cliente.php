@@ -28,6 +28,16 @@ class Cliente extends Model
         'active' => 'boolean',
     ];
 
+    public function getIdentificacionAttribute($value)
+    {
+        return $value ? strtoupper($value) : $value;
+    }
+
+    public function setIdentificacionAttribute($value)
+    {
+        $this->attributes['identificacion'] = $value ? strtoupper($value) : $value;
+    }
+
     /**
      * Retorna el nombre completo de forma dinámica.
      */
@@ -67,5 +77,11 @@ class Cliente extends Model
     public function facturas()
     {
         return $this->morphMany(Factura::class, 'facturable');
+    }
+
+    /** Scope: solo registros activos (no dados de baja lógicamente) */
+    public function scopeActivos($query)
+    {
+        return $query->where('active', true);
     }
 }

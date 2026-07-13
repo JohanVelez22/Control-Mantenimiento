@@ -26,6 +26,14 @@ class AbonoController extends Controller
             'descripcion' => 'nullable|string|max:500',
         ]);
 
+        // No permitir abonar más de lo que se debe
+        $saldoPendiente = $mantenimiento->saldo_pendiente;
+        if ($validated['monto'] > $saldoPendiente + 0.001) {
+            return back()->with('error',
+                'El abono ($' . number_format($validated['monto'], 0, ',', '.') .
+                ') no puede superar el saldo pendiente ($' . number_format($saldoPendiente, 0, ',', '.') . ').')->withInput();
+        }
+
         $validated['mantenimiento_id'] = $mantenimiento->id;
         $validated['user_id']          = auth()->id();
 

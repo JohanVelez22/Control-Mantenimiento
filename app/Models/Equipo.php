@@ -15,6 +15,16 @@ class Equipo extends Model
 
     protected $casts = ['active' => 'boolean'];
 
+    public function getSerieAttribute($value)
+    {
+        return $value ? strtoupper($value) : $value;
+    }
+
+    public function setSerieAttribute($value)
+    {
+        $this->attributes['serie'] = $value ? strtoupper($value) : $value;
+    }
+
     public function cliente()
     {
         return $this->belongsTo(Cliente::class);
@@ -24,5 +34,11 @@ class Equipo extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** Scope: solo registros activos (no dados de baja lógicamente) */
+    public function scopeActivos($query)
+    {
+        return $query->where('active', true);
     }
 }

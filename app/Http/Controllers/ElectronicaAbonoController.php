@@ -26,6 +26,14 @@ class ElectronicaAbonoController extends Controller
             'descripcion' => 'nullable|string|max:500',
         ]);
 
+        // No permitir abonar más de lo que se debe
+        $saldoPendiente = $electronica->saldo_pendiente;
+        if ($validated['monto'] > $saldoPendiente + 0.001) {
+            return back()->with('error',
+                'El abono ($' . number_format($validated['monto'], 0, ',', '.') .
+                ') no puede superar el saldo pendiente ($' . number_format($saldoPendiente, 0, ',', '.') . ').')->withInput();
+        }
+
         $validated['electronica_id'] = $electronica->id;
         $validated['user_id']        = auth()->id();
 

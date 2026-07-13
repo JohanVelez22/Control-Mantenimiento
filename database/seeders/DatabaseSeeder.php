@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // 0. Usuarios base del sistema (admin + técnico) - definidos en .env
+        $this->call(AdminUserSeeder::class);
+
         // 1. Crear un Administrador fijo para pruebas
         $admin = User::factory()->create([
             'name' => 'Admin Sistema',

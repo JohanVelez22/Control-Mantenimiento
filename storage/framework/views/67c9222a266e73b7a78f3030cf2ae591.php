@@ -122,13 +122,13 @@ unset($__errorArgs, $__bag); ?>
  <label for="proveedor_id" class="field-label">Proveedor *</label>
  <select name="proveedor_id" id="proveedor_id" required class="glass-input no-search">
  <option value="">Seleccione un proveedor...</option>
- <?php $__currentLoopData = $proveedores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $proveedor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
- <option value="<?php echo e($proveedor->id); ?>" <?php echo e(old('proveedor_id', $stock->proveedor_id ?? '') == $proveedor->id ? 'selected' : ''); ?>>
- <?php echo e($proveedor->nombre_razon_social); ?> (<?php echo e($proveedor->identificacion); ?>)
- </option>
- <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
- </select>
- <?php $__errorArgs = ['proveedor_id'];
+<?php $__currentLoopData = $proveedores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $proveedor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+  <option value="<?php echo e($proveedor->id); ?>" <?php echo e(old('proveedor_id', $stock->proveedor_id ?? '') == $proveedor->id ? 'selected' : ''); ?>>
+  <?php echo e($proveedor->nombre_razon_social); ?> (<?php echo e($proveedor->identificacion); ?>)
+  </option>
+  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+  </select>
+  <?php $__errorArgs = ['proveedor_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -136,10 +136,24 @@ $message = $__bag->first($__errorArgs[0]); ?> <p class="text-red-500 text-xs mt-
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
- </div>
- </div>
+  </div>
 
- 
+  
+  <div class="md:col-span-2">
+  <label class="field-label">Foto del Producto</label>
+<?php if($stock->photo): ?>
+  <div class="mb-2">
+  <img src="<?php echo e(asset('storage/' . $stock->photo)); ?>" alt="<?php echo e($stock->producto); ?>"
+       onclick="openImageLightbox('<?php echo e(asset('storage/' . $stock->photo)); ?>', '<?php echo e(addslashes($stock->producto)); ?>')"
+       class="w-20 h-20 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm hover:opacity-80 transition">
+  </div>
+  <?php endif; ?>
+  <input type="file" name="photo" accept="image/*" class="glass-input">
+  <p class="text-[10px] text-gray-400 mt-1">Deja vacío para mantener la foto actual</p>
+  </div>
+  </div>
+
+  
  <div class="pricing-panel p-5 bg-white/45 dark:bg-slate-900/60 border border-white/40 dark:border-white/10 rounded-2xl shadow-sm">
  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
  <div>

@@ -413,7 +413,7 @@
                 height: auto !important;
             }
 
-            /* Disable flexbox layouts during print to prevent desktop viewport scaling and right-side clipping */
+            /* Deshabilita diseños flexbox durante la impresión para evitar escalado del viewport de escritorio y recorte lateral derecho */
             .flex.min-h-screen,
             #main-wrapper {
                 display: block !important;
@@ -620,7 +620,7 @@
             </div>
 
             <!-- Navegación -->
-            <nav class="flex-1 flex flex-col justify-between overflow-y-auto overflow-x-hidden scrollbar-hide py-4 px-2 gap-1">
+            <nav class="flex-1 flex flex-col justify-between overflow-y-auto overflow-x-hidden py-4 px-2 gap-1">
                 <a href="<?php echo e(route('dashboard')); ?>" class="nav-item <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>" title="Dashboard">
                     <span class="nav-icon">📊</span>
                     <span class="nav-label">Dashboard</span>
@@ -1215,7 +1215,7 @@
         mediaQuery.addListener(handleMobileChanges);
         handleMobileChanges(mediaQuery);
 
-        // Close notification dropdown when clicking outside
+        // Cierra el dropdown de notificaciones al hacer clic fuera
         document.addEventListener('click', function(event) {
             const bell = document.getElementById('notification-bell');
             const dropdown = document.getElementById('notif-dropdown');
@@ -1238,7 +1238,7 @@
                 const trs = tbody.getElementsByTagName('tr');
                 for (let i = 0; i < trs.length; i++) {
                     const tr = trs[i];
-                    // Skip 'empty state' row (colspan)
+                    // Omite la fila de 'estado vacío' (colspan)
                     if (tr.cells.length === 1 && tr.cells[0].hasAttribute('colspan')) continue;
                     
                     let text = tr.textContent || tr.innerText;
@@ -1283,7 +1283,7 @@
             </div>
 
             
-            <div class="w-full max-h-[50vh] overflow-y-auto space-y-2 pr-1 scrollbar-hide mb-5">
+            <div class="w-full max-h-[50vh] overflow-y-auto space-y-2 pr-1 mb-5">
 
                 
                 <?php $__currentLoopData = $mantList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -1377,10 +1377,10 @@
     </div>
     <script>
         function filterNotifs(type) {
-            // Update tabs styling
+            // Actualiza estilo de las pestañas
             const allTabs = document.querySelectorAll('.notif-tab');
             allTabs.forEach(btn => {
-                // Reset to unselected state
+                // Restablece a estado no seleccionado
                 if(btn.id === 'btn-notif-all') {
                     btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-mant') {
@@ -1392,7 +1392,7 @@
                 }
             });
 
-            // Set active state
+            // Establece estado activo
             const activeBtn = document.getElementById('btn-notif-' + type);
             if(activeBtn) {
                 if(type === 'all') {
@@ -1406,7 +1406,7 @@
                 }
             }
 
-            // Filter items
+            // Filtra elementos
             const items = document.querySelectorAll('.notif-item');
             items.forEach(item => {
                 if(type === 'all' || item.dataset.notifType === type) {
@@ -1422,7 +1422,7 @@
             if (d.classList.contains('hidden')) {
                 d.classList.remove('hidden');
                 setTimeout(() => { d.classList.remove('opacity-0', 'scale-95'); }, 10);
-                // Close on outside click
+                // Cierra al hacer clic fuera
                 setTimeout(() => {
                     document.addEventListener('click', function handler(e) {
                         if (!d.contains(e.target) && !e.target.closest('[onclick="toggleNotifDropdown()"]')) {
@@ -1692,6 +1692,109 @@
             </tr>
         </table>
     </div>
+
+    
+    <div id="image-lightbox" onclick="closeImageLightbox()" style="display:none; position:fixed; inset:0; z-index:9999; background:transparent; align-items:center; justify-content:center; padding:2vh 2vw; opacity:0; visibility:hidden; transition:opacity 0.25s ease;">
+        <div onclick="event.stopPropagation()" style="position:relative; display:inline-flex; flex-direction:column; align-items:center;">
+            <button type="button" onclick="event.stopPropagation(); closeImageLightbox()" aria-label="Cerrar" style="position:absolute; top:-12px; right:-12px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:16px; line-height:1; color:#64748b; background:rgba(255,255,255,0.9); border:1px solid rgba(0,0,0,0.05); border-radius:50%; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.06); transition:all 0.15s ease; z-index:1;" onmouseover="this.style.transform='scale(1.1)'; this.style.background='#fff'" onmouseout="this.style.transform='scale(1)'; this.style.background='rgba(255,255,255,0.9)'">✕</button>
+            <img id="image-lightbox-img" src="" alt="" style="max-width:70vw; max-height:65vh; width:auto; height:auto; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04); object-fit:contain; transform:scale(0.95); opacity:0; transition:transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.2s ease; cursor:pointer;">
+        </div>
+    </div>
+    <script>
+        let lightboxOpen = false;
+        let lightboxOrigin = null;
+        
+        function openImageLightbox(src, alt = '', originEl = null) {
+            const box = document.getElementById('image-lightbox');
+            const img = document.getElementById('image-lightbox-img');
+            
+            if (originEl) {
+                const rect = originEl.getBoundingClientRect();
+                lightboxOrigin = {
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2,
+                    width: rect.width,
+                    height: rect.height
+                };
+            } else {
+                lightboxOrigin = null;
+            }
+            
+            img.src = src;
+            img.alt = alt;
+            box.style.display = 'flex';
+            
+            img.style.transform = 'scale(0.95)';
+            img.style.opacity = '0';
+            box.style.display = 'flex';
+            
+            requestAnimationFrame(() => {
+                box.style.opacity = '1';
+                box.style.visibility = 'visible';
+                
+                if (lightboxOrigin) {
+                    const imgRect = img.getBoundingClientRect();
+                    const dx = lightboxOrigin.x - (imgRect.left + imgRect.width / 2);
+                    const dy = lightboxOrigin.y - (imgRect.top + imgRect.height / 2);
+                    const scaleX = lightboxOrigin.width / imgRect.width;
+                    const scaleY = lightboxOrigin.height / imgRect.height;
+                    const scale = Math.min(scaleX, scaleY) * 0.95;
+                    
+                    img.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+                }
+                
+                img.offsetHeight;
+                
+                requestAnimationFrame(() => {
+                    img.style.transition = 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.2s ease';
+                    img.style.transform = 'scale(1)';
+                    img.style.opacity = '1';
+                });
+            });
+            
+            lightboxOpen = true;
+        }
+
+        function closeImageLightbox() {
+            const box = document.getElementById('image-lightbox');
+            const img = document.getElementById('image-lightbox-img');
+            
+            box.style.opacity = '0';
+            box.style.visibility = 'hidden';
+            
+            if (lightboxOrigin) {
+                const imgRect = img.getBoundingClientRect();
+                const dx = lightboxOrigin.x - (imgRect.left + imgRect.width / 2);
+                const dy = lightboxOrigin.y - (imgRect.top + imgRect.height / 2);
+                const scaleX = lightboxOrigin.width / imgRect.width;
+                const scaleY = lightboxOrigin.height / imgRect.height;
+                const scale = Math.min(scaleX, scaleY) * 0.95;
+                
+                img.style.transition = 'transform 0.25s cubic-bezier(0.33,0.66,0.66,1), opacity 0.15s ease';
+                img.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+            } else {
+                img.style.transition = 'transform 0.25s cubic-bezier(0.33,0.66,0.66,1), opacity 0.15s ease';
+                img.style.transform = 'scale(0.95)';
+            }
+            img.style.opacity = '0';
+            
+            setTimeout(() => {
+                box.style.display = 'none';
+                img.style.transition = 'transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.2s ease';
+            }, 250);
+            
+            lightboxOpen = false;
+            lightboxOrigin = null;
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && lightboxOpen) closeImageLightbox();
+        });
+
+        document.getElementById('image-lightbox').addEventListener('click', function(e) {
+            if (e.target === this) closeImageLightbox();
+        });
+    </script>
 
     <?php echo $__env->yieldPushContent('modals'); ?>
 </body>

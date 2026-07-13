@@ -87,17 +87,23 @@ input[type="text"].glass-input {
  <label for="proveedor_id" class="field-label">Proveedor *</label>
  <select name="proveedor_id" id="proveedor_id" required class="glass-input no-search">
  <option value="">Seleccione un proveedor...</option>
- @foreach($proveedores as $proveedor)
- <option value="{{ $proveedor->id }}" {{ old('proveedor_id', $stock->proveedor_id ?? '') == $proveedor->id ? 'selected' : '' }}>
- {{ $proveedor->nombre_razon_social }} ({{ $proveedor->identificacion }})
- </option>
- @endforeach
- </select>
- @error('proveedor_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
- </div>
- </div>
+@foreach($proveedores as $proveedor)
+  <option value="{{ $proveedor->id }}" {{ old('proveedor_id', $stock->proveedor_id ?? '') == $proveedor->id ? 'selected' : '' }}>
+  {{ $proveedor->nombre_razon_social }} ({{ $proveedor->identificacion }})
+  </option>
+  @endforeach
+  </select>
+  @error('proveedor_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+  </div>
+  </div>
 
- {{-- Panel de Precios: siempre visible, fuera del grid --}}
+  {{-- Foto del producto --}}
+  <div class="md:col-span-2">
+  <label class="field-label">Foto del Producto</label>
+  <input type="file" name="photo" accept="image/*" class="glass-input">
+  </div>
+
+  {{-- Panel de Precios: siempre visible, fuera del grid --}}
  <div class="pricing-panel p-5 bg-white/45 dark:bg-slate-900/60 border border-white/40 dark:border-white/10 rounded-2xl shadow-sm">
  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
  <div>

@@ -116,12 +116,20 @@
 
  </div>
 
- <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
- <a href="{{ route('mantenimientos.index') }}" class="btn-cancel">↩️ Cancelar</a>
- <button type="submit" class="btn-save">
- 🔄 Actualizar Mantenimiento
- </button>
- </div>
+  @if(auth()->user()->isTecnico())
+  <div class="md:col-span-2">
+    <label class="field-label flex items-center gap-2"><span>🔐</span> Contraseña de Administrador *</label>
+    <input type="password" name="admin_password" class="glass-input mt-1" placeholder="Requerida para guardar cambios" autocomplete="off">
+    <p class="text-xs text-gray-400 mt-1">Como técnico, debes confirmar con la contraseña de un administrador para editar.</p>
+  </div>
+  @endif
+
+  <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+  <a href="{{ route('mantenimientos.index') }}" class="btn-cancel">↩️ Cancelar</a>
+  <button type="submit" class="btn-save">
+  🔄 Actualizar Mantenimiento
+  </button>
+  </div>
  </form>
  </div>
 </div>

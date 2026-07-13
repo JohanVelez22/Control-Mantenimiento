@@ -69,19 +69,10 @@
  {{-- Submit --}}
  <button type="submit" class="w-full btn-primary py-3 justify-center text-lg mt-4 ">
  Entrar al Sistema →
- </button>
- </form>
+  </button>
+  </form>
 
- {{-- Divider + enlace registro --}}
- <div class="mt-6 pt-5 border-t border-gray-200/50 dark:border-white/10 text-center">
- <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
- ¿No tienes cuenta?
- <a href="{{ route('register') }}" class="text-blue-600 dark:text-blue-400 font-bold hover:text-blue-700 dark:hover:text-blue-300 transition-colors ml-1">
- Regístrate aquí
- </a>
- </p>
- </div>
- </div>
+  </div>
 </div>
 
 <script>

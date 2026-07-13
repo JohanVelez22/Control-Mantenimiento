@@ -61,6 +61,13 @@ class MovimientoInventarioController extends Controller
 
             $totalDocumento = $this->calcularTotal($request->items);
             $totalPagado    = (float) str_replace('.', '', $request->total_pagado);
+
+            // No permitir pagar más de lo debido (evita saldos negativos)
+            if ($totalPagado > $totalDocumento + 0.001) {
+                DB::rollBack();
+                return back()->with('error', 'El valor pagado no puede superar el total del documento.')->withInput();
+            }
+
             $saldo          = $totalDocumento - $totalPagado;
             $estado         = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
 
@@ -175,6 +182,13 @@ class MovimientoInventarioController extends Controller
 
             $totalDocumento = $this->calcularTotal($request->items);
             $totalPagado    = (float) str_replace('.', '', $request->total_pagado);
+
+            // No permitir cobrar más de lo debido (evita saldos negativos)
+            if ($totalPagado > $totalDocumento + 0.001) {
+                DB::rollBack();
+                return back()->with('error', 'El valor cobrado no puede superar el total del documento.')->withInput();
+            }
+
             $saldo          = $totalDocumento - $totalPagado;
             $estado         = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
 
@@ -260,7 +274,7 @@ class MovimientoInventarioController extends Controller
         $fecha_desde = $request->input('fecha_desde', date('Y-m-01'));
         $fecha_hasta = $request->input('fecha_hasta', date('Y-m-d'));
 
-        // Merge back to request so Blade matches
+        // Sincroniza con el request para que Blade coincida
         $request->merge([
             'fecha_desde' => $fecha_desde,
             'fecha_hasta' => $fecha_hasta,
@@ -305,6 +319,23 @@ class MovimientoInventarioController extends Controller
 
     public function anularFactura(Request $request, Factura $factura): RedirectResponse
     {
+        if (Auth::user()->role === 'invitado') {
+            return redirect()->back()->with('error', 'No tienes permisos para anular.');
+        }
+
+        // Técnico requiere contraseña de admin; admin usa su propia o la de admin.
+        if (Auth::user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para anular.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+                return redirect()->back()->with('error', 'Contraseña incorrecta.');
+            }
+        }
+
         try {
             DB::beginTransaction();
 
@@ -508,6 +539,12 @@ class MovimientoInventarioController extends Controller
             $totalDocumento = 0;
             foreach ($factura->items()->get() as $item) {
                 $totalDocumento += (float) $item->cantidad * (float) $item->precio_unitario;
+            }
+
+            // No permitir que el pagado supere el nuevo total del documento
+            if (!$shouldBeAnulada && $totalPagado > $totalDocumento + 0.001) {
+                DB::rollBack();
+                return back()->with('error', 'El valor pagado no puede superar el total del documento.')->withInput();
             }
 
             $saldo = $totalDocumento - $totalPagado;

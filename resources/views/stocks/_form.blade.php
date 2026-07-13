@@ -98,7 +98,7 @@
 
  if(!inputVisual || !inputReal) return;
 
- // Init visual
+ // Inicializa visual
  if (inputReal.value) {
  inputVisual.value = new Intl.NumberFormat('es-CO').format(inputReal.value);
  }

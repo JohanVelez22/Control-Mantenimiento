@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use App\Models\MovimientoCaja;
 use App\Models\ConceptoCaja;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -18,7 +15,7 @@ class MovimientoCajaController extends Controller
         $fecha_desde = $request->input('fecha_desde', date('Y-m-01'));
         $fecha_hasta = $request->input('fecha_hasta', date('Y-m-d'));
 
-        // Merge back to request so Blade matches
+        // Sincroniza con el request para que Blade coincida
         $request->merge([
             'fecha_desde' => $fecha_desde,
             'fecha_hasta' => $fecha_hasta,
@@ -271,19 +268,17 @@ class MovimientoCajaController extends Controller
             return redirect()->back()->with('error', 'No tienes permisos para anular.');
         }
 
-        $request->validate([
-            'password_confirm' => 'required'
-        ]);
-
-        $currentUser = auth()->user();
-        $ok = Hash::check($request->password_confirm, $currentUser->password);
-        if (!$ok) {
-            $adminPassword = User::where('role', 'admin')->value('password');
-            $ok = $adminPassword && Hash::check($request->password_confirm, $adminPassword);
-        }
-
-        if (!$ok) {
-            return redirect()->back()->with('error', 'Contraseña incorrecta.');
+        // Técnico requiere contraseña de admin; admin usa su propia o la de admin.
+        if (auth()->user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para anular.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+                return redirect()->back()->with('error', 'Contraseña incorrecta.');
+            }
         }
 
         try {

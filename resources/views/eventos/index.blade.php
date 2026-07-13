@@ -226,7 +226,7 @@
             const monetaryKeys = ['costo', 'monto', 'precio', 'total', 'abono', 'saldo', 'valor'];
             
             for(let key in obj) {
-                // Ignore tokens or long hash strings if any
+                // Ignora tokens o cadenas hash largas si existen
                 if(key === 'remember_token' || key === 'password') continue;
                 
                 let val = obj[key];

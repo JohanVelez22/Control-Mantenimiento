@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
         cargarMunicipios(dep, munSeleccionado);
     }
 
-    // Radio button dynamic styling
+    // Estilo dinámico para botones de radio
     const radios = document.querySelectorAll('input[name="tipo_cliente"]');
     if (radios.length > 0) {
         radios.forEach(radio => {

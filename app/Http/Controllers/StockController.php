@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Stock;
 
@@ -17,7 +18,7 @@ class StockController extends Controller
             return redirect()->route('stocks.index', ['page' => $page])->withFragment('stock-' . $id);
         }
 
-        $query = Stock::with('proveedor');
+        $query = Stock::with('proveedor')->activos();
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -59,7 +60,12 @@ class StockController extends Controller
             'utilidad' => 'required|numeric|min:0|max:100',
             'precio_venta' => 'nullable|numeric|min:0|decimal:0,2',
             'precio_tecnico' => 'nullable|numeric|min:0|decimal:0,2',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo'] = $request->file('photo')->store('stocks', 'public');
+        }
 
         Stock::create($validated);
 
@@ -92,7 +98,15 @@ class StockController extends Controller
             'utilidad' => 'required|numeric|min:0|max:100',
             'precio_venta' => 'nullable|numeric|min:0|decimal:0,2',
             'precio_tecnico' => 'nullable|numeric|min:0|decimal:0,2',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            if ($stock->photo && Storage::disk('public')->exists($stock->photo)) {
+                Storage::disk('public')->delete($stock->photo);
+            }
+            $validated['photo'] = $request->file('photo')->store('stocks', 'public');
+        }
 
         if (!isset($validated['precio_venta'])) $validated['precio_venta'] = 0;
         if (!isset($validated['precio_tecnico'])) $validated['precio_tecnico'] = 0;
@@ -184,7 +198,7 @@ class StockController extends Controller
                 return $item->factura->fecha ?? $item->created_at;
             });
             
-        // Explicitly get the proveedor relationship to avoid the 'proveedor' column masking it
+        // Obtiene explícitamente la relación proveedor para evitar que la columna 'proveedor' la enmascare
         $proveedor = $stock->proveedor()->first();
             
         return view('stocks.show', compact('stock', 'historial', 'proveedor'));
@@ -204,7 +218,7 @@ class StockController extends Controller
             return redirect()->route('stocks.index')->with('error', 'No tienes permisos para realizar esta acción.');
         }
 
-        // Toggle the active status
+        // Alterna el estado activo
         $stock->active = !$stock->active;
         $stock->save();
 

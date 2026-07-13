@@ -18,6 +18,11 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6">
             <div class="flex items-center gap-3">
                 <a href="{{ route('stocks.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+@if($stock->photo)
+  <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
+       onclick="openImageLightbox('{{ asset('storage/' . $stock->photo) }}', '{{ addslashes($stock->producto) }}', this)"
+       class="w-16 h-16 rounded-2xl object-cover cursor-pointer border border-white/40 shadow-sm flex-shrink-0 hover:opacity-80 transition">
+@endif
                 <div>
                     <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                         {{ $stock->producto }}

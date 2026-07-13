@@ -11,7 +11,7 @@ class TecnicoController extends Controller
 {
     public function index()
     {
-        $tecnicos = Tecnico::orderBy('id', 'desc')->paginate(10);
+        $tecnicos = Tecnico::activos()->orderBy('id', 'desc')->paginate(10);
         return view('tecnicos.index', compact('tecnicos'));
     }
 

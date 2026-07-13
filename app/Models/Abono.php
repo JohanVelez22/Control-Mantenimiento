@@ -29,4 +29,18 @@ class Abono extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function movimientoCaja()
+    {
+        return $this->hasOne(MovimientoCaja::class, 'abono_id');
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($abono) {
+            if ($abono->movimientoCaja) {
+                $abono->movimientoCaja->update(['anulado' => true]);
+            }
+        });
+    }
 }

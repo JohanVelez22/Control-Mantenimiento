@@ -27,7 +27,10 @@ class MovimientoCaja extends Model
 
     protected function casts(): array
     {
-        return ['fecha' => 'date'];
+        return [
+            'fecha' => 'date',
+            'anulado' => 'boolean',
+        ];
     }
 
     public function parent()

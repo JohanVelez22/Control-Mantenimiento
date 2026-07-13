@@ -56,10 +56,16 @@ class Factura extends Model
 
     // ─── Computed Attributes ──────────────────────────────────────
 
-    /** Saldo calculado en PHP (complementa la columna stored) */
+    /** Saldo pendiente (lo que aún se debe). Columna generada, nunca negativo. */
     public function getSaldoPendienteAttribute(): float
     {
-        return max(0, (float) $this->total_documento - (float) $this->total_pagado);
+        return max(0, (float) ($this->attributes['saldo_pendiente'] ?? 0));
+    }
+
+    /** Saldo a favor (lo que se pagó de más). Columna generada. */
+    public function getSaldoAFavorAttribute(): float
+    {
+        return max(0, (float) ($this->attributes['saldo_a_favor'] ?? 0));
     }
 
     public function getEstaAnuladaAttribute(): bool

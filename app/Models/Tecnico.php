@@ -29,4 +29,10 @@ class Tecnico extends Model
     {
         return $this->hasMany(Mantenimiento::class);
     }
+
+    /** Scope: solo registros activos (no dados de baja lógicamente) */
+    public function scopeActivos($query)
+    {
+        return $query->where('active', true);
+    }
 }

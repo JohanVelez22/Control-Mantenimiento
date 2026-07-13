@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -90,48 +89,6 @@ class AuthController extends Controller
         }
 
         return redirect()->intended('/dashboard')->with('success', '¡Bienvenido de nuevo, ' . $user->name . '!');
-    }
-
-    // Muestra la vista de registro
-    public function showRegister()
-    {
-        return view('auth.register');
-    }
-
-    // Procesa el registro
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed'],
-            'admin_password' => 'nullable|string',
-            'role' => 'required|in:admin,tecnico,invitado',
-        ]);
-
-        $rolSolicitado = $request->input('role');
-        $secretAdmin = env('ROLE_PROMOTE_ADMIN_SECRET', 'Admin2026*');
-        $secretTecnico = env('ROLE_PROMOTE_TECNICO_SECRET', 'Tecny2026*');
-
-        if ($rolSolicitado === 'admin' && $request->input('admin_password') !== $secretAdmin) {
-            return back()->withErrors(['admin_password' => 'La clave de autorización es incorrecta para el rol de Administrador.'])->withInput();
-        }
-        if ($rolSolicitado === 'tecnico' && $request->input('admin_password') !== $secretTecnico) {
-            return back()->withErrors(['admin_password' => 'La clave de autorización es incorrecta para el rol de Técnico.'])->withInput();
-        }
-
-        // Crear usuario con 'active' en true por defecto
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $rolSolicitado,
-            'active' => true, 
-        ]);
-
-        Auth::login($user);
-
-        return redirect()->route('dashboard');
     }
 
     // Cierra la sesión

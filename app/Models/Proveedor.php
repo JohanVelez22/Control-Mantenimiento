@@ -43,4 +43,10 @@ class Proveedor extends Model
     {
         return $this->tipo_entidad === 'empresa' ? '🏢 Empresa' : '👤 Persona';
     }
+
+    /** Scope: solo registros activos (no dados de baja lógicamente) */
+    public function scopeActivos($query)
+    {
+        return $query->where('active', true);
+    }
 }

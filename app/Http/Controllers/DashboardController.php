@@ -49,12 +49,10 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Estados Mantenimientos
+        // Estados Mantenimientos (solo estados reales: pendiente / terminado)
         $stats = [
             'pendientes' => Mantenimiento::where('anulado', false)->where('estado', 'pendiente')->count(),
-            'en_proceso' => Mantenimiento::where('anulado', false)->where('estado', 'en_proceso')->count(),
-            'reparados'  => Mantenimiento::where('anulado', false)->where('estado', 'reparado')->count(),
-            'terminados' => Mantenimiento::where('anulado', false)->whereIn('estado', ['terminado', 'entregado'])->count(),
+            'terminados' => Mantenimiento::where('anulado', false)->where('estado', 'terminado')->count(),
             'stock_bajo' => \App\Models\Stock::where('cantidad', '<=', 5)->count(),
             'electronica_pendientes' => \App\Models\Electronica::where('anulado', false)->where('estado', 'pendiente')->count(),
         ];

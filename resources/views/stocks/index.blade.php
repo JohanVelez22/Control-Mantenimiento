@@ -66,16 +66,23 @@
  <td data-label="Código:" class="text-sm font-bold text-slate-500 dark:text-slate-400 {{ $dim }}">
  {{ $stock->codigo ?? '-' }}
  </td>
- <td data-label="Producto:" class="{{ $dim }}">
- <div class="font-bold text-slate-800 dark:text-white leading-tight">
- {{ $stock->producto }}
- </div>
- @if($stock->categoria || $stock->subcategoria)
- <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-1">
- {{ $stock->categoria ?? 'Sin Categoría' }} {{ $stock->subcategoria ? ' / ' . $stock->subcategoria : '' }}
- </div>
- @endif
- </td>
+  <td data-label="Producto:" class="{{ $dim }}">
+  <div class="flex items-center gap-3">
+@if($stock->photo)
+  <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
+       onclick="openImageLightbox('{{ asset('storage/' . $stock->photo) }}', '{{ addslashes($stock->producto) }}', this)"
+       class="w-11 h-11 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm flex-shrink-0 hover:opacity-80 transition">
+@endif
+  <div class="font-bold text-slate-800 dark:text-white leading-tight">
+  {{ $stock->producto }}
+  </div>
+  </div>
+  @if($stock->categoria || $stock->subcategoria)
+  <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-1">
+  {{ $stock->categoria ?? 'Sin Categoría' }} {{ $stock->subcategoria ? ' / ' . $stock->subcategoria : '' }}
+  </div>
+  @endif
+  </td>
  <td data-label="Cantidad:" class="text-center {{ $dim }}">
  <span class="pill {{ $stock->cantidad > 5 ? 'pill-done' : 'pill-anulado' }}">
  {{ $stock->cantidad }}

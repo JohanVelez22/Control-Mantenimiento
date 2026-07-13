@@ -87,9 +87,15 @@ class UserController extends Controller
         }
 
         if ($request->filled('password') || $request->filled('password_confirmation')) {
-            $request->validate([
-                'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed']
-            ]);
+            $rules = [
+                'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed'],
+            ];
+            // Al editar tu propia cuenta se exige la contraseña actual (seguridad).
+            // Un administrador editando a otro usuario no necesita conocer su contraseña.
+            if (auth()->id() === $usuario->id) {
+                $rules['current_password'] = ['required', 'current_password'];
+            }
+            $request->validate($rules);
             $usuario->password = Hash::make($request->password);
         }
 
