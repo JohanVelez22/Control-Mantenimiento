@@ -1393,7 +1393,7 @@
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black <?php echo e($titleClass); ?> uppercase tracking-wider">Saldo <?php echo e(ucfirst($mov->tipo_movimiento)); ?></span>
-                            <span class="text-[10px] font-bold <?php echo e($idClass); ?>">#<?php echo e(str_pad($mov->id, 4, '0', STR_PAD_LEFT)); ?></span>
+                            <span class="text-[10px] font-bold <?php echo e($idClass); ?>">#<?php echo e($mov->id); ?></span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate"><?php echo e($mov->concepto->nombre ?? '—'); ?> - <?php echo e($mov->persona ?? '—'); ?></p>
                         <p class="text-xs <?php echo e($montoClass); ?> font-semibold">

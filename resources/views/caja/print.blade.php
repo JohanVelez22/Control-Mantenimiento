@@ -29,7 +29,7 @@
     </p>
 </div>
 
-<div class="clearfix" style="margin-top: 30px;">
+<div class="clearfix" style="margin-top: 15px;">
     <div style="float: left; width: 45%; border: 1px solid #ccc; padding: 10px; font-size: 8pt; min-height: 80px;">
         <strong>Observaciones / Descripción:</strong><br>
         {!! nl2br(e($movimiento->descripcion ?: 'Sin observaciones.')) !!}
@@ -60,7 +60,7 @@
     </table>
 </div>
 
-<div class="clearfix" style="margin-top: 32px;">
+<div class="clearfix" style="margin-top: 50px;">
     <div style="float: left; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 4px; font-size: 8pt;">
         <strong>Firma Cliente / Recibe</strong>
     </div>
