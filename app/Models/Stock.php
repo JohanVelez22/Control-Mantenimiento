@@ -24,6 +24,7 @@ class Stock extends Model
         'precio_venta',
         'precio_tecnico',
         'active',
+        'photo',
     ];
 
     protected $casts = ['active' => 'boolean'];

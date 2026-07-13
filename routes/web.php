@@ -104,6 +104,7 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         Route::post('caja/{movimiento}/duplicate', [App\Http\Controllers\MovimientoCajaController::class, 'duplicate'])->name('caja.duplicate');
         Route::post('caja/{movimiento}/abonos',    [App\Http\Controllers\MovimientoCajaController::class, 'storeAbono'])->name('caja.abonos.store');
         Route::post('caja/concepto',               [App\Http\Controllers\MovimientoCajaController::class, 'storeConcepto'])->name('caja.concepto.store');
+        Route::resource('conceptos', App\Http\Controllers\ConceptoCajaController::class)->except(['create', 'show']);
 
         // Abonos (anidados)
         Route::post('mantenimientos/{mantenimiento}/abonos', [App\Http\Controllers\AbonoController::class, 'store'])->name('abonos.store');

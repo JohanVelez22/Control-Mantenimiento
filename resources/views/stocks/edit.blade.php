@@ -30,7 +30,7 @@ input[type="text"].glass-input {
  </div>
  </div>
 
- <form action="{{ route('stocks.update', $stock->id) }}" method="POST" class="space-y-6">
+ <form action="{{ route('stocks.update', $stock->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
  @csrf
  @method('PUT')
 

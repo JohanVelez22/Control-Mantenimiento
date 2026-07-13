@@ -45,38 +45,41 @@
 
  <div class="overflow-x-auto pb-2">
  <table id="tabla-stocks" class="ts-table responsive-table w-full">
- <thead>
- <tr>
- <th>Cód.</th>
- <th>Producto</th>
- <th class="text-center">Cant.</th>
- <th class="text-right">P. Compra</th>
- <th class="text-center">Utilidad</th>
- <th class="text-right">P. Venta</th>
- <th class="text-right">P. Técnico</th>
- <th class="text-center">Estado</th>
- <th class="text-center">Acciones</th>
- </tr>
- </thead>
+<thead>
+  <tr>
+  <th>Cód.</th>
+  <th>Foto</th>
+  <th>Producto</th>
+  <th class="text-center">Cant.</th>
+  <th class="text-right">P. Compra</th>
+  <th class="text-center">Utilidad</th>
+  <th class="text-right">P. Venta</th>
+  <th class="text-right">P. Técnico</th>
+  <th class="text-center">Estado</th>
+  <th class="text-center">Acciones</th>
+  </tr>
+  </thead>
  <tbody>
  <?php $__empty_1 = true; $__currentLoopData = $stocks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stock): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
  <?php $dim = !$stock->active ? 'opacity-60 grayscale' : ''; ?>
  <tr id="stock-<?php echo e($stock->id); ?>">
- <td data-label="Código:" class="text-sm font-bold text-slate-500 dark:text-slate-400 <?php echo e($dim); ?>">
- <?php echo e($stock->codigo ?? '-'); ?>
+<td data-label="Código:" class="text-sm font-bold text-slate-500 dark:text-slate-400 <?php echo e($dim); ?>">
+  <?php echo e($stock->codigo ?? '-'); ?>
 
- </td>
-  <td data-label="Producto:" class="<?php echo e($dim); ?>">
-  <div class="flex items-center gap-3">
-<?php if($stock->photo): ?>
+  </td>
+  <td data-label="Foto:" class="text-center <?php echo e($dim); ?>">
+  <?php if($stock->photo): ?>
   <img src="<?php echo e(asset('storage/' . $stock->photo)); ?>" alt="<?php echo e($stock->producto); ?>"
        onclick="openImageLightbox('<?php echo e(asset('storage/' . $stock->photo)); ?>', '<?php echo e(addslashes($stock->producto)); ?>', this)"
-       class="w-11 h-11 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm flex-shrink-0 hover:opacity-80 transition">
-<?php endif; ?>
+       class="w-11 h-11 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm mx-auto hover:opacity-80 transition">
+  <?php else: ?>
+  <span class="text-[10px] text-gray-400 dark:text-gray-500">—</span>
+  <?php endif; ?>
+  </td>
+  <td data-label="Producto:" class="<?php echo e($dim); ?>">
   <div class="font-bold text-slate-800 dark:text-white leading-tight">
   <?php echo e($stock->producto); ?>
 
-  </div>
   </div>
   <?php if($stock->categoria || $stock->subcategoria): ?>
   <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-1">
@@ -140,9 +143,9 @@
  </div>
  </td>
  </tr>
- <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
- <tr>
- <td colspan="9" class="p-16 text-center">
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+  <tr>
+  <td colspan="10" class="p-16 text-center">
  <div class="flex flex-col items-center gap-3">
  <div class="text-6xl drop-shadow-md mb-2">📦</div>
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Inventario Vacío</h3>

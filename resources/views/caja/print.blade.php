@@ -1,11 +1,11 @@
 @extends('layouts.print')
 
-@section('title', 'Comprobante de Caja ' . str_pad($movimiento->id, 5, '0', STR_PAD_LEFT))
+@section('title', 'Comprobante de Caja ' . $movimiento->id)
 
 @section('watermark_class', $movimiento->anulado ? 'anulado' : '')
 
 @section('doc_title')
-    COMPROBANTE DE {{ Str::upper($movimiento->tipo_movimiento) }} A CAJA - #{{ str_pad($movimiento->id, 5, '0', STR_PAD_LEFT) }}
+    COMPROBANTE DE {{ Str::upper($movimiento->tipo_movimiento) }} A CAJA - #{{ $movimiento->id }}
 @endsection
 
 @section('content')
@@ -22,9 +22,9 @@
     </div>
 </div>
 
-<div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; text-align: center;">
-    <h3 style="margin: 0 0 10px; font-size: 11pt; text-transform: uppercase;">Concepto del Movimiento</h3>
-    <p style="font-size: 12pt; font-weight: bold; margin: 0; color: #222;">
+<div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; text-align: center;">
+    <h3 style="margin: 0 0 6px; font-size: 10pt; text-transform: uppercase;">Concepto del Movimiento</h3>
+    <p style="font-size: 11pt; font-weight: bold; margin: 0; color: #222;">
         {{ $movimiento->concepto->nombre ?? 'Concepto Desconocido' }}
     </p>
 </div>
@@ -60,11 +60,11 @@
     </table>
 </div>
 
-<div class="clearfix" style="margin-top: 45px;">
-    <div style="float: left; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
+<div class="clearfix" style="margin-top: 32px;">
+    <div style="float: left; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 4px; font-size: 8pt;">
         <strong>Firma Cliente / Recibe</strong>
     </div>
-    <div style="float: right; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
+    <div style="float: right; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 4px; font-size: 8pt;">
         <strong>Firma Autorizada</strong>
     </div>
 </div>

@@ -1215,6 +1215,43 @@
         mediaQuery.addListener(handleMobileChanges);
         handleMobileChanges(mediaQuery);
 
+        // ─── REPOSICIONAR TOMSELECT DROPDOWNS AL CAMBIAR SIDEBAR ───────────────
+        // Trackear instancias TomSelect para reposicionar al cambiar sidebar
+        window._glassTomSelectInstances = window._glassTomSelectInstances || [];
+
+        function trackTomSelectDropdowns(durationMs) {
+            const start = performance.now();
+            function tick(now) {
+                if (window._glassTomSelectInstances) {
+                    window._glassTomSelectInstances.forEach(function(ts) {
+                        if (ts && ts.isOpen && ts.dropdown && ts.wrapper) {
+                            var control = ts.wrapper;
+                            var rect = control.getBoundingClientRect();
+                            var scrollY = window.scrollY || window.pageYOffset;
+                            var scrollX = window.scrollX || window.pageXOffset;
+                            var dropdownWidth = ts.dropdown.offsetWidth;
+                            var leftPos = rect.left + scrollX + (rect.width / 2) - (dropdownWidth / 2);
+                            ts.dropdown.style.top = (rect.bottom + scrollY + 4) + 'px';
+                            ts.dropdown.style.left = leftPos + 'px';
+                        }
+                    });
+                }
+                if (now - start < durationMs) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+
+        // Detectar cambios en el sidebar (hover/expanded)
+        const sidebar = document.getElementById('ts-sidebar');
+        if (sidebar) {
+            sidebar.addEventListener('mouseenter', () => {
+                trackTomSelectDropdowns(300);
+            });
+            sidebar.addEventListener('mouseleave', () => {
+                trackTomSelectDropdowns(300);
+            });
+        }
+
         // Cierra el dropdown de notificaciones al hacer clic fuera
         document.addEventListener('click', function(event) {
             const bell = document.getElementById('notification-bell');
@@ -1543,6 +1580,10 @@
                 }
 
                 let tsInstance = new TomSelect(el, tsConfig);
+
+                // Track open TomSelect instances for sidebar repositioning
+                if (!window._glassTomSelectInstances) window._glassTomSelectInstances = [];
+                window._glassTomSelectInstances.push(tsInstance);
 
                 // CRÍTICO: Copiar clase 'no-search' al wrapper generado por TomSelect.
                 // TomSelect NO copia clases del select original al wrapper,
