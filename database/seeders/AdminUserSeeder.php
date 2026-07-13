@@ -15,11 +15,14 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Eliminar usuarios antiguos con @tusistema.com
+        User::where('email', 'like', '%@tusistema.com')->delete();
+
         // Admin principal
         User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
-                'name' => 'Administrador',
+                'name' => 'Admin Sistema',
                 'password' => Hash::make(env('ADMIN_DEFAULT_PASSWORD', 'Admin123*')),
                 'role' => 'admin',
                 'active' => true,
@@ -30,7 +33,7 @@ class AdminUserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'tecnico@example.com'],
             [
-                'name' => 'Técnico Demo',
+                'name' => 'Tecnico Sistema',
                 'password' => Hash::make(env('TECNICO_DEFAULT_PASSWORD', 'Tecny123*')),
                 'role' => 'tecnico',
                 'active' => true,
@@ -41,7 +44,7 @@ class AdminUserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'invitado@example.com'],
             [
-                'name' => 'Invitado Demo',
+                'name' => 'Invitado',
                 'password' => Hash::make(env('INVITADO_DEFAULT_PASSWORD', 'Invit123*')),
                 'role' => 'invitado',
                 'active' => true,
