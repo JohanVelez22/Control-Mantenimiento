@@ -585,7 +585,7 @@ class MovimientoInventarioController extends Controller
 
     private function calcularTotal(array $items): float
     {
-        return collect($items)->sum(fn($i) => (float) $i['cantidad'] * (float) $i['precio_unitario']);
+        return collect($items)->sum(fn($i) => (float) $i['cantidad'] * (float) str_replace('.', '', $i['precio_unitario']));
     }
 
     private function buildObservaciones(?string $obs, float $saldo, ?string $historial = null): ?string
