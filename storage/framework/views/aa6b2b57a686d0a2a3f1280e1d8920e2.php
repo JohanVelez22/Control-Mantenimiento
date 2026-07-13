@@ -222,28 +222,15 @@ unset($__errorArgs, $__bag); ?>
  }
  }
  
- // Ejecuta inicial
- updateAmountColor();
- }
- formatInput('monto_visual', 'monto_real');
- formatInput('monto_total_visual', 'monto_total_real');
+// Ejecuta inicial
+  updateAmountColor();
+  }
+  formatInput('monto_visual', 'monto_real');
+  formatInput('monto_total_visual', 'monto_total_real');
 
- // --- BÚSQUEDA DE CLIENTES Y PROVEEDORES ---
- <?php
-  $clientesData = \App\Models\Cliente::orderBy('nombres')->orderBy('apellidos')->get(['id','nombres','apellidos','identificacion','movil'])->map(function($c) {
-      $c->tipo_entidad = 'cliente';
-      $c->nombre = $c->nombre; // accessor
-      return $c;
-  });
- $proveedoresData = \App\Models\Proveedor::orderBy('nombre_razon_social')->get(['id','nombre_razon_social as nombre','identificacion','telefono as movil'])->map(function($p) {
-     $p->tipo_entidad = 'proveedor';
-     return $p;
- });
- $entidadesData = $clientesData->concat($proveedoresData);
- ?>
- const todasEntidades = <?php echo json_encode($entidadesData, 15, 512) ?>;
+  const todasEntidades = <?php echo json_encode($todasEntidades, 15, 512) ?>;
 
- function buscarClienteCaja() {
+  function buscarClienteCaja() {
  const termino = document.getElementById('cliente_busqueda').value.trim().toLowerCase();
  const resultadosDiv = document.getElementById('cliente_resultados');
  resultadosDiv.innerHTML = '';

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
+use App\Models\Proveedor;
 use Illuminate\Http\Request;
 use App\Models\MovimientoCaja;
 use App\Models\ConceptoCaja;
@@ -80,10 +82,25 @@ class MovimientoCajaController extends Controller
         return view('caja.index', compact('movimientos', 'totales', 'conceptos'));
     }
 
-    public function create()
+public function create()
     {
         $conceptos = ConceptoCaja::orderBy('nombre')->get();
-        return view('caja.create', compact('conceptos'));
+
+        $todasEntidades = \App\Models\Cliente::orderBy('nombres')->orderBy('apellidos')
+            ->get(['id','nombres','apellidos','identificacion','movil'])
+            ->map(function($c) {
+                $c->tipo_entidad = 'cliente';
+                $c->nombre = $c->nombre;
+                return $c;
+            })
+            ->concat(\App\Models\Proveedor::orderBy('nombre_razon_social')
+                ->get(['id','nombre_razon_social as nombre','identificacion','telefono as movil'])
+                ->map(function($p) {
+                    $p->tipo_entidad = 'proveedor';
+                    return $p;
+                }));
+
+        return view('caja.create', compact('conceptos', 'todasEntidades'));
     }
 
     public function store(Request $request)
@@ -140,7 +157,22 @@ class MovimientoCajaController extends Controller
     {
         $movimiento->load('childPayments.user');
         $conceptos = ConceptoCaja::orderBy('nombre')->get();
-        return view('caja.edit', compact('movimiento', 'conceptos'));
+
+        $todasEntidades = \App\Models\Cliente::orderBy('nombres')->orderBy('apellidos')
+            ->get(['id','nombres','apellidos','identificacion','movil'])
+            ->map(function($c) {
+                $c->tipo_entidad = 'cliente';
+                $c->nombre = $c->nombre;
+                return $c;
+            })
+            ->concat(\App\Models\Proveedor::orderBy('nombre_razon_social')
+                ->get(['id','nombre_razon_social as nombre','identificacion','telefono as movil'])
+                ->map(function($p) {
+                    $p->tipo_entidad = 'proveedor';
+                    return $p;
+                }));
+
+        return view('caja.edit', compact('movimiento', 'conceptos', 'todasEntidades'));
     }
 
     public function update(Request $request, MovimientoCaja $movimiento)

@@ -675,7 +675,7 @@
                 </a>
                 <?php if(auth()->user() && auth()->user()->isAdmin()): ?>
                 <a href="<?php echo e(route('eventos.index')); ?>" class="nav-item <?php echo e(request()->routeIs('eventos.*') ? 'active' : ''); ?>" title="Eventos (Auditoría)">
-                    <span class="nav-icon">🕵️</span>
+                    <span class="nav-icon">🕵🏻</span>
                     <span class="nav-label">Eventos</span>
                 </a>
                 <?php endif; ?>

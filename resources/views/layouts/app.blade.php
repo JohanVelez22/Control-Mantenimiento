@@ -675,7 +675,7 @@
                 </a>
                 @if(auth()->user() && auth()->user()->isAdmin())
                 <a href="{{ route('eventos.index') }}" class="nav-item {{ request()->routeIs('eventos.*') ? 'active' : '' }}" title="Eventos (Auditoría)">
-                    <span class="nav-icon">🕵️</span>
+                    <span class="nav-icon">🕵🏻</span>
                     <span class="nav-label">Eventos</span>
                 </a>
                 @endif

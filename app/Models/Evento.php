@@ -6,7 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Evento extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'accion',
+        'modelo_tipo',
+        'modelo_id',
+        'valores_antiguos',
+        'valores_nuevos',
+        'ip_direccion',
+        'user_agent',
+        'descripcion',
+    ];
 
     protected $casts = [
         'valores_antiguos' => 'array',
