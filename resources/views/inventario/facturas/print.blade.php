@@ -35,7 +35,7 @@
         @foreach($factura->items as $item)
         <tr>
             <td class="text-center">{{ $item->cantidad }}</td>
-            <td>{{ $item->stock->producto ?? 'Producto Desconocido' }}</td>
+            <td>{{ $item->stock->producto ?? $item->descripcion ?? 'Producto Desconocido' }}</td>
             <td class="text-right">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
             <td class="text-right">${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}</td>
         </tr>

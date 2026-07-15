@@ -107,6 +107,10 @@
                     <span class="nav-icon">🛒</span>
                     <span class="nav-label">Operaciones (C/V)</span>
                 </a>
+                <a href="{{ route('cotizaciones.index') ?? '#' }}" class="nav-item {{ request()->routeIs('cotizaciones.*') ? 'active' : '' }}" title="Cotizaciones">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-label">Cotizaciones</span>
+                </a>
                 <a href="{{ route('mantenimientos.index') }}" class="nav-item {{ request()->routeIs('mantenimientos.*') && !request()->routeIs('mantenimientos.reportes') ? 'active' : '' }}" title="Mantenimientos">
                     <span class="nav-icon">⚙️</span>
                     <span class="nav-label">Mantenimientos</span>

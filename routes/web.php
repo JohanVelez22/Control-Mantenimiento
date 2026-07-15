@@ -75,6 +75,11 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         Route::resource('stocks', App\Http\Controllers\StockController::class)->except(['destroy']);
         Route::get('stocks/{stock}/print', [App\Http\Controllers\StockController::class, 'print'])->name('stocks.print');
 
+        // Cotizaciones
+        Route::resource('cotizaciones', App\Http\Controllers\CotizacionController::class);
+        Route::post('cotizaciones/{cotizacion}/convertir', [App\Http\Controllers\CotizacionController::class, 'convertir'])->name('cotizaciones.convertir');
+        Route::get('cotizaciones/{cotizacion}/pdf', [App\Http\Controllers\CotizacionController::class, 'pdf'])->name('cotizaciones.pdf');
+
         // Mantenimientos: mutaciones (lectura la gestiona el grupo de invitado)
         Route::resource('mantenimientos', MantenimientoController::class)->except(['destroy', 'index', 'show']);
         Route::post('mantenimientos/{mantenimiento}/duplicate', [MantenimientoController::class, 'duplicate'])->name('mantenimientos.duplicate');

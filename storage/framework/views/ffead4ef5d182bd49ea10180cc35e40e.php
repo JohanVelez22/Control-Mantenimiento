@@ -107,6 +107,10 @@
                     <span class="nav-icon">🛒</span>
                     <span class="nav-label">Operaciones (C/V)</span>
                 </a>
+                <a href="<?php echo e(route('cotizaciones.index') ?? '#'); ?>" class="nav-item <?php echo e(request()->routeIs('cotizaciones.*') ? 'active' : ''); ?>" title="Cotizaciones">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-label">Cotizaciones</span>
+                </a>
                 <a href="<?php echo e(route('mantenimientos.index')); ?>" class="nav-item <?php echo e(request()->routeIs('mantenimientos.*') && !request()->routeIs('mantenimientos.reportes') ? 'active' : ''); ?>" title="Mantenimientos">
                     <span class="nav-icon">⚙️</span>
                     <span class="nav-label">Mantenimientos</span>
