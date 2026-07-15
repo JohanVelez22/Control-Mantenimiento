@@ -31,7 +31,7 @@
                     <th class="w-32 text-center">Validez</th>
                     <th class="w-32 text-right">Total</th>
                     <th class="w-32 text-center">Estado</th>
-                    <th class="w-24 text-center">Acciones</th>
+                    <th class="w-32 text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,16 +48,18 @@
                         </span>
                     </td>
                     <td class="text-center">
-                        <div class="flex justify-center gap-1.5 flex-wrap">
+                        <div class="flex justify-center gap-1.5 min-w-[140px] flex-nowrap">
                             <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600" title="Ver detalle">👁️</a>
                             
-                            <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-gray-600 hover:text-gray-800" title="Ver PDF">📄</a>
+                            @if($cot->estado === 'aprobada')
+                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 hover:text-green-800 hover:bg-green-50/50" title="Imprimir PDF">🖨️</a>
+                            @endif
 
                             @if($cot->estado === 'pendiente' && (!auth()->user() || auth()->user()->role !== 'invitado'))
                                 <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
 
                                 <button type="button" onclick="openAnularModal('{{ route('cotizaciones.rechazar', $cot) }}', false)" class="btn-ghost px-2.5 py-1.5 text-xs text-red-600 border-red-500/20 hover:bg-red-500/10" title="Rechazar cotización">
-                                    ❌
+                                    🚫
                                 </button>
                             @endif
                         </div>
