@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Registramos un alias para nuestro middleware de roles
+        // Headers de seguridad en TODAS las respuestas HTTP
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
+        // Registramos aliases para middlewares personalizados
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);

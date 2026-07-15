@@ -165,10 +165,10 @@
                         @endif
                     </td>
                     <td class="text-sm font-medium text-center {{ $dim }}">
-                        @if(!empty($stock->proveedor_id))
+                        @if(!empty($stock->proveedor_id) && $stock->getRelationValue('proveedor'))
                             <a href="{{ route('proveedores.index', ['locate' => $stock->proveedor_id]) }}" class="flex flex-col items-center gap-0 group no-print-link transition-colors" title="Ver en tabla de proveedores">
                                 <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
-                                    {{ $stock->getRelationValue('proveedor')->nombre_razon_social ?? 'Proveedor ' . $stock->proveedor_id }}
+                                    {{ $stock->getRelationValue('proveedor')->nombre_razon_social }}
                                 </span>
                                 @if(optional($stock->getRelationValue('proveedor'))->identificacion)
                                 <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
@@ -177,7 +177,7 @@
                                 @endif
                             </a>
                         @else
-                            {{ $stock->getRawOriginal('proveedor') ?: '-' }}
+                            -
                         @endif
                     </td>
                     <td class="text-center {{ $dim }}">

@@ -39,9 +39,6 @@ class ClienteController extends Controller
 
     public function create()
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->route('clientes.index')->with('error', 'No tienes permisos para crear.');
-        }
         $departamentos = ColombiaHelper::departamentos();
         $tiposId       = ColombiaHelper::tiposIdentificacion();
         return view('clientes.create', compact('departamentos', 'tiposId'));
@@ -49,9 +46,6 @@ class ClienteController extends Controller
 
     public function store(Request $request)
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->route('clientes.index')->with('error', 'No tienes permisos para crear.');
-        }
 
         $validated = $request->validate([
             'nombres'            => 'required|string|max:60',
@@ -74,9 +68,6 @@ class ClienteController extends Controller
 
     public function edit(Cliente $cliente)
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->route('clientes.index')->with('error', 'No tienes permisos para editar.');
-        }
         $departamentos = ColombiaHelper::departamentos();
         $tiposId       = ColombiaHelper::tiposIdentificacion();
         $municipios    = $cliente->departamento
@@ -87,9 +78,6 @@ class ClienteController extends Controller
 
     public function update(Request $request, Cliente $cliente)
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->route('clientes.index')->with('error', 'No tienes permisos para actualizar.');
-        }
 
         $validated = $request->validate([
             'nombres'            => 'required|string|max:60',
@@ -112,9 +100,6 @@ class ClienteController extends Controller
 
     public function anular(Cliente $cliente)
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->route('clientes.index')->with('error', 'No tienes permisos para realizar esta acción.');
-        }
 
         $cliente->active = !$cliente->active;
         $cliente->save();

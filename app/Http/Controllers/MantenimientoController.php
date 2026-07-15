@@ -47,9 +47,6 @@ class MantenimientoController extends Controller
     /** Duplicar un mantenimiento existente como nuevo borrador */
     public function duplicate(Mantenimiento $mantenimiento)
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->route('mantenimientos.index')->with('error', 'Sin permisos para duplicar.');
-        }
 
         // Número de orden atómico para la copia (evita colisión con otra creación/duplicado).
         $siguiente = app(\App\Services\OrdenService::class)->siguiente('ORD-', Mantenimiento::class);
@@ -161,9 +158,6 @@ class MantenimientoController extends Controller
 
     public function create()
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para crear.');
-        }
         $equipos  = Equipo::with('cliente')->orderBy('nombre')->get();
         $tecnicos = Tecnico::orderBy('nombre')->get();
 
@@ -181,9 +175,6 @@ class MantenimientoController extends Controller
      */
     public function store(Request $request)
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para crear.');
-        }
 
         $validated = $request->validate([
             'fecha_entrada' => 'required|date',
@@ -218,9 +209,6 @@ class MantenimientoController extends Controller
 
     public function edit(Mantenimiento $mantenimiento)
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para editar.');
-        }
         $equipos = Equipo::all();
         $tecnicos = Tecnico::all();
         return view('mantenimientos.edit', compact('mantenimiento', 'equipos', 'tecnicos'));
@@ -228,9 +216,6 @@ class MantenimientoController extends Controller
 
     public function update(Request $request, Mantenimiento $mantenimiento)
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->route('mantenimientos.index')->with('error', 'No tienes permisos para actualizar.');
-        }
 
         // El técnico puede editar, pero debe confirmar con la contraseña de un admin.
         $reglas = [

@@ -50,9 +50,15 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        // 5. Construir alertas de tareas pendientes
+        // 5. Construir alertas de tareas pendientes (Top 50 más antiguas + Totales para trazabilidad)
+        $totalElec = \App\Models\Electronica::where('estado', 'pendiente')->where('anulado', false)->count();
+        $totalMant = \App\Models\Mantenimiento::where('estado', 'pendiente')->where('anulado', false)->count();
+
         $alertasElectronica = \App\Models\Electronica::with('equipo.cliente')
             ->where('estado', 'pendiente')
+            ->where('anulado', false)
+            ->orderBy('fecha_entrada', 'asc') // Más antiguos primero
+            ->take(50)
             ->get()
             ->map(function ($e) {
                 return [
@@ -67,6 +73,9 @@ class AuthController extends Controller
 
         $alertasMantenimiento = \App\Models\Mantenimiento::with('equipo.cliente')
             ->where('estado', 'pendiente')
+            ->where('anulado', false)
+            ->orderBy('fecha_entrada', 'asc') // Más antiguos primero
+            ->take(50)
             ->get()
             ->map(function ($m) {
                 return [
@@ -84,8 +93,16 @@ class AuthController extends Controller
             return $b['dias'] <=> $a['dias']; // Ordenar por días descendente (los más antiguos primero)
         });
 
-        if (count($alertasPendientes) > 0) {
+        // Tomar solo los 50 más críticos (más antiguos) de la combinación
+        $alertasPendientes = array_slice($alertasPendientes, 0, 50);
+
+        if (($totalElec + $totalMant) > 0) {
             $request->session()->flash('alertas_pendientes', $alertasPendientes);
+            $request->session()->flash('alertas_totales', [
+                'electronica' => $totalElec,
+                'mantenimiento' => $totalMant,
+                'total' => $totalElec + $totalMant
+            ]);
         }
 
         return redirect()->intended('/dashboard')->with('success', '¡Bienvenido de nuevo, ' . $user->name . '!');

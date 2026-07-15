@@ -80,11 +80,10 @@ class Factura extends Model
 
     // ─── Helpers estáticos ────────────────────────────────────────
 
-    /** Genera el siguiente número de factura correlativo */
+    /** Genera el siguiente número de factura correlativo (atómico con lockForUpdate) */
     public static function siguienteNumero(string $prefijo = 'F'): string
     {
-        $ultimo = static::withTrashed()->where('numero_factura', 'like', $prefijo . '%')->latest('id')->value('numero_factura');
-        $num    = $ultimo ? ((int) substr($ultimo, strlen($prefijo))) + 1 : 1;
-        return $prefijo . $num;
+        return app(\App\Services\OrdenService::class)
+            ->siguiente($prefijo, static::class, 'numero_factura');
     }
 }

@@ -280,7 +280,7 @@
                     @endif
                 </td>
                 <td class="col-center">
-                    <div>{{ $stock->proveedor_id ? ($stock->getRelationValue('proveedor')->nombre_razon_social ?: '-') : ($stock->getRawOriginal('proveedor') ?: '-') }}</div>
+                    <div>{{ $stock->proveedor_id && $stock->getRelationValue('proveedor') ? $stock->getRelationValue('proveedor')->nombre_razon_social : '-' }}</div>
                     @if(optional($stock->getRelationValue('proveedor'))->identificacion)
                     <div class="sub-text">{{ $stock->getRelationValue('proveedor')->identificacion }}</div>
                     @endif

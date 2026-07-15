@@ -17,27 +17,35 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        // Métricas rápidas: Conteo total de registros
-        $totalEquipos = Equipo::count();
-        $totalMantenimientos = Mantenimiento::where('anulado', false)->count();
+        // ─── Métricas consolidadas (1 query en lugar de 7) ───────────
+        $counts = \Illuminate\Support\Facades\DB::selectOne("
+            SELECT
+                (SELECT COUNT(*) FROM equipos) as total_equipos,
+                (SELECT COUNT(*) FROM mantenimientos WHERE anulado = 0) as total_mant,
+                (SELECT COUNT(*) FROM mantenimientos WHERE anulado = 0 AND estado = 'pendiente') as mant_pendientes,
+                (SELECT COUNT(*) FROM mantenimientos WHERE anulado = 0 AND estado = 'terminado') as mant_terminados,
+                (SELECT COUNT(*) FROM stocks WHERE cantidad <= 5) as stock_bajo,
+                (SELECT COUNT(*) FROM electronicas WHERE anulado = 0 AND estado = 'pendiente') as elec_pendientes
+        ");
 
-        // Caja: ingresos, egresos y saldo actual del histórico
-        $cajaIngresos = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
-        $cajaEgresos = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
+        $totalEquipos = $counts->total_equipos;
+        $totalMantenimientos = $counts->total_mant;
+
+        // Caja: consolidar ingresos/egresos en 1 sola query (histórico + hoy)
+        $caja = \Illuminate\Support\Facades\DB::selectOne("
+            SELECT
+                COALESCE(SUM(CASE WHEN tipo_movimiento='ingreso' THEN monto ELSE 0 END), 0) as ingresos,
+                COALESCE(SUM(CASE WHEN tipo_movimiento='egreso'  THEN monto ELSE 0 END), 0) as egresos,
+                COALESCE(SUM(CASE WHEN tipo_movimiento='ingreso' AND DATE(fecha) = CURDATE() THEN monto ELSE 0 END), 0) as ingresos_hoy,
+                COALESCE(SUM(CASE WHEN tipo_movimiento='egreso'  AND DATE(fecha) = CURDATE() THEN monto ELSE 0 END), 0) as egresos_hoy
+            FROM movimiento_cajas
+            WHERE estado = 'activo' AND anulado = 0
+        ");
+
+        $cajaIngresos = $caja->ingresos;
+        $cajaEgresos = $caja->egresos;
         $cajaSaldoActual = $cajaIngresos - $cajaEgresos;
-
-        // Caja: saldo neto del día (Hoy)
-        $ingresosHoy = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)
-            ->where('tipo_movimiento', 'ingreso')
-            ->whereDate('fecha', Carbon::today())
-            ->sum('monto');
-            
-        $egresosHoy = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', false)
-            ->where('tipo_movimiento', 'egreso')
-            ->whereDate('fecha', Carbon::today())
-            ->sum('monto');
-            
-        $cajaSaldoDia = $ingresosHoy - $egresosHoy;
+        $cajaSaldoDia = $caja->ingresos_hoy - $caja->egresos_hoy;
 
         // Formateo para la vista
         $totalCostoFormateado = number_format($cajaSaldoActual, 0, ',', '.');
@@ -49,12 +57,12 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Estados Mantenimientos (solo estados reales: pendiente / terminado)
+        // Estados Mantenimientos (ya calculados arriba)
         $stats = [
-            'pendientes' => Mantenimiento::where('anulado', false)->where('estado', 'pendiente')->count(),
-            'terminados' => Mantenimiento::where('anulado', false)->where('estado', 'terminado')->count(),
-            'stock_bajo' => \App\Models\Stock::where('cantidad', '<=', 5)->count(),
-            'electronica_pendientes' => \App\Models\Electronica::where('anulado', false)->where('estado', 'pendiente')->count(),
+            'pendientes' => $counts->mant_pendientes,
+            'terminados' => $counts->mant_terminados,
+            'stock_bajo' => $counts->stock_bajo,
+            'electronica_pendientes' => $counts->elec_pendientes,
         ];
 
         // --- Gráficos de los últimos 7 días: 3 queries agrupadas en lugar de 28 ---
@@ -111,11 +119,19 @@ class DashboardController extends Controller
             $dataIngresosAcumulados[] = $acumulado;
         }
 
-        // Estadísticas de Electrónica para el slide del dashboard
-        $electronicaPendientes  = Electronica::where('anulado', false)->where('estado', 'pendiente')->count();
-        $electronicaTerminados  = Electronica::where('anulado', false)->where('estado', 'terminado')->count();
-        $electronicaCorrectivos = Electronica::where('anulado', false)->where('tipo', 'correctivo')->count();
-        $electronicaPreventivos = Electronica::where('anulado', false)->where('tipo', 'preventivo')->count();
+        // Estadísticas de Electrónica consolidadas (1 query en lugar de 4)
+        $elecStats = \Illuminate\Support\Facades\DB::selectOne("
+            SELECT
+                SUM(anulado = 0 AND estado = 'pendiente') as pendientes,
+                SUM(anulado = 0 AND estado = 'terminado') as terminados,
+                SUM(anulado = 0 AND tipo = 'correctivo') as correctivos,
+                SUM(anulado = 0 AND tipo = 'preventivo') as preventivos
+            FROM electronicas
+        ");
+        $electronicaPendientes  = (int) $elecStats->pendientes;
+        $electronicaTerminados  = (int) $elecStats->terminados;
+        $electronicaCorrectivos = (int) $elecStats->correctivos;
+        $electronicaPreventivos = (int) $elecStats->preventivos;
         // 5 más recientes (cualquier estado) para la tabla del dashboard
         $recentElec = Electronica::with(['tecnico', 'equipo.cliente'])
             ->orderBy('id', 'desc')

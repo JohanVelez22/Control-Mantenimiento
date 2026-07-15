@@ -25,13 +25,15 @@ use Illuminate\Support\Facades\Hash;
 class AnulacionService
 {
     /**
-     * Valida que la contraseña corresponda a un administrador (no a la del
-     * usuario en sesión). Se usa para acciones sensibles de técnico (editar).
+     * Valida que la contraseña corresponda a cualquier administrador.
+     * Se usa para acciones sensibles de técnico (editar/anular).
+     * Verifica contra TODOS los admins, no solo el primero.
      */
     public function adminPasswordValida(string $password): bool
     {
-        $adminPassword = User::where('role', 'admin')->value('password');
-        return $adminPassword && Hash::check($password, $adminPassword);
+        return User::where('role', 'admin')
+            ->get(['password'])
+            ->contains(fn($admin) => Hash::check($password, $admin->password));
     }
 
     /**

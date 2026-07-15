@@ -17,7 +17,6 @@ class Stock extends Model
         'categoria',
         'subcategoria',
         'cantidad',
-        'proveedor',       // Campo texto legado (aún existe)
         'proveedor_id',    // FK formal
         'precio_compra',
         'utilidad',
