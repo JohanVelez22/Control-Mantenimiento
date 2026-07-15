@@ -48,8 +48,7 @@ class AnulacionService
             return true;
         }
 
-        $adminPassword = User::where('role', 'admin')->value('password');
-        return $adminPassword && Hash::check($password, $adminPassword);
+        return $this->adminPasswordValida($password);
     }
 
     /**

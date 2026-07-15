@@ -1,12 +1,17 @@
 @php
-    $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
-    $logoBase64 = null;
-    if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
-        $path = \Illuminate\Support\Facades\Storage::disk('public')->path($empresa->logo_path);
-        $type = pathinfo($path, PATHINFO_EXTENSION);
-        $data = file_get_contents($path);
-        $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-    }
+    $empresaData = \Illuminate\Support\Facades\Cache::remember('empresa_global_data', 3600, function () {
+        $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
+        $logoBase64 = null;
+        if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
+            $path = \Illuminate\Support\Facades\Storage::disk('public')->path($empresa->logo_path);
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+        return ['empresa' => $empresa, 'logoBase64' => $logoBase64];
+    });
+    $empresa = $empresaData['empresa'];
+    $logoBase64 = $empresaData['logoBase64'];
 @endphp
 <!DOCTYPE html>
 <html lang="es" class="preload">

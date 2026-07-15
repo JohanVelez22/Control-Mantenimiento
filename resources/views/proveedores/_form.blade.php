@@ -93,21 +93,21 @@
 
     {{-- ── Departamento ──────────────────────────────────────────── --}}
     <div>
-        <label class="field-label">Departamento</label>
-        <select name="departamento" id="prov_departamento" class="glass-input no-search w-full"
+        <label class="field-label text-gray-700 dark:text-gray-300">Departamento</label>
+        <select name="departamento" id="prov_departamento" class="glass-input w-full"
                 onchange="cargarMunicipiosProv(this.value)">
             <option value="">— Seleccionar departamento —</option>
             @foreach($departamentos as $dep)
                 <option value="{{ $dep }}" {{ $selDep === $dep ? 'selected' : '' }}>{{ $dep }}</option>
             @endforeach
         </select>
-        @error('departamento') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        @error('departamento') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
 
     {{-- ── Municipio ─────────────────────────────────────────────── --}}
     <div>
-        <label class="field-label">Municipio / Ciudad</label>
-        <select name="municipio" id="prov_municipio" class="glass-input no-search w-full">
+        <label class="field-label text-gray-700 dark:text-gray-300">Municipio / Ciudad</label>
+        <select name="municipio" id="prov_municipio" class="glass-input w-full">
             <option value="">— Primero selecciona un departamento —</option>
             @if(!empty($municipios))
                 @foreach($municipios as $mun)
