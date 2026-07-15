@@ -113,7 +113,7 @@
     {{-- ── Departamento ────────────────────────────────────────────── --}}
     <div>
         <label class="field-label">Departamento</label>
-        <select name="departamento" id="select_departamento" class="glass-input no-search"
+        <select name="departamento" id="select_departamento" class="glass-input"
                 onchange="cargarMunicipios(this.value)">
             <option value="">— Seleccionar departamento —</option>
             @foreach($departamentos as $dep)
@@ -126,7 +126,7 @@
     {{-- ── Municipio ───────────────────────────────────────────────── --}}
     <div>
         <label class="field-label">Municipio / Ciudad</label>
-        <select name="municipio" id="select_municipio" class="glass-input no-search">
+        <select name="municipio" id="select_municipio" class="glass-input">
             <option value="">— Primero selecciona un departamento —</option>
             @if(!empty($municipios))
                 @foreach($municipios as $mun)
