@@ -52,6 +52,8 @@ class ConfiguracionController extends Controller
 
         $configuracion->save();
 
+        \Illuminate\Support\Facades\Cache::forget('empresa_global_data');
+
         return redirect()->back()->with('success', 'Configuración de la empresa guardada correctamente.');
     }
 }
