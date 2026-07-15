@@ -311,4 +311,37 @@ class MantenimientoController extends Controller
             return redirect()->back()->with('error', 'Error al anular el mantenimiento.');
         }
     }
+
+    /**
+     * Consulta blindada para invitado: busca por cédula o teléfono del cliente.
+     * No muestra lista completa. Requiere parámetro ?q= o muestra formulario vacío.
+     */
+    public function consulta(Request $request)
+    {
+        $query = $request->get('q');
+        $mantenimientos = collect();
+
+        if ($query) {
+            // Validación estricta: solo alfanumérico, espacios, guiones (cédula/teléfono)
+            if (!preg_match('/^[\d\s\-\.]{5,20}$/', $query)) {
+                return back()->with('error', 'Formato inválido. Use solo números, espacios o guiones (cédula o teléfono).');
+            }
+
+            // Normalizar: quitar espacios/guiones/puntos para búsqueda
+            $clean = preg_replace('/[\s\-\.]/', '', $query);
+
+            $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico'])
+                ->whereHas('equipo.cliente', function ($q) use ($clean) {
+                    $q->where('identificacion', 'like', "%{$clean}%")
+                      ->orWhere('telefono', 'like', "%{$clean}%")
+                      ->orWhere('movil', 'like', "%{$clean}%");
+                })
+                ->where('anulado', false)
+                ->latest()
+                ->limit(50)
+                ->get();
+        }
+
+        return view('consulta.mantenimientos', compact('mantenimientos', 'query'));
+    }
 }

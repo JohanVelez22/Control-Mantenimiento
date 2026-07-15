@@ -48,7 +48,19 @@
                         </span>
                     </td>
                     <td class="text-center">
-                        <a href="{{ route('cotizaciones.show', $cot) }}" class="text-blue-500 hover:text-blue-700 mx-1" title="Ver / Imprimir">📄</a>
+                        <div class="flex justify-center gap-1.5 flex-wrap">
+                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600" title="Ver detalle">👁️</a>
+                            
+                            <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-gray-600 hover:text-gray-800" title="Ver PDF">📄</a>
+
+                            @if($cot->estado === 'pendiente' && (!auth()->user() || auth()->user()->role !== 'invitado'))
+                                <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
+
+                                <button type="button" onclick="openAnularModal('{{ route('cotizaciones.rechazar', $cot) }}', false)" class="btn-ghost px-2.5 py-1.5 text-xs text-red-600 border-red-500/20 hover:bg-red-500/10" title="Rechazar cotización">
+                                    ❌
+                                </button>
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @empty

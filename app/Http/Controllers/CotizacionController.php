@@ -79,6 +79,82 @@ class CotizacionController extends Controller
         }
     }
 
+    public function edit(\App\Models\Cotizacion $cotizacione)
+    {
+        if ($cotizacione->estado !== 'pendiente') {
+            return redirect()->route('cotizaciones.show', $cotizacione)->with('error', 'Solo se pueden editar cotizaciones pendientes.');
+        }
+
+        $clientes = \App\Models\Cliente::orderBy('nombres')->get();
+        $stocks = \App\Models\Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
+        $cotizacione->load('items');
+        
+        return view('cotizaciones.edit', [
+            'cotizacion' => $cotizacione,
+            'clientes' => $clientes,
+            'stocks' => $stocks,
+        ]);
+    }
+
+    public function update(\Illuminate\Http\Request $request, \App\Models\Cotizacion $cotizacione)
+    {
+        if ($cotizacione->estado !== 'pendiente') {
+            return back()->with('error', 'Solo se pueden editar cotizaciones pendientes.');
+        }
+
+        $request->validate([
+            'cliente_id' => 'required|exists:clientes,id',
+            'fecha' => 'required|date',
+            'validez_dias' => 'required|integer|min:1',
+            'notas' => 'nullable|string',
+            'items' => 'required|array|min:1',
+            'items.*.tipo' => 'required|in:stock,mantenimiento,electronica,libre',
+            'items.*.descripcion' => 'required|string',
+            'items.*.cantidad' => 'required|integer|min:1',
+            'items.*.precio_unitario' => 'required|numeric|min:0',
+            'items.*.item_id' => 'nullable|exists:stocks,id',
+        ]);
+
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+
+            $total = 0;
+            foreach ($request->items as $item) {
+                $total += $item['cantidad'] * $item['precio_unitario'];
+            }
+
+            $cotizacione->update([
+                'cliente_id' => $request->cliente_id,
+                'fecha' => $request->fecha,
+                'validez_dias' => $request->validez_dias,
+                'total' => $total,
+                'notas' => $request->notas,
+            ]);
+
+            // Eliminar ítems anteriores y crear nuevos
+            $cotizacione->items()->delete();
+
+            foreach ($request->items as $item) {
+                \App\Models\CotizacionItem::create([
+                    'cotizacion_id' => $cotizacione->id,
+                    'tipo' => $item['tipo'],
+                    'item_id' => $item['tipo'] === 'stock' ? $item['item_id'] : null,
+                    'descripcion' => $item['descripcion'],
+                    'cantidad' => $item['cantidad'],
+                    'precio_unitario' => $item['precio_unitario'],
+                    'subtotal' => $item['cantidad'] * $item['precio_unitario'],
+                ]);
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+            return redirect()->route('cotizaciones.show', $cotizacione)->with('success', 'Cotización actualizada exitosamente.');
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Error al actualizar: ' . $e->getMessage())->withInput();
+        }
+    }
+
     public function show(\App\Models\Cotizacion $cotizacione)
     {
         // Parameter is named $cotizacione by default because resource generator is weird with Spanish names
@@ -160,5 +236,20 @@ class CotizacionController extends Controller
         }
     }
 
+    public function rechazar(\Illuminate\Http\Request $request, Cotizacion $cotizacion, \App\Services\AnulacionService $anulacionService)
+    {
+        if ($cotizacion->estado !== 'pendiente') {
+            return back()->with('error', 'Solo las cotizaciones pendientes pueden ser rechazadas.');
+        }
+
+        $password = $request->input('admin_password');
+        if (!$anulacionService->adminPasswordValida($password)) {
+            return back()->with('error', 'Contraseña de administrador incorrecta.');
+        }
+
+        $cotizacion->update(['estado' => 'rechazada']);
+
+        return back()->with('success', 'Cotización marcada como rechazada.');
+    }
 
 }

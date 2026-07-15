@@ -1,23 +1,33 @@
-@extends('layouts.app')
+@php
+    $esInvitado = auth()->check() && auth()->user()->isInvitado();
+    $layout = $esInvitado ? 'layouts.consulta' : 'layouts.app';
+@endphp
+
+@extends($layout)
+
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="glass-card p-6 md:p-8">
         {{-- Header --}}
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 w-full">
-  <div class="flex items-center gap-3">
-  <a href="{{ route('mantenimientos.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
-  <div>
-  <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
-  <span class="text-blue-500">📋</span>
-  {{ $mantenimiento->id_orden }}
-  @if($mantenimiento->anulado)
-  <span class="pill pill-anulado text-sm py-1 px-3 ml-2">🚫 Anulado</span>
-  @else
-  <span class="pill {{ $mantenimiento->estado === 'terminado' ? 'pill-done' : 'pill-pending' }} text-sm py-1 px-3 ml-2">
-  {{ $mantenimiento->estado === 'terminado' ? '✅ Terminado' : '⏳ Pendiente' }}
-  </span>
-  @endif
-  </h2>
+        <div class="flex items-center gap-3">
+        @if(!$esInvitado)
+        <a href="{{ route('mantenimientos.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+        @else
+        <a href="{{ route('consulta.mantenimientos') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a búsqueda">⬅️</a>
+        @endif
+        <div>
+        <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
+        <span class="text-blue-500">📋</span>
+        {{ $mantenimiento->id_orden }}
+        @if($mantenimiento->anulado)
+        <span class="pill pill-anulado text-sm py-1 px-3 ml-2">🚫 Anulado</span>
+        @else
+        <span class="pill {{ $mantenimiento->estado === 'terminado' ? 'pill-done' : 'pill-pending' }} text-sm py-1 px-3 ml-2">
+        {{ $mantenimiento->estado === 'terminado' ? '✅ Terminado' : '⏳ Pendiente' }}
+        </span>
+        @endif
+        </h2>
   </div>
   </div>
  

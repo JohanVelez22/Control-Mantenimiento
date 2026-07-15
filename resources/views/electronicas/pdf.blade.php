@@ -2,9 +2,9 @@
     $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
     $logoBase64 = null;
     if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
-        $path = \Illuminate\Support\Facades\Storage::disk('public')->path($empresa->logo_path);
-        $type = pathinfo($path, PATHINFO_EXTENSION);
-        $data = file_get_contents($path);
+        
+        $type = pathinfo($empresa->logo_path, PATHINFO_EXTENSION);
+        $data = \Illuminate\Support\Facades\Storage::disk('public')->get($empresa->logo_path);
         $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
     }
 @endphp

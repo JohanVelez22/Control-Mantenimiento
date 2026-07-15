@@ -7,6 +7,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\TecnicoController;
 use App\Http\Controllers\MantenimientoController;
+use App\Http\Controllers\ElectronicaController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\PreventBackHistory;
 
@@ -50,6 +51,12 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     });
 
+    // ─── INVITADO: Consulta blindada por cédula/teléfono ──────
+    Route::middleware('role:invitado')->group(function () {
+        Route::get('/consulta/mantenimientos', [MantenimientoController::class, 'consulta'])->name('consulta.mantenimientos');
+        Route::get('/consulta/electronicas',   [ElectronicaController::class, 'consulta'])->name('consulta.electronicas');
+    });
+
     // ─── Solo ADMIN y TÉCNICO ─────────────────────────────────────────
     Route::middleware('role:admin,tecnico')->group(function () {
 
@@ -78,6 +85,7 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         // Cotizaciones
         Route::resource('cotizaciones', App\Http\Controllers\CotizacionController::class);
         Route::post('cotizaciones/{cotizacion}/convertir', [App\Http\Controllers\CotizacionController::class, 'convertir'])->name('cotizaciones.convertir');
+        Route::post('cotizaciones/{cotizacion}/rechazar', [App\Http\Controllers\CotizacionController::class, 'rechazar'])->name('cotizaciones.rechazar');
         Route::get('cotizaciones/{cotizacion}/pdf', [App\Http\Controllers\CotizacionController::class, 'pdf'])->name('cotizaciones.pdf');
 
         // Mantenimientos: mutaciones (lectura la gestiona el grupo de invitado)
@@ -141,7 +149,7 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         Route::post('usuarios/{usuario}/change-password', [UserController::class, 'changePassword'])->name('usuarios.change-password');
     });
 
-    // ─── INVITADO: solo consultar mantenimientos y electrónicas ──────
+    // ─── INVITADO: solo ver detalle y factura (desde búsqueda) ──────
     Route::middleware('role:admin,tecnico,invitado')->group(function () {
         Route::get('mantenimientos', [MantenimientoController::class, 'index'])->name('mantenimientos.index');
         Route::get('mantenimientos/{mantenimiento}', [MantenimientoController::class, 'show'])->name('mantenimientos.show');
