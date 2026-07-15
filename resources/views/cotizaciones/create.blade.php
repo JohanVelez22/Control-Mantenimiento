@@ -236,15 +236,7 @@ function recalcular() {
     document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
 }
 
-window.initGlassTomSelect = function(element) {
-    if (element.tomselect) {
-        element.tomselect.destroy();
-    }
-    return new TomSelect(element, {
-        create: false,
-        sortField: { field: "text", direction: "asc" }
-    });
-};
+// El sistema usará initGlassTomSelect de app.blade.php
 
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializamos con una fila limpia

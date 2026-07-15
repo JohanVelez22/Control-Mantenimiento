@@ -37,7 +37,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth', PreventBackHistory::class])->group(function () {
 
     // Logout (cualquier usuario autenticado)
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('throttle:10,1')->name('logout');
 
     // Descartar alerta de electrónica (JS)
     Route::post('/electronicas/dismiss-alert', function () {
