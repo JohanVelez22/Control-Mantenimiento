@@ -62,34 +62,15 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(CierreCaja::class, CierreCajaPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
 
-View::composer('layouts.app', function ($view) {
-            // Cache por 30 segundos para evitar sobrecargar la BD en cada carga de página
-            $data = Cache::remember('layout.notifications', 30, function () {
-                // Mantenimientos pendientes - convertir a array simple para evitar problemas de serialización
-                $mantList = Mantenimiento::activos()
+        View::composer('layouts.app', function ($view) {
+            // Mantenimientos pendientes
+            $mantList = Mantenimiento::activos()
                     ->where('estado', 'pendiente')
                     ->select('id', 'id_orden', 'equipo_id', 'estado')
                     ->with('equipo.cliente:id,nombres,apellidos')
                     ->latest()
                     ->limit(50)
-                    ->get()
-                    ->map(function($m) {
-                        return [
-                            'id' => $m->id,
-                            'id_orden' => $m->id_orden,
-                            'equipo_id' => $m->equipo_id,
-                            'estado' => $m->estado,
-                            'equipo' => [
-                                'id' => $m->equipo->id ?? null,
-                                'cliente' => [
-                                    'id' => $m->equipo->cliente->id ?? null,
-                                    'nombres' => $m->equipo->cliente->nombres ?? '',
-                                    'apellidos' => $m->equipo->cliente->apellidos ?? '',
-                                ]
-                            ]
-                        ];
-                    })
-                    ->all(); // Convert to plain array to avoid serialization issues
+                    ->get();
 
                 // Electrónicas pendientes - convertir a array simple
                 $elecList = Electronica::activos()
@@ -98,24 +79,7 @@ View::composer('layouts.app', function ($view) {
                     ->with('equipo.cliente:id,nombres,apellidos')
                     ->latest()
                     ->limit(50)
-                    ->get()
-                    ->map(function($e) {
-                        return [
-                            'id' => $e->id,
-                            'id_orden' => $e->id_orden,
-                            'equipo_id' => $e->equipo_id,
-                            'estado' => $e->estado,
-                            'equipo' => [
-                                'id' => $e->equipo->id ?? null,
-                                'cliente' => [
-                                    'id' => $e->equipo->cliente->id ?? null,
-                                    'nombres' => $e->equipo->cliente->nombres ?? '',
-                                    'apellidos' => $e->equipo->cliente->apellidos ?? '',
-                                ]
-                            ]
-                        ];
-                    })
-                    ->all(); // Convert to plain array to avoid serialization issues
+                    ->get();
 
                 // Facturas con saldo pendiente - convertir a array simple
                 $cajaList = Factura::where('estado', '!=', 'anulada')
@@ -124,27 +88,7 @@ View::composer('layouts.app', function ($view) {
                     ->with('facturable:id,tipo_entidad,nombre_razon_social,nombres,apellidos,identificacion')
                     ->latest()
                     ->limit(50)
-                    ->get()
-                    ->map(function($f) {
-                        return [
-                            'id' => $f->id,
-                            'numero_factura' => $f->numero_factura,
-                            'tipo_movimiento' => $f->tipo_movimiento,
-                            'saldo_pendiente' => $f->saldo_pendiente,
-                            'total_documento' => $f->total_documento,
-                            'facturable_id' => $f->facturable_id,
-                            'facturable_type' => $f->facturable_type,
-                            'facturable' => $f->facturable ? [
-                                'id' => $f->facturable->id,
-                                'tipo_entidad' => $f->facturable->tipo_entidad,
-                                'nombre_razon_social' => $f->facturable->nombre_razon_social,
-                                'nombres' => $f->facturable->nombres,
-                                'apellidos' => $f->facturable->apellidos,
-                                'identificacion' => $f->facturable->identificacion,
-                            ] : null
-                        ];
-                    })
-                    ->all(); // Convert to plain array to avoid serialization issues
+                    ->get();
 
                 // Movimientos de caja pendientes - convertir a array simple
                 $movimientosPendientes = MovimientoCaja::where('anulado', false)
@@ -153,27 +97,7 @@ View::composer('layouts.app', function ($view) {
                     ->with(['concepto:id,nombre', 'childPayments'])
                     ->latest()
                     ->limit(50)
-                    ->get()
-                    ->map(function($m) {
-                        return [
-                            'id' => $m->id,
-                            'tipo_movimiento' => $m->tipo_movimiento,
-                            'fecha' => $m->fecha,
-                            'monto' => $m->monto,
-                            'concepto' => $m->concepto ? [
-                                'id' => $m->concepto->id,
-                                'nombre' => $m->concepto->nombre,
-                            ] : null,
-                            'monto_total' => $m->monto_total,
-                            'monto' => $m->monto,
-                            'saldo_pendiente' => $m->saldo_pendiente,
-                        ];
-                    })
-                    ->filter(function($m) {
-                        return $m['saldo_pendiente'] > 0;
-                    })
-                    ->values()
-                    ->all(); // Convert to plain array to avoid serialization issues
+                    ->get();
 
                 // Cotizaciones pendientes - convertir a array simple
                 $cotList = Cotizacion::where('estado', 'pendiente')
@@ -181,39 +105,23 @@ View::composer('layouts.app', function ($view) {
                     ->with('cliente:id,nombres,apellidos')
                     ->latest()
                     ->limit(50)
-                    ->get()
-                    ->map(function($c) {
-                        return [
-                            'id' => $c->id,
-                            'codigo' => $c->codigo,
-                            'total' => $c->total,
-                            'fecha' => $c->fecha,
-                            'cliente' => $c->cliente ? [
-                                'id' => $c->cliente->id,
-                                'nombre' => $c->cliente->nombres . ' ' . $c->cliente->apellidos,
-                            ] : null,
-                        ];
-                    })
-                    ->all();
-
-                return compact('mantList', 'elecList', 'cajaList', 'movimientosPendientes', 'cotList');
-            });
+                    ->get();
 
             $view->with([
-                'mantList'              => $data['mantList'],
-                'elecList'              => $data['elecList'],
-                'cajaList'              => $data['cajaList'],
-                'movimientosPendientes' => $data['movimientosPendientes'],
-                'cotList'               => $data['cotList'],
-                'mantPendientes'        => count($data['mantList']),
-                'elecPendientes'        => count($data['elecList']),
-                'cotPendientes'         => count($data['cotList']),
-                'cajaPendientes'        => count($data['cajaList']) + count($data['movimientosPendientes']),
-                'totalPendientes'       => count($data['mantList'])
-                                              + count($data['elecList'])
-                                              + count($data['cajaList'])
-                                              + count($data['movimientosPendientes'])
-                                              + count($data['cotList']),
+                'mantList'              => $mantList,
+                'elecList'              => $elecList,
+                'cajaList'              => $cajaList,
+                'movimientosPendientes' => $movimientosPendientes,
+                'cotList'               => $cotList,
+                'mantPendientes'        => $mantList->count(),
+                'elecPendientes'        => $elecList->count(),
+                'cotPendientes'         => $cotList->count(),
+                'cajaPendientes'        => $cajaList->count() + $movimientosPendientes->count(),
+                'totalPendientes'       => $mantList->count()
+                                              + $elecList->count()
+                                              + $cajaList->count()
+                                              + $movimientosPendientes->count()
+                                              + $cotList->count(),
             ]);
         });
 

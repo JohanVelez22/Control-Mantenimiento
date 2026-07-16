@@ -49,7 +49,7 @@
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Vendedor:</span> {{ $cotizacion->user->name }}</p>
                 </div>
                 <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                    <p class="text-2xl font-black text-blue-600 dark:text-blue-400 text-right">
+                    <p class="text-2xl font-black bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent text-right">
                         Total: ${{ number_format($cotizacion->total, 0, ',', '.') }}
                     </p>
                 </div>
@@ -74,22 +74,22 @@
                 <tbody>
                     @foreach($cotizacion->items as $item)
                     <tr>
-                        <td class="font-medium">
+                        <td data-label="Tipo" class="font-medium">
                             @if($item->tipo === 'stock')
                                 <span class="text-emerald-600 dark:text-emerald-400 text-xs px-2 py-1 bg-emerald-100 dark:bg-emerald-900/30 rounded-md">📦 Producto</span>
                             @else
                                 <span class="text-blue-600 dark:text-blue-400 text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-md">🛠️ Servicio</span>
                             @endif
                         </td>
-                        <td class="text-slate-800 dark:text-white font-bold">
+                        <td data-label="Descripción" class="text-slate-800 dark:text-white font-bold">
                             {{ $item->descripcion }}
                             @if($item->stock)
                                 <div class="text-[10px] text-slate-400 font-normal mt-0.5">Ref Stock: {{ $item->stock->codigo }}</div>
                             @endif
                         </td>
-                        <td class="text-center font-bold">{{ $item->cantidad }}</td>
-                        <td class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
-                        <td class="text-right font-black text-blue-600 dark:text-cyan-400">${{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                        <td data-label="Cant." class="text-center font-bold">{{ $item->cantidad }}</td>
+                        <td data-label="Precio Un." class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+                        <td data-label="Subtotal" class="text-right font-black text-blue-600 dark:text-cyan-400">${{ number_format($item->subtotal, 0, ',', '.') }}</td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -37,17 +37,20 @@ class CleanDatabase extends Command
 
         $tables = [
             'clientes',
+            'tecnicos',
             'proveedores',
             'stocks',
             'mantenimientos',
+            'electronicas',
             'mantenimiento_respuestos',
             'equipos',
             'facturas',
             'factura_items',
             'factura_pagos',
-            'cotizacions',
+            'cotizaciones',
             'cotizacion_items',
             'movimientos_caja',
+            'conceptos_caja',
             'eventos',
         ];
 

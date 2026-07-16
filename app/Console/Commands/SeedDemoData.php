@@ -30,6 +30,13 @@ class SeedDemoData extends Command
     {
         $this->info('Iniciando la siembra de datos de prueba realistas...');
 
+        // Prevenir duplicados si ya existen datos
+        if (Cliente::count() > 0 || Tecnico::count() > 0) {
+            $this->error('⚠️ La base de datos ya contiene registros.');
+            $this->error('Por favor, ejecute primero: php artisan app:clean-data');
+            return;
+        }
+
         $admin = User::where('role', 'admin')->first();
         if (!$admin) {
             $this->error('No se encontró un usuario administrador. Por favor, asegúrese de tener al menos un usuario en la tabla users.');
