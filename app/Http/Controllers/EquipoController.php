@@ -12,7 +12,7 @@ class EquipoController extends Controller
     public function index()
     {
         // Cargamos 'cliente' y 'user' para mostrar quién registró el equipo
-        $equipos = Equipo::with(['cliente', 'user'])->activos()->orderBy('id', 'desc')->paginate(10);
+        $equipos = Equipo::with(['cliente', 'user'])->orderBy('id', 'desc')->paginate(10);
         return view('equipos.index', compact('equipos'));
     }
 
@@ -23,7 +23,7 @@ class EquipoController extends Controller
 
     public function create()
     {
-        $clientes = Cliente::orderBy('nombres')->orderBy('apellidos')->get();
+        $clientes = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
         return view('equipos.create', compact('clientes'));
     }
 
@@ -49,7 +49,9 @@ class EquipoController extends Controller
     public function edit(Equipo $equipo)
     {
         
-        $clientes = Cliente::orderBy('nombres')->orderBy('apellidos')->get();
+        $clientes = Cliente::where(function($q) use ($equipo) {
+            $q->activos()->orWhere('id', $equipo->cliente_id);
+        })->orderBy('nombres')->orderBy('apellidos')->get();
         return view('equipos.edit', compact('equipo', 'clientes'));
     }
 

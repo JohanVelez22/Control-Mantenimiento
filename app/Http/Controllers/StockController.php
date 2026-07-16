@@ -18,7 +18,7 @@ class StockController extends Controller
             return redirect()->route('stocks.index', ['page' => $page])->withFragment('stock-' . $id);
         }
 
-        $query = Stock::with('proveedor')->activos();
+        $query = Stock::with('proveedor');
 
         if ($request->has('search')) {
             $search = $request->search;

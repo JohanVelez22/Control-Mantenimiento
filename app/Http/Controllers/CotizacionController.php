@@ -14,8 +14,8 @@ class CotizacionController extends Controller
 
     public function create()
     {
-        $clientes = \App\Models\Cliente::orderBy('nombres')->get();
-        $stocks = \App\Models\Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
+        $clientes = \App\Models\Cliente::activos()->orderBy('nombres')->get();
+        $stocks = \App\Models\Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
         return view('cotizaciones.create', compact('clientes', 'stocks'));
     }
 
@@ -85,8 +85,10 @@ class CotizacionController extends Controller
             return redirect()->route('cotizaciones.show', $cotizacione)->with('error', 'Solo se pueden editar cotizaciones pendientes.');
         }
 
-        $clientes = \App\Models\Cliente::orderBy('nombres')->get();
-        $stocks = \App\Models\Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
+        $clientes = \App\Models\Cliente::where(function($q) use ($cotizacione) {
+            $q->activos()->orWhere('id', $cotizacione->cliente_id);
+        })->orderBy('nombres')->get();
+        $stocks = \App\Models\Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
         $cotizacione->load('items');
         
         return view('cotizaciones.edit', [

@@ -83,7 +83,7 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         Route::get('stocks/{stock}/print', [App\Http\Controllers\StockController::class, 'print'])->name('stocks.print');
 
         // Cotizaciones
-        Route::resource('cotizaciones', App\Http\Controllers\CotizacionController::class);
+        Route::resource('cotizaciones', App\Http\Controllers\CotizacionController::class)->except(['destroy']);
         Route::post('cotizaciones/{cotizacion}/convertir', [App\Http\Controllers\CotizacionController::class, 'convertir'])->name('cotizaciones.convertir');
         Route::post('cotizaciones/{cotizacion}/rechazar', [App\Http\Controllers\CotizacionController::class, 'rechazar'])->name('cotizaciones.rechazar');
         Route::post('cotizaciones/{cotizacion}/reactivar', [App\Http\Controllers\CotizacionController::class, 'reactivar'])->name('cotizaciones.reactivar');

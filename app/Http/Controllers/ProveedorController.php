@@ -22,7 +22,7 @@ class ProveedorController extends Controller
                              ->withFragment('proveedor-' . $id);
         }
 
-        $query = Proveedor::query()->activos();
+        $query = Proveedor::query();
 
         if ($request->filled('search')) {
             $s = $request->search;

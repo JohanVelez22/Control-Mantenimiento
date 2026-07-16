@@ -24,9 +24,9 @@ class MovimientoInventarioController extends Controller
 
     public function createCompra(): View
     {
-        $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
-        $clientes    = Cliente::orderBy('nombres')->orderBy('apellidos')->get();
-        $stocks      = Stock::orderBy('producto')->get();
+        $proveedores = Proveedor::activos()->orderBy('nombre_razon_social')->get();
+        $clientes    = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
+        $stocks      = Stock::activos()->orderBy('producto')->get();
         $nextNumero  = Factura::siguienteNumero('CP-');
 
         return view('inventario.compra', compact('proveedores', 'clientes', 'stocks', 'nextNumero'));
@@ -145,9 +145,9 @@ class MovimientoInventarioController extends Controller
 
     public function createVenta(): View
     {
-        $clientes    = Cliente::orderBy('nombres')->orderBy('apellidos')->get();
-        $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
-        $stocks      = Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
+        $clientes    = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
+        $proveedores = Proveedor::activos()->orderBy('nombre_razon_social')->get();
+        $stocks      = Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
         $nextNumero  = Factura::siguienteNumero('VT-');
 
         return view('inventario.venta', compact('clientes', 'proveedores', 'stocks', 'nextNumero'));
@@ -408,9 +408,19 @@ class MovimientoInventarioController extends Controller
 
     public function editFactura(Factura $factura): View
     {
-        $proveedores = Proveedor::where('activo', true)->orderBy('nombre_razon_social')->get();
-        $clientes    = Cliente::orderBy('nombres')->orderBy('apellidos')->get();
-        $stocks      = Stock::orderBy('producto')->get();
+        $proveedores = Proveedor::where(function($q) use ($factura) {
+            $q->activos();
+            if ($factura->facturable_type === Proveedor::class) {
+                $q->orWhere('id', $factura->facturable_id);
+            }
+        })->orderBy('nombre_razon_social')->get();
+        $clientes = Cliente::where(function($q) use ($factura) {
+            $q->activos();
+            if ($factura->facturable_type === Cliente::class) {
+                $q->orWhere('id', $factura->facturable_id);
+            }
+        })->orderBy('nombres')->orderBy('apellidos')->get();
+        $stocks      = Stock::activos()->orderBy('producto')->get();
         $factura->load('items.stock');
         return view('inventario.facturas.edit', compact('factura', 'proveedores', 'clientes', 'stocks'));
     }

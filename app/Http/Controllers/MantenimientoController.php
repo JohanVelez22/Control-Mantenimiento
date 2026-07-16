@@ -40,7 +40,7 @@ class MantenimientoController extends Controller
     public function show(Mantenimiento $mantenimiento)
     {
         $mantenimiento->load(['equipo.cliente', 'tecnico', 'user', 'abonos.user', 'stocks']);
-        $stocks_disponibles = \App\Models\Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
+        $stocks_disponibles = \App\Models\Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
         return view('mantenimientos.show', compact('mantenimiento', 'stocks_disponibles'));
     }
 
@@ -158,8 +158,8 @@ class MantenimientoController extends Controller
 
     public function create()
     {
-        $equipos  = Equipo::with('cliente')->orderBy('nombre')->get();
-        $tecnicos = Tecnico::orderBy('nombre')->get();
+        $equipos  = Equipo::with('cliente')->activos()->orderBy('nombre')->get();
+        $tecnicos = Tecnico::activos()->orderBy('nombre')->get();
 
         // Consecutivo preview (sin bloqueo) para mostrar en el formulario.
         // El valor definitivo se recalcula con lockForUpdate en store().
@@ -209,8 +209,13 @@ class MantenimientoController extends Controller
 
     public function edit(Mantenimiento $mantenimiento)
     {
-        $equipos = Equipo::all();
-        $tecnicos = Tecnico::all();
+        $equipos = Equipo::where(function($q) use ($mantenimiento) {
+            $q->activos()->orWhere('id', $mantenimiento->equipo_id);
+        })->with('cliente')->orderBy('nombre')->get();
+
+        $tecnicos = Tecnico::where(function($q) use ($mantenimiento) {
+            $q->activos()->orWhere('id', $mantenimiento->tecnico_id);
+        })->orderBy('nombre')->get();
         return view('mantenimientos.edit', compact('mantenimiento', 'equipos', 'tecnicos'));
     }
 

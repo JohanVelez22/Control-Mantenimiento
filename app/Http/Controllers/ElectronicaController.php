@@ -57,8 +57,8 @@ class ElectronicaController extends Controller
 
     public function create()
     {
-        $tecnicos = Tecnico::orderBy('nombre')->get();
-        $equipos = Equipo::with('cliente')->orderBy('nombre')->get();
+        $tecnicos = Tecnico::activos()->orderBy('nombre')->get();
+        $equipos = Equipo::with('cliente')->activos()->orderBy('nombre')->get();
 
         // Consecutivo preview (sin bloqueo) para mostrar en el formulario.
         // El valor definitivo se recalcula con lockForUpdate en store().
@@ -110,14 +110,18 @@ class ElectronicaController extends Controller
     public function show(Electronica $electronica)
     {
         $electronica->load(['equipo.cliente', 'tecnico', 'user', 'stocks', 'abonos']);
-        $stocks_disponibles = \App\Models\Stock::where('cantidad', '>', 0)->orderBy('producto')->get();
+        $stocks_disponibles = \App\Models\Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
         return view('electronicas.show', compact('electronica', 'stocks_disponibles'));
     }
 
     public function edit(Electronica $electronica)
     {
-        $tecnicos = Tecnico::orderBy('nombre')->get();
-        $equipos = Equipo::with('cliente')->orderBy('nombre')->get();
+        $tecnicos = Tecnico::where(function($q) use ($electronica) {
+            $q->activos()->orWhere('id', $electronica->tecnico_id);
+        })->orderBy('nombre')->get();
+        $equipos = Equipo::where(function($q) use ($electronica) {
+            $q->activos()->orWhere('id', $electronica->equipo_id);
+        })->with('cliente')->orderBy('nombre')->get();
         return view('electronicas.edit', compact('electronica', 'tecnicos', 'equipos'));
     }
 
