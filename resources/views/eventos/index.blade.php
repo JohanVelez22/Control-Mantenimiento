@@ -7,7 +7,7 @@
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
             <h1 class="text-3xl font-black text-slate-800 dark:text-white flex items-center gap-3">
-                <span class="text-4xl">🕵️</span> Registro de Eventos
+                <span class="text-4xl">🕵🏻</span> Registro de Eventos
             </h1>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
                 Auditoría del sistema y control de movimientos
@@ -153,7 +153,7 @@
                         <tr>
                             <td colspan="5" class="text-center py-12">
                                 <div class="flex flex-col items-center gap-3">
-                                    <span class="text-5xl">🕵️</span>
+                                    <span class="text-5xl">🕵🏻</span>
                                     <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No hay eventos</h3>
                                     <p class="text-gray-500 text-sm font-medium">No se encontraron registros de auditoría.</p>
                                 </div>

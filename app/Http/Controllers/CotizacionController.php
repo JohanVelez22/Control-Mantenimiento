@@ -236,7 +236,7 @@ class CotizacionController extends Controller
         }
     }
 
-public function rechazar(\Illuminate\Http\Request $request, Cotizacion $cotizacion)
+    public function rechazar(\Illuminate\Http\Request $request, \App\Models\Cotizacion $cotizacion)
     {
         if ($cotizacion->estado !== 'pendiente') {
             return back()->with('error', 'Solo las cotizaciones pendientes pueden ser rechazadas.');
@@ -263,7 +263,7 @@ public function rechazar(\Illuminate\Http\Request $request, Cotizacion $cotizaci
         return back()->with('success', 'Cotización marcada como rechazada.');
     }
 
-    public function reactivar(\Illuminate\Http\Request $request, Cotizacion $cotizacion)
+    public function reactivar(\Illuminate\Http\Request $request, \App\Models\Cotizacion $cotizacion)
     {
         if ($cotizacion->estado !== 'rechazada') {
             return back()->with('error', 'Solo las cotizaciones rechazadas pueden ser reactivadas.');
