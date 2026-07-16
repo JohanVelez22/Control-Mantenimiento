@@ -16,6 +16,11 @@ module.exports = {
                     cyan: '#06B6D4',
                     slate: '#0F172A',
                 }
+            },
+            fontFamily: {
+                sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                logo: ['Michroma', 'sans-serif'],
+                display: ['Orbitron', 'sans-serif'],
             }
         }
     },
