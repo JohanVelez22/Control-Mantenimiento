@@ -61,7 +61,7 @@
  <!-- Precio Compra -->
  <div>
  <label for="precio_compra_visual" class="field-label">Precio Compra ($) *</label>
- <input type="text" id="precio_compra_visual" value="{{ old('precio_compra', isset($stock) ? number_format($stock->precio_compra, 0, '', '') : 0) }}" required class="glass-input font-mono font-bold text-orange-600 dark:text-orange-400">
+ <input type="text" id="precio_compra_visual" value="{{ old('precio_compra', isset($stock) ? number_format($stock->precio_compra, 0, '', '') : 0) }}" required class="glass-input font-bold text-orange-600 dark:text-orange-400">
  <input type="hidden" name="precio_compra" id="precio_compra_real" value="{{ old('precio_compra', isset($stock) ? intval($stock->precio_compra) : 0) }}">
  @error('precio_compra') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
@@ -76,7 +76,7 @@
  <!-- Precio Venta -->
  <div>
  <label for="precio_venta_visual" class="field-label">Precio Venta (Manual) ($)</label>
- <input type="text" id="precio_venta_visual" value="{{ old('precio_venta', isset($stock) && $stock->precio_venta ? number_format($stock->precio_venta, 0, '', '') : '') }}" placeholder="Automático si vacío" class="glass-input font-mono">
+ <input type="text" id="precio_venta_visual" value="{{ old('precio_venta', isset($stock) && $stock->precio_venta ? number_format($stock->precio_venta, 0, '', '') : '') }}" placeholder="Automático si vacío" class="glass-input font-bold text-slate-800 dark:text-white">
  <input type="hidden" name="precio_venta" id="precio_venta_real" value="{{ old('precio_venta', isset($stock) && $stock->precio_venta ? intval($stock->precio_venta) : '') }}">
  @error('precio_venta') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
@@ -84,7 +84,7 @@
  <!-- Precio Técnico -->
  <div>
  <label for="precio_tecnico_visual" class="field-label">Precio Técnico (Manual) ($)</label>
- <input type="text" id="precio_tecnico_visual" value="{{ old('precio_tecnico', isset($stock) && $stock->precio_tecnico ? number_format($stock->precio_tecnico, 0, '', '') : '') }}" placeholder="Automático si vacío" class="glass-input font-mono">
+ <input type="text" id="precio_tecnico_visual" value="{{ old('precio_tecnico', isset($stock) && $stock->precio_tecnico ? number_format($stock->precio_tecnico, 0, '', '') : '') }}" placeholder="Automático si vacío" class="glass-input font-bold text-slate-800 dark:text-white">
  <input type="hidden" name="precio_tecnico" id="precio_tecnico_real" value="{{ old('precio_tecnico', isset($stock) && $stock->precio_tecnico ? intval($stock->precio_tecnico) : '') }}">
  @error('precio_tecnico') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>

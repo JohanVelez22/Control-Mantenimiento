@@ -81,7 +81,7 @@
   </td>
   <td>
   <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
-  <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-mono">
+  <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white">
   </td>
   <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell align-middle pr-4">
   $0
@@ -166,7 +166,7 @@ function agregarFila() {
   </td>
   <td>
   <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="0" required class="hidden">
-  <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-mono">
+  <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white">
   </td>
   <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell align-middle pr-4">$0</td>
   <td class="text-center align-middle">

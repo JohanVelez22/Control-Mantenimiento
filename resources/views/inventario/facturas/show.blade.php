@@ -93,7 +93,7 @@
  <tr>
  <td class="font-bold text-slate-800 dark:text-white">{{ $item->stock->producto ?? $item->descripcion ?? 'Producto/Servicio' }}</td>
  <td class="text-center font-bold">{{ $item->cantidad }}</td>
- <td class="text-right font-mono">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+ <td class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
  <td class="text-right font-black text-blue-600 dark:text-cyan-400">${{ number_format($item->subtotal, 0, ',', '.') }}</td>
  </tr>
  @endforeach

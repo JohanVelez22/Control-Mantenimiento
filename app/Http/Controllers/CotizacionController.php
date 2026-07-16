@@ -147,7 +147,7 @@ class CotizacionController extends Controller
             }
 
             \Illuminate\Support\Facades\DB::commit();
-            return redirect()->route('cotizaciones.show', $cotizacione)->with('success', 'Cotización actualizada exitosamente.');
+            return redirect()->route('cotizaciones.index')->with('success', 'Cotización actualizada exitosamente.');
 
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
@@ -242,15 +242,18 @@ public function rechazar(\Illuminate\Http\Request $request, Cotizacion $cotizaci
             return back()->with('error', 'Solo las cotizaciones pendientes pueden ser rechazadas.');
         }
 
-        // Técnico requiere contraseña de admin; admin usa su propia o la de admin.
+        // El modal global usa 'password_confirm'; tecnico requiere contraseña de admin.
+        // Aceptamos ambos nombres de campo para compatibilidad.
+        $password = $request->input('admin_password') ?? $request->input('password_confirm');
+
         if (auth()->user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+            $request->validate(['admin_password' => 'required_without:password_confirm']);
+            if (!$password || !app(\App\Services\AnulacionService::class)->adminPasswordValida($password)) {
                 return back()->with('error', 'Se requiere la contraseña de un administrador para rechazar.')->withInput();
             }
         } else {
-            $request->validate(['password_confirm' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+            $request->validate(['password_confirm' => 'required_without:admin_password']);
+            if (!$password || !app(\App\Services\AnulacionService::class)->passwordValida($password)) {
                 return back()->with('error', 'Contraseña incorrecta.');
             }
         }
@@ -266,15 +269,17 @@ public function rechazar(\Illuminate\Http\Request $request, Cotizacion $cotizaci
             return back()->with('error', 'Solo las cotizaciones rechazadas pueden ser reactivadas.');
         }
 
-        // Técnico requiere contraseña de admin; admin usa su propia o la de admin.
+        // El modal global usa 'password_confirm'; tecnico requiere contraseña de admin.
+        $password = $request->input('admin_password') ?? $request->input('password_confirm');
+
         if (auth()->user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+            $request->validate(['admin_password' => 'required_without:password_confirm']);
+            if (!$password || !app(\App\Services\AnulacionService::class)->adminPasswordValida($password)) {
                 return back()->with('error', 'Se requiere la contraseña de un administrador para reactivar.')->withInput();
             }
         } else {
-            $request->validate(['password_confirm' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+            $request->validate(['password_confirm' => 'required_without:admin_password']);
+            if (!$password || !app(\App\Services\AnulacionService::class)->passwordValida($password)) {
                 return back()->with('error', 'Contraseña incorrecta.');
             }
         }

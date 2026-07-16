@@ -27,17 +27,17 @@
 
     <div class="overflow-x-auto pb-2">
         <table id="tabla-cotizaciones" class="ts-table responsive-table w-full">
-            <thead>
-                <tr>
-                    <th class="w-24 text-left">Código</th>
-                    <th class="text-left">Tipo</th>
-                    <th class="w-[20%] text-left">Descripción</th>
-                    <th class="text-left">Cliente</th>
-                    <th class="w-32 text-center">Fecha</th>
-                    <th class="w-32 text-center">Validez</th>
-                    <th class="w-32 text-right">Total</th>
-                    <th class="w-32 text-center">Estado</th>
-                    <th class="w-32 text-center">Acciones</th>
+            <thead class="bg-white/30 dark:bg-slate-800/40 backdrop-blur-sm border-b border-slate-200/50 dark:border-slate-700/50">
+                <tr class="text-slate-700 dark:text-slate-200 font-semibold">
+                    <th class="w-24 text-left px-4 py-3">Código</th>
+                    <th class="text-left px-4 py-3">Tipo</th>
+                    <th class="w-[20%] text-left px-4 py-3">Descripción</th>
+                    <th class="text-left px-4 py-3">Cliente</th>
+                    <th class="w-32 text-center px-4 py-3">Fecha</th>
+                    <th class="w-32 text-center px-4 py-3">Validez</th>
+                    <th class="w-32 text-right px-4 py-3">Total</th>
+                    <th class="w-32 text-center px-4 py-3">Estado</th>
+                    <th class="w-32 text-center px-4 py-3">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,20 +68,20 @@
                     </td>
                     <td class="text-center">
                         <div class="flex flex-wrap justify-center gap-1.5 max-w-[85px] mx-auto">
-                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600 flex items-center justify-center" title="Ver detalle">👁️</a>
+                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600 border border-indigo-500/20 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm hover:bg-indigo-50/10 dark:hover:bg-indigo-900/20 flex items-center justify-center" title="Ver detalle">👁️</a>
                             
                             @if($cot->estado === 'aprobada')
-                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 hover:text-green-800 hover:bg-green-50/50 flex items-center justify-center" title="Imprimir PDF">🖨️</a>
+                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 border border-green-500/20 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm hover:text-green-800 hover:bg-green-50/50 dark:hover:bg-green-900/20 flex items-center justify-center" title="Imprimir PDF">🖨️</a>
                             @endif
 
 @if($cot->estado === 'pendiente' && (!auth()->user() || auth()->user()->role !== 'invitado'))
-    <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600 flex items-center justify-center" title="Editar">✏️</a>
+    <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600 border border-yellow-500/20 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm hover:bg-yellow-50/50 dark:hover:bg-yellow-900/20 flex items-center justify-center" title="Editar">✏️</a>
 
-    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.rechazar', $cot) }}', false)" class="btn-ghost px-2.5 py-1.5 text-xs text-red-600 border-red-500/20 hover:bg-red-500/10 flex items-center justify-center" title="Rechazar cotización">
+    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.rechazar', $cot) }}', false)" class="btn-ghost px-2.5 py-1.5 text-xs text-red-600 border-red-500/20 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm hover:bg-red-500/10 dark:hover:bg-red-900/20 flex items-center justify-center" title="Rechazar cotización">
         🚫
     </button>
 @elseif($cot->estado === 'rechazada' && (!auth()->user() || auth()->user()->role !== 'invitado'))
-    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.reactivar', $cot) }}', true)" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 border-green-500/20 hover:bg-green-50/10 flex items-center justify-center" title="Reactivar cotización">
+    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.reactivar', $cot) }}', true)" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 border-green-500/20 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm hover:bg-green-50/10 dark:hover:bg-green-900/20 flex items-center justify-center" title="Reactivar cotización">
         ✅
     </button>
 @endif

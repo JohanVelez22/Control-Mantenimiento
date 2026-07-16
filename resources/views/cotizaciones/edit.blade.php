@@ -3,7 +3,7 @@
 <div class="max-w-6xl mx-auto">
     <div class="glass-card p-6 md:p-8">
         <div class="flex items-center gap-3 mb-8">
-            <a href="{{ route('cotizaciones.show', $cotizacion) }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+            <a href="{{ route('cotizaciones.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
             <div>
                 <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">✏️ Editar Cotización {{ $cotizacion->codigo }}</h2>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Modifica los ítems o detalles de la cotización antes de facturar.</p>
@@ -52,22 +52,22 @@
 
                 <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto">
                     <table class="ts-table" id="items-table">
-                        <thead>
+                        <thead class="bg-white/30 dark:bg-slate-800/40 backdrop-blur-sm text-slate-700 dark:text-slate-200 font-semibold border-b border-slate-200/50 dark:border-slate-700/50">
                             <tr>
-                                <th class="w-32">Tipo</th>
-                                <th class="w-[45%]">Descripción / Producto</th>
-                                <th class="w-24 text-center">Cant.</th>
-                                <th class="min-w-[150px] text-right">Precio Un. ($)</th>
-                                <th class="min-w-[150px] text-right">Subtotal</th>
-                                <th class="w-12 text-center"></th>
+                                <th class="w-32 px-4 py-3">Tipo</th>
+                                <th class="w-[45%] px-4 py-3">Descripción / Producto</th>
+                                <th class="w-24 text-center px-4 py-3">Cant.</th>
+                                <th class="min-w-[150px] text-right px-4 py-3">Precio Un. ($)</th>
+                                <th class="min-w-[150px] text-right px-4 py-3">Subtotal</th>
+                                <th class="w-12 text-center px-4 py-3"></th>
                             </tr>
                         </thead>
-                        <tbody id="items-body">
+                        <tbody id="items-body" class="divide-y divide-slate-200/50 dark:divide-slate-700/50 bg-white/20 dark:bg-slate-900/20">
                             <!-- La primera fila se inserta por JS -->
                         </tbody>
                         <tfoot>
-                            <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
-                                <td colspan="4" class="text-right font-bold text-gray-500 uppercase tracking-widest text-xs pt-4 pb-4">Total Cotización:</td>
+                            <tr class="border-t border-slate-200/50 dark:border-slate-700/50 bg-white/30 dark:bg-slate-800/30">
+                                <td colspan="4" class="text-right font-bold text-slate-500 uppercase tracking-widest text-xs pt-4 pb-4">Total Cotización:</td>
                                 <td class="text-right font-black text-2xl text-blue-600 dark:text-blue-400 pt-4 pb-4 pr-4" id="total-display">$0</td>
                                 <td></td>
                             </tr>
@@ -130,7 +130,7 @@ function getStockOptions() {
 function agregarFila(itemData = null) {
     const tbody = document.getElementById('items-body');
     const tr = document.createElement('tr');
-    tr.className = 'item-row bg-transparent border-t border-gray-200 dark:border-gray-700/50';
+    tr.className = 'item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-slate-700/50 hover:bg-white/50 dark:hover:bg-slate-800/30 transition-colors';
     
     let isStock = itemData ? itemData.tipo === 'stock' : false;
     let cant = itemData ? itemData.cantidad : 1;
@@ -152,7 +152,7 @@ function agregarFila(itemData = null) {
         </td>
         <td class="align-middle">
             <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="${precio}" required class="hidden">
-            <input type="text" id="precio_unitario_visual_${filaIndex}" value="${window.formatNumber(precio)}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-blue-500 font-mono">
+            <input type="text" id="precio_unitario_visual_${filaIndex}" value="${window.formatNumber(precio)}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white">
         </td>
         <td class="text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle pr-4">$${window.formatNumber(cant * precio)}</td>
         <td class="text-center align-middle">

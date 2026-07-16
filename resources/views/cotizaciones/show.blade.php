@@ -60,36 +60,36 @@
             <span>🛍️</span> Detalle Cotizado
         </h3>
         
-        <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 mb-6 relative z-10">
-            <table class="w-full text-sm text-left">
-                <thead class="bg-gray-50/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 font-semibold border-b border-gray-200 dark:border-gray-700">
+        <div class="overflow-x-auto pb-2 relative z-10 mb-6">
+            <table class="ts-table w-full">
+                <thead>
                     <tr>
-                        <th class="px-4 py-3">Tipo</th>
-                        <th class="px-4 py-3">Descripción</th>
-                        <th class="px-4 py-3 text-center">Cant.</th>
-                        <th class="px-4 py-3 text-right">Precio Un.</th>
-                        <th class="px-4 py-3 text-right">Subtotal</th>
+                        <th class="text-left w-32">Tipo</th>
+                        <th class="text-left">Descripción</th>
+                        <th class="text-center w-24">Cant.</th>
+                        <th class="text-right w-32">Precio Un.</th>
+                        <th class="text-right w-32">Subtotal</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white/40 dark:bg-transparent">
+                <tbody>
                     @foreach($cotizacion->items as $item)
-                    <tr class="hover:bg-gray-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td class="px-4 py-3 font-medium">
+                    <tr>
+                        <td class="font-medium">
                             @if($item->tipo === 'stock')
                                 <span class="text-emerald-600 dark:text-emerald-400 text-xs px-2 py-1 bg-emerald-100 dark:bg-emerald-900/30 rounded-md">📦 Producto</span>
                             @else
                                 <span class="text-blue-600 dark:text-blue-400 text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-md">🛠️ Servicio</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
+                        <td class="text-slate-800 dark:text-white font-bold">
                             {{ $item->descripcion }}
                             @if($item->stock)
-                                <div class="text-[10px] text-slate-400">Ref Stock: {{ $item->stock->codigo }}</div>
+                                <div class="text-[10px] text-slate-400 font-normal mt-0.5">Ref Stock: {{ $item->stock->codigo }}</div>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-center font-bold">{{ $item->cantidad }}</td>
-                        <td class="px-4 py-3 text-right text-slate-600 dark:text-slate-400">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                        <td class="text-center font-bold">{{ $item->cantidad }}</td>
+                        <td class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+                        <td class="text-right font-black text-blue-600 dark:text-cyan-400">${{ number_format($item->subtotal, 0, ',', '.') }}</td>
                     </tr>
                     @endforeach
                 </tbody>

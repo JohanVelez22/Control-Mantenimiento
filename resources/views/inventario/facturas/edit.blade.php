@@ -83,9 +83,9 @@
                                         <input type="number" name="existing_items[{{ $index }}][cantidad]" min="1" value="{{ (int)$item->cantidad }}" required class="glass-input text-center py-1.5 focus:ring-orange-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
                                     </td>
                                     <td>
-                                        <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 focus:ring-orange-500 font-mono price-input" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
+                                        <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 focus:ring-orange-500 font-bold text-slate-800 dark:text-white price-input" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
                                     </td>
-                                    <td class="text-right font-mono subtotal-display py-1.5 align-middle font-bold text-slate-800 dark:text-white">
+                                    <td class="text-right subtotal-display py-1.5 align-middle font-bold text-slate-800 dark:text-white">
                                         ${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}
                                     </td>
                                     <td></td>
@@ -149,9 +149,9 @@ function agregarFila() {
             <input type="number" name="new_items[${filaIndex}][cantidad]" min="1" value="1" required class="glass-input text-center py-1.5 focus:ring-blue-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
         </td>
         <td>
-            <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 focus:ring-blue-500 font-mono price-input" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
+            <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 focus:ring-blue-500 font-bold text-slate-800 dark:text-white price-input" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
         </td>
-        <td class="text-right font-mono subtotal-display py-1.5 align-middle font-bold text-blue-600 dark:text-blue-400">
+        <td class="text-right subtotal-display py-1.5 align-middle font-bold text-blue-600 dark:text-blue-400">
             $0
         </td>
         <td class="text-center align-middle">

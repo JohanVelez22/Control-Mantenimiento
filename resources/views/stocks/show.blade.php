@@ -134,7 +134,7 @@
                             {{ $item->factura->facturable->nombre_razon_social ?? $item->factura->facturable->nombre ?? '—' }}
                         </td>
                         <td class="text-center font-bold">{{ $item->cantidad }}</td>
-                        <td class="text-right font-mono">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+                        <td class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
                         <td class="text-right font-black {{ $item->factura->tipo_movimiento === 'compra' ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
                             {{ $item->factura->tipo_movimiento === 'compra' ? '-' : '+' }}${{ number_format($item->subtotal, 0, ',', '.') }}
                         </td>
