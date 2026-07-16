@@ -87,7 +87,9 @@ class MigrateAccessDb extends Command
                 'direccion' => mb_substr(trim($row['Domicilio']) ?: 'No registrada', 0, 255),
                 'telefono' => mb_substr($telefono, 0, 255),
                 'email' => mb_substr(trim($row['Email']) ?: null, 0, 255),
-                'ciudad' => 'No registrada',
+                'tipo_entidad' => 'empresa',
+                'tipo_identificacion' => 'nit',
+                'municipio' => 'No registrada',
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -131,12 +133,16 @@ class MigrateAccessDb extends Command
 
             $insertData[] = [
                 'id' => $row['Id'], 
-                'nombre' => mb_substr($nombre, 0, 255),
+                'nombres' => mb_substr($nombre, 0, 255),
+                'apellidos' => '',
+                'tipo_identificacion' => 'cedula_ciudadania',
+                'genero' => 'indefinido',
+                'tipo_cliente' => 'cliente',
                 'identificacion' => mb_substr($identificacion, 0, 255),
                 'direccion' => mb_substr(trim($row['Domicilio']) ?: 'No registrada', 0, 255),
                 'movil' => mb_substr($telefono, 0, 255),
                 'email' => mb_substr(trim($row['Email']) ?: null, 0, 255),
-                'ciudad' => 'No registrada',
+                'municipio' => 'No registrada',
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

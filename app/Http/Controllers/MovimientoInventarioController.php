@@ -370,6 +370,9 @@ class MovimientoInventarioController extends Controller
                     'observaciones' => ($factura->observaciones ?? '') . "\n[REACTIVADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']',
                 ]);
 
+                \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
+                    ->update(['estado' => 'activo']);
+
                 $action = 'reactivada';
             } else {
                 // ANULAR LA FACTURA
@@ -388,6 +391,9 @@ class MovimientoInventarioController extends Controller
                     'estado'        => 'anulada',
                     'observaciones' => ($factura->observaciones ?? '') . "\n[ANULADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']',
                 ]);
+
+                \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
+                    ->update(['estado' => 'anulado']);
 
                 $action = 'anulada';
             }
@@ -568,6 +574,8 @@ class MovimientoInventarioController extends Controller
             // Regenerar observación: texto del usuario + saldo pendiente (si aplica) + historial
             $nuevaObservacion = $this->buildObservaciones($request->observaciones, $saldo, $historial ?: null);
 
+            $diferenciaPago = $totalPagado - $factura->total_pagado;
+            
             $factura->update([
                 'fecha'           => $request->fecha,
                 'total_pagado'    => $totalPagado,
@@ -577,6 +585,17 @@ class MovimientoInventarioController extends Controller
                 'facturable_id'   => $entity->id,
                 'facturable_type' => $facturableType,
             ]);
+
+            // Registrar nuevo movimiento en caja por el excedente pagado (abono)
+            if ($diferenciaPago > 0.01 && !$shouldBeAnulada) {
+                $this->registrarMovimientoCaja(
+                    tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
+                    monto: $diferenciaPago,
+                    persona: $entity->nombre_razon_social ?? $entity->nombre,
+                    descripcion: ($factura->tipo_movimiento === 'venta' ? "Abono a venta #" : "Abono a compra #") . $factura->numero_factura,
+                    fecha: now()->toDateString() // Se registra el día en que se hizo el abono realmente
+                );
+            }
 
             DB::commit();
             return redirect()->route('inventario.facturas')->with('success', 'Factura actualizada correctamente.');

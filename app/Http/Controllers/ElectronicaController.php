@@ -63,7 +63,7 @@ class ElectronicaController extends Controller
         // Consecutivo preview (sin bloqueo) para mostrar en el formulario.
         // El valor definitivo se recalcula con lockForUpdate en store().
         $nextOrden = app(OrdenService::class)
-            ->siguiente('ELC-', Electronica::class, 'id_orden', 4, false);
+            ->siguiente('ELC-', Electronica::class, 'id_orden', null, false);
 
         return view('electronicas.create', compact('tecnicos', 'equipos', 'nextOrden'));
     }
@@ -89,7 +89,7 @@ class ElectronicaController extends Controller
             // de la transacción para eliminar la condición de carrera (race condition).
             if (empty($validated['id_orden'])) {
                 $validated['id_orden'] = app(OrdenService::class)
-                    ->siguiente('ELC-', Electronica::class, 'id_orden', 4);
+                    ->siguiente('ELC-', Electronica::class, 'id_orden', null);
             }
 
             $validated['user_id'] = auth()->id();
