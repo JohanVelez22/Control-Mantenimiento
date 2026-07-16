@@ -17,14 +17,6 @@ use App\Models\Stock;
 use App\Models\ConceptoCaja;
 use App\Models\CategoriaStock;
 use App\Models\CierreCaja;
-use App\Policies\MantenimientoPolicy;
-use App\Policies\ElectronicaPolicy;
-use App\Policies\FacturaPolicy;
-use App\Policies\MovimientoCajaPolicy;
-use App\Policies\StockPolicy;
-use App\Policies\ConceptoCajaPolicy;
-use App\Policies\CierreCajaPolicy;
-use App\Policies\UserPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -51,16 +43,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('promote-admin', fn(User $u) => $u->role === 'admin');
         Gate::define('promote-tecnico', fn(User $u) => $u->role === 'admin');
 
-        // Políticas por modelo
-        Gate::policy(Mantenimiento::class, MantenimientoPolicy::class);
-        Gate::policy(Electronica::class, ElectronicaPolicy::class);
-        Gate::policy(Factura::class, FacturaPolicy::class);
-        Gate::policy(MovimientoCaja::class, MovimientoCajaPolicy::class);
-        Gate::policy(Stock::class, StockPolicy::class);
-        Gate::policy(ConceptoCaja::class, ConceptoCajaPolicy::class);
-        Gate::policy(CategoriaStock::class, CategoriaStockPolicy::class);
-        Gate::policy(CierreCaja::class, CierreCajaPolicy::class);
-        Gate::policy(User::class, UserPolicy::class);
 
         View::composer('layouts.app', function ($view) {
             // Mantenimientos pendientes

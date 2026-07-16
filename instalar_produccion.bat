@@ -43,6 +43,10 @@ if not exist ".env" (
     echo OK - El archivo .env ya existe.
 )
 
+echo Forzando APP_ENV=production y APP_DEBUG=false en .env...
+powershell -Command "(Get-Content .env) -replace '^APP_ENV=.*', 'APP_ENV=production' -replace '^APP_DEBUG=.*', 'APP_DEBUG=false' | Set-Content .env"
+echo OK - Entorno configurado para produccion.
+
 echo.
 echo [3/8] Instalando dependencias de PHP (Modo Produccion)...
 call composer install --optimize-autoloader --no-dev

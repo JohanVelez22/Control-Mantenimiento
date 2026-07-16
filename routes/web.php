@@ -85,8 +85,8 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         // Cotizaciones
         Route::resource('cotizaciones', App\Http\Controllers\CotizacionController::class)->except(['destroy']);
         Route::post('cotizaciones/{cotizacion}/convertir', [App\Http\Controllers\CotizacionController::class, 'convertir'])->name('cotizaciones.convertir');
-        Route::post('cotizaciones/{cotizacion}/rechazar', [App\Http\Controllers\CotizacionController::class, 'rechazar'])->name('cotizaciones.rechazar');
-        Route::post('cotizaciones/{cotizacion}/reactivar', [App\Http\Controllers\CotizacionController::class, 'reactivar'])->name('cotizaciones.reactivar');
+        Route::post('cotizaciones/{cotizacion}/rechazar', [App\Http\Controllers\CotizacionController::class, 'rechazar'])->middleware('throttle:10,1')->name('cotizaciones.rechazar');
+        Route::post('cotizaciones/{cotizacion}/reactivar', [App\Http\Controllers\CotizacionController::class, 'reactivar'])->middleware('throttle:10,1')->name('cotizaciones.reactivar');
         Route::get('cotizaciones/{cotizacion}/pdf', [App\Http\Controllers\CotizacionController::class, 'pdf'])->name('cotizaciones.pdf');
 
         // Mantenimientos: mutaciones (lectura la gestiona el grupo de invitado)
@@ -147,7 +147,7 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
 
         // Usuarios (admin y técnico pueden gestionar; anular es solo admin)
         Route::resource('usuarios', UserController::class)->except(['destroy']);
-        Route::post('usuarios/{usuario}/change-password', [UserController::class, 'changePassword'])->name('usuarios.change-password');
+        Route::post('usuarios/{usuario}/change-password', [UserController::class, 'changePassword'])->middleware('throttle:10,1')->name('usuarios.change-password');
     });
 
     // ─── INVITADO: solo ver detalle y factura (desde búsqueda) ──────
@@ -162,7 +162,7 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
     });
 
     // ─── Admin y Técnico: anular (técnico requiere contraseña de admin) ─────
-    Route::middleware('role:admin,tecnico')->group(function () {
+    Route::middleware(['role:admin,tecnico', 'throttle:10,1'])->group(function () {
         Route::post('clientes/{cliente}/anular', [ClienteController::class, 'anular'])->name('clientes.anular');
         Route::post('equipos/{equipo}/anular', [EquipoController::class, 'anular'])->name('equipos.anular');
         Route::post('tecnicos/{tecnico}/anular', [TecnicoController::class, 'anular'])->name('tecnicos.anular');
