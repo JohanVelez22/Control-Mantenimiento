@@ -39,16 +39,15 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
-        // 3. Verificar contraseña
-        if (!Hash::check($request->password, $user->password)) {
+        // 3. Intentar autenticar con soporte para 'Remember me' y Throttling nativo
+        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->filled('remember'))) {
             return back()->withErrors([
-                'password' => 'La contraseña ingresada es incorrecta.',
+                'email' => 'Las credenciales ingresadas son incorrectas.',
             ])->onlyInput('email');
         }
 
-        // 4. Si todo está bien, iniciar sesión
-        Auth::login($user);
         $request->session()->regenerate();
+        $user = Auth::user();
 
         // 5. Construir alertas de tareas pendientes (Top 50 más antiguas + Totales para trazabilidad)
         $totalElec = \App\Models\Electronica::where('estado', 'pendiente')->where('anulado', false)->count();

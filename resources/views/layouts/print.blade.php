@@ -129,6 +129,17 @@
             color: #555;
         }
         
+        .dompdf-footer {
+            position: fixed;
+            bottom: 0px;
+            right: 15px;
+            font-size: 8pt;
+            color: #333;
+        }
+        .page-number:before {
+            content: "Página " counter(page) " de " counter(pages);
+        }
+        
         .watermark-container { position: relative; height: 100%; }
         .watermark-container.anulado::after {
             content: "ANULADO";
@@ -198,8 +209,27 @@
 
         <div class="footer">
             <p>{{ $empresa->pie_pagina_factura ?? 'Gracias por preferirnos.' }}</p>
+            <p style="font-size: 7pt; color: #777; margin-top: 5px;">Este documento es un soporte válido bajo los términos y condiciones de la empresa. Su alteración o falsificación está penada por la ley.</p>
+        </div>
+        
+        <!-- Paginación compatible con DomPDF y Navegadores -->
+        <div class="dompdf-footer">
+            <span class="page-number"></span>
         </div>
         </div>
     </div>
+    
+    <!-- Script nativo de DomPDF para garantizar la numeración 10/10 -->
+    <script type="text/php">
+        if (isset($pdf)) {
+            $x = $pdf->get_width() - 80;
+            $y = $pdf->get_height() - 35;
+            $text = "Página {PAGE_NUM} de {PAGE_COUNT}";
+            $font = $fontMetrics->get_font("sans-serif", "normal");
+            $size = 8;
+            $color = array(0.3, 0.3, 0.3); // Gris oscuro (#555)
+            $pdf->page_text($x, $y, $text, $font, $size, $color);
+        }
+    </script>
 </body>
 </html>

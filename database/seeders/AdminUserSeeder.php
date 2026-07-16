@@ -18,12 +18,22 @@ class AdminUserSeeder extends Seeder
         // Eliminar usuarios antiguos con @tusistema.com
         User::where('email', 'like', '%@tusistema.com')->delete();
 
+        $adminPass = env('ADMIN_DEFAULT_PASSWORD');
+        $tecnicoPass = env('TECNICO_DEFAULT_PASSWORD');
+        $invitadoPass = env('INVITADO_DEFAULT_PASSWORD');
+
+        if (app()->environment('production')) {
+            if (!$adminPass || !$tecnicoPass || !$invitadoPass) {
+                throw new \Exception('CRÍTICO: En entorno de producción debes definir ADMIN_DEFAULT_PASSWORD, TECNICO_DEFAULT_PASSWORD e INVITADO_DEFAULT_PASSWORD en el archivo .env para proteger el sistema.');
+            }
+        }
+
         // Admin principal
         User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin Sistema',
-                'password' => Hash::make(env('ADMIN_DEFAULT_PASSWORD', 'Admin123*')),
+                'password' => Hash::make($adminPass ?: 'Admin123*'),
                 'role' => 'admin',
                 'active' => true,
             ]
@@ -34,7 +44,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'tecnico@example.com'],
             [
                 'name' => 'Tecnico Sistema',
-                'password' => Hash::make(env('TECNICO_DEFAULT_PASSWORD', 'Tecny123*')),
+                'password' => Hash::make($tecnicoPass ?: 'Tecny123*'),
                 'role' => 'tecnico',
                 'active' => true,
             ]
@@ -45,7 +55,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'invitado@example.com'],
             [
                 'name' => 'Invitado',
-                'password' => Hash::make(env('INVITADO_DEFAULT_PASSWORD', 'Invit123*')),
+                'password' => Hash::make($invitadoPass ?: 'Invit123*'),
                 'role' => 'invitado',
                 'active' => true,
             ]

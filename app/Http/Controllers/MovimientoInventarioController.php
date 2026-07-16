@@ -323,6 +323,10 @@ class MovimientoInventarioController extends Controller
             return redirect()->back()->with('error', 'No tienes permisos para anular.');
         }
 
+        // Aceptamos ambos nombres de campo para compatibilidad con el modal global.
+        $password = $request->input('admin_password') ?? $request->input('password_confirm');
+        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
+
         // Técnico requiere contraseña de admin; admin usa su propia o la de admin.
         if (Auth::user()->isTecnico()) {
             $request->validate(['admin_password' => 'required']);

@@ -122,7 +122,44 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
 };
 
 function eliminarFila(btn) {
-    if (document.querySelectorAll('.item-row').length === 1) return;
+    if (document.querySelectorAll('.item-row').length === 1) {
+        if (typeof window.showToast === 'function') {
+            window.showToast('Debe haber al menos un ítem en la cotización.', 'error');
+        } else {
+            alert('Debe haber al menos un ítem en la cotización.');
+        }
+        return;
+    }
+    
+    // Si ya confirmó, lo borramos, si no, mostramos modal de confirmación
+    if (!btn.dataset.confirmed) {
+        const modal = document.getElementById('ts-modal');
+        if (modal) {
+            document.getElementById('ts-modal-title').innerText = 'Eliminar fila';
+            document.getElementById('ts-modal-msg').innerText = '¿Está seguro de eliminar este ítem de la cotización?';
+            
+            // Sobreescribir temporalmente el onclick del botón confirmar
+            const confirmBtn = document.getElementById('ts-modal-confirm');
+            const oldClick = confirmBtn.onclick;
+            
+            confirmBtn.onclick = function() {
+                btn.dataset.confirmed = 'true';
+                window.closeTsModal();
+                eliminarFila(btn);
+                confirmBtn.onclick = oldClick; // Restaurar
+            };
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('ts-modal-card').classList.remove('scale-95', 'opacity-0');
+            }, 10);
+            return;
+        } else if (!confirm('¿Está seguro de eliminar esta fila?')) {
+            return;
+        }
+    }
+    
     const tr = btn.closest('tr');
     if (tr.tomselectObj) tr.tomselectObj.destroy();
     tr.remove();
@@ -178,4 +215,32 @@ function recalcular() {
     });
     document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
 }
+
+// Bloquear submit si no hay stock
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form.glass-panel') || document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            let hasError = false;
+            document.querySelectorAll('.item-row').forEach(tr => {
+                const maxStockStr = tr.dataset.maxStock;
+                if (maxStockStr && maxStockStr !== '') {
+                    const maxStock = parseInt(maxStockStr, 10);
+                    const currentCant = parseInt(tr.querySelector('.cantidad-input').value, 10) || 0;
+                    if (currentCant > maxStock) {
+                        hasError = true;
+                        tr.querySelector('.cantidad-input').classList.add('animate-pulse');
+                    }
+                }
+            });
+            
+            if (hasError) {
+                e.preventDefault();
+                if (typeof window.showToast === 'function') {
+                    window.showToast('Hay cantidades que superan el stock disponible. Por favor ajuste antes de guardar.', 'error');
+                }
+            }
+        });
+    }
+});
 </script>

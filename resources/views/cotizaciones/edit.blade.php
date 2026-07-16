@@ -115,7 +115,7 @@
             'cantidad' => $i->cantidad,
             'precio_unitario' => $i->precio_unitario,
         ];
-    })->toJson();
+    })->toArray();
 @endphp
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.initGlassTomSelect(clienteSelect);
     }
 
-    const itemsExistentes = {!! $existingItems !!};
+    const itemsExistentes = @json($existingItems);
     if (itemsExistentes.length === 0) {
         agregarFila();
     } else {

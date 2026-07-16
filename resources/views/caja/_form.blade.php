@@ -39,13 +39,13 @@
  <div>
  <label class="field-label">Tipo de Movimiento *</label>
  <div class="flex gap-3 mt-1">
- <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <label id="label_ingreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
  <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
- <span class="font-bold {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">📈 Ingreso</span>
+ <span id="text_ingreso" class="font-bold {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">📈 Ingreso</span>
  </label>
- <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <label id="label_egreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
  <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso" {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'checked' : '' }} class="accent-red-500 w-4 h-4">
- <span class="font-bold {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'text-red-700 dark:text-red-400' : 'text-slate-600 dark:text-slate-400' }}">📉 Egreso</span>
+ <span id="text_egreso" class="font-bold {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'text-red-700 dark:text-red-400' : 'text-slate-600 dark:text-slate-400' }}">📉 Egreso</span>
  </label>
  </div>
  @error('tipo_movimiento') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
@@ -55,13 +55,13 @@
  <div>
  <label class="field-label">Tipo de Pago *</label>
  <div class="flex gap-3 mt-1">
- <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
- <input type="radio" name="tipo_pago" value="efectivo" required {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'checked' : '' }} class="accent-blue-500 w-4 h-4">
- <span class="font-bold {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400' }}">💵 Efectivo</span>
+ <label id="label_efectivo" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <input type="radio" name="tipo_pago" value="efectivo" required id="tipo_efectivo" {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'checked' : '' }} class="accent-blue-500 w-4 h-4">
+ <span id="text_efectivo" class="font-bold {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400' }}">💵 Efectivo</span>
  </label>
- <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'border-purple-500 bg-purple-50/50 dark:bg-purple-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
- <input type="radio" name="tipo_pago" value="consignacion" {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'checked' : '' }} class="accent-purple-500 w-4 h-4">
- <span class="font-bold {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'text-purple-700 dark:text-purple-400' : 'text-slate-600 dark:text-slate-400' }}">🏦 Banco</span>
+ <label id="label_banco" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'border-purple-500 bg-purple-50/50 dark:bg-purple-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <input type="radio" name="tipo_pago" value="consignacion" id="tipo_banco" {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'checked' : '' }} class="accent-purple-500 w-4 h-4">
+ <span id="text_banco" class="font-bold {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'text-purple-700 dark:text-purple-400' : 'text-slate-600 dark:text-slate-400' }}">🏦 Banco</span>
  </label>
  </div>
  @error('tipo_pago') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
@@ -155,6 +155,10 @@
  r.addEventListener('change', updateAmountColor);
  });
  
+ document.querySelectorAll('input[name="tipo_pago"]').forEach(r => {
+ r.addEventListener('change', updateAmountColor);
+ });
+ 
  function updateAmountColor() {
  const isIngreso = document.getElementById('tipo_ingreso').checked;
  const isEgreso = document.getElementById('tipo_egreso').checked;
@@ -169,6 +173,49 @@
  }
  } else {
  inputVisual.classList.remove('text-emerald-600', 'dark:text-emerald-400', 'text-red-600', 'dark:text-red-400');
+ }
+ 
+ const labelIngreso = document.getElementById('label_ingreso');
+ const labelEgreso = document.getElementById('label_egreso');
+ const textIngreso = document.getElementById('text_ingreso');
+ const textEgreso = document.getElementById('text_egreso');
+ 
+ labelIngreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md";
+ textIngreso.className = "font-bold text-slate-600 dark:text-slate-400";
+ 
+ labelEgreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md";
+ textEgreso.className = "font-bold text-slate-600 dark:text-slate-400";
+ 
+ if (isIngreso) {
+ labelIngreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20";
+ textIngreso.className = "font-bold text-emerald-700 dark:text-emerald-400";
+ } else if (isEgreso) {
+ labelEgreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-red-500 bg-red-50/50 dark:bg-red-900/20";
+ textEgreso.className = "font-bold text-red-700 dark:text-red-400";
+ }
+ 
+ const isEfectivo = document.getElementById('tipo_efectivo')?.checked;
+ const isBanco = document.getElementById('tipo_banco')?.checked;
+ 
+ const labelEfectivo = document.getElementById('label_efectivo');
+ const labelBanco = document.getElementById('label_banco');
+ const textEfectivo = document.getElementById('text_efectivo');
+ const textBanco = document.getElementById('text_banco');
+ 
+ if(labelEfectivo && labelBanco) {
+     labelEfectivo.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md";
+     textEfectivo.className = "font-bold text-slate-600 dark:text-slate-400";
+     
+     labelBanco.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md";
+     textBanco.className = "font-bold text-slate-600 dark:text-slate-400";
+     
+     if (isEfectivo) {
+         labelEfectivo.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-blue-500 bg-blue-50/50 dark:bg-blue-900/20";
+         textEfectivo.className = "font-bold text-blue-700 dark:text-blue-400";
+     } else if (isBanco) {
+         labelBanco.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-purple-500 bg-purple-50/50 dark:bg-purple-900/20";
+         textBanco.className = "font-bold text-purple-700 dark:text-purple-400";
+     }
  }
  }
  

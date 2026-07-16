@@ -12,9 +12,13 @@
 <!DOCTYPE html>
 <html lang="es" class="preload">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tecni Systemas</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="Sistema de Control de Mantenimiento y Gestión de Equipos. Solución integral para talleres y gestión de garantías.">
+    <meta name="keywords" content="Mantenimiento, Talleres, Gestión de Inventario, Cotizaciones, Electrónica">
+    
+    <title>@yield('title', 'Tecni Systemas')</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
