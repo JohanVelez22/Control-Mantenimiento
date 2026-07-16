@@ -18,7 +18,7 @@ use App\Models\Mantenimiento;
 use App\Models\Electronica;
 use App\Models\MovimientoCaja;
 use App\Models\ConceptoCaja;
-use App\Models\ArqueoCaja;
+
 use Carbon\Carbon;
 
 class SeedDemoData extends Command
@@ -242,22 +242,7 @@ class SeedDemoData extends Command
                 ]);
             }
 
-            // 11. ARQUEOS (6)
-            $this->info('Creando 6 Arqueos de Caja históricos...');
-            for ($i = 6; $i >= 1; $i--) {
-                $fecha = Carbon::now()->subDays($i)->toDateString();
-                ArqueoCaja::create([
-                    'fecha' => $fecha,
-                    'saldo_inicial' => 100000,
-                    'total_ingresos' => 450000,
-                    'total_egresos' => 120000,
-                    'saldo_final_calculado' => 430000,
-                    'saldo_real_informado' => 430000,
-                    'diferencia' => 0,
-                    'observaciones' => 'Arqueo cuadrado correctamente.',
-                    'user_id' => $admin->id,
-                ]);
-            }
+
 
             DB::commit();
             $this->info('¡Datos de demostración sembrados exitosamente! Todo listo para pruebas completas.');
