@@ -11,6 +11,7 @@ use App\Models\Mantenimiento;
 use App\Models\Electronica;
 use App\Models\Factura;
 use App\Models\MovimientoCaja;
+use App\Models\Cotizacion;
 use App\Models\User;
 use App\Models\Stock;
 use App\Models\ConceptoCaja;
@@ -174,7 +175,28 @@ View::composer('layouts.app', function ($view) {
                     ->values()
                     ->all(); // Convert to plain array to avoid serialization issues
 
-                return compact('mantList', 'elecList', 'cajaList', 'movimientosPendientes');
+                // Cotizaciones pendientes - convertir a array simple
+                $cotList = Cotizacion::where('estado', 'pendiente')
+                    ->select('id', 'codigo', 'cliente_id', 'total', 'fecha')
+                    ->with('cliente:id,nombres,apellidos')
+                    ->latest()
+                    ->limit(50)
+                    ->get()
+                    ->map(function($c) {
+                        return [
+                            'id' => $c->id,
+                            'codigo' => $c->codigo,
+                            'total' => $c->total,
+                            'fecha' => $c->fecha,
+                            'cliente' => $c->cliente ? [
+                                'id' => $c->cliente->id,
+                                'nombre' => $c->cliente->nombres . ' ' . $c->cliente->apellidos,
+                            ] : null,
+                        ];
+                    })
+                    ->all();
+
+                return compact('mantList', 'elecList', 'cajaList', 'movimientosPendientes', 'cotList');
             });
 
             $view->with([
@@ -182,13 +204,16 @@ View::composer('layouts.app', function ($view) {
                 'elecList'              => $data['elecList'],
                 'cajaList'              => $data['cajaList'],
                 'movimientosPendientes' => $data['movimientosPendientes'],
+                'cotList'               => $data['cotList'],
                 'mantPendientes'        => count($data['mantList']),
                 'elecPendientes'        => count($data['elecList']),
+                'cotPendientes'         => count($data['cotList']),
                 'cajaPendientes'        => count($data['cajaList']) + count($data['movimientosPendientes']),
                 'totalPendientes'       => count($data['mantList'])
                                               + count($data['elecList'])
                                               + count($data['cajaList'])
-                                              + count($data['movimientosPendientes']),
+                                              + count($data['movimientosPendientes'])
+                                              + count($data['cotList']),
             ]);
         });
 

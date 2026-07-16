@@ -13,7 +13,7 @@
     <div class="info-col">
         <p><strong>Cliente:</strong> {{ $cotizacion->cliente->nombre }}</p>
         <p><strong>Identificación:</strong> {{ $cotizacion->cliente->identificacion }}</p>
-        <p><strong>Teléfono:</strong> {{ $cotizacion->cliente->telefono ?? 'N/A' }}</p>
+        <p><strong>Teléfono:</strong> {{ $cotizacion->cliente->movil ?? 'N/A' }}</p>
     </div>
     <div class="info-col">
         <p><strong>Fecha Emisión:</strong> {{ \Carbon\Carbon::parse($cotizacion->fecha)->format('d/m/Y') }}</p>

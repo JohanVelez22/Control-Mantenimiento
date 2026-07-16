@@ -238,6 +238,15 @@
                                         <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#a855f7; box-shadow:0 2px 6px rgba(168,85,247,0.4)">{{ $elecPendientes }}</span>
                                     </button>
                                     @endif
+                                    @if($cotPendientes > 0)
+                                    <button onclick="openNotifModal('cot'); document.getElementById('notif-dropdown').classList.add('hidden');"
+                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+                                            style="border-bottom:1px solid rgba(0,0,0,0.05);">
+                                        <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(99,102,241,0.15);">📝</div>
+                                        <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Cotizaciones</span>
+                                        <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#6366f1; box-shadow:0 2px 6px rgba(99,102,241,0.4)">{{ $cotPendientes }}</span>
+                                    </button>
+                                    @endif
                                     @if($cajaPendientes > 0)
                                     <button onclick="openNotifModal('caja'); document.getElementById('notif-dropdown').classList.add('hidden');"
                                             class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-amber-50 dark:hover:bg-amber-900/30">
@@ -776,6 +785,9 @@
                 @if($elecPendientes > 0)
                 <button onclick="filterNotifs('elec')" id="btn-notif-elec" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60">Electrónica</button>
                 @endif
+                @if($cotPendientes > 0)
+                <button onclick="filterNotifs('cot')" id="btn-notif-cot" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60">Cotizaciones</button>
+                @endif
                 @if($cajaPendientes > 0)
                 <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60">Saldos/Caja</button>
                 @endif
@@ -815,6 +827,23 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $e->equipo->cliente->nombre ?? '—' }}</p>
                     </div>
                     <span class="shrink-0 text-purple-500 dark:text-purple-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
+                </a>
+                @endforeach
+
+                {{-- Cotizaciones --}}
+                @foreach($cotList as $c)
+                <a href="{{ route('cotizaciones.show', $c['id']) }}" onclick="closeNotifModal()" data-notif-type="cot"
+                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors group relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl"></div>
+                    <div class="pl-3 min-w-0">
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <span class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Cotización</span>
+                            <span class="text-[10px] font-bold text-indigo-500 dark:text-indigo-300">{{ $c['codigo'] }}</span>
+                        </div>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $c['cliente']['nombre'] ?? 'N/A' }}</p>
+                        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold truncate">Total: ${{ number_format($c['total'], 0, ',', '.') }}</p>
+                    </div>
+                    <span class="shrink-0 text-indigo-500 dark:text-indigo-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
                 @endforeach
 
@@ -884,6 +913,8 @@
                     btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-elec') {
                     btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60'; btn.removeAttribute('style');
+                } else if(btn.id === 'btn-notif-cot') {
+                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-caja') {
                     btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60'; btn.removeAttribute('style');
                 }
@@ -898,6 +929,8 @@
                     activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-200 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200 border border-blue-300 dark:border-blue-700'; activeBtn.removeAttribute('style');
                 } else if(type === 'elec') {
                     activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-200 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border border-purple-300 dark:border-purple-700'; activeBtn.removeAttribute('style');
+                } else if(type === 'cot') {
+                    activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-indigo-200 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-700'; activeBtn.removeAttribute('style');
                 } else if(type === 'caja') {
                     activeBtn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-amber-200 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border border-amber-300 dark:border-amber-700'; activeBtn.removeAttribute('style');
                 }

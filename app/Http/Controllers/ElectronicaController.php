@@ -312,19 +312,24 @@ class ElectronicaController extends Controller
         $electronicas = collect();
 
         if ($query) {
-            // Validación estricta: solo alfanumérico, espacios, guiones (cédula/teléfono)
-            if (!preg_match('/^[\d\s\-\.]{5,20}$/', $query)) {
-                return back()->with('error', 'Formato inválido. Use solo números, espacios o guiones (cédula o teléfono).');
+            // Validación estricta: alfanumérico, espacios, guiones, puntos, # (para órdenes como ELC-0001)
+            if (!preg_match('/^[\d\s\-\.#]{5,30}$/', $query)) {
+                return back()->with('error', 'Formato inválido. Use solo números, espacios, guiones, puntos o # (ej: 123456789, 3001234567, ELC-001).');
             }
 
             // Normalizar: quitar espacios/guiones/puntos para búsqueda
             $clean = preg_replace('/[\s\-\.]/', '', $query);
 
             $electronicas = Electronica::with(['equipo.cliente', 'tecnico'])
-                ->whereHas('equipo.cliente', function ($q) use ($clean) {
-                    $q->where('identificacion', 'like', "%{$clean}%")
-                      ->orWhere('telefono', 'like', "%{$clean}%")
-                      ->orWhere('movil', 'like', "%{$clean}%");
+                ->where(function ($q) use ($clean) {
+                    // 1. Por cédula/teléfono del cliente
+                    $q->whereHas('equipo.cliente', function ($sub) use ($clean) {
+                        $sub->where('identificacion', 'like', "%{$clean}%")
+                          ->orWhere('telefono', 'like', "%{$clean}%")
+                          ->orWhere('movil', 'like', "%{$clean}%");
+                    })
+                    // 2. Por número de orden (id_orden)
+                    ->orWhere('id_orden', 'like', "%{$clean}%");
                 })
                 ->where('anulado', false)
                 ->latest()

@@ -42,10 +42,10 @@ class CotizacionController extends Controller
                 $total += $item['cantidad'] * $item['precio_unitario'];
             }
 
-            // Generate next code
+            // Generate next code (short version as requested)
             $lastCot = \App\Models\Cotizacion::orderBy('id', 'desc')->first();
             $nextId = $lastCot ? $lastCot->id + 1 : 1;
-            $codigo = 'COT-' . date('Y') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+            $codigo = 'COT-' . $nextId;
 
             $cotizacion = \App\Models\Cotizacion::create([
                 'codigo' => $codigo,
@@ -236,15 +236,23 @@ class CotizacionController extends Controller
         }
     }
 
-    public function rechazar(\Illuminate\Http\Request $request, Cotizacion $cotizacion, \App\Services\AnulacionService $anulacionService)
+public function rechazar(\Illuminate\Http\Request $request, Cotizacion $cotizacion)
     {
         if ($cotizacion->estado !== 'pendiente') {
             return back()->with('error', 'Solo las cotizaciones pendientes pueden ser rechazadas.');
         }
 
-        $password = $request->input('admin_password');
-        if (!$anulacionService->adminPasswordValida($password)) {
-            return back()->with('error', 'Contraseña de administrador incorrecta.');
+        // Técnico requiere contraseña de admin; admin usa su propia o la de admin.
+        if (auth()->user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+                return back()->with('error', 'Se requiere la contraseña de un administrador para rechazar.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+                return back()->with('error', 'Contraseña incorrecta.');
+            }
         }
 
         $cotizacion->update(['estado' => 'rechazada']);
@@ -252,4 +260,27 @@ class CotizacionController extends Controller
         return back()->with('success', 'Cotización marcada como rechazada.');
     }
 
+    public function reactivar(\Illuminate\Http\Request $request, Cotizacion $cotizacion)
+    {
+        if ($cotizacion->estado !== 'rechazada') {
+            return back()->with('error', 'Solo las cotizaciones rechazadas pueden ser reactivadas.');
+        }
+
+        // Técnico requiere contraseña de admin; admin usa su propia o la de admin.
+        if (auth()->user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+                return back()->with('error', 'Se requiere la contraseña de un administrador para reactivar.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+                return back()->with('error', 'Contraseña incorrecta.');
+            }
+        }
+
+        $cotizacion->update(['estado' => 'pendiente']);
+
+        return back()->with('success', 'Cotización reactivada correctamente.');
+    }
 }

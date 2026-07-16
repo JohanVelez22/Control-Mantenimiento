@@ -1,31 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
-    <div>
-        <h1 class="text-3xl font-black text-gray-800 dark:text-white tracking-tight flex items-center gap-3">
-            <span class="text-4xl drop-shadow-md">📝</span>
-            Cotizaciones
-        </h1>
-        <p class="text-gray-500 dark:text-gray-400 font-medium mt-1">
-            Gestiona presupuestos para clientes sin afectar caja ni stock.
-        </p>
+<div class="glass-card p-6">
+    <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
+        <div>
+            <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
+                <span class="text-3xl">📝</span> Cotizaciones
+            </h2>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">
+                Gestiona presupuestos para clientes sin afectar caja ni stock.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+            <div class="relative">
+                <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
+                <input type="text" id="search-cotizaciones" placeholder="Buscar cotización..." class="glass-input pl-9 w-48 sm:w-64">
+            </div>
+            @if(!auth()->user()->isInvitado())
+            <a href="{{ route('cotizaciones.create') }}" class="btn-primary">
+                ➕ Nueva Cotización
+            </a>
+            @endif
+        </div>
     </div>
 
-    @if(auth()->user() && auth()->user()->role !== 'invitado')
-    <a href="{{ route('cotizaciones.create') }}" class="btn-primary group">
-        <span class="text-lg group-hover:scale-110 transition-transform">➕</span>
-        Nueva Cotización
-    </a>
-    @endif
-</div>
-
-<div class="glass-card">
     <div class="overflow-x-auto pb-2">
-        <table class="ts-table responsive-table w-full">
+        <table id="tabla-cotizaciones" class="ts-table responsive-table w-full">
             <thead>
                 <tr>
                     <th class="w-24 text-left">Código</th>
+                    <th class="text-left">Tipo</th>
+                    <th class="w-[20%] text-left">Descripción</th>
                     <th class="text-left">Cliente</th>
                     <th class="w-32 text-center">Fecha</th>
                     <th class="w-32 text-center">Validez</th>
@@ -36,8 +42,21 @@
             </thead>
             <tbody>
                 @forelse($cotizaciones as $cot)
+                @php
+                    $primerItem = $cot->items->first();
+                    $tipoStr = $primerItem ? ($primerItem->tipo === 'stock' ? 'Producto' : 'Servicio') : '-';
+                    if ($cot->items->count() > 1) {
+                        $tipoStr .= ' (Mixto)';
+                    }
+                    $descStr = $primerItem ? $primerItem->descripcion : '-';
+                    if ($cot->items->count() > 1) {
+                        $descStr .= ' (+' . ($cot->items->count() - 1) . ' más)';
+                    }
+                @endphp
                 <tr>
                     <td class="font-bold text-slate-600 dark:text-slate-300">{{ $cot->codigo }}</td>
+                    <td class="font-bold text-indigo-600 dark:text-indigo-400 text-sm whitespace-nowrap">{{ $tipoStr }}</td>
+                    <td class="text-gray-600 dark:text-gray-300 text-xs font-medium max-w-[200px] truncate" title="{{ $descStr }}">{{ $descStr }}</td>
                     <td class="font-bold text-slate-800 dark:text-white">{{ $cot->cliente->nombre ?? 'N/A' }}</td>
                     <td class="text-center font-medium">{{ \Carbon\Carbon::parse($cot->fecha)->format('d/m/Y') }}</td>
                     <td class="text-center font-medium">{{ $cot->validez_dias }} días</td>
@@ -48,20 +67,24 @@
                         </span>
                     </td>
                     <td class="text-center">
-                        <div class="flex justify-center gap-1.5 min-w-[140px] flex-nowrap">
-                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600" title="Ver detalle">👁️</a>
+                        <div class="flex flex-wrap justify-center gap-1.5 max-w-[85px] mx-auto">
+                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600 flex items-center justify-center" title="Ver detalle">👁️</a>
                             
                             @if($cot->estado === 'aprobada')
-                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 hover:text-green-800 hover:bg-green-50/50" title="Imprimir PDF">🖨️</a>
+                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 hover:text-green-800 hover:bg-green-50/50 flex items-center justify-center" title="Imprimir PDF">🖨️</a>
                             @endif
 
-                            @if($cot->estado === 'pendiente' && (!auth()->user() || auth()->user()->role !== 'invitado'))
-                                <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
+@if($cot->estado === 'pendiente' && (!auth()->user() || auth()->user()->role !== 'invitado'))
+    <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600 flex items-center justify-center" title="Editar">✏️</a>
 
-                                <button type="button" onclick="openAnularModal('{{ route('cotizaciones.rechazar', $cot) }}', false)" class="btn-ghost px-2.5 py-1.5 text-xs text-red-600 border-red-500/20 hover:bg-red-500/10" title="Rechazar cotización">
-                                    🚫
-                                </button>
-                            @endif
+    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.rechazar', $cot) }}', false)" class="btn-ghost px-2.5 py-1.5 text-xs text-red-600 border-red-500/20 hover:bg-red-500/10 flex items-center justify-center" title="Rechazar cotización">
+        🚫
+    </button>
+@elseif($cot->estado === 'rechazada' && (!auth()->user() || auth()->user()->role !== 'invitado'))
+    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.reactivar', $cot) }}', true)" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 border-green-500/20 hover:bg-green-50/10 flex items-center justify-center" title="Reactivar cotización">
+        ✅
+    </button>
+@endif
                         </div>
                     </td>
                 </tr>
@@ -83,4 +106,12 @@
         {{ $cotizaciones->links() }}
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if(typeof filterTable === 'function') {
+            filterTable('search-cotizaciones', 'tabla-cotizaciones');
+        }
+    });
+</script>
 @endsection
