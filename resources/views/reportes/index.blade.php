@@ -66,31 +66,27 @@
 
 <div class="space-y-4">
 
- {{-- INFORME ACUMULADO --}}
- <div class="glass-card p-6">
- <h3 class="text-xl font-bold mb-4">📈 Informe Acumulado (Mes {{ $mes }}/{{ $anio }})</h3>
- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-  <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
-  <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📈</span> Ingresos</p>
-  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['ingresos'], 0, ',', '.') }}</p>
-  </div>
-  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-  <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-500/20 rounded-full blur-2xl group-hover:bg-red-500/30 transition-all"></div>
-  <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📉</span> Egresos / Gastos</p>
-  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['egresos'], 0, ',', '.') }}</p>
-  </div>
-  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-  <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
-  <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💎</span> Facturación Total</p>
-  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</p>
-  </div>
-  <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
- <div class="absolute -right-6 -top-6 w-24 h-24 {{ $acumulado['utilidad_neta'] >= 0 ? 'bg-teal-500/20 group-hover:bg-teal-500/30' : 'bg-orange-500/20 group-hover:bg-orange-500/30' }} rounded-full blur-2xl transition-all"></div>
- <p class="text-xs font-bold {{ $acumulado['utilidad_neta'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">⚖️</span> Utilidad / Saldo Neta</p>
- <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</p>
- </div>
-  </div>
+{{-- INFORME ACUMULADO --}}
+  <div class="glass-card p-6">
+  <h3 class="text-xl font-bold mb-4">📈 Informe Acumulado (Mes {{ $mes }}/{{ $anio }})</h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+   <div class="glass-card glass-card-emerald p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+   <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📈</span> Ingresos</p>
+   <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['ingresos'], 0, ',', '.') }}</p>
+   </div>
+   <div class="glass-card glass-card-red p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+   <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📉</span> Egresos / Gastos</p>
+   <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['egresos'], 0, ',', '.') }}</p>
+   </div>
+   <div class="glass-card glass-card-blue p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+   <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💎</span> Facturación Total</p>
+   <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</p>
+   </div>
+   <div class="glass-card {{ $acumulado['utilidad_neta'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+   <p class="text-xs font-bold {{ $acumulado['utilidad_neta'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">⚖️</span> Utilidad / Saldo Neta</p>
+   <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</p>
+   </div>
+   </div>
   
   <div class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
    <div class="flex justify-between items-center bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 backdrop-blur-sm p-3 rounded-xl shadow-sm">

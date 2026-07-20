@@ -54,29 +54,25 @@
  </form>
 </div>
 
- {{-- Tarjetas de resumen --}}
- <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
- <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
- <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
- <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
- <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_ingresos'], 0, ',', '.') }}</p>
- </div>
- <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
- <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-500/20 rounded-full blur-2xl group-hover:bg-red-500/30 transition-all"></div>
- <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
- <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_egresos'], 0, ',', '.') }}</p>
- </div>
- <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
- <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
- <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🔧</span> Mantenimientos</p>
- <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_mantenimientos'], 0, ',', '.') }}</p>
- </div>
- <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
- <div class="absolute -right-6 -top-6 w-24 h-24 bg-gray-500/20 rounded-full blur-2xl group-hover:bg-gray-500/30 transition-all"></div>
- <p class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🚫</span> Anulados</p>
- <p class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $resumen['total_anulados'] }}</p>
- </div>
- </div>
+{{-- Tarjetas de resumen --}}
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+  <div class="glass-card glass-card-emerald p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+  <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
+  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_ingresos'], 0, ',', '.') }}</p>
+  </div>
+  <div class="glass-card glass-card-red p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+  <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
+  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_egresos'], 0, ',', '.') }}</p>
+  </div>
+  <div class="glass-card glass-card-blue p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+  <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🔧</span> Mantenimientos</p>
+  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($resumen['total_mantenimientos'], 0, ',', '.') }}</p>
+  </div>
+  <div class="glass-card glass-card-gray p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+  <p class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🚫</span> Anulados</p>
+  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $resumen['total_anulados'] }}</p>
+  </div>
+  </div>
 
  {{-- Tabla de movimientos del día --}}
  <div class="glass-card p-6 md:p-8 mt-4">

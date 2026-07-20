@@ -182,17 +182,11 @@ class StockController extends Controller
         }
 
         $stocks = $query->orderBy('id', 'desc')->paginate(20)->withQueryString();
-        $categorias = \Illuminate\Support\Facades\Cache::remember('catalog_categorias_stock', 3600, function() {
-            return \App\Models\CategoriaStock::where('tipo', 'categoria')->pluck('nombre')->merge(Stock::select('categoria')->whereNotNull('categoria')->where('categoria', '!=', '')->distinct()->pluck('categoria'))->unique();
-        });
+        $categorias = \App\Models\CategoriaStock::where('tipo', 'categoria')->pluck('nombre')->merge(Stock::select('categoria')->whereNotNull('categoria')->where('categoria', '!=', '')->distinct()->pluck('categoria'))->unique();
         
-        $subcategorias = \Illuminate\Support\Facades\Cache::remember('catalog_subcategorias_stock', 3600, function() {
-            return \App\Models\CategoriaStock::where('tipo', 'subcategoria')->pluck('nombre')->merge(Stock::select('subcategoria')->whereNotNull('subcategoria')->where('subcategoria', '!=', '')->distinct()->pluck('subcategoria'))->unique();
-        });
+        $subcategorias = \App\Models\CategoriaStock::where('tipo', 'subcategoria')->pluck('nombre')->merge(Stock::select('subcategoria')->whereNotNull('subcategoria')->where('subcategoria', '!=', '')->distinct()->pluck('subcategoria'))->unique();
         
-        $proveedores = \Illuminate\Support\Facades\Cache::remember('catalog_proveedores_activos', 3600, function() {
-            return \App\Models\Proveedor::where('active', 1)->orderBy('nombre_razon_social')->get();
-        });
+        $proveedores = \App\Models\Proveedor::where('active', 1)->orderBy('nombre_razon_social')->get();
 
         return view('stocks.reportes', compact('stocks', 'categorias', 'subcategorias', 'proveedores'));
     }

@@ -15,35 +15,30 @@
 </style>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
- <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
- <div class="absolute inset-0 bg-gradient-to-bl from-blue-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
- <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💻</span> Equipos</div>
- <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalEquipos ?? 0 }}</div>
- </div>
- 
- <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
- <div class="absolute inset-0 bg-gradient-to-bl from-emerald-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
- <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">🔧</span> Órdenes</div>
- <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalMantenimientos ?? 0 }}</div>
- </div>
- 
- <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
- <div class="absolute inset-0 bg-gradient-to-bl from-amber-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
- <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⏳</span> Mantenimientos Pend.</div>
- <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['pendientes'] ?? 0 }}</div>
- </div>
- 
- <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
- <div class="absolute inset-0 bg-gradient-to-bl from-purple-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
- <div class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⚡</span> Electrónica Pend.</div>
- <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['electronica_pendientes'] ?? 0 }}</div>
- </div>
+  <div class="glass-card glass-card-blue p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+  <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💻</span> Equipos</div>
+  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalEquipos ?? 0 }}</div>
+  </div>
+  
+  <div class="glass-card glass-card-emerald p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+  <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">🔧</span> Órdenes</div>
+  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalMantenimientos ?? 0 }}</div>
+  </div>
+  
+  <div class="glass-card glass-card-amber p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+  <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⏳</span> Mantenimientos Pend.</div>
+  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['pendientes'] ?? 0 }}</div>
+  </div>
+  
+  <div class="glass-card glass-card-purple p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+  <div class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⚡</span> Electrónica Pend.</div>
+  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['electronica_pendientes'] ?? 0 }}</div>
+  </div>
 
- <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
- <div class="absolute inset-0 bg-gradient-to-bl from-red-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
- <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📦</span> Stock Bajo (<5)</div>
- <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
- </div>
+  <div class="glass-card glass-card-red p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+  <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📦</span> Stock Bajo (<5)</div>
+  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
+  </div>
 </div>
 
 <!-- Carrusel de Gráficos -->
@@ -127,29 +122,27 @@
 
  </div>
 
- <!-- Controles: fondo muy suave para no tapar los gráficos -->
- <button type="button" id="btnPrev" aria-label="Anterior" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10 border border-gray-200/40 dark:border-gray-500/30 bg-white/25 dark:bg-gray-900/25 backdrop-blur-[2px] text-gray-700/45 dark:text-gray-100/45 shadow-sm opacity-30 transition-all duration-300 group-hover:opacity-55 hover:!opacity-85 hover:bg-white/40 dark:hover:bg-gray-800/45 hover:text-gray-900 dark:hover:text-white hover:scale-105">
- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
- </button>
- <button type="button" id="btnNext" aria-label="Siguiente" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10 border border-gray-200/40 dark:border-gray-500/30 bg-white/25 dark:bg-gray-900/25 backdrop-blur-[2px] text-gray-700/45 dark:text-gray-100/45 shadow-sm opacity-30 transition-all duration-300 group-hover:opacity-55 hover:!opacity-85 hover:bg-white/40 dark:hover:bg-gray-800/45 hover:text-gray-900 dark:hover:text-white hover:scale-105">
- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
- </button>
+<!-- Controles: fondo muy suave para no tapar los gráficos -->
+  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10 border border-gray-200/40 dark:border-gray-500/30 bg-white/25 dark:bg-gray-900/25 backdrop-blur-[2px] text-gray-700/45 dark:text-gray-100/45 shadow-sm opacity-30 transition-all duration-300 group-hover:opacity-55 hover:!opacity-85 hover:bg-white/40 dark:hover:bg-gray-800/45 hover:text-gray-900 dark:hover:text-white">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+  </button>
+  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10 border border-gray-200/40 dark:border-gray-500/30 bg-white/25 dark:bg-gray-900/25 backdrop-blur-[2px] text-gray-700/45 dark:text-gray-100/45 shadow-sm opacity-30 transition-all duration-300 group-hover:opacity-55 hover:!opacity-85 hover:bg-white/40 dark:hover:bg-gray-800/45 hover:text-gray-900 dark:hover:text-white">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+  </button>
 </div>
 
 <!-- Tarjetas de ingresos (resumen rápido bajo el carrusel) -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
- @php $isSaldoNegativo = isset($cajaSaldoActual) && $cajaSaldoActual < 0; @endphp
- <div class="glass-card p-4 flex flex-col justify-center relative overflow-hidden group items-center text-center">
- <div class="absolute -right-4 -top-4 w-20 h-20 {{ $isSaldoNegativo ? 'bg-red-500/20 group-hover:bg-red-500/30' : 'bg-emerald-500/20 group-hover:bg-emerald-500/30' }} rounded-full blur-2xl transition-all"></div>
- <div class="text-xs font-bold {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💰</span> Saldo en Caja (Histórico)</div>
- <div class="text-2xl font-black {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoActual ?? 0), 0, ',', '.') }}</div>
- </div>
- @php $isSaldoDiaNegativo = isset($cajaSaldoDia) && $cajaSaldoDia < 0; @endphp
- <div class="glass-card p-4 flex flex-col justify-center relative overflow-hidden group items-center text-center">
- <div class="absolute -right-4 -top-4 w-20 h-20 {{ $isSaldoDiaNegativo ? 'bg-red-500/20 group-hover:bg-red-500/30' : 'bg-blue-500/20 group-hover:bg-blue-500/30' }} rounded-full blur-2xl transition-all"></div>
- <div class="text-xs font-bold {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Balance Caja (Hoy)</div>
- <div class="text-2xl font-black {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoDiaNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoDia ?? 0), 0, ',', '.') }}</div>
- </div>
+  @php $isSaldoNegativo = isset($cajaSaldoActual) && $cajaSaldoActual < 0; @endphp
+  <div class="glass-card {{ $isSaldoNegativo ? 'glass-card-red' : 'glass-card-emerald' }} p-4 flex flex-col justify-center relative overflow-hidden group items-center text-center">
+  <div class="text-xs font-bold {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💰</span> Saldo en Caja (Histórico)</div>
+  <div class="text-2xl font-black {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoActual ?? 0), 0, ',', '.') }}</div>
+  </div>
+  @php $isSaldoDiaNegativo = isset($cajaSaldoDia) && $cajaSaldoDia < 0; @endphp
+  <div class="glass-card {{ $isSaldoDiaNegativo ? 'glass-card-red' : 'glass-card-blue' }} p-4 flex flex-col justify-center relative overflow-hidden group items-center text-center">
+  <div class="text-xs font-bold {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Balance Caja (Hoy)</div>
+  <div class="text-2xl font-black {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoDiaNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoDia ?? 0), 0, ',', '.') }}</div>
+  </div>
 </div>
 
 <div class="glass-card p-6 md:p-8 pb-4 md:pb-5">

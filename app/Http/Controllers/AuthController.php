@@ -104,6 +104,10 @@ class AuthController extends Controller
             ]);
         }
 
+        if ($user->role === 'invitado') {
+            return redirect()->route('guest.dashboard')->with('success', '¡Bienvenido, ' . $user->name . '!');
+        }
+
         return redirect()->intended('/dashboard')->with('success', '¡Bienvenido de nuevo, ' . $user->name . '!');
     }
 

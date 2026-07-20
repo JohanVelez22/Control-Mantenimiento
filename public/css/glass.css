@@ -212,6 +212,70 @@ html.dark .glass-card {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
+/* --- GLASS CARD HOVER EFFECTS: Gradient from right to middle on hover --- */
+/* No zoom/scale effect - only horizontal gradient expansion */
+.glass-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gradient-color, rgba(255, 255, 255, 0.1)) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: background-position 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+.glass-card:hover::before {
+  background-position: left bottom;
+}
+
+/* Ensure content stays above gradient overlay */
+.glass-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Color variants for glass-card hover - define the gradient color */
+.glass-card-blue { --gradient-color: rgba(59, 130, 246, 0.2); }
+.glass-card-emerald { --gradient-color: rgba(16, 185, 129, 0.2); }
+.glass-card-amber { --gradient-color: rgba(245, 158, 11, 0.2); }
+.glass-card-purple { --gradient-color: rgba(168, 85, 247, 0.2); }
+.glass-card-red { --gradient-color: rgba(239, 68, 68, 0.2); }
+.glass-card-teal { --gradient-color: rgba(20, 184, 166, 0.2); }
+.glass-card-orange { --gradient-color: rgba(249, 115, 22, 0.2); }
+.glass-card-gray { --gradient-color: rgba(107, 114, 128, 0.2); }
+.glass-card-cyan { --gradient-color: rgba(6, 182, 212, 0.2); }
+.glass-card-indigo { --gradient-color: rgba(99, 102, 241, 0.2); }
+.glass-card-rose { --gradient-color: rgba(244, 63, 94, 0.2); }
+
+/* Dark mode variants for gradient colors */
+html.dark .glass-card-blue { --gradient-color: rgba(59, 130, 246, 0.15); }
+html.dark .glass-card-emerald { --gradient-color: rgba(16, 185, 129, 0.15); }
+html.dark .glass-card-amber { --gradient-color: rgba(245, 158, 11, 0.15); }
+html.dark .glass-card-purple { --gradient-color: rgba(168, 85, 247, 0.15); }
+html.dark .glass-card-red { --gradient-color: rgba(239, 68, 68, 0.15); }
+html.dark .glass-card-teal { --gradient-color: rgba(20, 184, 166, 0.15); }
+html.dark .glass-card-orange { --gradient-color: rgba(249, 115, 22, 0.15); }
+html.dark .glass-card-gray { --gradient-color: rgba(107, 114, 128, 0.15); }
+html.dark .glass-card-cyan { --gradient-color: rgba(6, 182, 212, 0.15); }
+html.dark .glass-card-indigo { --gradient-color: rgba(99, 102, 241, 0.15); }
+html.dark .glass-card-rose { --gradient-color: rgba(244, 63, 94, 0.15); }
+
 /* --- SIDEBAR VIDRIO LIQUIDO -------------------------------------------------- */
 #ts-sidebar {
   width: var(--sidebar-w);
