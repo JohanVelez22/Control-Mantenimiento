@@ -82,20 +82,7 @@ class AnulacionService
 
     private function marcarMovimientosCaja($abono, $concepto, string $idOrden, array $prefijosDescripcion, bool $esAnulacion): void
     {
-        $query = MovimientoCaja::where(function ($q) use ($abono, $concepto, $idOrden, $prefijosDescripcion) {
-            $q->where('abono_id', $abono->id)
-              ->orWhere(function ($sub) use ($abono, $concepto, $idOrden, $prefijosDescripcion) {
-                  $sub->whereNull('abono_id')
-                      ->where('concepto_id', $concepto->id)
-                      ->where('monto', $abono->monto)
-                      ->where('fecha', $abono->fecha->toDateString())
-                      ->where(function ($descQuery) use ($idOrden, $prefijosDescripcion) {
-                          foreach ($prefijosDescripcion as $prefijo) {
-                              $descQuery->orWhere('descripcion', 'like', "%{$prefijo} " . $idOrden . "%");
-                          }
-                      });
-              });
-        });
+        $query = MovimientoCaja::where('abono_id', $abono->id);
 
         // Al anular solo se afectan movimientos activos; al reactivar, todos.
         if ($esAnulacion) {

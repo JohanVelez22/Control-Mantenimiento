@@ -172,9 +172,9 @@ body {
 html.dark .ts-bg {
   background-color: #060D1A;
   background-image:
-    radial-gradient(ellipse at 20% 10%, rgba(37, 99, 235, 0.20) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 80%, rgba(6, 182, 212, 0.10) 0%, transparent 55%),
-    radial-gradient(ellipse at 60% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 45%);
+    radial-gradient(ellipse at 10% 10%, rgba(37, 99, 235, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 90% 90%, rgba(6, 182, 212, 0.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 30%, rgba(99, 102, 241, 0.20) 0%, transparent 50%);
 }
 
 /* --- PANEL VIDRIO BASE -------------------------------------------------- */
@@ -2820,6 +2820,24 @@ html.dark .glass-backdrop {
             }
         }
     
+/* Action Grid: 2-column layout with centered last item when odd count */
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.375rem;
+  justify-items: center;
+  width: fit-content;
+  margin: 0 auto;
+}
+.actions-grid > * {
+  width: 100%;
+  max-width: 2.75rem; /* 44px */
+}
+.actions-grid:has(> :nth-child(3):last-child) > :nth-child(3) {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
 /* Adaptar tom-select al glassmorphism */
 .ts-control {
     background-color: rgba(255, 255, 255, 0.4) !important;
@@ -2832,5 +2850,36 @@ html.dark .glass-backdrop {
     background-color: rgba(0, 0, 0, 0.2) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: #e2e8f0 !important;
+}
+
+/* --- Correcciones para utilidades de ancho de Tailwind --- */
+/* Restaura los anchos explícitos que son sobrescritos por el width: 100% de .glass-input */
+.glass-input.w-24 { width: 6rem !important; }
+.glass-input.w-32 { width: 8rem !important; }
+.glass-input.w-36 { width: 9rem !important; }
+.glass-input.w-40 { width: 10rem !important; }
+.glass-input.w-44 { width: 11rem !important; }
+.glass-input.w-48 { width: 12rem !important; }
+.glass-input.w-64 { width: 16rem !important; }
+.glass-input.w-72 { width: 18rem !important; }
+.glass-input.w-full { width: 100% !important; }
+
+/* Restaura los paddings explícitos (ej. para íconos dentro del input) */
+.glass-input.pl-9 { padding-left: 2.25rem !important; }
+.glass-input.pr-10 { padding-right: 2.5rem !important; }
+.glass-input.pl-10 { padding-left: 2.5rem !important; }
+
+@media (min-width: 640px) {
+    .glass-input.sm\:w-48 { width: 12rem !important; }
+    .glass-input.sm\:w-64 { width: 16rem !important; }
+}
+
+/* Scrollbar Hiding Utility */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
 }
 

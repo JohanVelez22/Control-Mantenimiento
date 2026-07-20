@@ -9,6 +9,7 @@ use App\Http\Controllers\TecnicoController;
 use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\ElectronicaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GuestController;
 use App\Http\Middleware\PreventBackHistory;
 
 /*
@@ -51,8 +52,10 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     });
 
-    // ─── INVITADO: Consulta blindada por cédula/teléfono ──────
+    // ─── INVITADO: Panel dedicado y consultas ─────────────────
     Route::middleware('role:invitado')->group(function () {
+        Route::get('/guest/dashboard', [GuestController::class, 'dashboard'])->name('guest.dashboard');
+        Route::get('/guest/search', [GuestController::class, 'search'])->name('guest.search');
         Route::get('/consulta/mantenimientos', [MantenimientoController::class, 'consulta'])->name('consulta.mantenimientos');
         Route::get('/consulta/electronicas',   [ElectronicaController::class, 'consulta'])->name('consulta.electronicas');
     });
@@ -83,8 +86,9 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         Route::get('stocks/{stock}/print', [App\Http\Controllers\StockController::class, 'print'])->name('stocks.print');
 
         // Cotizaciones
-        Route::resource('cotizaciones', App\Http\Controllers\CotizacionController::class)->except(['destroy']);
+        Route::resource('cotizaciones', App\Http\Controllers\CotizacionController::class)->parameters(['cotizaciones' => 'cotizacion'])->except(['destroy']);
         Route::post('cotizaciones/{cotizacion}/convertir', [App\Http\Controllers\CotizacionController::class, 'convertir'])->name('cotizaciones.convertir');
+        Route::post('cotizaciones/{cotizacion}/anular', [App\Http\Controllers\CotizacionController::class, 'anular'])->middleware('throttle:10,1')->name('cotizaciones.anular');
         Route::post('cotizaciones/{cotizacion}/rechazar', [App\Http\Controllers\CotizacionController::class, 'rechazar'])->middleware('throttle:10,1')->name('cotizaciones.rechazar');
         Route::post('cotizaciones/{cotizacion}/reactivar', [App\Http\Controllers\CotizacionController::class, 'reactivar'])->middleware('throttle:10,1')->name('cotizaciones.reactivar');
         Route::get('cotizaciones/{cotizacion}/pdf', [App\Http\Controllers\CotizacionController::class, 'pdf'])->name('cotizaciones.pdf');

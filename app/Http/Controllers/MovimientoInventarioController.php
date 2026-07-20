@@ -27,9 +27,8 @@ class MovimientoInventarioController extends Controller
         $proveedores = Proveedor::activos()->orderBy('nombre_razon_social')->get();
         $clientes    = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
         $stocks      = Stock::activos()->orderBy('producto')->get();
-        $nextNumero  = Factura::siguienteNumero('CP-');
 
-        return view('inventario.compra', compact('proveedores', 'clientes', 'stocks', 'nextNumero'));
+        return view('inventario.compra', compact('proveedores', 'clientes', 'stocks'));
     }
 
     public function registrarCompra(Request $request): RedirectResponse
@@ -148,9 +147,7 @@ class MovimientoInventarioController extends Controller
         $clientes    = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
         $proveedores = Proveedor::activos()->orderBy('nombre_razon_social')->get();
         $stocks      = Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
-        $nextNumero  = Factura::siguienteNumero('VT-');
-
-        return view('inventario.venta', compact('clientes', 'proveedores', 'stocks', 'nextNumero'));
+        return view('inventario.venta', compact('clientes', 'proveedores', 'stocks'));
     }
 
     public function registrarVenta(Request $request): RedirectResponse

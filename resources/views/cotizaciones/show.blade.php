@@ -2,13 +2,21 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="glass-card p-6 md:p-8 relative overflow-hidden">
-        {{-- Sello de estado --}}
-        @if($cotizacion->estado === 'aprobada')
-            <div class="absolute top-8 right-[-40px] bg-emerald-500 text-white text-sm font-bold px-12 py-1 rotate-45 shadow-lg">
+        {{-- Sellos de estado --}}
+        @if($cotizacion->anulado)
+            <div class="absolute z-50 pointer-events-none top-8 right-[-40px] bg-red-500 text-white text-sm font-bold px-12 py-1 rotate-45 shadow-lg">
+                ANULADA
+            </div>
+        @elseif($cotizacion->estado === 'rechazada')
+            <div class="absolute z-50 pointer-events-none top-8 right-[-40px] bg-orange-500 text-white text-sm font-bold px-12 py-1 rotate-45 shadow-lg">
+                RECHAZADA
+            </div>
+        @elseif($cotizacion->estado === 'aprobada')
+            <div class="absolute z-50 pointer-events-none top-8 right-[-40px] bg-emerald-500 text-white text-sm font-bold px-12 py-1 rotate-45 shadow-lg">
                 APROBADA
             </div>
         @elseif($cotizacion->estado === 'vencida')
-            <div class="absolute top-8 right-[-40px] bg-red-500 text-white text-sm font-bold px-12 py-1 rotate-45 shadow-lg">
+            <div class="absolute z-50 pointer-events-none top-8 right-[-40px] bg-red-500 text-white text-sm font-bold px-12 py-1 rotate-45 shadow-lg">
                 VENCIDA
             </div>
         @endif
@@ -21,16 +29,29 @@
             </div>
             
             <div class="flex gap-2">
-                <a href="{{ route('cotizaciones.pdf', $cotizacion) }}" target="_blank" class="btn-clean px-4">
+                <a href="{{ route('cotizaciones.pdf', $cotizacion) }}" target="_blank" class="btn-clean flex items-center justify-center h-[42px] px-4">
                     📄 Ver PDF
                 </a>
-                @if($cotizacion->estado === 'pendiente')
-                <form action="{{ route('cotizaciones.convertir', $cotizacion) }}" method="POST" onsubmit="return confirm('Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?')">
-                    @csrf
-                    <button type="submit" class="btn-primary">
-                        ✅ Aprobar y Facturar
+                
+                @if(!$cotizacion->anulado)
+                <div class="flex gap-2">
+                    @if($cotizacion->estado === 'pendiente')
+                    <form action="{{ route('cotizaciones.convertir', $cotizacion) }}" method="POST" data-confirm-delete="Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?">
+                        @csrf
+                        <button type="submit" class="btn-primary flex items-center justify-center h-[42px] px-4">
+                            ✅ Aprobar y Facturar
+                        </button>
+                    </form>
+                    
+                    <button type="button" onclick="openRechazarModal('{{ route('cotizaciones.rechazar', $cotizacion) }}')" class="btn-cancel bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 hover:text-red-700 dark:bg-red-900/20 dark:border-red-900/50 dark:hover:bg-red-900/40 dark:text-red-400 flex items-center justify-center h-[42px] px-4">
+                        🚫 Rechazar
                     </button>
-                </form>
+                    @elseif($cotizacion->estado === 'rechazada')
+                    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.reactivar', $cotizacion) }}', true)" class="btn-save flex items-center justify-center h-[42px] px-4">
+                        ✅ Reactivar
+                    </button>
+                    @endif
+                </div>
                 @endif
             </div>
         </div>
@@ -47,6 +68,15 @@
                     <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest mb-3">Resumen de Cotización</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400"><span class="font-semibold">Válida por:</span> {{ $cotizacion->validez_dias }} días</p>
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Vendedor:</span> {{ $cotizacion->user->name }}</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Estado:</span> 
+                        @if($cotizacion->anulado)
+                            <span class="text-red-600 font-bold">Anulada</span>
+                        @elseif($cotizacion->estado === 'rechazada')
+                            <span class="text-orange-600 font-bold">Rechazada</span>
+                        @else
+                            <span class="text-blue-600 font-bold capitalize">{{ $cotizacion->estado }}</span>
+                        @endif
+                    </p>
                 </div>
                 <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
                     <p class="text-2xl font-black bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent text-right">

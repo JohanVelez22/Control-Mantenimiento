@@ -142,7 +142,7 @@
         
         .watermark-container { position: relative; height: 100%; }
         .watermark-container.anulado::after {
-            content: "ANULADO";
+            content: "ANULADA";
             position: absolute;
             top: 50%;
             left: 50%;
@@ -154,9 +154,25 @@
             pointer-events: none;
             white-space: nowrap;
         }
+        .watermark-container.rechazada::after {
+            content: "RECHAZADA";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 6rem;
+            font-weight: 900;
+            color: rgba(249, 115, 22, 0.15);
+            z-index: 1000;
+            pointer-events: none;
+            white-space: nowrap;
+        }
         @media print {
             .watermark-container.anulado::after {
                 color: rgba(200, 0, 0, 0.2) !important;
+            }
+            .watermark-container.rechazada::after {
+                color: rgba(200, 100, 0, 0.2) !important;
             }
         }
         .text-center { text-align: center; }

@@ -118,7 +118,7 @@ class StockController extends Controller
 
     public function reportes(Request $request)
     {
-        $query = Stock::with('proveedor');
+        $query = Stock::with('proveedor')->where('active', true);
 
         if ($request->filled('search')) {
             $search = $request->search;

@@ -431,6 +431,28 @@
                         <button type="submit" id="global-anular-submit" class="flex-1 btn-danger justify-center font-bold">🚫 Anular</button>
                     </div>
                 </form>
+</div>
+    </div>
+    </div>
+
+    <!-- MODAL GLOBAL DE RECHAZAR COTIZACIÓN (Sí/No sin contraseña) -->
+    <div id="global-rechazar-modal" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
+        <div class="ts-modal-card scale-95 opacity-0 transition-all duration-300" id="global-rechazar-card">
+            <div class="p-6">
+                <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 flex items-center justify-center text-3xl mx-auto mb-4">
+                    <span>⚠️</span>
+                </div>
+                <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Rechazo</h3>
+                <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+                    ¿Estás seguro de rechazar esta cotización? Cambiará su estado a "Rechazada".
+                </p>
+                <form id="global-rechazar-form" method="POST" class="space-y-4">
+                    @csrf
+                    <div class="flex gap-3">
+                        <button type="button" onclick="closeRechazarModal()" class="flex-1 btn-ghost justify-center">No, cancelar</button>
+                        <button type="submit" id="global-rechazar-submit" class="flex-1 btn-danger justify-center font-bold">Sí, rechazar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -565,6 +587,29 @@
         function closeAnularModal() {
             const modal = document.getElementById('global-anular-modal');
             const card  = document.getElementById('global-anular-card');
+            modal.classList.add('opacity-0');
+            card.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // ─── MODAL GLOBAL DE RECHAZAR COTIZACIÓN ─────────────────────────────
+        function openRechazarModal(actionUrl) {
+            const modal = document.getElementById('global-rechazar-modal');
+            const card  = document.getElementById('global-rechazar-card');
+            const form  = document.getElementById('global-rechazar-form');
+
+            form.action = actionUrl;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function closeRechazarModal() {
+            const modal = document.getElementById('global-rechazar-modal');
+            const card  = document.getElementById('global-rechazar-card');
             modal.classList.add('opacity-0');
             card.classList.add('scale-95', 'opacity-0');
             setTimeout(() => modal.classList.add('hidden'), 300);
@@ -750,7 +795,7 @@
     <!-- Modal de Notificaciones Pendientes (siempre disponible, abierto desde campana o al iniciar sesión) -->
     @if(isset($totalPendientes) && $totalPendientes > 0)
     <div id="ts-notif-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
-        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 md:p-8 flex flex-col transition-all duration-300 w-full max-w-lg mx-4">
+        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 md:p-8 flex flex-col transition-all duration-300 w-full max-w-xl mx-4">
 
             {{-- Header --}}
             <div class="flex items-center gap-3 mb-4">
@@ -764,19 +809,19 @@
             </div>
 
             {{-- Filtros / Tabs --}}
-            <div class="flex flex-wrap gap-2 mb-4 w-full justify-center">
-                <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60">Todos</button>
+            <div class="flex flex-nowrap justify-center gap-1 sm:gap-2 mb-4 w-full">
+                <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab whitespace-nowrap px-1.5 sm:px-2 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60">Todos</button>
                 @if($mantPendientes > 0)
-                <button onclick="filterNotifs('mant')" id="btn-notif-mant" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60">Mantenimiento</button>
+                <button onclick="filterNotifs('mant')" id="btn-notif-mant" class="notif-tab whitespace-nowrap px-1.5 sm:px-2 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60">Mantenimiento</button>
                 @endif
                 @if($elecPendientes > 0)
-                <button onclick="filterNotifs('elec')" id="btn-notif-elec" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60">Electrónica</button>
+                <button onclick="filterNotifs('elec')" id="btn-notif-elec" class="notif-tab whitespace-nowrap px-1.5 sm:px-2 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60">Electrónica</button>
                 @endif
                 @if($cotPendientes > 0)
-                <button onclick="filterNotifs('cot')" id="btn-notif-cot" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60">Cotizaciones</button>
+                <button onclick="filterNotifs('cot')" id="btn-notif-cot" class="notif-tab whitespace-nowrap px-1.5 sm:px-2 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60">Cotizaciones</button>
                 @endif
                 @if($cajaPendientes > 0)
-                <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60">Saldos/Caja</button>
+                <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab whitespace-nowrap px-1.5 sm:px-2 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60">Saldos</button>
                 @endif
             </div>
 
@@ -895,15 +940,15 @@
             allTabs.forEach(btn => {
                 // Restablece a estado no seleccionado
                 if(btn.id === 'btn-notif-all') {
-                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60'; btn.removeAttribute('style');
+                    btn.className = 'notif-tab px-2 py-1 rounded-full text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-mant') {
-                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60'; btn.removeAttribute('style');
+                    btn.className = 'notif-tab px-2 py-1 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-elec') {
-                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60'; btn.removeAttribute('style');
+                    btn.className = 'notif-tab px-2 py-1 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-cot') {
-                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60'; btn.removeAttribute('style');
+                    btn.className = 'notif-tab px-2 py-1 rounded-full text-xs font-bold transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-caja') {
-                    btn.className = 'notif-tab px-3 py-1 rounded-full text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60'; btn.removeAttribute('style');
+                    btn.className = 'notif-tab px-2 py-1 rounded-full text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60'; btn.removeAttribute('style');
                 }
             });
 

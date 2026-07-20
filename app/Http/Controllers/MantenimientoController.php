@@ -333,12 +333,12 @@ class MantenimientoController extends Controller
 
         if ($query) {
             // Validación estricta: alfanumérico, espacios, guiones, puntos, # (para órdenes como ORD-123)
-            if (!preg_match('/^[\d\s\-\.#]{5,30}$/', $query)) {
-                return back()->with('error', 'Formato inválido. Use números, espacios, guiones, puntos o # (ej: 123456789, 3001234567, ORD-001).');
+            if (!preg_match('/^[\w\s\-\.#]{5,30}$/u', $query)) {
+                return back()->with('error', 'Formato inválido. Use letras, números, espacios, guiones, puntos o # (ej: 123456789, 3001234567, ORD-001, AB123).');
             }
 
-            // Normalizar: quitar espacios/guiones/puntos para búsqueda
-            $clean = preg_replace('/[\s\-\.]/', '', $query);
+            // Normalizar: quitar espacios/guiones/puntos para búsqueda y a mayúsculas
+            $clean = strtoupper(preg_replace('/[\s\-\.]/', '', $query));
 
             $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico'])
                 ->where(function ($q) use ($clean) {

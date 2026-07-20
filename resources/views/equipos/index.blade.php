@@ -62,18 +62,18 @@
  {{ $equipo->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
- <td class="text-center {{ $dim }}">
- <div class="flex justify-center items-center gap-1">
- @if(!auth()->user()->isInvitado())
- <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
-                            <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', {{ !$equipo->active ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $equipo->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $equipo->active ? 'Anular Equipo' : 'Reactivar Equipo' }}">
- {{ $equipo->active ? '🚫' : '✅' }}
- </button>
- @else
- <span class="text-gray-400 text-sm">👁️ Lectura</span>
- @endif
- </div>
- </td>
+<td class="text-center {{ $dim }}">
+  <div class="grid grid-cols-2 gap-1 justify-center mx-auto w-fit">
+  @if(!auth()->user()->isInvitado())
+  <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
+                             <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', {{ !$equipo->active ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $equipo->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $equipo->active ? 'Anular Equipo' : 'Reactivar Equipo' }}">
+  {{ $equipo->active ? '🚫' : '✅' }}
+  </button>
+  @else
+  <span class="text-gray-400 text-sm">👁️ Lectura</span>
+  @endif
+  </div>
+  </td>
  </tr>
  @empty
  <tr>

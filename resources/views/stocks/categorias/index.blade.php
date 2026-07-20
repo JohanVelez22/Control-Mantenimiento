@@ -110,7 +110,7 @@
                             <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-1.5 px-3 text-sm min-w-[120px]">
                             <button type="submit" class="btn-ghost px-3 py-1.5 text-xs text-blue-600 border-blue-500/20 hover:bg-blue-500/10">💾</button>
                         </form>
-                        <div class="ml-auto sm:ml-0">
+                        <div class="ml-auto sm:ml-0 grid grid-cols-2 gap-1">
                             <button type="button" onclick="openDeletePwd('{{ route('stocks.categorias.destroy', $c->id) }}')" class="btn-danger px-3 py-1.5 text-xs">🗑️</button>
                         </div>
                     </li>

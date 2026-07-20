@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cotizacion extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\Auditable;
 
     protected $table = 'cotizaciones';
 
@@ -18,9 +18,17 @@ class Cotizacion extends Model
         'validez_dias',
         'total',
         'estado',
+        'anulado',
         'notas',
         'user_id'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'anulado' => 'boolean',
+        ];
+    }
 
     public function cliente()
     {
@@ -35,5 +43,10 @@ class Cotizacion extends Model
     public function items()
     {
         return $this->hasMany(CotizacionItem::class);
+    }
+
+    public function scopeActivos($query)
+    {
+        return $query->where('anulado', false);
     }
 }

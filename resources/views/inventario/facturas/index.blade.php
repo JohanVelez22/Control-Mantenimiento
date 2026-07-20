@@ -124,8 +124,8 @@
   {{ $label }}
   </span>
   </td>
-  <td class="text-center {{ $dim }}">
-  <div class="flex justify-center md:justify-end gap-1.5 flex-wrap">
+<td class="text-center {{ $dim }}">
+  <div class="grid grid-cols-2 gap-1.5 justify-center mx-auto w-fit">
   <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
   <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs" title="Imprimir">🖨️</a>
   

@@ -9,6 +9,7 @@ use App\Models\Mantenimiento;
 use App\Models\Electronica;
 use App\Models\Tecnico;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect;
 
 class DashboardController extends Controller
 {
@@ -17,6 +18,10 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
+        // Invitados tienen su propio panel dedicado
+        if (auth()->user()?->role === 'invitado') {
+            return Redirect::route('guest.dashboard');
+        }
         // ─── Métricas consolidadas (1 query en lugar de 7) ───────────
         $counts = \Illuminate\Support\Facades\DB::selectOne("
             SELECT
@@ -51,8 +56,9 @@ class DashboardController extends Controller
         $totalCostoFormateado = number_format($cajaSaldoActual, 0, ',', '.');
         $totalCostoDiaFormateado = number_format($cajaSaldoDia, 0, ',', '.');
 
-        // Mantenimientos recientes (incluye abonos para calcular saldos pendientes)
-        $recentMant = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user', 'abonos'])
+        // Mantenimientos recientes (usando withSum para evitar N+1 en abonos)
+        $recentMant = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user'])
+            ->withSum('abonos as total_abonado', 'monto')
             ->orderBy('id', 'desc')
             ->take(5)
             ->get();

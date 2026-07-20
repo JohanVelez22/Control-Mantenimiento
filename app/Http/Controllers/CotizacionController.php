@@ -42,10 +42,8 @@ class CotizacionController extends Controller
                 $total += $item['cantidad'] * $item['precio_unitario'];
             }
 
-            // Generate next code (short version as requested)
-            $lastCot = \App\Models\Cotizacion::orderBy('id', 'desc')->first();
-            $nextId = $lastCot ? $lastCot->id + 1 : 1;
-            $codigo = 'COT-' . $nextId;
+            // Generate next code atomically using OrdenService (prevents race conditions)
+            $codigo = app(\App\Services\OrdenService::class)->siguiente('COT-', \App\Models\Cotizacion::class, 'codigo');
 
             $cotizacion = \App\Models\Cotizacion::create([
                 'codigo' => $codigo,
@@ -79,28 +77,28 @@ class CotizacionController extends Controller
         }
     }
 
-    public function edit(\App\Models\Cotizacion $cotizacione)
+    public function edit(\App\Models\Cotizacion $cotizacion)
     {
-        if ($cotizacione->estado !== 'pendiente') {
-            return redirect()->route('cotizaciones.show', $cotizacione)->with('error', 'Solo se pueden editar cotizaciones pendientes.');
+        if ($cotizacion->estado !== 'pendiente') {
+            return redirect()->route('cotizaciones.show', $cotizacion)->with('error', 'Solo se pueden editar cotizaciones pendientes.');
         }
 
-        $clientes = \App\Models\Cliente::where(function($q) use ($cotizacione) {
-            $q->activos()->orWhere('id', $cotizacione->cliente_id);
+        $clientes = \App\Models\Cliente::where(function($q) use ($cotizacion) {
+            $q->activos()->orWhere('id', $cotizacion->cliente_id);
         })->orderBy('nombres')->get();
         $stocks = \App\Models\Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
-        $cotizacione->load('items');
+        $cotizacion->load('items');
         
         return view('cotizaciones.edit', [
-            'cotizacion' => $cotizacione,
+            'cotizacion' => $cotizacion,
             'clientes' => $clientes,
             'stocks' => $stocks,
         ]);
     }
 
-    public function update(\Illuminate\Http\Request $request, \App\Models\Cotizacion $cotizacione)
+    public function update(\Illuminate\Http\Request $request, \App\Models\Cotizacion $cotizacion)
     {
-        if ($cotizacione->estado !== 'pendiente') {
+        if ($cotizacion->estado !== 'pendiente') {
             return back()->with('error', 'Solo se pueden editar cotizaciones pendientes.');
         }
 
@@ -125,7 +123,7 @@ class CotizacionController extends Controller
                 $total += $item['cantidad'] * $item['precio_unitario'];
             }
 
-            $cotizacione->update([
+            $cotizacion->update([
                 'cliente_id' => $request->cliente_id,
                 'fecha' => $request->fecha,
                 'validez_dias' => $request->validez_dias,
@@ -134,11 +132,11 @@ class CotizacionController extends Controller
             ]);
 
             // Eliminar ítems anteriores y crear nuevos
-            $cotizacione->items()->delete();
+            $cotizacion->items()->delete();
 
             foreach ($request->items as $item) {
                 \App\Models\CotizacionItem::create([
-                    'cotizacion_id' => $cotizacione->id,
+                    'cotizacion_id' => $cotizacion->id,
                     'tipo' => $item['tipo'],
                     'item_id' => $item['tipo'] === 'stock' ? $item['item_id'] : null,
                     'descripcion' => $item['descripcion'],
@@ -157,14 +155,13 @@ class CotizacionController extends Controller
         }
     }
 
-    public function show(\App\Models\Cotizacion $cotizacione)
+    public function show(\App\Models\Cotizacion $cotizacion)
     {
-        // Parameter is named $cotizacione by default because resource generator is weird with Spanish names
-        $cotizacione->load('cliente', 'items.stock', 'user');
-        return view('cotizaciones.show', ['cotizacion' => $cotizacione]);
+        $cotizacion->load('cliente', 'items.stock', 'user');
+        return view('cotizaciones.show', ['cotizacion' => $cotizacion]);
     }
 
-    public function pdf(\App\Models\Cotizacion $cotizacion)
+public function pdf(\App\Models\Cotizacion $cotizacion)
     {
         $cotizacion->load('cliente', 'items.stock', 'user');
         $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
@@ -173,68 +170,41 @@ class CotizacionController extends Controller
         return $pdf->stream('Cotizacion_' . $cotizacion->codigo . '.pdf');
     }
 
-    public function convertir(\Illuminate\Http\Request $request, \App\Models\Cotizacion $cotizacion)
+    public function anular(\Illuminate\Http\Request $request, \App\Models\Cotizacion $cotizacion)
     {
-        if ($cotizacion->estado !== 'pendiente') {
-            return back()->with('error', 'Solo las cotizaciones pendientes pueden ser convertidas.');
+        // El modal global usa 'password_confirm'; tecnico requiere contraseña de admin.
+        $password = $request->input('admin_password') ?? $request->input('password_confirm');
+
+        if (auth()->user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required_without:password_confirm']);
+            if (!$password || !app(\App\Services\AnulacionService::class)->adminPasswordValida($password)) {
+                return back()->with('error', 'Se requiere la contraseña de un administrador para anular.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required_without:admin_password']);
+            if (!$password || !app(\App\Services\AnulacionService::class)->passwordValida($password)) {
+                return back()->with('error', 'Contraseña incorrecta.');
+            }
         }
 
         try {
             \Illuminate\Support\Facades\DB::beginTransaction();
 
-            // 1. Crear la Factura
-            $factura = \App\Models\Factura::create([
-                'numero_factura' => \App\Models\Factura::siguienteNumero('VT-'),
-                'tipo_movimiento' => 'venta',
-                'estado' => 'pendiente_pago',
-                'facturable_id' => $cotizacion->cliente_id,
-                'facturable_type' => \App\Models\Cliente::class,
-                'total_documento' => $cotizacion->total,
-                'total_pagado' => 0,
-                'observaciones' => "Venta generada a partir de Cotización: " . $cotizacion->codigo,
-                'fecha' => now()->toDateString(),
-                'user_id' => auth()->id(),
+            // Toggle anulado (like Mantenimiento/Electronica)
+            $esAnulacion = !$cotizacion->anulado;
+            $cotizacion->update([
+                'anulado' => $esAnulacion,
             ]);
 
-            // 2. Procesar ítems y afectar stock
-            foreach ($cotizacion->items as $item) {
-                if ($item->tipo === 'stock' && $item->item_id) {
-                    $stock = \App\Models\Stock::findOrFail($item->item_id);
-                    if (!$stock->tieneDisponible($item->cantidad)) {
-                        throw new \DomainException("Stock insuficiente para el producto: " . $stock->producto);
-                    }
-                    
-                    \App\Models\FacturaItem::create([
-                        'factura_id' => $factura->id,
-                        'stock_id' => $stock->id,
-                        'cantidad' => $item->cantidad,
-                        'precio_unitario' => $item->precio_unitario,
-                    ]);
-
-                    $stock->decrementarStock($item->cantidad);
-                } else {
-                    // Si es servicio libre, lo metemos a la factura sin afectar stock
-                    \App\Models\FacturaItem::create([
-                        'factura_id' => $factura->id,
-                        'stock_id' => null, 
-                        'descripcion' => $item->descripcion,
-                        'cantidad' => $item->cantidad,
-                        'precio_unitario' => $item->precio_unitario,
-                    ]);
-                }
-            }
-
-            // 3. Marcar cotización como aprobada
-            $cotizacion->update(['estado' => 'aprobada']);
+            $mensaje = $esAnulacion
+                ? 'Cotización anulada correctamente.'
+                : 'Cotización reactivada correctamente.';
 
             \Illuminate\Support\Facades\DB::commit();
-
-            return redirect()->route('inventario.facturas.show', $factura->id)
-                ->with('success', 'Cotización aprobada y convertida en Venta. Registre el pago cuando el cliente abone.');
-
+            return back()->with('success', $mensaje);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
-            return back()->with('error', 'Error al convertir: ' . $e->getMessage());
+            return back()->with('error', 'Error al cambiar estado: ' . $e->getMessage());
         }
     }
 
@@ -244,25 +214,10 @@ class CotizacionController extends Controller
             return back()->with('error', 'Solo las cotizaciones pendientes pueden ser rechazadas.');
         }
 
-        // El modal global usa 'password_confirm'; tecnico requiere contraseña de admin.
-        // Aceptamos ambos nombres de campo para compatibilidad.
-        $password = $request->input('admin_password') ?? $request->input('password_confirm');
-
-        if (auth()->user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required_without:password_confirm']);
-            if (!$password || !app(\App\Services\AnulacionService::class)->adminPasswordValida($password)) {
-                return back()->with('error', 'Se requiere la contraseña de un administrador para rechazar.')->withInput();
-            }
-        } else {
-            $request->validate(['password_confirm' => 'required_without:admin_password']);
-            if (!$password || !app(\App\Services\AnulacionService::class)->passwordValida($password)) {
-                return back()->with('error', 'Contraseña incorrecta.');
-            }
-        }
-
+        // Cambio de estado simple (sin contraseña) - se usa desde formulario con confirmación nativa
         $cotizacion->update(['estado' => 'rechazada']);
 
-        return back()->with('success', 'Cotización marcada como rechazada.');
+        return back()->with('success', 'Cotización rechazada correctamente.');
     }
 
     public function reactivar(\Illuminate\Http\Request $request, \App\Models\Cotizacion $cotizacion)
@@ -286,7 +241,9 @@ class CotizacionController extends Controller
             }
         }
 
-        $cotizacion->update(['estado' => 'pendiente']);
+        $cotizacion->anulado = false;
+        $cotizacion->estado = 'pendiente';
+        $cotizacion->save();
 
         return back()->with('success', 'Cotización reactivada correctamente.');
     }

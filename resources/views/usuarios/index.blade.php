@@ -56,25 +56,25 @@
  </span>
  </td>
  <td class="text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
- <td class="text-center {{ $dim }}">
- <div class="flex justify-center items-center gap-1 flex-wrap">
- @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
- <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">
- ✏️
- </a>
- @else
- <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed" title="Solo lectura">
- 👁️ Lectura
- </span>
- @endif
- 
- @if(auth()->user()->isAdmin() && auth()->id() !== $u->id)
-                            <button type="button" onclick="openAnularModal('{{ route('usuarios.anular', $u->id) }}', {{ !$u->active ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $u->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $u->active ? 'Anular Usuario' : 'Reactivar Usuario' }}">
- {{ $u->active ? '🚫' : '✅' }}
- </button>
- @endif
- </div>
- </td>
+<td class="text-center {{ $dim }}">
+  <div class="grid grid-cols-2 gap-1 justify-center mx-auto w-fit">
+  @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
+  <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">
+  ✏️
+  </a>
+  @else
+  <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed" title="Solo lectura">
+  👁️ Lectura
+  </span>
+  @endif
+  
+  @if(auth()->user()->isAdmin() && auth()->id() !== $u->id)
+                             <button type="button" onclick="openAnularModal('{{ route('usuarios.anular', $u->id) }}', {{ !$u->active ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $u->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $u->active ? 'Anular Usuario' : 'Reactivar Usuario' }}">
+  {{ $u->active ? '🚫' : '✅' }}
+  </button>
+  @endif
+  </div>
+  </td>
  </tr>
  @empty
  <tr>

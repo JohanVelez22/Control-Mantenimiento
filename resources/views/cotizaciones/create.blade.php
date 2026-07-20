@@ -13,8 +13,8 @@
         <form action="{{ route('cotizaciones.store') }}" method="POST" id="cotizacion-form" class="space-y-5">
             @csrf
 
-            <div class="flex flex-col md:flex-row gap-5 p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
-                <div class="w-full flex-1 min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-5 p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
+                <div class="md:col-span-2">
                     <label class="field-label">Cliente *</label>
                     <select name="cliente_id" required class="glass-input focus:ring-blue-500" data-tomselect>
                         <option value="">Buscar cliente...</option>
@@ -26,12 +26,12 @@
                     </select>
                     @error('cliente_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>
-                <div class="w-full md:w-48 flex-shrink-0">
+                <div>
                     <label class="field-label">Fecha *</label>
                     <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}" class="glass-input focus:ring-blue-500">
                     @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>
-                <div class="w-full md:w-48 flex-shrink-0">
+                <div>
                     <label class="field-label">Validez (Días) *</label>
                     <input type="number" name="validez_dias" required min="1" value="{{ old('validez_dias', 15) }}" class="glass-input focus:ring-blue-500 text-center">
                     @error('validez_dias') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror

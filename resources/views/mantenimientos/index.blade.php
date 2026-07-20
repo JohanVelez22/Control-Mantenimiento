@@ -150,20 +150,20 @@
   {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '-' }}
   </td>
   
-  <td class="text-center {{ $dim }}">
-  <div class="flex justify-center gap-1.5 flex-wrap">
-  <a href="{{ route('mantenimientos.show', $m->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600" title="Ver detalle">👁️</a>
+<td class="text-center {{ $dim }}">
+  <div class="grid grid-cols-2 gap-1.5 justify-center mx-auto w-fit">
+  <a href="{{ route('mantenimientos.show', $m->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600 min-w-[44px] flex justify-center" title="Ver detalle">👁️</a>
   
   @if($m->estado === 'terminado' && $m->fecha_salida)
-  <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 hover:text-green-700 hover:bg-green-50/50" title="Factura POS">🖨️</a>
+  <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 hover:text-green-700 hover:bg-green-50/50 min-w-[44px] flex justify-center" title="Factura POS">🖨️</a>
   @elseif($m->estado === 'terminado')
-  <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
+  <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed min-w-[44px] flex justify-center" title="Requiere fecha de salida para facturar">🖨️</span>
   @endif
 
   @if(!auth()->user()->isInvitado())
-  <a href="{{ route('mantenimientos.edit', $m->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
+  <a href="{{ route('mantenimientos.edit', $m->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600 min-w-[44px] flex justify-center" title="Editar">✏️</a>
 
-  <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $m->anulado ? 'text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $m->anulado ? 'Reactivar orden' : 'Anular orden' }}">
+  <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $m->anulado ? 'text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }} min-w-[44px] flex justify-center" title="{{ $m->anulado ? 'Reactivar orden' : 'Anular orden' }}">
   {{ $m->anulado ? '✅' : '🚫' }}
   </button>
   @endif

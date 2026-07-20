@@ -16,7 +16,7 @@
  <div class="flex flex-col md:flex-row gap-5 p-5 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl">
  <div class="w-full md:w-48 flex-shrink-0">
  <label class="field-label">N° Factura (Auto)</label>
- <input type="text" value="{{ $nextNumero }}" readonly class="glass-input font-mono bg-white/40 dark:bg-black/20 text-gray-500 cursor-not-allowed">
+ <input type="text" value="Automático" readonly class="glass-input font-mono bg-white/40 dark:bg-black/20 text-gray-500 cursor-not-allowed">
  </div>
  <div class="w-full flex-1 min-w-0">
  <label class="field-label">Cliente / Proveedor *</label>

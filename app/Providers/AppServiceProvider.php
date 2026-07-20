@@ -13,10 +13,6 @@ use App\Models\Factura;
 use App\Models\MovimientoCaja;
 use App\Models\Cotizacion;
 use App\Models\User;
-use App\Models\Stock;
-use App\Models\ConceptoCaja;
-use App\Models\CategoriaStock;
-use App\Models\CierreCaja;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -45,16 +41,17 @@ class AppServiceProvider extends ServiceProvider
 
 
         View::composer('layouts.app', function ($view) {
-            // Mantenimientos pendientes
-            $mantList = Mantenimiento::activos()
-                    ->where('estado', 'pendiente')
-                    ->select('id', 'id_orden', 'equipo_id', 'estado')
-                    ->with('equipo.cliente:id,nombres,apellidos')
-                    ->latest()
-                    ->limit(50)
-                    ->get();
+            $data = Cache::remember('sidebar_pending_counts', 30, function () {
+                // Mantenimientos pendientes
+                $mantList = Mantenimiento::activos()
+                        ->where('estado', 'pendiente')
+                        ->select('id', 'id_orden', 'equipo_id', 'estado')
+                        ->with('equipo.cliente:id,nombres,apellidos')
+                        ->latest()
+                        ->limit(50)
+                        ->get();
 
-                // Electrónicas pendientes - convertir a array simple
+                // Electrónicas pendientes
                 $elecList = Electronica::activos()
                     ->where('estado', 'pendiente')
                     ->select('id', 'id_orden', 'equipo_id', 'estado')
@@ -63,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
                     ->limit(50)
                     ->get();
 
-                // Facturas con saldo pendiente - convertir a array simple
+                // Facturas con saldo pendiente
                 $cajaList = Factura::where('estado', '!=', 'anulada')
                     ->where('saldo_pendiente', '>', 0)
                     ->select('id', 'numero_factura', 'tipo_movimiento', 'saldo_pendiente', 'total_documento', 'facturable_id', 'facturable_type')
@@ -72,7 +69,7 @@ class AppServiceProvider extends ServiceProvider
                     ->limit(50)
                     ->get();
 
-                // Movimientos de caja pendientes - convertir a array simple
+                // Movimientos de caja pendientes
                 $movimientosPendientes = MovimientoCaja::where('anulado', false)
                     ->whereNull('parent_id')
                     ->whereRaw('monto_total > monto')
@@ -81,7 +78,7 @@ class AppServiceProvider extends ServiceProvider
                     ->limit(50)
                     ->get();
 
-                // Cotizaciones pendientes - convertir a array simple
+                // Cotizaciones pendientes
                 $cotList = Cotizacion::where('estado', 'pendiente')
                     ->select('id', 'codigo', 'cliente_id', 'total', 'fecha')
                     ->with('cliente:id,nombres,apellidos')
@@ -89,22 +86,25 @@ class AppServiceProvider extends ServiceProvider
                     ->limit(50)
                     ->get();
 
-            $view->with([
-                'mantList'              => $mantList,
-                'elecList'              => $elecList,
-                'cajaList'              => $cajaList,
-                'movimientosPendientes' => $movimientosPendientes,
-                'cotList'               => $cotList,
-                'mantPendientes'        => $mantList->count(),
-                'elecPendientes'        => $elecList->count(),
-                'cotPendientes'         => $cotList->count(),
-                'cajaPendientes'        => $cajaList->count() + $movimientosPendientes->count(),
-                'totalPendientes'       => $mantList->count()
-                                              + $elecList->count()
-                                              + $cajaList->count()
-                                              + $movimientosPendientes->count()
-                                              + $cotList->count(),
-            ]);
+                return [
+                    'mantList'              => $mantList,
+                    'elecList'              => $elecList,
+                    'cajaList'              => $cajaList,
+                    'movimientosPendientes' => $movimientosPendientes,
+                    'cotList'               => $cotList,
+                    'mantPendientes'        => $mantList->count(),
+                    'elecPendientes'        => $elecList->count(),
+                    'cotPendientes'         => $cotList->count(),
+                    'cajaPendientes'        => $cajaList->count() + $movimientosPendientes->count(),
+                    'totalPendientes'       => $mantList->count()
+                                                  + $elecList->count()
+                                                  + $cajaList->count()
+                                                  + $movimientosPendientes->count()
+                                                  + $cotList->count(),
+                ];
+            });
+
+            $view->with($data);
         });
 
         Event::listen(\Illuminate\Auth\Events\Login::class, function ($event) {

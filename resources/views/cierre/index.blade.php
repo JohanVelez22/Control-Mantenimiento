@@ -233,8 +233,8 @@
                         <td data-label="Saldo:" class="text-right font-black {{ $c->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }}">${{ number_format($c->saldo_final, 0, ',', '.') }}</td>
                         <td data-label="Mov.:" class="text-center text-sm font-semibold text-gray-500">{{ $c->num_movimientos }}</td>
                         <td data-label="Registró:" class="text-xs text-gray-500 font-medium">{{ $c->user->name }}</td>
-                        <td data-label="Acciones:" class="text-center">
-                            <div class="flex justify-end md:justify-center">
+<td data-label="Acciones:" class="text-center">
+                            <div class="grid grid-cols-2 gap-1.5 justify-center mx-auto w-fit">
                                 @if(auth()->user()->isAdmin())
                                     <button type="button" onclick="openCierrePwd('{{ route('cierre.destroy', $c->id) }}')" class="btn-danger px-3 py-1.5 text-xs" title="Eliminar">🗑️</button>
                                 @else

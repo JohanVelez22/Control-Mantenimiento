@@ -2,7 +2,7 @@
 
 @section('title', 'Cotización ' . $cotizacion->codigo)
 
-@section('watermark_class', $cotizacion->estado === 'rechazada' || $cotizacion->estado === 'vencida' ? 'anulado' : '')
+@section('watermark_class', $cotizacion->anulado ? 'anulado' : ($cotizacion->estado === 'rechazada' ? 'rechazada' : ''))
 
 @section('doc_title')
     COTIZACIÓN COMERCIAL - {{ $cotizacion->codigo }}

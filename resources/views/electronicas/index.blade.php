@@ -150,10 +150,10 @@
   {{ $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : '-' }}
   </td>
   
-  <td data-label="Acciones:" class="text-center {{ $dim }}">
-  <div class="flex justify-end md:justify-center gap-1.5 flex-wrap">
+<td data-label="Acciones:" class="text-center {{ $dim }}">
+  <div class="actions-grid">
   <a href="{{ route('electronicas.show', $e->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600" title="Ver detalle">👁️</a>
- 
+  
   @if($e->estado === 'terminado' && $e->fecha_salida)
   <a href="{{ route('electronicas.factura', $e->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 hover:text-green-700 hover:bg-green-50/50" title="Imprimir Factura">🖨️</a>
   @elseif($e->estado === 'terminado')

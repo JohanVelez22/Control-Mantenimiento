@@ -16,31 +16,31 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
  <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
- <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
+ <div class="absolute inset-0 bg-gradient-to-bl from-blue-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
  <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💻</span> Equipos</div>
  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalEquipos ?? 0 }}</div>
  </div>
  
  <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
- <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
+ <div class="absolute inset-0 bg-gradient-to-bl from-emerald-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
  <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">🔧</span> Órdenes</div>
  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalMantenimientos ?? 0 }}</div>
  </div>
  
  <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
- <div class="absolute -right-4 -top-4 w-20 h-20 bg-amber-500/20 rounded-full blur-2xl group-hover:bg-amber-500/30 transition-all"></div>
+ <div class="absolute inset-0 bg-gradient-to-bl from-amber-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
  <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⏳</span> Mantenimientos Pend.</div>
  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['pendientes'] ?? 0 }}</div>
  </div>
  
  <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
- <div class="absolute -right-4 -top-4 w-20 h-20 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/30 transition-all"></div>
+ <div class="absolute inset-0 bg-gradient-to-bl from-purple-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
  <div class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⚡</span> Electrónica Pend.</div>
  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['electronica_pendientes'] ?? 0 }}</div>
  </div>
 
  <div class="glass-card p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
- <div class="absolute -right-4 -top-4 w-20 h-20 bg-red-500/20 rounded-full blur-2xl group-hover:bg-red-500/30 transition-all"></div>
+ <div class="absolute inset-0 bg-gradient-to-bl from-red-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
  <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📦</span> Stock Bajo (<5)</div>
  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
  </div>
