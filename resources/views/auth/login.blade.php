@@ -4,7 +4,7 @@
 
 {{-- Botón modo oscuro --}}
 <div class="absolute top-5 right-5 z-10">
- <button id="theme-toggle-login"
+ <button id="theme-toggle-login" type="button"
  class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg"
  title="Cambiar tema" aria-label="Cambiar tema">
     <span class="dark:hidden">☀️</span>
@@ -25,7 +25,7 @@
  {{-- Header --}}
  <div class="text-center mb-6">
  <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 text-3xl shadow-xl mb-4">🔧</div>
- <h1 class="text-3xl font-black text-gray-900 dark:text-white">Iniciar Sesión</h1>
+ <h1 class="text-xl font-black text-gray-900 dark:text-white">Iniciar Sesión</h1>
  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa tus credenciales para acceder al sistema</p>
  </div>
 
@@ -46,25 +46,25 @@
 
  {{-- Email --}}
  <div>
- <label for="email" class="mb-3 flex items-center gap-3 text-3xl font-bold text-slate-700 dark:text-slate-200">
+ <label for="email" class="mb-3 flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-200">
  <span class="flex-shrink-0">📧</span>
  <span>Correo Electrónico</span>
  </label>
  <input type="email" id="email" name="email" value="{{ old('email') }}"
  required autofocus placeholder="usuario@empresa.com"
- class="glass-input mt-1 w-full text-xl py-3 px-4">
+ class="glass-input mt-1 w-full text-base py-3 px-4">
  @error('email') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
  {{-- Contraseña --}}
  <div>
- <label for="password" class="mb-3 flex items-center gap-3 text-3xl font-bold text-slate-700 dark:text-slate-200">
+ <label for="password" class="mb-3 flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-200">
  <span class="flex-shrink-0">🔑</span>
  <span>Contraseña</span>
  </label>
  <input type="password" id="password" name="password"
  required placeholder="••••••••"
- class="glass-input mt-1 w-full text-xl py-3 px-4">
+ class="glass-input mt-1 w-full text-base py-3 px-4">
  @error('password') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
@@ -75,7 +75,7 @@
  </div>
 
  {{-- Submit --}}
- <button type="submit" class="w-full btn-primary py-3 justify-center text-lg">
+ <button type="submit" class="w-full btn-primary py-3 justify-center text-sm">
  Entrar al Sistema →
   </button>
   </form>
@@ -93,7 +93,13 @@
  }
  var btn = document.getElementById('theme-toggle-login');
  if (btn) {
- btn.addEventListener('click', function() {
+ var isToggling = false;
+ btn.addEventListener('click', function(e) {
+ e.preventDefault();
+ if (isToggling) return;
+ isToggling = true;
+ setTimeout(function() { isToggling = false; }, 300);
+ 
  if (document.documentElement.classList.contains('dark')) {
  document.documentElement.classList.remove('dark');
  localStorage.setItem('color-theme', 'light');
