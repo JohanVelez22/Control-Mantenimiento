@@ -70,32 +70,32 @@
   <div class="glass-card p-6">
   <h3 class="text-xl font-bold mb-4">📈 Informe Acumulado (Mes {{ $mes }}/{{ $anio }})</h3>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-   <div class="glass-card glass-card-emerald p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-   <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📈</span> Ingresos</p>
-   <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['ingresos'], 0, ',', '.') }}</p>
+   <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+   <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📈</span> Ingresos</div>
+   <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['ingresos'], 0, ',', '.') }}</div>
    </div>
-   <div class="glass-card glass-card-red p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-   <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📉</span> Egresos / Gastos</p>
-   <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['egresos'], 0, ',', '.') }}</p>
+   <div class="glass-card hover-glow glass-card-red p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+   <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📉</span> Egresos / Gastos</div>
+   <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['egresos'], 0, ',', '.') }}</div>
    </div>
-   <div class="glass-card glass-card-blue p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-   <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💎</span> Facturación Total</p>
-   <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</p>
+   <div class="glass-card hover-glow glass-card-blue p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+   <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💎</span> Facturación Total</div>
+   <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</div>
    </div>
-   <div class="glass-card {{ $acumulado['utilidad_neta'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-   <p class="text-xs font-bold {{ $acumulado['utilidad_neta'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">⚖️</span> Utilidad / Saldo Neta</p>
-   <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</p>
+   <div class="glass-card hover-glow {{ $acumulado['utilidad_neta'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+   <div class="text-[11px] font-bold {{ $acumulado['utilidad_neta'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⚖️</span> Utilidad Neta</div>
+   <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</div>
    </div>
    </div>
   
   <div class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-   <div class="flex justify-between items-center bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 backdrop-blur-sm p-3 rounded-xl shadow-sm">
-   <span class="font-bold text-gray-600 dark:text-gray-300 text-sm">Valorización de Inventario (Costo)</span>
-   <span class="font-black text-gray-800 dark:text-white">${{ number_format($acumulado['inventario_costo'], 0, ',', '.') }}</span>
+   <div class="glass-card hover-glow glass-card-blue p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+   <div class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📦</span> Valorización Inventario (Costo)</div>
+   <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['inventario_costo'], 0, ',', '.') }}</div>
    </div>
-   <div class="flex justify-between items-center bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 backdrop-blur-sm p-3 rounded-xl shadow-sm">
-   <span class="font-bold text-gray-600 dark:text-gray-300 text-sm">Utilidad Esperada del Inventario</span>
-   <span class="font-black text-blue-600 dark:text-blue-400">${{ number_format($acumulado['inventario_utilidad_esperada'], 0, ',', '.') }}</span>
+   <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+   <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">✨</span> Utilidad Esperada Inventario</div>
+   <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['inventario_utilidad_esperada'], 0, ',', '.') }}</div>
    </div>
   </div>
   </div>
@@ -170,41 +170,41 @@
  <div class="glass-card p-6">
  <h3 class="text-xl font-bold mb-4">🧮 Informe por Operaciones (Tipos de Dinero)</h3>
  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
- {{-- Efectivo --}}
- <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
- <div class="bg-gray-100 dark:bg-gray-800 p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
- <span class="font-bold">💵 Efectivo Global</span>
- <span class="font-black text-lg">${{ number_format($operaciones['efectivo'], 0, ',', '.') }}</span>
- </div>
- <div class="p-3 space-y-2 text-sm">
- <div class="flex justify-between items-center">
- <span class="text-gray-700 dark:text-gray-300 font-semibold">Ingresos en Efectivo</span>
- <span class="font-bold text-gray-900 dark:text-gray-100">${{ number_format($operaciones['ingresos_efectivo'], 0, ',', '.') }}</span>
- </div>
- <div class="flex justify-between items-center">
- <span class="text-gray-700 dark:text-gray-300 font-semibold">Egresos en Efectivo</span>
- <span class="font-bold text-gray-900 dark:text-gray-100">${{ number_format($operaciones['egresos_efectivo'], 0, ',', '.') }}</span>
- </div>
- </div>
- </div>
+  {{-- Efectivo --}}
+  <div class="glass-card hover-glow glass-card-emerald p-5">
+   <div class="flex flex-col items-center justify-center mb-4 text-center">
+    <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💵</span> Efectivo Global</div>
+    <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($operaciones['efectivo'], 0, ',', '.') }}</div>
+   </div>
+   <div class="space-y-3 pt-3 border-t border-gray-200/50 dark:border-gray-700/50 text-sm">
+    <div class="flex justify-between items-center px-2">
+     <span class="text-gray-600 dark:text-gray-400 font-semibold">Ingresos</span>
+     <span class="font-bold text-emerald-600 dark:text-emerald-400">+${{ number_format($operaciones['ingresos_efectivo'], 0, ',', '.') }}</span>
+    </div>
+    <div class="flex justify-between items-center px-2">
+     <span class="text-gray-600 dark:text-gray-400 font-semibold">Egresos</span>
+     <span class="font-bold text-red-500 dark:text-red-400">-${{ number_format($operaciones['egresos_efectivo'], 0, ',', '.') }}</span>
+    </div>
+   </div>
+  </div>
 
- {{-- Consignacion --}}
- <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
- <div class="bg-gray-100 dark:bg-gray-800 p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
- <span class="font-bold">🏦 Consignación Global</span>
- <span class="font-black text-lg">${{ number_format($operaciones['consignacion'], 0, ',', '.') }}</span>
- </div>
- <div class="p-3 space-y-2 text-sm">
- <div class="flex justify-between items-center">
- <span class="text-gray-700 dark:text-gray-300 font-semibold">Ingresos por Banco</span>
- <span class="font-bold text-gray-900 dark:text-gray-100">${{ number_format($operaciones['ingresos_consignacion'], 0, ',', '.') }}</span>
- </div>
- <div class="flex justify-between items-center">
- <span class="text-gray-700 dark:text-gray-300 font-semibold">Egresos por Banco</span>
- <span class="font-bold text-gray-900 dark:text-gray-100">${{ number_format($operaciones['egresos_consignacion'], 0, ',', '.') }}</span>
- </div>
- </div>
- </div>
+  {{-- Consignacion --}}
+  <div class="glass-card hover-glow glass-card-blue p-5">
+   <div class="flex flex-col items-center justify-center mb-4 text-center">
+    <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">🏦</span> Consignación Global</div>
+    <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($operaciones['consignacion'], 0, ',', '.') }}</div>
+   </div>
+   <div class="space-y-3 pt-3 border-t border-gray-200/50 dark:border-gray-700/50 text-sm">
+    <div class="flex justify-between items-center px-2">
+     <span class="text-gray-600 dark:text-gray-400 font-semibold">Ingresos</span>
+     <span class="font-bold text-blue-600 dark:text-blue-400">+${{ number_format($operaciones['ingresos_consignacion'], 0, ',', '.') }}</span>
+    </div>
+    <div class="flex justify-between items-center px-2">
+     <span class="text-gray-600 dark:text-gray-400 font-semibold">Egresos</span>
+     <span class="font-bold text-red-500 dark:text-red-400">-${{ number_format($operaciones['egresos_consignacion'], 0, ',', '.') }}</span>
+    </div>
+   </div>
+  </div>
  </div>
  </div>
 

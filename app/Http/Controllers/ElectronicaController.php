@@ -320,29 +320,29 @@ class ElectronicaController extends Controller
         $electronicas = collect();
 
         if ($query) {
-            // Validación estricta: alfanumérico, espacios, guiones, puntos, # (para órdenes como ELC-0001)
-            if (!preg_match('/^[\d\s\-\.#]{5,30}$/', $query)) {
-                return back()->with('error', 'Formato inválido. Use solo números, espacios, guiones, puntos o # (ej: 123456789, 3001234567, ELC-001).');
+            // Validación mejorada: permitir letras, números, espacios, guiones, puntos y # (para órdenes como ORD-1, ELC-001)
+            if (!preg_match('/^[\w\s\-\.#]{5,30}$/u', $query)) {
+                return back()->with('error', 'Formato inválido. Use letras, números, espacios, guiones, puntos o # (ej: 123456789, 3001234567, ELC-001, ORD-001).');
             }
 
             // Normalizar: quitar espacios/guiones/puntos para búsqueda
             $clean = preg_replace('/[\s\-\.]/', '', $query);
 
-            $electronicas = Electronica::with(['equipo.cliente', 'tecnico'])
-                ->where(function ($q) use ($clean) {
-                    // 1. Por cédula/teléfono del cliente
-                    $q->whereHas('equipo.cliente', function ($sub) use ($clean) {
-                        $sub->where('identificacion', 'like', "%{$clean}%")
-                          ->orWhere('telefono', 'like', "%{$clean}%")
-                          ->orWhere('movil', 'like', "%{$clean}%");
-                    })
-                    // 2. Por número de orden (id_orden)
-                    ->orWhere('id_orden', 'like', "%{$clean}%");
-                })
-                ->where('anulado', false)
-                ->latest()
-                ->limit(50)
-                ->get();
+$electronicas = Electronica::with(['equipo.cliente', 'tecnico'])
+                 ->where(function ($q) use ($clean) {
+                     // 1. Por cédula/teléfono del cliente
+                     $q->whereHas('equipo.cliente', function ($sub) use ($clean) {
+                         $sub->where('identificacion', 'like', "%{$clean}%")
+                             ->orWhere('telefono', 'like', "%{$clean}%")
+                             ->orWhere('movil', 'like', "%{$clean}%");
+                     })
+                     // 2. Por número de orden (id_orden)
+                     ->orWhere('id_orden', 'like', "%{$clean}%");
+                 })
+                 ->where('anulado', false)
+                 ->latest()
+                 ->limit(50)
+                 ->get();
         }
 
         return view('consulta.electronicas', compact('electronicas', 'query'));

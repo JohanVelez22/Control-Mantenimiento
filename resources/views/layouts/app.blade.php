@@ -809,9 +809,9 @@
             </div>
 
             {{-- Contenedor Central para alinear filtros e información al mismo ancho --}}
-            <div class="w-full max-w-[490px] mx-auto flex flex-col flex-1 pb-4">
+            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1 pb-4">
                 {{-- Filtros / Tabs --}}
-                <div class="flex flex-nowrap justify-between gap-1 mb-4 w-full">
+                <div class="flex flex-nowrap justify-center gap-1.5 mb-4 w-full">
                 <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60">Todos</button>
                 @if($mantPendientes > 0)
                 <button onclick="filterNotifs('mant')" id="btn-notif-mant" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60">Mantenimiento</button>

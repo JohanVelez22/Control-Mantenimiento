@@ -340,21 +340,21 @@ class MantenimientoController extends Controller
             // Normalizar: quitar espacios/guiones/puntos para búsqueda y a mayúsculas
             $clean = strtoupper(preg_replace('/[\s\-\.]/', '', $query));
 
-            $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico'])
-                ->where(function ($q) use ($clean) {
-                    // 1. Por cédula/teléfono del cliente
-                    $q->whereHas('equipo.cliente', function ($sub) use ($clean) {
-                        $sub->where('identificacion', 'like', "%{$clean}%")
-                          ->orWhere('telefono', 'like', "%{$clean}%")
-                          ->orWhere('movil', 'like', "%{$clean}%");
-                    })
-                    // 2. Por número de orden (id_orden)
-                    ->orWhere('id_orden', 'like', "%{$clean}%");
-                })
-                ->where('anulado', false)
-                ->latest()
-                ->limit(50)
-                ->get();
+$mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico'])
+                 ->where(function ($q) use ($clean) {
+                     // 1. Por cédula/teléfono del cliente
+                     $q->whereHas('equipo.cliente', function ($sub) use ($clean) {
+                         $sub->where('identificacion', 'like', "%{$clean}%")
+                             ->orWhere('telefono', 'like', "%{$clean}%")
+                             ->orWhere('movil', 'like', "%{$clean}%");
+                     })
+                     // 2. Por número de orden (id_orden)
+                     ->orWhere('id_orden', 'like', "%{$clean}%");
+                 })
+                 ->where('anulado', false)
+                 ->latest()
+                 ->limit(50)
+                 ->get();
         }
 
         return view('consulta.mantenimientos', compact('mantenimientos', 'query'));

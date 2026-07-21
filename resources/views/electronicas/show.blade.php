@@ -81,22 +81,19 @@
         {{-- Resumen financiero --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 mt-8">Resumen Financiero</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-            <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/30 transition-all"></div>
-            <p class="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10">Costo Estimado</p>
-            <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($electronica->costo, 0, ',', '.') }}</p>
+            <div class="glass-card hover-glow glass-card-purple p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+            <div class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💰</span> Costo Estimado</div>
+            <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($electronica->costo, 0, ',', '.') }}</div>
         </div>
         
-        <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-            <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
-            <p class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10">Total Abonado</p>
-            <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($electronica->total_abonado, 0, ',', '.') }}</p>
+        <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+            <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💵</span> Total Abonado</div>
+            <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($electronica->total_abonado, 0, ',', '.') }}</div>
         </div>
         
-        <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-            <div class="absolute -right-6 -top-6 w-24 h-24 {{ $electronica->saldo_pendiente > 0 ? 'bg-red-500/20 group-hover:bg-red-500/30' : 'bg-teal-500/20 group-hover:bg-teal-500/30' }} rounded-full blur-2xl transition-all"></div>
-            <p class="text-[10px] font-black {{ $electronica->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10">Saldo Pendiente</p>
-            <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($electronica->saldo_pendiente, 0, ',', '.') }}</p>
+        <div class="glass-card hover-glow {{ $electronica->saldo_pendiente > 0 ? 'glass-card-red' : 'glass-card-teal' }} p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+            <div class="text-[11px] font-bold {{ $electronica->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⚖️</span> Saldo Pendiente</div>
+            <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($electronica->saldo_pendiente, 0, ',', '.') }}</div>
         </div>
         </div>
 
