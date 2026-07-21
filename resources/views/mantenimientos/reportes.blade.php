@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex gap-4 mb-6 no-print">
- <a href="{{ route('reportes.financiero.diario') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">💵 Informes Financieros</a>
- <a href="{{ route('mantenimientos.reportes') }}" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold shadow-sm">⚙️ Reporte de Mantenimientos</a>
- <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Reporte de Electrónica</a>
- <a href="{{ route('stocks.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
+<div class="flex gap-4 mb-6 no-print overflow-x-auto pb-2">
+ <a href="{{ route('reportes.financiero.diario') }}" class="px-4 py-2 rounded-xl font-bold shadow-sm transition-all bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 whitespace-nowrap">💵 Informes Financieros</a>
+ <a href="{{ route('mantenimientos.reportes') }}" class="px-4 py-2 rounded-xl font-bold shadow-lg transition-all bg-blue-500 text-white whitespace-nowrap">⚙️ Reporte de Mantenimientos</a>
+ <a href="{{ route('electronicas.reportes') }}" class="px-4 py-2 rounded-xl font-bold shadow-sm transition-all bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-500/20 whitespace-nowrap">⚡ Reporte de Electrónica</a>
+ <a href="{{ route('stocks.reportes') }}" class="px-4 py-2 rounded-xl font-bold shadow-sm transition-all bg-orange-500/10 text-orange-700 dark:text-orange-300 hover:bg-orange-500/20 whitespace-nowrap">📦 Informe Inventario</a>
 </div>
 
 <div class="glass-card p-6 mb-6">
