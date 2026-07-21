@@ -59,8 +59,8 @@
 <td class="text-center {{ $dim }}">
 						<div class="grid grid-cols-2 gap-1 justify-center mx-auto w-fit">
 							@if(!auth()->user()->isInvitado())
-							<a href="{{ route('clientes.edit', $cliente->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs" title="Editar">✏️</a>
-							<button type="button" onclick="openAnularModal('{{ route('clientes.anular', $cliente->id) }}', {{ !$cliente->active ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $cliente->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $cliente->active ? 'Anular Cliente' : 'Reactivar Cliente' }}">
+							<a href="{{ route('clientes.edit', $cliente->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs" title="Editar">✏️</a>
+							<button type="button" onclick="openAnularModal('{{ route('clientes.anular', $cliente->id) }}', {{ !$cliente->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $cliente->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $cliente->active ? 'Anular Cliente' : 'Reactivar Cliente' }}">
 								{{ $cliente->active ? '🚫' : '✅' }}
 							</button>
 							@else

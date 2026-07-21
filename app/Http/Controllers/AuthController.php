@@ -23,21 +23,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        // 1. Buscar si el usuario existe
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user) {
-            return back()->withErrors([
-                'email' => 'No existe ninguna cuenta registrada con este correo electrónico.',
-            ])->onlyInput('email');
-        }
-
-        // 2. Verificar si está activo
-        if (!$user->active) {
-            return back()->withErrors([
-                'email' => 'Tu cuenta ha sido desactivada por el administrador del sistema.',
-            ])->onlyInput('email');
-        }
+        // Eliminadas comprobaciones explícitas de existencia y estado para evitar enumeración de usuarios
 
         // 3. Intentar autenticar con soporte para 'Remember me' y Throttling nativo
         if (!Auth::attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->filled('remember'))) {

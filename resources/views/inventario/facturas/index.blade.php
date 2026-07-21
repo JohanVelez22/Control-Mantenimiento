@@ -126,13 +126,13 @@
   </td>
 <td class="text-center {{ $dim }}">
   <div class="grid grid-cols-2 gap-1.5 justify-center mx-auto w-fit">
-  <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
-  <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs" title="Imprimir">🖨️</a>
+  <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
+  <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs" title="Imprimir">🖨️</a>
   
   @if(!auth()->user()->isInvitado())
-  <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600 border-yellow-500/20 hover:bg-yellow-500/10" title="Editar">✏️</a>
+  <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 border-yellow-500/20 hover:bg-yellow-500/10" title="Editar">✏️</a>
   
-  <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}', {{ $f->estado === 'anulada' ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $f->estado === 'anulada' ? 'text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $f->estado === 'anulada' ? 'Reactivar Factura' : 'Anular Factura' }}">
+  <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}', {{ $f->estado === 'anulada' ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $f->estado === 'anulada' ? 'text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $f->estado === 'anulada' ? 'Reactivar Factura' : 'Anular Factura' }}">
   {{ $f->estado === 'anulada' ? '✅' : '🚫' }}
   </button>
   @endif

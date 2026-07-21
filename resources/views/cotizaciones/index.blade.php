@@ -75,22 +75,22 @@
                     </td>
 <td data-label="Acciones" class="text-center">
                         <div class="grid grid-cols-2 gap-1.5 justify-center mx-auto w-fit">
-                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-indigo-600 min-w-[44px] flex items-center justify-center" title="Ver detalle">👁️</a>
+                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver detalle">👁️</a>
                             
                             @if($cot->estado === 'aprobada')
-                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost px-2.5 py-1.5 text-xs text-green-600 min-w-[44px] flex items-center justify-center" title="Imprimir PDF">🖨️</a>
+                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-green-600" title="Imprimir PDF">🖨️</a>
                             @endif
 
 @if($cot->estado === 'pendiente' && !$cot->anulado && (!auth()->user() || auth()->user()->role !== 'invitado'))
-    <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600 min-w-[44px] flex items-center justify-center" title="Editar">✏️</a>
+    <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
 @endif
 
 @if(!$cot->anulado)
-    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', false)" class="btn-ghost px-2.5 py-1.5 text-xs text-orange-600 min-w-[44px] flex items-center justify-center" title="Anular cotización">
+    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', false)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-orange-600" title="Anular cotización">
         🚫
     </button>
 @else
-    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', true)" class="btn-ghost px-2.5 py-1.5 text-xs text-emerald-600 min-w-[44px] flex items-center justify-center" title="Reactivar cotización">
+    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', true)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600" title="Reactivar cotización">
         ✅
     </button>
 @endif

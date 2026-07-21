@@ -68,8 +68,8 @@
 <td class="text-center {{ $dim }}">
   <div class="grid grid-cols-2 gap-1 justify-center mx-auto w-fit">
   @if(!auth()->user()->isInvitado())
-  <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="btn-ghost px-2.5 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
-                             <button type="button" onclick="openAnularModal('{{ route('tecnicos.anular', $tecnico->id) }}', {{ !$tecnico->active ? 'true' : 'false' }})" class="btn-ghost px-2.5 py-1.5 text-xs {{ $tecnico->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $tecnico->active ? 'Anular Técnico' : 'Reactivar Técnico' }}">
+  <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
+                             <button type="button" onclick="openAnularModal('{{ route('tecnicos.anular', $tecnico->id) }}', {{ !$tecnico->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $tecnico->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $tecnico->active ? 'Anular Técnico' : 'Reactivar Técnico' }}">
   {{ $tecnico->active ? '🚫' : '✅' }}
   </button>
   @else

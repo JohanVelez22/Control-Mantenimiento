@@ -31,12 +31,10 @@ class BackupDatabase extends Command
             $fileName = "backup_{$database}_{$date}.sql";
             $filePath = $backupDir . '/' . $fileName;
 
-            // En ServBay (Windows) mysqldump debe estar disponible o pasarse el path completo
-            // Por seguridad, intentamos usar el mysqldump del sistema
+            // En ServBay (Windows) o Linux, usar MYSQL_PWD evita exponer la contraseña en procesos
             $command = sprintf(
-                'mysqldump --user="%s" --password="%s" --host="%s" --port="%s" "%s" > "%s"',
+                'mysqldump --user="%s" --host="%s" --port="%s" "%s" > "%s"',
                 $username,
-                $password,
                 $host,
                 $port,
                 $database,
@@ -45,9 +43,15 @@ class BackupDatabase extends Command
 
             $this->info("Iniciando respaldo de la base de datos...");
             
+            // Pasar contraseña por variable de entorno de forma segura
+            putenv("MYSQL_PWD={$password}");
+            
             $output = null;
             $resultCode = null;
             exec($command, $output, $resultCode);
+            
+            // Limpiar la variable de entorno inmediatamente después
+            putenv("MYSQL_PWD");
 
             if ($resultCode === 0) {
                 $this->info("✅ Respaldo exitoso: {$fileName}");

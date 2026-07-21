@@ -15,40 +15,41 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Deshabilitar foreign key checks temporalmente para truncate
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        User::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $adminPass = env('ADMIN_DEFAULT_PASSWORD', 'Admin123*');
-        $tecnicoPass = env('TECNICO_DEFAULT_PASSWORD', 'Tecni123*');
-        $invitadoPass = env('INVITADO_DEFAULT_PASSWORD', 'Invit123*');
+        $adminPass = env('ADMIN_DEFAULT_PASSWORD', \Illuminate\Support\Str::random(16));
+        $tecnicoPass = env('TECNICO_DEFAULT_PASSWORD', \Illuminate\Support\Str::random(16));
+        $invitadoPass = env('INVITADO_DEFAULT_PASSWORD', \Illuminate\Support\Str::random(16));
 
         // Admin principal
-        User::create([
-            'name' => 'Administrador',
-            'email' => 'administrador@tecnisystemas.com',
-            'password' => Hash::make($adminPass),
-            'role' => 'admin',
-            'active' => true,
-        ]);
+        User::firstOrCreate(
+            ['email' => 'administrador@tecnisystemas.com'],
+            [
+                'name' => 'Administrador',
+                'password' => Hash::make($adminPass),
+                'role' => 'admin',
+                'active' => true,
+            ]
+        );
 
         // Técnico
-        User::create([
-            'name' => 'Técnico',
-            'email' => 'tecnico@tecnisystemas.com',
-            'password' => Hash::make($tecnicoPass),
-            'role' => 'tecnico',
-            'active' => true,
-        ]);
+        User::firstOrCreate(
+            ['email' => 'tecnico@tecnisystemas.com'],
+            [
+                'name' => 'Técnico',
+                'password' => Hash::make($tecnicoPass),
+                'role' => 'tecnico',
+                'active' => true,
+            ]
+        );
 
         // Invitado (solo consulta)
-        User::create([
-            'name' => 'Invitado',
-            'email' => 'invitado@tecnisystemas.com',
-            'password' => Hash::make($invitadoPass),
-            'role' => 'invitado',
-            'active' => true,
-        ]);
+        User::firstOrCreate(
+            ['email' => 'invitado@tecnisystemas.com'],
+            [
+                'name' => 'Invitado',
+                'password' => Hash::make($invitadoPass),
+                'role' => 'invitado',
+                'active' => true,
+            ]
+        );
     }
 }

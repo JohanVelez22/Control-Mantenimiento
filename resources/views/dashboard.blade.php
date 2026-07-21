@@ -50,10 +50,10 @@
  
  <!-- Indicadores -->
  <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-3 z-10 flex-wrap px-2" id="carouselIndicators">
- <button type="button" class="w-8 h-2.5 rounded-full bg-blue-900 dark:bg-blue-400 shadow-md transition-all duration-500 backdrop-blur-sm"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-blue-900/30 dark:bg-blue-400/30 transition-all duration-500 backdrop-blur-sm hover:bg-blue-900/60 dark:hover:bg-blue-400/60"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-blue-900/30 dark:bg-blue-400/30 transition-all duration-500 backdrop-blur-sm hover:bg-blue-900/60 dark:hover:bg-blue-400/60"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-blue-900/30 dark:bg-blue-400/30 transition-all duration-500 backdrop-blur-sm hover:bg-blue-900/60 dark:hover:bg-blue-400/60"></button>
+ <button type="button" class="w-8 h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-md transition-all duration-500 backdrop-blur-sm"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
  </div>
 
  <!-- Contenedor Deslizante -->
@@ -123,10 +123,10 @@
  </div>
 
 <!-- Controles: fondo muy suave para no tapar los gráficos -->
-  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-gray-300 dark:border-gray-600 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md text-gray-800 dark:text-white shadow-lg transition-all hover:bg-white dark:hover:bg-gray-700 cursor-pointer" style="top: 50%; left: 25px; transform: translateY(-50%); position: absolute;">
+  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/40 dark:border-white/10 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl text-slate-800 dark:text-white shadow-[0_8px_32px_rgba(0,0,0,0.15)] transition-all hover:bg-white/60 dark:hover:bg-slate-700/60 cursor-pointer" style="top: 50%; left: 8px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
   </button>
-  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-gray-300 dark:border-gray-600 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md text-gray-800 dark:text-white shadow-lg transition-all hover:bg-white dark:hover:bg-gray-700 cursor-pointer" style="top: 50%; right: 25px; transform: translateY(-50%); position: absolute;">
+  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/40 dark:border-white/10 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl text-slate-800 dark:text-white shadow-[0_8px_32px_rgba(0,0,0,0.15)] transition-all hover:bg-white/60 dark:hover:bg-slate-700/60 cursor-pointer" style="top: 50%; right: 8px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
   </button>
 </div>
@@ -389,9 +389,9 @@ function switchDashTab(tab) {
             if(ind) {
                 ind.classList.remove('w-8', 'w-2.5', 'h-3', 'h-2.5', 'bg-gradient-to-r', 'from-blue-500', 'to-cyan-400', 'shadow-md', 'bg-blue-600', 'dark:bg-blue-500', 'bg-gray-300', 'dark:bg-gray-600', 'bg-gray-300/60', 'dark:bg-gray-600/60', 'bg-blue-900', 'dark:bg-blue-400', 'bg-blue-900/30', 'dark:bg-blue-400/30', 'hover:bg-blue-900/60', 'dark:hover:bg-blue-400/60');
                 if (i === currentSlide) {
-                    ind.classList.add('w-8', 'h-2.5', 'bg-blue-900', 'dark:bg-blue-400', 'shadow-md');
+                    ind.classList.add('w-8', 'h-2.5', 'bg-gradient-to-r', 'from-blue-500', 'to-cyan-400', 'shadow-md');
                 } else {
-                    ind.classList.add('w-2.5', 'h-2.5', 'bg-blue-900/30', 'dark:bg-blue-400/30', 'hover:bg-blue-900/60', 'dark:hover:bg-blue-400/60');
+                    ind.classList.add('w-2.5', 'h-2.5', 'bg-gray-300/60', 'dark:bg-gray-600/60');
                 }
             }
  }
@@ -549,14 +549,14 @@ function switchDashTab(tab) {
         const total = chart.config.data.datasets[0].data.reduce(function (a, b) { return a + b; }, 0);
 
         // Label arriba
-        ctx.font = '600 0.7em sans-serif';
+        ctx.font = '600 0.9em sans-serif';
         ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
-        ctx.fillText('Órdenes Totales', centerX, centerY - 12);
+        ctx.fillText('Total Órdenes', centerX, centerY - 14);
         
         // Número grande centrado
-        ctx.font = 'bold 2.2em sans-serif';
+        ctx.font = 'bold 3em sans-serif';
         ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
-        ctx.fillText(total, centerX, centerY + 16);
+        ctx.fillText(total, centerX, centerY + 12);
 
         ctx.restore();
  }
@@ -737,13 +737,13 @@ function switchDashTab(tab) {
  ctx.textBaseline = 'middle';
  ctx.textAlign = 'center';
  // Label arriba
- ctx.font = '600 0.7em sans-serif';
+ ctx.font = '600 0.9em sans-serif';
  ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
- ctx.fillText('Total Órdenes', centerX, centerY - 12);
+ ctx.fillText('Total Órdenes', centerX, centerY - 14);
  // Número grande centrado
- ctx.font = 'bold 2.2em sans-serif';
+ ctx.font = 'bold 3em sans-serif';
  ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
- ctx.fillText(total, centerX, centerY + 16);
+ ctx.fillText(total, centerX, centerY + 12);
  ctx.restore();
  }
  };
@@ -806,14 +806,14 @@ function switchDashTab(tab) {
  const isDark = document.documentElement.classList.contains('dark');
  ctx.save();
  const total = chart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
- ctx.font = 'bold 1.6em sans-serif';
+ ctx.font = 'bold 3em sans-serif';
  ctx.textBaseline = 'middle';
  ctx.textAlign = 'center';
  ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
  ctx.fillText(total, width / 2, height / 2 - 8);
- ctx.font = '600 0.65em sans-serif';
+ ctx.font = '600 0.9em sans-serif';
  ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
- ctx.fillText('Total', width / 2, height / 2 + 14);
+ ctx.fillText('Total Órdenes', width / 2, height / 2 + 18);
  ctx.restore();
  }
  };

@@ -73,7 +73,7 @@
  <span>Monto Total ($)</span>
  <span class="text-[10px] font-normal text-gray-400">(Opcional)</span>
  </label>
- <input type="text" id="monto_total_visual" value="{{ old('monto_total', isset($movimiento) && $movimiento->monto_total ? number_format($movimiento->monto_total, 0, ',', '.') : '') }}" placeholder="Monto total a pagar/cobrar..." class="glass-input font-bold text-right py-2">
+ <input type="text" id="monto_total_visual" value="{{ old('monto_total', isset($movimiento) && $movimiento->monto_total ? number_format($movimiento->monto_total, 0, ',', '.') : '') }}" placeholder="Monto total a pagar/cobrar..." class="glass-input font-bold text-left py-2">
  <input type="hidden" name="monto_total" id="monto_total_real" value="{{ old('monto_total', $movimiento->monto_total ?? '') }}">
  @error('monto_total') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  <p class="text-[11px] font-medium text-gray-400 mt-1">Usa esto solo si el pago actual es parcial. El sistema calculará el saldo pendiente.</p>
@@ -82,7 +82,7 @@
  {{-- Monto Pagado y Estado --}}
  <div>
  <label class="field-label">Monto Pagado Hoy ($) *</label>
- <input type="text" id="monto_visual" required value="{{ old('monto', isset($movimiento) ? number_format($movimiento->monto, 0, ',', '.') : '') }}" placeholder="Monto pagado..." class="glass-input font-bold text-right py-2">
+ <input type="text" id="monto_visual" required value="{{ old('monto', isset($movimiento) ? number_format($movimiento->monto, 0, ',', '.') : '') }}" placeholder="Monto pagado..." class="glass-input font-bold text-left py-2">
  <input type="hidden" name="monto" id="monto_real" value="{{ old('monto', $movimiento->monto ?? '') }}">
  @error('monto') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
