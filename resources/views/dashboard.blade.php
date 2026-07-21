@@ -239,7 +239,7 @@
  </tr>
  @empty
  <tr>
- <td colspan="7" class="p-8 text-center text-gray-500 dark:text-gray-400">
+ <td colspan="8" class="p-8 text-center text-gray-500 dark:text-gray-400">
  No hay mantenimientos registrados recientemente.
  </td>
  </tr>
@@ -328,7 +328,7 @@
  </tr>
  @empty
  <tr>
- <td colspan="7" class="p-8 text-center text-gray-500 dark:text-gray-400">
+ <td colspan="8" class="p-8 text-center text-gray-500 dark:text-gray-400">
  No hay órdenes de electrónica registradas recientemente.
  </td>
  </tr>

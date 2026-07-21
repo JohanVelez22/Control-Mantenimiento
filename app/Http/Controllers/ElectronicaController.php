@@ -214,6 +214,7 @@ class ElectronicaController extends Controller
 
     public function factura(Electronica $electronica)
     {
+        \Illuminate\Support\Facades\Gate::authorize('view', $electronica);
         $electronica->load(['equipo.cliente', 'tecnico', 'user']);
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('electronicas.factura', compact('electronica'));
         $pdf->setPaper('a4', 'portrait');

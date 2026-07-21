@@ -31,7 +31,7 @@ class ConfiguracionController extends Controller
             'direccion' => 'nullable|string|max:255',
             'correo' => 'nullable|email|max:255',
             'pie_pagina_factura' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048|dimensions:min_width=50,min_height=50,max_width=3000,max_height=3000',
         ]);
 
         $configuracion = Configuracion::first() ?? new Configuracion();

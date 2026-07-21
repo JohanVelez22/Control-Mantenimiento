@@ -40,8 +40,13 @@ trait Auditable
                     if (in_array($key, ['updated_at', 'password', 'remember_token'])) {
                         continue;
                     }
-                    $changedViejos[$key] = $model->getOriginal($key);
-                    $changedNuevos[$key] = $value;
+                    if (in_array($key, ['email', 'identificacion', 'telefono', 'movil', 'direccion'])) {
+                        $changedViejos[$key] = '*** ENMASCARADO ***';
+                        $changedNuevos[$key] = '*** ENMASCARADO ***';
+                    } else {
+                        $changedViejos[$key] = $model->getOriginal($key);
+                        $changedNuevos[$key] = $value;
+                    }
                 }
 
                 if (count($changedNuevos) === 0) {
@@ -93,7 +98,12 @@ trait Auditable
 if (! function_exists('clone_model_data')) {
     function clone_model_data($data)
     {
-        unset($data['password'], $data['remember_token']);
+        $sensibles = ['password', 'remember_token', 'email', 'identificacion', 'telefono', 'movil', 'direccion'];
+        foreach ($sensibles as $key) {
+            if (isset($data[$key])) {
+                $data[$key] = '*** ENMASCARADO ***';
+            }
+        }
         return $data;
     }
 }

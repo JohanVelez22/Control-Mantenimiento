@@ -43,7 +43,7 @@ class Evento extends Model
             'valores_antiguos' => $viejos,
             'valores_nuevos' => $nuevos,
             'ip_direccion' => request()->ip(),
-            'user_agent' => request()->userAgent(),
+            'user_agent' => substr(request()->userAgent() ?? '', 0, 255),
             'descripcion' => $descripcion,
         ]);
     }

@@ -52,8 +52,8 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     });
 
-    // ─── INVITADO: Panel dedicado y consultas ─────────────────
-    Route::middleware('role:invitado')->group(function () {
+    // ─── INVITADO: Panel dedicado y consultas (Protegidas con Throttling) ─────────────────
+    Route::middleware(['role:invitado', 'throttle:30,1'])->group(function () {
         Route::get('/guest/dashboard', [GuestController::class, 'dashboard'])->name('guest.dashboard');
         Route::get('/guest/search', [GuestController::class, 'search'])->name('guest.search');
         Route::get('/consulta/mantenimientos', [MantenimientoController::class, 'consulta'])->name('consulta.mantenimientos');

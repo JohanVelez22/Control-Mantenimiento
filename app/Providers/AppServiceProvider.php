@@ -39,67 +39,72 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('promote-admin', fn(User $u) => $u->role === 'admin');
         Gate::define('promote-tecnico', fn(User $u) => $u->role === 'admin');
 
+        Gate::policy(Mantenimiento::class, \App\Policies\MantenimientoPolicy::class);
+        Gate::policy(Electronica::class, \App\Policies\ElectronicaPolicy::class);
+
 
         View::composer('layouts.app', function ($view) {
-            // Mantenimientos pendientes
-            $mantList = Mantenimiento::activos()
+            $data = Cache::remember('layout_alerts_data', now()->addMinutes(2), function () {
+                // Mantenimientos pendientes
+                $mantList = Mantenimiento::activos()
+                        ->where('estado', 'pendiente')
+                        ->select('id', 'id_orden', 'equipo_id', 'estado')
+                        ->with('equipo.cliente:id,nombres,apellidos')
+                        ->get();
+
+                // Electrónicas pendientes
+                $elecList = Electronica::activos()
                     ->where('estado', 'pendiente')
                     ->select('id', 'id_orden', 'equipo_id', 'estado')
                     ->with('equipo.cliente:id,nombres,apellidos')
+                    ->latest()
+                    ->limit(50)
                     ->get();
 
-            // Electrónicas pendientes
-            $elecList = Electronica::activos()
-                ->where('estado', 'pendiente')
-                ->select('id', 'id_orden', 'equipo_id', 'estado')
-                ->with('equipo.cliente:id,nombres,apellidos')
-                ->latest()
-                ->limit(50)
-                ->get();
+                // Facturas con saldo pendiente
+                $cajaList = Factura::where('estado', '!=', 'anulada')
+                    ->where('saldo_pendiente', '>', 0)
+                    ->select('id', 'numero_factura', 'tipo_movimiento', 'saldo_pendiente', 'total_documento', 'facturable_id', 'facturable_type')
+                    ->with('facturable:id,tipo_entidad,nombre_razon_social,nombres,apellidos,identificacion')
+                    ->latest()
+                    ->limit(50)
+                    ->get();
 
-            // Facturas con saldo pendiente
-            $cajaList = Factura::where('estado', '!=', 'anulada')
-                ->where('saldo_pendiente', '>', 0)
-                ->select('id', 'numero_factura', 'tipo_movimiento', 'saldo_pendiente', 'total_documento', 'facturable_id', 'facturable_type')
-                ->with('facturable:id,tipo_entidad,nombre_razon_social,nombres,apellidos,identificacion')
-                ->latest()
-                ->limit(50)
-                ->get();
+                // Movimientos de caja pendientes
+                $movimientosPendientes = MovimientoCaja::where('anulado', false)
+                    ->whereNull('parent_id')
+                    ->whereRaw('monto_total > monto')
+                    ->with(['concepto:id,nombre', 'childPayments'])
+                    ->latest()
+                    ->limit(50)
+                    ->get();
 
-            // Movimientos de caja pendientes
-            $movimientosPendientes = MovimientoCaja::where('anulado', false)
-                ->whereNull('parent_id')
-                ->whereRaw('monto_total > monto')
-                ->with(['concepto:id,nombre', 'childPayments'])
-                ->latest()
-                ->limit(50)
-                ->get();
+                // Cotizaciones pendientes
+                $cotList = Cotizacion::activos()
+                    ->where('estado', 'pendiente')
+                    ->select('id', 'codigo', 'cliente_id', 'total', 'estado')
+                    ->with('cliente:id,nombres,apellidos')
+                    ->latest()
+                    ->limit(50)
+                    ->get();
 
-            // Cotizaciones pendientes
-            $cotList = Cotizacion::activos()
-                ->where('estado', 'pendiente')
-                ->select('id', 'codigo', 'cliente_id', 'total', 'estado')
-                ->with('cliente:id,nombres,apellidos')
-                ->latest()
-                ->limit(50)
-                ->get();
-
-            $data = [
-                'mantList'              => $mantList,
-                'elecList'              => $elecList,
-                'cajaList'              => $cajaList,
-                'movimientosPendientes' => $movimientosPendientes,
-                'cotList'               => $cotList,
-                'mantPendientes'        => $mantList->count(),
-                'elecPendientes'        => $elecList->count(),
-                'cotPendientes'         => $cotList->count(),
-                'cajaPendientes'        => $cajaList->count() + $movimientosPendientes->count(),
-                'totalPendientes'       => $mantList->count()
-                                              + $elecList->count()
-                                              + $cajaList->count()
-                                              + $movimientosPendientes->count()
-                                              + $cotList->count(),
-            ];
+                return [
+                    'mantList'              => $mantList,
+                    'elecList'              => $elecList,
+                    'cajaList'              => $cajaList,
+                    'movimientosPendientes' => $movimientosPendientes,
+                    'cotList'               => $cotList,
+                    'mantPendientes'        => $mantList->count(),
+                    'elecPendientes'        => $elecList->count(),
+                    'cotPendientes'         => $cotList->count(),
+                    'cajaPendientes'        => $cajaList->count() + $movimientosPendientes->count(),
+                    'totalPendientes'       => $mantList->count()
+                                                  + $elecList->count()
+                                                  + $cajaList->count()
+                                                  + $movimientosPendientes->count()
+                                                  + $cotList->count(),
+                ];
+            });
 
             $view->with($data);
         });

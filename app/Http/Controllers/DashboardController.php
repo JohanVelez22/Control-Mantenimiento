@@ -22,35 +22,26 @@ class DashboardController extends Controller
         if (auth()->user()?->role === 'invitado') {
             return Redirect::route('guest.dashboard');
         }
-        // ─── Métricas consolidadas (1 query en lugar de 7) ───────────
-        $counts = \Illuminate\Support\Facades\DB::selectOne("
-            SELECT
-                (SELECT COUNT(*) FROM equipos) as total_equipos,
-                (SELECT COUNT(*) FROM mantenimientos WHERE anulado = 0) as total_mant,
-                (SELECT COUNT(*) FROM mantenimientos WHERE anulado = 0 AND estado = 'pendiente') as mant_pendientes,
-                (SELECT COUNT(*) FROM mantenimientos WHERE anulado = 0 AND estado = 'terminado') as mant_terminados,
-                (SELECT COUNT(*) FROM stocks WHERE cantidad <= 5) as stock_bajo,
-                (SELECT COUNT(*) FROM electronicas WHERE anulado = 0 AND estado = 'pendiente') as elec_pendientes
-        ");
+        // ─── Métricas consolidadas (Eloquent puro) ───────────
+        $totalEquipos = \App\Models\Equipo::count();
+        $totalMantenimientos = \App\Models\Mantenimiento::where('anulado', 0)->count();
+        $counts = (object) [
+            'mant_pendientes' => \App\Models\Mantenimiento::where('anulado', 0)->where('estado', 'pendiente')->count(),
+            'mant_terminados' => \App\Models\Mantenimiento::where('anulado', 0)->where('estado', 'terminado')->count(),
+            'stock_bajo' => \App\Models\Stock::where('cantidad', '<=', 5)->count(),
+            'elec_pendientes' => \App\Models\Electronica::where('anulado', 0)->where('estado', 'pendiente')->count(),
+        ];
 
-        $totalEquipos = $counts->total_equipos;
-        $totalMantenimientos = $counts->total_mant;
+        $today = Carbon::today()->toDateString();
+        
+        $baseCaja = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', 0);
+        $cajaIngresos = (clone $baseCaja)->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $cajaEgresos = (clone $baseCaja)->where('tipo_movimiento', 'egreso')->sum('monto');
+        $cajaIngresosHoy = (clone $baseCaja)->where('tipo_movimiento', 'ingreso')->whereDate('fecha', $today)->sum('monto');
+        $cajaEgresosHoy = (clone $baseCaja)->where('tipo_movimiento', 'egreso')->whereDate('fecha', $today)->sum('monto');
 
-        // Caja: consolidar ingresos/egresos en 1 sola query (histórico + hoy)
-        $caja = \Illuminate\Support\Facades\DB::selectOne("
-            SELECT
-                COALESCE(SUM(CASE WHEN tipo_movimiento='ingreso' THEN monto ELSE 0 END), 0) as ingresos,
-                COALESCE(SUM(CASE WHEN tipo_movimiento='egreso'  THEN monto ELSE 0 END), 0) as egresos,
-                COALESCE(SUM(CASE WHEN tipo_movimiento='ingreso' AND DATE(fecha) = CURDATE() THEN monto ELSE 0 END), 0) as ingresos_hoy,
-                COALESCE(SUM(CASE WHEN tipo_movimiento='egreso'  AND DATE(fecha) = CURDATE() THEN monto ELSE 0 END), 0) as egresos_hoy
-            FROM movimiento_cajas
-            WHERE estado = 'activo' AND anulado = 0
-        ");
-
-        $cajaIngresos = $caja->ingresos;
-        $cajaEgresos = $caja->egresos;
         $cajaSaldoActual = $cajaIngresos - $cajaEgresos;
-        $cajaSaldoDia = $caja->ingresos_hoy - $caja->egresos_hoy;
+        $cajaSaldoDia = $cajaIngresosHoy - $cajaEgresosHoy;
 
         // Formateo para la vista
         $totalCostoFormateado = number_format($cajaSaldoActual, 0, ',', '.');

@@ -5,25 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Consulta - Tecni Systemas</title>
     
-    {{-- Tailwind CSS CDN --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        ts: {
-                            blue: '#2563EB',
-                            bluedark: '#1D4ED8',
-                            cyan: '#06B6D4',
-                            slate: '#0F172A',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    {{-- Vite (Tailwind CSS compilado + JS) --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     {{-- CSS Librerías --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">

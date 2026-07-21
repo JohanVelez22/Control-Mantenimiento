@@ -41,14 +41,20 @@ class Electronica extends Model
         return (int) $this->fecha_entrada->diffInDays($fin);
     }
 
-    public function getTotalAbonadoAttribute()
+    public function getTotalAbonadoAttribute(): float
     {
-        return $this->abonos()->sum('monto');
+        if ($this->relationLoaded('abonos')) {
+            return (float) $this->abonos->sum('monto');
+        }
+        if (isset($this->attributes['total_abonado'])) {
+            return (float) $this->attributes['total_abonado'];
+        }
+        return (float) $this->abonos()->sum('monto');
     }
 
-    public function getSaldoPendienteAttribute()
+    public function getSaldoPendienteAttribute(): float
     {
-        return max(0, $this->costo - $this->total_abonado);
+        return max(0, (float) $this->costo - $this->total_abonado);
     }
 
     // ─── Scopes ───────────────────────────────────────────────────

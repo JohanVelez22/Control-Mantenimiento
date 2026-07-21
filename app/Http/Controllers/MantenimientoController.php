@@ -261,6 +261,7 @@ class MantenimientoController extends Controller
 
     public function factura(Mantenimiento $mantenimiento)
     {
+        \Illuminate\Support\Facades\Gate::authorize('view', $mantenimiento);
         if (!$mantenimiento->fecha_salida) {
             return redirect()
                 ->route('mantenimientos.index')

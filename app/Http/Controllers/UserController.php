@@ -40,7 +40,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed'],
             'role' => 'required|in:admin,tecnico,invitado',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
         ]);
 
         $data = [
@@ -78,7 +78,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $usuario->id,
             'role' => 'required|in:admin,tecnico,invitado',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
         ]);
 
         // El administrador puede cambiar roles

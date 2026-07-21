@@ -31,7 +31,7 @@ class AnulacionService
      */
     public function adminPasswordValida(string $password): bool
     {
-        return User::where('role', 'admin')
+        return User::where('role', 'admin')->where('active', true)
             ->get(['password'])
             ->contains(fn($admin) => Hash::check($password, $admin->password));
     }
