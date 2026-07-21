@@ -50,10 +50,10 @@
  
  <!-- Indicadores -->
  <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-3 z-10 flex-wrap px-2" id="carouselIndicators">
- <button type="button" class="w-8 h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-md transition-all duration-500 backdrop-blur-sm"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
+ <button type="button" class="w-8 h-2.5 rounded-full bg-blue-900 dark:bg-blue-400 shadow-md transition-all duration-500 backdrop-blur-sm"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-blue-900/30 dark:bg-blue-400/30 transition-all duration-500 backdrop-blur-sm hover:bg-blue-900/60 dark:hover:bg-blue-400/60"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-blue-900/30 dark:bg-blue-400/30 transition-all duration-500 backdrop-blur-sm hover:bg-blue-900/60 dark:hover:bg-blue-400/60"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-blue-900/30 dark:bg-blue-400/30 transition-all duration-500 backdrop-blur-sm hover:bg-blue-900/60 dark:hover:bg-blue-400/60"></button>
  </div>
 
  <!-- Contenedor Deslizante -->
@@ -84,7 +84,7 @@
  </div>
  <div class="w-full flex-grow relative flex justify-center items-center pb-8">
  <!-- Wrapper para forzar tamaño pequeño -->
- <div style="height: 250px; width: 250px; position: relative;">
+ <div style="height: 250px; width: 100%; max-width: 400px; position: relative; margin: 0 auto;">
  <canvas id="pieChart"></canvas>
  </div>
  </div>
@@ -114,7 +114,7 @@
  <span class="text-xs font-bold px-3 py-1.5 bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 rounded-full shadow-sm">Tiempo Real</span>
  </div>
  <div class="w-full flex-grow relative flex justify-center items-center pb-8">
- <div style="height: 250px; width: 250px; position: relative;">
+ <div style="height: 250px; width: 100%; max-width: 400px; position: relative; margin: 0 auto;">
  <canvas id="elecSlideDonut"></canvas>
  </div>
  </div>
@@ -123,10 +123,10 @@
  </div>
 
 <!-- Controles: fondo muy suave para no tapar los gráficos -->
-  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-gray-300 dark:border-gray-600 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md text-gray-800 dark:text-white shadow-lg transition-all hover:bg-white dark:hover:bg-gray-700 cursor-pointer" style="top: 50%; left: 25px; transform: translateY(-50%);">
+  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-gray-300 dark:border-gray-600 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md text-gray-800 dark:text-white shadow-lg transition-all hover:bg-white dark:hover:bg-gray-700 cursor-pointer" style="top: 50%; left: 25px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
   </button>
-  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-gray-300 dark:border-gray-600 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md text-gray-800 dark:text-white shadow-lg transition-all hover:bg-white dark:hover:bg-gray-700 cursor-pointer" style="top: 50%; right: 25px; transform: translateY(-50%);">
+  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-gray-300 dark:border-gray-600 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md text-gray-800 dark:text-white shadow-lg transition-all hover:bg-white dark:hover:bg-gray-700 cursor-pointer" style="top: 50%; right: 25px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
   </button>
 </div>
@@ -387,11 +387,11 @@ function switchDashTab(tab) {
  for (let i = 0; i < totalSlides; i++) {
             const ind = indicators[i];
             if(ind) {
-                ind.classList.remove('w-8', 'w-2.5', 'h-3', 'h-2.5', 'bg-gradient-to-r', 'from-blue-500', 'to-cyan-400', 'shadow-md', 'bg-blue-600', 'dark:bg-blue-500', 'bg-gray-300', 'dark:bg-gray-600', 'bg-gray-300/60', 'dark:bg-gray-600/60');
+                ind.classList.remove('w-8', 'w-2.5', 'h-3', 'h-2.5', 'bg-gradient-to-r', 'from-blue-500', 'to-cyan-400', 'shadow-md', 'bg-blue-600', 'dark:bg-blue-500', 'bg-gray-300', 'dark:bg-gray-600', 'bg-gray-300/60', 'dark:bg-gray-600/60', 'bg-blue-900', 'dark:bg-blue-400', 'bg-blue-900/30', 'dark:bg-blue-400/30', 'hover:bg-blue-900/60', 'dark:hover:bg-blue-400/60');
                 if (i === currentSlide) {
-                    ind.classList.add('w-8', 'h-2.5', 'bg-gradient-to-r', 'from-blue-500', 'to-cyan-400', 'shadow-md');
+                    ind.classList.add('w-8', 'h-2.5', 'bg-blue-900', 'dark:bg-blue-400', 'shadow-md');
                 } else {
-                    ind.classList.add('w-2.5', 'h-2.5', 'bg-gray-300/60', 'dark:bg-gray-600/60');
+                    ind.classList.add('w-2.5', 'h-2.5', 'bg-blue-900/30', 'dark:bg-blue-400/30', 'hover:bg-blue-900/60', 'dark:hover:bg-blue-400/60');
                 }
             }
  }
