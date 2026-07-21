@@ -248,14 +248,8 @@ html.dark .hover-glow:hover {
               inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
-/* Border highlight on hover */
-.hover-glow:hover {
-  border-color: var(--glass-hover-border, rgba(37, 99, 235, 0.3));
-}
-
-html.dark .hover-glow:hover {
-  border-color: var(--glass-hover-border, rgba(96, 165, 250, 0.25));
-}
+/* Border highlight on hover removed as requested */
+/* .hover-glow:hover { ... } */
 
 /* Ensure content stays above gradient overlay */
 .hover-glow > *, .glass-card > * {
@@ -263,29 +257,29 @@ html.dark .hover-glow:hover {
   z-index: 1;
 }
 
-/* Color variants for glass-card hover - use as utility classes */
-.glass-card-blue { --glass-hover-gradient: linear-gradient(135deg, rgba(37, 99, 235, 0.18) 0%, rgba(6, 182, 212, 0.12) 100%); --glass-hover-border: rgba(37, 99, 235, 0.4); }
-.glass-card-emerald { --glass-hover-gradient: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(6, 182, 212, 0.12) 100%); --glass-hover-border: rgba(16, 185, 129, 0.4); }
-.glass-card-amber { --glass-hover-gradient: linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, rgba(249, 115, 22, 0.14) 100%); --glass-hover-border: rgba(245, 158, 11, 0.4); }
-.glass-card-purple { --glass-hover-gradient: linear-gradient(135deg, rgba(168, 85, 247, 0.18) 0%, rgba(99, 102, 241, 0.14) 100%); --glass-hover-border: rgba(168, 85, 247, 0.4); }
-.glass-card-red { --glass-hover-gradient: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(249, 115, 22, 0.14) 100%); --glass-hover-border: rgba(239, 68, 68, 0.4); }
-.glass-card-cyan { --glass-hover-gradient: linear-gradient(135deg, rgba(6, 182, 212, 0.18) 0%, rgba(37, 99, 235, 0.14) 100%); --glass-hover-border: rgba(6, 182, 212, 0.4); }
-.glass-card-indigo { --glass-hover-gradient: linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(139, 92, 246, 0.14) 100%); --glass-hover-border: rgba(99, 102, 241, 0.4); }
-.glass-card-orange { --glass-hover-gradient: linear-gradient(135deg, rgba(249, 115, 22, 0.18) 0%, rgba(239, 68, 68, 0.14) 100%); --glass-hover-border: rgba(249, 115, 22, 0.4); }
-.glass-card-teal { --glass-hover-gradient: linear-gradient(135deg, rgba(20, 184, 166, 0.18) 0%, rgba(6, 182, 212, 0.14) 100%); --glass-hover-border: rgba(20, 184, 166, 0.4); }
-.glass-card-rose { --glass-hover-gradient: linear-gradient(135deg, rgba(244, 63, 94, 0.18) 0%, rgba(236, 72, 153, 0.14) 100%); --glass-hover-border: rgba(244, 63, 94, 0.4); }
+/* Color variants for glass-card hover - Premium half-card fade from right */
+.glass-card-blue { --glass-hover-gradient: linear-gradient(225deg, rgba(37, 99, 235, 0.25) 0%, transparent 55%); }
+.glass-card-emerald { --glass-hover-gradient: linear-gradient(225deg, rgba(16, 185, 129, 0.25) 0%, transparent 55%); }
+.glass-card-amber { --glass-hover-gradient: linear-gradient(225deg, rgba(245, 158, 11, 0.25) 0%, transparent 55%); }
+.glass-card-purple { --glass-hover-gradient: linear-gradient(225deg, rgba(168, 85, 247, 0.25) 0%, transparent 55%); }
+.glass-card-red { --glass-hover-gradient: linear-gradient(225deg, rgba(239, 68, 68, 0.25) 0%, transparent 55%); }
+.glass-card-cyan { --glass-hover-gradient: linear-gradient(225deg, rgba(6, 182, 212, 0.25) 0%, transparent 55%); }
+.glass-card-indigo { --glass-hover-gradient: linear-gradient(225deg, rgba(99, 102, 241, 0.25) 0%, transparent 55%); }
+.glass-card-orange { --glass-hover-gradient: linear-gradient(225deg, rgba(249, 115, 22, 0.25) 0%, transparent 55%); }
+.glass-card-teal { --glass-hover-gradient: linear-gradient(225deg, rgba(20, 184, 166, 0.25) 0%, transparent 55%); }
+.glass-card-rose { --glass-hover-gradient: linear-gradient(225deg, rgba(244, 63, 94, 0.25) 0%, transparent 55%); }
 
-/* Dark mode variants */
-html.dark .glass-card-blue { --glass-hover-gradient: linear-gradient(135deg, rgba(59, 130, 246, 0.22) 0%, rgba(6, 182, 212, 0.16) 100%); --glass-hover-border: rgba(96, 165, 250, 0.45); }
-html.dark .glass-card-emerald { --glass-hover-gradient: linear-gradient(135deg, rgba(52, 211, 153, 0.22) 0%, rgba(6, 182, 212, 0.16) 100%); --glass-hover-border: rgba(52, 211, 153, 0.45); }
-html.dark .glass-card-amber { --glass-hover-gradient: linear-gradient(135deg, rgba(251, 191, 36, 0.22) 0%, rgba(251, 146, 60, 0.18) 100%); --glass-hover-border: rgba(251, 191, 36, 0.45); }
-html.dark .glass-card-purple { --glass-hover-gradient: linear-gradient(135deg, rgba(192, 132, 252, 0.22) 0%, rgba(167, 139, 250, 0.18) 100%); --glass-hover-border: rgba(192, 132, 252, 0.45); }
-html.dark .glass-card-red { --glass-hover-gradient: linear-gradient(135deg, rgba(248, 113, 113, 0.22) 0%, rgba(251, 146, 60, 0.18) 100%); --glass-hover-border: rgba(248, 113, 113, 0.45); }
-html.dark .glass-card-cyan { --glass-hover-gradient: linear-gradient(135deg, rgba(6, 182, 212, 0.22) 0%, rgba(59, 130, 246, 0.18) 100%); --glass-hover-border: rgba(6, 182, 212, 0.45); }
-html.dark .glass-card-indigo { --glass-hover-gradient: linear-gradient(135deg, rgba(129, 140, 248, 0.22) 0%, rgba(167, 139, 250, 0.18) 100%); --glass-hover-border: rgba(129, 140, 248, 0.45); }
-html.dark .glass-card-orange { --glass-hover-gradient: linear-gradient(135deg, rgba(251, 146, 60, 0.22) 0%, rgba(248, 113, 113, 0.18) 100%); --glass-hover-border: rgba(251, 146, 60, 0.45); }
-html.dark .glass-card-teal { --glass-hover-gradient: linear-gradient(135deg, rgba(45, 212, 191, 0.22) 0%, rgba(6, 182, 212, 0.18) 100%); --glass-hover-border: rgba(45, 212, 191, 0.45); }
-html.dark .glass-card-rose { --glass-hover-gradient: linear-gradient(135deg, rgba(251, 113, 133, 0.22) 0%, rgba(244, 114, 182, 0.18) 100%); --glass-hover-border: rgba(251, 113, 133, 0.45); }
+/* Dark mode variants - Premium half-card fade from right */
+html.dark .glass-card-blue { --glass-hover-gradient: linear-gradient(225deg, rgba(59, 130, 246, 0.35) 0%, transparent 55%); }
+html.dark .glass-card-emerald { --glass-hover-gradient: linear-gradient(225deg, rgba(52, 211, 153, 0.35) 0%, transparent 55%); }
+html.dark .glass-card-amber { --glass-hover-gradient: linear-gradient(225deg, rgba(251, 191, 36, 0.35) 0%, transparent 55%); }
+html.dark .glass-card-purple { --glass-hover-gradient: linear-gradient(225deg, rgba(192, 132, 252, 0.35) 0%, transparent 55%); }
+html.dark .glass-card-red { --glass-hover-gradient: linear-gradient(225deg, rgba(248, 113, 113, 0.35) 0%, transparent 55%); }
+html.dark .glass-card-cyan { --glass-hover-gradient: linear-gradient(225deg, rgba(6, 182, 212, 0.35) 0%, transparent 55%); }
+html.dark .glass-card-indigo { --glass-hover-gradient: linear-gradient(225deg, rgba(129, 140, 248, 0.35) 0%, transparent 55%); }
+html.dark .glass-card-orange { --glass-hover-gradient: linear-gradient(225deg, rgba(251, 146, 60, 0.35) 0%, transparent 55%); }
+html.dark .glass-card-teal { --glass-hover-gradient: linear-gradient(225deg, rgba(45, 212, 191, 0.35) 0%, transparent 55%); }
+html.dark .glass-card-rose { --glass-hover-gradient: linear-gradient(225deg, rgba(251, 113, 133, 0.35) 0%, transparent 55%); }
 
 /* --- SIDEBAR VIDRIO LIQUIDO -------------------------------------------------- */
 #ts-sidebar {
