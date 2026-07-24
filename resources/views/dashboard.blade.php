@@ -46,18 +46,11 @@
  <span class="text-xl leading-none shrink-0" aria-hidden="true">📆</span>
  Análisis Visual de Rendimiento
 </h3>
-<div class="mb-6 glass-card relative overflow-hidden group " id="statsCarouselContainer">
- 
- <!-- Indicadores -->
- <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-3 z-10 flex-wrap px-2" id="carouselIndicators">
- <button type="button" class="w-8 h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-md transition-all duration-500 backdrop-blur-sm"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
- </div>
-
- <!-- Contenedor Deslizante -->
- <div class="flex" id="carouselTrack" style="width: 400%; transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1) !important;">
+<div class="mb-6 relative" id="carouselWrapper">
+  <div class="mb-6 glass-card relative overflow-hidden group" id="statsCarouselContainer">
+  
+  <!-- Contenedor Deslizante -->
+  <div class="flex" id="carouselTrack" style="width: 400%; transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1) !important;">
  
  <!-- Slide 1: Gráfico de Barras (Tendencia 7 Días) -->
  <div class="w-1/4 p-6 flex flex-col bg-transparent" style="height: 420px;">
@@ -122,13 +115,22 @@
 
  </div>
 
-<!-- Controles: fondo muy suave para no tapar los gráficos -->
-  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/40 dark:border-white/10 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl text-slate-800 dark:text-white shadow-[0_8px_32px_rgba(0,0,0,0.15)] transition-all hover:bg-white/60 dark:hover:bg-slate-700/60 cursor-pointer" style="top: 50%; left: 8px; transform: translateY(-50%); position: absolute;">
+<!-- Controles: fondo acrílico traslúcido -->
+  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/20 dark:border-white/10 bg-white/10 dark:bg-slate-800/30 backdrop-blur-md text-slate-800 dark:text-white shadow-lg transition-all hover:bg-white/30 dark:hover:bg-slate-700/50 cursor-pointer" style="top: 50%; left: 15px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
   </button>
-  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/40 dark:border-white/10 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl text-slate-800 dark:text-white shadow-[0_8px_32px_rgba(0,0,0,0.15)] transition-all hover:bg-white/60 dark:hover:bg-slate-700/60 cursor-pointer" style="top: 50%; right: 8px; transform: translateY(-50%); position: absolute;">
+  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/20 dark:border-white/10 bg-white/10 dark:bg-slate-800/30 backdrop-blur-md text-slate-800 dark:text-white shadow-lg transition-all hover:bg-white/30 dark:hover:bg-slate-700/50 cursor-pointer" style="top: 50%; right: 15px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-  </button>
+   </button>
+ </div>
+
+ <!-- Indicadores (fuera del glass-card para evitar overflow hidden) -->
+ <div class="absolute bottom-6 left-0 right-0 flex justify-center gap-3 z-10 flex-wrap px-2" id="carouselIndicators">
+ <button type="button" class="w-8 h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-md transition-all duration-500 backdrop-blur-sm"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
+ </div>
 </div>
 
 <!-- Tarjetas de ingresos (resumen rápido bajo el carrusel) -->
@@ -435,6 +437,7 @@ function switchDashTab(tab) {
  Chart.defaults.color = '#6B7280'; // gray-500
 
     Chart.Tooltip.positioners.cursorCustom = function(elements, eventPosition) {
+        if (!eventPosition) return false;
         return {
             x: eventPosition.x,
             y: eventPosition.y
@@ -442,25 +445,30 @@ function switchDashTab(tab) {
     };
 
     Chart.Tooltip.positioners.outwardCursor = function(elements, eventPosition) {
-        if (!elements.length || !this.chart.chartArea) {
-            return { x: eventPosition.x, y: eventPosition.y };
+        if (!eventPosition || !elements.length || !this.chart.chartArea) {
+            return eventPosition ? { x: eventPosition.x, y: eventPosition.y } : false;
         }
-        const chartArea = this.chart.chartArea;
-        const centerX = (chartArea.left + chartArea.right) / 2;
-        const centerY = (chartArea.top + chartArea.bottom) / 2;
         
-        const dx = eventPosition.x - centerX;
-        const dy = eventPosition.y - centerY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        const element = elements[0].element;
+        // Si es un gráfico circular (dona), apuntamos al borde exterior
+        if (element.outerRadius !== undefined) {
+            const chartArea = this.chart.chartArea;
+            const centerX = (chartArea.left + chartArea.right) / 2;
+            const centerY = (chartArea.top + chartArea.bottom) / 2;
+            
+            const dx = eventPosition.x - centerX;
+            const dy = eventPosition.y - centerY;
+            const angle = Math.atan2(dy, dx);
+            
+            const radius = element.outerRadius;
+            
+            return {
+                x: centerX + Math.cos(angle) * radius,
+                y: centerY + Math.sin(angle) * radius
+            };
+        }
         
-        if (distance === 0) return { x: eventPosition.x, y: eventPosition.y };
-        
-        // Empuja el tooltip 50px hacia afuera desde la posición del cursor
-        const offset = 50; 
-        return {
-            x: eventPosition.x + (dx / distance) * offset,
-            y: eventPosition.y + (dy / distance) * offset
-        };
+        return { x: eventPosition.x, y: eventPosition.y };
     };
  
  const chartData = @json($chartData);
@@ -573,12 +581,12 @@ function switchDashTab(tab) {
         // Label arriba
         ctx.font = '600 0.9em sans-serif';
         ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
-        ctx.fillText('Total Órdenes', centerX, centerY - 14);
+        ctx.fillText('Total Órdenes', centerX, centerY - 22);
         
         // Número grande centrado
         ctx.font = 'bold 3em sans-serif';
         ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
-        ctx.fillText(total, centerX, centerY + 12);
+        ctx.fillText(total, centerX, centerY + 18);
 
         ctx.restore();
  }
@@ -630,10 +638,15 @@ function switchDashTab(tab) {
                     cornerRadius: 8,
                     usePointStyle: true,
                     position: 'outwardCursor',
+                    yAlign: function(ctx) {
+                        if (!ctx.chart.chartArea) return 'bottom';
+                        const centerY = (ctx.chart.chartArea.top + ctx.chart.chartArea.bottom) / 2;
+                        return ctx.tooltip.caretY < centerY ? 'bottom' : 'top';
+                    },
                     callbacks: {
                         label: function(context) {
                             let label = context.label || '';
-                            if (label) { label += ': '; }
+                            if (label) { label += ':      '; }
                             if (context.parsed !== null) { label += context.parsed + ' órdenes'; }
                             return label;
                         }
@@ -761,11 +774,11 @@ function switchDashTab(tab) {
  // Label arriba
  ctx.font = '600 0.9em sans-serif';
  ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
- ctx.fillText('Total Órdenes', centerX, centerY - 14);
+ ctx.fillText('Total Órdenes', centerX, centerY - 22);
  // Número grande centrado
  ctx.font = 'bold 3em sans-serif';
  ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
- ctx.fillText(total, centerX, centerY + 12);
+ ctx.fillText(total, centerX, centerY + 18);
  ctx.restore();
  }
  };
@@ -797,7 +810,12 @@ function switchDashTab(tab) {
                     bodyFont: { size: 13, weight: 'bold' },
                     padding: 10, cornerRadius: 8, usePointStyle: true,
                     position: 'outwardCursor',
-                    callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + ' órdenes' }
+                    yAlign: function(ctx) {
+                        if (!ctx.chart.chartArea) return 'bottom';
+                        const centerY = (ctx.chart.chartArea.top + ctx.chart.chartArea.bottom) / 2;
+                        return ctx.tooltip.caretY < centerY ? 'bottom' : 'top';
+                    },
+                    callbacks: { label: ctx => ctx.label + ':      ' + ctx.parsed + ' órdenes' }
                 }
  },
  animation: { animateScale: true, animateRotate: true }
@@ -832,10 +850,10 @@ function switchDashTab(tab) {
  ctx.textBaseline = 'middle';
  ctx.textAlign = 'center';
  ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
- ctx.fillText(total, width / 2, height / 2 - 8);
+ ctx.fillText(total, width / 2, height / 2 - 14);
  ctx.font = '600 0.9em sans-serif';
  ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
- ctx.fillText('Total Órdenes', width / 2, height / 2 + 18);
+ ctx.fillText('Total Órdenes', width / 2, height / 2 + 22);
  ctx.restore();
  }
  };
@@ -864,7 +882,12 @@ function switchDashTab(tab) {
                             bodyFont: { size: 13, weight: 'bold' },
                             padding: 10, cornerRadius: 8, usePointStyle: true,
                             position: 'outwardCursor',
-                            callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + ' órdenes' }
+                            yAlign: function(ctx) {
+                                if (!ctx.chart.chartArea) return 'bottom';
+                                const centerY = (ctx.chart.chartArea.top + ctx.chart.chartArea.bottom) / 2;
+                                return ctx.tooltip.caretY < centerY ? 'bottom' : 'top';
+                            },
+                            callbacks: { label: ctx => ctx.label + ':      ' + ctx.parsed + ' órdenes' }
                         }
  },
  animation: { animateScale: true, animateRotate: true }
