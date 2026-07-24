@@ -440,6 +440,28 @@ function switchDashTab(tab) {
             y: eventPosition.y
         };
     };
+
+    Chart.Tooltip.positioners.outwardCursor = function(elements, eventPosition) {
+        if (!elements.length || !this.chart.chartArea) {
+            return { x: eventPosition.x, y: eventPosition.y };
+        }
+        const chartArea = this.chart.chartArea;
+        const centerX = (chartArea.left + chartArea.right) / 2;
+        const centerY = (chartArea.top + chartArea.bottom) / 2;
+        
+        const dx = eventPosition.x - centerX;
+        const dy = eventPosition.y - centerY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance === 0) return { x: eventPosition.x, y: eventPosition.y };
+        
+        // Empuja el tooltip 50px hacia afuera desde la posición del cursor
+        const offset = 50; 
+        return {
+            x: eventPosition.x + (dx / distance) * offset,
+            y: eventPosition.y + (dy / distance) * offset
+        };
+    };
  
  const chartData = @json($chartData);
  const stats = @json($stats);
@@ -607,7 +629,7 @@ function switchDashTab(tab) {
                     padding: 12,
                     cornerRadius: 8,
                     usePointStyle: true,
-                    position: 'cursorCustom',
+                    position: 'outwardCursor',
                     callbacks: {
                         label: function(context) {
                             let label = context.label || '';
@@ -774,7 +796,7 @@ function switchDashTab(tab) {
                     backgroundColor: 'rgba(17,24,39,0.9)',
                     bodyFont: { size: 13, weight: 'bold' },
                     padding: 10, cornerRadius: 8, usePointStyle: true,
-                    position: 'cursorCustom',
+                    position: 'outwardCursor',
                     callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + ' órdenes' }
                 }
  },
@@ -841,7 +863,7 @@ function switchDashTab(tab) {
                             backgroundColor: 'rgba(17,24,39,0.9)',
                             bodyFont: { size: 13, weight: 'bold' },
                             padding: 10, cornerRadius: 8, usePointStyle: true,
-                            position: 'cursorCustom',
+                            position: 'outwardCursor',
                             callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + ' órdenes' }
                         }
  },
