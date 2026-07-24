@@ -116,10 +116,10 @@
  </div>
 
 <!-- Controles: fondo acrílico traslúcido -->
-  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/20 dark:border-white/10 bg-white/10 dark:bg-slate-800/30 backdrop-blur-md text-slate-800 dark:text-white shadow-lg transition-all hover:bg-white/30 dark:hover:bg-slate-700/50 cursor-pointer" style="top: 50%; left: 15px; transform: translateY(-50%); position: absolute;">
+  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/20 dark:border-white/10 bg-white/10 dark:bg-transparent backdrop-blur-xl text-slate-800 dark:text-white shadow-lg transition-all hover:bg-white/30 dark:hover:bg-white/10 cursor-pointer" style="top: 50%; left: 15px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
   </button>
-  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/20 dark:border-white/10 bg-white/10 dark:bg-slate-800/30 backdrop-blur-md text-slate-800 dark:text-white shadow-lg transition-all hover:bg-white/30 dark:hover:bg-slate-700/50 cursor-pointer" style="top: 50%; right: 15px; transform: translateY(-50%); position: absolute;">
+  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/20 dark:border-white/10 bg-white/10 dark:bg-transparent backdrop-blur-xl text-slate-800 dark:text-white shadow-lg transition-all hover:bg-white/30 dark:hover:bg-white/10 cursor-pointer" style="top: 50%; right: 15px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
    </button>
  </div>
@@ -249,7 +249,7 @@
  </tbody>
  </table>
  </div>
-    <div class="mt-4 md:mt-5 text-right">
+    <div class="mt-4 md:mt-8 text-right">
         <a href="{{ route('mantenimientos.reportes') }}" class="btn-primary">
             📈 Ver reporte detallado →
         </a>
@@ -338,7 +338,7 @@
  </tbody>
  </table>
  </div>
-    <div class="mt-4 md:mt-5 text-right">
+    <div class="mt-4 md:mt-8 text-right">
         <a href="{{ route('electronicas.reportes') }}" class="btn-purple">
  📈 Ver reporte detallado →
  </a>
@@ -460,7 +460,7 @@ function switchDashTab(tab) {
             const dy = eventPosition.y - centerY;
             const angle = Math.atan2(dy, dx);
             
-            const radius = element.outerRadius;
+            const radius = element.outerRadius + 60;
             
             return {
                 x: centerX + Math.cos(angle) * radius,
@@ -597,14 +597,14 @@ function switchDashTab(tab) {
  if (canvasPie) {
  const ctxPie = canvasPie.getContext('2d');
  
- // Gradientes para la dona translucidos
- const gradTerminado = ctxPie.createLinearGradient(0, 0, 0, 400);
- gradTerminado.addColorStop(0, 'rgba(16, 185, 129, 0.7)');
- gradTerminado.addColorStop(1, 'rgba(16, 185, 129, 0.1)');
- 
- const gradPendiente = ctxPie.createLinearGradient(0, 0, 0, 400);
- gradPendiente.addColorStop(0, 'rgba(245, 158, 11, 0.7)');
- gradPendiente.addColorStop(1, 'rgba(245, 158, 11, 0.1)');
+  // Gradientes para la dona tipo fantasma
+  const gradTerminado = ctxPie.createLinearGradient(0, 0, 0, 400);
+  gradTerminado.addColorStop(0, 'rgba(16, 185, 129, 0.18)');
+  gradTerminado.addColorStop(1, 'rgba(16, 185, 129, 0.05)');
+  
+  const gradPendiente = ctxPie.createLinearGradient(0, 0, 0, 400);
+  gradPendiente.addColorStop(0, 'rgba(245, 158, 11, 0.18)');
+  gradPendiente.addColorStop(1, 'rgba(245, 158, 11, 0.05)');
 
  const pieChart = new Chart(ctxPie, {
  type: 'doughnut',
@@ -632,17 +632,12 @@ function switchDashTab(tab) {
  labels: { usePointStyle: true, padding: 15, font: { weight: 'bold', size: 12 } }
  },
                 tooltip: {
-                    backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
                     bodyFont: { size: 14, weight: 'bold' },
-                    padding: 12,
-                    cornerRadius: 8,
+                    padding: 14,
+                    cornerRadius: 10,
                     usePointStyle: true,
-                    position: 'outwardCursor',
-                    yAlign: function(ctx) {
-                        if (!ctx.chart.chartArea) return 'bottom';
-                        const centerY = (ctx.chart.chartArea.top + ctx.chart.chartArea.bottom) / 2;
-                        return ctx.tooltip.caretY < centerY ? 'bottom' : 'top';
-                    },
+                    yAlign: 'bottom',
                     callbacks: {
                         label: function(context) {
                             let label = context.label || '';
