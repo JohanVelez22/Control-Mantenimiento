@@ -126,7 +126,7 @@
  const lblCorr = document.getElementById('lbl_corr_elec');
  const lblPrev = document.getElementById('lbl_prev_elec');
  
- // Reset styles
+  // Resetear estilos
  [lblCorr, lblPrev].forEach(lbl => {
  lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md';
  lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';

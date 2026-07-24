@@ -152,8 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
  var isMatchValid = val === confirmInput.value;
 
  if (!isLengthValid || !isCaseValid || !isNumberValid || !isMatchValid) {
- e.preventDefault(); // Stop submission
- requirementsList.classList.remove('hidden'); // Ensure requirements are visible
+  e.preventDefault(); // Detener envío del formulario
+  requirementsList.classList.remove('hidden'); // Asegurar que los requisitos estén visibles
  if (typeof showToast === 'function') {
  showToast('Por favor, asegúrate de cumplir con todos los requisitos antes de guardar.', 'error');
  } else {

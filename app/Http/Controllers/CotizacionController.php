@@ -42,7 +42,7 @@ class CotizacionController extends Controller
                 $total += $item['cantidad'] * $item['precio_unitario'];
             }
 
-            // Generate next code atomically using OrdenService (prevents race conditions)
+            // Generar siguiente código atómicamente usando OrdenService (previene condiciones de carrera)
             $codigo = app(\App\Services\OrdenService::class)->siguiente('COT-', \App\Models\Cotizacion::class, 'codigo');
 
             $cotizacion = \App\Models\Cotizacion::create([

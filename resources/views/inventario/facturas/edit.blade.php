@@ -205,7 +205,7 @@ function recalcularTotalesEdicion() {
     
     document.getElementById('total_documento_display').textContent = '$' + window.formatNumber(totalDoc);
     
-    // Update the help text of total pagado
+    // Actualizar el texto de ayuda del total pagado
     const helpText = document.getElementById('total_pagado_help');
     if (helpText) {
         helpText.textContent = `El monto total del documento es $${window.formatNumber(totalDoc)}. Modificar el pago ajustará el saldo y el estado automáticamente.`;

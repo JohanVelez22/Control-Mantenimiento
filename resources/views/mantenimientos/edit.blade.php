@@ -141,14 +141,14 @@
  const lblPrev = document.getElementById('lbl_prev');
  const lblCorr = document.getElementById('lbl_corr');
  
- // Reset styles
- [lblPrev, lblCorr].forEach(lbl => {
- lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md';
- lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';
- });
- 
- // Apply active styles
- if (this.value === 'preventivo') {
+  // Resetear estilos
+  [lblPrev, lblCorr].forEach(lbl => {
+  lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md';
+  lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';
+  });
+  
+  // Aplicar estilos activos
+  if (this.value === 'preventivo') {
  lblPrev.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20';
  lblPrev.querySelector('span').className = 'font-bold text-emerald-700 dark:text-emerald-400';
  } else {
@@ -164,14 +164,14 @@
  const lblSoft = document.getElementById('lbl_soft');
  const lblHard = document.getElementById('lbl_hard');
  
- // Reset styles
- [lblSoft, lblHard].forEach(lbl => {
- lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md';
- lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';
- });
- 
- // Apply active styles
- if (this.value === 'software') {
+  // Resetear estilos
+  [lblSoft, lblHard].forEach(lbl => {
+  lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md';
+  lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';
+  });
+  
+  // Aplicar estilos activos
+  if (this.value === 'software') {
  lblSoft.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20';
  lblSoft.querySelector('span').className = 'font-bold text-indigo-700 dark:text-indigo-400';
  } else {

@@ -128,7 +128,7 @@
  if (this.value === '__nuevo__') {
  box.classList.remove('hidden');
  document.getElementById('nuevo_concepto_input').focus();
- this.value = ''; // Reset select so it doesn't send "__nuevo__"
+  this.value = ''; // Resetear select para que no envíe "__nuevo__"
  }
  });
 
