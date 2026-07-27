@@ -29,6 +29,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Carbon\Carbon::setLocale('es');
+        setlocale(LC_TIME, 'es_ES.utf8', 'es_ES', 'spanish', 'es');
+
         if (request()->isSecure() || request()->header('X-Forwarded-Proto') === 'https') {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }

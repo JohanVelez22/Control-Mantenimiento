@@ -41,7 +41,7 @@
   {{ $factura->tipo_movimiento === 'compra' ? '📦 COMPRA' : '🛒 VENTA' }}
   </span>
   </h2>
-  <p class="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{{ $factura->fecha->format('d \d\e F \d\e Y') }}</p>
+  <p class="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{{ \Carbon\Carbon::parse($factura->fecha)->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</p>
   </div>
   </div>
  

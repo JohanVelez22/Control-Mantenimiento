@@ -57,7 +57,7 @@
 
         {{-- Proveedor y Cantidad --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="p-5 rounded-2xl bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 backdrop-blur-sm flex items-center gap-4">
+            <div class="glass-card hover-glow glass-card-indigo p-5 flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center text-white text-xl shadow-lg shrink-0">
                     🏭
                 </div>
@@ -70,7 +70,7 @@
                 </div>
             </div>
             
-            <div class="p-5 rounded-2xl bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 backdrop-blur-sm flex items-center justify-between">
+            <div class="glass-card hover-glow glass-card-blue p-5 flex items-center justify-between">
                 <div>
                     <p class="text-[10px] font-black text-blue-500 tracking-widest uppercase mb-1">Existencia Actual</p>
                     <p class="font-black text-4xl text-slate-800 dark:text-white leading-tight">
@@ -84,15 +84,15 @@
         {{-- Estructura de Precios --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Estructura de Precios</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="glass-card p-4 text-center">
-                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Costo de Compra</p>
-                <p class="text-xl font-black text-slate-800 dark:text-white">${{ number_format($stock->precio_compra, 0, ',', '.') }}</p>
+            <div class="glass-card hover-glow glass-card-orange p-4 text-center">
+                <p class="text-[10px] font-bold text-orange-500 dark:text-orange-400 uppercase tracking-widest mb-1">Costo de Compra</p>
+                <p class="text-xl font-black text-orange-600 dark:text-orange-400">${{ number_format($stock->precio_compra, 0, ',', '.') }}</p>
             </div>
-            <div class="glass-card p-4 text-center">
+            <div class="glass-card hover-glow glass-card-purple p-4 text-center">
                 <p class="text-[10px] font-bold text-purple-500 uppercase tracking-widest mb-1">Precio a Técnico</p>
                 <p class="text-xl font-black text-purple-600 dark:text-purple-400">${{ number_format($stock->precio_tecnico, 0, ',', '.') }}</p>
             </div>
-            <div class="glass-card p-4 text-center">
+            <div class="glass-card hover-glow glass-card-emerald p-4 text-center">
                 <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Precio Público Venta</p>
                 <p class="text-xl font-black text-emerald-600 dark:text-emerald-400">${{ number_format($stock->precio_venta, 0, ',', '.') }}</p>
                 @php
