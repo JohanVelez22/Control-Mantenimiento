@@ -128,18 +128,7 @@
             font-size: 7.5pt;
             color: #555;
         }
-        
-        .dompdf-footer {
-            position: fixed;
-            bottom: 0px;
-            right: 15px;
-            font-size: 8pt;
-            color: #333;
-        }
-        .page-number:before {
-            content: "Página " counter(page) " de " counter(pages);
-        }
-        
+
         .watermark-container { position: relative; height: 100%; }
         .watermark-container.anulado::after {
             content: "ANULADA";
@@ -226,11 +215,6 @@
         <div class="footer">
             <p>{{ $empresa->pie_pagina_factura ?? 'Gracias por preferirnos.' }}</p>
             <p style="font-size: 7pt; color: #777; margin-top: 5px;">Este documento es un soporte válido bajo los términos y condiciones de la empresa. Su alteración o falsificación está penada por la ley.</p>
-        </div>
-        
-        <!-- Paginación compatible con DomPDF y Navegadores -->
-        <div class="dompdf-footer">
-            <span class="page-number"></span>
         </div>
         </div>
     </div>

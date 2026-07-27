@@ -193,8 +193,6 @@
         }
         .footer-left  { display: table-cell; font-size: 7px; color: #000000; font-style: italic; }
         .footer-right { display: table-cell; text-align: right; font-size: 7px; color: #000000; }
-
-        .page-number:before { content: "Página " counter(page) " de " counter(pages); }
     </style>
 </head>
 <body>
