@@ -159,6 +159,10 @@
  class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] border-transparent text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10">
  ⚡ Electrónica
  </button>
+ <button type="button" onclick="switchDashTab('cot')" id="tabBtnCot"
+ class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] border-transparent text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-indigo-50/40 dark:hover:bg-indigo-900/10">
+ 📝 Cotizaciones
+ </button>
  </div>
 
  {{-- ═══════════════ TAB: Mantenimientos ═══════════════ --}}
@@ -345,6 +349,71 @@
  </div>
  </div>
 
+ {{-- ═══════════════ TAB: Cotizaciones ═══════════════ --}}
+ <div id="tabPanelCot" class="hidden">
+ <div class="overflow-x-auto pb-2">
+ <table class="ts-table responsive-table">
+ <thead>
+ <tr>
+ <th class="text-center">Código</th>
+ <th class="text-center">Cliente</th>
+ <th class="text-center">Total</th>
+ <th class="text-center">Fecha</th>
+ <th class="text-center">Validez</th>
+ <th class="text-center">Estado</th>
+ </tr>
+ </thead>
+ <tbody class="text-sm">
+ @forelse($recentCot ?? [] as $c)
+ @php
+ $dim = $c->anulado ? 'opacity-60 grayscale' : '';
+ @endphp
+ <tr>
+ <td class="text-center font-bold whitespace-nowrap {{ $dim }}">
+ <a href="{{ route('cotizaciones.show', $c->id) }}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline no-print-link">
+ {{ $c->codigo }}
+ </a>
+ </td>
+
+ <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">
+ {{ $c->cliente->nombre ?? 'N/A' }}
+ </td>
+
+ <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">
+ ${{ number_format($c->total, 0, ',', '.') }}
+ </td>
+
+ <td class="text-center whitespace-nowrap text-gray-600 dark:text-gray-300 {{ $dim }}">
+ {{ \Carbon\Carbon::parse($c->fecha)->format('d/m/Y') }}
+ </td>
+
+ <td class="text-center whitespace-nowrap text-gray-600 dark:text-gray-300 {{ $dim }}">
+ {{ $c->validez_dias }} días
+ </td>
+
+ <td class="text-center">
+ <span class="pill {{ $c->anulado ? 'pill-anulado' : ($c->estado === 'aprobada' ? 'pill-done' : ($c->estado === 'rechazada' ? 'pill-egreso' : 'pill-pending')) }}">
+ @if($c->anulado) Anulada @elseif($c->estado === 'rechazada') Rechazada @else {{ ucfirst($c->estado) }} @endif
+ </span>
+ </td>
+ </tr>
+ @empty
+ <tr>
+ <td colspan="6" class="p-8 text-center text-gray-500 dark:text-gray-400">
+ No hay cotizaciones registradas recientemente.
+ </td>
+ </tr>
+ @endforelse
+ </tbody>
+ </table>
+ </div>
+    <div class="mt-4 md:mt-8 text-right">
+        <a href="{{ route('cotizaciones.index') }}" class="btn-primary" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border: none;">
+ 📝 Ver todas las cotizaciones →
+ </a>
+ </div>
+ </div>
+
 </div>
 
 {{-- Script para cambio de tabs --}}
@@ -353,20 +422,20 @@ function switchDashTab(tab) {
  // Paneles
  document.getElementById('tabPanelMant').classList.toggle('hidden', tab !== 'mant');
  document.getElementById('tabPanelElec').classList.toggle('hidden', tab !== 'elec');
+ document.getElementById('tabPanelCot').classList.toggle('hidden', tab !== 'cot');
  // Botones
  const btnMant = document.getElementById('tabBtnMant');
  const btnElec = document.getElementById('tabBtnElec');
- const activeClasses = 'border-b-[3px] text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 border-blue-600';
- const activeClassesPurple = 'border-b-[3px] text-purple-700 dark:text-purple-300 bg-purple-50/60 dark:bg-purple-900/20 border-purple-600';
- const inactiveClasses = 'border-b-[3px] border-transparent text-gray-500 dark:text-gray-400';
+ const btnCot  = document.getElementById('tabBtnCot');
+ 
+ const activeBlue   = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 border-blue-600';
+ const activePurple = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] text-purple-700 dark:text-purple-300 bg-purple-50/60 dark:bg-purple-900/20 border-purple-600';
+ const activeIndigo = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] text-indigo-700 dark:text-indigo-300 bg-indigo-50/60 dark:bg-indigo-900/20 border-indigo-600';
+ const inactive     = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] border-transparent text-gray-500 dark:text-gray-400';
 
- if (tab === 'mant') {
- btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + activeClasses;
- btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + inactiveClasses + ' hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10';
- } else {
- btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + activeClassesPurple;
- btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + inactiveClasses + ' hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50/40 dark:hover:bg-blue-900/10';
- }
+ btnMant.className = (tab === 'mant') ? activeBlue   : (inactive + ' hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50/40 dark:hover:bg-blue-900/10');
+ btnElec.className = (tab === 'elec') ? activePurple : (inactive + ' hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10');
+ btnCot.className  = (tab === 'cot')  ? activeIndigo : (inactive + ' hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-indigo-50/40 dark:hover:bg-indigo-900/10');
 }
 </script>
 

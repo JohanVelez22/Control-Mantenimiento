@@ -139,6 +139,12 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // 5 cotizaciones más recientes para el dashboard
+        $recentCot = \App\Models\Cotizacion::with(['cliente', 'items'])
+            ->orderBy('id', 'desc')
+            ->take(5)
+            ->get();
+
         $chartData = [
             'labels'                  => $labels,
             'equipos'                 => $dataEquipos,
@@ -164,6 +170,7 @@ class DashboardController extends Controller
             'totalMantenimientos',
             'recentMant',
             'recentElec',
+            'recentCot',
             'stats',
             'chartData',
             'clientes',

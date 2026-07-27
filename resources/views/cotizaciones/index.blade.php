@@ -73,27 +73,33 @@
                             @endif
                         </span>
                     </td>
-<td data-label="Acciones" class="text-center w-28">
+                    <td data-label="Acciones" class="text-center w-28">
                         <div class="actions-grid">
                             <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver detalle">👁️</a>
                             
                             @if($cot->estado === 'aprobada')
                                 <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-green-600" title="Imprimir PDF">🖨️</a>
+                            @else
+                                <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-40 cursor-not-allowed" title="Requiere estar aprobada para imprimir PDF">🖨️</span>
                             @endif
 
-@if($cot->estado === 'pendiente' && !$cot->anulado && (!auth()->user() || auth()->user()->role !== 'invitado'))
-    <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
-@endif
+                            @if($cot->estado === 'pendiente' && !$cot->anulado && (!auth()->user() || auth()->user()->role !== 'invitado'))
+                                <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
+                            @else
+                                <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-40 cursor-not-allowed" title="Solo se pueden editar cotizaciones pendientes">✏️</span>
+                            @endif
 
-@if(!$cot->anulado)
-    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', false)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-orange-600" title="Anular cotización">
-        🚫
-    </button>
-@else
-    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', true)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600" title="Reactivar cotización">
-        ✅
-    </button>
-@endif
+                            @if(!auth()->user() || auth()->user()->role !== 'invitado')
+                                @if(!$cot->anulado)
+                                    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', false)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-red-600 border-red-500/20 hover:bg-red-500/10" title="Anular cotización">
+                                        🚫
+                                    </button>
+                                @else
+                                    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', true)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10" title="Reactivar cotización">
+                                        ✅
+                                    </button>
+                                @endif
+                            @endif
                         </div>
                     </td>
                 </tr>

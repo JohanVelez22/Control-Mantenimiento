@@ -118,6 +118,7 @@
     })->toArray();
 @endphp
 
+<script>
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializar select de cliente principal
     const clienteSelect = document.querySelector('select[name="cliente_id"]');
