@@ -54,14 +54,14 @@
  
  <!-- Slide 1: Gráfico de Barras (Tendencia 7 Días) -->
  <div class="w-1/4 p-6 flex flex-col bg-transparent" style="height: 420px;">
- <div class="flex justify-between items-center mb-6 px-4">
- <div>
- <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Crecimiento Semanal</h4>
- <p class="text-sm text-gray-500 dark:text-gray-400">Comparativa de ingresos de equipos vs órdenes creadas</p>
- </div>
- <span class="text-xs font-bold px-3 py-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 rounded-full shadow-sm">Últimos 7 Días</span>
- </div>
- <div class="w-full flex-grow relative pl-8 pr-14 pb-6">
+ <div class="flex justify-between items-center mb-10 px-4">
+  <div>
+  <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Crecimiento Semanal</h4>
+  <p class="text-sm text-gray-500 dark:text-gray-400">Comparativa de ingresos de equipos vs órdenes creadas</p>
+  </div>
+  <span class="text-xs font-bold px-3 py-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 rounded-full shadow-sm">Últimos 7 Días</span>
+  </div>
+  <div class="w-full flex-grow relative pl-8 pr-14 pb-8 pt-8">
  <canvas id="barChart"></canvas>
  </div>
  </div>
@@ -85,14 +85,14 @@
 
  <!-- Slide 3: Ingresos por día (últimos 7) -->
  <div class="w-1/4 p-6 flex flex-col bg-transparent" style="height: 420px;">
- <div class="flex justify-between items-center mb-6 px-4">
- <div>
- <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Ingresos por día</h4>
- <p class="text-sm text-gray-500 dark:text-gray-400">Órdenes terminadas: suma de costo por fecha de salida</p>
- </div>
- <span class="text-xs font-bold px-3 py-1.5 bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200 rounded-full shadow-sm">Últimos 7 días</span>
- </div>
- <div class="w-full flex-grow relative pl-8 pr-14 pb-8">
+ <div class="flex justify-between items-center mb-10 px-4">
+  <div>
+  <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Ingresos por día</h4>
+  <p class="text-sm text-gray-500 dark:text-gray-400">Órdenes terminadas: suma de costo por fecha de salida</p>
+  </div>
+  <span class="text-xs font-bold px-3 py-1.5 bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200 rounded-full shadow-sm">Últimos 7 días</span>
+  </div>
+  <div class="w-full flex-grow relative pl-8 pr-14 pb-8 pt-8">
  <canvas id="ingresosChart"></canvas>
  </div>
  </div>
@@ -436,6 +436,19 @@ function switchDashTab(tab) {
  Chart.defaults.font.family = "'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
  Chart.defaults.color = '#6B7280'; // gray-500
 
+    const legendMarginPlugin = {
+        id: 'legendMargin',
+        beforeInit(chart) {
+            if (chart.config.type !== 'bar') return;
+            const originalFit = chart.legend.fit;
+            chart.legend.fit = function fit() {
+                originalFit.bind(chart.legend)();
+                this.height += 12; // Espacio vertical profesional (12px) entre leyendas superiores y las barras
+            };
+        }
+    };
+    Chart.register(legendMarginPlugin);
+
     Chart.Tooltip.positioners.cursorCustom = function(elements, eventPosition) {
         if (!eventPosition) return false;
         return {
@@ -449,26 +462,26 @@ function switchDashTab(tab) {
             return eventPosition ? { x: eventPosition.x, y: eventPosition.y } : false;
         }
         
+        const chartArea = this.chart.chartArea;
+        const centerX = (chartArea.left + chartArea.right) / 2;
+        const centerY = (chartArea.top + chartArea.bottom) / 2;
+        
+        const dx = eventPosition.x - centerX;
+        const dy = eventPosition.y - centerY;
+        const angle = Math.atan2(dy, dx);
+        
+        // Calculamos el radio exterior. Si la propiedad no existe, calculamos el radio usando el área del gráfico.
         const element = elements[0].element;
-        // Si es un gráfico circular (dona), apuntamos al borde exterior
-        if (element.outerRadius !== undefined) {
-            const chartArea = this.chart.chartArea;
-            const centerX = (chartArea.left + chartArea.right) / 2;
-            const centerY = (chartArea.top + chartArea.bottom) / 2;
-            
-            const dx = eventPosition.x - centerX;
-            const dy = eventPosition.y - centerY;
-            const angle = Math.atan2(dy, dx);
-            
-            const radius = element.outerRadius + 60;
-            
-            return {
-                x: centerX + Math.cos(angle) * radius,
-                y: centerY + Math.sin(angle) * radius
-            };
+        let radius = element.outerRadius;
+        if (radius === undefined) {
+            radius = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top) / 2;
         }
         
-        return { x: eventPosition.x, y: eventPosition.y };
+        // Apuntamos justo al borde del círculo (añadimos 5px para que no muerda el gráfico)
+        return {
+            x: centerX + Math.cos(angle) * (radius + 5),
+            y: centerY + Math.sin(angle) * (radius + 5)
+        };
     };
  
  const chartData = @json($chartData);
@@ -597,14 +610,14 @@ function switchDashTab(tab) {
  if (canvasPie) {
  const ctxPie = canvasPie.getContext('2d');
  
-  // Gradientes para la dona tipo fantasma
-  const gradTerminado = ctxPie.createLinearGradient(0, 0, 0, 400);
-  gradTerminado.addColorStop(0, 'rgba(16, 185, 129, 0.18)');
-  gradTerminado.addColorStop(1, 'rgba(16, 185, 129, 0.05)');
+ // Colores degradados para la dona (estilo anterior)
+ const gradTerminado = ctxPie.createLinearGradient(0, 0, 0, 400);
+ gradTerminado.addColorStop(0, 'rgba(16, 185, 129, 0.9)');
+ gradTerminado.addColorStop(1, 'rgba(16, 185, 129, 0.1)');
   
-  const gradPendiente = ctxPie.createLinearGradient(0, 0, 0, 400);
-  gradPendiente.addColorStop(0, 'rgba(245, 158, 11, 0.18)');
-  gradPendiente.addColorStop(1, 'rgba(245, 158, 11, 0.05)');
+ const gradPendiente = ctxPie.createLinearGradient(0, 0, 0, 400);
+ gradPendiente.addColorStop(0, 'rgba(245, 158, 11, 0.9)');
+ gradPendiente.addColorStop(1, 'rgba(245, 158, 11, 0.1)');
 
  const pieChart = new Chart(ctxPie, {
  type: 'doughnut',
@@ -627,22 +640,57 @@ function switchDashTab(tab) {
             cutout: '68%',
             layout: { padding: 6 },
  plugins: { 
- legend: { 
- position: 'bottom',
- labels: { usePointStyle: true, padding: 15, font: { weight: 'bold', size: 12 } }
- },
+  legend: { 
+  position: 'bottom',
+  labels: { 
+      usePointStyle: true, 
+      padding: 15, 
+      color: '#6b7280',
+      font: { weight: 'bold', size: 12 },
+      generateLabels: function(chart) {
+          const data = chart.data;
+          if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => ({
+                  text: label,
+                  fillStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
+                  strokeStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
+                  fontColor: '#6b7280',
+                  lineWidth: 0,
+                  hidden: !chart.getDataVisibility(i),
+                  index: i
+              }));
+          }
+          return [];
+      }
+  }
+  },
                 tooltip: {
                     backgroundColor: 'rgba(17, 24, 39, 0.95)',
                     bodyFont: { size: 14, weight: 'bold' },
-                    padding: 14,
-                    cornerRadius: 10,
-                    usePointStyle: true,
-                    yAlign: 'bottom',
-                    callbacks: {
+                     padding: 14,
+                     cornerRadius: 10,
+                     usePointStyle: true,
+                     position: 'cursorCustom',
+                     xAlign: function(context) {
+                         const chart = context.chart;
+                         const tooltip = context.tooltip;
+                         if (!chart || !chart.chartArea || !tooltip || tooltip.caretX === undefined) return 'center';
+                         const centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
+                         return tooltip.caretX < centerX ? 'right' : 'left';
+                     },
+                     yAlign: function(context) {
+                         const chart = context.chart;
+                         const tooltip = context.tooltip;
+                         if (!chart || !chart.chartArea || !tooltip || tooltip.caretY === undefined) return 'bottom';
+                         const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 2;
+                         return tooltip.caretY < centerY ? 'bottom' : 'top';
+                     },
+                     callbacks: {
                         label: function(context) {
                             let label = context.label || '';
                             if (label) { label += ':      '; }
-                            if (context.parsed !== null) { label += context.parsed + ' órdenes'; }
+                            const val = (context.raw !== undefined && context.raw !== null) ? context.raw : (context.parsed ?? 0);
+                            label += val + ' órdenes';
                             return label;
                         }
                     }
@@ -745,13 +793,13 @@ function switchDashTab(tab) {
  // Slide 4: Dona Electrónica (Pendientes vs Terminados)
  const canvasSlideDonut = document.getElementById('elecSlideDonut');
  if (canvasSlideDonut) {
- const ctxSD = canvasSlideDonut.getContext('2d');
- const gPendS = ctxSD.createLinearGradient(0, 0, 0, 220);
- gPendS.addColorStop(0, 'rgba(245, 158, 11, 0.9)');
- gPendS.addColorStop(1, 'rgba(245, 158, 11, 0.3)');
- const gTermS = ctxSD.createLinearGradient(0, 0, 0, 220);
- gTermS.addColorStop(0, 'rgba(16, 185, 129, 0.9)');
- gTermS.addColorStop(1, 'rgba(16, 185, 129, 0.3)');
+  const ctxSD = canvasSlideDonut.getContext('2d');
+  const gPendS = ctxSD.createLinearGradient(0, 0, 0, 220);
+  gPendS.addColorStop(0, 'rgba(245, 158, 11, 0.9)');
+  gPendS.addColorStop(1, 'rgba(245, 158, 11, 0.3)');
+  const gTermS = ctxSD.createLinearGradient(0, 0, 0, 220);
+  gTermS.addColorStop(0, 'rgba(16, 185, 129, 0.9)');
+  gTermS.addColorStop(1, 'rgba(16, 185, 129, 0.3)');
 
  const slideCenterPlugin = {
  id: 'elecSlideCenter',
@@ -796,22 +844,59 @@ function switchDashTab(tab) {
  cutout: '68%',
  layout: { padding: 6 },
  plugins: {
- legend: {
- position: 'bottom',
- labels: { usePointStyle: true, padding: 14, font: { weight: 'bold', size: 12 } }
- },
-                tooltip: {
-                    backgroundColor: 'rgba(17,24,39,0.9)',
-                    bodyFont: { size: 13, weight: 'bold' },
-                    padding: 10, cornerRadius: 8, usePointStyle: true,
-                    position: 'outwardCursor',
-                    yAlign: function(ctx) {
-                        if (!ctx.chart.chartArea) return 'bottom';
-                        const centerY = (ctx.chart.chartArea.top + ctx.chart.chartArea.bottom) / 2;
-                        return ctx.tooltip.caretY < centerY ? 'bottom' : 'top';
-                    },
-                    callbacks: { label: ctx => ctx.label + ':      ' + ctx.parsed + ' órdenes' }
-                }
+  legend: {
+  position: 'bottom',
+  labels: { 
+      usePointStyle: true, 
+      padding: 14, 
+      color: '#6b7280',
+      font: { weight: 'bold', size: 12 },
+      generateLabels: function(chart) {
+          const data = chart.data;
+          if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => ({
+                  text: label,
+                  fillStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
+                  strokeStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
+                  fontColor: '#6b7280',
+                  lineWidth: 0,
+                  hidden: !chart.getDataVisibility(i),
+                  index: i
+              }));
+          }
+          return [];
+      }
+  }
+  },
+                  tooltip: {
+                      backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                      bodyFont: { size: 13, weight: 'bold' },
+                      padding: 12, cornerRadius: 8, usePointStyle: true,
+                      position: 'cursorCustom',
+                      xAlign: function(context) {
+                          const chart = context.chart;
+                          const tooltip = context.tooltip;
+                          if (!chart || !chart.chartArea || !tooltip || tooltip.caretX === undefined) return 'center';
+                          const centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
+                          return tooltip.caretX < centerX ? 'right' : 'left';
+                      },
+                      yAlign: function(context) {
+                          const chart = context.chart;
+                          const tooltip = context.tooltip;
+                          if (!chart || !chart.chartArea || !tooltip || tooltip.caretY === undefined) return 'bottom';
+                          const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 2;
+                          return tooltip.caretY < centerY ? 'bottom' : 'top';
+                      },
+                      callbacks: {
+                          label: function(context) {
+                              let label = context.label || '';
+                              if (label) { label += ':      '; }
+                              const val = (context.raw !== undefined && context.raw !== null) ? context.raw : (context.parsed ?? 0);
+                              label += val + ' órdenes';
+                              return label;
+                          }
+                      }
+                  }
  },
  animation: { animateScale: true, animateRotate: true }
  }
@@ -825,13 +910,13 @@ function switchDashTab(tab) {
  // Tab Electrónica: Dona Pendientes vs Terminados
  const canvasTabDonut = document.getElementById('elecTabDonut');
  if (canvasTabDonut) {
- const ctxDonut = canvasTabDonut.getContext('2d');
- const gPend = ctxDonut.createLinearGradient(0, 0, 0, 170);
- gPend.addColorStop(0, 'rgba(245, 158, 11, 0.85)');
- gPend.addColorStop(1, 'rgba(245, 158, 11, 0.25)');
- const gTerm = ctxDonut.createLinearGradient(0, 0, 0, 170);
- gTerm.addColorStop(0, 'rgba(16, 185, 129, 0.85)');
- gTerm.addColorStop(1, 'rgba(16, 185, 129, 0.25)');
+  const ctxDonut = canvasTabDonut.getContext('2d');
+  const gPend = ctxDonut.createLinearGradient(0, 0, 0, 170);
+  gPend.addColorStop(0, 'rgba(245, 158, 11, 0.85)');
+  gPend.addColorStop(1, 'rgba(245, 158, 11, 0.25)');
+  const gTerm = ctxDonut.createLinearGradient(0, 0, 0, 170);
+  gTerm.addColorStop(0, 'rgba(16, 185, 129, 0.85)');
+  gTerm.addColorStop(1, 'rgba(16, 185, 129, 0.25)');
 
  const centerPlugin = {
  id: 'elecTabCenter',
@@ -871,19 +956,59 @@ function switchDashTab(tab) {
  cutout: '68%',
  layout: { padding: 4 },
  plugins: {
- legend: { position: 'bottom', labels: { usePointStyle: true, padding: 8, font: { weight: 'bold', size: 11 } } },
- tooltip: {
-                            backgroundColor: 'rgba(17,24,39,0.9)',
-                            bodyFont: { size: 13, weight: 'bold' },
-                            padding: 10, cornerRadius: 8, usePointStyle: true,
-                            position: 'outwardCursor',
-                            yAlign: function(ctx) {
-                                if (!ctx.chart.chartArea) return 'bottom';
-                                const centerY = (ctx.chart.chartArea.top + ctx.chart.chartArea.bottom) / 2;
-                                return ctx.tooltip.caretY < centerY ? 'bottom' : 'top';
-                            },
-                            callbacks: { label: ctx => ctx.label + ':      ' + ctx.parsed + ' órdenes' }
-                        }
+  legend: { 
+  position: 'bottom', 
+  labels: { 
+      usePointStyle: true, 
+      padding: 8, 
+      color: '#6b7280',
+      font: { weight: 'bold', size: 11 },
+      generateLabels: function(chart) {
+          const data = chart.data;
+          if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => ({
+                  text: label,
+                  fillStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
+                  strokeStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
+                  fontColor: '#6b7280',
+                  lineWidth: 0,
+                  hidden: !chart.getDataVisibility(i),
+                  index: i
+              }));
+          }
+          return [];
+      }
+  } 
+  },
+   tooltip: {
+       backgroundColor: 'rgba(17, 24, 39, 0.95)',
+       bodyFont: { size: 13, weight: 'bold' },
+       padding: 12, cornerRadius: 8, usePointStyle: true,
+       position: 'cursorCustom',
+       xAlign: function(context) {
+           const chart = context.chart;
+           const tooltip = context.tooltip;
+           if (!chart || !chart.chartArea || !tooltip || tooltip.caretX === undefined) return 'center';
+           const centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
+           return tooltip.caretX < centerX ? 'right' : 'left';
+       },
+       yAlign: function(context) {
+           const chart = context.chart;
+           const tooltip = context.tooltip;
+           if (!chart || !chart.chartArea || !tooltip || tooltip.caretY === undefined) return 'bottom';
+           const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 2;
+           return tooltip.caretY < centerY ? 'bottom' : 'top';
+       },
+       callbacks: {
+           label: function(context) {
+               let label = context.label || '';
+               if (label) { label += ':      '; }
+               const val = (context.raw !== undefined && context.raw !== null) ? context.raw : (context.parsed ?? 0);
+               label += val + ' órdenes';
+               return label;
+           }
+       }
+   }
  },
  animation: { animateScale: true, animateRotate: true }
  }
