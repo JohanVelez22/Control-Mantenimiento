@@ -57,7 +57,7 @@
   <th class="text-right">P. Venta</th>
   <th class="text-right">P. Técnico</th>
   <th class="text-center">Estado</th>
-  <th class="text-center">Acciones</th>
+  <th class="text-center w-28">Acciones</th>
   </tr>
   </thead>
  <tbody>
@@ -119,20 +119,20 @@
  {{ $stock->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
-<td data-label="Acciones:" class="text-center {{ $dim }}">
+<td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
   <div class="actions-grid">
-  <a href="{{ route('stocks.show', $stock->id) }}" class="btn-ghost px-3 py-1.5 text-xs text-blue-600" title="Ver Detalles">👁️</a>
-  <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost px-3 py-1.5 text-xs text-gray-600" title="Imprimir">🖨️</a>
+  <a href="{{ route('stocks.show', $stock->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600" title="Ver Detalles">👁️</a>
+  <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-gray-600" title="Imprimir">🖨️</a>
   @if(!auth()->user()->isInvitado())
-  <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost px-3 py-1.5 text-xs text-yellow-600" title="Editar">✏️</a>
-                            <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-ghost px-3 py-1.5 text-xs {{ $stock->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $stock->active ? 'Anular Producto' : 'Reactivar Producto' }}">
+  <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
+  <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $stock->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $stock->active ? 'Anular Producto' : 'Reactivar Producto' }}">
   {{ $stock->active ? '🚫' : '✅' }}
   </button>
   @else
   <span class="text-gray-400 text-sm">👁️ Lectura</span>
   @endif
   </div>
-  </td>
+</td>
  </tr>
 @empty
   <tr>

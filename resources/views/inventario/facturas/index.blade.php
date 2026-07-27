@@ -58,7 +58,7 @@
  <th class="text-right">Total</th>
  <th class="text-right">Pagado</th>
  <th class="text-center">Estado</th>
- <th class="text-center">Acciones</th>
+ <th class="text-center w-28">Acciones</th>
  </tr>
  </thead>
  <tbody>
@@ -124,8 +124,8 @@
   {{ $label }}
   </span>
   </td>
-<td class="text-center {{ $dim }}">
-  <div class="grid grid-cols-2 gap-1.5 justify-center mx-auto w-fit">
+<td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
+  <div class="actions-grid">
   <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
   <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs" title="Imprimir">🖨️</a>
   

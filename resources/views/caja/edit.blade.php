@@ -32,8 +32,7 @@
         <div class="lg:col-span-1 space-y-6">
             @if(!$movimiento->parent_id && $movimiento->monto_total > 0)
                 {{-- Resumen de Saldos --}}
-                <div class="glass-card p-6 relative overflow-hidden group">
-                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-amber-500/20 rounded-full blur-2xl transition-all"></div>
+                <div class="glass-card hover-glow glass-card-amber p-6 relative overflow-hidden group">
                     <h3 class="text-lg font-black text-slate-800 dark:text-white mb-4 z-10 flex items-center gap-2">📊 Resumen de Saldos</h3>
                     
                     <div class="space-y-3 text-sm z-10 relative">

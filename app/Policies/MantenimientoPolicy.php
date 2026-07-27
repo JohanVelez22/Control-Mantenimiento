@@ -13,7 +13,7 @@ class MantenimientoPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class MantenimientoPolicy
      */
     public function view(User $user, Mantenimiento $mantenimiento): bool
     {
-        return false;
+        return true;
     }
 
     /**

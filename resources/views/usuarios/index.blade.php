@@ -30,7 +30,7 @@
  <th>Rol</th>
  <th>Estado</th>
  <th>Creado</th>
- <th class="text-center w-32">Acciones</th>
+ <th class="text-center w-28">Acciones</th>
  </tr>
  </thead>
  <tbody>
@@ -56,15 +56,15 @@
  </span>
  </td>
  <td class="text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
-<td class="text-center {{ $dim }}">
-  <div class="grid grid-cols-2 gap-1 justify-center mx-auto w-fit">
+<td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
+  <div class="actions-grid">
   @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
   <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">
   ✏️
   </a>
   @else
-  <span class="btn-ghost px-2.5 py-1.5 text-xs opacity-50 cursor-not-allowed flex items-center justify-center" title="Solo lectura">
-  👁️ Lectura
+  <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Solo lectura">
+  👁️
   </span>
   @endif
   

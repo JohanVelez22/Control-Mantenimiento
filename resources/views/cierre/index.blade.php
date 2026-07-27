@@ -161,29 +161,24 @@
         </div>
         
         <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-            <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all"></div>
-                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📈</span> Ingresos</p>
+            <div class="glass-card hover-glow glass-card-emerald p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
                 <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_ingresos'], 0, ',', '.') }}</p>
             </div>
-            <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-500/20 rounded-full blur-2xl group-hover:bg-red-500/30 transition-all"></div>
-                <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📉</span> Egresos</p>
+            <div class="glass-card hover-glow glass-card-red p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+                <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
                 <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_egresos'], 0, ',', '.') }}</p>
             </div>
-            <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all"></div>
-                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Efectivo</p>
+            <div class="glass-card hover-glow glass-card-blue p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💵</span> Efectivo</p>
                 <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['efectivo'], 0, ',', '.') }}</p>
             </div>
-            <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <div class="absolute -right-6 -top-6 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/30 transition-all"></div>
-                <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🏦</span> Consignación</p>
+            <div class="glass-card hover-glow glass-card-purple p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+                <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🏦</span> Consignación</p>
                 <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['consignacion'], 0, ',', '.') }}</p>
             </div>
-            <div class="glass-card p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <div class="absolute -right-6 -top-6 w-24 h-24 {{ $preview['saldo_final'] >= 0 ? 'bg-emerald-500/20 group-hover:bg-emerald-500/30' : 'bg-orange-500/20 group-hover:bg-orange-500/30' }} rounded-full blur-2xl transition-all"></div>
-                <p class="text-xs font-bold {{ $preview['saldo_final'] >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center">⚖️ Saldo Final</p>
+            <div class="glass-card hover-glow {{ $preview['saldo_final'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
+                <p class="text-xs font-bold {{ $preview['saldo_final'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Final</p>
                 <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['saldo_final'], 0, ',', '.') }}</p>
             </div>
         </div>

@@ -57,7 +57,7 @@
   <th class="text-center">Estado</th>
   <th class="text-center w-24">Entrada</th>
   <th class="text-center w-24">Salida</th>
-  <th class="text-center w-32">Acciones</th>
+  <th class="text-center w-28">Acciones</th>
   </tr>
   </thead>
   <tbody>
@@ -150,7 +150,7 @@
   {{ $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : '-' }}
   </td>
   
-<td data-label="Acciones:" class="text-center {{ $dim }}">
+<td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
   <div class="actions-grid">
   <a href="{{ route('electronicas.show', $e->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver detalle">👁️</a>
   

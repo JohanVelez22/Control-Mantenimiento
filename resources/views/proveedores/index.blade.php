@@ -51,7 +51,7 @@
  <th>Email</th>
  <th class="text-center">Stock Asociado</th>
  <th class="text-center">Estado</th>
- <th class="text-center">Acciones</th>
+ <th class="text-center w-28">Acciones</th>
  </tr>
  </thead>
  <tbody>
@@ -76,7 +76,7 @@
  {{ $p->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
-<td class="{{ $dim }}">
+<td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
   <div class="actions-grid">
   <a href="{{ route('proveedores.show', $p->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
   @if(!auth()->user()->isInvitado())

@@ -13,7 +13,7 @@ class ElectronicaPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class ElectronicaPolicy
      */
     public function view(User $user, Electronica $electronica): bool
     {
-        return false;
+        return true;
     }
 
     /**

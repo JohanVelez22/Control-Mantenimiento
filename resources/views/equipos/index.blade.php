@@ -62,8 +62,8 @@
  {{ $equipo->active ? 'Activo' : 'Inactivo' }}
  </span>
  </td>
-<td class="text-center {{ $dim }}">
-  <div class="grid grid-cols-2 gap-1 justify-center mx-auto w-fit">
+<td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
+  <div class="actions-grid">
   @if(!auth()->user()->isInvitado())
   <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
                              <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', {{ !$equipo->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $equipo->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $equipo->active ? 'Anular Equipo' : 'Reactivar Equipo' }}">

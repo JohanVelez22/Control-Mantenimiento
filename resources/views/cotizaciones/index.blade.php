@@ -37,7 +37,7 @@
                     <th class="w-32 text-center px-4 py-3">Validez</th>
                     <th class="w-32 text-right px-4 py-3">Total</th>
                     <th class="w-32 text-center px-4 py-3">Estado</th>
-                    <th class="w-32 text-center px-4 py-3">Acciones</th>
+                    <th class="w-28 text-center px-4 py-3">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -73,8 +73,8 @@
                             @endif
                         </span>
                     </td>
-<td data-label="Acciones" class="text-center">
-                        <div class="grid grid-cols-2 gap-1.5 justify-center mx-auto w-fit">
+<td data-label="Acciones" class="text-center w-28">
+                        <div class="actions-grid">
                             <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver detalle">👁️</a>
                             
                             @if($cot->estado === 'aprobada')

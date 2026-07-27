@@ -55,8 +55,8 @@
   <th class="text-center">Progreso</th>
   <th class="text-center">Estado</th>
   <th class="text-center w-24">Entrada</th>
-  <th class="text-center w-24">Salida</th>
-  <th class="text-center w-32">Acciones</th>
+  <th class="text-center w-28">Salida</th>
+  <th class="text-center w-28">Acciones</th>
   </tr>
   </thead>
   <tbody>
@@ -150,8 +150,8 @@
   {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '-' }}
   </td>
   
-<td class="text-center {{ $dim }}">
-  <div class="grid grid-cols-2 gap-1.5 justify-center mx-auto w-fit">
+<td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
+  <div class="actions-grid">
   <a href="{{ route('mantenimientos.show', $m->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver detalle">👁️</a>
   
   @if($m->estado === 'terminado' && $m->fecha_salida)

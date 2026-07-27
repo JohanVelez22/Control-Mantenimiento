@@ -16,7 +16,7 @@
 
         {{-- Encabezado --}}
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-4">
                 <a href="{{ route('stocks.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
 @if($stock->photo)
   <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
@@ -24,13 +24,15 @@
        class="w-16 h-16 rounded-2xl object-cover cursor-pointer border border-white/40 shadow-sm flex-shrink-0 hover:opacity-80 transition">
 @endif
                 <div>
-                    <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
-                        {{ $stock->producto }}
-                        <span class="pill {{ $stock->active ? 'pill-done' : 'pill-anulado' }} text-sm py-1 px-3">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+                            {{ $stock->producto }}
+                        </h2>
+                        <span class="pill {{ $stock->active ? 'pill-done' : 'pill-anulado' }} text-xs py-1 px-3 font-bold uppercase tracking-wider">
                             {{ $stock->active ? 'ACTIVO' : 'INACTIVO' }}
                         </span>
-                    </h2>
-                    <p class="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
+                    </div>
+                    <p class="text-sm font-bold text-gray-500 dark:text-gray-400 mt-3">
                         Código: <span class="font-mono text-indigo-500">{{ $stock->codigo ?? 'N/A' }}</span> | 
                         Categoría: {{ $stock->categoria ?? 'General' }} {{ $stock->subcategoria ? ' / ' . $stock->subcategoria : '' }}
                     </p>

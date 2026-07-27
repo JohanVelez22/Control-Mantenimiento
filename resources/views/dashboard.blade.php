@@ -116,10 +116,10 @@
  </div>
 
 <!-- Controles: fondo acrílico traslúcido -->
-  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/20 dark:border-white/10 bg-white/10 dark:bg-transparent backdrop-blur-xl text-slate-800 dark:text-white shadow-lg transition-all hover:bg-white/30 dark:hover:bg-white/10 cursor-pointer" style="top: 50%; left: 15px; transform: translateY(-50%); position: absolute;">
+  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/10 dark:border-white/5 bg-white/5 dark:bg-white/5 backdrop-blur-md text-slate-700/70 dark:text-white/60 opacity-50 hover:opacity-100 hover:bg-white/20 dark:hover:bg-white/15 hover:scale-105 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" style="top: 50%; left: 15px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
   </button>
-  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/20 dark:border-white/10 bg-white/10 dark:bg-transparent backdrop-blur-xl text-slate-800 dark:text-white shadow-lg transition-all hover:bg-white/30 dark:hover:bg-white/10 cursor-pointer" style="top: 50%; right: 15px; transform: translateY(-50%); position: absolute;">
+  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/10 dark:border-white/5 bg-white/5 dark:bg-white/5 backdrop-blur-md text-slate-700/70 dark:text-white/60 opacity-50 hover:opacity-100 hover:bg-white/20 dark:hover:bg-white/15 hover:scale-105 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" style="top: 50%; right: 15px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
    </button>
  </div>
