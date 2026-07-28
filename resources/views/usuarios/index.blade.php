@@ -40,7 +40,7 @@
  <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $u->id }}</td>
  <td class="text-center {{ $dim }}">
 @if($u->photo)
-  <img src="{{ asset('storage/' . $u->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $u->photo) }}', '{{ addslashes($u->name) }}')">
+  <img src="{{ asset('storage/' . $u->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $u->photo) }}', '{{ addslashes($u->name) }}', this)">
   @else
  <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">
  N/A

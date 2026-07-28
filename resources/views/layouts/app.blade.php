@@ -1010,8 +1010,7 @@
 
     {{-- Visor de imagen minimalista - sin fondo, tamaño moderado --}}
     <div id="image-lightbox" onclick="closeImageLightbox()" style="display:none; position:fixed; inset:0; z-index:9999; background:transparent; align-items:center; justify-content:center; padding:2vh 2vw; opacity:0; visibility:hidden; transition:opacity 0.25s ease;">
-        <div onclick="event.stopPropagation()" style="position:relative; display:inline-flex; flex-direction:column; align-items:center;">
-            <button type="button" onclick="event.stopPropagation(); closeImageLightbox()" aria-label="Cerrar" style="position:absolute; top:-12px; right:-12px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:16px; line-height:1; color:#64748b; background:rgba(255,255,255,0.9); border:1px solid rgba(0,0,0,0.05); border-radius:50%; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.06); transition:all 0.15s ease; z-index:1;" onmouseover="this.style.transform='scale(1.1)'; this.style.background='#fff'" onmouseout="this.style.transform='scale(1)'; this.style.background='rgba(255,255,255,0.9)'">✕</button>
+        <div style="position:relative; display:inline-flex; flex-direction:column; align-items:center;">
             <img id="image-lightbox-img" src="" alt="" style="max-width:70vw; max-height:65vh; width:auto; height:auto; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04); object-fit:contain; transform:scale(0.95); opacity:0; transition:transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.2s ease; cursor:pointer;">
         </div>
     </div>
