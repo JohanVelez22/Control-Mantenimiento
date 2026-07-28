@@ -78,6 +78,26 @@ class Factura extends Model
         return $this->saldo_pendiente > 0;
     }
 
+    /**
+     * Sincroniza y recalcula el total pagado a partir de los movimientos de caja activos
+     * asociados a la factura, actualizando automáticamente el estado y los saldos.
+     */
+    public function recalcularPagos(): void
+    {
+        $pagosCaja = MovimientoCaja::where('estado', 'activo')
+            ->where('descripcion', 'like', "%#{$this->numero_factura}%")
+            ->sum('monto');
+
+        $this->total_pagado = (float) $pagosCaja;
+
+        if ($this->estado !== 'anulada') {
+            $saldo = (float) $this->total_documento - $pagosCaja;
+            $this->estado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+        }
+
+        $this->save();
+    }
+
     // ─── Helpers estáticos ────────────────────────────────────────
 
     /** Genera el siguiente número de factura correlativo (atómico con lockForUpdate) */

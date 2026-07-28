@@ -10,6 +10,10 @@ class EventoController extends Controller
 {
     public function index(Request $request)
     {
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Acceso denegado. Solo administradores pueden ver la auditoría de eventos.');
+        }
+
         $query = Evento::with(['user'])->latest();
 
         // Filtros
@@ -40,6 +44,10 @@ class EventoController extends Controller
 
     public function show(Evento $evento)
     {
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Acceso denegado. Solo administradores pueden ver la auditoría de eventos.');
+        }
+
         $evento->load(['user']);
         // Forzar parseo como array si fuera necesario
         $viejos = is_string($evento->valores_antiguos) ? json_decode($evento->valores_antiguos, true) : $evento->valores_antiguos;

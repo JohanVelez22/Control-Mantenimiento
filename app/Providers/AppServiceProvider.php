@@ -36,6 +36,11 @@ class AppServiceProvider extends ServiceProvider
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
+        // Directiva Blade para formato de moneda uniforme ($1.000.000)
+        \Illuminate\Support\Facades\Blade::directive('money', function ($expression) {
+            return "<?php echo '$' . number_format(($expression) ?? 0, 0, ',', '.'); ?>";
+        });
+
         // ─────────────────────────────────────────────────────────────────
         // GATES DE AUTORIZACIÓN CENTRALIZADOS
         // ─────────────────────────────────────────────────────────────────

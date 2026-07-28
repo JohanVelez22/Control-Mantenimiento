@@ -374,6 +374,11 @@ class MovimientoInventarioController extends Controller
                 \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
                     ->update(['estado' => 'activo']);
 
+                $factura->observaciones = ($factura->observaciones ?? '') . "\n[REACTIVADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']';
+                $factura->estado = 'emitida'; // provisional, recalcularPagos() ajustará si hay saldo pendiente
+                $factura->save();
+                $factura->recalcularPagos();
+
                 $action = 'reactivada';
             } else {
                 // ANULAR LA FACTURA
@@ -388,13 +393,14 @@ class MovimientoInventarioController extends Controller
                     }
                 }
 
-                $factura->update([
-                    'estado'        => 'anulada',
-                    'observaciones' => ($factura->observaciones ?? '') . "\n[ANULADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']',
-                ]);
-
                 \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
                     ->update(['estado' => 'anulado']);
+
+                $factura->update([
+                    'estado'        => 'anulada',
+                    'total_pagado'  => 0,
+                    'observaciones' => ($factura->observaciones ?? '') . "\n[ANULADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']',
+                ]);
 
                 $action = 'anulada';
             }
@@ -596,6 +602,10 @@ class MovimientoInventarioController extends Controller
                     descripcion: ($factura->tipo_movimiento === 'venta' ? "Abono a venta #" : "Abono a compra #") . $factura->numero_factura,
                     fecha: now()->toDateString() // Se registra el día en que se hizo el abono realmente
                 );
+            }
+
+            if (!$shouldBeAnulada) {
+                $factura->recalcularPagos();
             }
 
             DB::commit();

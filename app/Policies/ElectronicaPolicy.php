@@ -4,63 +4,43 @@ namespace App\Policies;
 
 use App\Models\Electronica;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ElectronicaPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Todos los usuarios autenticados pueden ver electrónica.
      */
     public function viewAny(User $user): bool
     {
         return true;
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Electronica $electronica): bool
     {
         return true;
     }
 
     /**
-     * Determine whether the user can create models.
+     * Solo usuarios no invitados pueden crear registros de electrónica.
      */
     public function create(User $user): bool
     {
-        return false;
+        return !$user->isInvitado();
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Solo usuarios no invitados pueden actualizar registros de electrónica.
      */
     public function update(User $user, Electronica $electronica): bool
     {
-        return false;
+        return !$user->isInvitado();
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Solo administradores pueden anular o eliminar.
      */
     public function delete(User $user, Electronica $electronica): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Electronica $electronica): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Electronica $electronica): bool
-    {
-        return false;
+        return $user->isAdmin();
     }
 }

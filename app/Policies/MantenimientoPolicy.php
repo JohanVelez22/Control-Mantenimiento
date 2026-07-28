@@ -4,63 +4,43 @@ namespace App\Policies;
 
 use App\Models\Mantenimiento;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class MantenimientoPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Todos los usuarios autenticados pueden ver mantenimientos.
      */
     public function viewAny(User $user): bool
     {
         return true;
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Mantenimiento $mantenimiento): bool
     {
         return true;
     }
 
     /**
-     * Determine whether the user can create models.
+     * Solo usuarios no invitados pueden crear mantenimientos.
      */
     public function create(User $user): bool
     {
-        return false;
+        return !$user->isInvitado();
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Solo usuarios no invitados pueden actualizar mantenimientos.
      */
     public function update(User $user, Mantenimiento $mantenimiento): bool
     {
-        return false;
+        return !$user->isInvitado();
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Solo administradores pueden anular o eliminar.
      */
     public function delete(User $user, Mantenimiento $mantenimiento): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Mantenimiento $mantenimiento): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Mantenimiento $mantenimiento): bool
-    {
-        return false;
+        return $user->isAdmin();
     }
 }
