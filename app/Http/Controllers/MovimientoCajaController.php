@@ -23,7 +23,7 @@ class MovimientoCajaController extends Controller
             'fecha_hasta' => $fecha_hasta,
         ]);
 
-        $query = MovimientoCaja::with('concepto', 'user');
+        $query = MovimientoCaja::with('concepto', 'user', 'childPayments');
 
         if ($request->filled('tipo_movimiento') && $request->tipo_movimiento !== 'todos') {
             $query->where('tipo_movimiento', $request->tipo_movimiento);
@@ -82,7 +82,7 @@ class MovimientoCajaController extends Controller
         return view('caja.index', compact('movimientos', 'totales', 'conceptos'));
     }
 
-public function create()
+    public function create()
     {
         $conceptos = ConceptoCaja::orderBy('nombre')->get();
 
@@ -217,14 +217,12 @@ public function create()
         }
     }
 
-
-
     /**
      * Vista de impresión de un movimiento.
      */
     public function print(MovimientoCaja $movimiento)
     {
-        $movimiento->load('concepto', 'user');
+        $movimiento->load(['concepto', 'user', 'parent.concepto', 'parent.user', 'parent.childPayments.user', 'childPayments.user']);
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('caja.print', compact('movimiento'));
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('comprobante_caja_' . $movimiento->id . '.pdf');
@@ -244,8 +242,11 @@ public function create()
     public function duplicate(MovimientoCaja $movimiento)
     {
         $nuevo = $movimiento->replicate();
-        $nuevo->fecha   = now()->toDateString();
-        $nuevo->user_id = auth()->id();
+        $nuevo->fecha     = now()->toDateString();
+        $nuevo->user_id   = auth()->id();
+        $nuevo->parent_id = null;  // Nunca heredar vínculo padre (evita abonos huérfanos)
+        $nuevo->anulado   = false; // Siempre crear como activo
+        $nuevo->estado    = 'activo';
         $nuevo->save();
 
         return redirect()->route('caja.edit', $nuevo)
@@ -280,6 +281,7 @@ public function create()
                 'monto_total'     => 0, // Los abonos parciales no tienen total propio
                 'descripcion'     => $validated['descripcion'] ?: 'Abono parcial a saldo de movimiento #' . $movimiento->id,
                 'estado'          => 'activo',
+                'anulado'         => false,
                 'user_id'         => auth()->id(),
                 'parent_id'       => $movimiento->id,
             ]);

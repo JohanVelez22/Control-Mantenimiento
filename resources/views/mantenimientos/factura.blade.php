@@ -83,13 +83,30 @@
 </div>
 
 @if($mantenimiento->abonos->count() > 0)
-    <div style="margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 10px;">
-        <p style="font-size: 8pt; font-weight: bold; margin-bottom: 5px;">Historial de Pagos:</p>
-        <p style="font-size: 8pt; color: #555;">
-            @foreach($mantenimiento->abonos->sortBy('fecha') as $abono)
+    @php
+        $abonosHistorial = $mantenimiento->abonos->sortBy('fecha');
+        $totalAbonosCount = $abonosHistorial->count();
+        $abonosMostrar = $abonosHistorial->take(3);
+    @endphp
+    <div style="margin-top: 6px; border-top: 1px dashed #ccc; padding-top: 4px;">
+        <p style="font-size: 7.5pt; font-weight: bold; margin-bottom: 2px;">Historial de Pagos:</p>
+        <p style="font-size: 7pt; color: #555; margin: 0; line-height: 1.2;">
+            @foreach($abonosMostrar as $abono)
                 • {{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }} - {{ ucfirst($abono->tipo_pago) }}: ${{ number_format($abono->monto, 0, ',', '.') }}<br>
             @endforeach
         </p>
+        @if($totalAbonosCount > 3)
+            <p style="font-size: 6pt; color: #666; font-style: italic; margin: 2px 0 0 0;">* Se muestran los 3 abonos más recientes. El TOTAL ABONADO arriba incluye los {{ $totalAbonosCount }} pagos.</p>
+        @endif
     </div>
 @endif
+
+<div class="signatures-block clearfix">
+    <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">
+        <strong>Firma Cliente / Recibe</strong>
+    </div>
+    <div style="float: right; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">
+        <strong>Firma Autorizada</strong>
+    </div>
+</div>
 @endsection

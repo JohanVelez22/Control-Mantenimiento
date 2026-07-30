@@ -66,12 +66,12 @@
     </table>
 </div>
 
-<div class="clearfix" style="margin-top: 65px;">
-    <div style="float: left; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
+<div class="signatures-block clearfix">
+    <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">
         <strong>Aprobación del Cliente</strong><br>
-        <span style="font-size: 7pt; color: #666;">Firma y Cédula</span>
+        <span style="font-size: 6.5pt; color: #666;">Firma y Cédula</span>
     </div>
-    <div style="float: right; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
+    <div style="float: right; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">
         <strong>{{ $empresa->nombre ?? 'Elaborado por' }}</strong>
     </div>
 </div>

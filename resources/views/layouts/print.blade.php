@@ -29,7 +29,7 @@
             height: 138mm; /* Exact half A4 height (148.5mm) minus 10mm margins */
             box-sizing: border-box;
             border-bottom: 1px dashed #aaa; /* Cut line */
-            padding-bottom: 30px; /* Space for footer */
+            padding-bottom: 0px; /* Space for footer */
         }
         .header {
             display: table;
@@ -118,15 +118,24 @@
         
         .clearfix::after { content: ""; clear: both; display: table; }
 
-        .footer {
+        .signatures-block {
             position: absolute;
-            bottom: -15px;
+            bottom: 44px;
             left: 0;
             width: 100%;
-            padding-top: 5px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
             text-align: center;
             font-size: 7.5pt;
             color: #555;
+            line-height: 1.15;
+        }
+        .footer p {
+            margin: 0;
         }
 
         .watermark-container { position: relative; height: 100%; }
@@ -219,7 +228,8 @@
         </div>
     </div>
     
-    <!-- Script nativo de DomPDF para garantizar la numeración 10/10 -->
+    @if(View::hasSection('show_page_number') || ($showPageNumber ?? false))
+    <!-- Script nativo de DomPDF para garantizar la numeración solo en documentos que lo requieran -->
     <script type="text/php">
         if (isset($pdf)) {
             $x = $pdf->get_width() - 80;
@@ -231,5 +241,6 @@
             $pdf->page_text($x, $y, $text, $font, $size, $color);
         }
     </script>
+    @endif
 </body>
 </html>

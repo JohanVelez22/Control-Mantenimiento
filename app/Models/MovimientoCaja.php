@@ -43,15 +43,30 @@ class MovimientoCaja extends Model
         return $this->hasMany(self::class, 'parent_id');
     }
 
+    public function getTotalAbonosAttribute()
+    {
+        if ($this->relationLoaded('childPayments')) {
+            return (float) $this->childPayments->where('anulado', false)->sum('monto');
+        }
+        return (float) $this->childPayments()->where('anulado', false)->sum('monto');
+    }
+
+    public function getTotalPagadoAttribute()
+    {
+        if ($this->parent_id) {
+            return $this->parent ? $this->parent->total_pagado : (float) $this->monto;
+        }
+        return (float) ($this->monto + $this->total_abonos);
+    }
+
     public function getSaldoPendienteAttribute()
     {
         if ($this->parent_id) {
-            return 0; // Un pago hijo no tiene saldo pendiente por sí mismo
+            return $this->parent ? $this->parent->saldo_pendiente : 0;
         }
         
-        if ($this->monto_total && $this->monto_total > $this->monto) {
-            $abonosHijos = $this->childPayments()->where('anulado', false)->sum('monto');
-            return max(0, $this->monto_total - ($this->monto + $abonosHijos));
+        if ($this->monto_total && $this->monto_total > 0) {
+            return max(0, (float) $this->monto_total - $this->total_pagado);
         }
         return 0;
     }

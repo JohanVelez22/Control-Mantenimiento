@@ -59,11 +59,11 @@
     </tbody>
 </table>
 
-<div class="clearfix" style="margin-top: 35px; margin-bottom: 15px;">
-    <div style="float: left; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
+<div class="signatures-block clearfix">
+    <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">
         <strong>Responsable de Inventario</strong>
     </div>
-    <div style="float: right; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 5px; font-size: 8.5pt;">
+    <div style="float: right; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">
         <strong>Firma Autorizada</strong>
     </div>
 </div>

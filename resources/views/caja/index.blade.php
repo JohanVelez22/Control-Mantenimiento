@@ -127,6 +127,13 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
  </td>
  <td data-label="Concepto:" class="font-medium {{ $dim }}">
  {{ $m->concepto->nombre }}
+ @if($m->parent_id)
+ <div class="mt-1">
+     <span class="inline-flex items-center gap-1 text-[10px] bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-bold px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-800">
+         🔹 Abono a Movimiento #{{ $m->parent_id }}
+     </span>
+ </div>
+ @endif
  </td>
  <td data-label="Tipo:" class="text-center {{ $dimLight }}">
  <span class="pill {{ $m->tipo_movimiento === 'ingreso' ? 'pill-done' : 'pill-egreso' }}">

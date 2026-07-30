@@ -5,67 +5,163 @@
 @section('watermark_class', $movimiento->anulado ? 'anulado' : '')
 
 @section('doc_title')
-    COMPROBANTE DE {{ Str::upper($movimiento->tipo_movimiento) }} A CAJA - #{{ $movimiento->id }}
+    @if($movimiento->parent_id)
+        COMPROBANTE DE ABONO A CAJA - #{{ $movimiento->id }}
+    @else
+        COMPROBANTE DE {{ Str::upper($movimiento->tipo_movimiento) }} A CAJA - #{{ $movimiento->id }}
+    @endif
 @endsection
 
 @section('content')
-<div class="info-grid">
+@php
+    $parent = $movimiento->parent ?: $movimiento;
+    $isChild = (bool) $movimiento->parent_id;
+@endphp
+
+<div class="info-grid" style="margin-bottom: 4px;">
     <div class="info-col">
-        <p><strong>Persona / Contacto:</strong> {{ $movimiento->persona ?: '—' }}</p>
-        <p><strong>Empresa:</strong> {{ $movimiento->empresa ?: '—' }}</p>
-        <p><strong>Atendido por:</strong> {{ $movimiento->user->name ?? 'Sistema' }}</p>
+        <p style="margin: 1px 0; font-size: 8pt;"><strong>Persona / Contacto:</strong> {{ $movimiento->persona ?: ($parent->persona ?: '—') }}</p>
+        <p style="margin: 1px 0; font-size: 8pt;"><strong>Empresa:</strong> {{ $movimiento->empresa ?: ($parent->empresa ?: '—') }}</p>
+        <p style="margin: 1px 0; font-size: 8pt;"><strong>Atendido por:</strong> {{ $movimiento->user->name ?? 'Sistema' }}</p>
+        @if($isChild)
+            <p style="margin: 1px 0; font-size: 8pt;"><strong>Movimiento Padre:</strong> #{{ $parent->id }}</p>
+        @endif
     </div>
     <div class="info-col">
-        <p><strong>Fecha Transacción:</strong> {{ \Carbon\Carbon::parse($movimiento->fecha)->format('d/m/Y') }}</p>
-        <p><strong>Método de Pago:</strong> <span style="text-transform: uppercase;">{{ $movimiento->tipo_pago }}</span></p>
-        <p><strong>Estado:</strong> <span style="text-transform: uppercase;">{{ $movimiento->estado }}</span></p>
+        <p style="margin: 1px 0; font-size: 8pt;"><strong>Fecha Transacción:</strong> {{ \Carbon\Carbon::parse($movimiento->fecha)->format('d/m/Y') }}</p>
+        <p style="margin: 1px 0; font-size: 8pt;"><strong>Método de Pago:</strong> <span style="text-transform: uppercase;">{{ $movimiento->tipo_pago }}</span></p>
+        <p style="margin: 1px 0; font-size: 8pt;"><strong>Estado:</strong> <span style="text-transform: uppercase;">{{ $movimiento->anulado ? 'ANULADO' : $movimiento->estado }}</span></p>
     </div>
 </div>
 
-<div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; text-align: center;">
-    <h3 style="margin: 0 0 6px; font-size: 10pt; text-transform: uppercase;">Concepto del Movimiento</h3>
-    <p style="font-size: 11pt; font-weight: normal; margin: 0; color: #222;">
-        {{ $movimiento->concepto->nombre ?? 'Concepto Desconocido' }}
-    </p>
-</div>
+<table style="width: 100%; margin-bottom: 6px; border: 1px solid #d1d5db; background-color: #f8fafc; border-collapse: collapse;">
+    <tr>
+        <td style="text-align: center; vertical-align: middle; padding: 4px 6px; line-height: 1.0;">
+            <span style="font-size: 7.5pt; text-transform: uppercase; font-weight: bold; color: #0f172a; letter-spacing: 0.3px;">
+                {{ $isChild ? 'Concepto del Movimiento Original:' : 'Concepto del Movimiento:' }}
+            </span>
+            <span style="font-size: 8.5pt; font-weight: bold; color: #0f172a; margin-left: 6px;">
+                {{ $parent->concepto->nombre ?? 'Concepto Desconocido' }}
+            </span>
+        </td>
+    </tr>
+</table>
 
-<div class="clearfix" style="margin-top: 15px;">
-    <div style="float: left; width: 45%; border: 1px solid #ccc; padding: 10px; font-size: 8pt; min-height: 80px;">
+<div class="clearfix" style="margin-top: 4px;">
+    <div style="float: left; width: 48%; border: 1px solid #ccc; padding: 4px 6px; font-size: 7pt; height: 50px; box-sizing: border-box; overflow: hidden;">
         <strong>Observaciones / Descripción:</strong><br>
-        {!! nl2br(e($movimiento->descripcion ?: 'Sin observaciones.')) !!}
+        <span style="color: #333;">{!! nl2br(e($movimiento->descripcion ?: ($isChild ? 'Abono parcial registrado al movimiento #' . $parent->id : 'Sin observaciones.'))) !!}</span>
     </div>
     
-    <table class="totals">
-        @if($movimiento->monto_total && $movimiento->monto_total > $movimiento->monto)
+    <table class="totals" style="width: 48%; margin-bottom: 0;">
+        @if($isChild)
+            {{-- Impresión de un Abono Hijo --}}
+            @if($parent->monto_total > 0)
+                <tr>
+                    <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">TOTAL DEUDA:</td>
+                    <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">${{ number_format($parent->monto_total, 0, ',', '.') }}</td>
+                </tr>
+            @endif
             <tr>
-                <td class="lbl">MONTO TOTAL DEUDA:</td>
-                <td class="val">${{ number_format($movimiento->monto_total, 0, ',', '.') }}</td>
+                <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">PAGADO HOY (ABONO):</td>
+                <td class="val" style="font-size: 7.5pt; padding: 1px 3px; color: green; font-weight: bold;">${{ number_format($movimiento->monto, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td class="lbl">PAGADO HOY:</td>
-                <td class="val" style="color: green;">${{ number_format($movimiento->monto, 0, ',', '.') }}</td>
+                <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">TOTAL ACUMULADO:</td>
+                <td class="val" style="font-size: 7.5pt; padding: 1px 3px; color: blue;">${{ number_format($parent->total_pagado, 0, ',', '.') }}</td>
             </tr>
-            <tr class="grand-total">
-                <td class="lbl">SALDO PENDIENTE:</td>
-                <td class="val" style="color: red;">${{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}</td>
-            </tr>
+            @if($parent->monto_total > 0)
+                <tr class="grand-total">
+                    <td class="lbl" style="font-size: 8pt; padding: 1px 3px;">SALDO PENDIENTE:</td>
+                    <td class="val" style="font-size: 8pt; padding: 1px 3px; {{ $parent->saldo_pendiente == 0 ? 'color: green;' : 'color: red;' }}">
+                        ${{ number_format($parent->saldo_pendiente, 0, ',', '.') }}
+                    </td>
+                </tr>
+            @endif
         @else
-            <tr class="grand-total">
-                <td class="lbl">MONTO TOTAL:</td>
-                <td class="val" style="font-size: 14pt; {{ $movimiento->tipo_movimiento === 'ingreso' ? 'color: green;' : 'color: red;' }}">
-                    ${{ number_format($movimiento->monto, 0, ',', '.') }}
-                </td>
-            </tr>
+            {{-- Impresión del Movimiento Principal (Padre) - Histórico Puro --}}
+            @if($movimiento->monto_total && $movimiento->monto_total > 0)
+                @php
+                    $saldoInicial = max(0, $movimiento->monto_total - $movimiento->monto);
+                @endphp
+                <tr>
+                    <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">TOTAL DEUDA:</td>
+                    <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">${{ number_format($movimiento->monto_total, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">PAGO INICIAL:</td>
+                    <td class="val" style="font-size: 7.5pt; padding: 1px 3px; color: green;">${{ number_format($movimiento->monto, 0, ',', '.') }}</td>
+                </tr>
+                <tr class="grand-total">
+                    <td class="lbl" style="font-size: 8pt; padding: 1px 3px;">SALDO PENDIENTE:</td>
+                    <td class="val" style="font-size: 8pt; padding: 1px 3px; {{ $saldoInicial == 0 ? 'color: green;' : 'color: red;' }}">
+                        ${{ number_format($saldoInicial, 0, ',', '.') }}
+                    </td>
+                </tr>
+            @else
+                <tr class="grand-total">
+                    <td class="lbl" style="font-size: 8.5pt; padding: 3px;">MONTO TOTAL:</td>
+                    <td class="val" style="font-size: 10pt; padding: 3px; {{ $movimiento->tipo_movimiento === 'ingreso' ? 'color: green;' : 'color: red;' }}">
+                        ${{ number_format($movimiento->monto, 0, ',', '.') }}
+                    </td>
+                </tr>
+            @endif
         @endif
     </table>
 </div>
 
-<div class="clearfix" style="margin-top: 50px;">
-    <div style="float: left; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 4px; font-size: 8pt;">
-        <strong>Firma Cliente / Recibe</strong>
+{{-- Trazabilidad / Historial de Pagos SOLO para el comprobante Hijo (Abono) --}}
+@if($isChild)
+    @php
+        $abonosPrevios = $parent->childPayments->where('anulado', false)->where('id', '!=', $movimiento->id);
+        $countPrevios = $abonosPrevios->count();
+        // Limitamos visualmente los abonos anteriores a máximo 3 para garantizar que NUNCA desborde la media hoja
+        $abonosMostrar = $abonosPrevios->sortBy('fecha')->take(3);
+    @endphp
+
+    <div style="margin-top: 4px; border-top: 1px dashed #ccc; padding-top: 3px;">
+        <p style="font-size: 7pt; font-weight: bold; margin: 0 0 2px;">Historial de Pagos Anteriores (Movimiento Padre #{{ $parent->id }}):</p>
+        <table class="items-table" style="font-size: 6.5pt; margin-bottom: 2px; width: 100%; text-align: center;">
+            <thead>
+                <tr>
+                    <th style="padding: 1px 3px; text-align: center;">FECHA</th>
+                    <th style="padding: 1px 3px; text-align: center;">MÉT. PAGO</th>
+                    <th style="padding: 1px 3px; text-align: center;">DESCRIPCIÓN</th>
+                    <th style="padding: 1px 3px; text-align: center;">USUARIO</th>
+                    <th style="padding: 1px 3px; text-align: center;">MONTO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 1px 3px;">{{ \Carbon\Carbon::parse($parent->fecha)->format('d/m/Y') }}</td>
+                    <td style="padding: 1px 3px;">{{ Str::upper($parent->tipo_pago) }}</td>
+                    <td style="padding: 1px 3px;">{{ $parent->descripcion ?: 'Pago inicial' }}</td>
+                    <td style="padding: 1px 3px;">{{ $parent->user->name ?? 'Sistema' }}</td>
+                    <td style="padding: 1px 3px;">${{ number_format($parent->monto, 0, ',', '.') }}</td>
+                </tr>
+                @foreach($abonosMostrar as $abono)
+                    <tr>
+                        <td style="padding: 1px 3px;">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }}</td>
+                        <td style="padding: 1px 3px;">{{ Str::upper($abono->tipo_pago) }}</td>
+                        <td style="padding: 1px 3px;">{{ $abono->descripcion ?: 'Abono parcial' }}</td>
+                        <td style="padding: 1px 3px;">{{ $abono->user->name ?? 'Sistema' }}</td>
+                        <td style="padding: 1px 3px;">${{ number_format($abono->monto, 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        @if($countPrevios > 3)
+            <p style="font-size: 6pt; color: #666; font-style: italic; margin: 1px 0 0 0;">* Se muestran los 3 abonos más recientes en este resumen de impresión. El TOTAL ACUMULADO arriba incluye los {{ $countPrevios + 1 }} pagos del movimiento.</p>
+        @endif
     </div>
-    <div style="float: right; text-align: center; border-top: 1px solid #000; width: 40%; padding-top: 4px; font-size: 8pt;">
-        <strong>Firma Autorizada</strong>
+@endif
+
+    <div class="signatures-block clearfix">
+        <div style="float: left; text-align: center; border-top: 1px solid #333; width: 38%; padding-top: 2px; font-size: 7.5pt; color: #222;">
+            <strong>Firma Cliente / Recibe</strong>
+        </div>
+        <div style="float: right; text-align: center; border-top: 1px solid #333; width: 38%; padding-top: 2px; font-size: 7.5pt; color: #222;">
+            <strong>Firma Autorizada</strong>
+        </div>
     </div>
-</div>
 @endsection

@@ -77,7 +77,7 @@ class CierreCajaController extends Controller
     /** Helper: calcula totales de movimientos de un día dado excluyendo los anulados */
     private function calcularDia(string $fecha): array
     {
-        $movs = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->get();
+        $movs = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->get();
 
         return [
             'total_ingresos'  => $movs->where('tipo_movimiento', 'ingreso')->sum('monto'),

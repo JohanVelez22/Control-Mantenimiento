@@ -366,11 +366,6 @@ class MovimientoInventarioController extends Controller
                 $saldo = $factura->total_documento - $factura->total_pagado;
                 $nuevoEstado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
 
-                $factura->update([
-                    'estado'        => $nuevoEstado,
-                    'observaciones' => ($factura->observaciones ?? '') . "\n[REACTIVADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']',
-                ]);
-
                 \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
                     ->update(['estado' => 'activo']);
 
