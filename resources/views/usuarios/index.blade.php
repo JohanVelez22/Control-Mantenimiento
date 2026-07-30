@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+ tr:target {
+ background-color: rgba(59, 130, 246, 0.2) !important;
+ outline: 2px solid #3b82f6;
+ }
+</style>
+
 <div class="glass-card p-6">
  <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
  <div>
@@ -10,11 +17,12 @@
  <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Gestiona los accesos y credenciales de los colaboradores del sistema</p>
  </div>
  <div class="flex flex-wrap items-center gap-2">
-  <input type="text" id="search-usuarios" placeholder="🔍 Buscar..." class="search-input bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-500/30 hover:bg-gray-500/40 backdrop-blur-sm rounded-xl px-4 py-2 text-sm font-semibold transition-all shadow-sm focus:outline-none w-48">
+   <div class="relative">
+   <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
+   <input type="text" id="search-usuarios" placeholder="Buscar usuario..." class="glass-input pl-9 w-48 sm:w-64">
+   </div>
  @if(auth()->user()->isAdmin())
- <a href="{{ route('usuarios.create') }}" class="btn-primary">
- ➕ Nuevo Usuario
- </a>
+ <a href="{{ route('usuarios.create') }}" class="btn-primary">➕ Nuevo Usuario</a>
  @endif
  </div>
  </div>
@@ -36,16 +44,16 @@
  <tbody>
  @forelse($users as $u)
  @php $dim = !$u->active ? 'opacity-60 grayscale' : ''; @endphp
- <tr>
+ <tr id="usuario-{{ $u->id }}" class="scroll-mt-[6.5rem]">
  <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $u->id }}</td>
  <td class="text-center {{ $dim }}">
-@if($u->photo)
-  <img src="{{ asset('storage/' . $u->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $u->photo) }}', '{{ addslashes($u->name) }}', this)">
-  @else
- <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">
- N/A
- </div>
- @endif
+ @if($u->photo)
+   <img src="{{ asset('storage/' . $u->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $u->photo) }}', '{{ addslashes($u->name) }}', this)">
+   @else
+  <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">
+  N/A
+  </div>
+  @endif
  </td>
  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $u->name }}</td>
  <td class="{{ $dim }}">{{ $u->email }}</td>
@@ -56,25 +64,21 @@
  </span>
  </td>
  <td class="text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
-<td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
-  <div class="actions-grid">
-  @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
-  <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">
-  ✏️
-  </a>
-  @else
-  <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Solo lectura">
-  👁️
-  </span>
-  @endif
-  
-  @if(auth()->user()->isAdmin() && auth()->id() !== $u->id)
-                             <button type="button" onclick="openAnularModal('{{ route('usuarios.anular', $u->id) }}', {{ !$u->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $u->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $u->active ? 'Anular Usuario' : 'Reactivar Usuario' }}">
-  {{ $u->active ? '🚫' : '✅' }}
-  </button>
-  @endif
-  </div>
-  </td>
+ <td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
+   <div class="actions-grid">
+   @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
+   <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
+   @else
+   <span class="text-gray-400 text-sm">👁️ Lectura</span>
+   @endif
+   
+   @if(auth()->user()->isAdmin() && auth()->id() !== $u->id)
+                              <button type="button" onclick="openAnularModal('{{ route('usuarios.anular', $u->id) }}', {{ !$u->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $u->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $u->active ? 'Anular Usuario' : 'Reactivar Usuario' }}">
+   {{ $u->active ? '🚫' : '✅' }}
+   </button>
+   @endif
+   </div>
+   </td>
  </tr>
  @empty
  <tr>
@@ -84,9 +88,7 @@
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin otros usuarios</h3>
  <p class="text-gray-500 font-medium max-w-sm mb-4">Actualmente solo existes tú en el sistema. Puedes invitar a más colaboradores.</p>
  @if(auth()->user()->isAdmin())
- <a href="{{ route('usuarios.create') }}" class="btn-primary">
- ➕ Crear Nuevo Usuario
- </a>
+ <a href="{{ route('usuarios.create') }}" class="btn-primary">➕ Crear Nuevo Usuario</a>
  @endif
  </div>
  </td>
