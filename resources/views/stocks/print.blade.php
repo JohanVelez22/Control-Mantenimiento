@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-<div class="info-grid">
+<div class="info-grid" style="margin-bottom: 6px;">
     <div class="info-col">
         <p><strong>Producto:</strong> {{ $stock->producto }}</p>
         <p><strong>Categoría:</strong> {{ $stock->categoria ?: 'General' }} {{ $stock->subcategoria ? ' / ' . $stock->subcategoria : '' }}</p>
@@ -22,39 +22,39 @@
     </div>
 </div>
 
-<div style="padding: 10px; border: 1px solid #ccc; background: #fafafa;">
+<div style="padding: 5px 8px; border: 1px solid #ccc; background: #fafafa; margin-bottom: 0; font-size: 8.5pt;">
     <strong>Información de Registro:</strong><br>
     Fecha de Registro: {{ $stock->created_at ? \Carbon\Carbon::parse($stock->created_at)->format('d/m/Y h:i A') : '—' }} &nbsp;|&nbsp; 
     Identificación Proveedor: {{ $proveedor->identificacion ?? '—' }}
 </div>
 
-<p class="font-bold" style="margin: 0 0 4px 0;">Estructura de Precios y Costos:</p>
+<p class="font-bold" style="margin: 2px 0 7px 0; font-size: 8.5pt;">Estructura de Precios y Costos:</p>
 <table class="items-table" style="margin-bottom: 0;">
     <thead>
         <tr>
-            <th style="padding: 4px 5px; font-size: 8.5pt;">CONCEPTO / TARIFA</th>
-            <th class="text-center" style="width: 25%; padding: 4px 5px; font-size: 8.5pt;">UTILIDAD / MARGEN</th>
-            <th class="text-right" style="width: 25%; padding: 4px 5px; font-size: 8.5pt;">VALOR UNITARIO</th>
+            <th style="padding: 3px 5px; font-size: 8pt;">CONCEPTO / TARIFA</th>
+            <th class="text-center" style="width: 25%; padding: 3px 5px; font-size: 8pt;">UTILIDAD / MARGEN</th>
+            <th class="text-right" style="width: 25%; padding: 3px 5px; font-size: 8pt;">VALOR UNITARIO</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td style="padding: 4px 5px; font-size: 8.5pt;">Costo de Compra (Precio Proveedor)</td>
-            <td class="text-center text-gray-500" style="padding: 4px 5px; font-size: 8.5pt;">—</td>
-            <td class="text-right" style="padding: 4px 5px; font-size: 8.5pt;">${{ number_format($stock->precio_compra, 0, ',', '.') }}</td>
+            <td style="padding: 3px 5px; font-size: 8pt;">Costo de Compra (Precio Proveedor)</td>
+            <td class="text-center text-gray-500" style="padding: 3px 5px; font-size: 8pt;">—</td>
+            <td class="text-right" style="padding: 3px 5px; font-size: 8pt;">${{ number_format($stock->precio_compra, 0, ',', '.') }}</td>
         </tr>
         <tr>
-            <td style="padding: 4px 5px; font-size: 8.5pt;">Precio Especial a Técnico</td>
+            <td style="padding: 3px 5px; font-size: 8pt;">Precio Especial a Técnico</td>
             @php
                 $utilidadTecnico = $stock->precio_compra > 0 ? (($stock->precio_tecnico - $stock->precio_compra) / $stock->precio_compra) * 100 : 0;
             @endphp
-            <td class="text-center" style="padding: 4px 5px; font-size: 8.5pt; font-weight: bold;">+{{ number_format($utilidadTecnico, 0) }}%</td>
-            <td class="text-right" style="padding: 4px 5px; font-size: 8.5pt; font-weight: bold;">${{ number_format($stock->precio_tecnico, 0, ',', '.') }}</td>
+            <td class="text-center" style="padding: 3px 5px; font-size: 8pt; font-weight: bold;">+{{ number_format($utilidadTecnico, 0) }}%</td>
+            <td class="text-right" style="padding: 3px 5px; font-size: 8pt; font-weight: bold;">${{ number_format($stock->precio_tecnico, 0, ',', '.') }}</td>
         </tr>
         <tr style="background-color: #fafafa;">
-            <td class="font-bold" style="padding: 4px 5px; font-size: 8.5pt;">Precio de Venta Público (PVP)</td>
-            <td class="text-center font-bold" style="padding: 4px 5px; font-size: 8.5pt;">+{{ number_format($stock->utilidad ?? 0, 0) }}%</td>
-            <td class="text-right font-bold" style="padding: 4px 5px; font-size: 8.5pt;">${{ number_format($stock->precio_venta, 0, ',', '.') }}</td>
+            <td class="font-bold" style="padding: 3px 5px; font-size: 8pt;">Precio de Venta Público (PVP)</td>
+            <td class="text-center font-bold" style="padding: 3px 5px; font-size: 8pt;">+{{ number_format($stock->utilidad ?? 0, 0) }}%</td>
+            <td class="text-right font-bold" style="padding: 3px 5px; font-size: 8pt;">${{ number_format($stock->precio_venta, 0, ',', '.') }}</td>
         </tr>
     </tbody>
 </table>

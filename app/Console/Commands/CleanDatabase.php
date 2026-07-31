@@ -9,21 +9,21 @@ use Illuminate\Support\Facades\Schema;
 class CleanDatabase extends Command
 {
     /**
-     * The name and signature of the console command.
+     * El nombre y firma del comando de consola.
      *
      * @var string
      */
     protected $signature = 'app:clean-data';
 
     /**
-     * The console command description.
+     * La descripción del comando de consola.
      *
      * @var string
      */
     protected $description = 'Limpia las tablas de datos (clientes, proveedores, stocks, facturas, etc.) manteniendo usuarios y configuraciones.';
 
     /**
-     * Execute the console command.
+     * Ejecuta el comando de consola.
      */
     public function handle()
     {

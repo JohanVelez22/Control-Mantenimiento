@@ -8,21 +8,21 @@ use Illuminate\Support\Facades\DB;
 class ResetTests extends Command
 {
     /**
-     * The name and signature of the console command.
+     * El nombre y firma del comando de consola.
      *
      * @var string
      */
     protected $signature = 'app:reset-tests';
 
     /**
-     * The console command description.
+     * La descripción del comando de consola.
      *
      * @var string
      */
     protected $description = 'Borra todos los datos transaccionales (mantenimientos, caja, facturas) dejando intactos los clientes, proveedores y stock para restaurar un ambiente de pruebas.';
 
     /**
-     * Execute the console command.
+     * Ejecuta el comando de consola.
      */
     public function handle()
     {

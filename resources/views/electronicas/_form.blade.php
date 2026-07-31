@@ -7,7 +7,7 @@
  </div>
 
  <div class="min-w-0">
- <label class="field-label flex items-center gap-2"><span>👨‍🔧</span> Técnico Asignado *</label>
+ <label class="field-label flex items-center gap-2"><span>👨🏻‍🔧</span> Técnico Asignado *</label>
  <select name="tecnico_id" required class="glass-input mt-1">
  <option value=\"\">Seleccionar técnico...</option>
  @foreach($tecnicos as $t)
