@@ -1,12 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<style>
- tr:target {
- background-color: rgba(59, 130, 246, 0.2) !important;
- outline: 2px solid #3b82f6;
- }
-</style>
 
 <div class="glass-card p-6">
  <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
@@ -32,6 +26,7 @@
  <thead>
  <tr>
  <th class="w-16 text-center">ID</th>
+ <th class="text-center">Tipo</th>
  <th>Nombre</th>
  <th>Identificación</th>
  <th>Móvil</th>
@@ -46,6 +41,13 @@
  @php $dim = !$cliente->active ? 'opacity-60 grayscale' : ''; @endphp
  <tr id="cliente-{{ $cliente->id }}" class="scroll-mt-[6.5rem]">
  <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $cliente->id }}</td>
+ <td class="text-center {{ $dim }}">
+   @if($cliente->tipo_cliente === 'tecnico')
+     <span class="pill bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">Técnico</span>
+   @else
+     <span class="pill bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">Normal</span>
+   @endif
+ </td>
  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $cliente->nombre }}</td>
  <td class="text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $cliente->identificacion }}</td>
  <td class="{{ $dim }}">{{ $cliente->movil }}</td>
@@ -71,7 +73,7 @@
  </tr>
  @empty
  <tr>
- <td colspan="8" class="p-16 text-center">
+ <td colspan="9" class="p-16 text-center">
  <div class="flex flex-col items-center gap-3">
  <div class="text-6xl drop-shadow-md mb-2">👤</div>
  <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin clientes registrados</h3>

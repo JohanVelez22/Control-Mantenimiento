@@ -77,7 +77,7 @@
         </div>
 
         <div class="pt-6 mt-6 border-t border-gray-200/50 dark:border-white/10 flex justify-end">
-            <button type="submit" class="btn-primary flex items-center gap-2">
+            <button type="submit" class="btn-save flex items-center gap-2">
                 <span>💾</span>
                 <span>Guardar Configuración</span>
             </button>

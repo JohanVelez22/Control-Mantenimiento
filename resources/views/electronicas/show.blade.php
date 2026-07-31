@@ -163,7 +163,7 @@
  <form action="{{ route('electronicas.stocks.destroy', [$electronica, $repuesto->id]) }}" method="POST" class="inline-block"
  onsubmit="return confirm('¿Seguro que deseas eliminar este repuesto? Se descontará del costo de la orden y volverá al inventario.');">
  @csrf @method('DELETE')
- <button type="submit" class="btn-ghost px-2 py-1.5 text-xs text-red-600 hover:text-red-700 border-red-500/20 hover:bg-red-50/50" title="Eliminar y devolver al stock">
+  <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Eliminar y devolver al stock">
  🗑️
  </button>
  </form>
@@ -242,7 +242,7 @@
  @if(!auth()->user()->isInvitado())
  <form action="{{ route('electronicas.abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de ${{ number_format($abono->monto, 0, ',', '.') }}?">
  @csrf @method('DELETE')
- <button type="submit" class="btn-ghost px-2 py-1.5 text-xs text-red-600 hover:text-red-700 border-red-500/20 hover:bg-red-50/50" title="Eliminar abono">
+  <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Eliminar abono">
  🗑️
  </button>
  </form>

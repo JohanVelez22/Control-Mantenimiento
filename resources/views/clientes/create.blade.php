@@ -13,11 +13,6 @@
         <form method="POST" action="{{ route('clientes.store') }}" class="space-y-6">
             @csrf
             @include('clientes._form')
-
-            <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-                <a href="{{ route('clientes.index') }}" class="btn-cancel">↩️ Cancelar</a>
-                <button type="submit" class="btn-save">💾 Guardar Cliente</button>
-            </div>
         </form>
     </div>
 </div>

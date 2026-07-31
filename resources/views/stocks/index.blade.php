@@ -1,23 +1,5 @@
 @extends('layouts.app')
 @section('content')
-<style>
-  tr.active-target td {
-    background-color: rgba(59, 130, 246, 0.08) !important;
-    border-top: 1.5px solid rgba(59, 130, 246, 0.3) !important;
-    border-bottom: 1.5px solid rgba(59, 130, 246, 0.3) !important;
-  }
-  tr.active-target td:first-child {
-    border-left: 4px solid #3b82f6 !important;
-  }
-  .dark tr.active-target td {
-    background-color: rgba(59, 130, 246, 0.15) !important;
-    border-top: 1.5px solid rgba(96, 165, 250, 0.4) !important;
-    border-bottom: 1.5px solid rgba(96, 165, 250, 0.4) !important;
-  }
-  .dark tr.active-target td:first-child {
-    border-left: 4px solid #60a5fa !important;
-  }
-</style>
 <div class="glass-card p-6">
  <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
  <div>
@@ -63,7 +45,7 @@
  <tbody>
  @forelse($stocks as $stock)
  @php $dim = !$stock->active ? 'opacity-60 grayscale' : ''; @endphp
- <tr id="stock-{{ $stock->id }}">
+ <tr id="stock-{{ $stock->id }}" class="scroll-mt-[6.5rem]">
 <td data-label="Código:" class="text-sm font-bold text-slate-500 dark:text-slate-400 {{ $dim }}">
   {{ $stock->codigo ?? '-' }}
   </td>

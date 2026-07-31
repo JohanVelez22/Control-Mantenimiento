@@ -82,7 +82,7 @@
                         <label class="field-label">Nombre del Concepto</label>
                         <input type="text" name="nombre" required class="glass-input" placeholder="Ej: Pago de Internet">
                     </div>
-                    <button type="submit" class="btn-primary w-full justify-center">Crear Concepto</button>
+                    <button type="submit" class="btn-save w-full justify-center">Crear Concepto</button>
                 </div>
             </form>
         </div>
@@ -97,7 +97,7 @@
                         <form action="{{ route('conceptos.update', $c->id) }}" method="POST" class="flex-1 flex gap-2 mr-4">
                             @csrf @method('PUT')
                             <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-1.5 px-3 text-sm">
-                            <button type="submit" class="btn-ghost px-3 py-1.5 text-xs text-blue-600 border-blue-500/20 hover:bg-blue-500/10">💾 Guardar</button>
+                            <button type="submit" class="btn-ghost px-3 py-1.5 text-xs text-blue-600">💾 Guardar</button>
                         </form>
                         <button type="button" onclick="openDeletePwd('{{ route('conceptos.destroy', $c->id) }}')" class="btn-danger px-3 py-1.5 text-xs">🗑️</button>
                     </li>

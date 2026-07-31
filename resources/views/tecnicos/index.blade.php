@@ -38,7 +38,7 @@
  <tbody>
  @forelse($tecnicos as $tecnico)
  @php $dim = !$tecnico->active ? 'opacity-60 grayscale' : ''; @endphp
- <tr>
+ <tr id="tecnico-{{ $tecnico->id }}" class="scroll-mt-[6.5rem]">
  <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $tecnico->id }}</td>
  <td class="text-center {{ $dim }}">
 @if($tecnico->photo)

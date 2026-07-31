@@ -29,7 +29,7 @@ class ElectronicaController extends Controller
             return redirect()->route('electronicas.index', ['page' => $page])->withFragment('electronica-' . $id);
         }
 
-        $query = Electronica::with('tecnico');
+        $query = Electronica::with(['equipo.cliente', 'tecnico', 'user', 'abonos']);
 
         if ($request->filled('search')) {
             $s = $request->search;

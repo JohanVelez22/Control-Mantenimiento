@@ -40,11 +40,11 @@
                         </button>
                     </form>
                     
-                    <button type="button" onclick="openRechazarModal('{{ route('cotizaciones.rechazar', $cotizacion) }}')" class="btn-cancel bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 hover:text-red-700 dark:bg-red-900/20 dark:border-red-900/50 dark:hover:bg-red-900/40 dark:text-red-400 flex items-center justify-center h-[42px] px-4">
+                    <button type="button" onclick="openRechazarModal('{{ route('cotizaciones.rechazar', $cotizacion) }}')" class="btn-danger flex items-center justify-center h-[42px] px-4">
                         🚫 Rechazar
                     </button>
                     @elseif($cotizacion->estado === 'rechazada')
-                    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.reactivar', $cotizacion) }}', true)" class="btn-save flex items-center justify-center h-[42px] px-4">
+                    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.reactivar', $cotizacion) }}', true)" class="btn-ghost flex items-center justify-center h-[42px] px-4">
                         ✅ Reactivar
                     </button>
                     @endif

@@ -120,7 +120,7 @@
                 </thead>
                 <tbody>
                     @forelse($historial as $item)
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 {{ $item->factura->estado === 'anulada' ? 'opacity-50 grayscale' : '' }}">
+                    <tr class="{{ $item->factura->estado === 'anulada' ? 'opacity-50 grayscale' : '' }}">
                         <td class="text-sm font-medium">{{ \Carbon\Carbon::parse($item->factura->fecha ?? $item->created_at)->format('d/m/Y') }}</td>
                         <td>
                             <span class="pill {{ $item->factura->tipo_movimiento === 'compra' ? 'pill-pending' : 'pill-done' }} text-xs">

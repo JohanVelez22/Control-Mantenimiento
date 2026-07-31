@@ -14,12 +14,12 @@
  </div>
  <div class="flex flex-wrap gap-3">
  @if(!auth()->user()->isInvitado())
- <a href="{{ route('inventario.compra.create') }}" class="btn-compra" style="padding: 9px 18px; font-size: 13px;">
- 📦 Nueva Compra
- </a>
- <a href="{{ route('inventario.venta.create') }}" class="btn-venta" style="padding: 9px 18px; font-size: 13px;">
- 🛒 Nueva Venta
- </a>
+  <a href="{{ route('inventario.compra.create') }}" class="btn-compra">
+  📦 Nueva Compra
+  </a>
+  <a href="{{ route('inventario.venta.create') }}" class="btn-venta">
+  🛒 Nueva Venta
+  </a>
  @endif
  </div>
  </div>
@@ -67,7 +67,7 @@
     $dim = $f->estado === 'anulada' ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
     $dimLight = $f->estado === 'anulada' ? 'opacity-60' : '';
   @endphp
-  <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+   <tr id="factura-{{ $f->id }}" class="scroll-mt-[6.5rem]">
   <td class="text-center font-mono font-bold text-sm text-slate-700 dark:text-slate-300 {{ $dim }}">{{ $f->numero_factura }}</td>
   <td class="text-center {{ $dimLight }}">
   <span class="pill {{ $f->tipo_movimiento === 'compra' ? 'pill-pending' : 'pill-done' }}">
@@ -130,11 +130,13 @@
   <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs" title="Imprimir">🖨️</a>
   
   @if(!auth()->user()->isInvitado())
-  <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 border-yellow-500/20 hover:bg-yellow-500/10" title="Editar">✏️</a>
+  <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
   
-  <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}', {{ $f->estado === 'anulada' ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $f->estado === 'anulada' ? 'text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $f->estado === 'anulada' ? 'Reactivar Factura' : 'Anular Factura' }}">
+  <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}', {{ $f->estado === 'anulada' ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $f->estado === 'anulada' ? 'text-emerald-600' : 'text-red-600' }}" title="{{ $f->estado === 'anulada' ? 'Reactivar Factura' : 'Anular Factura' }}">
   {{ $f->estado === 'anulada' ? '✅' : '🚫' }}
   </button>
+  @else
+  <span class="text-xs text-gray-400 font-medium">👁️ Lectura</span>
   @endif
   </div>
   </td>
@@ -148,8 +150,8 @@
  <p class="text-gray-500 font-medium max-w-sm mb-4">No se han realizado compras ni ventas de inventario.</p>
  @if(!auth()->user()->isInvitado())
  <div class="flex gap-3 justify-center">
- <a href="{{ route('inventario.compra.create') }}" class="btn-compra" style="padding: 9px 18px; font-size: 13px;">📦 Comprar</a>
- <a href="{{ route('inventario.venta.create') }}" class="btn-venta" style="padding: 9px 18px; font-size: 13px;">🛒 Vender</a>
+  <a href="{{ route('inventario.compra.create') }}" class="btn-compra">📦 Comprar</a>
+  <a href="{{ route('inventario.venta.create') }}" class="btn-venta">🛒 Vender</a>
  </div>
  @endif
  </div>

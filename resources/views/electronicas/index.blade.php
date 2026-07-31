@@ -1,24 +1,5 @@
 @extends('layouts.app')
 @section('content')
-<style>
-  /* Fila resaltada al llegar por ancla (#electronica-id) */
-  tr.active-target td {
-    background-color: rgba(168, 85, 247, 0.08) !important;
-    border-top: 1.5px solid rgba(168, 85, 247, 0.3) !important;
-    border-bottom: 1.5px solid rgba(168, 85, 247, 0.3) !important;
-  }
-  tr.active-target td:first-child {
-    border-left: 4px solid #a855f7 !important;
-  }
-  .dark tr.active-target td {
-    background-color: rgba(168, 85, 247, 0.15) !important;
-    border-top: 1.5px solid rgba(192, 132, 252, 0.4) !important;
-    border-bottom: 1.5px solid rgba(192, 132, 252, 0.4) !important;
-  }
-  .dark tr.active-target td:first-child {
-    border-left: 4px solid #c084fc !important;
-  }
-</style>
 
 <div class="glass-card p-6">
 
@@ -66,7 +47,7 @@
     $dim = $e->anulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
     $dimLight = $e->anulado ? 'opacity-60' : '';
   @endphp
-  <tr id="electronica-{{ $e->id }}" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+  <tr id="electronica-{{ $e->id }}" class="scroll-mt-[6.5rem]">
   <td data-label="Orden:" class="font-bold text-center whitespace-nowrap {{ $dim }}">
   <a href="#electronica-{{ $e->id }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline transition-colors">
   {{ $e->id_orden }}
@@ -155,7 +136,7 @@
   <a href="{{ route('electronicas.show', $e->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver detalle">👁️</a>
   
   @if($e->estado === 'terminado' && $e->fecha_salida)
-  <a href="{{ route('electronicas.factura', $e->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-green-600 hover:text-green-700 hover:bg-green-50/50" title="Imprimir Factura">🖨️</a>
+  <a href="{{ route('electronicas.factura', $e->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-green-600" title="Imprimir Factura">🖨️</a>
   @elseif($e->estado === 'terminado')
   <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
   @endif
@@ -163,9 +144,11 @@
   @if(!auth()->user()->isInvitado())
   <a href="{{ route('electronicas.edit', $e->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
   
-  <button type="button" onclick="openAnularModal('{{ route('electronicas.anular', $e->id) }}', {{ $e->anulado ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $e->anulado ? 'text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $e->anulado ? 'Reactivar orden' : 'Anular orden' }}">
+  <button type="button" onclick="openAnularModal('{{ route('electronicas.anular', $e->id) }}', {{ $e->anulado ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $e->anulado ? 'text-emerald-600' : 'text-red-600' }}" title="{{ $e->anulado ? 'Reactivar orden' : 'Anular orden' }}">
   {{ $e->anulado ? '✅' : '🚫' }}
   </button>
+  @else
+  <span class="text-xs text-gray-400 font-medium">👁️ Lectura</span>
   @endif
   </div>
   </td>

@@ -1,23 +1,5 @@
 @extends('layouts.app')
 @section('content')
-<style>
-  tr.active-target td {
-    background-color: rgba(59, 130, 246, 0.08) !important;
-    border-top: 1.5px solid rgba(59, 130, 246, 0.3) !important;
-    border-bottom: 1.5px solid rgba(59, 130, 246, 0.3) !important;
-  }
-  tr.active-target td:first-child {
-    border-left: 4px solid #3b82f6 !important;
-  }
-  .dark tr.active-target td {
-    background-color: rgba(59, 130, 246, 0.15) !important;
-    border-top: 1.5px solid rgba(96, 165, 250, 0.4) !important;
-    border-bottom: 1.5px solid rgba(96, 165, 250, 0.4) !important;
-  }
-  .dark tr.active-target td:first-child {
-    border-left: 4px solid #60a5fa !important;
-  }
-</style>
 <div class="glass-card p-6">
  <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
  <div>
@@ -57,7 +39,7 @@
  <tbody>
  @forelse($proveedores as $p)
  @php $dim = !$p->active ? 'opacity-60 grayscale' : ''; @endphp
- <tr id="proveedor-{{ $p->id }}">
+ <tr id="proveedor-{{ $p->id }}" class="scroll-mt-[6.5rem]">
  <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $p->id }}</td>
  <td class="{{ $dim }}">
  <span class="pill {{ $p->tipo_entidad === 'empresa' ? 'pill-done' : 'pill-pending' }}">
@@ -84,6 +66,8 @@
                                     <button type="button" onclick="openAnularModal('{{ route('proveedores.anular', $p->id) }}', {{ !$p->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $p->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $p->active ? 'Anular Proveedor' : 'Reactivar Proveedor' }}">
   {{ $p->active ? '🚫' : '✅' }}
   </button>
+  @else
+  <span class="text-xs text-gray-400 font-medium">👁️ Lectura</span>
   @endif
   </div>
   </td>

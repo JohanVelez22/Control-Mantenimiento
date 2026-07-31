@@ -8,7 +8,7 @@ class CotizacionController extends Controller
 {
     public function index()
     {
-        $cotizaciones = \App\Models\Cotizacion::with('cliente', 'user')->orderBy('id', 'desc')->paginate(15);
+        $cotizaciones = \App\Models\Cotizacion::with(['cliente', 'user', 'items'])->orderBy('id', 'desc')->paginate(15);
         return view('cotizaciones.index', compact('cotizaciones'));
     }
 

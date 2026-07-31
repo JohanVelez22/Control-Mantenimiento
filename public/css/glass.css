@@ -538,6 +538,24 @@ html.dark #ts-topbar {
   box-shadow: 0 1px 12px rgba(0, 0, 0, 0.30);
 }
 
+/* --- BOTÓN GLOBAL CONFIGURACIÓN DE HORIZONTALIDAD Y NO WRAP --- */
+.btn-primary,
+.btn-clean,
+.btn-save,
+.btn-cancel,
+.btn-save-print,
+.btn-concepts,
+.btn-venta,
+.btn-compra,
+.btn-purple,
+.btn-secondary,
+.btn-ghost,
+.btn-danger,
+.btn-success {
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
+
 /* --- BOTÓN PRIMARIO VIDRIO LIQUIDO -------------------------------------------------- */
 .btn-primary {
   display: inline-flex;
@@ -2981,4 +2999,28 @@ html.dark .glass-backdrop {
 .hide-scrollbar::-webkit-scrollbar {
     display: none;
 }
+
+/* --- UNIFIED ROW TARGET HIGHLIGHTING --- */
+tr:target,
+tr.active-target {
+    animation: highlight-row 2.5s ease-out forwards;
+}
+
+html.dark tr:target,
+html.dark tr.active-target {
+    animation: highlight-row-dark 2.5s ease-out forwards;
+}
+
+@keyframes highlight-row {
+    0% { background-color: rgba(37, 99, 235, 0.28) !important; }
+    60% { background-color: rgba(37, 99, 235, 0.15) !important; }
+    100% { background-color: rgba(37, 99, 235, 0.06) !important; }
+}
+
+@keyframes highlight-row-dark {
+    0% { background-color: rgba(59, 130, 246, 0.35) !important; }
+    60% { background-color: rgba(59, 130, 246, 0.20) !important; }
+    100% { background-color: rgba(59, 130, 246, 0.08) !important; }
+}
+
 

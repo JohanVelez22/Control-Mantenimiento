@@ -1106,8 +1106,21 @@
             if (e.key === 'Escape' && lightboxOpen) closeImageLightbox();
         });
 
-        document.getElementById('image-lightbox').addEventListener('click', function(e) {
-            if (e.target === this) closeImageLightbox();
+        // Global Hash Target Row Highlighter
+        document.addEventListener('DOMContentLoaded', () => {
+            function highlightTargetRow() {
+                if (window.location.hash) {
+                    const id = window.location.hash.substring(1);
+                    const targetEl = document.getElementById(id);
+                    if (targetEl) {
+                        targetEl.classList.remove('active-target');
+                        void targetEl.offsetWidth; // force reflow
+                        targetEl.classList.add('active-target');
+                    }
+                }
+            }
+            highlightTargetRow();
+            window.addEventListener('hashchange', highlightTargetRow);
         });
     </script>
 

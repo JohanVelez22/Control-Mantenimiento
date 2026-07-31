@@ -77,13 +77,28 @@
  </div>
  </div>
 
- {{-- Costo --}}
- <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm mt-2">
- <label class="field-label text-center mb-2 block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Costo Estimado / Final ($) *</label>
- <input type="text" id="costo_visual" value="{{ old('costo', isset($electronica) ? number_format($electronica->costo, 0, '', '') : 0) }}" class="glass-input bg-white/50 dark:bg-slate-900/60 border-gray-200/50 dark:border-white/5 text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20" placeholder="0">
- <input type="hidden" name="costo" id="costo_real" value="{{ old('costo', isset($electronica) ? intval($electronica->costo) : 0) }}">
- @error('costo') <p class="text-red-500 text-xs font-bold mt-2 text-center">{{ $message }}</p> @enderror
- </div>
+  {{-- Costo --}}
+  <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm mt-2">
+  <label class="field-label text-center mb-2 block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Costo Estimado / Final ($) *</label>
+  <input type="text" id="costo_visual" value="{{ old('costo', isset($electronica) ? number_format($electronica->costo, 0, '', '') : 0) }}" class="glass-input bg-white/50 dark:bg-slate-900/60 border-gray-200/50 dark:border-white/5 text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20" placeholder="0">
+  <input type="hidden" name="costo" id="costo_real" value="{{ old('costo', isset($electronica) ? intval($electronica->costo) : 0) }}">
+  @error('costo') <p class="text-red-500 text-xs font-bold mt-2 text-center">{{ $message }}</p> @enderror
+  </div>
+
+  @if(isset($electronica) && auth()->user()->isTecnico())
+  <div class="md:col-span-2 mt-4">
+    <label class="field-label flex items-center gap-2"><span>🔐</span> Contraseña de Administrador *</label>
+    <input type="password" name="admin_password" class="glass-input mt-1" placeholder="Requerida para guardar cambios" autocomplete="off">
+    <p class="text-xs text-gray-400 mt-1">Como técnico, debes confirmar con la contraseña de un administrador para editar.</p>
+  </div>
+  @endif
+
+  <div class="md:col-span-2 flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+  <a href="{{ route('electronicas.index') }}" class="btn-cancel">↩️ Cancelar</a>
+  <button type="submit" class="btn-save">
+  {{ isset($electronica) ? '🔄 Actualizar Registro' : '💾 Guardar Registro' }}
+  </button>
+  </div>
 
 </div>
 

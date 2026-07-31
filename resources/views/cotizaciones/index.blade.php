@@ -54,7 +54,7 @@
                     }
                     $dim = $cot->anulado ? 'opacity-60 grayscale' : '';
                 @endphp
-                <tr class="{{ $dim }}">
+                <tr id="cotizacion-{{ $cot->id }}" class="scroll-mt-[6.5rem] {{ $dim }}">
                     <td data-label="Código" class="font-bold text-slate-600 dark:text-slate-300">{{ $cot->codigo }}</td>
                     <td data-label="Tipo" class="font-bold text-indigo-600 dark:text-indigo-400 text-sm whitespace-nowrap">{{ $tipoStr }}</td>
                     <td data-label="Descripción" class="text-gray-600 dark:text-gray-300 text-xs font-medium max-w-[200px] truncate" title="{{ $descStr }}">{{ $descStr }}</td>
@@ -83,33 +83,32 @@
                                 <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-40 cursor-not-allowed" title="Requiere estar aprobada para imprimir PDF">🖨️</span>
                             @endif
 
-                            @if($cot->estado === 'pendiente' && !$cot->anulado && (!auth()->user() || auth()->user()->role !== 'invitado'))
-                                <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
-                            @else
-                                <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-40 cursor-not-allowed" title="Solo se pueden editar cotizaciones pendientes">✏️</span>
-                            @endif
-
-                            @if(!auth()->user() || auth()->user()->role !== 'invitado')
-                                @if(!$cot->anulado)
-                                    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', false)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-red-600 border-red-500/20 hover:bg-red-500/10" title="Anular cotización">
-                                        🚫
-                                    </button>
-                                @else
-                                    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', true)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10" title="Reactivar cotización">
-                                        ✅
-                                    </button>
+                            @if(!auth()->user()->isInvitado())
+                                @if($cot->estado === 'pendiente' && !$cot->anulado)
+                                    <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
                                 @endif
+
+                                <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', {{ $cot->anulado ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $cot->anulado ? 'text-emerald-600' : 'text-red-600' }}" title="{{ $cot->anulado ? 'Reactivar cotización' : 'Anular cotización' }}">
+                                    {{ $cot->anulado ? '✅' : '🚫' }}
+                                </button>
+                            @else
+                                <span class="text-xs text-gray-400 font-medium">👁️ Lectura</span>
                             @endif
                         </div>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="9" class="p-6">
-                        <div class="glass-card flex flex-col items-center justify-center space-y-3 p-12 border border-slate-200/50 dark:border-slate-700/50">
-                            <div class="text-5xl opacity-80">📝</div>
-                            <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No hay cotizaciones aún</h3>
-                            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Las cotizaciones creadas aparecerán aquí.</p>
+                    <td colspan="9" class="p-16 text-center">
+                        <div class="flex flex-col items-center justify-center gap-3">
+                            <div class="text-6xl drop-shadow-md mb-2">📝</div>
+                            <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin cotizaciones aún</h3>
+                            <p class="text-gray-500 font-medium max-w-sm mb-4">Las cotizaciones registradas aparecerán aquí.</p>
+                            @if(!auth()->user()->isInvitado())
+                            <a href="{{ route('cotizaciones.create') }}" class="btn-primary">
+                                ➕ Nueva Cotización
+                            </a>
+                            @endif
                         </div>
                     </td>
                 </tr>
@@ -117,8 +116,8 @@
             </tbody>
         </table>
     </div>
-    <div class="mt-4 px-4 pb-4">
-        {{ $cotizaciones->links() }}
+    <div class="mt-6 flex justify-end">
+        {{ $cotizaciones->appends(request()->query())->links() }}
     </div>
 </div>
 

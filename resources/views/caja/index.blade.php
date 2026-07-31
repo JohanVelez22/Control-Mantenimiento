@@ -99,7 +99,7 @@
 $dim = $m->anulado ? 'opacity-60 grayscale' : '';
 $dimLight = $m->anulado ? 'opacity-60' : '';
 @endphp
-<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+  <tr class="scroll-mt-[6.5rem]">
 <td data-label="Código:" class="text-center font-bold {{ $dim }}">{{ $m->id }}</td>
 <td data-label="Fecha:" class="text-center font-medium {{ $dim }}">{{ $m->fecha->format('d/m/Y') }}</td>
  <td data-label="Entidad:" class="{{ $dim }}">
@@ -162,7 +162,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
   @if(!auth()->user()->isInvitado())
   <a href="{{ route('caja.edit', $m->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
 
-                         <button type="button" onclick="openAnularModal('{{ route('caja.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $m->anulado ? 'grayscale opacity-60 hover:bg-gray-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $m->anulado ? 'Reactivar movimiento' : 'Anular movimiento' }}">
+                         <button type="button" onclick="openAnularModal('{{ route('caja.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $m->anulado ? 'text-emerald-600' : 'text-red-600' }}" title="{{ $m->anulado ? 'Reactivar movimiento' : 'Anular movimiento' }}">
   {{ $m->anulado ? '✅' : '🚫' }}
   </button>
   @endif </div>

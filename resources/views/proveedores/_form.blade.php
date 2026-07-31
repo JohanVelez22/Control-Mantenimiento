@@ -133,6 +133,11 @@
                   placeholder="Ej: Crédito a 30 días, descuento del 5%...">{{ old('notas', $p?->notas ?? '') }}</textarea>
     </div>
 
+    <div class="md:col-span-2 flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+        <a href="{{ route('proveedores.index') }}" class="btn-cancel">↩️ Cancelar</a>
+        <button type="submit" class="btn-save">{{ $p ? '🔄 Actualizar Proveedor' : '💾 Guardar Proveedor' }}</button>
+    </div>
+
 </div>
 
 <script>

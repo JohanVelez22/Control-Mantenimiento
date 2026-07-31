@@ -15,11 +15,6 @@
         <form action="{{ route('proveedores.update', $proveedor->id) }}" method="POST" class="space-y-6">
             @csrf @method('PUT')
             @include('proveedores._form', ['proveedor' => $proveedor])
-
-            <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-                <a href="{{ route('proveedores.show', $proveedor->id) }}" class="btn-cancel">↩️ Cancelar</a>
-                <button type="submit" class="btn-save">🔄 Actualizar Proveedor</button>
-            </div>
         </form>
     </div>
 </div>

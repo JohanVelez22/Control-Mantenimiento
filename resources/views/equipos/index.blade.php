@@ -1,13 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<style>
-  /* Fila resaltada al llegar por ancla (#equipo-id) */
-  tr:target {
-  background-color: rgba(59, 130, 246, 0.2) !important;
-  outline: 2px solid #3b82f6;
-  }
-</style>
 
 <div class="glass-card p-6">
  <div class="flex flex-wrap justify-between items-center gap-3 mb-6">

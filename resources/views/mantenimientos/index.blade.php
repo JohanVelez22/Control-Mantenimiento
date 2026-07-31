@@ -1,24 +1,5 @@
 @extends('layouts.app')
 @section('content')
-<style>
-  /* Fila resaltada al llegar por ancla (#mantenimiento-id) */
-  tr.active-target td {
-    background-color: rgba(59, 130, 246, 0.08) !important;
-    border-top: 1.5px solid rgba(59, 130, 246, 0.3) !important;
-    border-bottom: 1.5px solid rgba(59, 130, 246, 0.3) !important;
-  }
-  tr.active-target td:first-child {
-    border-left: 4px solid #3b82f6 !important;
-  }
-  .dark tr.active-target td {
-    background-color: rgba(59, 130, 246, 0.15) !important;
-    border-top: 1.5px solid rgba(96, 165, 250, 0.4) !important;
-    border-bottom: 1.5px solid rgba(96, 165, 250, 0.4) !important;
-  }
-  .dark tr.active-target td:first-child {
-    border-left: 4px solid #60a5fa !important;
-  }
-</style>
 
 <div class="glass-card p-6">
   <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
@@ -65,7 +46,7 @@
     $dim = $m->anulado ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
     $dimLight = $m->anulado ? 'opacity-60' : '';
   @endphp
-  <tr id="mantenimiento-{{ $m->id }}" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+  <tr id="mantenimiento-{{ $m->id }}" class="scroll-mt-[6.5rem]">
   <td data-label="Orden:" class="font-bold text-center whitespace-nowrap {{ $dim }}">
   <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
   {{ $m->id_orden }}
@@ -155,7 +136,7 @@
   <a href="{{ route('mantenimientos.show', $m->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver detalle">👁️</a>
   
   @if($m->estado === 'terminado' && $m->fecha_salida)
-  <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-green-600 hover:text-green-700 hover:bg-green-50/50" title="Factura POS">🖨️</a>
+   <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-green-600" title="Factura POS">🖨️</a>
   @elseif($m->estado === 'terminado')
   <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
   @endif
@@ -163,9 +144,11 @@
   @if(!auth()->user()->isInvitado())
   <a href="{{ route('mantenimientos.edit', $m->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
 
-  <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $m->anulado ? 'text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10' : 'text-red-600 border-red-500/20 hover:bg-red-500/10' }}" title="{{ $m->anulado ? 'Reactivar orden' : 'Anular orden' }}">
+  <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $m->anulado ? 'text-emerald-600' : 'text-red-600' }}" title="{{ $m->anulado ? 'Reactivar orden' : 'Anular orden' }}">
   {{ $m->anulado ? '✅' : '🚫' }}
   </button>
+  @else
+  <span class="text-xs text-gray-400 font-medium">👁️ Lectura</span>
   @endif
   </div>
   </td>
