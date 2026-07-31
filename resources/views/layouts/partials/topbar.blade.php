@@ -87,6 +87,15 @@
                                         <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#a855f7; box-shadow:0 2px 6px rgba(168,85,247,0.4)">{{ $elecPendientes }}</span>
                                     </button>
                                     @endif
+                                    @if($cotPendientes > 0)
+                                    <button onclick="openNotifModal('cot'); document.getElementById('notif-dropdown').classList.add('hidden');"
+                                            class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+                                            style="border-bottom:1px solid rgba(0,0,0,0.05);">
+                                        <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 text-sm" style="background:rgba(99,102,241,0.15);">📑</div>
+                                        <span class="text-sm font-semibold flex-1" style="color:#1e293b;">Cotizaciones</span>
+                                        <span class="text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="background:#6366f1; box-shadow:0 2px 6px rgba(99,102,241,0.4)">{{ $cotPendientes }}</span>
+                                    </button>
+                                    @endif
                                     @if($cajaPendientes > 0)
                                     <button onclick="openNotifModal('caja'); document.getElementById('notif-dropdown').classList.add('hidden');"
                                             class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3 transition-colors hover:bg-amber-50 dark:hover:bg-amber-900/30">

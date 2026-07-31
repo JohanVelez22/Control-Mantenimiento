@@ -70,7 +70,7 @@
     </tr>
 </table>
 
-<div class="signatures-block clearfix" style="position: absolute; bottom: 58px; left: 0; width: 100%;">
+<div class="signatures-block clearfix" style="position: absolute; bottom: 42px; left: 0; width: 100%;">
     <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 4px; font-size: 7.5pt;">
         <strong>Aprobación del Cliente</strong>
     </div>
