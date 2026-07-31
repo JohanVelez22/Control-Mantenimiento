@@ -62,7 +62,7 @@ class DashboardController extends Controller
             'electronica_pendientes' => $counts->elec_pendientes,
         ];
 
-        // --- Gráficos de los últimos 7 días: 3 queries agrupadas en lugar de 28 ---
+        // --- Gráficos de los últimos 7 días: queries agrupadas ---
         $startDate = Carbon::today()->subDays(6)->startOfDay();
         $endDate   = Carbon::today()->endOfDay();
 
@@ -78,11 +78,26 @@ class DashboardController extends Controller
             ->groupBy('fecha')
             ->pluck('total', 'fecha');
 
-        // 1 query: costo de mantenimientos terminados por fecha_salida de los últimos 7 días
-        $costoTerminadosPorDia = Mantenimiento::where('anulado', false)
-            ->where('estado', 'terminado')
-            ->whereBetween('fecha_salida', [$startDate, $endDate])
-            ->selectRaw("DATE(fecha_salida) as fecha, SUM(costo) as total")
+        // 1 query: ingresos reales de caja por día (ingresos - egresos)
+        $ingresosPorDia = \App\Models\MovimientoCaja::where('estado', 'activo')
+            ->where('anulado', false)
+            ->whereBetween('fecha', [$startDate, $endDate])
+            ->selectRaw('DATE(fecha) as fecha, SUM(CASE WHEN tipo_movimiento = "ingreso" THEN monto ELSE -monto END) as total')
+            ->groupBy('fecha')
+            ->pluck('total', 'fecha');
+
+        // 1 query: ventas e ingresos por día (para desglose)
+        $ventasPorDia = \App\Models\Factura::where('estado', '!=', 'anulada')
+            ->whereBetween('fecha', [$startDate, $endDate])
+            ->where('tipo_movimiento', 'venta')
+            ->selectRaw('DATE(fecha) as fecha, SUM(total_documento) as total')
+            ->groupBy('fecha')
+            ->pluck('total', 'fecha');
+
+        $comprasPorDia = \App\Models\Factura::where('estado', '!=', 'anulada')
+            ->whereBetween('fecha', [$startDate, $endDate])
+            ->where('tipo_movimiento', 'compra')
+            ->selectRaw('DATE(fecha) as fecha, SUM(total_documento) as total')
             ->groupBy('fecha')
             ->pluck('total', 'fecha');
 
@@ -92,14 +107,17 @@ class DashboardController extends Controller
         $dataMantenimientos = [];
         $dataIngresos = [];
         $dataIngresosAcumulados = [];
+        $dataVentas = [];
+        $dataCompras = [];
 
-        // Para el acumulado debemos partir del saldo histórico de mantenimientos terminados
-        $costoAnterior = Mantenimiento::where('anulado', false)
-            ->where('estado', 'terminado')
-            ->where('fecha_salida', '<', $startDate)
-            ->sum('costo');
-            
-        $acumulado = $costoAnterior;
+        // Para el acumulado: saldo histórico de movimientos de caja hasta la fecha de inicio
+        $saldoAnterior = \App\Models\MovimientoCaja::where('estado', 'activo')
+            ->where('anulado', false)
+            ->where('fecha', '<', $startDate)
+            ->selectRaw('SUM(CASE WHEN tipo_movimiento = "ingreso" THEN monto ELSE -monto END) as total')
+            ->value('total') ?? 0;
+
+        $acumulado = (float) $saldoAnterior;
 
         for ($i = 0; $i < 7; $i++) {
             $date = Carbon::today()->subDays(6 - $i);
@@ -107,11 +125,15 @@ class DashboardController extends Controller
             $labels[]             = $date->format('d/m');
             $dataEquipos[]        = (int)   ($equiposPorDia[$key]  ?? 0);
             $dataMantenimientos[] = (int)   ($mantPorDia[$key]     ?? 0);
-            $costoDia = (float) ($costoTerminadosPorDia[$key] ?? 0);
+            $ingresoDia = (float) ($ingresosPorDia[$key] ?? 0);
+            $ventasDia  = (float) ($ventasPorDia[$key] ?? 0);
+            $comprasDia = (float) ($comprasPorDia[$key] ?? 0);
 
-            $dataIngresos[]       = $costoDia;
-            $acumulado           += $costoDia;
+            $dataIngresos[]       = $ingresoDia;
+            $acumulado           += $ingresoDia;
             $dataIngresosAcumulados[] = $acumulado;
+            $dataVentas[]       = $ventasDia;
+            $dataCompras[]      = $comprasDia;
         }
 
         // Estadísticas de Electrónica consolidadas (1 query en lugar de 4)
@@ -151,6 +173,8 @@ class DashboardController extends Controller
             'mantenimientos'          => $dataMantenimientos,
             'ingresos'                => $dataIngresos,
             'ingresosAcumulados'      => $dataIngresosAcumulados,
+            'ventas'                  => $dataVentas,
+            'compras'                 => $dataCompras,
             // Datos para el slide 4: resumen electrónica
             'electronicaPendientes'   => $electronicaPendientes,
             'electronicaTerminados'   => $electronicaTerminados,

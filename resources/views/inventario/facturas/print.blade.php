@@ -22,50 +22,76 @@
     </div>
 </div>
 
-<table class="items-table">
+<table class="items-table" style="text-align: center;">
     <thead>
         <tr>
             <th class="text-center" style="width: 10%;">CANT</th>
-            <th>DESCRIPCIÓN / PRODUCTO</th>
-            <th class="text-right" style="width: 20%;">V. UNITARIO</th>
-            <th class="text-right" style="width: 20%;">SUBTOTAL</th>
+            <th class="text-center">DESCRIPCIÓN / PRODUCTO</th>
+            <th class="text-center" style="width: 22%;">V. UNITARIO</th>
+            <th class="text-center" style="width: 22%;">SUBTOTAL</th>
         </tr>
     </thead>
     <tbody>
         @foreach($factura->items as $item)
         <tr>
             <td class="text-center">{{ $item->cantidad }}</td>
-            <td>{{ $item->stock->producto ?? $item->descripcion ?? 'Producto Desconocido' }}</td>
-            <td class="text-right">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
-            <td class="text-right">${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}</td>
+            <td class="text-center">{{ $item->stock->producto ?? $item->descripcion ?? 'Producto Desconocido' }}</td>
+            <td class="text-center">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+            <td class="text-center">${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}</td>
         </tr>
         @endforeach
     </tbody>
 </table>
 
-<div class="clearfix">
-    <div style="float: left; width: 45%; border: 1px solid #ccc; padding: 10px; background: #fafafa; font-size: 8pt; min-height: 60px;">
+<div class="clearfix" style="margin-bottom: 4px;">
+    <div style="float: left; width: 45%; border: 1px solid #ccc; padding: 4px 6px; background: #fafafa; font-size: 7.5pt; height: 42px; box-sizing: border-box; overflow: hidden;">
         <strong>Observaciones:</strong><br>
-        {!! nl2br(e($factura->observaciones ?: 'Sin observaciones.')) !!}
+        <span style="color: #333;">{!! nl2br(e($factura->observaciones ?: 'Sin observaciones.')) !!}</span>
     </div>
 
-    <table class="totals">
+    <table class="totals" style="width: 48%; float: right; margin-bottom: 0;">
         <tr>
-            <td class="lbl">Total Documento:</td>
-            <td class="val">${{ number_format($factura->total_documento, 0, ',', '.') }}</td>
+            <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">Total Documento:</td>
+            <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">${{ number_format($factura->total_documento, 0, ',', '.') }}</td>
         </tr>
         <tr>
-            <td class="lbl">Total Pagado:</td>
-            <td class="val" style="color: green;">${{ number_format($factura->total_pagado, 0, ',', '.') }}</td>
+            <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">Total Pagado:</td>
+            <td class="val" style="font-size: 7.5pt; padding: 1px 3px; color: green;">${{ number_format($factura->total_pagado, 0, ',', '.') }}</td>
         </tr>
         <tr class="grand-total">
-            <td class="lbl">SALDO PENDIENTE:</td>
-            <td class="val" style="{{ $factura->saldo_pendiente <= 0 ? 'color: green;' : 'color: red;' }}">
+            <td class="lbl" style="font-size: 8pt; padding: 1px 3px;">SALDO PENDIENTE:</td>
+            <td class="val" style="font-size: 8pt; padding: 1px 3px; {{ $factura->saldo_pendiente <= 0 ? 'color: green;' : 'color: red;' }}">
                 ${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}
             </td>
         </tr>
     </table>
 </div>
+
+@if(isset($abonos) && $abonos->count() > 0)
+<div style="margin-top: 4px; clear: both;">
+    <p style="font-size: 7pt; font-weight: bold; text-transform: uppercase; color: #333; margin: 0 0 2px; text-align: left;">HISTORIAL DE ABONOS / PAGOS RECIBIDOS:</p>
+    <table class="items-table" style="font-size: 6.5pt; margin-bottom: 0; width: 100%; text-align: center;">
+        <thead>
+            <tr style="background: #f8fafc;">
+                <th style="padding: 1px 3px; text-align: center; width: 15%;">FECHA</th>
+                <th style="padding: 1px 3px; text-align: center; width: 25%;">MEDIO PAGO</th>
+                <th style="padding: 1px 3px; text-align: center;">DESCRIPCIÓN</th>
+                <th style="padding: 1px 3px; text-align: center; width: 20%;">ABONO</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($abonos->take(3) as $abono)
+            <tr>
+                <td style="padding: 1px 3px; text-align: center;">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }}</td>
+                <td style="padding: 1px 3px; text-align: center;">{{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Banco / Transf.' }}</td>
+                <td style="padding: 1px 3px; text-align: center;">{{ $abono->descripcion }}</td>
+                <td style="padding: 1px 3px; text-align: center; font-weight: bold; color: green;">${{ number_format($abono->monto, 0, ',', '.') }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+@endif
 
 <div class="signatures-block clearfix">
     <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">

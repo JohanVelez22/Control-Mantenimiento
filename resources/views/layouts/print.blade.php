@@ -59,18 +59,18 @@
         }
         .doc-title {
             text-align: center;
-            font-size: 11pt;
+            font-size: 10.5pt;
             font-weight: bold;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             background-color: #f3f4f6;
-            padding: 4px;
+            padding: 3px;
             border: 1px solid #ddd;
         }
         .info-grid {
             display: table;
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
         .info-col {
             display: table-cell;
@@ -78,18 +78,18 @@
             vertical-align: top;
         }
         .info-col p {
-            margin: 2px 0;
-            font-size: 9pt;
+            margin: 1px 0;
+            font-size: 8.5pt;
         }
         table.items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
         table.items-table th, table.items-table td {
             border: 1px solid #ccc;
-            padding: 5px;
-            font-size: 8.5pt;
+            padding: 2px 4px;
+            font-size: 7.5pt;
         }
         table.items-table th {
             background-color: #f3f4f6;
@@ -103,18 +103,18 @@
         table.items-table th.text-center { text-align: center; }
 
         .totals {
-            width: 45%;
+            width: 48%;
             float: right;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
         .totals td {
-            padding: 3px 5px;
-            font-size: 9pt;
+            padding: 2px 4px;
+            font-size: 7.5pt;
         }
         .totals td.lbl { font-weight: bold; text-align: right; }
         .totals td.val { text-align: right; border-bottom: 1px solid #ddd; }
-        .totals tr.grand-total td { font-size: 10pt; font-weight: bold; border-top: 2px solid #000; border-bottom: none; }
+        .totals tr.grand-total td { font-size: 8.5pt; font-weight: bold; border-top: 1.5px solid #000; border-bottom: none; }
         
         .clearfix::after { content: ""; clear: both; display: table; }
 

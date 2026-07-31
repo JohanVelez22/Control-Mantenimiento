@@ -207,6 +207,7 @@ class MovimientoCajaController extends Controller
 
             unset($validated['nuevo_concepto']);
             $movimiento->update($validated);
+            $this->sincronizarFacturaRelacionada($movimiento);
             DB::commit();
 
             return redirect()->route('caja.index')->with('success', 'Movimiento actualizado correctamente.');
@@ -270,6 +271,28 @@ class MovimientoCajaController extends Controller
         try {
             DB::beginTransaction();
 
+            $numFactura = null;
+            if (preg_match('/#([A-Za-z0-9-]+)/', $movimiento->descripcion, $matches)) {
+                $numFactura = $matches[1];
+            }
+
+            $esPagoCompleto = ($validated['monto_abono'] >= $movimiento->saldo_pendiente);
+
+            $descAbono = $validated['descripcion'];
+            if (!$descAbono) {
+                if ($numFactura) {
+                    $descAbono = $esPagoCompleto 
+                        ? "Pago final de saldo #" . $numFactura 
+                        : "Abono parcial a #" . $numFactura;
+                } else {
+                    $descAbono = $esPagoCompleto 
+                        ? "Pago final de saldo (Movimiento #" . $movimiento->id . ")" 
+                        : "Abono parcial a movimiento #" . $movimiento->id;
+                }
+            } else if ($numFactura && !str_contains($descAbono, '#' . $numFactura)) {
+                $descAbono .= " (Ref #" . $numFactura . ")";
+            }
+
             MovimientoCaja::create([
                 'empresa'         => $movimiento->empresa,
                 'persona'         => $movimiento->persona,
@@ -279,12 +302,14 @@ class MovimientoCajaController extends Controller
                 'tipo_pago'       => $validated['tipo_pago'],
                 'monto'           => $validated['monto_abono'],
                 'monto_total'     => 0, // Los abonos parciales no tienen total propio
-                'descripcion'     => $validated['descripcion'] ?: 'Abono parcial a saldo de movimiento #' . $movimiento->id,
+                'descripcion'     => $descAbono,
                 'estado'          => 'activo',
                 'anulado'         => false,
                 'user_id'         => auth()->id(),
                 'parent_id'       => $movimiento->id,
             ]);
+
+            $this->sincronizarFacturaRelacionada($movimiento);
 
             DB::commit();
 
@@ -329,12 +354,31 @@ class MovimientoCajaController extends Controller
             // Anular o restaurar todos los abonos asociados en cascada
             $movimiento->childPayments()->update(['anulado' => $esAnulacion]);
 
+            $this->sincronizarFacturaRelacionada($movimiento);
+
             DB::commit();
             return redirect()->back()->with('success', $esAnulacion ? 'Movimiento y sus abonos anulados correctamente.' : 'Movimiento y sus abonos reactivados correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error anulando movimiento de caja: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al anular el movimiento de caja.');
+        }
+    }
+
+    private function sincronizarFacturaRelacionada(MovimientoCaja $movimiento): void
+    {
+        $textToSearch = $movimiento->descripcion;
+        if ($movimiento->parent_id && $movimiento->parent) {
+            $textToSearch .= ' ' . $movimiento->parent->descripcion;
+        }
+
+        if (preg_match_all('/#([A-Za-z0-9-]+)/', $textToSearch, $matches)) {
+            foreach ($matches[1] as $numFactura) {
+                $factura = \App\Models\Factura::where('numero_factura', $numFactura)->first();
+                if ($factura) {
+                    $factura->recalcularPagos();
+                }
+            }
         }
     }
 }

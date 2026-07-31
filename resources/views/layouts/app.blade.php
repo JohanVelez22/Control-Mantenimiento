@@ -555,6 +555,7 @@
 
                 {{-- Mantenimientos --}}
                 @foreach($mantList as $m)
+                @if(is_object($m))
                 <a href="{{ route('mantenimientos.show', $m->id) }}" onclick="closeNotifModal()" data-notif-type="mant"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-blue-500 rounded-l-xl"></div>
@@ -563,15 +564,17 @@
                             <span class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Mantenimiento</span>
                             <span class="text-[10px] font-bold text-blue-500 dark:text-blue-300">{{ $m->id_orden }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $m->equipo->nombre ?? 'N/A' }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $m->equipo->cliente->nombre ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $m->equipo?->nombre ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ is_object($m->equipo?->cliente) ? trim(($m->equipo->cliente->nombres ?? '') . ' ' . ($m->equipo->cliente->apellidos ?? '')) : '—' }}</p>
                     </div>
                     <span class="shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
+                @endif
                 @endforeach
 
                 {{-- Electrónica --}}
                 @foreach($elecList as $e)
+                @if(is_object($e))
                 <a href="{{ route('electronicas.show', $e->id) }}" onclick="closeNotifModal()" data-notif-type="elec"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-purple-500 rounded-l-xl"></div>
@@ -580,32 +583,36 @@
                             <span class="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Electrónica</span>
                             <span class="text-[10px] font-bold text-purple-500 dark:text-purple-300">{{ $e->id_orden }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $e->equipo->nombre ?? 'N/A' }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $e->equipo->cliente->nombre ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $e->equipo?->nombre ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ is_object($e->equipo?->cliente) ? trim(($e->equipo->cliente->nombres ?? '') . ' ' . ($e->equipo->cliente->apellidos ?? '')) : '—' }}</p>
                     </div>
                     <span class="shrink-0 text-purple-500 dark:text-purple-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
+                @endif
                 @endforeach
 
                 {{-- Cotizaciones --}}
                 @foreach($cotList as $c)
-                <a href="{{ route('cotizaciones.show', $c['id']) }}" onclick="closeNotifModal()" data-notif-type="cot"
+                @if(is_object($c))
+                <a href="{{ route('cotizaciones.show', $c->id ?? $c['id'] ?? 0) }}" onclick="closeNotifModal()" data-notif-type="cot"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Cotización</span>
-                            <span class="text-[10px] font-bold text-indigo-500 dark:text-indigo-300">{{ $c['codigo'] }}</span>
+                            <span class="text-[10px] font-bold text-indigo-500 dark:text-indigo-300">{{ $c->codigo ?? $c['codigo'] ?? '—' }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $c['cliente']['nombre'] ?? 'N/A' }}</p>
-                        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold truncate">Total: ${{ number_format($c['total'], 0, ',', '.') }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ is_object($c->cliente) ? trim(($c->cliente->nombres ?? '') . ' ' . ($c->cliente->apellidos ?? '')) : 'N/A' }}</p>
+                        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold truncate">Total: ${{ number_format($c->total ?? $c['total'] ?? 0, 0, ',', '.') }}</p>
                     </div>
                     <span class="shrink-0 text-indigo-500 dark:text-indigo-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
+                @endif
                 @endforeach
 
                 {{-- Facturas con saldo pendiente --}}
                 @foreach($cajaList as $f)
+                @if(is_object($f))
                 <a href="{{ route('inventario.facturas.show', $f->id) }}" onclick="closeNotifModal()" data-notif-type="caja"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
@@ -614,17 +621,19 @@
                             <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Factura</span>
                             <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $f->numero_factura }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ is_object($f->facturable) ? ($f->facturable->nombre_razon_social ?? $f->facturable->nombre ?? '—') : '—' }}</p>
                         <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
                             Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}
                         </p>
                     </div>
                     <span class="shrink-0 text-orange-500 dark:text-orange-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
+                @endif
                 @endforeach
 
                 {{-- Ingresos/Egresos con saldo pendiente --}}
                 @foreach($movimientosPendientes as $mov)
+                @if(is_object($mov))
                 @php
                     $isIngreso = $mov->tipo_movimiento === 'ingreso';
                     $bgClass = $isIngreso ? 'bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border-emerald-100 dark:border-emerald-800' : 'bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 border-orange-100 dark:border-orange-800';
@@ -642,13 +651,14 @@
                             <span class="text-[10px] font-black {{ $titleClass }} uppercase tracking-wider">Saldo {{ ucfirst($mov->tipo_movimiento) }}</span>
                             <span class="text-[10px] font-bold {{ $idClass }}">#{{ $mov->id }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $mov->concepto->nombre ?? '—' }} - {{ $mov->persona ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ is_object($mov->concepto) ? $mov->concepto->nombre : ($mov->concepto ?? '—') }} - {{ $mov->persona ?? '—' }}</p>
                         <p class="text-xs {{ $montoClass }} font-semibold">
-                            Falta pagar: ${{ number_format($mov->monto_total - $mov->monto, 0, ',', '.') }}
+                            Falta pagar: ${{ number_format($mov->saldo_pendiente, 0, ',', '.') }}
                         </p>
                     </div>
                     <span class="shrink-0 {{ $arrowClass }} group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
+                @endif
                 @endforeach
 
             </div>
@@ -902,9 +912,26 @@
             };
 
             window.formatNumber = function(num) {
-                const parts = num.toString().split('.');
-                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                return parts.join('.');
+                if (num === null || num === undefined || num === '') return '0';
+                if (typeof num === 'number') {
+                    if (isNaN(num)) return '0';
+                    return num.toLocaleString('es-CO');
+                }
+                let str = String(num).trim();
+                if (!str) return '0';
+                // Si viene con comas, es decimal (ej: "1.500,50" -> 1500.50)
+                if (str.includes(',')) {
+                    str = str.replace(/\./g, '').replace(',', '.');
+                } else if ((str.match(/\./g) || []).length > 1) {
+                    // Múltiples puntos = separador de miles (ej: "1.500.000")
+                    str = str.replace(/\./g, '');
+                } else if ((str.match(/\./g) || []).length === 1 && str.split('.')[1].length === 3) {
+                    // Un solo punto con 3 dígitos después = separador de miles (ej: "260.000")
+                    str = str.replace(/\./g, '');
+                }
+                let n = parseFloat(str);
+                if (isNaN(n)) return '0';
+                return n.toLocaleString('es-CO');
             };
 
             // Formatear inputs monetarios al cargar la página

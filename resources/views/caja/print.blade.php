@@ -119,8 +119,8 @@
         $abonosMostrar = $abonosPrevios->sortBy('fecha')->take(3);
     @endphp
 
-    <div style="margin-top: 4px; border-top: 1px dashed #ccc; padding-top: 3px;">
-        <p style="font-size: 7pt; font-weight: bold; margin: 0 0 2px;">Historial de Pagos Anteriores (Movimiento Padre #{{ $parent->id }}):</p>
+    <div style="margin-top: 4px; clear: both;">
+        <p style="font-size: 7pt; font-weight: bold; text-transform: uppercase; color: #333; margin: 0 0 2px; text-align: left;">Historial de Pagos Anteriores (Movimiento Padre #{{ $parent->id }}):</p>
         <table class="items-table" style="font-size: 6.5pt; margin-bottom: 2px; width: 100%; text-align: center;">
             <thead>
                 <tr>

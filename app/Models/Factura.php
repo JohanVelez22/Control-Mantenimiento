@@ -84,15 +84,36 @@ class Factura extends Model
      */
     public function recalcularPagos(): void
     {
-        $pagosCaja = MovimientoCaja::where('estado', 'activo')
+        $directMovIds = MovimientoCaja::where('estado', 'activo')
+            ->where('anulado', false)
             ->where('descripcion', 'like', "%#{$this->numero_factura}%")
+            ->pluck('id');
+
+        $pagosCaja = MovimientoCaja::where('estado', 'activo')
+            ->where('anulado', false)
+            ->where(function ($q) use ($directMovIds) {
+                if ($directMovIds->isNotEmpty()) {
+                    $q->whereIn('id', $directMovIds)
+                      ->orWhereIn('parent_id', $directMovIds);
+                }
+                $q->orWhere('descripcion', 'like', "%#{$this->numero_factura}%");
+            })
             ->sum('monto');
 
         $this->total_pagado = (float) $pagosCaja;
 
         if ($this->estado !== 'anulada') {
-            $saldo = (float) $this->total_documento - $pagosCaja;
+            $saldo = max(0, (float) $this->total_documento - $pagosCaja);
             $this->estado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+
+            // Limpiar etiqueta "⚠️ SALDO PENDIENTE" antigua de observaciones y actualizar si aún hay saldo
+            $lineas = array_filter(explode("\n", $this->observaciones ?? ''), fn($l) => !str_contains($l, 'SALDO PENDIENTE:'));
+            $obsLimpia = trim(implode("\n", $lineas));
+
+            if ($saldo > 0.01) {
+                $obsLimpia .= ($obsLimpia ? "\n" : "") . "⚠️ SALDO PENDIENTE: $" . number_format($saldo, 0, ',', '.');
+            }
+            $this->observaciones = $obsLimpia ?: null;
         }
 
         $this->save();

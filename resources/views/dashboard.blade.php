@@ -39,7 +39,7 @@
   <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📦</span> Stock Bajo (<5)</div>
   <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
   </div>
-</div>
+  </div>
 
 <!-- Carrusel de Gráficos -->
 <h3 class="text-lg font-bold mb-4 text-gray-700 dark:text-gray-300 flex items-center gap-2">
@@ -83,13 +83,13 @@
  </div>
  </div>
 
- <!-- Slide 3: Ingresos por día (últimos 7) -->
- <div class="w-1/4 p-6 flex flex-col bg-transparent" style="height: 420px;">
- <div class="flex justify-between items-center mb-10 px-4">
-  <div>
-  <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Ingresos por día</h4>
-  <p class="text-sm text-gray-500 dark:text-gray-400">Órdenes terminadas: suma de costo por fecha de salida</p>
-  </div>
+  <!-- Slide 3: Ingresos por día (últimos 7) -->
+  <div class="w-1/4 p-6 flex flex-col bg-transparent" style="height: 420px;">
+  <div class="flex justify-between items-center mb-10 px-4">
+   <div>
+   <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Ingresos por día</h4>
+   <p class="text-sm text-gray-500 dark:text-gray-400">Movimientos de caja reales: ingresos menos egresos por fecha</p>
+   </div>
   <span class="text-xs font-bold px-3 py-1.5 bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200 rounded-full shadow-sm">Últimos 7 días</span>
   </div>
   <div class="w-full flex-grow relative pl-8 pr-14 pb-8 pt-8">
@@ -145,7 +145,7 @@
   <div class="text-xs font-bold {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Balance Caja (Hoy)</div>
   <div class="text-2xl font-black {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoDiaNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoDia ?? 0), 0, ',', '.') }}</div>
   </div>
-</div>
+  </div>
 
 <div class="glass-card p-6 md:p-8 pb-4 md:pb-5">
 
@@ -708,48 +708,80 @@ function switchDashTab(tab) {
  }
  }
 
- const canvasIngresos = document.getElementById('ingresosChart');
- if (canvasIngresos) {
- const ctxIng = canvasIngresos.getContext('2d');
- const gradientTeal = ctxIng.createLinearGradient(0, 0, 0, 400);
- gradientTeal.addColorStop(0, 'rgba(20, 184, 166, 0.85)'); // green/teal
- gradientTeal.addColorStop(1, 'rgba(20, 184, 166, 0.12)');
+  const canvasIngresos = document.getElementById('ingresosChart');
+  if (canvasIngresos) {
+  const ctxIng = canvasIngresos.getContext('2d');
+  const gradientTeal = ctxIng.createLinearGradient(0, 0, 0, 400);
+  gradientTeal.addColorStop(0, 'rgba(20, 184, 166, 0.85)'); // green/teal
+  gradientTeal.addColorStop(1, 'rgba(20, 184, 166, 0.12)');
 
- const gradientBlueIng = ctxIng.createLinearGradient(0, 0, 0, 400);
- gradientBlueIng.addColorStop(0, 'rgba(59, 130, 246, 0.85)'); // blue
- gradientBlueIng.addColorStop(1, 'rgba(59, 130, 246, 0.12)');
+  const gradientBlueIng = ctxIng.createLinearGradient(0, 0, 0, 400);
+  gradientBlueIng.addColorStop(0, 'rgba(59, 130, 246, 0.85)'); // blue
+  gradientBlueIng.addColorStop(1, 'rgba(59, 130, 246, 0.12)');
 
- const ingresosAcumuladosData = (chartData && chartData.ingresosAcumulados) ? chartData.ingresosAcumulados : [];
+  const gradientGreenVenta = ctxIng.createLinearGradient(0, 0, 0, 400);
+  gradientGreenVenta.addColorStop(0, 'rgba(34, 197, 94, 0.85)'); // green
+  gradientGreenVenta.addColorStop(1, 'rgba(34, 197, 94, 0.12)');
 
- new Chart(ctxIng, {
- type: 'bar',
- data: {
- labels: chartData.labels,
- datasets: [
- {
- label: 'Ingresos Acumulados',
- data: ingresosAcumuladosData,
- backgroundColor: gradientTeal,
- borderColor: 'rgb(13, 148, 136)',
- borderWidth: 2,
- borderRadius: 6,
- borderSkipped: false,
- barPercentage: 0.55,
- categoryPercentage: 0.85
- },
- {
- label: 'Ingresos del Día',
- data: ingresosData,
- backgroundColor: gradientBlueIng,
- borderColor: 'rgb(59, 130, 246)',
- borderWidth: 2,
- borderRadius: 6,
- borderSkipped: false,
- barPercentage: 0.55,
- categoryPercentage: 0.85
- }
- ]
- },
+  const gradientOrangeCompra = ctxIng.createLinearGradient(0, 0, 0, 400);
+  gradientOrangeCompra.addColorStop(0, 'rgba(249, 115, 22, 0.85)'); // orange
+  gradientOrangeCompra.addColorStop(1, 'rgba(249, 115, 22, 0.12)');
+
+  const ingresosAcumuladosData = (chartData && chartData.ingresosAcumulados) ? chartData.ingresosAcumulados : [];
+  const ventasData = (chartData && chartData.ventas) ? chartData.ventas : [];
+  const comprasData = (chartData && chartData.compras) ? chartData.compras : [];
+
+  new Chart(ctxIng, {
+  type: 'bar',
+  data: {
+  labels: chartData.labels,
+  datasets: [
+  {
+  label: 'Ingresos Acumulados',
+  data: ingresosAcumuladosData,
+  backgroundColor: gradientTeal,
+  borderColor: 'rgb(13, 148, 136)',
+  borderWidth: 2,
+  borderRadius: 6,
+  borderSkipped: false,
+  barPercentage: 0.55,
+  categoryPercentage: 0.85
+  },
+  {
+  label: 'Ingresos del Día',
+  data: ingresosData,
+  backgroundColor: gradientBlueIng,
+  borderColor: 'rgb(59, 130, 246)',
+  borderWidth: 2,
+  borderRadius: 6,
+  borderSkipped: false,
+  barPercentage: 0.55,
+  categoryPercentage: 0.85
+  },
+  {
+  label: 'Ventas del Día',
+  data: ventasData,
+  backgroundColor: gradientGreenVenta,
+  borderColor: 'rgb(34, 197, 94)',
+  borderWidth: 2,
+  borderRadius: 6,
+  borderSkipped: false,
+  barPercentage: 0.55,
+  categoryPercentage: 0.85
+  },
+  {
+  label: 'Compras del Día',
+  data: comprasData,
+  backgroundColor: gradientOrangeCompra,
+  borderColor: 'rgb(249, 115, 22)',
+  borderWidth: 2,
+  borderRadius: 6,
+  borderSkipped: false,
+  barPercentage: 0.55,
+  categoryPercentage: 0.85
+  }
+  ]
+  },
  options: {
  responsive: true,
  maintainAspectRatio: false,

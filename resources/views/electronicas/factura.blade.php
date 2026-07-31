@@ -34,22 +34,22 @@
 
 @if($electronica->stocks->count() > 0)
     <p class="font-bold mb-4">Repuestos / Componentes Utilizados:</p>
-    <table class="items-table">
+    <table class="items-table" style="text-align: center;">
         <thead>
             <tr>
                 <th class="text-center" style="width: 10%;">CANT</th>
-                <th>DESCRIPCIÓN</th>
-                <th class="text-right" style="width: 20%;">V. UNITARIO</th>
-                <th class="text-right" style="width: 20%;">SUBTOTAL</th>
+                <th class="text-center">DESCRIPCIÓN</th>
+                <th class="text-center" style="width: 22%;">V. UNITARIO</th>
+                <th class="text-center" style="width: 22%;">SUBTOTAL</th>
             </tr>
         </thead>
         <tbody>
             @foreach($electronica->stocks as $stock)
             <tr>
                 <td class="text-center">{{ $stock->pivot->cantidad }}</td>
-                <td>{{ $stock->producto }}</td>
-                <td class="text-right">${{ number_format($stock->pivot->precio_unitario, 0, ',', '.') }}</td>
-                <td class="text-right">${{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
+                <td class="text-center">{{ $stock->producto }}</td>
+                <td class="text-center">${{ number_format($stock->pivot->precio_unitario, 0, ',', '.') }}</td>
+                <td class="text-center">${{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -85,19 +85,30 @@
 @if($electronica->abonos->count() > 0)
     @php
         $abonosHistorial = $electronica->abonos->sortBy('fecha');
-        $totalAbonosCount = $abonosHistorial->count();
         $abonosMostrar = $abonosHistorial->take(3);
     @endphp
-    <div style="margin-top: 6px; border-top: 1px dashed #ccc; padding-top: 4px;">
-        <p style="font-size: 7.5pt; font-weight: bold; margin-bottom: 2px;">Historial de Pagos:</p>
-        <p style="font-size: 7pt; color: #555; margin: 0; line-height: 1.2;">
-            @foreach($abonosMostrar as $abono)
-                • {{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }} - {{ ucfirst($abono->tipo_pago) }}: ${{ number_format($abono->monto, 0, ',', '.') }}<br>
-            @endforeach
-        </p>
-        @if($totalAbonosCount > 3)
-            <p style="font-size: 6pt; color: #666; font-style: italic; margin: 2px 0 0 0;">* Se muestran los 3 abonos más recientes. El TOTAL ABONADO arriba incluye los {{ $totalAbonosCount }} pagos.</p>
-        @endif
+    <div style="margin-top: 4px; clear: both;">
+        <p style="font-size: 7pt; font-weight: bold; text-transform: uppercase; color: #333; margin: 0 0 2px; text-align: left;">HISTORIAL DE ABONOS / PAGOS RECIBIDOS:</p>
+        <table class="items-table" style="font-size: 6.5pt; margin-bottom: 0; width: 100%; text-align: center;">
+            <thead>
+                <tr style="background: #f8fafc;">
+                    <th style="padding: 1px 3px; text-align: center; width: 15%;">FECHA</th>
+                    <th style="padding: 1px 3px; text-align: center; width: 25%;">MEDIO PAGO</th>
+                    <th style="padding: 1px 3px; text-align: center;">DESCRIPCIÓN</th>
+                    <th style="padding: 1px 3px; text-align: center; width: 20%;">ABONO</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($abonosMostrar as $abono)
+                <tr>
+                    <td style="padding: 1px 3px; text-align: center;">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }}</td>
+                    <td style="padding: 1px 3px; text-align: center;">{{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Banco / Transf.' }}</td>
+                    <td style="padding: 1px 3px; text-align: center;">{{ $abono->descripcion ?: 'Abono a cuenta' }}</td>
+                    <td style="padding: 1px 3px; text-align: center; font-weight: bold; color: green;">${{ number_format($abono->monto, 0, ',', '.') }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 @endif
 

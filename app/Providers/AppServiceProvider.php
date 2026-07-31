@@ -68,23 +68,35 @@ class AppServiceProvider extends ServiceProvider
                 ->limit(50)
                 ->get();
 
-            // Facturas con saldo pendiente
+            // Facturas con saldo pendiente (Compras / Ventas)
             $cajaList = Factura::where('estado', '!=', 'anulada')
                 ->where('saldo_pendiente', '>', 0)
                 ->select('id', 'numero_factura', 'tipo_movimiento', 'saldo_pendiente', 'total_documento', 'facturable_id', 'facturable_type')
-                ->with('facturable:id,tipo_entidad,nombre_razon_social,nombres,apellidos,identificacion')
+                ->with('facturable')
                 ->latest()
                 ->limit(50)
                 ->get();
 
-            // Movimientos de caja pendientes
+            // Extraer números de factura pendientes para evitar duplicar en notificaciones de caja
+            $facturasNumeros = $cajaList->pluck('numero_factura')->filter()->toArray();
+
+            // Movimientos de caja pendientes independientes (excluye facturas de inventario y movimientos cuyo saldo ya fue saldado con abonos)
             $movimientosPendientes = MovimientoCaja::where('anulado', false)
                 ->whereNull('parent_id')
-                ->whereRaw('monto_total > monto')
+                ->whereNotNull('monto_total')
+                ->where('monto_total', '>', 0)
+                ->when(!empty($facturasNumeros), function ($query) use ($facturasNumeros) {
+                    $query->where(function ($q) use ($facturasNumeros) {
+                        foreach ($facturasNumeros as $num) {
+                            $q->where('descripcion', 'not like', "%#{$num}%");
+                        }
+                    });
+                })
                 ->with(['concepto:id,nombre', 'childPayments'])
                 ->latest()
-                ->limit(50)
-                ->get();
+                ->get()
+                ->filter(fn($mov) => $mov->saldo_pendiente > 0.01)
+                ->take(50);
 
             // Cotizaciones pendientes
             $cotList = Cotizacion::activos()

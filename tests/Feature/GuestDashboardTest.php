@@ -86,7 +86,7 @@ class GuestDashboardTest extends TestCase
         $response = $this->actingAs($guest)->get('/guest/dashboard');
         
         $response->assertOk();
-        $response->assertSee('Consulta de servicios');
+        $response->assertSee('Consulta de Servicios');
         $response->assertSee('Mantenimientos');
         $response->assertSee('Electrónica');
     }
@@ -121,7 +121,7 @@ class GuestDashboardTest extends TestCase
         
         $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&query=' . $cliente->identificacion);
         
-        $response->assertRedirect();
+        $response->assertOk();
         $response->assertSessionHasNoErrors();
     }
 
@@ -154,7 +154,7 @@ class GuestDashboardTest extends TestCase
         
         $response = $this->actingAs($guest)->get('/guest/search?tipo=electronica&query=' . $cliente->identificacion);
         
-        $response->assertRedirect();
+        $response->assertOk();
         $response->assertSessionHasNoErrors();
     }
 

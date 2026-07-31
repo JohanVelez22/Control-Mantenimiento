@@ -135,6 +135,43 @@
  </div>
  </div>
 
+ {{-- Historial de Pagos y Abonos --}}
+ @if(isset($abonos) && $abonos->count() > 0)
+ <div class="mb-8 pt-4 border-t border-gray-200/50 dark:border-white/10">
+     <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+         💳 Historial de Pagos y Abonos en Caja
+     </h3>
+     <div class="overflow-x-auto">
+         <table class="ts-table text-xs">
+             <thead>
+                 <tr>
+                     <th>Fecha</th>
+                     <th>Tipo de Pago</th>
+                     <th>Detalle / Descripción</th>
+                     <th>Registrado por</th>
+                     <th class="text-right">Monto Abono</th>
+                 </tr>
+             </thead>
+             <tbody>
+                 @foreach($abonos as $abono)
+                 <tr>
+                     <td class="font-bold text-slate-700 dark:text-slate-300">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }}</td>
+                     <td>
+                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $abono->tipo_pago === 'efectivo' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' }}">
+                             {{ $abono->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Consignación/Banco' }}
+                         </span>
+                     </td>
+                     <td class="text-gray-600 dark:text-gray-400 font-medium">{{ $abono->descripcion }}</td>
+                     <td class="text-gray-500">{{ $abono->user->name ?? 'Sistema' }}</td>
+                     <td class="text-right font-black text-emerald-600 dark:text-emerald-400">${{ number_format($abono->monto, 0, ',', '.') }}</td>
+                 </tr>
+                 @endforeach
+             </tbody>
+         </table>
+     </div>
+ </div>
+ @endif
+
  <div class="pt-4 border-t border-gray-200/50 dark:border-white/5 flex justify-between items-center text-xs font-semibold text-gray-400">
  <span>Usuario: {{ $factura->user->name ?? '—' }}</span>
  <span>Registro: {{ $factura->created_at->format('d/m/Y H:i:s') }}</span>

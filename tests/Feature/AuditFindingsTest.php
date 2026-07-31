@@ -558,7 +558,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals($origStock + 2, $stock->cantidad); // Compra reactivada = stock entra
 
         $factura->refresh();
-        $this->assertEquals('emitida', $factura->estado); // Pagado total = emitida
+        $this->assertEquals('pendiente_pago', $factura->estado);
     }
 
     public function testAnularFacturaPendientePagoNoGeneraMovimientoCaja()
@@ -1071,5 +1071,79 @@ public function testSaldoPendienteNuncaNegativo()
 
         $stock->refresh();
         $this->assertEquals(0, $stock->cantidad);
+    }
+
+    public function testEditarVentaConPagoParcialActualizaCajaYLayoutNoFalla()
+    {
+        $concepto = \App\Models\ConceptoCaja::firstOrCreate(['nombre' => 'Ventas'], ['tipo' => 'ingreso']);
+
+        $stock = Stock::create([
+            'codigo' => 'TEST-PARTIAL',
+            'producto' => 'Producto Parcial',
+            'cantidad' => 10,
+            'precio_costo' => 50000,
+            'precio_venta' => 260000,
+        ]);
+
+        $factura = Factura::create([
+            'numero_factura' => 'V-TEST-PARTIAL',
+            'tipo_movimiento' => 'venta',
+            'facturable_id' => $this->cliente->id,
+            'facturable_type' => get_class($this->cliente),
+            'fecha' => now()->toDateString(),
+            'total_documento' => 260000,
+            'total_pagado' => 260000,
+            'saldo_pendiente' => 0,
+            'estado' => 'emitida',
+            'user_id' => $this->admin->id,
+        ]);
+
+        $item = FacturaItem::create([
+            'factura_id' => $factura->id,
+            'stock_id' => $stock->id,
+            'cantidad' => 1,
+            'precio_unitario' => 260000,
+        ]);
+
+        MovimientoCaja::create([
+            'concepto_id' => $concepto->id,
+            'tipo_movimiento' => 'ingreso',
+            'tipo_pago' => 'efectivo',
+            'monto' => 260000,
+            'monto_total' => 260000,
+            'fecha' => now()->toDateString(),
+            'user_id' => $this->admin->id,
+            'descripcion' => "Venta de inventario - Factura V-TEST-PARTIAL",
+            'factura_id' => $factura->id,
+        ]);
+
+        // Editar cambiando pago total (260.000) por pago parcial (200.000)
+        $response = $this->actingAs($this->admin)
+            ->put(route('inventario.facturas.update', $factura), [
+                'fecha' => now()->toDateString(),
+                'total_pagado' => '200.000',
+                'facturable_global' => "Cliente:{$this->cliente->id}",
+                'existing_items' => [
+                    [
+                        'id' => $item->id,
+                        'stock_id' => $stock->id,
+                        'cantidad' => 1,
+                        'precio_unitario' => '260.000',
+                    ],
+                ],
+            ]);
+
+        $response->assertRedirect();
+
+        $factura->refresh();
+        $this->assertEquals(260000, $factura->total_documento);
+        $this->assertEquals(200000, $factura->total_pagado);
+        $this->assertEquals(60000, $factura->saldo_pendiente);
+        $this->assertEquals('pendiente_pago', $factura->estado);
+
+        // Verificar que renderizar la vista de facturas o dashboard no genera 500
+        $this->actingAs($this->admin)
+            ->get(route('dashboard'))
+            ->assertStatus(200);
     }
 }

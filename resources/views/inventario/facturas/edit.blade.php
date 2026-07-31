@@ -211,5 +211,18 @@ function recalcularTotalesEdicion() {
         helpText.textContent = `El monto total del documento es $${window.formatNumber(totalDoc)}. Modificar el pago ajustará el saldo y el estado automáticamente.`;
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            this.querySelectorAll('.price-input, #total_pagado').forEach(input => {
+                if (input && input.value) {
+                    input.value = input.value.replace(/\./g, '');
+                }
+            });
+        });
+    }
+});
 </script>
 @endsection

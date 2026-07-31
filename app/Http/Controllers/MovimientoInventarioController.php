@@ -33,6 +33,19 @@ class MovimientoInventarioController extends Controller
 
     public function registrarCompra(Request $request): RedirectResponse
     {
+        if ($request->has('total_pagado')) {
+            $request->merge(['total_pagado' => $this->cleanAmount($request->total_pagado)]);
+        }
+        if ($request->has('items') && is_array($request->items)) {
+            $items = $request->items;
+            foreach ($items as &$item) {
+                if (isset($item['precio_unitario'])) {
+                    $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
+                }
+            }
+            $request->merge(['items' => $items]);
+        }
+
         $request->validate([
             'facturable_global'       => ['required', 'string'],
             'fecha'                   => ['required', 'date'],
@@ -152,6 +165,19 @@ class MovimientoInventarioController extends Controller
 
     public function registrarVenta(Request $request): RedirectResponse
     {
+        if ($request->has('total_pagado')) {
+            $request->merge(['total_pagado' => $this->cleanAmount($request->total_pagado)]);
+        }
+        if ($request->has('items') && is_array($request->items)) {
+            $items = $request->items;
+            foreach ($items as &$item) {
+                if (isset($item['precio_unitario'])) {
+                    $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
+                }
+            }
+            $request->merge(['items' => $items]);
+        }
+
         $request->validate([
             'facturable_global'       => ['required', 'string'],
             'fecha'                   => ['required', 'date'],
@@ -303,13 +329,33 @@ class MovimientoInventarioController extends Controller
     public function showFactura(Factura $factura): View
     {
         $factura->load(['facturable', 'items.stock', 'user']);
-        return view('inventario.facturas.show', compact('factura'));
+
+        $movimientoPadre = MovimientoCaja::where('estado', 'activo')
+            ->where('anulado', false)
+            ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
+            ->whereNull('parent_id')
+            ->with(['childPayments' => fn($q) => $q->where('anulado', false)->with('user')])
+            ->first();
+
+        $abonos = $movimientoPadre ? $movimientoPadre->childPayments : collect();
+
+        return view('inventario.facturas.show', compact('factura', 'movimientoPadre', 'abonos'));
     }
 
     public function printFactura(Factura $factura)
     {
         $factura->load(['facturable', 'items.stock', 'user']);
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('inventario.facturas.print', compact('factura'));
+
+        $movimientoPadre = MovimientoCaja::where('estado', 'activo')
+            ->where('anulado', false)
+            ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
+            ->whereNull('parent_id')
+            ->with(['childPayments' => fn($q) => $q->where('anulado', false)->with('user')])
+            ->first();
+
+        $abonos = $movimientoPadre ? $movimientoPadre->childPayments : collect();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('inventario.facturas.print', compact('factura', 'abonos'));
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('factura_inventario_' . $factura->numero_factura . '.pdf');
     }
@@ -435,6 +481,28 @@ class MovimientoInventarioController extends Controller
 
     public function updateFactura(Request $request, Factura $factura): RedirectResponse
     {
+        if ($request->has('total_pagado')) {
+            $request->merge(['total_pagado' => $this->cleanAmount($request->total_pagado)]);
+        }
+        if ($request->has('existing_items') && is_array($request->existing_items)) {
+            $items = $request->existing_items;
+            foreach ($items as &$item) {
+                if (isset($item['precio_unitario'])) {
+                    $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
+                }
+            }
+            $request->merge(['existing_items' => $items]);
+        }
+        if ($request->has('new_items') && is_array($request->new_items)) {
+            $items = $request->new_items;
+            foreach ($items as &$item) {
+                if (isset($item['precio_unitario'])) {
+                    $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
+                }
+            }
+            $request->merge(['new_items' => $items]);
+        }
+
         $request->validate([
             'fecha'                   => 'required|date',
             'total_pagado'            => 'required|numeric|min:0',
@@ -460,10 +528,10 @@ class MovimientoInventarioController extends Controller
             $facturableType = Cliente::class;
         }
 
-        $totalPagado = (float) $request->total_pagado;
+        $totalPagado = $this->cleanAmount($request->total_pagado);
         
         $wasAnulada = $factura->estado === 'anulada';
-        $shouldBeAnulada = $wasAnulada; // State change happens in anularFactura now
+        $shouldBeAnulada = $wasAnulada;
         
         try {
             DB::beginTransaction();
@@ -477,7 +545,7 @@ class MovimientoInventarioController extends Controller
                     
                     $newStockId = (int) $itemData['stock_id'];
                     $newQty = (int) $itemData['cantidad'];
-                    $newPrice = (float) $itemData['precio_unitario'];
+                    $newPrice = $this->cleanAmount($itemData['precio_unitario']);
 
                     if ($oldStock) {
                         if ($oldStock->id !== $newStockId) {
@@ -528,16 +596,16 @@ class MovimientoInventarioController extends Controller
             if (isset($request->new_items) && is_array($request->new_items) && !$shouldBeAnulada) {
                 foreach ($request->new_items as $itemData) {
                     $stock = Stock::findOrFail($itemData['stock_id']);
+                    $newPrice = $this->cleanAmount($itemData['precio_unitario']);
                     
                     FacturaItem::create([
                         'factura_id'      => $factura->id,
                         'stock_id'        => $stock->id,
                         'cantidad'        => $itemData['cantidad'],
-                        'precio_unitario' => (float) $itemData['precio_unitario'],
+                        'precio_unitario' => $newPrice,
                     ]);
 
                     if ($factura->tipo_movimiento === 'compra') {
-                        // Actualizar proveedor del stock si es compra a proveedor
                         if ($type === 'Proveedor') {
                             $stock->update(['proveedor_id' => $entity->id]);
                         }
@@ -550,8 +618,6 @@ class MovimientoInventarioController extends Controller
                     }
                 }
             }
-
-
 
             // 4. Calcular el nuevo total de la factura
             $totalDocumento = 0;
@@ -573,11 +639,42 @@ class MovimientoInventarioController extends Controller
                 ->filter(fn($line) => str_starts_with($line, '[ANULADA') || str_starts_with($line, '[REACTIVADA'))
                 ->implode("\n");
 
-            // Regenerar observación: texto del usuario + saldo pendiente (si aplica) + historial
             $nuevaObservacion = $this->buildObservaciones($request->observaciones, $saldo, $historial ?: null);
 
-            $diferenciaPago = $totalPagado - $factura->total_pagado;
-            
+            // Sincronizar movimiento de caja base
+            $baseCaja = MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
+                ->whereNull('parent_id')
+                ->first();
+
+            $entityName = $entity->nombre_razon_social ?? $entity->nombre;
+
+            if ($totalPagado > 0) {
+                if ($baseCaja) {
+                    $baseCaja->update([
+                        'monto'       => $totalPagado,
+                        'monto_total' => $totalDocumento > $totalPagado ? $totalDocumento : null,
+                        'persona'     => $entityName,
+                        'fecha'       => $request->fecha,
+                        'estado'      => $shouldBeAnulada ? 'anulado' : 'activo',
+                    ]);
+                } else if (!$shouldBeAnulada) {
+                    $this->registrarMovimientoCaja(
+                        tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
+                        monto: $totalPagado,
+                        persona: $entityName,
+                        descripcion: ($factura->tipo_movimiento === 'venta' ? "Cobro venta #" : "Pago compra #") . $factura->numero_factura,
+                        fecha: $request->fecha,
+                        montoTotal: $totalDocumento > $totalPagado ? $totalDocumento : null
+                    );
+                }
+            } else if ($baseCaja) {
+                $baseCaja->update([
+                    'monto'       => 0,
+                    'monto_total' => $totalDocumento,
+                    'estado'      => 'activo',
+                ]);
+            }
+
             $factura->update([
                 'fecha'           => $request->fecha,
                 'total_pagado'    => $totalPagado,
@@ -587,17 +684,6 @@ class MovimientoInventarioController extends Controller
                 'facturable_id'   => $entity->id,
                 'facturable_type' => $facturableType,
             ]);
-
-            // Registrar nuevo movimiento en caja por el excedente pagado (abono)
-            if ($diferenciaPago > 0.01 && !$shouldBeAnulada) {
-                $this->registrarMovimientoCaja(
-                    tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
-                    monto: $diferenciaPago,
-                    persona: $entity->nombre_razon_social ?? $entity->nombre,
-                    descripcion: ($factura->tipo_movimiento === 'venta' ? "Abono a venta #" : "Abono a compra #") . $factura->numero_factura,
-                    fecha: now()->toDateString() // Se registra el día en que se hizo el abono realmente
-                );
-            }
 
             if (!$shouldBeAnulada) {
                 $factura->recalcularPagos();
@@ -618,9 +704,18 @@ class MovimientoInventarioController extends Controller
 
     // ─── Helpers Privados ─────────────────────────────────────────
 
+    private function cleanAmount(mixed $val): float
+    {
+        if (is_null($val) || $val === '') return 0.0;
+        if (is_int($val) || is_float($val)) return (float) $val;
+        $clean = str_replace('.', '', (string) $val);
+        $clean = str_replace(',', '.', $clean);
+        return (float) $clean;
+    }
+
     private function calcularTotal(array $items): float
     {
-        return collect($items)->sum(fn($i) => (float) $i['cantidad'] * (float) str_replace('.', '', $i['precio_unitario']));
+        return collect($items)->sum(fn($i) => (float) $i['cantidad'] * $this->cleanAmount($i['precio_unitario']));
     }
 
     private function buildObservaciones(?string $obs, float $saldo, ?string $historial = null): ?string
@@ -644,16 +739,18 @@ class MovimientoInventarioController extends Controller
         float  $monto,
         string $persona,
         string $descripcion,
-        string $fecha
-    ): void {
+        string $fecha,
+        ?float $montoTotal = null
+    ): MovimientoCaja {
         $concepto = ConceptoCaja::firstOrCreate(
             ['nombre' => $tipo === 'egreso' ? 'Compra de Inventario' : 'Venta de Inventario']
         );
 
-        MovimientoCaja::create([
+        return MovimientoCaja::create([
             'tipo_movimiento' => $tipo,
             'tipo_pago'       => 'efectivo',
             'monto'           => $monto,
+            'monto_total'     => $montoTotal,
             'persona'         => $persona,
             'concepto_id'     => $concepto->id,
             'descripcion'     => $descripcion,
