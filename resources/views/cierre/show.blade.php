@@ -126,8 +126,8 @@
         {{-- Observaciones del Cierre --}}
         @if($cierre->observaciones)
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Observaciones / Notas de Arqueo</h3>
-        <div class="p-4 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 mb-8">
-            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">{{ $cierre->observaciones }}</p>
+        <div class="p-4 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 mb-8 print:bg-white print:border-slate-300 print:shadow-none">
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 print:text-black leading-relaxed whitespace-pre-line">{{ $cierre->observaciones }}</p>
         </div>
         @endif
 
@@ -151,7 +151,11 @@
                 <tbody>
                     @forelse($movimientos as $m)
                     <tr class="{{ $m->anulado ? 'opacity-50 grayscale' : '' }}">
-                        <td class="font-bold text-slate-700 dark:text-slate-300">#{{ $m->id }}</td>
+                        <td class="font-bold">
+                            <a href="{{ route('caja.show', $m->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline print:text-black print:no-underline" title="Ver detalle del movimiento #{{ $m->id }}">
+                                #{{ $m->id }}
+                            </a>
+                        </td>
                         <td class="text-sm font-medium text-slate-800 dark:text-slate-200 break-words">
                             {{ $m->persona ?? ($m->empresa ?? 'Tercero') }}
                         </td>
@@ -168,7 +172,7 @@
                                 {{ $m->tipo_movimiento === 'ingreso' ? '📈 Ingreso' : '📉 Egreso' }}
                             </span>
                         </td>
-                        <td class="text-right font-black text-sm {{ $m->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
+                        <td class="text-right font-black text-sm {{ $m->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} pr-4">
                             ${{ number_format($m->monto, 0, ',', '.') }}
                         </td>
                     </tr>
@@ -180,8 +184,8 @@
                 </tbody>
                 <tfoot>
                     <tr class="font-black border-t-2 border-slate-300 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40">
-                        <td colspan="5" class="text-right text-xs uppercase tracking-wider font-bold text-slate-800 dark:text-white print:text-black py-3">TOTAL:</td>
-                        <td class="text-right font-black text-base {{ $cierre->saldo_final >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} print:text-black py-3">
+                        <td colspan="5" class="text-right text-xs uppercase tracking-wider font-bold text-slate-800 dark:text-white print:text-black py-3 pr-3">TOTAL:</td>
+                        <td class="text-right font-black text-base {{ $cierre->saldo_final >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} print:text-black py-3 pr-4">
                             ${{ number_format($cierre->saldo_final, 0, ',', '.') }}
                         </td>
                     </tr>
@@ -224,8 +228,23 @@
 @media print {
     .no-print { display: none !important; }
     body { color: #000000 !important; background: #ffffff !important; }
-    .glass-card { background: #ffffff !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
-    p, span, td, th, h2, h3, div, label { color: #000000 !important; opacity: 1 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    *, *::before, *::after { 
+        box-shadow: none !important; 
+        text-shadow: none !important; 
+        filter: none !important; 
+        border-radius: 0 !important;
+    }
+    .glass-card, div, table, tr, td, th { 
+        background: #ffffff !important; 
+        background-color: #ffffff !important; 
+        border-radius: 0 !important;
+    }
+    p, span, td, th, h2, h3, div, label { 
+        color: #000000 !important; 
+        opacity: 1 !important; 
+        -webkit-print-color-adjust: exact !important; 
+        print-color-adjust: exact !important; 
+    }
     .text-teal-400, .text-teal-500, .text-teal-600,
     .text-emerald-400, .text-emerald-500, .text-emerald-600,
     .text-blue-400, .text-blue-500, .text-blue-600,
