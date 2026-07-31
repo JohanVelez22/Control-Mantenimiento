@@ -18,7 +18,7 @@ function agregarFila(itemData = null) {
     
     tr.innerHTML = `
         <td class="align-middle">
-            <select name="items[${filaIndex}][tipo]" class="tipo-select glass-input py-1.5 text-sm" data-tomselect>
+            <select name="items[${filaIndex}][tipo]" class="tipo-select glass-input no-search py-1.5 font-bold">
                 <option value="libre" ${!isStock ? 'selected' : ''}>Servicio / Libre</option>
                 <option value="stock" ${isStock ? 'selected' : ''}>Producto Stock</option>
             </select>
@@ -47,12 +47,17 @@ function agregarFila(itemData = null) {
     // Inyectar el campo de descripción según el tipo (stock o libre)
     window.cambiarTipo(newTipoSel, tr, newTipoSel.value, itemData);
 
-    if (newTipoSel) {
-        const ts = window.initGlassTomSelect(newTipoSel);
-        ts.on('change', function(value) {
-            window.cambiarTipo(newTipoSel, tr, value);
-        });
+    // Inicializar TomSelect en el selector Tipo para que herede la UI Glass completa y desplegable TomSelect
+    if (typeof window.initGlassTomSelect === 'function') {
+        const tsTipo = window.initGlassTomSelect(newTipoSel);
+        if (tsTipo) {
+            tr.tipoTomSelectObj = tsTipo;
+            tsTipo.on('change', function(val) {
+                window.cambiarTipo(newTipoSel, tr, val);
+            });
+        }
     }
+
     filaIndex++;
     recalcular();
 }
@@ -65,7 +70,7 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
     tr.dataset.maxStock = '';
     validarStock(tr);
 
-    // Guardar referencia al control TS si existe para destruirlo limpiamente
+    // Destruir TomSelect del stock-select previo si existía
     if (tr.tomselectObj) {
         tr.tomselectObj.destroy();
         tr.tomselectObj = null;
@@ -95,26 +100,49 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
             }
         }
 
-        if (typeof window.initGlassTomSelect === 'function') {
-            tr.tomselectObj = window.initGlassTomSelect(newSel);
+        // Inicializar TomSelect en stock-select con glass styling y búsqueda + creación de producto libre
+        const tsObj = window.initGlassTomSelect(newSel, { create: true });
+        tr.tomselectObj = tsObj;
+
+        const handleStockChange = function(selectedVal) {
+            const stockVal = selectedVal || newSel.value;
+            if (!stockVal) {
+                tr.querySelector('.stock-id-input').value = '';
+                tr.querySelector('.stock-desc-input').value = '';
+                return;
+            }
+            
+            const selectedStock = stocksData.find(s => s.id == stockVal);
+            if (selectedStock) {
+                tr.querySelector('.stock-id-input').value = selectedStock.id;
+                tr.querySelector('.stock-desc-input').value = selectedStock.nombre;
+                
+                const pReal = tr.querySelector('[id^="precio_unitario_real_"]');
+                const pVis = tr.querySelector('[id^="precio_unitario_visual_"]');
+                
+                pReal.value = selectedStock.precio;
+                pVis.value = window.formatNumber(selectedStock.precio);
+                
+                tr.dataset.maxStock = selectedStock.cantidad;
+                
+                actualizarSubtotal(tr);
+                validarStock(tr);
+            } else {
+                // Producto manual o personalizado escrito por el usuario
+                tr.querySelector('.stock-id-input').value = '';
+                tr.querySelector('.stock-desc-input').value = stockVal;
+                tr.dataset.maxStock = '';
+                validarStock(tr);
+            }
+        };
+
+        if (tsObj) {
+            tsObj.on('change', handleStockChange);
+        } else {
+            newSel.addEventListener('change', function() {
+                handleStockChange(this.value);
+            });
         }
-        
-        newSel.addEventListener('change', function() {
-            const opt = this.options[this.selectedIndex];
-            if (!opt.value) return;
-            const pReal = tr.querySelector('[id^="precio_unitario_real_"]');
-            const pVis = tr.querySelector('[id^="precio_unitario_visual_"]');
-            tr.querySelector('.stock-id-input').value = opt.value;
-            tr.querySelector('.stock-desc-input').value = opt.dataset.nombre;
-            
-            pReal.value = opt.dataset.precio;
-            pVis.value = window.formatNumber(opt.dataset.precio);
-            
-            tr.dataset.maxStock = opt.dataset.cantidad;
-            
-            actualizarSubtotal(tr);
-            validarStock(tr);
-        });
     } else {
         let defaultDesc = itemData ? (itemData.descripcion || '') : '';
         tdDesc.innerHTML = `<input type="text" name="items[${idx}][descripcion]" value="${defaultDesc}" class="desc-input glass-input py-1.5 focus:ring-blue-500" placeholder="Descripción de mano de obra o servicio..." required>`;
@@ -162,6 +190,7 @@ function eliminarFila(btn) {
     
     const tr = btn.closest('tr');
     if (tr.tomselectObj) tr.tomselectObj.destroy();
+    if (tr.tipoTomSelectObj) tr.tipoTomSelectObj.destroy();
     tr.remove();
     recalcular();
 }

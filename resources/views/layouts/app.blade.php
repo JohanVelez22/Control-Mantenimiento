@@ -789,7 +789,7 @@
             });
 
             // Función global para inicializar TomSelect con el comportamiento "Limpieza Mágica"
-            window.initGlassTomSelect = function(el) {
+            window.initGlassTomSelect = function(el, customConfig = {}) {
                 if (el.classList.contains('tomselected')) return;
 
                 let defaultPlaceholder = el.getAttribute('data-placeholder');
@@ -810,7 +810,7 @@
                     defaultPlaceholder = ' '; 
                 }
 
-                let tsConfig = {
+                let defaultConfig = {
                     create: false,
                     maxOptions: 100,
                     placeholder: defaultPlaceholder,
@@ -826,18 +826,17 @@
                         },
                         no_results: function(data, escape) {
                             return '<div class="no-results font-bold" style="padding: 8px 12px; color: #475569; font-size: 13px;">No se encontraron resultados para "<span class="text-blue-600">' + escape(data.input) + '</span>"</div>';
+                        },
+                        option_create: function(data, escape) {
+                            return '<div class="create py-2 px-3 text-blue-600 dark:text-blue-400 font-bold cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/30">➕ Usar como producto personalizado: "<strong>' + escape(data.input) + '</strong>"</div>';
                         }
                     }
                 };
 
+                let tsConfig = Object.assign({}, defaultConfig, customConfig);
+
                 if (isNoSearch) {
-                    tsConfig.onInitialize = function() {
-                        if (this.control_input) {
-                            this.control_input.readOnly = true;
-                            this.control_input.style.caretColor = 'transparent';
-                            this.control_input.style.cursor = 'pointer';
-                        }
-                    };
+                    tsConfig.controlInput = null;
                 }
 
                 let tsInstance = new TomSelect(el, tsConfig);
@@ -865,6 +864,8 @@
                     }
                     tsInstance.removeOption("");
                 }
+
+                return tsInstance;
             };
 
             // Formateador global de moneda (separadores de miles)
@@ -943,8 +944,8 @@
                 }
             });
 
-            // 2. Tom Select para selects con clase glass-input en carga de página
-            document.querySelectorAll("select.glass-input").forEach((el) => {
+            // 2. Tom Select para selects con clase glass-input en carga de página (excluyendo .no-tomselect)
+            document.querySelectorAll("select.glass-input:not(.no-tomselect)").forEach((el) => {
                 window.initGlassTomSelect(el);
             });
             // Despachar evento global para que los formularios sepan cuándo TomSelect terminó

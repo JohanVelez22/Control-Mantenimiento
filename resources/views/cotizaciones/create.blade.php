@@ -53,12 +53,12 @@
                     <table class="ts-table" id="items-table">
                         <thead class="bg-white/30 dark:bg-slate-800/40 backdrop-blur-sm text-slate-700 dark:text-slate-200 font-semibold border-b border-slate-200/50 dark:border-slate-700/50">
                             <tr>
-                                <th class="w-32 px-4 py-3">Tipo</th>
-                                <th class="w-[45%] px-4 py-3">Descripción / Producto</th>
-                                <th class="w-24 text-center px-4 py-3">Cant.</th>
-                                <th class="min-w-[150px] text-right px-4 py-3">Precio Un. ($)</th>
-                                <th class="min-w-[150px] text-right px-4 py-3">Subtotal</th>
-                                <th class="w-12 text-center px-4 py-3"></th>
+                                <th class="w-44 px-3 py-3">Tipo</th>
+                                <th class="w-[36%] px-3 py-3">Descripción / Producto</th>
+                                <th class="w-24 text-center px-3 py-3">Cant.</th>
+                                <th class="w-36 text-right px-3 py-3">Precio Un. ($)</th>
+                                <th class="w-36 text-right px-3 py-3">Subtotal</th>
+                                <th class="w-12 text-center px-2 py-3"></th>
                             </tr>
                         </thead>
                         <tbody id="items-body" class="divide-y divide-slate-200/50 dark:divide-slate-700/50 bg-white/20 dark:bg-slate-900/20">
