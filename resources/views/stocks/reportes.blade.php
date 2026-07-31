@@ -124,15 +124,15 @@
         <table class="ts-table responsive-table reportes-tabla-imprimir w-full">
             <thead>
                 <tr>
-                    <th class="text-left w-24">Código</th>
-                    <th class="text-center">Producto</th>
-                    <th class="text-center">Proveedor</th>
-                    <th class="text-center w-20">Cant.</th>
-                    <th class="text-center w-24">Estado</th>
-                    <th class="text-right w-28">P. Compra</th>
-                    <th class="text-center w-20">Utilidad</th>
-                    <th class="text-right w-28">P. Venta</th>
-                    <th class="text-right w-28">P. Técnico</th>
+                    <th class="text-left w-16" style="width: 7%;">Código</th>
+                    <th class="text-center" style="width: 22%;">Producto</th>
+                    <th class="text-center" style="width: 16%;">Proveedor</th>
+                    <th class="text-center w-14" style="width: 5%;">Cant.</th>
+                    <th class="text-center w-16" style="width: 7%;">Estado</th>
+                    <th class="text-right w-24" style="width: 11%;">P. Compra</th>
+                    <th class="text-center w-16" style="width: 8%;">Utilidad</th>
+                    <th class="text-right w-24" style="width: 12%;">P. Venta</th>
+                    <th class="text-right w-24" style="width: 12%;">P. Técnico</th>
                 </tr>
             </thead>
             <tbody>
@@ -210,18 +210,19 @@
                 @endforelse
             </tbody>
             @if($stocks->count() > 0)
-            <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
+            <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold">
                 <tr>
-                    <td colspan="2" class="text-center uppercase text-xs font-bold whitespace-nowrap">
+                    <td class="text-center uppercase text-xs font-bold whitespace-nowrap">
                         TOTAL: {{ $stocks->total() }}
                     </td>
-                    <td class="text-right uppercase text-xs"></td>
+                    <td></td>
+                    <td></td>
                     <td class="text-center font-bold text-xs">{{ $stocks->sum('cantidad') }}</td>
                     <td></td>
-                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}</td>
+                    <td class="text-right font-bold text-xs">${{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}</td>
                     <td></td>
-                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}</td>
-                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}</td>
+                    <td class="text-right font-bold text-xs">${{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}</td>
+                    <td class="text-right font-bold text-xs">${{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}</td>
                 </tr>
             </tfoot>
             @endif
@@ -360,7 +361,8 @@
     table th, .ts-table th, table td, .ts-table td, tfoot td, .tfoot td {
         display: table-cell !important;
         border: none !important;
-        padding: 7px 10px !important;
+        padding: 4px 3px !important;
+        font-size: 7.5pt !important;
         vertical-align: middle !important;
     }
     

@@ -82,7 +82,7 @@ class ReporteFinancieroController extends Controller
                     'estado'      => $f->estado,
                     'anulado'     => $f->estado === 'anulada',
                     'icono'       => $f->tipo_movimiento === 'compra' ? '📦' : '🛒',
-                    'color'       => $f->tipo_movimiento === 'compra' ? 'orange' : 'green',
+                    'color'       => $f->tipo_movimiento === 'compra' ? 'amber' : 'emerald',
                 ];
             });
 
@@ -283,7 +283,7 @@ class ReporteFinancieroController extends Controller
                     'estado'      => $f->estado,
                     'anulado'     => $f->estado === 'anulada',
                     'icono'       => $f->tipo_movimiento === 'compra' ? '📦' : '🛒',
-                    'color'       => $f->tipo_movimiento === 'compra' ? 'orange' : 'green',
+                    'color'       => $f->tipo_movimiento === 'compra' ? 'amber' : 'emerald',
                 ];
             });
 

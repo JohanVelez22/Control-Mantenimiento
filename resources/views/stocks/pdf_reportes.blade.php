@@ -255,15 +255,15 @@
     <table>
         <thead>
             <tr>
-                <th style="width:10%">Código</th>
-                <th style="width:23%">Producto</th>
-                <th style="width:15%">Proveedor</th>
-                <th style="width:6%">Cant.</th>
+                <th style="width:7%">Código</th>
+                <th style="width:22%">Producto</th>
+                <th style="width:16%">Proveedor</th>
+                <th style="width:5%">Cant.</th>
                 <th style="width:7%">Estado</th>
-                <th style="width:10%; text-align:right">P. Compra</th>
-                <th style="width:7%">Util.</th>
-                <th style="width:11%; text-align:right">P. Venta</th>
-                <th style="width:11%; text-align:right">P. Técnico</th>
+                <th style="width:11%; text-align:right">P. Compra</th>
+                <th style="width:8%">Util.</th>
+                <th style="width:12%; text-align:right">P. Venta</th>
+                <th style="width:12%; text-align:right">P. Técnico</th>
             </tr>
         </thead>
         <tbody>
@@ -307,9 +307,10 @@
         @if(count($stocks) > 0)
         <tfoot>
             <tr>
-                <td colspan="2" class="col-center" style="letter-spacing:0.5px; text-transform:uppercase; font-weight:800;">
+                <td class="col-center" style="letter-spacing:0.5px; text-transform:uppercase; font-weight:800; text-align:center;">
                     TOTAL: {{ count($stocks) }}
                 </td>
+                <td></td>
                 <td></td>
                 <td class="col-center" style="font-weight:800;">
                     {{ $stocks->sum('cantidad') }}
