@@ -7,11 +7,6 @@
             <div class="absolute z-50 pointer-events-none top-8 right-[-40px] bg-red-500 text-white text-sm font-bold px-12 py-1 rotate-45 shadow-lg">
                 ANULADA
             </div>
-
-        @elseif($cotizacion->estado === 'aprobada')
-            <div class="absolute z-50 pointer-events-none top-8 right-[-40px] bg-emerald-500 text-white text-sm font-bold px-12 py-1 rotate-45 shadow-lg">
-                APROBADA
-            </div>
         @elseif($cotizacion->estado === 'vencida')
             <div class="absolute z-50 pointer-events-none top-8 right-[-40px] bg-red-500 text-white text-sm font-bold px-12 py-1 rotate-45 shadow-lg">
                 VENCIDA

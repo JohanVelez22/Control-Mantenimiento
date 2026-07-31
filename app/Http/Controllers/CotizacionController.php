@@ -247,4 +247,78 @@ public function pdf(\App\Models\Cotizacion $cotizacion)
 
         return back()->with('success', 'Cotización reactivada correctamente.');
     }
+
+    public function convertir(\App\Models\Cotizacion $cotizacion)
+    {
+        if ($cotizacion->anulado) {
+            return back()->with('error', 'No se puede convertir una cotización anulada.');
+        }
+
+        if ($cotizacion->estado !== 'pendiente') {
+            return back()->with('error', 'Esta cotización ya fue procesada o rechazada.');
+        }
+
+        $cotizacion->load('items');
+
+        // Validar stock disponible para todos los ítems de tipo 'stock'
+        foreach ($cotizacion->items as $item) {
+            if ($item->tipo === 'stock' && $item->item_id) {
+                $stock = \App\Models\Stock::find($item->item_id);
+                if (!$stock || !$stock->tieneDisponible($item->cantidad)) {
+                    $prodNombre = $stock ? $stock->producto : $item->descripcion;
+                    $disp = $stock ? $stock->cantidad : 0;
+                    return back()->with('error', "Stock insuficiente para '{$prodNombre}'. Disponible: {$disp}, requerido: {$item->cantidad}.");
+                }
+            }
+        }
+
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+
+            // 1. Marcar cotización como aprobada
+            $cotizacion->update(['estado' => 'aprobada']);
+
+            // 2. Crear Factura de Venta
+            $factura = \App\Models\Factura::create([
+                'numero_factura'  => \App\Models\Factura::siguienteNumero('VT-'),
+                'tipo_movimiento' => 'venta',
+                'estado'          => 'pendiente_pago',
+                'facturable_id'   => $cotizacion->cliente_id,
+                'facturable_type' => \App\Models\Cliente::class,
+                'total_documento' => $cotizacion->total,
+                'total_pagado'    => 0,
+                'observaciones'   => "Venta generada automáticamente desde Cotización #{$cotizacion->codigo}" . ($cotizacion->notas ? "\nNotas: {$cotizacion->notas}" : ''),
+                'fecha'           => now()->toDateString(),
+                'user_id'         => auth()->id(),
+            ]);
+
+            // 3. Crear FacturaItems y descontar stock cuando aplique
+            foreach ($cotizacion->items as $item) {
+                \App\Models\FacturaItem::create([
+                    'factura_id'      => $factura->id,
+                    'stock_id'        => $item->tipo === 'stock' ? $item->item_id : null,
+                    'descripcion'     => $item->descripcion,
+                    'cantidad'        => $item->cantidad,
+                    'precio_unitario' => $item->precio_unitario,
+                ]);
+
+                if ($item->tipo === 'stock' && $item->item_id) {
+                    $stock = \App\Models\Stock::find($item->item_id);
+                    if ($stock) {
+                        $stock->decrementarStock((int) $item->cantidad);
+                    }
+                }
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            return redirect()->route('inventario.facturas.show', $factura->id)
+                ->with('success', "Cotización {$cotizacion->codigo} aprobada y convertida en Venta #{$factura->numero_factura} exitosamente.");
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Error al convertir cotización: ' . $e->getMessage());
+            return back()->with('error', 'Error al procesar la conversión: ' . $e->getMessage());
+        }
+    }
 }

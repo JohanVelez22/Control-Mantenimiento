@@ -15,11 +15,21 @@
  </p>
  </div>
  </div>
- <div class="text-center md:text-right">
- <p class="text-[10px] font-bold text-yellow-600/70 uppercase tracking-widest">Saldo Actual</p>
- <p class="text-2xl font-black text-yellow-700 dark:text-yellow-400">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</p>
- </div>
- </div>
+  <div class="flex flex-col md:flex-row items-center gap-4">
+      <div class="text-center md:text-right">
+          <p class="text-[10px] font-bold text-yellow-600/70 uppercase tracking-widest">Saldo Actual</p>
+          <p class="text-2xl font-black text-yellow-700 dark:text-yellow-400">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</p>
+      </div>
+      @php
+          $movCaja = \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")->whereNull('parent_id')->first();
+      @endphp
+      @if($movCaja)
+      <a href="{{ route('caja.edit', $movCaja->id) }}" class="btn-primary py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md flex items-center gap-2 shrink-0">
+          <span>💵</span> Registrar Abono en Caja
+      </a>
+      @endif
+  </div>
+  </div>
  @endif
  
  @if($factura->estado === 'anulada')
@@ -109,7 +119,7 @@
  @if($factura->observaciones)
   <div class="p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
  <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Observaciones</p>
- <p class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ $factura->observaciones }}</p>
+ <p class="text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-pre-line">{{ $factura->observaciones }}</p>
  </div>
  @endif
  </div>

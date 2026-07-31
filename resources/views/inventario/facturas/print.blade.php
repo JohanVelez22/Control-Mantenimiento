@@ -44,7 +44,7 @@
 </table>
 
 <div class="clearfix" style="margin-bottom: 4px;">
-    <div style="float: left; width: 45%; border: 1px solid #ccc; padding: 4px 6px; background: #fafafa; font-size: 7.5pt; height: 42px; box-sizing: border-box; overflow: hidden;">
+    <div style="float: left; width: 45%; border: 1px solid #ccc; padding: 4px 6px; background: #fafafa; font-size: 7.5pt; min-height: 42px; height: auto; box-sizing: border-box;">
         <strong>Observaciones:</strong><br>
         <span style="color: #333;">{!! nl2br(e($factura->observaciones ?: 'Sin observaciones.')) !!}</span>
     </div>

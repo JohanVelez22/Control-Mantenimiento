@@ -55,14 +55,14 @@
                     </button>
                 </div>
                 <div class="overflow-x-auto pb-2">
-                    <table class="ts-table">
+                    <table class="ts-table w-full table-fixed">
                         <thead>
                             <tr>
-                                <th class="w-[45%]">Artículo</th>
-                                <th class="w-24 text-center">Cantidad</th>
-                                <th class="min-w-[160px] text-right">Precio Unitario ($)</th>
-                                <th class="min-w-[160px] text-right">Subtotal</th>
-                                <th class="w-12"></th>
+                                <th class="w-auto px-2 py-3">Artículo</th>
+                                <th class="w-24 text-center px-2 py-3">Cantidad</th>
+                                <th class="w-40 text-right px-3 py-3">Precio Unitario ($)</th>
+                                <th class="w-36 text-right px-3 py-3">Subtotal</th>
+                                <th class="w-10 text-center px-2 py-3"></th>
                             </tr>
                         </thead>
                         <tbody id="items-body">
@@ -70,14 +70,25 @@
                                 <tr class="existing-row">
                                     <td>
                                         <input type="hidden" name="existing_items[{{ $index }}][id]" value="{{ $item->id }}">
-                                        <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-orange-500" onchange="actualizarPrecio(this)">
-                                            <option value="">Seleccionar producto...</option>
-                                            @foreach($stocks as $s)
-                                                <option value="{{ $s->id }}" data-precio="{{ $factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta }}" {{ $item->stock_id == $s->id ? 'selected' : '' }}>
-                                                    {{ $s->producto }} (Stock: {{ $s->cantidad }})
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        @if($item->stock_id)
+                                            <div class="flex flex-col gap-1">
+                                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto Stock</span>
+                                                <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-orange-500">
+                                                    <option value="">Seleccionar producto...</option>
+                                                    @foreach($stocks as $s)
+                                                        <option value="{{ $s->id }}" data-precio="{{ $factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta }}" {{ $item->stock_id == $s->id ? 'selected' : '' }}>
+                                                            {{ $s->producto }} (Stock: {{ $s->cantidad }})
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @else
+                                            <input type="hidden" name="existing_items[{{ $index }}][stock_id]" value="">
+                                            <div class="flex flex-col gap-1">
+                                                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-cyan-400">🛠️ Servicio / Ítem Libre</span>
+                                                <input type="text" name="existing_items[{{ $index }}][descripcion]" value="{{ $item->descripcion }}" required class="glass-input py-1.5 focus:ring-orange-500 font-bold" placeholder="Descripción del artículo/servicio">
+                                            </div>
+                                        @endif
                                     </td>
                                     <td>
                                         <input type="number" name="existing_items[{{ $index }}][cantidad]" min="1" value="{{ (int)$item->cantidad }}" required class="glass-input text-center py-1.5 focus:ring-orange-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
@@ -141,9 +152,12 @@ function agregarFila() {
     tr.className = 'new-row bg-blue-50/20 dark:bg-blue-900/10';
     tr.innerHTML = `
         <td>
-            <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-blue-500" onchange="actualizarPrecio(this)">
-                ${optionsHtml}
-            </select>
+            <div class="flex flex-col gap-1">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto Stock</span>
+                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-blue-500" onchange="actualizarPrecio(this)">
+                    ${optionsHtml}
+                </select>
+            </div>
         </td>
         <td>
             <input type="number" name="new_items[${filaIndex}][cantidad]" min="1" value="1" required class="glass-input text-center py-1.5 focus:ring-blue-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
@@ -173,12 +187,13 @@ function eliminarFilaNueva(btn) {
 }
 
 function actualizarPrecio(selectElem) {
+    // Solo se invoca en filas NUEVAS (agregarFila), nunca en ítems existentes
     const option = selectElem.options[selectElem.selectedIndex];
     if(option && option.dataset.precio) {
         const tr = selectElem.closest('tr');
         const priceInput = tr.querySelector('.price-input');
         if(priceInput) {
-            priceInput.value = parseFloat(option.dataset.precio).toLocaleString('es-CO');
+            priceInput.value = window.formatNumber(parseFloat(option.dataset.precio));
             recalcularTotalesEdicion();
         }
     }
@@ -196,15 +211,23 @@ function recalcularTotalesEdicion() {
             const price = parseFloat(priceInput.value.replace(/\./g, '')) || 0;
             const sub = qty * price;
             const subtotalCell = row.querySelector('.subtotal-display');
-        if (subtotalCell) {
-            subtotalCell.textContent = '$' + window.formatNumber(sub);
-        }
+            if (subtotalCell) {
+                subtotalCell.textContent = '$' + window.formatNumber(sub);
+            }
             totalDoc += sub;
         }
     });
     
     document.getElementById('total_documento_display').textContent = '$' + window.formatNumber(totalDoc);
     
+    const pagadoInput = document.getElementById('total_pagado');
+    if (pagadoInput) {
+        let currentPagado = parseFloat(pagadoInput.value.replace(/\./g, '')) || 0;
+        if (currentPagado > totalDoc) {
+            pagadoInput.value = window.formatNumber(totalDoc);
+        }
+    }
+
     // Actualizar el texto de ayuda del total pagado
     const helpText = document.getElementById('total_pagado_help');
     if (helpText) {

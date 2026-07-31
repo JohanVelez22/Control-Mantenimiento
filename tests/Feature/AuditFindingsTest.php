@@ -1146,4 +1146,194 @@ public function testSaldoPendienteNuncaNegativo()
             ->get(route('dashboard'))
             ->assertStatus(200);
     }
+
+    public function testConvertirCotizacionAFacturaExitosamente()
+    {
+        $stock = Stock::create([
+            'producto' => 'RAM 8GB',
+            'categoria' => 'Hardware',
+            'cantidad' => 10,
+            'precio_compra' => 100000,
+            'utilidad' => 30,
+            'proveedor_id' => $this->proveedor->id,
+            'activo' => true,
+        ]);
+
+        $cotizacion = \App\Models\Cotizacion::create([
+            'codigo' => 'COT-001',
+            'cliente_id' => $this->cliente->id,
+            'fecha' => now()->toDateString(),
+            'validez_dias' => 15,
+            'total' => 130000,
+            'estado' => 'pendiente',
+            'user_id' => $this->admin->id,
+        ]);
+
+        \App\Models\CotizacionItem::create([
+            'cotizacion_id' => $cotizacion->id,
+            'tipo' => 'stock',
+            'item_id' => $stock->id,
+            'descripcion' => 'RAM 8GB DDR4',
+            'cantidad' => 1,
+            'precio_unitario' => 130000,
+            'subtotal' => 130000,
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->post(route('cotizaciones.convertir', $cotizacion));
+
+        $response->assertRedirect();
+        
+        $cotizacion->refresh();
+        $this->assertEquals('aprobada', $cotizacion->estado);
+
+        $factura = Factura::where('tipo_movimiento', 'venta')->first();
+        $this->assertNotNull($factura);
+        $this->assertEquals($this->cliente->id, $factura->facturable_id);
+        $this->assertEquals(130000, $factura->total_documento);
+
+        $stock->refresh();
+        $this->assertEquals(9, $stock->cantidad);
+    }
+
+    public function testEditarFacturaConItemLibreActualizaPagoExitosamente()
+    {
+        $factura = Factura::create([
+            'numero_factura' => Factura::siguienteNumero('VT-'),
+            'tipo_movimiento' => 'venta',
+            'estado' => 'pendiente_pago',
+            'facturable_type' => Cliente::class,
+            'facturable_id' => $this->cliente->id,
+            'total_documento' => 150000,
+            'total_pagado' => 0,
+            'fecha' => now()->toDateString(),
+            'user_id' => $this->admin->id,
+        ]);
+
+        $itemLibre = FacturaItem::create([
+            'factura_id' => $factura->id,
+            'stock_id' => null,
+            'descripcion' => 'Servicio técnico especializado',
+            'cantidad' => 1,
+            'precio_unitario' => 150000,
+        ]);
+
+        // Editar factura para actualizar total_pagado a 150.000
+        $response = $this->actingAs($this->admin)
+            ->put(route('inventario.facturas.update', $factura), [
+                'fecha' => now()->toDateString(),
+                'total_pagado' => '150.000',
+                'facturable_global' => "Cliente:{$this->cliente->id}",
+                'existing_items' => [
+                    [
+                        'id' => $itemLibre->id,
+                        'stock_id' => null,
+                        'descripcion' => 'Servicio técnico especializado',
+                        'cantidad' => 1,
+                        'precio_unitario' => '150.000',
+                    ],
+                ],
+            ]);
+
+        $response->assertRedirect();
+
+        $factura->refresh();
+        $this->assertEquals(150000, $factura->total_documento);
+        $this->assertEquals(150000, $factura->total_pagado);
+        $this->assertEquals('emitida', $factura->estado);
+    }
+
+    public function testReactivarFacturaConItemLibreExitosamente()
+    {
+        $factura = Factura::create([
+            'numero_factura' => 'VT-TEST-REACTIVAR',
+            'tipo_movimiento' => 'venta',
+            'estado' => 'anulada',
+            'facturable_id' => $this->cliente->id,
+            'facturable_type' => \App\Models\Cliente::class,
+            'total_documento' => 100000,
+            'total_pagado' => 0,
+            'fecha' => now()->toDateString(),
+            'user_id' => $this->admin->id,
+        ]);
+
+        FacturaItem::create([
+            'factura_id' => $factura->id,
+            'stock_id' => null,
+            'descripcion' => 'Servicio libre sin stock',
+            'cantidad' => 1,
+            'precio_unitario' => 100000,
+        ]);
+
+        // Reactivar factura usando la contraseña del admin
+        $response = $this->actingAs($this->admin)
+            ->post(route('inventario.facturas.anular', $factura), [
+                'password_confirm' => 'password',
+            ]);
+
+        $response->assertRedirect();
+        $factura->refresh();
+        $this->assertNotEquals('anulada', $factura->estado);
+    }
+
+    public function testEditarFacturaConPagoParcialCreaSaldoPendienteCorrectamente()
+    {
+        $factura = Factura::create([
+            'numero_factura' => 'VT-TEST-PARTIAL',
+            'tipo_movimiento' => 'venta',
+            'estado' => 'emitida',
+            'facturable_id' => $this->cliente->id,
+            'facturable_type' => \App\Models\Cliente::class,
+            'total_documento' => 345000,
+            'total_pagado' => 345000,
+            'fecha' => now()->toDateString(),
+            'user_id' => $this->admin->id,
+        ]);
+
+        $item1 = FacturaItem::create([
+            'factura_id' => $factura->id,
+            'stock_id' => null,
+            'descripcion' => 'Servicio Formateo',
+            'cantidad' => 1,
+            'precio_unitario' => 100000,
+        ]);
+
+        $item2 = FacturaItem::create([
+            'factura_id' => $factura->id,
+            'stock_id' => null,
+            'descripcion' => 'Disco Mecanico',
+            'cantidad' => 1,
+            'precio_unitario' => 50000,
+        ]);
+
+        $item3 = FacturaItem::create([
+            'factura_id' => $factura->id,
+            'stock_id' => null,
+            'descripcion' => 'Memoria RAM',
+            'cantidad' => 1,
+            'precio_unitario' => 195000,
+        ]);
+
+        // Simular edición con Total Pagado = 300.000 (saldo pendiente 45.000)
+        $response = $this->actingAs($this->admin)
+            ->put(route('inventario.facturas.update', $factura), [
+                'fecha' => now()->toDateString(),
+                'facturable_global' => 'Cliente:' . $this->cliente->id,
+                'total_pagado' => '300.000',
+                'existing_items' => [
+                    0 => ['id' => $item1->id, 'stock_id' => '', 'cantidad' => 1, 'precio_unitario' => '100.000', 'descripcion' => 'Servicio Formateo'],
+                    1 => ['id' => $item2->id, 'stock_id' => '', 'cantidad' => 1, 'precio_unitario' => '50.000', 'descripcion' => 'Disco Mecanico'],
+                    2 => ['id' => $item3->id, 'stock_id' => '', 'cantidad' => 1, 'precio_unitario' => '195.000', 'descripcion' => 'Memoria RAM'],
+                ],
+            ]);
+
+        $response->assertRedirect(route('inventario.facturas'));
+
+        $factura->refresh();
+        $this->assertEquals(345000, $factura->total_documento);
+        $this->assertEquals(300000, $factura->total_pagado);
+        $this->assertEquals('pendiente_pago', $factura->estado);
+        $this->assertStringContainsString('⚠️ SALDO PENDIENTE: $45.000', $factura->observaciones);
+        $this->assertEquals(50000, $item2->fresh()->precio_unitario);
+    }
 }

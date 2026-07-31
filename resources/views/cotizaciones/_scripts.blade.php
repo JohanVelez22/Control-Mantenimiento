@@ -18,7 +18,7 @@ function agregarFila(itemData = null) {
     
     tr.innerHTML = `
         <td class="align-middle">
-            <select name="items[${filaIndex}][tipo]" class="tipo-select glass-input no-search py-1.5 font-bold">
+            <select name="items[${filaIndex}][tipo]" class="tipo-select glass-input no-search py-1.5 font-bold w-full">
                 <option value="libre" ${!isStock ? 'selected' : ''}>Servicio / Libre</option>
                 <option value="stock" ${isStock ? 'selected' : ''}>Producto Stock</option>
             </select>
@@ -27,12 +27,12 @@ function agregarFila(itemData = null) {
             <!-- Renderizado dinámico -->
         </td>
         <td class="align-middle relative">
-            <input type="number" name="items[${filaIndex}][cantidad]" min="1" value="${cant}" required class="cantidad-input glass-input py-1.5 text-center focus:ring-blue-500">
+            <input type="number" name="items[${filaIndex}][cantidad]" min="1" max="999" value="${cant}" required class="cantidad-input glass-input py-1.5 text-center focus:ring-blue-500 w-24 pl-3 pr-6 font-bold">
             <div class="stock-warning text-[10px] text-orange-500 font-bold absolute -bottom-3 left-0 w-full text-center hidden">Sin stock</div>
         </td>
         <td class="align-middle">
             <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="${precio}" required class="hidden">
-            <input type="text" id="precio_unitario_visual_${filaIndex}" value="${window.formatNumber(precio)}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white">
+            <input type="text" id="precio_unitario_visual_${filaIndex}" value="${window.formatNumber(precio)}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-36">
         </td>
         <td class="text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle pr-4">$${window.formatNumber(cant * precio)}</td>
         <td class="text-center align-middle">
@@ -153,7 +153,7 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
         }
     } else {
         let defaultDesc = itemData ? (itemData.descripcion || '') : '';
-        tdDesc.innerHTML = `<input type="text" name="items[${idx}][descripcion]" value="${defaultDesc}" class="desc-input glass-input py-1.5 focus:ring-blue-500" placeholder="Descripción de mano de obra o servicio..." required>`;
+        tdDesc.innerHTML = `<input type="text" name="items[${idx}][descripcion]" value="${defaultDesc}" class="desc-input glass-input py-1.5 focus:ring-blue-500 w-full min-w-0" placeholder="Descripción de mano de obra o servicio..." required>`;
     }
 };
 

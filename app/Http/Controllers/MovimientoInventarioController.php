@@ -391,6 +391,9 @@ class MovimientoInventarioController extends Controller
                 // Verificar si hay stock disponible si es una venta
                 if ($factura->tipo_movimiento === 'venta') {
                     foreach ($factura->items as $item) {
+                        if (!$item->stock_id || !$item->stock) {
+                            continue;
+                        }
                         $stock = $item->stock;
                         if (!$stock->tieneDisponible($item->cantidad)) {
                             throw new \DomainException("No se puede reactivar. Stock insuficiente para '{$stock->producto}'. Requerido: {$item->cantidad}, disponible: {$stock->cantidad}.");
@@ -399,6 +402,9 @@ class MovimientoInventarioController extends Controller
                 }
 
                 foreach ($factura->items as $item) {
+                    if (!$item->stock_id || !$item->stock) {
+                        continue;
+                    }
                     $stock = $item->stock;
                     if ($factura->tipo_movimiento === 'compra') {
                         // Reactivando compra: vuelve a entrar el stock
@@ -415,7 +421,8 @@ class MovimientoInventarioController extends Controller
                 \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
                     ->update(['estado' => 'activo', 'anulado' => false]);
 
-                $factura->observaciones = ($factura->observaciones ?? '') . "\n[REACTIVADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']';
+                $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn($l) => !preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
+                $factura->observaciones = trim($cleanObs . "\n[REACTIVADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']');
                 $factura->estado = 'emitida'; // provisional, recalcularPagos() ajustará si hay saldo pendiente
                 $factura->save();
                 $factura->recalcularPagos();
@@ -440,10 +447,11 @@ class MovimientoInventarioController extends Controller
                 \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
                     ->update(['estado' => 'anulado', 'anulado' => true]);
 
+                $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn($l) => !preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
                 $factura->update([
                     'estado'        => 'anulada',
                     'total_pagado'  => 0,
-                    'observaciones' => ($factura->observaciones ?? '') . "\n[ANULADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']',
+                    'observaciones' => trim($cleanObs . "\n[ANULADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']'),
                 ]);
 
                 $action = 'anulada';
@@ -490,6 +498,9 @@ class MovimientoInventarioController extends Controller
         if ($request->has('existing_items') && is_array($request->existing_items)) {
             $items = $request->existing_items;
             foreach ($items as &$item) {
+                if (array_key_exists('stock_id', $item) && empty($item['stock_id'])) {
+                    $item['stock_id'] = null;
+                }
                 if (isset($item['precio_unitario'])) {
                     $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
                 }
@@ -499,6 +510,9 @@ class MovimientoInventarioController extends Controller
         if ($request->has('new_items') && is_array($request->new_items)) {
             $items = $request->new_items;
             foreach ($items as &$item) {
+                if (array_key_exists('stock_id', $item) && empty($item['stock_id'])) {
+                    $item['stock_id'] = null;
+                }
                 if (isset($item['precio_unitario'])) {
                     $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
                 }
@@ -513,7 +527,8 @@ class MovimientoInventarioController extends Controller
             'facturable_global'       => 'required|string',
             'existing_items'             => 'nullable|array',
             'existing_items.*.id'        => 'required|exists:factura_items,id',
-            'existing_items.*.stock_id'  => 'required|exists:stocks,id',
+            'existing_items.*.stock_id'  => 'nullable|exists:stocks,id',
+            'existing_items.*.descripcion' => 'nullable|string',
             'existing_items.*.cantidad'  => 'required|integer|min:1',
             'existing_items.*.precio_unitario'=> 'required|numeric|min:0',
             'new_items'               => 'nullable|array',
@@ -546,12 +561,15 @@ class MovimientoInventarioController extends Controller
                     $oldStock = $item->stock;
                     $oldQty = (int) $item->cantidad;
                     
-                    $newStockId = (int) $itemData['stock_id'];
+                    $newStockId = !empty($itemData['stock_id']) ? (int) $itemData['stock_id'] : null;
                     $newQty = (int) $itemData['cantidad'];
                     $newPrice = $this->cleanAmount($itemData['precio_unitario']);
+                    $newDesc = isset($itemData['descripcion']) ? $itemData['descripcion'] : $item->descripcion;
 
-                    if ($oldStock) {
-                        if ($oldStock->id !== $newStockId) {
+
+
+                    if ($oldStock || $newStockId) {
+                        if ($oldStock && $newStockId && $oldStock->id !== $newStockId) {
                             $newStock = Stock::where('id', $newStockId)->lockForUpdate()->firstOrFail();
                             if ($factura->tipo_movimiento === 'compra') {
                                 $oldStock->decrementarStock($oldQty);
@@ -563,7 +581,7 @@ class MovimientoInventarioController extends Controller
                                 }
                                 $newStock->decrementarStock($newQty);
                             }
-                        } else {
+                        } elseif ($oldStock && $newStockId && $oldStock->id === $newStockId) {
                             // Es el mismo artículo, solo cambia cantidad
                             $oldStock = Stock::where('id', $oldStock->id)->lockForUpdate()->firstOrFail();
                             $diff = $newQty - $oldQty;
@@ -585,11 +603,30 @@ class MovimientoInventarioController extends Controller
                                     }
                                 }
                             }
+                        } elseif ($oldStock && !$newStockId) {
+                            // Tenía stock y ahora cambió a sin stock
+                            if ($factura->tipo_movimiento === 'compra') {
+                                $oldStock->decrementarStock($oldQty);
+                            } else {
+                                $oldStock->incrementarStock($oldQty);
+                            }
+                        } elseif (!$oldStock && $newStockId) {
+                            // No tenía stock y se asignó stock
+                            $newStock = Stock::where('id', $newStockId)->lockForUpdate()->firstOrFail();
+                            if ($factura->tipo_movimiento === 'compra') {
+                                $newStock->incrementarStock($newQty);
+                            } else {
+                                if (!$newStock->tieneDisponible($newQty)) {
+                                    throw new \DomainException("Stock insuficiente para '{$newStock->producto}'. Requerido: {$newQty}, disponible: {$newStock->cantidad}.");
+                                }
+                                $newStock->decrementarStock($newQty);
+                            }
                         }
                     }
                     
                     $item->update([
                         'stock_id'        => $newStockId,
+                        'descripcion'     => $newDesc,
                         'cantidad'        => $newQty,
                         'precio_unitario' => $newPrice,
                     ]);
@@ -712,9 +749,50 @@ class MovimientoInventarioController extends Controller
     {
         if (is_null($val) || $val === '') return 0.0;
         if (is_int($val) || is_float($val)) return (float) $val;
-        $clean = str_replace('.', '', (string) $val);
-        $clean = str_replace(',', '.', $clean);
-        return (float) $clean;
+
+        $str = trim((string) $val);
+
+        // 1. Si es un número decimal estándar tipo "50000.00" o "50000.5" (un solo punto, 1 o 2 decimales al final, sin comas)
+        if (preg_match('/^\d+\.\d{1,2}$/', $str)) {
+            return (float) $str;
+        }
+
+        // 2. Si contiene tanto puntos como comas (ej. "5.000.000,00" o "5,000,000.00")
+        if (str_contains($str, '.') && str_contains($str, ',')) {
+            if (strrpos($str, ',') > strrpos($str, '.')) {
+                // Formato español/colombiano: 5.000.000,00 -> quitar punto, reemplazar coma por punto
+                $clean = str_replace('.', '', $str);
+                $clean = str_replace(',', '.', $clean);
+                return (float) $clean;
+            } else {
+                // Formato inglés: 5,000,000.00 -> quitar coma
+                $clean = str_replace(',', '', $str);
+                return (float) $clean;
+            }
+        }
+
+        // 3. Si contiene solo comas (ej. "50000,00" o "50,000")
+        if (str_contains($str, ',') && !str_contains($str, '.')) {
+            if (preg_match('/^\d+,\d{1,2}$/', $str)) {
+                return (float) str_replace(',', '.', $str);
+            }
+            return (float) str_replace(',', '', $str);
+        }
+
+        // 4. Si contiene solo puntos (ej. "50.000" o "5.000.000")
+        if (str_contains($str, '.')) {
+            if (substr_count($str, '.') > 1) {
+                return (float) str_replace('.', '', $str);
+            }
+            $parts = explode('.', $str);
+            $decimalPart = $parts[1] ?? '';
+            if (strlen($decimalPart) === 3) {
+                return (float) str_replace('.', '', $str);
+            }
+            return (float) $str;
+        }
+
+        return (float) $str;
     }
 
     private function calcularTotal(array $items): float

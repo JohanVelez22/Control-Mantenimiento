@@ -51,14 +51,14 @@
                 </div>
 
                 <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto">
-                    <table class="ts-table" id="items-table">
+                    <table class="ts-table w-full table-fixed" id="items-table">
                         <thead class="bg-white/30 dark:bg-slate-800/40 backdrop-blur-sm text-slate-700 dark:text-slate-200 font-semibold border-b border-slate-200/50 dark:border-slate-700/50">
                             <tr>
-                                <th class="w-44 px-3 py-3">Tipo</th>
-                                <th class="w-[36%] px-3 py-3">Descripción / Producto</th>
-                                <th class="w-24 text-center px-3 py-3">Cant.</th>
+                                <th class="w-48 px-3 py-3">Tipo</th>
+                                <th class="w-auto px-2 py-3">Descripción / Producto</th>
+                                <th class="w-24 text-center px-2 py-3">Cant.</th>
                                 <th class="w-36 text-right px-3 py-3">Precio Un. ($)</th>
-                                <th class="w-36 text-right px-3 py-3">Subtotal</th>
+                                <th class="w-32 text-right px-3 py-3">Subtotal</th>
                                 <th class="w-12 text-center px-2 py-3"></th>
                             </tr>
                         </thead>
@@ -67,9 +67,12 @@
                         </tbody>
                         <tfoot>
                             <tr class="border-t border-slate-200/50 dark:border-slate-700/50 bg-white/30 dark:bg-slate-800/30">
-                                <td colspan="4" class="text-right font-bold text-slate-500 uppercase tracking-widest text-xs pt-4 pb-4">Total Cotización:</td>
-                                <td class="text-right font-black text-2xl text-blue-600 dark:text-blue-400 pt-4 pb-4 pr-4" id="total-display">$0</td>
-                                <td></td>
+                                <td colspan="6" class="px-4 py-4">
+                                    <div class="flex justify-end items-center gap-4">
+                                        <span class="font-bold text-slate-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Cotización:</span>
+                                        <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">$0</span>
+                                    </div>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>

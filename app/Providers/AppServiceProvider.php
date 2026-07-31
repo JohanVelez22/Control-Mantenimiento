@@ -75,7 +75,14 @@ class AppServiceProvider extends ServiceProvider
                 ->with('facturable')
                 ->latest()
                 ->limit(50)
-                ->get();
+                ->get()
+                ->map(function ($f) {
+                    $mov = MovimientoCaja::where('descripcion', 'like', "%#{$f->numero_factura}%")
+                        ->whereNull('parent_id')
+                        ->first();
+                    $f->movimiento_caja_id = $mov?->id;
+                    return $f;
+                });
 
             // Extraer números de factura pendientes para evitar duplicar en notificaciones de caja
             $facturasNumeros = $cajaList->pluck('numero_factura')->filter()->toArray();

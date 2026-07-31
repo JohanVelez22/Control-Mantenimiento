@@ -106,9 +106,22 @@ class Factura extends Model
             $saldo = max(0, (float) $this->total_documento - $pagosCaja);
             $this->estado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
 
-            // Limpiar etiqueta "⚠️ SALDO PENDIENTE" antigua de observaciones y actualizar si aún hay saldo
+            // Limpiar etiqueta "⚠️ SALDO PENDIENTE" antigua y duplicados repetitivos de anulación/reactivación
             $lineas = array_filter(explode("\n", $this->observaciones ?? ''), fn($l) => !str_contains($l, 'SALDO PENDIENTE:'));
-            $obsLimpia = trim(implode("\n", $lineas));
+            $tagLines = [];
+            $contentLines = [];
+            foreach ($lineas as $l) {
+                $trimmed = trim($l);
+                if (preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', $trimmed)) {
+                    $tagLines[] = $trimmed;
+                } else {
+                    $contentLines[] = $l;
+                }
+            }
+            if (!empty($tagLines)) {
+                $contentLines[] = end($tagLines);
+            }
+            $obsLimpia = trim(implode("\n", $contentLines));
 
             if ($saldo > 0.01) {
                 $obsLimpia .= ($obsLimpia ? "\n" : "") . "⚠️ SALDO PENDIENTE: $" . number_format($saldo, 0, ',', '.');

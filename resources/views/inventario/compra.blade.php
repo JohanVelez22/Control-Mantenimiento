@@ -55,14 +55,14 @@
  </div>
 
  <div class="overflow-x-auto pb-2 max-h-[420px] overflow-y-auto">
- <table class="ts-table" id="items-table">
+ <table class="ts-table w-full table-fixed" id="items-table">
  <thead>
  <tr>
- <th class="w-[45%]">Artículo del Stock</th>
- <th class="w-24 text-center">Cant.</th>
- <th class="min-w-[160px] text-right">Precio Un. ($)</th>
- <th class="min-w-[160px] text-right">Subtotal</th>
- <th class="w-12 text-center"></th>
+ <th class="w-auto px-2 py-3">Artículo del Stock</th>
+ <th class="w-24 text-center px-2 py-3">Cant.</th>
+ <th class="w-40 text-right px-3 py-3">Precio Un. ($)</th>
+ <th class="w-36 text-right px-3 py-3">Subtotal</th>
+ <th class="w-10 text-center px-2 py-3"></th>
  </tr>
  </thead>
  <tbody id="items-body">

@@ -50,18 +50,19 @@
     </tbody>
 </table>
 
-<div class="clearfix">
-    <div style="float: left; width: 55%; border: 1px solid #ccc; padding: 10px; background: #fafafa; font-size: 8pt; min-height: 60px;">
+<div class="clearfix" style="margin-bottom: 4px;">
+    <div style="float: left; width: 52%; border: 1px solid #ccc; padding: 4px 6px; background: #fafafa; font-size: 7.5pt; box-sizing: border-box;">
         <strong>Condiciones y Notas:</strong><br>
-        {!! nl2br(e($cotizacion->notas ?: 'Sin notas adicionales.')) !!}
-        <br><br>
-        <em style="color: #666;">* Esta cotización no es un comprobante de pago ni representa una obligación fiscal o contable. Los precios pueden estar sujetos a cambio después de la fecha de validez establecida.</em>
+        <span>{!! nl2br(e($cotizacion->notas ?: 'Sin notas adicionales.')) !!}</span>
+        <div style="margin-top: 3px; font-size: 6.5pt; color: #666; font-style: italic;">
+            * Esta cotización no es un comprobante de pago ni representa una obligación fiscal o contable. Los precios pueden estar sujetos a cambio después de la fecha de validez establecida.
+        </div>
     </div>
 
-    <table class="totals">
+    <table class="totals" style="width: 45%; float: right;">
         <tr class="grand-total">
-            <td class="lbl">TOTAL PRESUPUESTO:</td>
-            <td class="val">${{ number_format($cotizacion->total, 0, ',', '.') }}</td>
+            <td class="lbl" style="font-size: 8.5pt;">TOTAL PRESUPUESTO:</td>
+            <td class="val" style="font-size: 8.5pt;">${{ number_format($cotizacion->total, 0, ',', '.') }}</td>
         </tr>
     </table>
 </div>

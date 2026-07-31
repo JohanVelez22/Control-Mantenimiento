@@ -613,7 +613,7 @@
                 {{-- Facturas con saldo pendiente --}}
                 @foreach($cajaList as $f)
                 @if(is_object($f))
-                <a href="{{ route('inventario.facturas.show', $f->id) }}" onclick="closeNotifModal()" data-notif-type="caja"
+                <a href="{{ $f->movimiento_caja_id ? route('caja.edit', $f->movimiento_caja_id) : route('inventario.facturas.show', $f->id) }}" onclick="closeNotifModal()" data-notif-type="caja"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
@@ -626,7 +626,9 @@
                             Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}
                         </p>
                     </div>
-                    <span class="shrink-0 text-orange-500 dark:text-orange-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-xs font-bold px-2.5 py-1 bg-orange-500 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1">💵 Registrar Abono</span>
+                    </div>
                 </a>
                 @endif
                 @endforeach
@@ -898,6 +900,9 @@
                 
                 // Solo dígitos en el valor real (hidden)
                 let raw = visualInput.value.replace(/\D/g, '');
+                if (raw.length > 12) {
+                    raw = raw.substring(0, 12);
+                }
                 realInput.value = raw || '0';
                 
                 // Formatear visual con puntos de miles (es-CO)
