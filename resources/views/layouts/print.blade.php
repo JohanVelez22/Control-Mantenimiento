@@ -79,12 +79,12 @@
         }
         .info-col p {
             margin: 1px 0;
-            font-size: 8.5pt;
+            font-size: 7.5pt;
         }
         table.items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         table.items-table th, table.items-table td {
             border: 1px solid #ccc;
@@ -106,21 +106,21 @@
             width: 48%;
             float: right;
             border-collapse: collapse;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .totals td {
-            padding: 2px 4px;
+            padding: 1px 3px;
             font-size: 7.5pt;
         }
         .totals td.lbl { font-weight: bold; text-align: right; }
         .totals td.val { text-align: right; border-bottom: 1px solid #ddd; }
-        .totals tr.grand-total td { font-size: 8.5pt; font-weight: bold; border-top: 1.5px solid #000; border-bottom: none; }
+        .totals tr.grand-total td { font-size: 8pt; font-weight: bold; border-top: 1.5px solid #000; border-bottom: none; }
         
         .clearfix::after { content: ""; clear: both; display: table; }
 
         .signatures-block {
             position: absolute;
-            bottom: 44px;
+            bottom: 42px;
             left: 0;
             width: 100%;
         }
