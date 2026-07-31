@@ -9,58 +9,58 @@
 @endsection
 
 @section('content')
-<div class="info-grid" style="font-size: 7.5pt; margin-bottom: 4px;">
+<div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
     <div class="info-col">
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}:</strong> {{ $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? 'N/A' }}</p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Identificación:</strong> {{ $factura->facturable->nit_documento ?? $factura->facturable->documento ?? 'N/A' }}</p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Teléfono:</strong> {{ $factura->facturable->telefono ?? 'N/A' }}</p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}:</strong> <strong>{{ $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? 'N/A' }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Identificación:</strong> <strong>{{ $factura->facturable->nit_documento ?? $factura->facturable->documento ?? 'N/A' }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Teléfono:</strong> <strong>{{ $factura->facturable->telefono ?? 'N/A' }}</strong></p>
     </div>
     <div class="info-col">
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Emisión:</strong> {{ \Carbon\Carbon::parse($factura->fecha)->format('d/m/Y') }}</p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Estado:</strong> <span style="text-transform: uppercase;">{{ str_replace('_', ' ', $factura->estado) }}</span></p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Registrado por:</strong> {{ $factura->user->name ?? 'Sistema' }}</p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Emisión:</strong> <strong>{{ \Carbon\Carbon::parse($factura->fecha)->format('d/m/Y') }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ str_replace('_', ' ', $factura->estado) }}</span></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Registrado por:</strong> <strong>{{ $factura->user->name ?? 'Sistema' }}</strong></p>
     </div>
 </div>
 
-<table class="items-table" style="text-align: center; margin-bottom: 4px;">
+<table class="items-table" style="text-align: center; margin-bottom: 2px;">
     <thead>
-        <tr>
-            <th class="text-center" style="width: 10%; font-size: 7.5pt; padding: 2px 4px;">CANT</th>
-            <th class="text-center" style="font-size: 7.5pt; padding: 2px 4px;">DESCRIPCIÓN / PRODUCTO</th>
-            <th class="text-center" style="width: 22%; font-size: 7.5pt; padding: 2px 4px;">V. UNITARIO</th>
-            <th class="text-center" style="width: 22%; font-size: 7.5pt; padding: 2px 4px;">SUBTOTAL</th>
+        <tr style="background: #f8fafc;">
+            <th class="text-center" style="width: 10%; font-size: 6.8pt; padding: 1px 2px;">CANT</th>
+            <th class="text-center" style="font-size: 6.8pt; padding: 1px 2px;">DESCRIPCIÓN / PRODUCTO</th>
+            <th class="text-center" style="width: 22%; font-size: 6.8pt; padding: 1px 2px;">V. UNITARIO</th>
+            <th class="text-center" style="width: 22%; font-size: 6.8pt; padding: 1px 2px;">SUBTOTAL</th>
         </tr>
     </thead>
     <tbody>
         @foreach($factura->items as $item)
-        <tr>
-            <td class="text-center" style="font-size: 7.5pt; padding: 2px 4px;">{{ $item->cantidad }}</td>
-            <td class="text-center" style="font-size: 7.5pt; padding: 2px 4px;">{{ $item->stock->producto ?? $item->descripcion ?? 'Producto Desconocido' }}</td>
-            <td class="text-center" style="font-size: 7.5pt; padding: 2px 4px;">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
-            <td class="text-center" style="font-size: 7.5pt; padding: 2px 4px;">${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}</td>
+        <tr style="font-weight: bold;">
+            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">{{ $item->cantidad }}</td>
+            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">{{ $item->stock->producto ?? $item->descripcion ?? 'Producto Desconocido' }}</td>
+            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}</td>
         </tr>
         @endforeach
     </tbody>
 </table>
 
-<div class="clearfix" style="margin-bottom: 4px;">
-    <div style="float: left; width: 48%; border: 1px solid #ccc; padding: 3px 6px; background: #fafafa; font-size: 7.5pt; box-sizing: border-box;">
-        <strong>Observaciones:</strong><br>
-        <span style="color: #333; font-size: 7pt;">{!! nl2br(e($factura->observaciones ?: 'Sin observaciones.')) !!}</span>
+<div class="clearfix" style="margin-bottom: 2px;">
+    <div style="float: left; width: 48%; border: 1px solid #ccc; padding: 2px 5px; background: #fafafa; font-size: 6.8pt; box-sizing: border-box;">
+        <strong style="font-size: 6.8pt;">OBSERVACIONES:</strong><br>
+        <span style="color: #333; font-size: 6.5pt; font-weight: normal;">{!! nl2br(e($factura->observaciones ?: 'Sin observaciones.')) !!}</span>
     </div>
 
     <table class="totals" style="width: 48%; float: right; margin-bottom: 0;">
         <tr>
-            <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">Total Documento:</td>
-            <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">${{ number_format($factura->total_documento, 0, ',', '.') }}</td>
+            <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Total Documento:</td>
+            <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">${{ number_format($factura->total_documento, 0, ',', '.') }}</td>
         </tr>
         <tr>
-            <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">Total Pagado:</td>
-            <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">${{ number_format($factura->total_pagado, 0, ',', '.') }}</td>
+            <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Total Pagado:</td>
+            <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">${{ number_format($factura->total_pagado, 0, ',', '.') }}</td>
         </tr>
         <tr class="grand-total">
-            <td class="lbl" style="font-size: 8pt; padding: 1px 3px;">SALDO PENDIENTE:</td>
-            <td class="val" style="font-size: 8pt; padding: 1px 3px;">
+            <td class="lbl" style="font-size: 6.8pt; padding: 1px 2px;">SALDO PENDIENTE:</td>
+            <td class="val" style="font-size: 6.8pt; padding: 1px 2px; font-weight: bold;">
                 ${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}
             </td>
         </tr>
@@ -93,7 +93,7 @@
 </div>
 @endif
 
-<div class="signatures-block clearfix">
+<div class="signatures-block clearfix" style="position: absolute; bottom: 38px; left: 0; width: 100%;">
     <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">
         <strong>Firma {{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}</strong>
     </div>

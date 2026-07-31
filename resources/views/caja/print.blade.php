@@ -18,25 +18,25 @@
     $isChild = (bool) $movimiento->parent_id;
 @endphp
 
-<div class="info-grid" style="font-size: 7.5pt; margin-bottom: 4px;">
+<div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
     <div class="info-col">
-        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Persona / Contacto:</strong> {{ $movimiento->persona ?: ($parent->persona ?: '—') }}</p>
-        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Empresa:</strong> {{ $movimiento->empresa ?: ($parent->empresa ?: '—') }}</p>
-        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Atendido por:</strong> {{ $movimiento->user->name ?? 'Sistema' }}</p>
+        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Persona / Contacto:</strong> <strong>{{ $movimiento->persona ?: ($parent->persona ?: '—') }}</strong></p>
+        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Empresa:</strong> <strong>{{ $movimiento->empresa ?: ($parent->empresa ?: '—') }}</strong></p>
+        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Atendido por:</strong> <strong>{{ $movimiento->user->name ?? 'Sistema' }}</strong></p>
         @if($isChild)
-            <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Movimiento Padre:</strong> #{{ $parent->id }}</p>
+            <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Movimiento Padre:</strong> <strong>#{{ $parent->id }}</strong></p>
         @endif
     </div>
     <div class="info-col">
-        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Fecha Transacción:</strong> {{ \Carbon\Carbon::parse($movimiento->fecha)->format('d/m/Y') }}</p>
-        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Método de Pago:</strong> <span style="text-transform: uppercase;">{{ $movimiento->tipo_pago }}</span></p>
-        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Estado:</strong> <span style="text-transform: uppercase;">{{ $movimiento->anulado ? 'ANULADO' : $movimiento->estado }}</span></p>
+        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Fecha Transacción:</strong> <strong>{{ \Carbon\Carbon::parse($movimiento->fecha)->format('d/m/Y') }}</strong></p>
+        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Método de Pago:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $movimiento->tipo_pago }}</span></p>
+        <p style="margin: 1px 0; font-size: 7.5pt;"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $movimiento->anulado ? 'ANULADO' : $movimiento->estado }}</span></p>
     </div>
 </div>
 
-<table style="width: 100%; margin-bottom: 4px; border: 1px solid #d1d5db; background-color: #f8fafc; border-collapse: collapse;">
+<table style="width: 100%; margin-bottom: 2px; border: 1px solid #d1d5db; background-color: #f8fafc; border-collapse: collapse;">
     <tr>
-        <td style="text-align: center; vertical-align: middle; padding: 3px 6px; line-height: 1.0;">
+        <td style="text-align: center; vertical-align: middle; padding: 2px 5px; line-height: 1.0;">
             <span style="font-size: 7.5pt; text-transform: uppercase; font-weight: bold; color: #0f172a; letter-spacing: 0.3px;">
                 {{ $isChild ? 'Concepto del Movimiento Original:' : 'Concepto del Movimiento:' }}
             </span>
@@ -47,10 +47,10 @@
     </tr>
 </table>
 
-<div class="clearfix" style="margin-top: 4px; margin-bottom: 4px;">
-    <div style="float: left; width: 48%; border: 1px solid #ccc; padding: 3px 6px; font-size: 7pt; height: auto; min-height: 40px; box-sizing: border-box; overflow: hidden;">
-        <strong>Observaciones / Descripción:</strong><br>
-        <span style="color: #333; font-size: 7pt;">{!! nl2br(e($movimiento->descripcion ?: ($isChild ? 'Abono parcial registrado al movimiento #' . $parent->id : 'Sin observaciones.'))) !!}</span>
+<div class="clearfix" style="margin-top: 2px; margin-bottom: 2px;">
+    <div style="float: left; width: 48%; border: 1px solid #ccc; padding: 2px 5px; font-size: 6.8pt; height: auto; min-height: 35px; box-sizing: border-box; overflow: hidden; background: #fafafa;">
+        <strong style="font-size: 6.8pt;">OBSERVACIONES / DESCRIPCIÓN:</strong><br>
+        <span style="color: #333; font-size: 6.5pt; font-weight: normal;">{!! nl2br(e($movimiento->descripcion ?: ($isChild ? 'Abono parcial registrado al movimiento #' . $parent->id : 'Sin observaciones.'))) !!}</span>
     </div>
     
     <table class="totals" style="width: 48%; margin-bottom: 0;">
@@ -155,7 +155,7 @@
     </div>
 @endif
 
-<div class="signatures-block clearfix">
+<div class="signatures-block clearfix" style="position: absolute; bottom: 38px; left: 0; width: 100%;">
     <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt; color: #222;">
         <strong>Firma Cliente / Recibe</strong>
     </div>

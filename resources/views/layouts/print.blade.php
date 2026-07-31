@@ -114,13 +114,13 @@
         }
         .totals td.lbl { font-weight: bold; text-align: right; }
         .totals td.val { text-align: right; border-bottom: 1px solid #ddd; }
-        .totals tr.grand-total td { font-size: 8pt; font-weight: bold; border-top: 1.5px solid #000; border-bottom: none; }
+        .totals tr.grand-total td { font-size: 6.5pt; font-weight: bold; border-top: 1.5px solid #000; border-bottom: none; padding: 1px 2px; }
         
         .clearfix::after { content: ""; clear: both; display: table; }
 
         .signatures-block {
             position: absolute;
-            bottom: 42px;
+            bottom: 38px;
             left: 0;
             width: 100%;
         }

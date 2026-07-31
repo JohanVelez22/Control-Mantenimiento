@@ -7,76 +7,76 @@
 @section('doc_title', 'ORDEN DE ELECTRÓNICA - ' . $electronica->id_orden)
 
 @section('content')
-<div class="info-grid" style="font-size: 7.5pt; margin-bottom: 4px;">
+<div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
     <div class="info-col">
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Cliente:</strong> {{ $electronica->equipo->cliente->nombre ?? 'N/A' }}</p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Teléfono:</strong> {{ $electronica->equipo->cliente->telefono ?? 'N/A' }}</p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Técnico:</strong> {{ $electronica->tecnico->nombre ?? 'N/A' }}</p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Cliente:</strong> <strong>{{ $electronica->equipo->cliente->nombre ?? 'N/A' }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Teléfono:</strong> <strong>{{ $electronica->equipo->cliente->telefono ?? 'N/A' }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Técnico:</strong> <strong>{{ $electronica->tecnico->nombre ?? 'N/A' }}</strong></p>
     </div>
     <div class="info-col">
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Ingreso:</strong> {{ $electronica->fecha_entrada ? \Carbon\Carbon::parse($electronica->fecha_entrada)->format('d/m/Y') : '—' }}</p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Emisión:</strong> {{ now()->format('d/m/Y h:i A') }}</p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Estado:</strong> <span style="text-transform: uppercase;">{{ $electronica->estado }}</span></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Ingreso:</strong> <strong>{{ $electronica->fecha_entrada ? \Carbon\Carbon::parse($electronica->fecha_entrada)->format('d/m/Y') : '—' }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Emisión:</strong> <strong>{{ now()->format('d/m/Y h:i A') }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $electronica->estado }}</span></p>
     </div>
 </div>
 
-<div style="margin-bottom: 4px; font-size: 7.5pt;">
+<div style="margin-bottom: 2px; font-size: 7.5pt;">
     <strong>Detalles del Dispositivo:</strong> 
-    {{ $electronica->equipo->nombre ?? 'N/A' }} | 
-    Marca/Modelo: {{ trim(($electronica->equipo->marca ?? '') . ' ' . ($electronica->equipo->modelo ?? '')) ?: '—' }} | 
-    Serie: {{ Str::upper($electronica->equipo->serie ?? 'N/A') }}
+    <strong>{{ $electronica->equipo->nombre ?? 'N/A' }}</strong> | 
+    Marca/Modelo: <strong>{{ trim(($electronica->equipo->marca ?? '') . ' ' . ($electronica->equipo->modelo ?? '')) ?: '—' }}</strong> | 
+    Serie: <strong>{{ Str::upper($electronica->equipo->serie ?? 'N/A') }}</strong>
 </div>
 
-<div style="margin-bottom: 4px; padding: 4px 6px; border: 1px solid #ccc; background: #fafafa; font-size: 7.5pt;">
-    <strong>Falla Principal:</strong> {{ Str::upper($electronica->falla_reportada ?: 'Sin reporte de falla.') }}<br>
-    <strong>Diagnóstico / Problema:</strong> {{ Str::upper($electronica->descripcion_problema ?: 'Pendiente de diagnóstico.') }}
+<div style="margin-bottom: 2px; padding: 2px 5px; border: 1px solid #ccc; background: #fafafa; font-size: 6.8pt;">
+    <strong style="font-size: 6.8pt;">FALLA PRINCIPAL:</strong> <strong>{{ Str::upper($electronica->falla_reportada ?: 'Sin reporte de falla.') }}</strong><br>
+    <strong style="font-size: 6.8pt;">DIAGNÓSTICO / PROBLEMA:</strong> <span style="font-size: 6.5pt; font-weight: normal;">{{ Str::upper($electronica->descripcion_problema ?: 'Pendiente de diagnóstico.') }}</span>
 </div>
 
 @if($electronica->stocks->count() > 0)
-    <p class="font-bold" style="font-size: 7.5pt; margin: 2px 0 2px 0;">Repuestos / Componentes Utilizados:</p>
-    <table class="items-table" style="text-align: center; margin-bottom: 4px;">
+    <p style="font-size: 6.8pt; font-weight: bold; text-transform: uppercase; color: #333; margin: 2px 0 1px; text-align: left;">Repuestos / Componentes Utilizados:</p>
+    <table class="items-table" style="font-size: 6.5pt; text-align: center; margin-bottom: 2px; width: 100%;">
         <thead>
-            <tr>
-                <th class="text-center" style="width: 10%; font-size: 7.5pt; padding: 2px 4px;">CANT</th>
-                <th class="text-center" style="font-size: 7.5pt; padding: 2px 4px;">DESCRIPCIÓN</th>
-                <th class="text-center" style="width: 22%; font-size: 7.5pt; padding: 2px 4px;">V. UNITARIO</th>
-                <th class="text-center" style="width: 22%; font-size: 7.5pt; padding: 2px 4px;">SUBTOTAL</th>
+            <tr style="background: #f8fafc;">
+                <th class="text-center" style="width: 10%; font-size: 6.8pt; padding: 1px 2px;">CANT</th>
+                <th class="text-center" style="font-size: 6.8pt; padding: 1px 2px;">DESCRIPCIÓN</th>
+                <th class="text-center" style="width: 22%; font-size: 6.8pt; padding: 1px 2px;">V. UNITARIO</th>
+                <th class="text-center" style="width: 22%; font-size: 6.8pt; padding: 1px 2px;">SUBTOTAL</th>
             </tr>
         </thead>
         <tbody>
             @foreach($electronica->stocks as $stock)
-            <tr>
-                <td class="text-center" style="font-size: 7.5pt; padding: 2px 4px;">{{ $stock->pivot->cantidad }}</td>
-                <td class="text-center" style="font-size: 7.5pt; padding: 2px 4px;">{{ $stock->producto }}</td>
-                <td class="text-center" style="font-size: 7.5pt; padding: 2px 4px;">${{ number_format($stock->pivot->precio_unitario, 0, ',', '.') }}</td>
-                <td class="text-center" style="font-size: 7.5pt; padding: 2px 4px;">${{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
+            <tr style="font-weight: bold;">
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">{{ $stock->pivot->cantidad }}</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">{{ $stock->producto }}</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($stock->pivot->precio_unitario, 0, ',', '.') }}</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>
     </table>
 @endif
 
-<div class="clearfix" style="margin-bottom: 4px;">
-    <table class="totals" style="width: 48%; float: right; margin-bottom: 0;">
+<div class="clearfix" style="margin-bottom: 2px;">
+    <table class="totals" style="width: 45%; float: right; margin-bottom: 0;">
         <tr>
-            <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">Costo Total Estimado:</td>
-            <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">${{ number_format($electronica->costo, 0, ',', '.') }}</td>
+            <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Costo Total Estimado:</td>
+            <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">${{ number_format($electronica->costo, 0, ',', '.') }}</td>
         </tr>
         @if($electronica->abonos->count() > 0)
             <tr>
-                <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">Total Abonado:</td>
-                <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">- ${{ number_format($electronica->total_abonado, 0, ',', '.') }}</td>
+                <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Total Abonado:</td>
+                <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">- ${{ number_format($electronica->total_abonado, 0, ',', '.') }}</td>
             </tr>
             <tr class="grand-total">
-                <td class="lbl" style="font-size: 8pt; padding: 1px 3px;">SALDO PENDIENTE:</td>
-                <td class="val" style="font-size: 8pt; padding: 1px 3px;">
+                <td class="lbl" style="font-size: 6.8pt; padding: 1px 2px;">SALDO PENDIENTE:</td>
+                <td class="val" style="font-size: 6.8pt; padding: 1px 2px; font-weight: bold;">
                     ${{ number_format($electronica->saldo_pendiente, 0, ',', '.') }}
                 </td>
             </tr>
         @else
             <tr class="grand-total">
-                <td class="lbl" style="font-size: 8pt; padding: 1px 3px;">SALDO PENDIENTE:</td>
-                <td class="val" style="font-size: 8pt; padding: 1px 3px;">${{ number_format($electronica->costo, 0, ',', '.') }}</td>
+                <td class="lbl" style="font-size: 6.8pt; padding: 1px 2px;">SALDO PENDIENTE:</td>
+                <td class="val" style="font-size: 6.8pt; padding: 1px 2px; font-weight: bold;">${{ number_format($electronica->costo, 0, ',', '.') }}</td>
             </tr>
         @endif
     </table>
@@ -87,24 +87,24 @@
         $abonosHistorial = $electronica->abonos->sortBy('fecha');
         $abonosMostrar = $abonosHistorial->take(3);
     @endphp
-    <div style="margin-top: 4px; clear: both;">
-        <p style="font-size: 7pt; font-weight: bold; text-transform: uppercase; color: #333; margin: 0 0 2px; text-align: left;">HISTORIAL DE ABONOS / PAGOS RECIBIDOS:</p>
+    <div style="margin-top: -10px; clear: both;">
+        <p style="font-size: 6.8pt; font-weight: bold; text-transform: uppercase; color: #333; margin: 0 0 1px; text-align: left;">HISTORIAL DE ABONOS / PAGOS RECIBIDOS:</p>
         <table class="items-table" style="font-size: 6.5pt; margin-bottom: 0; width: 100%; text-align: center;">
             <thead>
                 <tr style="background: #f8fafc;">
-                    <th style="padding: 1px 3px; text-align: center; width: 15%; font-size: 6.5pt;">FECHA</th>
-                    <th style="padding: 1px 3px; text-align: center; width: 25%; font-size: 6.5pt;">MEDIO PAGO</th>
-                    <th style="padding: 1px 3px; text-align: center; font-size: 6.5pt;">DESCRIPCIÓN</th>
-                    <th style="padding: 1px 3px; text-align: center; width: 20%; font-size: 6.5pt;">ABONO</th>
+                    <th style="padding: 1px 2px; text-align: center; width: 15%; font-size: 6.8pt;">FECHA</th>
+                    <th style="padding: 1px 2px; text-align: center; width: 25%; font-size: 6.8pt;">MEDIO PAGO</th>
+                    <th style="padding: 1px 2px; text-align: center; font-size: 6.8pt;">DESCRIPCIÓN</th>
+                    <th style="padding: 1px 2px; text-align: center; width: 20%; font-size: 6.8pt;">ABONO</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($abonosMostrar as $abono)
-                <tr>
-                    <td style="padding: 1px 3px; text-align: center; font-size: 6.5pt;">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }}</td>
-                    <td style="padding: 1px 3px; text-align: center; font-size: 6.5pt;">{{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Banco / Transf.' }}</td>
-                    <td style="padding: 1px 3px; text-align: center; font-size: 6.5pt;">{{ $abono->descripcion ?: 'Abono a cuenta' }}</td>
-                    <td style="padding: 1px 3px; text-align: center; font-size: 6.5pt; font-weight: bold;">${{ number_format($abono->monto, 0, ',', '.') }}</td>
+                <tr style="font-weight: bold;">
+                    <td style="padding: 1px 2px; text-align: center; font-size: 6.5pt; font-weight: bold;">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }}</td>
+                    <td style="padding: 1px 2px; text-align: center; font-size: 6.5pt; font-weight: bold;">{{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Banco / Transf.' }}</td>
+                    <td style="padding: 1px 2px; text-align: center; font-size: 6.5pt; font-weight: bold;">{{ $abono->descripcion ?: 'Abono a cuenta' }}</td>
+                    <td style="padding: 1px 2px; text-align: center; font-size: 6.5pt; font-weight: bold;">${{ number_format($abono->monto, 0, ',', '.') }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -112,11 +112,11 @@
     </div>
 @endif
 
-<div class="signatures-block clearfix">
-    <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">
+<div class="signatures-block clearfix" style="position: absolute; bottom: 38px; left: 0; width: 100%;">
+    <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 2px; font-size: 7pt;">
         <strong>Firma Cliente / Recibe</strong>
     </div>
-    <div style="float: right; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">
+    <div style="float: right; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 2px; font-size: 7pt;">
         <strong>Firma Autorizada</strong>
     </div>
 </div>

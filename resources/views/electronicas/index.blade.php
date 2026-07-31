@@ -95,8 +95,24 @@
   </p>
   </td>
  
-  <td data-label="Costo:" class="text-right font-black text-purple-600 dark:text-purple-400 {{ $dim }}">
-  ${{ number_format($e->costo, 0, ',', '.') }}
+  <td data-label="Costo:" class="text-right font-black {{ $dim }}">
+    <div class="text-purple-600 dark:text-purple-400 font-bold">${{ number_format($e->costo, 0, ',', '.') }}</div>
+    @if($e->total_abonado > 0 && $e->saldo_pendiente > 0)
+      <div class="text-[10px] font-bold text-amber-600 dark:text-amber-400 mt-0.5" title="Monto abonado">
+        Abono: ${{ number_format($e->total_abonado, 0, ',', '.') }}
+      </div>
+      <div class="text-[10px] font-bold text-red-600 dark:text-red-400" title="Saldo pendiente por cobrar">
+        Falta: ${{ number_format($e->saldo_pendiente, 0, ',', '.') }}
+      </div>
+    @elseif($e->total_abonado > 0 && $e->saldo_pendiente <= 0)
+      <div class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+        Pagado ✅
+      </div>
+    @elseif($e->costo > 0 && $e->total_abonado == 0)
+      <div class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+        Sin abonos
+      </div>
+    @endif
   </td>
   
   <td data-label="Estado:" class="text-center {{ $dimLight }}">
