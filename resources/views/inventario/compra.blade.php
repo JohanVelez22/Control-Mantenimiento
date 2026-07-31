@@ -236,7 +236,7 @@ function calcularSaldo(total) {
   const saldo = total - pagado;
   const box = document.getElementById('saldo-preview');
   if (saldo > 0.01) {
-    document.getElementById('saldo-display').textContent = '$' + window.formatNumber(Math.round(saldo));
+    document.getElementById('saldo-display').textContent = '$' + window.formatNumber(Math.max(0, saldo));
     box.classList.remove('hidden');
     box.classList.add('flex');
   } else {

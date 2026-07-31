@@ -349,10 +349,16 @@ class MovimientoCajaController extends Controller
             $esAnulacion = !$movimiento->anulado;
             
             // Anular movimiento principal
-            $movimiento->update(['anulado' => $esAnulacion]);
+            $movimiento->update([
+                'anulado' => $esAnulacion,
+                'estado'  => $esAnulacion ? 'anulado' : 'activo',
+            ]);
             
             // Anular o restaurar todos los abonos asociados en cascada
-            $movimiento->childPayments()->update(['anulado' => $esAnulacion]);
+            $movimiento->childPayments()->update([
+                'anulado' => $esAnulacion,
+                'estado'  => $esAnulacion ? 'anulado' : 'activo',
+            ]);
 
             $this->sincronizarFacturaRelacionada($movimiento);
 

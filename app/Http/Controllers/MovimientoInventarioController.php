@@ -413,7 +413,7 @@ class MovimientoInventarioController extends Controller
                 $nuevoEstado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
 
                 \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
-                    ->update(['estado' => 'activo']);
+                    ->update(['estado' => 'activo', 'anulado' => false]);
 
                 $factura->observaciones = ($factura->observaciones ?? '') . "\n[REACTIVADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']';
                 $factura->estado = 'emitida'; // provisional, recalcularPagos() ajustará si hay saldo pendiente
@@ -424,6 +424,9 @@ class MovimientoInventarioController extends Controller
             } else {
                 // ANULAR LA FACTURA
                 foreach ($factura->items as $item) {
+                    if (!$item->stock_id || !$item->stock) {
+                        continue;
+                    }
                     $stock = $item->stock;
                     if ($factura->tipo_movimiento === 'compra') {
                         // Compra anulada: quitar lo que se agregó
@@ -435,7 +438,7 @@ class MovimientoInventarioController extends Controller
                 }
 
                 \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
-                    ->update(['estado' => 'anulado']);
+                    ->update(['estado' => 'anulado', 'anulado' => true]);
 
                 $factura->update([
                     'estado'        => 'anulada',
@@ -549,7 +552,7 @@ class MovimientoInventarioController extends Controller
 
                     if ($oldStock) {
                         if ($oldStock->id !== $newStockId) {
-                            $newStock = Stock::findOrFail($newStockId);
+                            $newStock = Stock::where('id', $newStockId)->lockForUpdate()->firstOrFail();
                             if ($factura->tipo_movimiento === 'compra') {
                                 $oldStock->decrementarStock($oldQty);
                                 $newStock->incrementarStock($newQty);
@@ -562,6 +565,7 @@ class MovimientoInventarioController extends Controller
                             }
                         } else {
                             // Es el mismo artículo, solo cambia cantidad
+                            $oldStock = Stock::where('id', $oldStock->id)->lockForUpdate()->firstOrFail();
                             $diff = $newQty - $oldQty;
                             if ($diff !== 0) {
                                 if ($factura->tipo_movimiento === 'compra') {
@@ -595,7 +599,7 @@ class MovimientoInventarioController extends Controller
             // 2.5. Añadir nuevos ítems a la factura
             if (isset($request->new_items) && is_array($request->new_items) && !$shouldBeAnulada) {
                 foreach ($request->new_items as $itemData) {
-                    $stock = Stock::findOrFail($itemData['stock_id']);
+                    $stock = Stock::where('id', $itemData['stock_id'])->lockForUpdate()->firstOrFail();
                     $newPrice = $this->cleanAmount($itemData['precio_unitario']);
                     
                     FacturaItem::create([

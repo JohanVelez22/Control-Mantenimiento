@@ -104,6 +104,14 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
         const tsObj = window.initGlassTomSelect(newSel, { create: true });
         tr.tomselectObj = tsObj;
 
+        if (tsObj) {
+            setTimeout(() => {
+                if (tsObj && !tsObj.isDestroyed) {
+                    tsObj.refreshOptions(false);
+                }
+            }, 0);
+        }
+
         const handleStockChange = function(selectedVal) {
             const stockVal = selectedVal || newSel.value;
             if (!stockVal) {

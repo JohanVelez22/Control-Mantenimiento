@@ -75,8 +75,11 @@ trait HandlesAbono
         try {
             DB::beginTransaction();
 
-            // Eliminar el MovimientoCaja asociado por FK exacta
-            MovimientoCaja::where('abono_id', $abono->id)->delete();
+            // Anular lógicamente el MovimientoCaja asociado para preservar la trazabilidad contable de auditoría
+            MovimientoCaja::where('abono_id', $abono->id)->update([
+                'anulado' => true,
+                'estado'  => 'anulado',
+            ]);
 
             $abono->delete();
 

@@ -116,11 +116,22 @@ class ReporteFinancieroController extends Controller
             ->sortByDesc('fecha')
             ->values();
 
+        $efectivoIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto');
+        $efectivoEgresos  = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto');
+        $consignacionIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto');
+        $consignacionEgresos  = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto');
+
         $resumen = [
-            'total_ingresos'       => $movimientos->where('anulado', false)->whereIn('tipo', ['ingreso', 'venta'])->sum('monto'),
-            'total_egresos'        => $movimientos->where('anulado', false)->whereIn('tipo', ['egreso', 'compra'])->sum('monto'),
-            'total_mantenimientos' => $mantenimientos->where('anulado', false)->sum('costo'),
-            'total_anulados'       => $movimientos->where('anulado', true)->count(),
+            'total_ingresos'        => $movimientos->where('anulado', false)->whereIn('tipo', ['ingreso', 'venta'])->sum('monto'),
+            'total_egresos'         => $movimientos->where('anulado', false)->whereIn('tipo', ['egreso', 'compra'])->sum('monto'),
+            'total_mantenimientos'  => $mantenimientos->where('anulado', false)->sum('costo'),
+            'total_anulados'        => $movimientos->where('anulado', true)->count(),
+            'efectivo_ingresos'     => $efectivoIngresos,
+            'efectivo_egresos'      => $efectivoEgresos,
+            'efectivo_saldo'        => $efectivoIngresos - $efectivoEgresos,
+            'consignacion_ingresos' => $consignacionIngresos,
+            'consignacion_egresos'  => $consignacionEgresos,
+            'consignacion_saldo'    => $consignacionIngresos - $consignacionEgresos,
         ];
 
         if ($request->get('export') === 'excel') {
@@ -195,6 +206,10 @@ class ReporteFinancieroController extends Controller
             'facturado_elec'        => (clone $electronicasQuery)->sum('costo'),
             'ingresos_caja'         => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->sum('monto'),
             'egresos_caja'          => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->sum('monto'),
+            'ingresos_efectivo'     => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto'),
+            'egresos_efectivo'      => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto'),
+            'ingresos_consignacion' => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto'),
+            'egresos_consignacion'  => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto'),
             'ventas_inventario'     => (clone $facturasBase)->where('tipo_movimiento', 'venta')->sum('total_pagado'),
             'compras_inventario'    => (clone $facturasBase)->where('tipo_movimiento', 'compra')->sum('total_pagado'),
 
@@ -205,8 +220,10 @@ class ReporteFinancieroController extends Controller
                                         ->selectRaw('SUM(total_documento - total_pagado) as s')->value('s') ?? 0,
         ];
 
-        $acumulado['balance_neto'] = $acumulado['ingresos_caja'] - $acumulado['egresos_caja'];
-        $acumulado['facturado_total'] = $acumulado['facturado_mant'] + $acumulado['facturado_elec'];
+        $acumulado['balance_neto']        = $acumulado['ingresos_caja'] - $acumulado['egresos_caja'];
+        $acumulado['balance_efectivo']    = $acumulado['ingresos_efectivo'] - $acumulado['egresos_efectivo'];
+        $acumulado['balance_consignacion']= $acumulado['ingresos_consignacion'] - $acumulado['egresos_consignacion'];
+        $acumulado['facturado_total']     = $acumulado['facturado_mant'] + $acumulado['facturado_elec'];
 
         // — Mantenimientos en el rango
         $mantenimientosList = Mantenimiento::with(['equipo.cliente', 'tecnico'])
@@ -387,10 +404,14 @@ class ReporteFinancieroController extends Controller
                     ->whereBetween('fecha_entrada', [$desde, $hasta])
                     ->orderBy('fecha_entrada', 'desc')->get(),
                 'solo_ingresos' => MovimientoCaja::with(['concepto', 'user'])
+                    ->where('anulado', false)
+                    ->where('estado', 'activo')
                     ->where('tipo_movimiento', 'ingreso')
                     ->whereBetween('fecha', [$desde, $hasta])
                     ->orderBy('fecha', 'desc')->get(),
                 'solo_egresos' => MovimientoCaja::with(['concepto', 'user'])
+                    ->where('anulado', false)
+                    ->where('estado', 'activo')
                     ->where('tipo_movimiento', 'egreso')
                     ->whereBetween('fecha', [$desde, $hasta])
                     ->orderBy('fecha', 'desc')->get(),

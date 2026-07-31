@@ -46,9 +46,14 @@ class MovimientoCaja extends Model
     public function getTotalAbonosAttribute()
     {
         if ($this->relationLoaded('childPayments')) {
-            return (float) $this->childPayments->where('anulado', false)->sum('monto');
+            return (float) $this->childPayments
+                ->filter(fn($p) => !$p->anulado && $p->estado === 'activo')
+                ->sum('monto');
         }
-        return (float) $this->childPayments()->where('anulado', false)->sum('monto');
+        return (float) $this->childPayments()
+            ->where('anulado', false)
+            ->where('estado', 'activo')
+            ->sum('monto');
     }
 
     public function getTotalPagadoAttribute()

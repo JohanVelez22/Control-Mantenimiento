@@ -84,11 +84,18 @@ class AnulacionService
     {
         $query = MovimientoCaja::where('abono_id', $abono->id);
 
-        // Al anular solo se afectan movimientos activos; al reactivar, todos.
         if ($esAnulacion) {
-            $query->where('estado', 'activo');
+            $query->where(function($q) {
+                $q->where('estado', 'activo')->orWhere('anulado', false);
+            })->update([
+                'anulado' => true,
+                'estado'  => 'anulado',
+            ]);
+        } else {
+            $query->update([
+                'anulado' => false,
+                'estado'  => 'activo',
+            ]);
         }
-
-        $query->update(['anulado' => $esAnulacion]);
     }
 }
