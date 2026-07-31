@@ -26,9 +26,9 @@
         }
         .invoice-wrapper {
             position: relative;
-            height: 138mm; /* Exact half A4 height (148.5mm) minus 10mm margins */
+            height: 141mm; /* Mitad exacta de hoja A4 (297mm / 2 = 148.5mm) menos margen superior */
             box-sizing: border-box;
-            border-bottom: 1px dashed #aaa; /* Cut line */
+            border-bottom: 1px dashed #aaa; /* Línea de corte punteada */
             padding-bottom: 0px; /* Space for footer */
         }
         .header {
