@@ -96,7 +96,7 @@
   </td>
  
   <td data-label="Costo:" class="text-right font-black {{ $dim }}">
-    <div class="text-purple-600 dark:text-purple-400 font-bold">${{ number_format($e->costo, 0, ',', '.') }}</div>
+    <div class="text-slate-800 dark:text-white font-bold">${{ number_format($e->costo, 0, ',', '.') }}</div>
     @if($e->total_abonado > 0 && $e->saldo_pendiente > 0)
       <div class="text-[10px] font-bold text-amber-600 dark:text-amber-400 mt-0.5" title="Monto abonado">
         Abono: ${{ number_format($e->total_abonado, 0, ',', '.') }}
