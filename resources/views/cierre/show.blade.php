@@ -98,28 +98,28 @@
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Resumen Financiero del Día</h3>
         <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
             <div class="glass-card hover-glow glass-card-emerald p-4 text-center">
-                <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">📈 Ingresos</p>
-                <p class="text-xl font-black text-slate-800 dark:text-white">${{ number_format($cierre->total_ingresos, 0, ',', '.') }}</p>
+                <p class="text-[11px] font-bold text-slate-900 dark:text-white print:text-black uppercase tracking-wider mb-1">📈 Ingresos</p>
+                <p class="text-xl font-black text-slate-800 dark:text-white print:text-black">${{ number_format($cierre->total_ingresos, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow glass-card-red p-4 text-center">
-                <p class="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1">📉 Egresos</p>
-                <p class="text-xl font-black text-slate-800 dark:text-white">${{ number_format($cierre->total_egresos, 0, ',', '.') }}</p>
+                <p class="text-[11px] font-bold text-slate-900 dark:text-white print:text-black uppercase tracking-wider mb-1">📉 Egresos</p>
+                <p class="text-xl font-black text-slate-800 dark:text-white print:text-black">${{ number_format($cierre->total_egresos, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow glass-card-blue p-4 text-center">
-                <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">💵 Efectivo</p>
-                <p class="text-xl font-black text-slate-800 dark:text-white">${{ number_format($cierre->efectivo, 0, ',', '.') }}</p>
+                <p class="text-[11px] font-bold text-slate-900 dark:text-white print:text-black uppercase tracking-wider mb-1">💵 Efectivo</p>
+                <p class="text-xl font-black text-slate-800 dark:text-white print:text-black">${{ number_format($cierre->efectivo, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow glass-card-purple p-4 text-center">
-                <p class="text-[10px] font-bold text-purple-500 uppercase tracking-widest mb-1">🏦 Consignación</p>
-                <p class="text-xl font-black text-slate-800 dark:text-white">${{ number_format($cierre->consignacion, 0, ',', '.') }}</p>
+                <p class="text-[11px] font-bold text-slate-900 dark:text-white print:text-black uppercase tracking-wider mb-1">🏦 Consignación</p>
+                <p class="text-xl font-black text-slate-800 dark:text-white print:text-black">${{ number_format($cierre->consignacion, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow {{ $cierre->saldo_final >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 text-center">
-                <p class="text-[10px] font-bold {{ $cierre->saldo_final >= 0 ? 'text-teal-500' : 'text-orange-500' }} uppercase tracking-widest mb-1">⚖️ Saldo Final</p>
-                <p class="text-xl font-black {{ $cierre->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-500' }}">${{ number_format($cierre->saldo_final, 0, ',', '.') }}</p>
+                <p class="text-[11px] font-bold text-slate-900 dark:text-white print:text-black uppercase tracking-wider mb-1">⚖️ Saldo Final</p>
+                <p class="text-xl font-black text-slate-800 dark:text-white print:text-black">${{ number_format($cierre->saldo_final, 0, ',', '.') }}</p>
             </div>
         </div>
 
@@ -146,7 +146,6 @@
                         <th class="text-center">Método</th>
                         <th class="text-center">Operación</th>
                         <th class="text-right">Monto</th>
-                        <th class="w-20 text-center no-print">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -172,18 +171,21 @@
                         <td class="text-right font-black text-sm {{ $m->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
                             ${{ number_format($m->monto, 0, ',', '.') }}
                         </td>
-                        <td class="text-center no-print">
-                            <a href="{{ route('caja.show', $m->id) }}" class="btn-ghost px-2 py-1 text-xs font-bold text-blue-600 dark:text-blue-400" title="Ver movimiento de caja">
-                                👁️
-                            </a>
-                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center py-6 text-gray-500 font-medium">No se registraron movimientos en esta fecha.</td>
+                        <td colspan="6" class="text-center py-6 text-gray-500 font-medium">No se registraron movimientos en esta fecha.</td>
                     </tr>
                     @endforelse
                 </tbody>
+                <tfoot>
+                    <tr class="font-black border-t-2 border-slate-300 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40">
+                        <td colspan="5" class="text-right text-xs uppercase tracking-wider font-bold text-slate-800 dark:text-white print:text-black py-3">TOTAL:</td>
+                        <td class="text-right font-black text-base {{ $cierre->saldo_final >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} print:text-black py-3">
+                            ${{ number_format($cierre->saldo_final, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
 
@@ -217,4 +219,19 @@
         }, 300);
     }
 </script>
+
+<style>
+@media print {
+    .no-print { display: none !important; }
+    body { color: #000000 !important; background: #ffffff !important; }
+    .glass-card { background: #ffffff !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
+    p, span, td, th, h2, h3, div, label { color: #000000 !important; opacity: 1 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .text-teal-400, .text-teal-500, .text-teal-600,
+    .text-emerald-400, .text-emerald-500, .text-emerald-600,
+    .text-blue-400, .text-blue-500, .text-blue-600,
+    .text-purple-400, .text-purple-500, .text-purple-600,
+    .text-red-400, .text-red-500, .text-red-600,
+    .text-gray-400, .text-slate-400, .text-gray-500, .text-slate-500, .text-slate-600, .text-slate-700 { color: #000000 !important; }
+}
+</style>
 @endsection
