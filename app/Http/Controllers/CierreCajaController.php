@@ -73,6 +73,41 @@ class CierreCajaController extends Controller
         return redirect()->route('cierre.index')->with('success', 'Cierre eliminado y día desbloqueado.');
     }
 
+    /** Ver detalle del cierre de caja */
+    public function show(CierreCaja $cierre)
+    {
+        $cierre->load('user');
+        $fecha = $cierre->fecha->toDateString();
+
+        $movimientos = MovimientoCaja::with(['user', 'concepto'])
+            ->whereDate('fecha', $fecha)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('cierre.show', compact('cierre', 'movimientos'));
+    }
+
+    /** Formulario para editar observaciones del cierre */
+    public function edit(CierreCaja $cierre)
+    {
+        return view('cierre.edit', compact('cierre'));
+    }
+
+    /** Actualizar observaciones del cierre */
+    public function update(Request $request, CierreCaja $cierre)
+    {
+        $request->validate([
+            'observaciones' => 'nullable|string|max:1000',
+        ]);
+
+        $cierre->update([
+            'observaciones' => $request->observaciones,
+        ]);
+
+        return redirect()->route('cierre.show', $cierre->id)
+                         ->with('success', 'Observaciones del cierre actualizadas correctamente.');
+    }
+
     // ──────────────────────────────────────────────────────────
     /** Helper: calcula totales de movimientos de un día dado excluyendo los anulados */
     private function calcularDia(string $fecha): array

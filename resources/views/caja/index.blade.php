@@ -158,6 +158,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
  </td>
 <td data-label="Acciones:" class="text-center w-28">
   <div class="actions-grid">
+  <a href="{{ route('caja.show', $m->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver detalle">👁️</a>
   <a href="{{ route('caja.print', $m->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-gray-600" title="Imprimir">🖨️</a>
   @if(!auth()->user()->isInvitado())
   <a href="{{ route('caja.edit', $m->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>

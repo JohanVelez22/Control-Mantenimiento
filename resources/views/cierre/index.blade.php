@@ -228,12 +228,14 @@
                         <td data-label="Saldo:" class="text-right font-black {{ $c->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }}">${{ number_format($c->saldo_final, 0, ',', '.') }}</td>
                         <td data-label="Mov.:" class="text-center text-sm font-semibold text-gray-500">{{ $c->num_movimientos }}</td>
                         <td data-label="Registró:" class="text-xs text-gray-500 font-medium">{{ $c->user->name }}</td>
-                        <td data-label="Acciones:" class="text-center">
-                            <div class="flex items-center justify-center mx-auto">
+                        <td data-label="Acciones:" class="text-center w-28">
+                            <div class="actions-grid">
+                                <a href="{{ route('cierre.show', $c->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver detalle">👁️</a>
+                                @if(!auth()->user()->isInvitado())
+                                    <a href="{{ route('cierre.edit', $c->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar observaciones">✏️</a>
+                                @endif
                                 @if(auth()->user()->isAdmin())
-                                    <button type="button" onclick="openCierrePwd('{{ route('cierre.destroy', $c->id) }}')" class="btn-danger px-3 py-1.5 text-xs" title="Eliminar">🗑️</button>
-                                @else
-                                    <span class="text-xs text-gray-400 font-medium bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-700">🔒 Bloqueado</span>
+                                    <button type="button" onclick="openCierrePwd('{{ route('cierre.destroy', $c->id) }}')" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-red-600 hover:bg-red-500/10" title="Eliminar / Desbloquear">🗑️</button>
                                 @endif
                             </div>
                         </td>

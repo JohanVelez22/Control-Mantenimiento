@@ -82,6 +82,12 @@ class MovimientoCajaController extends Controller
         return view('caja.index', compact('movimientos', 'totales', 'conceptos'));
     }
 
+    public function show(MovimientoCaja $movimiento)
+    {
+        $movimiento->load('concepto', 'user', 'childPayments.user', 'parent');
+        return view('caja.show', compact('movimiento'));
+    }
+
     public function create()
     {
         $conceptos = ConceptoCaja::orderBy('nombre')->get();

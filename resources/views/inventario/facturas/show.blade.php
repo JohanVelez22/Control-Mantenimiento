@@ -69,16 +69,16 @@
  </div>
 
  {{-- Entidad (cliente o proveedor) --}}
- <div class="mb-8 p-5 rounded-2xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md flex items-start gap-4 shadow-sm">
+ <div class="mb-8 p-5 rounded-2xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md flex items-start gap-4 shadow-sm min-w-0">
  <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center text-white text-xl shadow-lg shrink-0">
  {{ $factura->tipo_movimiento === 'compra' ? '🏭' : '👤' }}
  </div>
- <div>
- <p class="text-[10px] font-black text-indigo-500 tracking-widest uppercase mb-1">{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}</p>
- <p class="font-black text-xl text-slate-800 dark:text-white leading-tight">
+ <div class="min-w-0">
+ <p class="text-[11px] font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}</p>
+ <p class="font-medium text-xl text-slate-800 dark:text-slate-200 leading-tight break-words">
  {{ $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? '—' }}
  </p>
- <p class="text-sm font-semibold text-gray-500 mt-1">
+ <p class="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1 break-words">
  ID: {{ $factura->facturable->identificacion ?? 'N/A' }} 
  @if(isset($factura->facturable->email)) <span class="mx-2">•</span> Correo: {{ $factura->facturable->email }} @endif
  </p>

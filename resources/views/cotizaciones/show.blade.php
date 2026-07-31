@@ -49,15 +49,15 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 relative z-10">
-            <div class="bg-slate-50/50 dark:bg-slate-800/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700">
-                <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest mb-3">Datos del Cliente</h3>
-                <p class="font-bold text-lg text-slate-700 dark:text-slate-200">{{ $cotizacion->cliente->nombre }}</p>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">ID/NIT: {{ $cotizacion->cliente->identificacion }}</p>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Tel: {{ $cotizacion->cliente->movil ?? 'N/A' }}</p>
+            <div class="bg-slate-50/50 dark:bg-slate-800/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 min-w-0">
+                <h3 class="text-xs font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">Datos del Cliente</h3>
+                <p class="font-medium text-lg text-slate-800 dark:text-slate-200 break-words">{{ $cotizacion->cliente->nombre }}</p>
+                <p class="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1">ID/NIT: {{ $cotizacion->cliente->identificacion }}</p>
+                <p class="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1">Tel: {{ $cotizacion->cliente->movil ?? 'N/A' }}</p>
             </div>
-            <div class="bg-slate-50/50 dark:bg-slate-800/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <div class="bg-slate-50/50 dark:bg-slate-800/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between min-w-0">
                 <div>
-                    <h3 class="text-xs font-bold uppercase text-slate-400 tracking-widest mb-3">Resumen de Cotización</h3>
+                    <h3 class="text-xs font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">Resumen de Cotización</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400"><span class="font-semibold">Válida por:</span> {{ $cotizacion->validez_dias }} días</p>
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Vendedor:</span> {{ $cotizacion->user->name }}</p>
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Estado:</span> 

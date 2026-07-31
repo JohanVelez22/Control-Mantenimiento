@@ -30,33 +30,33 @@
  </div>
 
  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 rounded-2xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md shadow-sm">
- <div>
- <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Identificación</span>
- <span class="font-mono font-bold text-slate-800 dark:text-white text-base">
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Identificación</span>
+ <span class="font-mono font-medium text-slate-800 dark:text-slate-200 text-base break-words">
  <span class="text-xs text-indigo-500 font-normal mr-1 font-sans">({{ strtoupper(str_replace('_', ' ', $proveedor->tipo_identificacion ?? 'NIT')) }})</span>
  {{ $proveedor->identificacion }}
  </span>
  </div>
- <div>
- <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Contacto Principal</span>
- <span class="font-bold text-slate-800 dark:text-white">{{ $proveedor->contacto_nombre ?? '—' }}</span>
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Contacto Principal</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->contacto_nombre ?? '—' }}</span>
  </div>
- <div>
- <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Teléfonos</span>
- <span class="font-bold text-slate-800 dark:text-white">
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Teléfonos</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">
  {{ $proveedor->telefono ?? '—' }}
  @if($proveedor->telefono2)
  <span class="text-xs text-gray-400 font-normal ml-1">(Alt: {{ $proveedor->telefono2 }})</span>
  @endif
  </span>
  </div>
- <div>
- <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Correo Electrónico</span>
- <span class="font-bold text-slate-800 dark:text-white">{{ $proveedor->email ?? '—' }}</span>
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Correo Electrónico</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->email ?? '—' }}</span>
  </div>
- <div>
- <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Ubicación</span>
- <span class="font-bold text-slate-800 dark:text-white">
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Ubicación</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">
  @if($proveedor->municipio || $proveedor->departamento)
  📍 {{ implode(', ', array_filter([$proveedor->municipio, $proveedor->departamento])) }}
  @else
@@ -64,14 +64,14 @@
  @endif
  </span>
  </div>
- <div>
- <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Dirección</span>
- <span class="font-bold text-slate-800 dark:text-white">{{ $proveedor->direccion ?? '—' }}</span>
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Dirección</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->direccion ?? '—' }}</span>
  </div>
  @if($proveedor->notas)
- <div class="md:col-span-2 mt-2 p-3 bg-white/40 dark:bg-slate-800/40 rounded-xl">
- <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Notas / Condiciones Comerciales</span>
- <span class="font-medium text-slate-700 dark:text-slate-300">{{ $proveedor->notas }}</span>
+ <div class="md:col-span-2 min-w-0 mt-2 p-3 bg-white/40 dark:bg-slate-800/40 rounded-xl">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Notas / Condiciones Comerciales</span>
+ <span class="font-medium text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->notas }}</span>
  </div>
  @endif
  </div>

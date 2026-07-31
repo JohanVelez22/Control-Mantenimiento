@@ -117,7 +117,7 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         });
 
         // Caja
-        Route::resource('caja', App\Http\Controllers\MovimientoCajaController::class)->except(['show', 'destroy'])->parameters(['caja' => 'movimiento']);
+        Route::resource('caja', App\Http\Controllers\MovimientoCajaController::class)->except(['destroy'])->parameters(['caja' => 'movimiento']);
         Route::get( 'caja/{movimiento}/print',     [App\Http\Controllers\MovimientoCajaController::class, 'print'])->name('caja.print');
         Route::post('caja/{movimiento}/duplicate', [App\Http\Controllers\MovimientoCajaController::class, 'duplicate'])->name('caja.duplicate');
         Route::post('caja/{movimiento}/abonos',    [App\Http\Controllers\MovimientoCajaController::class, 'storeAbono'])->name('caja.abonos.store');
@@ -137,9 +137,12 @@ Route::middleware(['auth', PreventBackHistory::class])->group(function () {
         Route::delete('electronicas/{electronica}/stocks/{stock_id}', [App\Http\Controllers\ElectronicaStockController::class, 'destroy'])->name('electronicas.stocks.destroy');
 
         // Cierre de Caja
-        Route::get(   'cierre',            [App\Http\Controllers\CierreCajaController::class, 'index'])->name('cierre.index');
-        Route::post(  'cierre',            [App\Http\Controllers\CierreCajaController::class, 'store'])->name('cierre.store');
-        Route::delete('cierre/{cierre}',   [App\Http\Controllers\CierreCajaController::class, 'destroy'])->name('cierre.destroy');
+        Route::get(   'cierre',                [App\Http\Controllers\CierreCajaController::class, 'index'])->name('cierre.index');
+        Route::post(  'cierre',                [App\Http\Controllers\CierreCajaController::class, 'store'])->name('cierre.store');
+        Route::get(   'cierre/{cierre}',       [App\Http\Controllers\CierreCajaController::class, 'show'])->name('cierre.show');
+        Route::get(   'cierre/{cierre}/edit',  [App\Http\Controllers\CierreCajaController::class, 'edit'])->name('cierre.edit');
+        Route::put(   'cierre/{cierre}',       [App\Http\Controllers\CierreCajaController::class, 'update'])->name('cierre.update');
+        Route::delete('cierre/{cierre}',       [App\Http\Controllers\CierreCajaController::class, 'destroy'])->name('cierre.destroy');
 
         // Configuración de Empresa
         Route::get('/configuracion',  [App\Http\Controllers\ConfiguracionController::class, 'index'])->name('configuracion.index');

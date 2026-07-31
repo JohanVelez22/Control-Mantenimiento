@@ -57,24 +57,24 @@
 
         {{-- Proveedor y Cantidad --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="glass-card hover-glow glass-card-indigo p-5 flex items-center gap-4">
+            <div class="glass-card hover-glow glass-card-indigo p-5 flex items-center gap-4 min-w-0">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center text-white text-xl shadow-lg shrink-0">
                     🏭
                 </div>
-                <div>
-                    <p class="text-[10px] font-black text-indigo-500 tracking-widest uppercase mb-1">Proveedor Predeterminado</p>
-                    <p class="font-black text-xl text-slate-800 dark:text-white leading-tight">
+                <div class="min-w-0">
+                    <p class="text-[11px] font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">Proveedor Predeterminado</p>
+                    <p class="font-medium text-xl text-slate-800 dark:text-slate-200 leading-tight break-words">
                         {{ $proveedor->nombre_razon_social ?? '—' }}
                     </p>
-                    <p class="text-xs font-semibold text-gray-500 mt-1">ID: {{ $proveedor->identificacion ?? 'N/A' }}</p>
+                    <p class="text-xs font-medium text-slate-600 dark:text-slate-300 mt-1">ID: {{ $proveedor->identificacion ?? 'N/A' }}</p>
                 </div>
             </div>
             
-            <div class="glass-card hover-glow glass-card-blue p-5 flex items-center justify-between">
-                <div>
-                    <p class="text-[10px] font-black text-blue-500 tracking-widest uppercase mb-1">Existencia Actual</p>
-                    <p class="font-black text-4xl text-slate-800 dark:text-white leading-tight">
-                        {{ $stock->cantidad }} <span class="text-sm text-gray-500 font-bold">Unidades</span>
+            <div class="glass-card hover-glow glass-card-blue p-5 flex items-center justify-between min-w-0">
+                <div class="min-w-0">
+                    <p class="text-[11px] font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">Existencia Actual</p>
+                    <p class="font-bold text-4xl text-slate-800 dark:text-white leading-tight">
+                        {{ $stock->cantidad }} <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Unidades</span>
                     </p>
                 </div>
                 <div class="text-5xl opacity-80 drop-shadow-md">📦</div>

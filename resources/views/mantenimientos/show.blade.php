@@ -47,34 +47,34 @@
 
  {{-- Datos del mantenimiento --}}
  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20">
- <div>
- <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest block mb-1">Cliente</span>
- <span class="font-bold text-slate-800 dark:text-white">{{ $mantenimiento->equipo->cliente->nombre ?? '-' }}</span>
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Cliente</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->equipo->cliente->nombre ?? '-' }}</span>
  </div>
- <div>
- <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest block mb-1">Equipo</span>
- <span class="font-bold text-slate-800 dark:text-white">{{ $mantenimiento->equipo->marca }} {{ $mantenimiento->equipo->modelo }} <span class="text-xs text-gray-500">({{ $mantenimiento->equipo->nombre }})</span></span>
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Equipo</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->equipo->marca }} {{ $mantenimiento->equipo->modelo }} <span class="text-xs text-gray-500 font-semibold">({{ $mantenimiento->equipo->nombre }})</span></span>
  </div>
- <div>
- <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest block mb-1">Técnico</span>
- <span class="font-bold text-slate-800 dark:text-white">{{ $mantenimiento->tecnico->nombre }}</span>
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Técnico</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->tecnico->nombre }}</span>
  </div>
- <div>
- <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest block mb-1">Tipo / Reparación</span>
- <span class="font-bold text-slate-800 dark:text-white capitalize">{{ $mantenimiento->tipo }} / {{ $mantenimiento->reparacion }}</span>
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Tipo / Reparación</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200 capitalize break-words">{{ $mantenimiento->tipo }} / {{ $mantenimiento->reparacion }}</span>
  </div>
- <div>
- <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest block mb-1">Entrada</span>
- <span class="font-bold text-slate-800 dark:text-white">{{ $mantenimiento->fecha_entrada->format('d/m/Y') }}</span>
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Entrada</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200">{{ $mantenimiento->fecha_entrada->format('d/m/Y') }}</span>
  </div>
- <div>
- <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest block mb-1">Salida</span>
- <span class="font-bold text-slate-800 dark:text-white">{{ $mantenimiento->fecha_salida?->format('d/m/Y') ?? '—' }}</span>
+ <div class="min-w-0">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Salida</span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200">{{ $mantenimiento->fecha_salida?->format('d/m/Y') ?? '—' }}</span>
  </div>
  @if($mantenimiento->descripcion)
- <div class="md:col-span-2 mt-2 p-3 bg-white/40 dark:bg-slate-800/40 rounded-xl">
- <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest block mb-1">Descripción</span>
- <span class="font-medium text-slate-700 dark:text-slate-300">{{ $mantenimiento->descripcion }}</span>
+ <div class="md:col-span-2 min-w-0 mt-2 p-3 bg-white/40 dark:bg-slate-800/40 rounded-xl">
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Descripción</span>
+ <span class="font-medium text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->descripcion }}</span>
  </div>
  @endif
  </div>
