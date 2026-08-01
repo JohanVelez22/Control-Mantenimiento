@@ -190,9 +190,9 @@
                                     + ($acumulado['total_anulados'] ?? 0);
                 @endphp
                 <tr>
-                    <td class="text-center font-bold text-xs uppercase">TOTAL: 7</td>
-                    <td class="text-center font-bold text-xs uppercase whitespace-nowrap"><span style="position: relative; left: -70px;">TOTAL REGISTROS:</span> <span style="position: relative; left: -60px;">{{ $totalRegistros }}</span></td>
-                    <td class="text-center font-bold text-xs uppercase whitespace-nowrap"><span style="position: relative; left: -60px;">BALANCE NETO:</span> <span style="position: relative; left: -50px;">${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}</span></td>
+                    <td class="text-center font-bold text-xs uppercase" style="color: #ffffff !important;">TOTAL: 7</td>
+                    <td class="text-center font-bold text-xs uppercase whitespace-nowrap" style="color: #ffffff !important;"><span style="position: relative; left: -70px; color: #ffffff !important;">TOTAL REGISTROS:</span> <span style="position: relative; left: -58.5px; color: #ffffff !important;">{{ $totalRegistros }}</span></td>
+                    <td class="text-center font-bold text-xs uppercase whitespace-nowrap" style="color: #ffffff !important;"><span style="position: relative; left: -60px; color: #ffffff !important;">BALANCE NETO:</span> <span style="position: relative; left: -48px; color: #ffffff !important;">${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}</span></td>
                 </tr>
             </tfoot>
         </table>
@@ -209,7 +209,7 @@ function exportarAcumulado(tipo, btn) {
     const url = window.location.pathname + '?' + params.toString();
     const fallbackName = 'Reporte_Acumulado_' + new Date().toISOString().slice(0,10) + (tipo === 'pdf' ? '.pdf' : '.xlsx');
     
-    const  = btn.innerHTML;
+    const origText = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<span>⏳</span>...';
     
@@ -261,7 +261,7 @@ function exportarAcumulado(tipo, btn) {
     #ts-topbar,
     header,
     aside,
-    nav,origText
+    nav,
     form,
     button,
     .btn,
