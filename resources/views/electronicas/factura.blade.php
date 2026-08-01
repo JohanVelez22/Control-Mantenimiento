@@ -16,21 +16,20 @@
     <div class="info-col">
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Ingreso:</strong> <strong>{{ $electronica->fecha_entrada ? \Carbon\Carbon::parse($electronica->fecha_entrada)->format('d/m/Y') : '—' }}</strong></p>
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Emisión:</strong> <strong>{{ now()->format('d/m/Y h:i A') }}</strong></p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Tipo / Reparación:</strong> <strong>{{ Str::upper($electronica->tipo) }} • {{ Str::upper($electronica->reparacion ?? 'HARDWARE') }}</strong></p>
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $electronica->estado }}</span></p>
     </div>
 </div>
 
 <div style="margin-bottom: 2px; font-size: 7.5pt;">
-    <strong>Detalles del Dispositivo:</strong> 
+    <strong>Detalles del Equipo:</strong> 
     <strong>{{ $electronica->equipo->nombre ?? 'N/A' }}</strong> | 
     Marca/Modelo: <strong>{{ trim(($electronica->equipo->marca ?? '') . ' ' . ($electronica->equipo->modelo ?? '')) ?: '—' }}</strong> | 
     Serie: <strong>{{ Str::upper($electronica->equipo->serie ?? 'N/A') }}</strong>
 </div>
 
 <div style="margin-bottom: 2px; padding: 2px 5px; border: 1px solid #ccc; background: #fafafa; font-size: 6.8pt;">
-    <strong style="font-size: 6.8pt;">FALLA PRINCIPAL:</strong> <strong>{{ Str::upper($electronica->falla_reportada ?: 'Sin reporte de falla.') }}</strong><br>
-    <strong style="font-size: 6.8pt;">DIAGNÓSTICO / PROBLEMA:</strong> <span style="font-size: 6.5pt; font-weight: normal;">{{ Str::upper($electronica->descripcion_problema ?: 'Pendiente de diagnóstico.') }}</span>
+    <strong style="font-size: 6.8pt;">SERVICIO:</strong> <strong>{{ Str::upper($electronica->tipo) }} — {{ Str::upper($electronica->reparacion ?? 'HARDWARE') }}</strong><br>
+    <strong style="font-size: 6.8pt;">OBSERVACIONES / DIAGNÓSTICO:</strong> <span style="font-size: 6.5pt; font-weight: normal;">{{ Str::upper($electronica->descripcion_problema ?: 'Sin observaciones adicionales.') }}</span>
 </div>
 
 @if($electronica->stocks->count() > 0)

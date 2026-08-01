@@ -218,6 +218,11 @@ class ElectronicaController extends Controller
     public function factura(Electronica $electronica)
     {
         \Illuminate\Support\Facades\Gate::authorize('view', $electronica);
+        if (!$electronica->fecha_salida) {
+            return redirect()
+                ->route('electronicas.index')
+                ->with('error', 'No se puede generar la factura sin fecha de salida. Registre la salida de la orden e inténtelo de nuevo.');
+        }
         $electronica->load(['equipo.cliente', 'tecnico', 'user']);
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('electronicas.factura', compact('electronica'));
         $pdf->setPaper('a4', 'portrait');

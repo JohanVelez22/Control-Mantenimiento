@@ -33,11 +33,11 @@ class ElectronicasExport implements FromCollection, WithHeadings, WithMapping, S
                 $sheet->getHeaderFooter()->setOddFooter('&RPágina &P de &N');
 
                 // Centrar y combinar título (Fila 1)
-                $sheet->mergeCells('A1:N1');
+                $sheet->mergeCells('A1:O1');
                 $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 
                 // Centrar y combinar fecha (Fila 2)
-                $sheet->mergeCells('A2:N2');
+                $sheet->mergeCells('A2:O2');
                 $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
                 $lastRow = $sheet->getHighestRow();
@@ -46,17 +46,17 @@ class ElectronicasExport implements FromCollection, WithHeadings, WithMapping, S
                 $totalRegistros = count($this->electronicas);
                 $costoTotal = $this->electronicas->sum('costo');
 
-                // Aplicar formato de miles a la columna L (Costo)
-                $sheet->getStyle("L5:L{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
+                // Aplicar formato de miles a la columna M (Costo)
+                $sheet->getStyle("M5:M{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
 
                 // Escribir el total de registros bajo la columna "Orden" (Columna A)
                 $sheet->setCellValue("A{$footerRow}", "Total: {$totalRegistros}");
                 
-                // Escribir el costo total bajo la columna "Costo" (Columna L)
-                $sheet->setCellValue("L{$footerRow}", "Total: $" . number_format($costoTotal, 0, ',', '.'));
+                // Escribir el costo total bajo la columna "Costo" (Columna M)
+                $sheet->setCellValue("M{$footerRow}", "Total: $" . number_format($costoTotal, 0, ',', '.'));
 
                 // Estilo para los totales
-                $sheet->getStyle("A{$footerRow}:L{$footerRow}")->applyFromArray([
+                $sheet->getStyle("A{$footerRow}:M{$footerRow}")->applyFromArray([
                     'font' => [
                         'bold' => true,
                         'size' => 11
@@ -64,7 +64,7 @@ class ElectronicasExport implements FromCollection, WithHeadings, WithMapping, S
                 ]);
 
                 // Alineación a la derecha para el costo total
-                $sheet->getStyle("L{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("M{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             },
         ];
     }
@@ -107,8 +107,8 @@ class ElectronicasExport implements FromCollection, WithHeadings, WithMapping, S
                 'Modelo', 
                 'Serie',
                 'Técnico', 
-                'Tipo Trabajo', 
-                'Tipo Reparación', 
+                'Tipo', 
+                'Reparación', 
                 'Progreso',
                 'Estado',
                 'Costo', 

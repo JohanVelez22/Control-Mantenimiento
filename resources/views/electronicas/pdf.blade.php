@@ -260,10 +260,11 @@
         <thead>
             <tr>
                 <th style="width:6%">Orden</th>
-                <th style="width:14%">Cliente</th>
-                <th style="width:15%">Equipo / Info</th>
+                <th style="width:13%">Cliente</th>
+                <th style="width:14%">Equipo / Info</th>
                 <th style="width:10%">Técnico</th>
                 <th style="width:8%">Tipo</th>
+                <th style="width:9%">Reparación</th>
                 <th style="width:9%">Progreso</th>
                 <th style="width:7%">Estado</th>
                 <th style="width:8%">Entrada</th>
@@ -277,6 +278,7 @@
                 $isAnulado = !empty($e->anulado);
                 $progreso  = strtolower($e->estado ?? '');
                 $tipo      = strtolower($e->tipo ?? '');
+                $reparacion = $e->reparacion ?? '';
             @endphp
             <tr class="{{ $isAnulado ? 'anulado' : '' }}">
                 <td class="col-center col-bold">{{ $e->id_orden }}</td>
@@ -291,8 +293,8 @@
                 <td class="col-center">{{ $e->tecnico->nombre ?? 'N/A' }}</td>
                 <td class="col-center">
                     <span class="badge badge-{{ $tipo ?: 'correctivo' }}">{{ ucfirst($tipo) ?: '—' }}</span>
-                    <div class="sub-text">{{ ucfirst($e->reparacion ?? 'hardware') }}</div>
                 </td>
+                <td class="col-center" style="font-size:7.5px">{{ ucfirst($reparacion) ?: '—' }}</td>
                 <td class="col-center">
                     <span class="badge badge-{{ $progreso ?: 'pendiente' }}">{{ ucfirst($progreso) ?: '—' }}</span>
                 </td>
@@ -307,7 +309,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="10" style="text-align:center; padding:20px; color:#94a3b8; font-style:italic;">
+                <td colspan="11" style="text-align:center; padding:20px; color:#94a3b8; font-style:italic;">
                     No hay registros para mostrar con los filtros aplicados.
                 </td>
             </tr>
@@ -316,7 +318,7 @@
         @if(count($electronicas) > 0)
         <tfoot>
             <tr>
-                <td colspan="9" style="text-align:left; letter-spacing:0.5px; text-transform:uppercase; padding: 5px 6px; border:none !important;">
+                <td colspan="10" style="text-align:left; letter-spacing:0.5px; text-transform:uppercase; padding: 5px 6px; border:none !important;">
                     <span style="float:left; font-weight:700;">TOTAL: {{ count($electronicas) }} REGISTROS</span>
                     <span style="float:right; font-weight:700;">COSTO ACUMULADO:</span>
                 </td>
