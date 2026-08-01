@@ -213,11 +213,11 @@
  @endforeach
  </tbody>
  <tfoot>
-    <tr class="bg-gray-100 dark:bg-gray-800">
-        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
-        <td colspan="6" class="text-right uppercase text-xs">TOTAL MONTO:</td>
-        <td class="text-center font-bold text-xs">${{ number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.') }}</td>
-    </tr>
+     <tr class="bg-gray-100 dark:bg-gray-800">
+         <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
+         <td colspan="6" class="text-right uppercase text-xs font-bold">TOTAL MONTO:</td>
+         <td class="text-center font-bold text-xs">${{ number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.') }}</td>
+     </tr>
  </tfoot>
  </table>
  </div>

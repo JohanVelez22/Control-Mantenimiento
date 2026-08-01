@@ -129,10 +129,10 @@
                     <th class="text-center" style="width: 16%;">Proveedor</th>
                     <th class="text-center w-14" style="width: 5%;">Cant.</th>
                     <th class="text-center w-16" style="width: 7%;">Estado</th>
-                    <th class="text-right w-24" style="width: 11%;">P. Compra</th>
+                    <th class="text-center w-24" style="width: 11%;">P. Compra</th>
                     <th class="text-center w-16" style="width: 8%;">Utilidad</th>
-                    <th class="text-right w-24" style="width: 12%;">P. Venta</th>
-                    <th class="text-right w-24" style="width: 12%;">P. Técnico</th>
+                    <th class="text-center w-24" style="width: 12%;">P. Venta</th>
+                    <th class="text-center w-24" style="width: 12%;">P. Técnico</th>
                 </tr>
             </thead>
             <tbody>
@@ -190,12 +190,12 @@
                             {{ $isAnulado ? 'Inactivo' : 'Activo' }}
                         </span>
                     </td>
-                    <td class="text-right font-medium {{ $dim }}">${{ number_format($stock->precio_compra, 0, '', '.') }}</td>
+                    <td class="text-center font-medium {{ $dim }}">${{ number_format($stock->precio_compra, 0, '', '.') }}</td>
                     <td class="text-center font-bold text-green-600 dark:text-green-400 {{ $dim }}">
                         +{{ $stock->utilidad }}%
                     </td>
-                    <td class="text-right font-black text-slate-800 dark:text-white {{ $dim }}">${{ number_format($stock->precio_venta, 0, '', '.') }}</td>
-                    <td class="text-right font-black text-slate-800 dark:text-white {{ $dim }}">${{ number_format($stock->precio_tecnico, 0, '', '.') }}</td>
+                    <td class="text-center font-black text-slate-800 dark:text-white {{ $dim }}">${{ number_format($stock->precio_venta, 0, '', '.') }}</td>
+                    <td class="text-center font-black text-slate-800 dark:text-white {{ $dim }}">${{ number_format($stock->precio_tecnico, 0, '', '.') }}</td>
                 </tr>
                 @empty
                 <tr>
@@ -219,10 +219,10 @@
                     <td></td>
                     <td class="text-center font-bold text-xs">{{ $stocks->sum('cantidad') }}</td>
                     <td></td>
-                    <td class="text-right font-bold text-xs">${{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}</td>
+                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}</td>
                     <td></td>
-                    <td class="text-right font-bold text-xs">${{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}</td>
-                    <td class="text-right font-bold text-xs">${{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}</td>
+                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}</td>
+                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}</td>
                 </tr>
             </tfoot>
             @endif
