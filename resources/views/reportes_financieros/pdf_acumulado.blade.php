@@ -233,8 +233,8 @@
                                     + ($acumulado['total_anulados'] ?? 0);
                 @endphp
                 <td style="text-align:center; padding: 5px 6px; color:#ffffff; font-weight:800;">TOTAL: 7</td>
-                <td style="text-align:center; padding: 5px 6px; color:#ffffff; font-weight:800;">TOTAL REGISTROS: {{ $totalRegistros }}</td>
-                <td style="text-align:center; padding: 5px 6px; color:#ffffff; font-weight:800;">BALANCE NETO: ${{ number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</td>
+                <td style="text-align:center; padding: 5px 6px; color:#ffffff; font-weight:800;"><span style="position: relative; left: -70px;">TOTAL REGISTROS:</span> <span style="position: relative; left: -60px;">{{ $totalRegistros }}</span></td>
+                <td style="text-align:center; padding: 5px 6px; color:#ffffff; font-weight:800;"><span style="position: relative; left: -60px;">BALANCE NETO:</span> <span style="position: relative; left: -50px;">${{ number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</span></td>
             </tr>
         </tfoot>
     </table>
