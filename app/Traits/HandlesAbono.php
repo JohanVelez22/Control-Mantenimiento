@@ -41,15 +41,33 @@ trait HandlesAbono
 
             $abono = Abono::create($validated);
 
+            // Determinar si es un pago completo (total/final) o abono parcial
+            $esPagoCompleto = ($validated['monto'] >= $saldoPendiente - 0.001);
+            $totalAbonosCount = $model->abonos()->count();
+
+            if ($esPagoCompleto && $totalAbonosCount === 1) {
+                $conceptoNombreFinal = $model instanceof \App\Models\Mantenimiento ? 'Pago Mantenimiento' : 'Pago Electrónica';
+                $prefix = $model instanceof \App\Models\Mantenimiento ? 'Pago Total Orden ' : 'Pago Total ELC ';
+            } elseif ($esPagoCompleto) {
+                $conceptoNombreFinal = $model instanceof \App\Models\Mantenimiento ? 'Pago Mantenimiento' : 'Pago Electrónica';
+                $prefix = $model instanceof \App\Models\Mantenimiento ? 'Pago Final Orden ' : 'Pago Final ELC ';
+            } else {
+                $conceptoNombreFinal = $conceptoNombre; // 'Abono Mantenimiento' / 'Abono Electrónica'
+                $prefix = $model instanceof \App\Models\Mantenimiento ? 'Abono Parcial Orden ' : 'Abono Parcial ELC ';
+            }
+
+            $descUser = $validated['descripcion'] ?? null;
+            $descripcionFinal = $prefix . $model->id_orden . ($descUser ? ' — ' . $descUser : '');
+
             // Registrar en Caja vinculado exactamente a este abono
-            $concepto = ConceptoCaja::firstOrCreate(['nombre' => $conceptoNombre]);
+            $concepto = ConceptoCaja::firstOrCreate(['nombre' => $conceptoNombreFinal]);
             MovimientoCaja::create([
                 'tipo_movimiento' => 'ingreso',
                 'fecha'           => $validated['fecha'],
                 'monto'           => $validated['monto'],
                 'concepto_id'     => $concepto->id,
                 'persona'         => $this->getPersona($model),
-                'descripcion'     => $this->getDescripcion($model, $abono, $validated['descripcion'] ?? null),
+                'descripcion'     => $descripcionFinal,
                 'tipo_pago'       => $validated['tipo_pago'],
                 'estado'          => 'activo',
                 'user_id'         => auth()->id(),
@@ -58,12 +76,13 @@ trait HandlesAbono
 
             DB::commit();
 
+            $tipoMsg = $esPagoCompleto ? 'Pago' : 'Abono';
             return back()->with('success',
-                'Abono de $' . number_format($validated['monto'], 0, ',', '.') . ' registrado y añadido a caja correctamente.');
+                $tipoMsg . ' de $' . number_format($validated['monto'], 0, ',', '.') . ' registrado y añadido a caja correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error registrando abono: ' . $e->getMessage());
-            return back()->with('error', 'Error al registrar el abono. Intenta de nuevo.');
+            return back()->with('error', 'Error al registrar el movimiento. Intenta de nuevo.');
         }
     }
 
