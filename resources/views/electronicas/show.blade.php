@@ -60,8 +60,8 @@
                 <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $electronica->tecnico->nombre }}</span>
             </div>
             <div class="min-w-0">
-                <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Tipo</span>
-                <span class="font-medium text-base text-slate-800 dark:text-slate-200 capitalize break-words">{{ $electronica->tipo }}</span>
+                <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Tipo de Trabajo / Reparación</span>
+                <span class="font-medium text-base text-slate-800 dark:text-slate-200 capitalize break-words">{{ $electronica->tipo }} • {{ $electronica->reparacion ?? 'hardware' }}</span>
             </div>
             <div class="min-w-0">
                 <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Entrada</span>

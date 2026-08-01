@@ -16,6 +16,7 @@
     <div class="info-col">
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Ingreso:</strong> <strong>{{ $electronica->fecha_entrada ? \Carbon\Carbon::parse($electronica->fecha_entrada)->format('d/m/Y') : '—' }}</strong></p>
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Emisión:</strong> <strong>{{ now()->format('d/m/Y h:i A') }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Tipo / Reparación:</strong> <strong>{{ Str::upper($electronica->tipo) }} • {{ Str::upper($electronica->reparacion ?? 'HARDWARE') }}</strong></p>
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $electronica->estado }}</span></p>
     </div>
 </div>

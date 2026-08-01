@@ -15,6 +15,7 @@ class Electronica extends Model
         'equipo_id',
         'descripcion_problema',
         'tipo',
+        'reparacion',
         'costo',
         'estado',
         'anulado',

@@ -87,6 +87,7 @@
   <span class="pill {{ $e->tipo === 'correctivo' ? 'pill-correctivo' : 'pill-preventivo' }} {{ $e->anulado ? 'opacity-70' : '' }}">
   {{ ucfirst($e->tipo) }}
   </span>
+  <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mt-1">{{ $e->reparacion ?? 'hardware' }}</div>
   </td>
   
   <td data-label="Observación:" class="max-w-[250px] {{ $dim }}">

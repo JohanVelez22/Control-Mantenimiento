@@ -1,19 +1,21 @@
 @extends('layouts.app')
+
 @section('content')
 <div class="max-w-4xl mx-auto">
- <div class="glass-card p-6 md:p-8">
- <div class="flex items-center gap-3 mb-8">
- <a href="{{ route('electronicas.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
- <div>
- <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">✏️ Editar Registro Electrónico: {{ $electronica->id_orden }}</h2>
- <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Actualiza la reparación del equipo electrónico</p>
- </div>
- </div>
- 
-  <form action="{{ route('electronicas.update', $electronica->id) }}" method="POST" class="space-y-6">
-  @csrf @method('PUT')
-   @include('electronicas._form', ['electronica' => $electronica])
-  </form>
- </div>
+    <div class="glass-card p-6 md:p-8">
+        <div class="flex items-center gap-3 mb-8">
+            <a href="{{ route('electronicas.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+            <div>
+                <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">✏️ Editar Registro Electrónico: {{ $electronica->id_orden }}</h2>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Actualiza los datos de la orden de reparación de electrónica</p>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ route('electronicas.update', $electronica->id) }}" id="electronicaForm" class="space-y-6">
+            @csrf
+            @method('PUT')
+            @include('electronicas._form')
+        </form>
+    </div>
 </div>
 @endsection

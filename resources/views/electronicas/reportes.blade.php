@@ -67,22 +67,24 @@
  @endforeach
  </select>
  </div>
- <div>
- <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Desde (Entrada)</label>
- <input type="date" name="fecha_inicio" class="glass-input" value="{{ request('fecha_inicio', date('Y-m-01')) }}">
- </div>
- <div>
- <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Hasta (Entrada)</label>
- <input type="date" name="fecha_fin" class="glass-input" value="{{ request('fecha_fin', date('Y-m-d')) }}">
- </div>
- <div>
- <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Tipo</label>
- <select name="tipo" class="glass-input no-search">
- <option value="todos">Todos</option>
- <option value="preventivo" {{ request('tipo') == 'preventivo' ? 'selected' : '' }}>Preventivo</option>
- <option value="correctivo" {{ request('tipo') == 'correctivo' ? 'selected' : '' }}>Correctivo</option>
- </select>
- </div>
+  <div>
+  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Desde</label>
+  <input type="date" name="fecha_desde" class="glass-input" value="{{ request('fecha_desde', request('fecha_inicio', date('Y-m-01'))) }}">
+  </div>
+  <div>
+  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Hasta</label>
+  <input type="date" name="fecha_hasta" class="glass-input" value="{{ request('fecha_hasta', request('fecha_fin', date('Y-m-d'))) }}">
+  </div>
+  <div>
+  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Tipo/Rep</label>
+  <select name="tipo_rep" class="glass-input no-search">
+  <option value="todos">Todos</option>
+  <option value="preventivo" {{ request('tipo_rep') == 'preventivo' ? 'selected' : '' }}>Preventivo</option>
+  <option value="correctivo" {{ request('tipo_rep') == 'correctivo' ? 'selected' : '' }}>Correctivo</option>
+  <option value="software" {{ request('tipo_rep') == 'software' ? 'selected' : '' }}>Software</option>
+  <option value="hardware" {{ request('tipo_rep') == 'hardware' ? 'selected' : '' }}>Hardware</option>
+  </select>
+  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Progreso</label>
  <select name="estado" class="glass-input no-search">
@@ -165,7 +167,7 @@
   <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
   {{ $m->equipo->cliente->nombre ?? 'N/A' }}
   </span>
-  <span class="text-[10px] text-gray-500 tracking-wider uppercase mt-0.5">
+  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
   {{ $m->equipo->cliente->identificacion ?? '-' }}
   </span>
   </a>
@@ -174,8 +176,8 @@
   <td class="{{ $dim }}">
   <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
   <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{{ $m->equipo->nombre ?? 'N/A' }}</span>
-  <span class="text-[10px] text-gray-500 tracking-wider uppercase mt-0.5">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
-  <span class="text-[10px] text-gray-500 tracking-wider uppercase mt-0.5">
+  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
+  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
   {{ strtoupper($m->equipo->serie ?? '') }}
   </span></span>
   </a>
@@ -187,6 +189,7 @@
   <span class="pill {{ $m->tipo == 'preventivo' ? 'pill-preventivo' : 'pill-correctivo' }}">
   {{ ucfirst($m->tipo) }}
   </span>
+  <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mt-1">{{ $m->reparacion ?? 'hardware' }}</div>
   </td>
 
   <td class="text-center {{ $dimLight }}">

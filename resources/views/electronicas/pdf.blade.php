@@ -291,6 +291,7 @@
                 <td class="col-center">{{ $e->tecnico->nombre ?? 'N/A' }}</td>
                 <td class="col-center">
                     <span class="badge badge-{{ $tipo ?: 'correctivo' }}">{{ ucfirst($tipo) ?: '—' }}</span>
+                    <div class="sub-text">{{ ucfirst($e->reparacion ?? 'hardware') }}</div>
                 </td>
                 <td class="col-center">
                     <span class="badge badge-{{ $progreso ?: 'pendiente' }}">{{ ucfirst($progreso) ?: '—' }}</span>

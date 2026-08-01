@@ -76,6 +76,7 @@ class ElectronicaController extends Controller
             'equipo_id'            => 'required|exists:equipos,id',
             'descripcion_problema' => 'required|string',
             'tipo'                 => 'required|in:preventivo,correctivo',
+            'reparacion'           => 'required|in:software,hardware',
             'costo'                => 'required|numeric|min:0',
             'estado'               => 'required|in:pendiente,terminado,anulado',
             'fecha_entrada'        => 'required|date',
@@ -134,6 +135,7 @@ class ElectronicaController extends Controller
             'equipo_id'            => 'required|exists:equipos,id',
             'descripcion_problema' => 'required|string',
             'tipo'                 => 'required|in:preventivo,correctivo',
+            'reparacion'           => 'required|in:software,hardware',
             'costo'                => 'required|numeric|min:0',
             'estado'               => 'required|in:pendiente,terminado,anulado',
             'fecha_entrada'        => 'required|date',
@@ -226,11 +228,14 @@ class ElectronicaController extends Controller
     {
         $query = Electronica::query();
 
-        if ($request->filled('fecha_inicio')) {
-            $query->whereDate('fecha_entrada', '>=', $request->fecha_inicio);
+        $fechaDesde = $request->input('fecha_desde') ?? $request->input('fecha_inicio');
+        $fechaHasta = $request->input('fecha_hasta') ?? $request->input('fecha_fin');
+
+        if ($fechaDesde) {
+            $query->whereDate('fecha_entrada', '>=', $fechaDesde);
         }
-        if ($request->filled('fecha_fin')) {
-            $query->whereDate('fecha_entrada', '<=', $request->fecha_fin);
+        if ($fechaHasta) {
+            $query->whereDate('fecha_entrada', '<=', $fechaHasta);
         }
         if ($request->filled('estado') && $request->estado !== 'todos') {
             $query->where('estado', $request->estado);
@@ -244,8 +249,20 @@ class ElectronicaController extends Controller
                 $query->where('anulado', 1);
             }
         }
-        if ($request->filled('tipo') && $request->tipo !== 'todos') {
-            $query->where('tipo', $request->tipo);
+        if ($request->filled('tipo_rep') && $request->tipo_rep !== 'todos') {
+            $val = $request->tipo_rep;
+            if (in_array($val, ['preventivo', 'correctivo'])) {
+                $query->where('tipo', $val);
+            } elseif (in_array($val, ['software', 'hardware'])) {
+                $query->where('reparacion', $val);
+            }
+        } else {
+            if ($request->filled('tipo') && $request->tipo !== 'todos') {
+                $query->where('tipo', $request->tipo);
+            }
+            if ($request->filled('reparacion') && $request->reparacion !== 'todos') {
+                $query->where('reparacion', $request->reparacion);
+            }
         }
         if ($request->filled('tecnico_id') && $request->tecnico_id !== 'todos') {
             $query->where('tecnico_id', $request->tecnico_id);
