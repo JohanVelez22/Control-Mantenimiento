@@ -42,9 +42,9 @@
 
         /* Tarjetas resumen */
         .summary-grid { display: table; width: 100%; margin-bottom: 4px; border-spacing: 4px; }
-        .summary-grid .card { display: table-cell; width: 25%; border: 1px solid #e2e8f0; border-radius: 4px; padding: 5px 8px; text-align: center; vertical-align: middle; }
-        .card .card-label { font-size: 6.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #718096; margin-bottom: 2px; }
-        .card .card-value { font-size: 11px; font-weight: 800; }
+        .summary-grid .card { display: table-cell; width: 14.28%; border: 1px solid #e2e8f0; border-radius: 4px; padding: 4px 3px; text-align: center; vertical-align: middle; }
+        .card .card-label { font-size: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #718096; margin-bottom: 2px; }
+        .card .card-value { font-size: 9px; font-weight: 800; }
         .card.ingresos .card-value { color: #000000; }
         .card.egresos  .card-value { color: #000000; }
         .card.mantenimientos .card-value { color: #000000; }
@@ -151,12 +151,24 @@
             <div class="card-value">${{ number_format($resumen['total_egresos'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card mantenimientos">
-            <div class="card-label">Mantenimientos</div>
+            <div class="card-label">Mantenimiento</div>
             <div class="card-value">${{ number_format($resumen['total_mantenimientos'] ?? 0, 0, ',', '.') }}</div>
+        </div>
+        <div class="card electronica">
+            <div class="card-label">Electrónica</div>
+            <div class="card-value">${{ number_format($resumen['total_electronica'] ?? 0, 0, ',', '.') }}</div>
+        </div>
+        <div class="card ventas">
+            <div class="card-label">Ventas</div>
+            <div class="card-value">${{ number_format($resumen['total_ventas'] ?? 0, 0, ',', '.') }}</div>
+        </div>
+        <div class="card compras">
+            <div class="card-label">Compras</div>
+            <div class="card-value">${{ number_format($resumen['total_compras'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card anulados">
             <div class="card-label">Anulados</div>
-            <div class="card-value">{{ $resumen['total_anulados'] ?? 0 }}</div>
+            <div class="card-value">${{ number_format($resumen['monto_anulados'] ?? 0, 0, ',', '.') }}</div>
         </div>
     </div>
     @endif

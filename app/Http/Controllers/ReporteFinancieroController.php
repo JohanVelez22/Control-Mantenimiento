@@ -37,9 +37,9 @@ class ReporteFinancieroController extends Controller
                     'fecha'       => $m->fecha_entrada,
                     'codigo'      => $m->id_orden,
                     'descripcion' => "{$equipo} ({$cliente})",
-                    'monto'       => $m->costo,
+                    'monto'       => (float) $m->costo,
                     'estado'      => $m->estado,
-                    'anulado'     => $m->anulado,
+                    'anulado'     => (bool) $m->anulado,
                     'icono'       => '🔧',
                     'color'       => 'blue',
                 ];
@@ -58,9 +58,9 @@ class ReporteFinancieroController extends Controller
                     'fecha'       => $e->fecha_entrada,
                     'codigo'      => $e->id_orden,
                     'descripcion' => "{$equipo} ({$cliente})",
-                    'monto'       => $e->costo,
+                    'monto'       => (float) $e->costo,
                     'estado'      => $e->estado,
-                    'anulado'     => $e->anulado,
+                    'anulado'     => (bool) $e->anulado,
                     'icono'       => '⚡',
                     'color'       => 'purple',
                 ];
@@ -78,7 +78,7 @@ class ReporteFinancieroController extends Controller
                     'fecha'       => $f->fecha,
                     'codigo'      => $f->numero_factura,
                     'descripcion' => "{$nombre}",
-                    'monto'       => $f->total_documento,
+                    'monto'       => (float) $f->total_documento,
                     'estado'      => $f->estado,
                     'anulado'     => $f->estado === 'anulada',
                     'icono'       => $f->tipo_movimiento === 'compra' ? '📦' : '🛒',
@@ -99,9 +99,9 @@ class ReporteFinancieroController extends Controller
                     'fecha'       => $c->fecha,
                     'codigo'      => $c->id,
                     'descripcion' => "{$quien} — {$concepto}",
-                    'monto'       => $c->monto,
+                    'monto'       => (float) $c->monto,
                     'estado'      => $c->estado,
-                    'anulado'     => $c->anulado,
+                    'anulado'     => (bool) $c->anulado,
                     'icono'       => $c->tipo_movimiento === 'ingreso' ? '📈' : '📉',
                     'color'       => $c->tipo_movimiento === 'ingreso' ? 'emerald' : 'red',
                 ];
@@ -116,16 +116,41 @@ class ReporteFinancieroController extends Controller
             ->sortByDesc('fecha')
             ->values();
 
-        $efectivoIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto');
-        $efectivoEgresos  = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto');
+        // ════════════════════════════════════════════════════════════════════
+        // CONSULTAS DIRECTAS A BASE DE DATOS PARA RIGOR CONTABLE (DINERO REAL)
+        // ════════════════════════════════════════════════════════════════════
+        $efectivoIngresos     = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto');
+        $efectivoEgresos      = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto');
         $consignacionIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto');
         $consignacionEgresos  = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto');
 
+        $ingresosCaja  = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $egresosCaja   = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
+        $facturadoMant = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
+        $facturadoElec = Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
+        $ventasInv     = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->where('tipo_movimiento', 'venta')->sum('total_documento');
+        $comprasInv    = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->where('tipo_movimiento', 'compra')->sum('total_documento');
+
+        $totalAnuladosCount = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', true)->count()
+                            + Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', true)->count()
+                            + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->count()
+                            + Factura::whereDate('fecha', $fecha)->where('estado', 'anulada')->count();
+
+        $montoAnuladosSum   = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
+                            + Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
+                            + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->sum('monto')
+                            + Factura::whereDate('fecha', $fecha)->where('estado', 'anulada')->sum('total_documento');
+
         $resumen = [
-            'total_ingresos'        => $movimientos->where('anulado', false)->whereIn('tipo', ['ingreso', 'venta'])->sum('monto'),
-            'total_egresos'         => $movimientos->where('anulado', false)->whereIn('tipo', ['egreso', 'compra'])->sum('monto'),
-            'total_mantenimientos'  => $mantenimientos->where('anulado', false)->sum('costo'),
-            'total_anulados'        => $movimientos->where('anulado', true)->count(),
+            'total_ingresos'        => $ingresosCaja,
+            'total_egresos'         => $egresosCaja,
+            'balance_neto'          => $ingresosCaja - $egresosCaja,
+            'total_mantenimientos'  => $facturadoMant,
+            'total_electronica'     => $facturadoElec,
+            'total_ventas'          => $ventasInv,
+            'total_compras'         => $comprasInv,
+            'total_anulados'        => $totalAnuladosCount,
+            'monto_anulados'        => $montoAnuladosSum,
             'efectivo_ingresos'     => $efectivoIngresos,
             'efectivo_egresos'      => $efectivoEgresos,
             'efectivo_saldo'        => $efectivoIngresos - $efectivoEgresos,
@@ -210,8 +235,8 @@ class ReporteFinancieroController extends Controller
             'egresos_efectivo'      => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto'),
             'ingresos_consignacion' => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto'),
             'egresos_consignacion'  => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto'),
-            'ventas_inventario'     => (clone $facturasBase)->where('tipo_movimiento', 'venta')->sum('total_pagado'),
-            'compras_inventario'    => (clone $facturasBase)->where('tipo_movimiento', 'compra')->sum('total_pagado'),
+            'ventas_inventario'     => (clone $facturasBase)->where('tipo_movimiento', 'venta')->sum('total_documento'),
+            'compras_inventario'    => (clone $facturasBase)->where('tipo_movimiento', 'compra')->sum('total_documento'),
 
             // Pendientes
             'saldo_pendiente_venta' => (clone $facturasBase)->where('tipo_movimiento', 'venta')

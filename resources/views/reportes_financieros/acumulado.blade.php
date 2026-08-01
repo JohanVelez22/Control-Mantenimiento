@@ -59,41 +59,43 @@
 
 <div class="space-y-5">
 
-{{-- KPIs principales --}}
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-  <div class="glass-card hover-glow glass-card-blue p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-  <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🔧</span> Mantenimientos</p>
-  <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['facturado_mant'], 0, ',', '.') }}</p>
-  </div>
-  <div class="glass-card hover-glow glass-card-purple p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-  <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">⚡</span> Electrónica</p>
-  <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['facturado_elec'], 0, ',', '.') }}</p>
-  </div>
-  <div class="glass-card hover-glow glass-card-orange p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-  <p class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📦</span> Compras</p>
-  <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['compras_inventario'], 0, ',', '.') }}</p>
-  </div>
-  <div class="glass-card hover-glow glass-card-emerald p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-  <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🛒</span> Ventas Inv.</p>
-  <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['ventas_inventario'], 0, ',', '.') }}</p>
-  </div>
+ {{-- Resumen Consolidado (1 sola fila horizontal permanente homogénea) --}}
+  <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.75rem; width: 100%;">
+  <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📈</span> Ingresos (Caja)</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['ingresos_caja'], 0, ',', '.') }}</p>
   </div>
 
-  {{-- Balance consolidado --}}
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-  <div class="glass-card hover-glow glass-card-emerald p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-  <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Total Ingresos Reales (Caja)</p>
-  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['ingresos_caja'], 0, ',', '.') }}</p>
+  <div class="glass-card hover-glow glass-card-red p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-red-600 dark:text-red-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📉</span> Egresos (Caja)</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['egresos_caja'], 0, ',', '.') }}</p>
   </div>
-  <div class="glass-card hover-glow glass-card-red p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-  <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💸</span> Total Egresos Reales (Caja)</p>
-  <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['egresos_caja'], 0, ',', '.') }}</p>
+
+  <div class="glass-card hover-glow glass-card-blue p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">🔧</span> Mantenimiento</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['facturado_mant'], 0, ',', '.') }}</p>
   </div>
-  <div class="glass-card hover-glow {{ $acumulado['balance_neto'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-  <p class="text-xs font-bold {{ $acumulado['balance_neto'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">⚖️</span> Balance Neto</p>
- <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}</p>
- </div>
- </div>
+
+  <div class="glass-card hover-glow glass-card-purple p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">⚡</span> Electrónica</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['facturado_elec'], 0, ',', '.') }}</p>
+  </div>
+
+  <div class="glass-card hover-glow glass-card-teal p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">🛒</span> Ventas</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['ventas_inventario'], 0, ',', '.') }}</p>
+  </div>
+
+  <div class="glass-card hover-glow glass-card-orange p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📦</span> Compras</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['compras_inventario'], 0, ',', '.') }}</p>
+  </div>
+
+  <div class="glass-card hover-glow {{ $acumulado['balance_neto'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold {{ $acumulado['balance_neto'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">⚖️</span> Balance Neto</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}</p>
+  </div>
+  </div>
 
  {{-- Saldos pendientes --}}
  @if($acumulado['saldo_pendiente_venta'] > 0 || $acumulado['saldo_pendiente_compra'] > 0)
@@ -135,44 +137,44 @@
         <table class="ts-table responsive-table w-full text-sm">
             <thead>
                 <tr>
-                    <th class="p-3 text-left">Categoría</th>
-                    <th class="p-3 text-center">Cantidad</th>
-                    <th class="p-3 text-center">Costo Total</th>
+                    <th class="p-3 text-left whitespace-nowrap">Categoría</th>
+                    <th class="p-3 text-center whitespace-nowrap">Cantidad</th>
+                    <th class="p-3 text-center whitespace-nowrap">Costo Total</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300"><span class="mr-2">🔧</span>Mantenimientos</td>
+                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap"><span class="mr-2">🔧</span>Mantenimientos</td>
                     <td class="p-3 text-center">{{ $acumulado['total_mantenimientos'] }}</td>
                     <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">${{ number_format($acumulado['facturado_mant'], 0, ',', '.') }}</td>
                 </tr>
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300"><span class="mr-2">⚡</span>Electrónica</td>
+                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap"><span class="mr-2">⚡</span>Electrónica</td>
                     <td class="p-3 text-center">{{ $acumulado['total_electronicas'] }}</td>
                     <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">${{ number_format($acumulado['facturado_elec'], 0, ',', '.') }}</td>
                 </tr>
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300"><span class="mr-2">📦</span>Compras de Inventario</td>
+                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap"><span class="mr-2">📦</span>Compras de Inventario</td>
                     <td class="p-3 text-center">{{ $acumulado['total_compras'] }}</td>
                     <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">${{ number_format($acumulado['compras_inventario'], 0, ',', '.') }}</td>
                 </tr>
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300"><span class="mr-2">🛒</span>Ventas de Inventario</td>
+                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap"><span class="mr-2">🛒</span>Ventas de Inventario</td>
                     <td class="p-3 text-center">{{ $acumulado['total_ventas'] }}</td>
                     <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">${{ number_format($acumulado['ventas_inventario'], 0, ',', '.') }}</td>
                 </tr>
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300"><span class="mr-2">📈</span>Ingresos Reales (Caja)</td>
+                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap"><span class="mr-2">📈</span>Ingresos (Caja)</td>
                     <td class="p-3 text-center">{{ $acumulado['total_ingresos'] ?? 0 }}</td>
                     <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">${{ number_format($acumulado['ingresos_caja'], 0, ',', '.') }}</td>
                 </tr>
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300"><span class="mr-2">📉</span>Egresos Reales (Caja)</td>
+                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap"><span class="mr-2">📉</span>Egresos (Caja)</td>
                     <td class="p-3 text-center">{{ $acumulado['total_egresos'] ?? 0 }}</td>
                     <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">${{ number_format($acumulado['egresos_caja'], 0, ',', '.') }}</td>
                 </tr>
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300"><span class="mr-2">🚫</span>Movimientos Anulados</td>
+                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap"><span class="mr-2">🚫</span>Movimientos Anulados</td>
                     <td class="p-3 text-center">{{ $acumulado['total_anulados'] ?? 0 }}</td>
                     <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100" title="Este valor no suma al balance">${{ number_format($acumulado['total_costo_anulados'] ?? 0, 0, ',', '.') }}</td>
                 </tr>
