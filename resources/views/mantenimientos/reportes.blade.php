@@ -242,8 +242,8 @@
  @if($mantenimientos->count() > 0)
  <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
  <tr>
- <td colspan="2" class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $mantenimientos->count() }}</td>
- <td colspan="7" class="text-right uppercase text-xs">TOTALES FILTRADOS:</td>
+ <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $mantenimientos->count() }}</td>
+ <td colspan="8" class="text-right uppercase text-xs">TOTALES FILTRADOS:</td>
  <td class="text-center font-bold text-xs text-green-600 dark:text-green-400">${{ number_format($mantenimientos->sum('costo'), 0, '', '.') }}</td>
  </tr>
  </tfoot>
