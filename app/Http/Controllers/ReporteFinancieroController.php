@@ -141,10 +141,13 @@ class ReporteFinancieroController extends Controller
                             + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->sum('monto')
                             + Factura::whereDate('fecha', $fecha)->where('estado', 'anulada')->sum('total_documento');
 
+        $totalPositivos = $ingresosCaja + $ventasInv + $facturadoMant + $facturadoElec;
+        $totalNegativos = $egresosCaja + $comprasInv;
+
         $resumen = [
             'total_ingresos'        => $ingresosCaja,
             'total_egresos'         => $egresosCaja,
-            'balance_neto'          => $ingresosCaja - $egresosCaja,
+            'balance_neto'          => $totalPositivos - $totalNegativos,
             'total_mantenimientos'  => $facturadoMant,
             'total_electronica'     => $facturadoElec,
             'total_ventas'          => $ventasInv,
@@ -245,7 +248,10 @@ class ReporteFinancieroController extends Controller
                                         ->selectRaw('SUM(total_documento - total_pagado) as s')->value('s') ?? 0,
         ];
 
-        $acumulado['balance_neto']        = $acumulado['ingresos_caja'] - $acumulado['egresos_caja'];
+        $totalIngresosOperaciones = $acumulado['ingresos_caja'] + $acumulado['ventas_inventario'] + $acumulado['facturado_mant'] + $acumulado['facturado_elec'];
+        $totalEgresosOperaciones  = $acumulado['egresos_caja'] + $acumulado['compras_inventario'];
+
+        $acumulado['balance_neto']        = $totalIngresosOperaciones - $totalEgresosOperaciones;
         $acumulado['balance_efectivo']    = $acumulado['ingresos_efectivo'] - $acumulado['egresos_efectivo'];
         $acumulado['balance_consignacion']= $acumulado['ingresos_consignacion'] - $acumulado['egresos_consignacion'];
         $acumulado['facturado_total']     = $acumulado['facturado_mant'] + $acumulado['facturado_elec'];

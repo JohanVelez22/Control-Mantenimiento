@@ -55,7 +55,7 @@
 </div>
 
 {{-- Tarjetas de resumen (1 sola fila horizontal homogénea) --}}
-  <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.75rem; width: 100%;">
+  <div class="print-grid-7" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.75rem; width: 100%;">
   <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
   <p class="text-xs xl:text-sm font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📈</span> Ingresos</p>
   <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($resumen['total_ingresos'], 0, ',', '.') }}</p>
@@ -381,39 +381,59 @@ function exportarDiario(tipo, btn) {
         box-shadow: none !important;
     }
     
-    .grid {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        gap: 8px !important;
-        margin-bottom: 4px !important;
+    .print-grid-7 {
+        display: grid !important;
+        grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+        gap: 0.25rem !important;
+        width: 100% !important;
+        margin-bottom: 8px !important;
     }
     
-    .grid > div {
-        flex: 1 1 20% !important;
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 8px !important;
-        padding: 6px 10px !important;
-        background-color: #f8fafc !important;
+    .print-grid-7 > div,
+    .print-grid-7 .glass-card {
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 2px 0 !important;
+        background: transparent !important;
+        background-color: transparent !important;
         text-align: center !important;
         box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .print-grid-7 > div::before,
+    .print-grid-7 > div::after,
+    .print-grid-7 .glass-card::before,
+    .print-grid-7 .glass-card::after {
+        display: none !important;
+        content: none !important;
+        border: none !important;
     }
     
-    .grid p {
+    .print-grid-7 p {
         margin: 0 !important;
+        padding: 0 !important;
     }
     
-    .grid p.text-xs {
-        font-size: 6.5pt !important;
-        color: #4a5568 !important;
-        font-weight: bold !important;
+    .print-grid-7 p:first-child,
+    .print-grid-7 p.text-xs,
+    .print-grid-7 p span {
+        font-size: 7.5pt !important;
+        color: #4b5563 !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        opacity: 1 !important;
     }
     
-    .grid p.text-2xl, .grid p.text-3xl {
-        font-size: 11pt !important;
-        font-weight: 800 !important;
-        color: #1a202c !important;
-        margin-top: 2px !important;
+    .print-grid-7 p:last-child,
+    .print-grid-7 p.text-base,
+    .print-grid-7 p.text-xl,
+    .print-grid-7 p.text-2xl {
+        font-size: 9.5pt !important;
+        font-weight: 600 !important;
+        color: #111827 !important;
+        margin-top: 1px !important;
+        opacity: 1 !important;
     }
     
     span.pill, .badge, table td span, .ts-table td span, .reportes-tabla-imprimir td span {
