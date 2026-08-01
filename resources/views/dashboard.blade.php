@@ -727,9 +727,14 @@ function switchDashTab(tab) {
   gradientOrangeCompra.addColorStop(0, 'rgba(249, 115, 22, 0.85)'); // orange
   gradientOrangeCompra.addColorStop(1, 'rgba(249, 115, 22, 0.12)');
 
+  const gradientRedEgreso = ctxIng.createLinearGradient(0, 0, 0, 400);
+  gradientRedEgreso.addColorStop(0, 'rgba(239, 68, 68, 0.85)'); // red
+  gradientRedEgreso.addColorStop(1, 'rgba(239, 68, 68, 0.12)');
+
   const ingresosAcumuladosData = (chartData && chartData.ingresosAcumulados) ? chartData.ingresosAcumulados : [];
   const ventasData = (chartData && chartData.ventas) ? chartData.ventas : [];
   const comprasData = (chartData && chartData.compras) ? chartData.compras : [];
+  const egresosData = (chartData && chartData.egresos) ? chartData.egresos : [];
 
   new Chart(ctxIng, {
   type: 'bar',
@@ -752,6 +757,17 @@ function switchDashTab(tab) {
   data: ingresosData,
   backgroundColor: gradientBlueIng,
   borderColor: 'rgb(59, 130, 246)',
+  borderWidth: 2,
+  borderRadius: 6,
+  borderSkipped: false,
+  barPercentage: 0.55,
+  categoryPercentage: 0.85
+  },
+  {
+  label: 'Egresos del Día',
+  data: egresosData,
+  backgroundColor: gradientRedEgreso,
+  borderColor: 'rgb(239, 68, 68)',
   borderWidth: 2,
   borderRadius: 6,
   borderSkipped: false,

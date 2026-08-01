@@ -101,6 +101,14 @@ class DashboardController extends Controller
             ->groupBy('fecha')
             ->pluck('total', 'fecha');
 
+        $egresosPorDia = \App\Models\MovimientoCaja::where('estado', 'activo')
+            ->where('anulado', false)
+            ->whereBetween('fecha', [$startDate, $endDate])
+            ->where('tipo_movimiento', 'egreso')
+            ->selectRaw('DATE(fecha) as fecha, SUM(monto) as total')
+            ->groupBy('fecha')
+            ->pluck('total', 'fecha');
+
         // Construir arrays para Chart.js en PHP (sin queries adicionales)
         $labels = [];
         $dataEquipos = [];
@@ -109,6 +117,7 @@ class DashboardController extends Controller
         $dataIngresosAcumulados = [];
         $dataVentas = [];
         $dataCompras = [];
+        $dataEgresos = [];
 
         // Para el acumulado: saldo histórico de movimientos de caja hasta la fecha de inicio
         $saldoAnterior = \App\Models\MovimientoCaja::where('estado', 'activo')
@@ -128,12 +137,14 @@ class DashboardController extends Controller
             $ingresoDia = (float) ($ingresosPorDia[$key] ?? 0);
             $ventasDia  = (float) ($ventasPorDia[$key] ?? 0);
             $comprasDia = (float) ($comprasPorDia[$key] ?? 0);
+            $egresosDia = (float) ($egresosPorDia[$key] ?? 0);
 
-            $dataIngresos[]       = $ingresoDia;
-            $acumulado           += $ingresoDia;
+            $dataIngresos[]           = $ingresoDia;
+            $acumulado               += $ingresoDia;
             $dataIngresosAcumulados[] = $acumulado;
-            $dataVentas[]       = $ventasDia;
-            $dataCompras[]      = $comprasDia;
+            $dataVentas[]           = $ventasDia;
+            $dataCompras[]          = $comprasDia;
+            $dataEgresos[]          = $egresosDia;
         }
 
         // Estadísticas de Electrónica consolidadas (1 query en lugar de 4)
@@ -175,6 +186,7 @@ class DashboardController extends Controller
             'ingresosAcumulados'      => $dataIngresosAcumulados,
             'ventas'                  => $dataVentas,
             'compras'                 => $dataCompras,
+            'egresos'                 => $dataEgresos,
             // Datos para el slide 4: resumen electrónica
             'electronicaPendientes'   => $electronicaPendientes,
             'electronicaTerminados'   => $electronicaTerminados,
