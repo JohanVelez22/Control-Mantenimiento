@@ -111,7 +111,7 @@ class ElectronicaController extends Controller
 
     public function show(Electronica $electronica)
     {
-        $electronica->load(['equipo.cliente', 'tecnico', 'user', 'stocks', 'abonos']);
+        $electronica->load(['equipo.cliente', 'tecnico', 'user', 'stocks', 'abonos.user', 'abonos.movimientoCaja']);
         $stocks_disponibles = \App\Models\Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
         return view('electronicas.show', compact('electronica', 'stocks_disponibles'));
     }

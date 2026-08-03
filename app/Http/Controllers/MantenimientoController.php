@@ -39,7 +39,7 @@ class MantenimientoController extends Controller
 
     public function show(Mantenimiento $mantenimiento)
     {
-        $mantenimiento->load(['equipo.cliente', 'tecnico', 'user', 'abonos.user', 'stocks']);
+        $mantenimiento->load(['equipo.cliente', 'tecnico', 'user', 'abonos.user', 'abonos.movimientoCaja', 'stocks']);
         $stocks_disponibles = \App\Models\Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
         return view('mantenimientos.show', compact('mantenimiento', 'stocks_disponibles'));
     }

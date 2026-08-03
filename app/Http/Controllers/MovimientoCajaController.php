@@ -144,6 +144,7 @@ class MovimientoCajaController extends Controller
             unset($validated['nuevo_concepto']);
 
             $movimiento = MovimientoCaja::create($validated);
+            $this->sincronizarFacturaRelacionada($movimiento);
             DB::commit();
 
             // Redirigir a la vista de impresión si se solicitó

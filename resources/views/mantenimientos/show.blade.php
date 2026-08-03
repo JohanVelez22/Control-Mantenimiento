@@ -239,6 +239,13 @@
  </div>
  </div>
  
+ <div class="flex items-center gap-2">
+ @if($abono->movimientoCaja)
+ <a href="{{ route('caja.show', $abono->movimientoCaja->id) }}" class="btn-ghost px-2 py-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 flex items-center justify-center" title="Ver movimiento en Caja #{{ $abono->movimientoCaja->id }}">
+     👁️
+ </a>
+ @endif
+
  @if(!auth()->user()->isInvitado())
  <form action="{{ route('abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de ${{ number_format($abono->monto, 0, ',', '.') }}?">
  @csrf @method('DELETE')
@@ -247,6 +254,7 @@
  </button>
  </form>
  @endif
+ </div>
  </div>
  @endforeach
  </div>

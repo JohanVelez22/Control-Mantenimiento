@@ -18,11 +18,11 @@
  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
  <div>
  <label class="field-label flex items-center gap-2"><span>🏢</span> Empresa (Opcional)</label>
- <input type="text" name="empresa" id="caja_empresa" value="{{ old('empresa', $movimiento->empresa ?? '') }}" placeholder="Nombre de la empresa..." class="glass-input">
+ <input type="text" name="empresa" id="caja_empresa" value="{{ old('empresa', request('empresa', $movimiento->empresa ?? '')) }}" placeholder="Nombre de la empresa..." class="glass-input">
  </div>
  <div>
  <label class="field-label flex items-center gap-2"><span>👤</span> Persona (Opcional)</label>
- <input type="text" name="persona" id="caja_persona" value="{{ old('persona', $movimiento->persona ?? '') }}" placeholder="Nombre de quien paga/recibe..." class="glass-input">
+ <input type="text" name="persona" id="caja_persona" value="{{ old('persona', request('persona', $movimiento->persona ?? '')) }}" placeholder="Nombre de quien paga/recibe..." class="glass-input">
  @error('persona') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
  </div>
@@ -35,17 +35,53 @@
  @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
 
+ @php
+     $tipoMov = old('tipo_movimiento', request('tipo_movimiento', $movimiento->tipo_movimiento ?? 'ingreso'));
+     $tipoPago = old('tipo_pago', request('tipo_pago', $movimiento->tipo_pago ?? 'efectivo'));
+     
+     $rawMontoTotal = old('monto_total', request('monto_total', $movimiento->monto_total ?? ''));
+
+     // Si monto_total esta vacio pero hay una descripcion con factura (#VT-X / #CP-X), obtener el total de la factura
+     if (($rawMontoTotal === '' || $rawMontoTotal === null || $rawMontoTotal == 0) && (isset($movimiento) || request('descripcion'))) {
+         $descToSearch = $movimiento->descripcion ?? request('descripcion', '');
+         if (preg_match('/#([A-Za-z0-9-]+)/', $descToSearch, $matches)) {
+             $facturaRel = \App\Models\Factura::where('numero_factura', $matches[1])->first();
+             if ($facturaRel) {
+                 $rawMontoTotal = $facturaRel->total_documento;
+             }
+         }
+     }
+
+     $cleanMontoTotal = ($rawMontoTotal !== '' && $rawMontoTotal !== null) ? round((float)$rawMontoTotal) : '';
+     $valMontoTotal = $cleanMontoTotal !== '' ? number_format($cleanMontoTotal, 0, ',', '.') : '';
+
+     $rawMonto = old('monto', request('monto', $movimiento->monto ?? ''));
+     $cleanMonto = ($rawMonto !== '' && $rawMonto !== null) ? round((float)$rawMonto) : '';
+     $valMonto = $cleanMonto !== '' ? number_format($cleanMonto, 0, ',', '.') : '';
+
+     $requestedConcepto = old('concepto_id', request('concepto_id', $movimiento->concepto_id ?? ''));
+     if (!$requestedConcepto && isset($conceptos)) {
+         $searchConcept = $tipoMov === 'egreso' ? 'compra' : 'venta';
+         foreach ($conceptos as $cOpt) {
+             if (str_contains(strtolower($cOpt->nombre), $searchConcept)) {
+                 $requestedConcepto = $cOpt->id;
+                 break;
+             }
+         }
+     }
+ @endphp
+
  {{-- Tipo de Movimiento --}}
  <div>
  <label class="field-label">Tipo de Movimiento *</label>
  <div class="flex gap-3 mt-1">
- <label id="label_ingreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
- <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
- <span id="text_ingreso" class="font-bold {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'ingreso' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">📈 Ingreso</span>
+ <label id="label_ingreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ $tipoMov === 'ingreso' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
+ <span id="text_ingreso" class="font-bold {{ $tipoMov === 'ingreso' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">📈 Ingreso</span>
  </label>
- <label id="label_egreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
- <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso" {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'checked' : '' }} class="accent-red-500 w-4 h-4">
- <span id="text_egreso" class="font-bold {{ old('tipo_movimiento', $movimiento->tipo_movimiento ?? '') === 'egreso' ? 'text-red-700 dark:text-red-400' : 'text-slate-600 dark:text-slate-400' }}">📉 Egreso</span>
+ <label id="label_egreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso" {{ $tipoMov === 'egreso' ? 'checked' : '' }} class="accent-red-500 w-4 h-4">
+ <span id="text_egreso" class="font-bold {{ $tipoMov === 'egreso' ? 'text-red-700 dark:text-red-400' : 'text-slate-600 dark:text-slate-400' }}">📉 Egreso</span>
  </label>
  </div>
  @error('tipo_movimiento') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
@@ -55,13 +91,13 @@
  <div>
  <label class="field-label">Tipo de Pago *</label>
  <div class="flex gap-3 mt-1">
- <label id="label_efectivo" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
- <input type="radio" name="tipo_pago" value="efectivo" required id="tipo_efectivo" {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'checked' : '' }} class="accent-blue-500 w-4 h-4">
- <span id="text_efectivo" class="font-bold {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'efectivo' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400' }}">💵 Efectivo</span>
+ <label id="label_efectivo" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'efectivo' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <input type="radio" name="tipo_pago" value="efectivo" required id="tipo_efectivo" {{ $tipoPago === 'efectivo' ? 'checked' : '' }} class="accent-blue-500 w-4 h-4">
+ <span id="text_efectivo" class="font-bold {{ $tipoPago === 'efectivo' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400' }}">💵 Efectivo</span>
  </label>
- <label id="label_banco" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'border-purple-500 bg-purple-50/50 dark:bg-purple-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
- <input type="radio" name="tipo_pago" value="consignacion" id="tipo_banco" {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'checked' : '' }} class="accent-purple-500 w-4 h-4">
- <span id="text_banco" class="font-bold {{ old('tipo_pago', $movimiento->tipo_pago ?? '') === 'consignacion' ? 'text-purple-700 dark:text-purple-400' : 'text-slate-600 dark:text-slate-400' }}">🏦 Banco</span>
+ <label id="label_banco" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'consignacion' ? 'border-purple-500 bg-purple-50/50 dark:bg-purple-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <input type="radio" name="tipo_pago" value="consignacion" id="tipo_banco" {{ $tipoPago === 'consignacion' ? 'checked' : '' }} class="accent-purple-500 w-4 h-4">
+ <span id="text_banco" class="font-bold {{ $tipoPago === 'consignacion' ? 'text-purple-700 dark:text-purple-400' : 'text-slate-600 dark:text-slate-400' }}">🏦 Banco</span>
  </label>
  </div>
  @error('tipo_pago') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
@@ -73,8 +109,8 @@
  <span>Monto Total ($)</span>
  <span class="text-[10px] font-normal text-gray-400">(Opcional)</span>
  </label>
- <input type="text" id="monto_total_visual" value="{{ old('monto_total', isset($movimiento) && $movimiento->monto_total ? number_format($movimiento->monto_total, 0, ',', '.') : '') }}" placeholder="Monto total a pagar/cobrar..." class="glass-input font-bold text-left py-2">
- <input type="hidden" name="monto_total" id="monto_total_real" value="{{ old('monto_total', $movimiento->monto_total ?? '') }}">
+ <input type="text" id="monto_total_visual" value="{{ $valMontoTotal }}" placeholder="Monto total a pagar/cobrar..." class="glass-input font-bold text-left py-2">
+ <input type="hidden" name="monto_total" id="monto_total_real" value="{{ $cleanMontoTotal }}">
  @error('monto_total') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  <p class="text-[11px] font-medium text-gray-400 mt-1">Usa esto solo si el pago actual es parcial. El sistema calculará el saldo pendiente.</p>
  </div>
@@ -82,8 +118,8 @@
  {{-- Monto Pagado y Estado --}}
  <div>
  <label class="field-label">Monto Pagado Hoy ($) *</label>
- <input type="text" id="monto_visual" required value="{{ old('monto', isset($movimiento) ? number_format($movimiento->monto, 0, ',', '.') : '') }}" placeholder="Monto pagado..." class="glass-input font-bold text-left py-2">
- <input type="hidden" name="monto" id="monto_real" value="{{ old('monto', $movimiento->monto ?? '') }}">
+ <input type="text" id="monto_visual" required value="{{ $valMonto }}" placeholder="Monto pagado..." class="glass-input font-bold text-left py-2">
+ <input type="hidden" name="monto" id="monto_real" value="{{ $cleanMonto }}">
  @error('monto') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
 
@@ -92,9 +128,9 @@
  <label class="field-label">Concepto *</label>
  <div class="flex gap-2 min-w-0">
  <select name="concepto_id" id="concepto_select" class="glass-input flex-1">
- <option value=\"\">Seleccionar concepto...</option>
+ <option value="">Seleccionar concepto...</option>
  @foreach($conceptos as $c)
- <option value="{{ $c->id }}" {{ old('concepto_id', $movimiento->concepto_id ?? '') == $c->id ? 'selected' : '' }}>
+ <option value="{{ $c->id }}" {{ $requestedConcepto == $c->id ? 'selected' : '' }}>
  {{ $c->nombre }}
  </option>
  @endforeach
@@ -117,7 +153,7 @@
  {{-- Descripción --}}
  <div class="md:col-span-2">
  <label class="field-label">Descripción (Opcional)</label>
- <textarea name="descripcion" rows="2" placeholder="Detalles adicionales del movimiento..." class="glass-input resize-y">{{ old('descripcion', $movimiento->descripcion ?? '') }}</textarea>
+ <textarea name="descripcion" rows="2" placeholder="Detalles adicionales del movimiento..." class="glass-input resize-y">{{ old('descripcion', request('descripcion', $movimiento->descripcion ?? '')) }}</textarea>
  </div>
 </div>
 

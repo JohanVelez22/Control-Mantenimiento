@@ -123,7 +123,8 @@ class MovimientoInventarioController extends Controller
                     monto: $totalPagado,
                     persona: $entityName,
                     descripcion: "Pago compra #{$factura->numero_factura}",
-                    fecha: $request->fecha
+                    fecha: $request->fecha,
+                    montoTotal: $totalDocumento
                 );
             }
 
@@ -260,7 +261,8 @@ class MovimientoInventarioController extends Controller
                     monto: $totalPagado,
                     persona: $entityName,
                     descripcion: "Cobro venta #{$factura->numero_factura}",
-                    fecha: $request->fecha
+                    fecha: $request->fecha,
+                    montoTotal: $totalDocumento
                 );
             }
 

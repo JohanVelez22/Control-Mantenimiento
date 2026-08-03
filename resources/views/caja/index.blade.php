@@ -151,10 +151,18 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
  </span>
  </td>
  <td data-label="Monto:" class="text-right font-black text-lg {{ $m->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} {{ $dim }}">
- ${{ number_format($m->monto, 0, ',', '.') }}
- @if($m->saldo_pendiente > 0)
- <div class="text-[10px] text-orange-500 font-bold uppercase mt-1">Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }}</div>
- @endif
+  ${{ number_format($m->monto, 0, ',', '.') }}
+  @if($m->effective_monto_total > 0)
+      @if($m->saldo_pendiente > 0)
+          <div class="text-[10px] text-orange-600 dark:text-orange-400 font-bold uppercase mt-1">
+              Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }} <span class="text-gray-400 font-normal">(Total: ${{ number_format($m->effective_monto_total, 0, ',', '.') }})</span>
+          </div>
+      @elseif($m->childPayments->count() > 0 || $m->parent_id)
+          <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase mt-1">
+              Total Pagado (${{ number_format($m->effective_monto_total, 0, ',', '.') }})
+          </div>
+      @endif
+  @endif
  </td>
 <td data-label="Acciones:" class="text-center w-28">
   <div class="actions-grid">

@@ -2,7 +2,7 @@
 @section('title', 'Detalle de Movimiento de Caja')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-5xl mx-auto">
     <div class="glass-card p-6 md:p-8">
         
         {{-- Alerta de estado anulado --}}
@@ -108,12 +108,12 @@
             </div>
 
             <div class="glass-card hover-glow glass-card-indigo p-4 text-center">
-                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Monto Total</p>
-                <p class="text-xl font-black text-slate-800 dark:text-white">${{ number_format($movimiento->monto_total ?? $movimiento->monto, 0, ',', '.') }}</p>
+                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Monto Total Servicio/Factura</p>
+                <p class="text-xl font-black text-slate-800 dark:text-white">${{ number_format($movimiento->effective_monto_total ?: $movimiento->monto, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow glass-card-emerald p-4 text-center">
-                <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Total Abonado</p>
+                <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Total Acumulado Pagado</p>
                 <p class="text-xl font-black text-emerald-600 dark:text-emerald-400">${{ number_format($movimiento->total_pagado, 0, ',', '.') }}</p>
             </div>
 
@@ -131,54 +131,62 @@
         </div>
         @endif
 
-        {{-- Aviso si es abono de un movimiento padre --}}
-        @if($movimiento->parent_id)
-        <div class="mb-8 p-4 rounded-2xl bg-blue-500/10 border border-blue-400/30 text-blue-700 dark:text-blue-300 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="text-xl">🔹</span>
-                <span class="text-xs font-bold">Este movimiento corresponde a un abono registrado al movimiento principal #{{ $movimiento->parent_id }}.</span>
-            </div>
-            <a href="{{ route('caja.show', $movimiento->parent_id) }}" class="btn-ghost text-xs px-3 py-1 font-bold">
-                Ver Movimiento Principal ➡️
-            </a>
-        </div>
-        @endif
+        @php
+            $rootId = $movimiento->parent_id ?: $movimiento->id;
+            $refSearch = $movimiento->ref_search;
 
-        {{-- Historial de Abonos Recibidos (si aplica) --}}
-        @if($movimiento->childPayments->isNotEmpty())
+            $relacionados = \App\Models\MovimientoCaja::where('estado', 'activo')
+                ->where('id', '!=', $movimiento->id)
+                ->where(function($q) use ($rootId, $refSearch) {
+                    if ($rootId) {
+                        $q->where('id', $rootId)
+                          ->orWhere('parent_id', $rootId);
+                    }
+                    if ($refSearch) {
+                        $q->orWhere('descripcion', 'like', "%{$refSearch}%");
+                    }
+                })
+                ->orderBy('created_at', 'asc')
+                ->get();
+        @endphp
+
+        {{-- Historial de Abonos / Pagos Relacionados --}}
+        @if($relacionados->isNotEmpty())
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
-            <span>📑</span> Historial de Abonos Recibidos ({{ $movimiento->childPayments->count() }})
+            <span>📑</span> Pagos y Abonos Relacionados ({{ $relacionados->count() }})
         </h3>
         <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-8">
-            <table class="ts-table mb-0">
+            <table class="ts-table mb-0 w-full">
                 <thead>
                     <tr>
-                        <th class="w-24 text-left">Código</th>
-                        <th class="text-left">Fecha</th>
-                        <th class="text-left">Método Pago</th>
-                        <th class="text-left">Registrado Por</th>
-                        <th class="text-right">Monto</th>
-                        <th class="w-20 text-center">Acciones</th>
+                        <th class="text-center whitespace-nowrap" style="width: 60px;">Código</th>
+                        <th class="text-center whitespace-nowrap" style="width: 100px;">Fecha</th>
+                        <th class="text-left">Descripción</th>
+                        <th class="text-center whitespace-nowrap" style="width: 130px;">Método Pago</th>
+                        <th class="text-center whitespace-nowrap" style="width: 140px;">Registrado Por</th>
+                        <th class="text-right whitespace-nowrap" style="width: 100px;">Monto</th>
+                        <th class="text-center whitespace-nowrap" style="width: 90px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($movimiento->childPayments as $child)
+                    @foreach($relacionados as $child)
                     <tr class="{{ $child->anulado ? 'opacity-50 grayscale' : '' }}">
-                        <td class="font-bold text-slate-600 dark:text-slate-300">#{{ $child->id }}</td>
-                        <td class="text-sm font-medium">{{ \Carbon\Carbon::parse($child->fecha)->format('d/m/Y') }}</td>
-                        <td>
+                        <td class="font-bold text-center text-slate-600 dark:text-slate-300">#{{ $child->id }}</td>
+                        <td class="text-sm font-medium text-center whitespace-nowrap">{{ \Carbon\Carbon::parse($child->fecha)->format('d/m/Y') }}</td>
+                        <td class="text-xs font-semibold text-slate-700 dark:text-slate-300">{{ $child->descripcion }}</td>
+                        <td class="text-center whitespace-nowrap">
                             <span class="pill {{ $child->tipo_pago === 'efectivo' ? 'pill-efectivo' : 'pill-banco' }} text-xs">
                                 {{ $child->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Banco' }}
                             </span>
                         </td>
-                        <td class="text-sm font-bold text-slate-700 dark:text-slate-300">
+                        <td class="text-sm font-bold text-center text-slate-700 dark:text-slate-300 whitespace-nowrap">
                             {{ $child->user->name ?? 'Sistema' }}
                         </td>
-                        <td class="text-right font-black {{ $child->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }}">
+                        <td class="text-right font-black {{ $child->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} whitespace-nowrap">
                             ${{ number_format($child->monto, 0, ',', '.') }}
                         </td>
-                        <td class="text-center">
-                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost px-2.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este abono">
+                        <td class="text-center whitespace-nowrap">
+                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost px-2.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este pago">
                                 👁️ Ver
                             </a>
                         </td>

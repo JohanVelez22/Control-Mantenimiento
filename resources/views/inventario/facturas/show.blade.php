@@ -21,12 +21,39 @@
           <p class="text-2xl font-black text-yellow-700 dark:text-yellow-400">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</p>
       </div>
       @php
-          $movCaja = \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")->whereNull('parent_id')->first();
+          $movCaja = \App\Models\MovimientoCaja::where('estado', 'activo')
+              ->where('anulado', false)
+              ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
+              ->whereNull('parent_id')
+              ->first();
+
+          $isCompra = $factura->tipo_movimiento === 'compra';
+          $nombreEntidad = $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? '';
+          $isEmpresa = $factura->facturable_type === \App\Models\Proveedor::class;
+
+          $createParams = [
+              'tipo_movimiento' => $isCompra ? 'egreso' : 'ingreso',
+              'monto'           => round((float) $factura->saldo_pendiente),
+              'monto_total'     => round((float) $factura->total_documento),
+              'descripcion'     => ($isCompra ? "Pago compra #" : "Pago venta #") . $factura->numero_factura,
+          ];
+          if ($isEmpresa) {
+              $createParams['empresa'] = $nombreEntidad;
+          } else {
+              $createParams['persona'] = $nombreEntidad;
+          }
       @endphp
-      @if($movCaja)
-      <a href="{{ route('caja.edit', $movCaja->id) }}" class="btn-primary py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md flex items-center gap-2 shrink-0">
-          <span>💵</span> Registrar Abono en Caja
-      </a>
+
+      @if(!auth()->user()->isInvitado())
+          @if($movCaja)
+          <a href="{{ route('caja.edit', $movCaja->id) }}" class="btn-primary py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md flex items-center gap-2 shrink-0">
+              <span>💵</span> Registrar Abono en Caja
+          </a>
+          @else
+          <a href="{{ route('caja.create', $createParams) }}" class="btn-primary py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md flex items-center gap-2 shrink-0">
+              <span>💵</span> Registrar Pago en Caja
+          </a>
+          @endif
       @endif
   </div>
   </div>
