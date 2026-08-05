@@ -186,8 +186,8 @@
                             ${{ number_format($child->monto, 0, ',', '.') }}
                         </td>
                         <td class="text-center whitespace-nowrap">
-                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost px-2.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este pago">
-                                👁️ Ver
+                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost px-2 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este pago">
+                                👁️
                             </a>
                         </td>
                     </tr>

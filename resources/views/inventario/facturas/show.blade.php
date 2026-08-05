@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-5xl mx-auto">
  <div class="glass-card p-6 md:p-8">
 
  {{-- Alertas de estado especiales --}}
@@ -176,31 +176,43 @@
  @if(isset($abonos) && $abonos->count() > 0)
  <div class="mb-8 pt-4 border-t border-gray-200/50 dark:border-white/10">
      <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
-         💳 Historial de Pagos y Abonos en Caja
+         💳 Historial de Pagos y Abonos en Caja ({{ $abonos->count() }})
      </h3>
      <div class="overflow-x-auto">
-         <table class="ts-table text-xs">
+         <table class="ts-table mb-0 w-full text-xs">
              <thead>
                  <tr>
-                     <th>Fecha</th>
-                     <th>Tipo de Pago</th>
-                     <th>Detalle / Descripción</th>
-                     <th>Registrado por</th>
-                     <th class="text-right">Monto Abono</th>
+                     <th class="text-center whitespace-nowrap px-2" style="width: 50px;">Código</th>
+                     <th class="text-center whitespace-nowrap px-2" style="width: 85px;">Fecha</th>
+                     <th class="text-left px-2">Descripción</th>
+                     <th class="text-center whitespace-nowrap px-2" style="width: 100px;">Método Pago</th>
+                     <th class="text-center whitespace-nowrap px-2" style="width: 110px;">Registrado Por</th>
+                     <th class="text-right whitespace-nowrap px-2" style="width: 85px;">Monto</th>
+                     <th class="text-center whitespace-nowrap px-2" style="width: 45px;">Acciones</th>
                  </tr>
              </thead>
              <tbody>
                  @foreach($abonos as $abono)
                  <tr>
-                     <td class="font-bold text-slate-700 dark:text-slate-300">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }}</td>
-                     <td>
-                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $abono->tipo_pago === 'efectivo' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' }}">
-                             {{ $abono->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Consignación/Banco' }}
+                     <td class="font-bold text-center text-slate-600 dark:text-slate-300 px-2">#{{ $abono->id }}</td>
+                     <td class="text-sm font-medium text-center whitespace-nowrap px-2">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }}</td>
+                     <td class="text-xs font-semibold text-slate-700 dark:text-slate-300 px-2">{{ $abono->descripcion ?? '—' }}</td>
+                     <td class="text-center whitespace-nowrap px-2">
+                         <span class="pill {{ $abono->tipo_pago === 'efectivo' ? 'pill-efectivo' : 'pill-banco' }} text-xs">
+                             {{ $abono->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Banco' }}
                          </span>
                      </td>
-                     <td class="text-gray-600 dark:text-gray-400 font-medium">{{ $abono->descripcion }}</td>
-                     <td class="text-gray-500">{{ $abono->user->name ?? 'Sistema' }}</td>
-                     <td class="text-right font-black text-emerald-600 dark:text-emerald-400">${{ number_format($abono->monto, 0, ',', '.') }}</td>
+                     <td class="text-sm font-bold text-center text-slate-700 dark:text-slate-300 whitespace-nowrap px-2">
+                         {{ $abono->user->name ?? 'Sistema' }}
+                     </td>
+                     <td class="text-right font-black text-emerald-600 dark:text-emerald-400 whitespace-nowrap px-2">
+                         ${{ number_format($abono->monto, 0, ',', '.') }}
+                     </td>
+                     <td class="text-center whitespace-nowrap px-2">
+                         <a href="{{ route('caja.show', $abono->id) }}" class="btn-ghost px-1.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este pago #{{ $abono->id }}">
+                             👁️
+                         </a>
+                     </td>
                  </tr>
                  @endforeach
              </tbody>

@@ -157,10 +157,21 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
           <div class="text-[10px] text-orange-600 dark:text-orange-400 font-bold uppercase mt-1">
               Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }} <span class="text-gray-400 font-normal">(Total: ${{ number_format($m->effective_monto_total, 0, ',', '.') }})</span>
           </div>
-      @elseif($m->childPayments->count() > 0 || $m->parent_id)
+      @else
+          {{-- Solo mostrar "Pagado" en el ÚLTIMO hijo que cerró la deuda --}}
+          @php
+              $showPagado = false;
+              if ($m->parent_id && $m->parent) {
+                  // Es un hijo: verificar si es el último hijo activo del padre
+                  $lastChild = $m->parent->childPayments->where('anulado', false)->sortByDesc('created_at')->first();
+                  $showPagado = $lastChild && $lastChild->id === $m->id;
+              }
+          @endphp
+          @if($showPagado)
           <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase mt-1">
-              Total Pagado (${{ number_format($m->effective_monto_total, 0, ',', '.') }})
+              ✅ Pagado (${{ number_format($m->effective_monto_total, 0, ',', '.') }})
           </div>
+          @endif
       @endif
   @endif
  </td>
