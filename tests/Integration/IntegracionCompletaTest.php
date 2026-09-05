@@ -56,6 +56,12 @@ class IntegracionCompletaTest extends TestCase
                 'password' => Hash::make('password'), 'role' => 'tecnico', 'active' => true,
             ]);
         }
+        if (!User::where('role', 'invitado')->exists()) {
+            User::create([
+                'name' => 'Invitado Test', 'email' => 'invitado_test_'.time().'@test.com',
+                'password' => Hash::make('password'), 'role' => 'invitado', 'active' => true,
+            ]);
+        }
         if (!$this->cliente) {
             $this->cliente = Cliente::create([
                 'nombre' => 'Cliente Test', 'identificacion' => 'CC-'.time(),
