@@ -53,6 +53,7 @@ class ConfiguracionController extends Controller
         $configuracion->save();
 
         \Illuminate\Support\Facades\Cache::forget('empresa_global_data');
+        \Illuminate\Support\Facades\Cache::forget('empresa_logo_base64');
 
         return redirect()->back()->with('success', 'Configuración de la empresa guardada correctamente.');
     }

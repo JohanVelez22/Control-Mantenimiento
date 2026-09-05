@@ -36,11 +36,12 @@ class DatabaseSeeder extends Seeder
         \App\Models\Configuracion::firstOrCreate(
             ['id' => 1],
             [
-                'nombre'             => 'Tecni-Systemas',
-                'nit'                => '900.123.456-7',
-                'telefono'           => '300 123 4567',
-                'direccion'          => 'Calle Principal #12-34',
-                'correo'             => 'contacto@tecnisystemas.com',
+                'nombre'             => 'Tecni Systemas',
+                'nit'                => '4.501.927',
+                'telefono'           => '3172697442 - 3165528637',
+                'direccion'          => 'Cra 4 # 20-81 Pereira',
+                'correo'             => 'tecnisystemaspereira@hotmail.com',
+                'logo_path'          => 'configuracion/logo_nuevo_tecnisystemas.png',
                 'pie_pagina_factura' => 'Gracias por su confianza. Garantía de servicio sujeta a términos y condiciones.',
             ]
         );

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('configuraciones', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->default('Mi Empresa');
+            $table->string('nombre')->default('Tecni Systemas');
             $table->string('nit')->nullable();
             $table->string('telefono')->nullable();
             $table->string('direccion')->nullable();

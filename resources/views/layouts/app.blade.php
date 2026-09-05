@@ -22,7 +22,6 @@
     
     <!-- Favicon (Apple Liquid Glass) -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v={{ time() }}">
-    <link rel="alternate icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     
     <!-- Vite (Tailwind CSS compilado + JS) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
