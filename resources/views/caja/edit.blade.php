@@ -1,13 +1,35 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $numFactura = null;
+    if (preg_match('/#([A-Za-z0-9-]+)/', $movimiento->descripcion ?? '', $matches)) {
+        $numFactura = $matches[1];
+    }
+    $facturaRel = $numFactura ? \App\Models\Factura::where('numero_factura', $numFactura)->first() : null;
+@endphp
+
 <div class="max-w-7xl mx-auto space-y-6">
-    <div class="flex items-center gap-3 mb-4">
-        <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
-        <div>
-            <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">✏️ Editar Movimiento: #{{ $movimiento->id }}</h2>
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Modifica los datos del registro de caja o añade abonos</p>
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+        <div class="flex items-center gap-3">
+            <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+            <div>
+                <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
+                    ✏️ Editar Movimiento: #{{ $movimiento->id }}
+                    @if($movimiento->monto_total > 0 && $movimiento->saldo_pendiente > 0)
+                        <span class="pill pill-pending text-xs py-0.5 px-2">Saldo: ${{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}</span>
+                    @endif
+                </h2>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Modifica los datos del registro de caja o añade abonos</p>
+            </div>
         </div>
+        @if($facturaRel)
+        <div class="flex items-center gap-2">
+            <a href="{{ route('inventario.facturas.show', $facturaRel->id) }}" class="btn-ghost text-xs px-3 py-2 flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/60 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-bold shadow-sm" title="Ver detalle comercial de la factura">
+                📄 Ver Factura #{{ $facturaRel->numero_factura }}
+            </a>
+        </div>
+        @endif
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">

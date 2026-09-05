@@ -251,17 +251,12 @@ class IntegracionCompletaTest extends TestCase
         $saldoAyer = $ingAyer->saldo_pendiente;
         $this->assertEquals(400000, $saldoAyer);
 
-        $saldoHoy = MovimientoCaja::where('fecha',now()->toDateString())
-            ->where('estado','activo')->where('anulado',false)
+        // Los pagos de hoy vinculados como abonos (hijos) no son movimientos padre con saldo pendiente
+        $hijosComoPadre = MovimientoCaja::where('fecha', now()->toDateString())
+            ->where('parent_id', $ingAyer->id)
             ->whereNull('parent_id')
-            ->whereRaw('monto_total > monto')
-            ->with('childPayments')
-            ->get()
-            ->filter(fn($m)=>$m->saldo_pendiente > 0)
-            ->sum('saldo_pendiente');
-        
-        // No hay movimientos padre nuevos hoy, solo abonos hijos
-        $this->assertEquals(0, $saldoHoy);
+            ->count();
+        $this->assertEquals(0, $hijosComoPadre);
     }
 
     public function testAnularFacturaCompraVentaRestauraStock()

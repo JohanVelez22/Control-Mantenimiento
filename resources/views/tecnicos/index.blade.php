@@ -41,11 +41,12 @@
  <tr id="tecnico-{{ $tecnico->id }}" class="scroll-mt-[6.5rem]">
  <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $tecnico->id }}</td>
  <td class="text-center {{ $dim }}">
-@if($tecnico->photo)
-  <img src="{{ asset('storage/' . $tecnico->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $tecnico->photo) }}', '{{ addslashes($tecnico->nombre) }}', this)">
-@else
- <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">N/A</div>
- @endif
+  @if($tecnico->photo)
+    <img src="{{ asset('storage/' . $tecnico->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $tecnico->photo) }}', '{{ addslashes($tecnico->nombre) }}', this)" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+    <div class="hidden w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">N/A</div>
+  @else
+    <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">N/A</div>
+  @endif
  </td>
  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $tecnico->nombre }}</td>
  <td class="text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $tecnico->identificacion }}</td>

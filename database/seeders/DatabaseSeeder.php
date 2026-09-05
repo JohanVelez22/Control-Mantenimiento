@@ -32,7 +32,22 @@ class DatabaseSeeder extends Seeder
         ConceptoCaja::firstOrCreate(['nombre' => 'Otros ingresos']);
         ConceptoCaja::firstOrCreate(['nombre' => 'Otros egresos']);
 
-        // NOTA: Para generar datos de prueba, utilice el comando:
-        // php artisan app:seed-demo-data
+        // Configuración inicial de la Empresa
+        \App\Models\Configuracion::firstOrCreate(
+            ['id' => 1],
+            [
+                'nombre'             => 'Tecni-Systemas',
+                'nit'                => '900.123.456-7',
+                'telefono'           => '300 123 4567',
+                'direccion'          => 'Calle Principal #12-34',
+                'correo'             => 'contacto@tecnisystemas.com',
+                'pie_pagina_factura' => 'Gracias por su confianza. Garantía de servicio sujeta a términos y condiciones.',
+            ]
+        );
+
+        // Categorías base de Stock
+        \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Repuestos', 'tipo' => 'categoria']);
+        \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Accesorios', 'tipo' => 'categoria']);
+        \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Servicios', 'tipo' => 'categoria']);
     }
 }

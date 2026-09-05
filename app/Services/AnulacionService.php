@@ -29,11 +29,20 @@ class AnulacionService
      * Se usa para acciones sensibles de técnico (editar/anular).
      * Verifica contra TODOS los admins, no solo el primero.
      */
+    /**
+     * Valida que la contraseña corresponda a cualquier administrador.
+     * Se usa para acciones sensibles de técnico (editar/anular).
+     * Verifica contra administradores activos con salida temprana.
+     */
     public function adminPasswordValida(string $password): bool
     {
-        return User::where('role', 'admin')->where('active', true)
-            ->get(['password'])
-            ->contains(fn($admin) => Hash::check($password, $admin->password));
+        $admins = User::where('role', 'admin')->where('active', true)->select('password')->cursor();
+        foreach ($admins as $admin) {
+            if (Hash::check($password, $admin->password)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -44,7 +53,7 @@ class AnulacionService
     {
         $user = Auth::user();
 
-        if (Hash::check($password, $user->password)) {
+        if ($user && Hash::check($password, $user->password)) {
             return true;
         }
 
@@ -52,32 +61,38 @@ class AnulacionService
     }
 
     /**
-     * Revierte (anulación) o restaura (reactivación) stock y abonos en caja.
+     * Revierte (anulación) o restaura (reactivación) stock y abonos en caja de forma atómica.
      *
      * @param \Illuminate\Database\Eloquent\Model $documento Modelo con relaciones 'stocks' (pivot cantidad) y 'abonos'.
      * @param bool $esAnulacion true = anular (devolver stock, anular caja); false = reactivar.
      * @param string $conceptoAbono Nombre del concepto en caja (p.ej. 'Abono Mantenimiento').
-     * @param string[] $prefijosDescripcion Tokens que anteceden al id en la descripción de caja (p.ej. ['Orden'] o ['ELC','Orden']).
+     * @param string[] $prefijosDescripcion Tokens que anteceden al id en la descripción de caja.
      */
     public function revertirStockYAbonos($documento, bool $esAnulacion, string $conceptoAbono, array $prefijosDescripcion): void
     {
-        // Revertir stock asociado al documento
-        foreach ($documento->stocks as $stock) {
-            $delta = $stock->pivot->cantidad;
-            if ($esAnulacion) {
-                Stock::where('id', $stock->id)->increment('cantidad', $delta);
-            } else {
-                Stock::where('id', $stock->id)->decrement('cantidad', $delta);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($documento, $esAnulacion, $conceptoAbono, $prefijosDescripcion) {
+            // Revertir stock asociado al documento de forma atómica
+            $stockService = app(\App\Services\StockService::class);
+            foreach ($documento->stocks as $stock) {
+                $delta = (int) $stock->pivot->cantidad;
+                $stockModel = Stock::where('id', $stock->id)->lockForUpdate()->first();
+                if ($stockModel) {
+                    if ($esAnulacion) {
+                        $stockService->entrada($stockModel, $delta);
+                    } else {
+                        $stockService->salida($stockModel, $delta);
+                    }
+                }
             }
-        }
 
-        // Revertir abonos registrados en Caja
-        $concepto = ConceptoCaja::where('nombre', $conceptoAbono)->first();
-        if ($concepto && $documento->abonos->count() > 0) {
-            foreach ($documento->abonos as $abono) {
-                $this->marcarMovimientosCaja($abono, $concepto, $documento->id_orden, $prefijosDescripcion, $esAnulacion);
+            // Revertir abonos registrados en Caja
+            $concepto = ConceptoCaja::where('nombre', $conceptoAbono)->first();
+            if ($concepto && $documento->abonos->count() > 0) {
+                foreach ($documento->abonos as $abono) {
+                    $this->marcarMovimientosCaja($abono, $concepto, $documento->id_orden, $prefijosDescripcion, $esAnulacion);
+                }
             }
-        }
+        });
     }
 
     private function marcarMovimientosCaja($abono, $concepto, string $idOrden, array $prefijosDescripcion, bool $esAnulacion): void

@@ -53,7 +53,9 @@
   @if($stock->photo)
   <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
        onclick="openImageLightbox('{{ asset('storage/' . $stock->photo) }}', '{{ addslashes($stock->producto) }}', this)"
+       onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
        class="w-11 h-11 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm mx-auto hover:opacity-80 transition">
+  <span class="hidden text-[10px] text-gray-400 dark:text-gray-500">—</span>
   @else
   <span class="text-[10px] text-gray-400 dark:text-gray-500">—</span>
   @endif

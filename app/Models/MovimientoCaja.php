@@ -78,6 +78,13 @@ class MovimientoCaja extends Model
         $rootId = $this->parent_id ?: $this->id;
         $refSearch = $this->ref_search;
 
+        if ($this->relationLoaded('childPayments') && !$refSearch) {
+            $abonosSum = (float) $this->childPayments
+                ->filter(fn($p) => !$p->anulado && $p->estado === 'activo')
+                ->sum('monto');
+            return (float) ($this->anulado ? 0 : $this->monto) + $abonosSum;
+        }
+
         if ($rootId || $refSearch) {
             return (float) self::activos()
                 ->where(function($q) use ($rootId, $refSearch) {

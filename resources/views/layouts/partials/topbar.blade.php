@@ -21,7 +21,10 @@
                     <!-- Avatar de Usuario (Clickeable hacia Usuarios) -->
                     <a href="{{ route('usuarios.index') }}" class="flex items-center gap-2 pr-4 border-r border-gray-200 dark:border-white/10 hover:opacity-80 transition-opacity mr-2">
                         @if(auth()->check() && auth()->user()->photo)
-                            <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Avatar" class="w-10 h-10 rounded-xl object-cover border-2 border-gray-200 dark:border-white/10">
+                            <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Avatar" class="w-10 h-10 rounded-xl object-cover border-2 border-gray-200 dark:border-white/10" onerror="this.style.display='none'; var fb=document.getElementById('topbar-avatar-fallback'); if(fb) fb.classList.remove('hidden');">
+                            <div id="topbar-avatar-fallback" class="hidden w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg">
+                                {{ substr(auth()->user()->name, 0, 1) }}
+                            </div>
                         @elseif(auth()->check())
                             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg">
                                 {{ substr(auth()->user()->name, 0, 1) }}

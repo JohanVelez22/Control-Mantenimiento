@@ -75,19 +75,30 @@ class AppServiceProvider extends ServiceProvider
                 ->with('facturable')
                 ->latest()
                 ->limit(50)
-                ->get()
-                ->map(function ($f) {
-                    $mov = MovimientoCaja::where('descripcion', 'like', "%#{$f->numero_factura}%")
-                        ->whereNull('parent_id')
-                        ->first();
-                    $f->movimiento_caja_id = $mov?->id;
-                    return $f;
+                ->get();
+
+            // Extraer números de factura pendientes para búsqueda en lote (evita N+1 queries)
+            $facturasNumeros = $cajaList->pluck('numero_factura')->filter()->values()->toArray();
+
+            // Movimientos de caja relacionados en lote
+            $movimientosRel = empty($facturasNumeros) ? collect() : MovimientoCaja::whereNull('parent_id')
+                ->where(function ($q) use ($facturasNumeros) {
+                    foreach ($facturasNumeros as $num) {
+                        $q->orWhere('descripcion', 'like', "%#{$num}%");
+                    }
+                })
+                ->select('id', 'descripcion')
+                ->get();
+
+            $cajaList = $cajaList->map(function ($f) use ($movimientosRel) {
+                $matched = $movimientosRel->first(function ($m) use ($f) {
+                    return str_contains($m->descripcion ?? '', "#{$f->numero_factura}");
                 });
+                $f->movimiento_caja_id = $matched?->id;
+                return $f;
+            });
 
-            // Extraer números de factura pendientes para evitar duplicar en notificaciones de caja
-            $facturasNumeros = $cajaList->pluck('numero_factura')->filter()->toArray();
-
-            // Movimientos de caja pendientes independientes (excluye facturas de inventario y movimientos cuyo saldo ya fue saldado con abonos)
+            // Movimientos de caja pendientes independientes (excluye facturas de inventario y movimientos ya saldados)
             $movimientosPendientes = MovimientoCaja::where('anulado', false)
                 ->whereNull('parent_id')
                 ->whereNotNull('monto_total')
@@ -101,6 +112,7 @@ class AppServiceProvider extends ServiceProvider
                 })
                 ->with(['concepto:id,nombre', 'childPayments'])
                 ->latest()
+                ->limit(50)
                 ->get()
                 ->filter(fn($mov) => $mov->saldo_pendiente > 0.01)
                 ->take(50);

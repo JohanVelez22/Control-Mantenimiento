@@ -116,8 +116,8 @@ class MovimientoInventarioController extends Controller
                 $stock->incrementarStock((int) $item['cantidad']);
             }
 
-            // 3. Si hay pago parcial, registrar egreso en Caja
-            if ($totalPagado > 0) {
+            // 3. Si hay pago o saldo pendiente, registrar egreso en Caja con seguimiento de saldos
+            if ($totalPagado > 0 || $saldo > 0.01) {
                 $this->registrarMovimientoCaja(
                     tipo: 'egreso',
                     monto: $totalPagado,
@@ -254,8 +254,8 @@ class MovimientoInventarioController extends Controller
                 $stock->decrementarStock((int) $item['cantidad']);
             }
 
-            // 4. Si hay pago parcial, registrar ingreso en Caja
-            if ($totalPagado > 0) {
+            // 4. Si hay pago o saldo pendiente, registrar ingreso en Caja con seguimiento de saldos
+            if ($totalPagado > 0 || $saldo > 0.01) {
                 $this->registrarMovimientoCaja(
                     tipo: 'ingreso',
                     monto: $totalPagado,
@@ -338,6 +338,18 @@ class MovimientoInventarioController extends Controller
             ->whereNull('parent_id')
             ->with(['childPayments' => fn($q) => $q->where('anulado', false)->with('user')])
             ->first();
+
+        if (!$movimientoPadre && $factura->estado !== 'anulada') {
+            $entityName = $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? 'Cliente/Proveedor';
+            $movimientoPadre = $this->registrarMovimientoCaja(
+                tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
+                monto: (float) $factura->total_pagado,
+                persona: $entityName,
+                descripcion: ($factura->tipo_movimiento === 'venta' ? "Cobro venta #" : "Pago compra #") . $factura->numero_factura,
+                fecha: $factura->fecha,
+                montoTotal: (float) $factura->total_documento
+            );
+        }
 
         $abonos = $movimientoPadre ? $movimientoPadre->childPayments : collect();
 

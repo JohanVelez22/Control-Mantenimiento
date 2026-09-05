@@ -4,7 +4,7 @@
  <div class="glass-card p-6 md:p-8">
 
  {{-- Alertas de estado especiales --}}
- @if($factura->estado === 'pendiente_pago')
+ @if($factura->estado !== 'anulada' && $factura->saldo_pendiente > 0)
  <div class="mb-6 flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/30">
  <div class="flex items-center gap-4">
  <div class="text-3xl">⏳</div>
@@ -20,40 +20,11 @@
           <p class="text-[10px] font-bold text-yellow-600/70 uppercase tracking-widest">Saldo Actual</p>
           <p class="text-2xl font-black text-yellow-700 dark:text-yellow-400">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</p>
       </div>
-      @php
-          $movCaja = \App\Models\MovimientoCaja::where('estado', 'activo')
-              ->where('anulado', false)
-              ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
-              ->whereNull('parent_id')
-              ->first();
 
-          $isCompra = $factura->tipo_movimiento === 'compra';
-          $nombreEntidad = $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? '';
-          $isEmpresa = $factura->facturable_type === \App\Models\Proveedor::class;
-
-          $createParams = [
-              'tipo_movimiento' => $isCompra ? 'egreso' : 'ingreso',
-              'monto'           => round((float) $factura->saldo_pendiente),
-              'monto_total'     => round((float) $factura->total_documento),
-              'descripcion'     => ($isCompra ? "Pago compra #" : "Pago venta #") . $factura->numero_factura,
-          ];
-          if ($isEmpresa) {
-              $createParams['empresa'] = $nombreEntidad;
-          } else {
-              $createParams['persona'] = $nombreEntidad;
-          }
-      @endphp
-
-      @if(!auth()->user()->isInvitado())
-          @if($movCaja)
-          <a href="{{ route('caja.edit', $movCaja->id) }}" class="btn-primary py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md flex items-center gap-2 shrink-0">
-              <span>💵</span> Registrar Abono en Caja
-          </a>
-          @else
-          <a href="{{ route('caja.create', $createParams) }}" class="btn-primary py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md flex items-center gap-2 shrink-0">
-              <span>💵</span> Registrar Pago en Caja
-          </a>
-          @endif
+      @if(!auth()->user()->isInvitado() && $movimientoPadre)
+          <button type="button" onclick="openAbonoFacturaModal()" class="btn-primary py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-2 shrink-0 text-sm">
+              <span>💵</span> Registrar Abono
+          </button>
       @endif
   </div>
   </div>
@@ -83,6 +54,12 @@
   </div>
  
  <div class="flex items-center gap-3 shrink-0">
+ @if($factura->estado !== 'anulada' && $factura->saldo_pendiente > 0 && !auth()->user()->isInvitado() && $movimientoPadre)
+  <a href="{{ route('caja.edit', $movimientoPadre->id) }}" class="btn-ghost py-2 px-3 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-white/40 border border-gray-200 dark:border-white/10 rounded-xl flex items-center gap-1.5 shadow-sm" title="Ver detalle del movimiento en el módulo de Caja">
+  📦 Ver en Caja
+  </a>
+ @endif
+
  <a href="{{ route('inventario.facturas.print', $factura->id) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600">
  🖨️ Imprimir
  </a>
@@ -163,12 +140,12 @@
  <span class="text-lg font-black text-emerald-600 dark:text-emerald-400">${{ number_format($factura->total_pagado, 0, ',', '.') }}</span>
  </div>
  
- @if($factura->saldo_pendiente > 0)
- <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
- <span class="text-sm font-bold text-red-500">Saldo Pendiente</span>
- <span class="text-lg font-black text-red-500">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
- </div>
- @endif
+  @if($factura->saldo_pendiente > 0)
+  <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
+  <span class="text-sm font-bold text-red-500">Saldo Pendiente</span>
+  <span class="text-lg font-black text-red-500">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
+  </div>
+  @endif
  </div>
  </div>
 
@@ -227,4 +204,108 @@
  </div>
  </div>
 </div>
+
+@if($factura->saldo_pendiente > 0 && $movimientoPadre)
+{{-- Modal interactivo para registrar abono directamente en la factura --}}
+<div id="abono-factura-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+    <div id="abono-factura-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4 max-w-md">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200/50 dark:border-white/10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                    💵
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">Registrar Abono</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Factura #{{ $factura->numero_factura }}</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeAbonoFacturaModal()" class="btn-ghost p-2 text-gray-400 hover:text-gray-600">✕</button>
+        </div>
+
+        <div class="mb-4 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 flex justify-between items-center text-sm">
+            <span class="text-amber-800 dark:text-amber-300 font-semibold">Saldo Pendiente:</span>
+            <span class="text-lg font-black text-amber-600 dark:text-amber-400">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
+        </div>
+
+        <form action="{{ route('caja.abonos.store', $movimientoPadre->id) }}" method="POST" class="space-y-4">
+            @csrf
+            <div>
+                <label class="field-label">Monto del Abono ($) *</label>
+                <input type="text" id="monto_abono_factura_visual" required placeholder="Ej: 50.000" class="glass-input font-bold text-right py-2.5">
+                <input type="hidden" name="monto_abono" id="monto_abono_factura_real">
+            </div>
+
+            <div>
+                <label class="field-label">Fecha del Pago *</label>
+                <input type="date" name="fecha" required value="{{ date('Y-m-d') }}" class="glass-input">
+            </div>
+
+            <div>
+                <label class="field-label">Tipo de Pago *</label>
+                <select name="tipo_pago" required class="glass-input">
+                    <option value="efectivo">💵 Efectivo</option>
+                    <option value="consignacion">🏦 Banco / Transferencia</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="field-label">Descripción (Opcional)</label>
+                <textarea name="descripcion" rows="2" placeholder="Detalle del abono..." class="glass-input text-xs"></textarea>
+            </div>
+
+            <div class="flex gap-2 pt-3">
+                <button type="button" onclick="closeAbonoFacturaModal()" class="btn-cancel w-1/3 justify-center">Cancelar</button>
+                <button type="submit" class="btn-primary w-2/3 justify-center shadow-lg shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700">💾 Guardar Abono</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openAbonoFacturaModal() {
+    const modal = document.getElementById('abono-factura-modal');
+    const card  = document.getElementById('abono-factura-card');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95', 'opacity-0');
+        const input = document.getElementById('monto_abono_factura_visual');
+        if (input) input.focus();
+    }, 10);
+}
+
+function closeAbonoFacturaModal() {
+    const modal = document.getElementById('abono-factura-modal');
+    const card  = document.getElementById('abono-factura-card');
+    if (!modal) return;
+    modal.classList.add('opacity-0');
+    card.classList.add('scale-95', 'opacity-0');
+    document.body.style.overflow = 'auto';
+    setTimeout(() => { modal.classList.add('hidden'); }, 300);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const visualInput = document.getElementById('monto_abono_factura_visual');
+    const realInput = document.getElementById('monto_abono_factura_real');
+    if (visualInput && realInput) {
+        visualInput.addEventListener('input', function() {
+            let raw = this.value.replace(/\D/g, '');
+            if (!raw) {
+                this.value = '';
+                realInput.value = '';
+                return;
+            }
+            realInput.value = raw;
+            this.value = parseInt(raw, 10).toLocaleString('es-CO');
+        });
+    }
+
+    if (window.location.hash === '#registrar-abono') {
+        openAbonoFacturaModal();
+    }
+});
+</script>
+@endif
 @endsection
