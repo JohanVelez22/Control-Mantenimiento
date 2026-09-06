@@ -817,9 +817,10 @@
 
                 let defaultConfig = {
                     create: false,
-                    maxOptions: 100,
+                    maxOptions: 1000,
                     placeholder: defaultPlaceholder,
                     highlight: false,
+                    openOnFocus: true,
                     refreshThrottle: 0,
                     dropdownParent: 'body',
                     plugins: isNoSearch ? [] : ['clear_button'],

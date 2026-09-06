@@ -2676,6 +2676,23 @@ select.glass-input:not(.tomselected) {
   z-index: 10;
 }
 
+/* Ocultar el cursor vertical parpadeante pero mantener la búsqueda / filtrado activo y desplegable abierto */
+.ts-control input,
+.ts-wrapper .ts-control input {
+  caret-color: transparent !important;
+  cursor: pointer !important;
+}
+
+/* Eliminar cualquier subrayado de texto en las opciones del desplegable */
+.ts-dropdown .highlight,
+.ts-dropdown mark,
+.ts-dropdown .ts-option-item,
+.ts-dropdown .option,
+.ts-dropdown [data-selectable] {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
 /* Si hay un ítem seleccionado, ocultar el input para que no estorbe */
 .ts-wrapper.single.has-items:not(.focus):not(.dropdown-active) .ts-control>input {
   display: none !important;
