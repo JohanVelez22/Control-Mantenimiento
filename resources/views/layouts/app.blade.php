@@ -860,6 +860,149 @@
                     tsInstance.wrapper.classList.add('no-search');
                 }
 
+                // ── NAVEGACIÓN INTELIGENTE POR TECLADO PARA SELECTS NO-SEARCH (SIN INPUT DE TEXTO) ──
+                // Mantiene el desplegable SIEMPRE ABIERTO, muestra todas las opciones con esa inicial y permite ciclar / elegir libremente
+                if (isNoSearch && tsInstance.control) {
+                    let typeAheadBuffer = '';
+                    let typeAheadTimer = null;
+                    let lastKey = '';
+                    let cycleIndex = 0;
+
+                    tsInstance.control.addEventListener('keydown', function(e) {
+                        if (e.key === 'Tab' || e.key === 'Escape') {
+                            return;
+                        }
+
+                        // Si presiona Enter y el desplegable está abierto con una opción resaltada, seleccionarla y cerrar
+                        if (e.key === 'Enter') {
+                            if (tsInstance.isOpen && tsInstance.activeOption) {
+                                e.preventDefault();
+                                const val = tsInstance.activeOption.getAttribute('data-value');
+                                if (val !== null) {
+                                    tsInstance.setValue(val);
+                                    tsInstance.close();
+                                }
+                                return;
+                            } else if (!tsInstance.isOpen) {
+                                e.preventDefault();
+                                tsInstance.open();
+                                return;
+                            }
+                        }
+
+                        // Abrir con Espacio
+                        if (e.key === ' ') {
+                            if (!tsInstance.isOpen) {
+                                e.preventDefault();
+                                tsInstance.open();
+                                return;
+                            }
+                        }
+
+                        // Navegación por flechas arriba / abajo
+                        if (e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            if (!tsInstance.isOpen) {
+                                tsInstance.open();
+                            } else {
+                                const current = tsInstance.activeOption;
+                                const next = current ? current.nextElementSibling : (tsInstance.dropdown_content ? tsInstance.dropdown_content.firstElementChild : null);
+                                if (next && next.classList.contains('option')) {
+                                    tsInstance.setActiveOption(next, true);
+                                }
+                            }
+                            return;
+                        }
+
+                        if (e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            if (!tsInstance.isOpen) {
+                                tsInstance.open();
+                            } else {
+                                const current = tsInstance.activeOption;
+                                const prev = current ? current.previousElementSibling : (tsInstance.dropdown_content ? tsInstance.dropdown_content.lastElementChild : null);
+                                if (prev && prev.classList.contains('option')) {
+                                    tsInstance.setActiveOption(prev, true);
+                                }
+                            }
+                            return;
+                        }
+
+                        // Ignorar modificadores y teclas no imprimibles
+                        if (e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1) {
+                            return;
+                        }
+
+                        e.preventDefault();
+
+                        // Asegurar que el desplegable se abra y permanezca visible
+                        if (!tsInstance.isOpen) {
+                            tsInstance.open();
+                        }
+
+                        const pressedKey = e.key.toLowerCase();
+                        const options = Object.values(tsInstance.options).filter(opt => opt && (opt.value || opt.text));
+                        if (options.length === 0) return;
+
+                        // Si presiona la misma tecla repetidamente (ej: 'A', 'A', 'A'), ciclar entre todas las opciones con esa inicial
+                        const isSameKeyRepeat = (pressedKey === lastKey && (typeAheadBuffer === pressedKey || typeAheadBuffer === ''));
+
+                        if (isSameKeyRepeat) {
+                            const matchingOptions = options.filter(opt => {
+                                const text = (opt.text || opt.value).trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                const cleanKey = pressedKey.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                return text.startsWith(cleanKey);
+                            });
+
+                            if (matchingOptions.length > 0) {
+                                cycleIndex = (cycleIndex + 1) % matchingOptions.length;
+                                const target = matchingOptions[cycleIndex];
+                                const domOpt = tsInstance.getOption(target.value);
+                                if (domOpt) {
+                                    tsInstance.setActiveOption(domOpt, true); // Resalta y desplaza la vista en el desplegable ABIERTO
+                                }
+                                return;
+                            }
+                        }
+
+                        // Buffer acumulativo (para buscar ej: "ant" -> Antioquia, "ris" -> Risaralda)
+                        typeAheadBuffer += pressedKey;
+                        lastKey = pressedKey;
+                        cycleIndex = 0;
+
+                        clearTimeout(typeAheadTimer);
+                        typeAheadTimer = setTimeout(() => {
+                            typeAheadBuffer = '';
+                        }, 800);
+
+                        // 1. Buscar coincidencia por buffer acumulado
+                        let match = options.find(opt => {
+                            const text = (opt.text || opt.value).trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                            const cleanBuf = typeAheadBuffer.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                            return text.startsWith(cleanBuf);
+                        });
+
+                        // 2. Si no coincide con el buffer acumulado, buscar con solo la última tecla
+                        if (!match && typeAheadBuffer.length > 1) {
+                            const cleanKey = pressedKey.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                            match = options.find(opt => {
+                                const text = (opt.text || opt.value).trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                return text.startsWith(cleanKey);
+                            });
+                            if (match) {
+                                typeAheadBuffer = pressedKey;
+                            }
+                        }
+
+                        if (match && match.value !== undefined && match.value !== '') {
+                            const domOpt = tsInstance.getOption(match.value);
+                            if (domOpt) {
+                                tsInstance.setActiveOption(domOpt, true); // Resalta y desplaza la vista en el desplegable ABIERTO sin cerrarlo
+                            }
+                        }
+                    });
+                }
+
                 if (el.classList.contains('stock-select')) {
                     if (tsInstance.wrapper) tsInstance.wrapper.classList.add('stock-select-wrapper');
                     if (tsInstance.dropdown) tsInstance.dropdown.classList.add('stock-select-dropdown');

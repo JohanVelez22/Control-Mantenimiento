@@ -9,20 +9,55 @@
     $selTipoCli = old('tipo_cliente', $c?->tipo_cliente ?? 'cliente');
 @endphp
 
+<style>
+.ts-radio-persona {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transition: all 0.15s ease-in-out;
+}
+.ts-radio-persona:focus,
+.ts-radio-persona:focus-visible,
+.ts-radio-persona:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+.ts-radio-persona[value="cliente"]:checked {
+    border-color: #3b82f6 !important;
+    background-color: #3b82f6 !important;
+    box-shadow: inset 0 0 0 2.5px #ffffff !important;
+}
+.ts-radio-persona[value="tecnico"]:checked {
+    border-color: #ea580c !important;
+    background-color: #ea580c !important;
+    box-shadow: inset 0 0 0 2.5px #ffffff !important;
+}
+.dark .ts-radio-persona[value="cliente"]:checked {
+    box-shadow: inset 0 0 0 2.5px #1e293b !important;
+}
+.dark .ts-radio-persona[value="tecnico"]:checked {
+    box-shadow: inset 0 0 0 2.5px #1e293b !important;
+}
+</style>
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
     {{-- ── Tipo de Cliente ─────────────────────────────────────────── --}}
     <div class="md:col-span-2">
         <label class="field-label mb-2 block">Tipo de Persona *</label>
         <div class="flex gap-3">
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all
+            <label class="flex-1 flex justify-center items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer select-none transition-all
                 {{ $selTipoCli === 'cliente' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30' }}">
-                <input type="radio" name="tipo_cliente" value="cliente" {{ $selTipoCli === 'cliente' ? 'checked' : '' }} class="accent-blue-500 w-4 h-4" required>
+                <input type="radio" name="tipo_cliente" value="cliente" {{ $selTipoCli === 'cliente' ? 'checked' : '' }}
+                       class="ts-radio-persona w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 cursor-pointer shrink-0" required>
                 <span class="font-bold {{ $selTipoCli === 'cliente' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400' }}">👤 Cliente Normal</span>
             </label>
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all
+            <label class="flex-1 flex justify-center items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer select-none transition-all
                 {{ $selTipoCli === 'tecnico' ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30' }}">
-                <input type="radio" name="tipo_cliente" value="tecnico" {{ $selTipoCli === 'tecnico' ? 'checked' : '' }} class="accent-orange-500 w-4 h-4">
+                <input type="radio" name="tipo_cliente" value="tecnico" {{ $selTipoCli === 'tecnico' ? 'checked' : '' }}
+                       class="ts-radio-persona w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 cursor-pointer shrink-0">
                 <span class="font-bold {{ $selTipoCli === 'tecnico' ? 'text-orange-700 dark:text-orange-400' : 'text-slate-600 dark:text-slate-400' }}">🔧 Técnico</span>
             </label>
         </div>
@@ -112,9 +147,9 @@
     {{-- ── Departamento ────────────────────────────────────────────── --}}
     <div>
         <label class="field-label">Departamento</label>
-        <select name="departamento" id="select_departamento" class="glass-input"
+        <select name="departamento" id="select_departamento" class="glass-input no-search" data-placeholder="Seleccionar departamento..."
                 onchange="cargarMunicipios(this.value)">
-            <option value="">— Seleccionar departamento —</option>
+            <option value=""></option>
             @foreach($departamentos as $dep)
                 <option value="{{ $dep }}" {{ $selDep === $dep ? 'selected' : '' }}>{{ $dep }}</option>
             @endforeach
@@ -125,8 +160,8 @@
     {{-- ── Municipio ───────────────────────────────────────────────── --}}
     <div>
         <label class="field-label">Municipio / Ciudad</label>
-        <select name="municipio" id="select_municipio" class="glass-input">
-            <option value="">— Primero selecciona un departamento —</option>
+        <select name="municipio" id="select_municipio" class="glass-input no-search" data-placeholder="Seleccionar municipio...">
+            <option value=""></option>
             @if(!empty($municipios))
                 @foreach($municipios as $mun)
                     <option value="{{ $mun }}" {{ $selMun === $mun ? 'selected' : '' }}>{{ $mun }}</option>
@@ -166,11 +201,10 @@ async function cargarMunicipios(departamento, seleccionado = '') {
     if (!departamento) {
         if (ts) {
             ts.clearOptions();
-            ts.addOption({value: '', text: '— Primero selecciona un departamento —'});
             ts.setValue('');
             ts.enable();
         } else {
-            select.innerHTML = '<option value="">— Primero selecciona un departamento —</option>';
+            select.innerHTML = '<option value=""></option>';
             select.disabled = false;
         }
         return;
@@ -236,19 +270,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 const tecnicoLabel = document.querySelector('input[value="tecnico"]').closest('label');
                 
                 if (this.value === 'cliente') {
-                    clienteLabel.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-blue-500 bg-blue-50/50 dark:bg-blue-900/20";
+                    clienteLabel.className = "flex-1 flex justify-center items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all border-blue-500 bg-blue-50/50 dark:bg-blue-900/20";
                     clienteLabel.querySelector('span').className = "font-bold text-blue-700 dark:text-blue-400";
                     clienteLabel.querySelector('span').innerHTML = "👤 Cliente Normal";
                     
-                    tecnicoLabel.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30";
+                    tecnicoLabel.className = "flex-1 flex justify-center items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30";
                     tecnicoLabel.querySelector('span').className = "font-bold text-slate-600 dark:text-slate-400";
                     tecnicoLabel.querySelector('span').innerHTML = "🔧 Técnico";
                 } else {
-                    tecnicoLabel.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-orange-500 bg-orange-50/50 dark:bg-orange-900/20";
+                    tecnicoLabel.className = "flex-1 flex justify-center items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all border-orange-500 bg-orange-50/50 dark:bg-orange-900/20";
                     tecnicoLabel.querySelector('span').className = "font-bold text-orange-700 dark:text-orange-400";
                     tecnicoLabel.querySelector('span').innerHTML = "🔧 Técnico";
                     
-                    clienteLabel.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30";
+                    clienteLabel.className = "flex-1 flex justify-center items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30";
                     clienteLabel.querySelector('span').className = "font-bold text-slate-600 dark:text-slate-400";
                     clienteLabel.querySelector('span').innerHTML = "👤 Cliente Normal";
                 }

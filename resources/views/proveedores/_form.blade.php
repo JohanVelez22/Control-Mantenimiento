@@ -94,9 +94,9 @@
     {{-- ── Departamento ──────────────────────────────────────────── --}}
     <div>
         <label class="field-label text-gray-700 dark:text-gray-300">Departamento</label>
-        <select name="departamento" id="prov_departamento" class="glass-input w-full"
+        <select name="departamento" id="prov_departamento" class="glass-input no-search w-full" data-placeholder="Seleccionar departamento..."
                 onchange="cargarMunicipiosProv(this.value)">
-            <option value="">— Seleccionar departamento —</option>
+            <option value=""></option>
             @foreach($departamentos as $dep)
                 <option value="{{ $dep }}" {{ $selDep === $dep ? 'selected' : '' }}>{{ $dep }}</option>
             @endforeach
@@ -107,8 +107,8 @@
     {{-- ── Municipio ─────────────────────────────────────────────── --}}
     <div>
         <label class="field-label text-gray-700 dark:text-gray-300">Municipio / Ciudad</label>
-        <select name="municipio" id="prov_municipio" class="glass-input w-full">
-            <option value="">— Primero selecciona un departamento —</option>
+        <select name="municipio" id="prov_municipio" class="glass-input no-search w-full" data-placeholder="Seleccionar municipio...">
+            <option value=""></option>
             @if(!empty($municipios))
                 @foreach($municipios as $mun)
                     <option value="{{ $mun }}" {{ $selMun === $mun ? 'selected' : '' }}>{{ $mun }}</option>
@@ -154,11 +154,10 @@ async function cargarMunicipiosProv(departamento, seleccionado = '') {
     if (!departamento) {
         if (ts) {
             ts.clearOptions();
-            ts.addOption({value: '', text: '— Primero selecciona un departamento —'});
             ts.setValue('');
             ts.enable();
         } else {
-            select.innerHTML = '<option value="">— Primero selecciona un departamento —</option>';
+            select.innerHTML = '<option value=""></option>';
             select.disabled = false;
         }
         return;
