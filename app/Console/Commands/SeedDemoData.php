@@ -226,25 +226,25 @@ class SeedDemoData extends Command
             for ($i = 1; $i <= 5; $i++) {
                 // Ingreso
                 MovimientoCaja::create([
-                    'tipo' => 'ingreso',
+                    'tipo_movimiento' => 'ingreso',
+                    'tipo_pago' => 'efectivo',
                     'concepto_id' => $conceptoIngreso->id,
                     'monto' => rand(50, 150) * 1000,
                     'descripcion' => "Venta rápida de accesorios $i",
                     'persona' => 'Cliente Ocasional',
                     'fecha' => Carbon::now()->subDays(rand(0, 3))->toDateString(),
-                    'hora' => Carbon::now()->subHours(rand(1, 10))->toTimeString(),
                     'user_id' => $admin->id,
                 ]);
 
                 // Egreso
                 MovimientoCaja::create([
-                    'tipo' => 'egreso',
+                    'tipo_movimiento' => 'egreso',
+                    'tipo_pago' => 'efectivo',
                     'concepto_id' => $i % 2 == 0 ? $conceptoEgreso->id : $conceptoNomina->id,
                     'monto' => rand(20, 80) * 1000,
                     'descripcion' => "Pago operativo $i",
                     'persona' => 'Proveedor / Empleado',
                     'fecha' => Carbon::now()->subDays(rand(0, 3))->toDateString(),
-                    'hora' => Carbon::now()->subHours(rand(1, 10))->toTimeString(),
                     'user_id' => $admin->id,
                 ]);
             }

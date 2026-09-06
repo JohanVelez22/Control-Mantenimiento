@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Mantenimiento;
 use App\Models\Electronica;
 use App\Models\Factura;
@@ -52,6 +53,22 @@ class AppServiceProvider extends ServiceProvider
 
 
         View::composer('layouts.app', function ($view) {
+            if (!Auth::check()) {
+                $view->with([
+                    'mantList'              => collect(),
+                    'elecList'              => collect(),
+                    'cajaList'              => collect(),
+                    'movimientosPendientes' => collect(),
+                    'cotList'               => collect(),
+                    'mantPendientes'        => 0,
+                    'elecPendientes'        => 0,
+                    'cotPendientes'         => 0,
+                    'cajaPendientes'        => 0,
+                    'totalPendientes'       => 0,
+                ]);
+                return;
+            }
+
             // Mantenimientos pendientes
             $mantList = Mantenimiento::activos()
                     ->where('estado', 'pendiente')

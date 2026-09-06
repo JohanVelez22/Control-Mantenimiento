@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class ResetTests extends Command
 {
@@ -39,18 +40,28 @@ class ResetTests extends Command
             'equipos',
             'mantenimientos',
             'mantenimiento_stock',
+            'mantenimiento_respuestos',
             'electronicas',
             'electronica_stock',
             'abonos',
             'cierre_cajas',
+            'cierres_caja',
             'movimiento_cajas',
+            'movimientos_caja',
             'facturas',
-            'factura_items'
+            'factura_items',
+            'factura_pagos',
+            'cotizaciones',
+            'cotizacions',
+            'cotizacion_items',
+            'eventos',
         ];
 
         foreach ($tablesToTruncate as $table) {
-            DB::table($table)->truncate();
-            $this->line(" - Tabla '{$table}' vaciada.");
+            if (Schema::hasTable($table)) {
+                DB::table($table)->truncate();
+                $this->line(" - Tabla '{$table}' vaciada.");
+            }
         }
 
         // Restablecer el stock a su cantidad inicial migrada

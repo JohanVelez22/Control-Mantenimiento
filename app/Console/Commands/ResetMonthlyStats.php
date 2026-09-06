@@ -25,9 +25,9 @@ class ResetMonthlyStats extends Command
 
         $this->info("Generando respaldo histórico para {$mes}/{$anio}...");
 
-        $ingresos = MovimientoCaja::where('estado', 'activo')->whereMonth('fecha', $mes)->whereYear('fecha', $anio)->where('tipo_movimiento', 'ingreso')->sum('monto');
-        $egresos = MovimientoCaja::where('estado', 'activo')->whereMonth('fecha', $mes)->whereYear('fecha', $anio)->where('tipo_movimiento', 'egreso')->sum('monto');
-        $costos = Mantenimiento::where('estado', '!=', 'anulado')->whereMonth('fecha_entrada', $mes)->whereYear('fecha_entrada', $anio)->sum('costo');
+        $ingresos = MovimientoCaja::activos()->whereMonth('fecha', $mes)->whereYear('fecha', $anio)->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $egresos = MovimientoCaja::activos()->whereMonth('fecha', $mes)->whereYear('fecha', $anio)->where('tipo_movimiento', 'egreso')->sum('monto');
+        $costos = Mantenimiento::activos()->whereMonth('fecha_entrada', $mes)->whereYear('fecha_entrada', $anio)->sum('costo');
 
         $data = [
             'fecha_respaldo' => now()->toDateTimeString(),

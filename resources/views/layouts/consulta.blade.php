@@ -6,7 +6,7 @@
     <title>Consulta - Tecni Systemas</title>
     
     <!-- Favicon (Apple Liquid Glass) -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v={{ time() }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=1.0">
     
     {{-- Vite (Tailwind CSS compilado + JS) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -21,7 +21,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     
     {{-- CSS Propio --}}
-    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     {{-- Lógica de Tema Temprana --}}
