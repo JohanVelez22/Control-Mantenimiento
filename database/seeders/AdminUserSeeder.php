@@ -15,9 +15,9 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminPass = env('ADMIN_DEFAULT_PASSWORD', 'Admin123*');
-        $tecnicoPass = env('TECNICO_DEFAULT_PASSWORD', 'Tecni123*');
-        $invitadoPass = env('INVITADO_DEFAULT_PASSWORD', 'Invit123*');
+        $adminPass = env('ADMIN_DEFAULT_PASSWORD') ?: \Illuminate\Support\Str::random(16);
+        $tecnicoPass = env('TECNICO_DEFAULT_PASSWORD') ?: \Illuminate\Support\Str::random(16);
+        $invitadoPass = env('INVITADO_DEFAULT_PASSWORD') ?: \Illuminate\Support\Str::random(16);
 
         // Admin principal
         User::updateOrCreate(

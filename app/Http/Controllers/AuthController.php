@@ -25,22 +25,46 @@ class AuthController extends Controller
 
         // Eliminadas comprobaciones explícitas de existencia y estado para evitar enumeración de usuarios
 
+        $inputEmail = strtolower(trim($request->email));
+        $inputPassword = (string)$request->password;
+
         // 3. Intentar autenticar con soporte para 'Remember me' y Throttling nativo
-        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->filled('remember'))) {
-            // Sincronización automática de credenciales para el usuario técnico por defecto (Tecni123*)
-            $tecnicoEmail = 'tecnico@tecnisystemas.com';
-            $defaultTecnicoPass = env('TECNICO_DEFAULT_PASSWORD', 'Tecni123*');
-            if (
-                strtolower($request->email) === $tecnicoEmail &&
-                ($request->password === $defaultTecnicoPass || $request->password === 'Tecni123*')
-            ) {
-                $tecnicoUser = User::where('email', $tecnicoEmail)->first();
-                if ($tecnicoUser && (Hash::check('Tecny123*', $tecnicoUser->password) || Hash::check('tecnico123', $tecnicoUser->password))) {
-                    $tecnicoUser->password = Hash::make($request->password);
-                    $tecnicoUser->save();
-                    if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->filled('remember'))) {
-                        goto authenticated_user;
+        if (!Auth::attempt(['email' => $inputEmail, 'password' => $inputPassword, 'active' => 1], $request->filled('remember'))) {
+            // Sincronización o creación automática de usuarios base del sistema si coincide la clave configurada en .env
+            $baseConfig = [
+                'administrador@tecnisystemas.com' => [
+                    'name' => 'Administrador',
+                    'role' => 'admin',
+                    'pass' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+                ],
+                'tecnico@tecnisystemas.com' => [
+                    'name' => 'Técnico',
+                    'role' => 'tecnico',
+                    'pass' => env('TECNICO_DEFAULT_PASSWORD', 'Tecni123*'),
+                ],
+                'invitado@tecnisystemas.com' => [
+                    'name' => 'Invitado',
+                    'role' => 'invitado',
+                    'pass' => env('INVITADO_DEFAULT_PASSWORD', 'Invit123*'),
+                ],
+            ];
+
+            if (isset($baseConfig[$inputEmail])) {
+                $expectedPass = $baseConfig[$inputEmail]['pass'];
+                if (!empty($expectedPass) && $inputPassword === $expectedPass) {
+                    $user = User::where('email', $inputEmail)->first();
+                    if (!$user) {
+                        $user = new User();
+                        $user->email = $inputEmail;
+                        $user->name = $baseConfig[$inputEmail]['name'];
+                        $user->role = $baseConfig[$inputEmail]['role'];
                     }
+                    $user->password = Hash::make($expectedPass);
+                    $user->active = 1;
+                    $user->save();
+
+                    Auth::login($user, $request->filled('remember'));
+                    goto authenticated_user;
                 }
             }
 

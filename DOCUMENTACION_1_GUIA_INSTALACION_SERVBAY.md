@@ -53,10 +53,11 @@ php artisan key:generate
    ```bash
    php artisan migrate:fresh --seed
    ```
-   *Nota: Este comando creará la estructura completa de tablas y sembrará los 3 usuarios base:*
-   - **Administrador**: `administrador@tecnisystemas.com` / Clave: `Admin123*`
-   - **Técnico**: `tecnico@tecnisystemas.com` / Clave: `Tecni123*`
-   - **Invitado**: `invitado@tecnisystemas.com` / Clave: `Invit123*`
+   *Nota: Este comando creará la estructura completa de tablas y sembrará los 3 usuarios base utilizando las contraseñas definidas en su archivo `.env` (valores por defecto para desarrollo local):*
+   - **Administrador**: `administrador@tecnisystemas.com` / Clave por defecto en `.env`: `Admin123*`
+   - **Técnico**: `tecnico@tecnisystemas.com` / Clave por defecto en `.env`: `Tecni123*`
+   - **Invitado**: `invitado@tecnisystemas.com` / Clave por defecto en `.env`: `Invit123*`
+   *(En un despliegue de producción real, cambie estas claves en el archivo `.env` antes de ejecutar el seeder).*
 
 ### Paso 5: Creación del Enlace Simbólico de Almacenamiento
 Para permitir la visualización de fotos de repuestos, logotipos y fotos de perfil:
