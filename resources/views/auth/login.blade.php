@@ -32,15 +32,6 @@
  {{-- Card --}}
  <div class="glass-card px-6 pb-8 pt-5 md:px-8 md:pb-8 md:pt-6">
 
- {{-- Errores --}}
- @if ($errors->any())
- <div class="mb-5 p-3.5 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm space-y-1">
- @foreach ($errors->all() as $error)
- <p class="flex items-center gap-2"><span>⚠️</span> {{ $error }}</p>
- @endforeach
- </div>
- @endif
-
  <form method="POST" action="{{ route('login') }}" class="space-y-6">
  @csrf
 

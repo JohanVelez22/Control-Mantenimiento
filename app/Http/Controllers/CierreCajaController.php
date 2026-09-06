@@ -114,13 +114,23 @@ class CierreCajaController extends Controller
     {
         $movs = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->get();
 
+        $ingresos = (float) $movs->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $egresos  = (float) $movs->where('tipo_movimiento', 'egreso')->sum('monto');
+
+        $efectivoIngresos = (float) $movs->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto');
+        $efectivoEgresos  = (float) $movs->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto');
+        $efectivoNeto     = $efectivoIngresos - $efectivoEgresos;
+
+        $consignacionIngresos = (float) $movs->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto');
+        $consignacionEgresos  = (float) $movs->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto');
+        $consignacionNeto     = $consignacionIngresos - $consignacionEgresos;
+
         return [
-            'total_ingresos'  => $movs->where('tipo_movimiento', 'ingreso')->sum('monto'),
-            'total_egresos'   => $movs->where('tipo_movimiento', 'egreso')->sum('monto'),
-            'efectivo'        => $movs->where('tipo_pago', 'efectivo')->sum('monto'),
-            'consignacion'    => $movs->where('tipo_pago', 'consignacion')->sum('monto'),
-            'saldo_final'     => $movs->where('tipo_movimiento', 'ingreso')->sum('monto')
-                              - $movs->where('tipo_movimiento', 'egreso')->sum('monto'),
+            'total_ingresos'  => $ingresos,
+            'total_egresos'   => $egresos,
+            'efectivo'        => $efectivoNeto,
+            'consignacion'    => $consignacionNeto,
+            'saldo_final'     => $ingresos - $egresos,
             'num_movimientos' => $movs->count(),
         ];
     }

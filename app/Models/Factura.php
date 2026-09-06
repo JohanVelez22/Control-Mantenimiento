@@ -84,13 +84,17 @@ class Factura extends Model
      */
     public function recalcularPagos(): void
     {
+        $expectedTipo = $this->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso';
+
         $directMovIds = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
+            ->where('tipo_movimiento', $expectedTipo)
             ->where('descripcion', 'like', "%#{$this->numero_factura}%")
             ->pluck('id');
 
         $pagosCaja = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
+            ->where('tipo_movimiento', $expectedTipo)
             ->where(function ($q) use ($directMovIds) {
                 if ($directMovIds->isNotEmpty()) {
                     $q->whereIn('id', $directMovIds)

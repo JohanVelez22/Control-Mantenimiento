@@ -69,11 +69,17 @@ class MovimientoCajaController extends Controller
             });
         }
 
+        $efectivoIngresos = (clone $totalesQuery)->where('tipo_pago', 'efectivo')->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $efectivoEgresos  = (clone $totalesQuery)->where('tipo_pago', 'efectivo')->where('tipo_movimiento', 'egreso')->sum('monto');
+
+        $consignacionIngresos = (clone $totalesQuery)->where('tipo_pago', 'consignacion')->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $consignacionEgresos  = (clone $totalesQuery)->where('tipo_pago', 'consignacion')->where('tipo_movimiento', 'egreso')->sum('monto');
+
         $totales = [
             'ingresos'     => (clone $totalesQuery)->where('tipo_movimiento', 'ingreso')->sum('monto'),
             'egresos'      => (clone $totalesQuery)->where('tipo_movimiento', 'egreso')->sum('monto'),
-            'efectivo'     => (clone $totalesQuery)->where('tipo_pago', 'efectivo')->sum('monto'),
-            'consignacion' => (clone $totalesQuery)->where('tipo_pago', 'consignacion')->sum('monto'),
+            'efectivo'     => $efectivoIngresos - $efectivoEgresos,
+            'consignacion' => $consignacionIngresos - $consignacionEgresos,
         ];
         $totales['saldo'] = $totales['ingresos'] - $totales['egresos'];
 

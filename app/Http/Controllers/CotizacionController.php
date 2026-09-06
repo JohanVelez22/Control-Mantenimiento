@@ -310,6 +310,21 @@ public function pdf(\App\Models\Cotizacion $cotizacion)
                 }
             }
 
+            // 4. Registrar movimiento raíz en Caja para seguimiento de saldos
+            $conceptoVenta = \App\Models\ConceptoCaja::firstOrCreate(['nombre' => 'Venta de Inventario']);
+            \App\Models\MovimientoCaja::create([
+                'tipo_movimiento' => 'ingreso',
+                'tipo_pago'       => 'efectivo',
+                'monto'           => 0,
+                'monto_total'     => (float) $cotizacion->total,
+                'persona'         => $cotizacion->cliente->nombre ?? 'Cliente',
+                'concepto_id'     => $conceptoVenta->id,
+                'descripcion'     => "Cobro venta #{$factura->numero_factura}",
+                'fecha'           => now()->toDateString(),
+                'estado'          => 'activo',
+                'user_id'         => auth()->id(),
+            ]);
+
             \Illuminate\Support\Facades\DB::commit();
 
             return redirect()->route('inventario.facturas.show', $factura->id)

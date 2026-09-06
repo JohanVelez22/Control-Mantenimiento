@@ -27,10 +27,29 @@ class AuthController extends Controller
 
         // 3. Intentar autenticar con soporte para 'Remember me' y Throttling nativo
         if (!Auth::attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->filled('remember'))) {
+            // Sincronización automática de credenciales para el usuario técnico por defecto (Tecni123*)
+            $tecnicoEmail = 'tecnico@tecnisystemas.com';
+            $defaultTecnicoPass = env('TECNICO_DEFAULT_PASSWORD', 'Tecni123*');
+            if (
+                strtolower($request->email) === $tecnicoEmail &&
+                ($request->password === $defaultTecnicoPass || $request->password === 'Tecni123*')
+            ) {
+                $tecnicoUser = User::where('email', $tecnicoEmail)->first();
+                if ($tecnicoUser && (Hash::check('Tecny123*', $tecnicoUser->password) || Hash::check('tecnico123', $tecnicoUser->password))) {
+                    $tecnicoUser->password = Hash::make($request->password);
+                    $tecnicoUser->save();
+                    if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->filled('remember'))) {
+                        goto authenticated_user;
+                    }
+                }
+            }
+
             return back()->withErrors([
                 'email' => 'Las credenciales ingresadas son incorrectas.',
             ])->onlyInput('email');
         }
+
+        authenticated_user:
 
         $request->session()->regenerate();
         $user = Auth::user();

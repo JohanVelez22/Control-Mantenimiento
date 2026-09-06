@@ -54,9 +54,9 @@ php artisan key:generate
    php artisan migrate:fresh --seed
    ```
    *Nota: Este comando creará la estructura completa de tablas y sembrará los 3 usuarios base:*
-   - **Administrador**: `admin@admin.com` / Clave: `admin123`
-   - **Técnico**: `tecnico@tecnico.com` / Clave: `tecnico123`
-   - **Invitado**: `invitado@invitado.com` / Clave: `invitado123`
+   - **Administrador**: `administrador@tecnisystemas.com` / Clave: `Admin123*`
+   - **Técnico**: `tecnico@tecnisystemas.com` / Clave: `Tecni123*`
+   - **Invitado**: `invitado@tecnisystemas.com` / Clave: `Invit123*`
 
 ### Paso 5: Creación del Enlace Simbólico de Almacenamiento
 Para permitir la visualización de fotos de repuestos, logotipos y fotos de perfil:
