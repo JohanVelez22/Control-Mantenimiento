@@ -58,8 +58,7 @@
         <label class="field-label">Género *</label>
         <select name="genero" required class="glass-input no-search">
             <option value="masculino"  {{ $selGenero === 'masculino'  ? 'selected' : '' }}>♂ Masculino</option>
-            <option value="femenino"   {{ $selGenero === 'femenino'   ? 'selected' : '' }}>♀ Femenino</option>
-            <option value="indefinido" {{ $selGenero === 'indefinido' ? 'selected' : '' }}>⊘ Indefinido / No especifica</option>
+            <option value="femenino"   {{ $selGenero === 'femenino'   ? 'selected' : '' }}>♀ Femenino</option>    
         </select>
         @error('genero') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
