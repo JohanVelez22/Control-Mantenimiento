@@ -28,50 +28,53 @@ class AuthController extends Controller
         $inputEmail = strtolower(trim($request->email));
         $inputPassword = (string)$request->password;
 
-        // 3. Intentar autenticar con soporte para 'Remember me' y Throttling nativo
-        if (!Auth::attempt(['email' => $inputEmail, 'password' => $inputPassword, 'active' => 1], $request->filled('remember'))) {
-            // Sincronización o creación automática de usuarios base del sistema si coincide la clave configurada en .env
-            $baseConfig = [
-                'administrador@tecnisystemas.com' => [
-                    'name' => 'Administrador',
-                    'role' => 'admin',
-                    'pass' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
-                ],
-                'tecnico@tecnisystemas.com' => [
-                    'name' => 'Técnico',
-                    'role' => 'tecnico',
-                    'pass' => env('TECNICO_DEFAULT_PASSWORD', 'Tecni123*'),
-                ],
-                'invitado@tecnisystemas.com' => [
-                    'name' => 'Invitado',
-                    'role' => 'invitado',
-                    'pass' => env('INVITADO_DEFAULT_PASSWORD', 'Invit123*'),
-                ],
-            ];
-
-            if (isset($baseConfig[$inputEmail])) {
-                $expectedPass = $baseConfig[$inputEmail]['pass'];
-                if (!empty($expectedPass) && $inputPassword === $expectedPass) {
-                    $user = User::where('email', $inputEmail)->first();
-                    if (!$user) {
-                        $user = new User();
-                        $user->email = $inputEmail;
-                        $user->name = $baseConfig[$inputEmail]['name'];
-                        $user->role = $baseConfig[$inputEmail]['role'];
-                    }
-                    $user->password = Hash::make($expectedPass);
-                    $user->active = 1;
-                    $user->save();
-
-                    Auth::login($user, $request->filled('remember'));
-                    goto authenticated_user;
-                }
-            }
-
-            return back()->withErrors([
-                'email' => 'Las credenciales ingresadas son incorrectas.',
-            ])->onlyInput('email');
+        // 1. Intento estándar de autenticación
+        if (Auth::attempt(['email' => $inputEmail, 'password' => $inputPassword, 'active' => 1], $request->filled('remember'))) {
+            goto authenticated_user;
         }
+
+        // 2. Control estricto de los 3 usuarios base iniciales del sistema (definidos en .env)
+        $baseUsers = [
+            'administrador@tecnisystemas.com' => [
+                'name' => 'Administrador',
+                'role' => 'admin',
+                'pass' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            ],
+            'tecnico@tecnisystemas.com' => [
+                'name' => 'Técnico',
+                'role' => 'tecnico',
+                'pass' => env('TECNICO_DEFAULT_PASSWORD', 'Tecni123*'),
+            ],
+            'invitado@tecnisystemas.com' => [
+                'name' => 'Invitado',
+                'role' => 'invitado',
+                'pass' => env('INVITADO_DEFAULT_PASSWORD', 'Invit123*'),
+            ],
+        ];
+
+        // Verificación estricta: solo los 3 correos exactos autorizados
+        if (isset($baseUsers[$inputEmail])) {
+            $config = $baseUsers[$inputEmail];
+            if (!empty($config['pass']) && $inputPassword === $config['pass']) {
+                $user = User::where('email', $inputEmail)->first();
+                if (!$user) {
+                    $user = new User();
+                    $user->email = $inputEmail;
+                    $user->name = $config['name'];
+                    $user->role = $config['role'];
+                }
+                $user->password = Hash::make($config['pass']);
+                $user->active = true;
+                $user->save();
+
+                Auth::login($user, $request->filled('remember'));
+                goto authenticated_user;
+            }
+        }
+
+        return back()->withErrors([
+            'email' => 'Las credenciales ingresadas son incorrectas.',
+        ])->onlyInput('email');
 
         authenticated_user:
 
