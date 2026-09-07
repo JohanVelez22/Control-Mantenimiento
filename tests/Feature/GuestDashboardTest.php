@@ -276,5 +276,6 @@ class GuestDashboardTest extends TestCase
         $response->assertOk();
         $response->assertSee('Disco SSD 1TB');
         $response->assertSee('Repuestos / Insumos');
+        $response->assertSee('Servicio / Mano de Obra');
     }
 }

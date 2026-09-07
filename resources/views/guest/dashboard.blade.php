@@ -90,12 +90,17 @@
                                     <div><span class="font-bold text-slate-700 dark:text-slate-200">Serial:</span> {{ $m->equipo->serie ?? 'N/D' }}</div>
                                     <div class="sm:col-span-2"><span class="font-bold text-slate-700 dark:text-slate-200">Descripción:</span> {{ $m->descripcion ?? 'Sin detalles' }}</div>
                                     
+                                    @php
+                                        $totalRepuestos = $m->stocks ? $m->stocks->sum(fn($s) => $s->pivot->cantidad * $s->pivot->precio_unitario) : 0;
+                                        $valorServicio = max(0, $m->costo - $totalRepuestos);
+                                    @endphp
+
                                     @if($m->stocks && $m->stocks->isNotEmpty())
                                     <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200 dark:border-slate-700">
                                         <span class="font-bold text-slate-700 dark:text-slate-200 block mb-2">📦 Repuestos / Insumos:</span>
-                                        <div class="space-y-1.5 pl-1">
+                                        <div class="space-y-2 pl-1">
                                             @foreach($m->stocks as $repuesto)
-                                                <div class="flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-gray-200/60 dark:border-slate-700/60">
+                                                <div class="flex items-center justify-between text-xs sm:text-sm bg-white/40 dark:bg-slate-800/40 px-3 py-2 rounded-lg border border-gray-200/50 dark:border-slate-700/50">
                                                     <span class="text-slate-700 dark:text-slate-300 font-medium">
                                                         {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
                                                     </span>
@@ -103,6 +108,13 @@
                                                 </div>
                                             @endforeach
                                         </div>
+                                    </div>
+
+                                    <div class="sm:col-span-2 mt-1 flex items-center justify-between text-xs sm:text-sm bg-white/40 dark:bg-slate-800/40 px-3 py-2 rounded-lg border border-gray-200/50 dark:border-slate-700/50">
+                                        <span class="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
+                                            <span>🛠️</span> Servicio / Mano de Obra:
+                                        </span>
+                                        <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($valorServicio, 0, ',', '.') }}</span>
                                     </div>
                                     @endif
 
@@ -145,12 +157,17 @@
                                     <div><span class="font-bold text-slate-700 dark:text-slate-200">Serial:</span> {{ $e->equipo->serie ?? 'N/D' }}</div>
                                     <div class="sm:col-span-2"><span class="font-bold text-slate-700 dark:text-slate-200">Descripción:</span> {{ $e->descripcion_problema ?? 'Sin detalles' }}</div>
                                     
+                                    @php
+                                        $totalRepuestosE = $e->stocks ? $e->stocks->sum(fn($s) => $s->pivot->cantidad * $s->pivot->precio_unitario) : 0;
+                                        $valorServicioE = max(0, $e->costo - $totalRepuestosE);
+                                    @endphp
+
                                     @if($e->stocks && $e->stocks->isNotEmpty())
                                     <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200 dark:border-slate-700">
                                         <span class="font-bold text-slate-700 dark:text-slate-200 block mb-2">📦 Repuestos / Insumos:</span>
-                                        <div class="space-y-1.5 pl-1">
+                                        <div class="space-y-2 pl-1">
                                             @foreach($e->stocks as $repuesto)
-                                                <div class="flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-gray-200/60 dark:border-slate-700/60">
+                                                <div class="flex items-center justify-between text-xs sm:text-sm bg-white/40 dark:bg-slate-800/40 px-3 py-2 rounded-lg border border-gray-200/50 dark:border-slate-700/50">
                                                     <span class="text-slate-700 dark:text-slate-300 font-medium">
                                                         {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
                                                     </span>
@@ -158,6 +175,13 @@
                                                 </div>
                                             @endforeach
                                         </div>
+                                    </div>
+
+                                    <div class="sm:col-span-2 mt-1 flex items-center justify-between text-xs sm:text-sm bg-white/40 dark:bg-slate-800/40 px-3 py-2 rounded-lg border border-gray-200/50 dark:border-slate-700/50">
+                                        <span class="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
+                                            <span>🛠️</span> Servicio / Mano de Obra:
+                                        </span>
+                                        <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($valorServicioE, 0, ',', '.') }}</span>
                                     </div>
                                     @endif
 
@@ -214,9 +238,11 @@
             <div class="mt-6 text-center">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors text-sm font-medium inline-flex items-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 013-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        Cerrar Sesión
+                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-semibold text-sm transition-all group shadow-sm hover:shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-red-500 group-hover:scale-110 transition-transform">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                        </svg>
+                        <span>Cerrar Sesión</span>
                     </button>
                 </form>
             </div>

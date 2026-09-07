@@ -53,7 +53,7 @@
             </div>
             <div class="min-w-0">
                 <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Equipo</span>
-                <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $electronica->equipo->marca }} {{ $electronica->equipo->modelo }} <span class="text-xs text-gray-500 font-semibold">({{ $electronica->equipo->nombre }})</span></span>
+                <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $electronica->equipo->marca }} {{ $electronica->equipo->modelo }} <span class="text-sm text-gray-500 font-semibold">({{ $electronica->equipo->nombre }})</span></span>
             </div>
             <div class="min-w-0">
                 <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Técnico</span>
