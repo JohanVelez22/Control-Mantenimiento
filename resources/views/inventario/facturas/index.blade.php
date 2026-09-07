@@ -12,15 +12,19 @@
  </h2>
  <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Historial de compras y ventas de artículos</p>
  </div>
- <div class="flex flex-wrap gap-3">
- @if(!auth()->user()->isInvitado())
-  <a href="{{ route('inventario.compra.create') }}" class="btn-compra">
-  📦 Nueva Compra
-  </a>
-  <a href="{{ route('inventario.venta.create') }}" class="btn-venta">
-  🛒 Nueva Venta
-  </a>
- @endif
+ <div class="flex flex-wrap items-center gap-3">
+   <div class="relative">
+    <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
+    <input type="text" id="search-facturas" placeholder="Buscar factura..." class="glass-input pl-9 w-48 sm:w-64 font-semibold" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); }">
+   </div>
+   @if(!auth()->user()->isInvitado())
+    <a href="{{ route('inventario.compra.create') }}" class="btn-compra">
+    📦 Nueva Compra
+    </a>
+    <a href="{{ route('inventario.venta.create') }}" class="btn-venta">
+    🛒 Nueva Venta
+    </a>
+   @endif
  </div>
  </div>
 
@@ -42,10 +46,6 @@
  <input type="date" name="fecha_desde" value="{{ request('fecha_desde', date('Y-m-01')) }}" class="glass-input w-44">
  <span class="text-gray-400 text-sm">a</span>
  <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta', date('Y-m-d')) }}" class="glass-input w-44">
- </div>
- <div class="relative">
- <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
- <input type="text" id="search-facturas" placeholder="Buscar factura..." class="glass-input pl-9 w-48 sm:w-56 font-semibold" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); }">
  </div>
  <button type="submit" class="btn-primary py-2 px-4 text-sm">🌪️ Filtrar</button>
  <a href="{{ route('inventario.facturas') }}" class="btn-clean text-sm">🧹 Limpiar</a>
