@@ -821,6 +821,8 @@
                     placeholder: defaultPlaceholder,
                     highlight: false,
                     openOnFocus: true,
+                    closeAfterSelect: true,
+                    hideSelected: false,
                     refreshThrottle: 0,
                     dropdownParent: 'body',
                     plugins: isNoSearch ? [] : ['clear_button'],
@@ -848,6 +850,14 @@
 
                 let tsInstance = new TomSelect(el, tsConfig);
 
+                // Asegurar cierre y desenfoque inmediato al seleccionar cualquier opción (con click o Enter)
+                tsInstance.on('item_add', function() {
+                    tsInstance.close();
+                    if (isNoSearch && tsInstance.control) {
+                        tsInstance.control.blur();
+                    }
+                });
+
                 // Track open TomSelect instances for sidebar repositioning
                 if (!window._glassTomSelectInstances) window._glassTomSelectInstances = [];
                 window._glassTomSelectInstances.push(tsInstance);
@@ -860,8 +870,8 @@
                     tsInstance.wrapper.classList.add('no-search');
                 }
 
-                // ── NAVEGACIÓN INTELIGENTE POR TECLADO PARA SELECTS NO-SEARCH (SIN INPUT DE TEXTO) ──
-                // Mantiene el desplegable SIEMPRE ABIERTO, muestra todas las opciones con esa inicial y permite ciclar / elegir libremente
+                // ── BÚSQUEDA Y NAVEGACIÓN POR LETRA (TYPEAHEAD) PARA SELECTS NO-SEARCH (SIN INPUT DE TEXTO) ──
+                // Permite saltar y ciclar por inicial manteniendo el desplegable visible para elegir
                 if (isNoSearch && tsInstance.control) {
                     let typeAheadBuffer = '';
                     let typeAheadTimer = null;
@@ -869,73 +879,15 @@
                     let cycleIndex = 0;
 
                     tsInstance.control.addEventListener('keydown', function(e) {
-                        if (e.key === 'Tab' || e.key === 'Escape') {
-                            return;
-                        }
-
-                        // Si presiona Enter y el desplegable está abierto con una opción resaltada, seleccionarla y cerrar
-                        if (e.key === 'Enter') {
-                            if (tsInstance.isOpen && tsInstance.activeOption) {
-                                e.preventDefault();
-                                const val = tsInstance.activeOption.getAttribute('data-value');
-                                if (val !== null) {
-                                    tsInstance.setValue(val);
-                                    tsInstance.close();
-                                }
-                                return;
-                            } else if (!tsInstance.isOpen) {
-                                e.preventDefault();
-                                tsInstance.open();
-                                return;
-                            }
-                        }
-
-                        // Abrir con Espacio
-                        if (e.key === ' ') {
-                            if (!tsInstance.isOpen) {
-                                e.preventDefault();
-                                tsInstance.open();
-                                return;
-                            }
-                        }
-
-                        // Navegación por flechas arriba / abajo
-                        if (e.key === 'ArrowDown') {
-                            e.preventDefault();
-                            if (!tsInstance.isOpen) {
-                                tsInstance.open();
-                            } else {
-                                const current = tsInstance.activeOption;
-                                const next = current ? current.nextElementSibling : (tsInstance.dropdown_content ? tsInstance.dropdown_content.firstElementChild : null);
-                                if (next && next.classList.contains('option')) {
-                                    tsInstance.setActiveOption(next, true);
-                                }
-                            }
-                            return;
-                        }
-
-                        if (e.key === 'ArrowUp') {
-                            e.preventDefault();
-                            if (!tsInstance.isOpen) {
-                                tsInstance.open();
-                            } else {
-                                const current = tsInstance.activeOption;
-                                const prev = current ? current.previousElementSibling : (tsInstance.dropdown_content ? tsInstance.dropdown_content.lastElementChild : null);
-                                if (prev && prev.classList.contains('option')) {
-                                    tsInstance.setActiveOption(prev, true);
-                                }
-                            }
-                            return;
-                        }
-
-                        // Ignorar modificadores y teclas no imprimibles
-                        if (e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1) {
+                        // Ignorar modificadores, teclas de control, flechas, enter, tab, escape y espacio
+                        // (TomSelect ya maneja las flechas 1 a 1 y el Enter nativamente sin saltos)
+                        if (e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1 || e.key === 'Tab' || e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
                             return;
                         }
 
                         e.preventDefault();
 
-                        // Asegurar que el desplegable se abra y permanezca visible
+                        // Asegurar que el desplegable se abra y permanezca visible al escribir una inicial
                         if (!tsInstance.isOpen) {
                             tsInstance.open();
                         }
