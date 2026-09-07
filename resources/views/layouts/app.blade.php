@@ -36,7 +36,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     
     <!-- CSS Propio (Liquid Glass) - va DESPUÉS para sobreescribir estilos base -->
-    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v=1.3">
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     
@@ -1253,12 +1253,29 @@
                             const id = hash.substring(1);
                             const target = document.getElementById(id);
                             if (target) {
-                                e.preventDefault(); 
-                                history.pushState(null, null, hash); 
+                                e.preventDefault();
+                                // Limpiar active-target antes de cambiar hash
+                                document.querySelectorAll('.active-target').forEach(el => el.classList.remove('active-target'));
+                                // Usar location.hash para que CSS :target se actualice correctamente
+                                location.hash = hash;
                                 activateHashTarget(hash);
                             }
                         } catch(err) {}
                     }
+                    return;
+                }
+
+                // Si se hace click en un enlace que navega a otra página, limpiar resaltado
+                const navLink = e.target.closest('a[href]');
+                if (navLink) {
+                    document.querySelectorAll('.active-target').forEach(el => el.classList.remove('active-target'));
+                    return;
+                }
+
+                // Si se hace click en un botón o elemento interactivo, limpiar resaltado
+                const interactive = e.target.closest('button, input, select, textarea');
+                if (interactive) {
+                    document.querySelectorAll('.active-target').forEach(el => el.classList.remove('active-target'));
                 }
             });
         })();
@@ -1382,21 +1399,7 @@
         });
 
         // Global Hash Target Row Highlighter
-        document.addEventListener('DOMContentLoaded', () => {
-            function highlightTargetRow() {
-                if (window.location.hash) {
-                    const id = window.location.hash.substring(1);
-                    const targetEl = document.getElementById(id);
-                    if (targetEl) {
-                        targetEl.classList.remove('active-target');
-                        void targetEl.offsetWidth; // force reflow
-                        targetEl.classList.add('active-target');
-                    }
-                }
-            }
-            highlightTargetRow();
-            window.addEventListener('hashchange', highlightTargetRow);
-        });
+        // (Unificado con activateHashTarget — ya no se necesita un handler separado)
     </script>
 
     @stack('modals')
