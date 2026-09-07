@@ -53,11 +53,13 @@
   <div class="flex" id="carouselTrack" style="width: 400%; transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1) !important;">
  
  <!-- Slide 1: Gráfico de Barras (Tendencia 7 Días) -->
- <div class="w-1/4 p-6 flex flex-col bg-transparent" style="height: 420px;">
+ <div class="w-1/4 px-6 md:px-8 pt-4 pb-6 flex flex-col bg-transparent" style="height: 420px;">
  <div class="flex justify-between items-center mb-10 px-4">
   <div>
-  <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Crecimiento Semanal</h4>
-  <p class="text-sm text-gray-500 dark:text-gray-400">Comparativa de ingresos de equipos vs órdenes creadas</p>
+  <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight flex items-center gap-2">
+   <span class="text-xl leading-none">📊</span> Crecimiento Semanal
+  </h4>
+  <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Comparativa de ingresos de equipos vs órdenes creadas</p>
   </div>
   <span class="text-xs font-bold px-3 py-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 rounded-full shadow-sm">Últimos 7 Días</span>
   </div>
@@ -67,11 +69,13 @@
  </div>
 
  <!-- Slide 2: Gráfico Circular (Distribución de Órdenes) -->
- <div class="w-1/4 p-6 flex flex-col bg-transparent" style="height: 420px;">
+ <div class="w-1/4 px-6 md:px-8 pt-4 pb-6 flex flex-col bg-transparent" style="height: 420px;">
  <div class="flex justify-between items-center mb-2 px-4">
  <div>
- <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Distribución Global</h4>
- <p class="text-sm text-gray-500 dark:text-gray-400">Estado actual de todos los mantenimientos históricos</p>
+ <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight flex items-center gap-2">
+  <span class="text-xl leading-none">🌐</span> Distribución Global
+ </h4>
+ <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Estado actual de todos los mantenimientos históricos</p>
  </div>
  <span class="text-xs font-bold px-3 py-1.5 bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 rounded-full shadow-sm">Tiempo Real</span>
  </div>
@@ -84,11 +88,13 @@
  </div>
 
   <!-- Slide 3: Ingresos por día (últimos 7) -->
-  <div class="w-1/4 p-6 flex flex-col bg-transparent" style="height: 420px;">
+  <div class="w-1/4 px-6 md:px-8 pt-4 pb-6 flex flex-col bg-transparent" style="height: 420px;">
   <div class="flex justify-between items-center mb-10 px-4">
    <div>
-   <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">Ingresos por día</h4>
-   <p class="text-sm text-gray-500 dark:text-gray-400">Movimientos de caja reales: ingresos menos egresos por fecha</p>
+   <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight flex items-center gap-2">
+    <span class="text-xl leading-none">💵</span> Ingresos por día
+   </h4>
+   <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Movimientos de caja reales: ingresos menos egresos por fecha</p>
    </div>
   <span class="text-xs font-bold px-3 py-1.5 bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200 rounded-full shadow-sm">Últimos 7 días</span>
   </div>
@@ -98,11 +104,13 @@
  </div>
 
  <!-- Slide 4: Estadísticas Electrónica -->
- <div class="w-1/4 p-6 flex flex-col bg-transparent" style="height: 420px;">
+ <div class="w-1/4 px-6 md:px-8 pt-4 pb-6 flex flex-col bg-transparent" style="height: 420px;">
  <div class="flex justify-between items-center mb-2 px-4">
  <div>
- <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight">⚡ Electrónica</h4>
- <p class="text-sm text-gray-500 dark:text-gray-400">Estado actual de órdenes de electrónica</p>
+ <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight flex items-center gap-2">
+  <span class="text-xl leading-none">⚡</span> Electrónica
+ </h4>
+ <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Estado actual de órdenes de electrónica</p>
  </div>
  <span class="text-xs font-bold px-3 py-1.5 bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 rounded-full shadow-sm">Tiempo Real</span>
  </div>
@@ -147,7 +155,7 @@
   </div>
   </div>
 
-<div class="glass-card p-6 md:p-8 pb-4 md:pb-5">
+<div class="glass-card p-6 md:px-8 pb-4 md:pb-5">
 
  {{-- Tabs --}}
  <div class="flex items-center gap-1 mb-5 border-b border-gray-200 dark:border-gray-600">
@@ -249,7 +257,7 @@
  </tbody>
  </table>
  </div>
-    <div class="mt-4 md:mt-8 text-right">
+    <div class="mt-3 md:mt-3 text-right">
         <a href="{{ route('mantenimientos.reportes') }}" class="btn-primary">
             📈 Ver reporte detallado →
         </a>
@@ -338,7 +346,7 @@
  </tbody>
  </table>
  </div>
-    <div class="mt-4 md:mt-8 text-right">
+    <div class="mt-3 md:mt-3 text-right">
         <a href="{{ route('electronicas.reportes') }}" class="btn-purple">
  📈 Ver reporte detallado →
  </a>
