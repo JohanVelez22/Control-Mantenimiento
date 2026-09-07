@@ -64,16 +64,16 @@
  @endif
  </span>
  </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Dirección</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->direccion ?? '—' }}</span>
- </div>
- @if($proveedor->notas)
- <div class="md:col-span-2 min-w-0 mt-2 p-3 bg-white/40 dark:bg-slate-800/40 rounded-xl">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Notas / Condiciones Comerciales</span>
- <span class="font-medium text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->notas }}</span>
- </div>
- @endif
+    <div class="min-w-0">
+        <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Dirección</span>
+        <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->direccion ?? '—' }}</span>
+    </div>
+    @if($proveedor->notas)
+    <div class="md:col-span-2 min-w-0 mt-2 p-3.5 glass-card !rounded-xl">
+        <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Notas / Condiciones Comerciales</span>
+        <span class="font-medium text-slate-800 dark:text-slate-200 break-words leading-relaxed">{{ $proveedor->notas }}</span>
+    </div>
+    @endif
  </div>
 
         {{-- Resumen financiero --}}
