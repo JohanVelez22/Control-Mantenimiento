@@ -47,6 +47,15 @@
         } else {
             document.documentElement.classList.remove('dark');
         }
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        try {
+            const savedScroll = sessionStorage.getItem('ts_scroll_pos_' + window.location.pathname);
+            if (savedScroll !== null) {
+                window.scrollTo(0, parseInt(savedScroll, 10));
+            }
+        } catch(e) {}
         // Usar DOMContentLoaded en lugar de 'load' para eliminar 'preload' ANTES
         // de que los CDN externos terminen de cargar. Esto evita que Tailwind CDN
         // re-inyecte estilos durante una animación activa (causa del flash).
@@ -345,15 +354,141 @@
             if (e.key === 'Escape') closeAnularModal();
         });
 
+        // ─── PANELES DINÁMICOS ASÍNCRONOS (ZERO-FLASH) ───────────────
+        async function submitDynamicForm(form, panel) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
+            }
+
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    }
+                });
+
+                if (response.ok) {
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newPanel = doc.getElementById(panel.id);
+                    if (newPanel && panel) {
+                        panel.style.transition = 'opacity 0.15s ease';
+                        panel.style.opacity = '0.5';
+                        setTimeout(() => {
+                            panel.innerHTML = newPanel.innerHTML;
+                            panel.style.opacity = '1';
+                            initDynamicPanelHandlers(panel);
+
+                            // Disparar toast de sesión si existe en la respuesta
+                            const matches = html.match(/showToast\("([^"]+)",\s*'([^']+)'\)/);
+                            if (matches && matches[1] && matches[2]) {
+                                showToast(matches[1], matches[2]);
+                            }
+                        }, 80);
+                        return;
+                    }
+                }
+                form.setAttribute('data-confirmed', 'true');
+                form.submit();
+            } catch(e) {
+                console.error('Dynamic form submit error:', e);
+                form.setAttribute('data-confirmed', 'true');
+                form.submit();
+            }
+        }
+
+        function initDynamicPanelHandlers(panel) {
+            if (!panel) return;
+
+            // Manejo visual de montos en abonos
+            const abonoVisual = panel.querySelector('#abono_monto_visual');
+            const abonoReal = panel.querySelector('#abono_monto_real');
+            if (abonoVisual && abonoReal) {
+                abonoVisual.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, "");
+                    if (value !== "") {
+                        abonoReal.value = value;
+                        e.target.value = new Intl.NumberFormat('es-CO').format(value);
+                    } else {
+                        abonoReal.value = "";
+                    }
+                });
+            }
+
+            // Inicializar TomSelect en selects del panel que no lo tengan
+            panel.querySelectorAll('select.glass-input:not(.no-tomselect)').forEach(sel => {
+                if (typeof window.initGlassTomSelect === 'function' && !sel.classList.contains('tomselected')) {
+                    window.initGlassTomSelect(sel);
+                }
+            });
+
+            // Conectar formularios con data-confirm-delete dentro del panel
+            panel.querySelectorAll('form[data-confirm-delete]').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    if (!this.getAttribute('data-confirmed')) {
+                        e.preventDefault();
+                        confirmDelete(this, this.dataset.confirmDelete);
+                    }
+                });
+            });
+
+            // Interceptar formularios normales (añadir repuesto, nuevo abono) dentro del panel
+            panel.querySelectorAll('form:not([data-confirm-delete])').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const abonoRealField = this.querySelector('#abono_monto_real');
+                    if (abonoRealField && abonoRealField.value === "") {
+                        abonoRealField.value = 0;
+                    }
+                    e.preventDefault();
+                    submitDynamicForm(this, panel);
+                });
+            });
+        }
+        window.initDynamicPanelHandlers = initDynamicPanelHandlers;
+        window.submitDynamicForm = submitDynamicForm;
+
         document.getElementById('ts-modal-confirm')?.addEventListener('click', () => {
             if (_pendingForm) {
+                const dynamicPanel = _pendingForm.closest('#mantenimiento-dynamic-panel, #electronica-dynamic-panel');
+                if (dynamicPanel) {
+                    const formToSubmit = _pendingForm;
+                    closeTsModal();
+                    submitDynamicForm(formToSubmit, dynamicPanel);
+                    return;
+                }
+                try {
+                    sessionStorage.setItem('ts_scroll_pos_' + window.location.pathname, window.scrollY);
+                } catch(e) {}
                 _pendingForm.setAttribute('data-confirmed', 'true');
                 _pendingForm.submit();
             }
         });
 
-        // Interceptar formularios con confirmación
+        // Interceptar formularios con confirmación y restaurar posición de scroll
         document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar paneles dinámicos existentes
+            document.querySelectorAll('#mantenimiento-dynamic-panel, #electronica-dynamic-panel').forEach(panel => {
+                initDynamicPanelHandlers(panel);
+            });
+
+            // Restaurar posición de scroll si venimos de una acción en la misma página
+            const savedScroll = sessionStorage.getItem('ts_scroll_pos_' + window.location.pathname);
+            if (savedScroll !== null) {
+                sessionStorage.removeItem('ts_scroll_pos_' + window.location.pathname);
+                const targetY = parseInt(savedScroll, 10);
+                window.scrollTo({ top: targetY, behavior: 'instant' });
+                setTimeout(() => {
+                    window.scrollTo({ top: targetY, behavior: 'instant' });
+                }, 40);
+            }
+
             document.querySelectorAll('form[data-confirm-delete]').forEach(form => {
                 form.addEventListener('submit', function(e) {
                     if (!this.getAttribute('data-confirmed')) {
@@ -363,6 +498,13 @@
                 });
             });
         });
+
+        // Guardar scroll position antes de enviar cualquier formulario
+        window.addEventListener('submit', function() {
+            try {
+                sessionStorage.setItem('ts_scroll_pos_' + window.location.pathname, window.scrollY);
+            } catch(e) {}
+        }, true);
 
         // ─── SIDEBAR HOVER → EMPUJAR CONTENIDO ───────────────────────
         (function() {

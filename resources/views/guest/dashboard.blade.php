@@ -89,8 +89,26 @@
                                     <div><span class="font-bold text-slate-700 dark:text-slate-200">Marca:</span> {{ $m->equipo->marca ?? 'N/D' }}</div>
                                     <div><span class="font-bold text-slate-700 dark:text-slate-200">Serial:</span> {{ $m->equipo->serie ?? 'N/D' }}</div>
                                     <div class="sm:col-span-2"><span class="font-bold text-slate-700 dark:text-slate-200">Descripción:</span> {{ $m->descripcion ?? 'Sin detalles' }}</div>
+                                    
+                                    @if($m->stocks && $m->stocks->isNotEmpty())
                                     <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200 dark:border-slate-700">
-                                        <span class="text-lg font-black text-blue-600 dark:text-blue-400">Total: ${{ number_format($m->costo, 0, ',', '.') }}</span>
+                                        <span class="font-bold text-slate-700 dark:text-slate-200 block mb-2">📦 Repuestos / Insumos:</span>
+                                        <div class="space-y-1.5 pl-1">
+                                            @foreach($m->stocks as $repuesto)
+                                                <div class="flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-gray-200/60 dark:border-slate-700/60">
+                                                    <span class="text-slate-700 dark:text-slate-300 font-medium">
+                                                        {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
+                                                    </span>
+                                                    <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    @endif
+
+                                    <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200 dark:border-slate-700 flex justify-between items-center">
+                                        <span class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">Costo Total:</span>
+                                        <span class="text-lg font-black text-blue-600 dark:text-blue-400">${{ number_format($m->costo, 0, ',', '.') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -126,8 +144,26 @@
                                     <div><span class="font-bold text-slate-700 dark:text-slate-200">Marca:</span> {{ $e->equipo->marca ?? 'N/D' }}</div>
                                     <div><span class="font-bold text-slate-700 dark:text-slate-200">Serial:</span> {{ $e->equipo->serie ?? 'N/D' }}</div>
                                     <div class="sm:col-span-2"><span class="font-bold text-slate-700 dark:text-slate-200">Descripción:</span> {{ $e->descripcion_problema ?? 'Sin detalles' }}</div>
+                                    
+                                    @if($e->stocks && $e->stocks->isNotEmpty())
                                     <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200 dark:border-slate-700">
-                                        <span class="text-lg font-black text-purple-600 dark:text-purple-400">Total: ${{ number_format($e->costo, 0, ',', '.') }}</span>
+                                        <span class="font-bold text-slate-700 dark:text-slate-200 block mb-2">📦 Repuestos / Insumos:</span>
+                                        <div class="space-y-1.5 pl-1">
+                                            @foreach($e->stocks as $repuesto)
+                                                <div class="flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-gray-200/60 dark:border-slate-700/60">
+                                                    <span class="text-slate-700 dark:text-slate-300 font-medium">
+                                                        {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
+                                                    </span>
+                                                    <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    @endif
+
+                                    <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200 dark:border-slate-700 flex justify-between items-center">
+                                        <span class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">Costo Total:</span>
+                                        <span class="text-lg font-black text-purple-600 dark:text-purple-400">${{ number_format($e->costo, 0, ',', '.') }}</span>
                                     </div>
                                 </div>
                             </div>

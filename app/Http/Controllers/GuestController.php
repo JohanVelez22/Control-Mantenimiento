@@ -25,7 +25,7 @@ class GuestController extends Controller
         $electronicas = collect();
 
         if ($cliente) {
-            $mantenimientos = Mantenimiento::with(['equipo', 'tecnico'])
+            $mantenimientos = Mantenimiento::with(['equipo', 'tecnico', 'stocks'])
                 ->whereHas('equipo', function($q) use ($cliente) {
                     $q->where('cliente_id', $cliente->id);
                 })
@@ -33,7 +33,7 @@ class GuestController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            $electronicas = Electronica::with(['equipo', 'tecnico'])
+            $electronicas = Electronica::with(['equipo', 'tecnico', 'stocks'])
                 ->whereHas('equipo', function($q) use ($cliente) {
                     $q->where('cliente_id', $cliente->id);
                 })
@@ -78,7 +78,7 @@ class GuestController extends Controller
         }
 
         if ($tipo === 'mantenimiento') {
-            $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico'])
+            $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico', 'stocks'])
                 ->where('anulado', false)
                 ->where(function($q) use ($query, $es_numero) {
                     $q->where('id_orden', 'LIKE', "%{$query}%");
@@ -90,7 +90,7 @@ class GuestController extends Controller
                     });
                 })->get();
         } else {
-            $electronicas = Electronica::with(['equipo.cliente', 'tecnico'])
+            $electronicas = Electronica::with(['equipo.cliente', 'tecnico', 'stocks'])
                 ->where('anulado', false)
                 ->where(function($q) use ($query, $es_numero) {
                     $q->where('id_orden', 'LIKE', "%{$query}%");

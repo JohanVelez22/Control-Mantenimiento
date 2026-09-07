@@ -226,4 +226,55 @@ class GuestDashboardTest extends TestCase
         
         $response->assertSessionHasErrors('tipo');
     }
+
+    public function test_guest_dashboard_shows_repuestos_breakdown(): void
+    {
+        $guest = $this->createGuestUser();
+        [$cliente, $equipo] = $this->createClienteWithEquipo($guest->id);
+        
+        $tecnico = Tecnico::create([
+            'nombre' => 'Tecnico Repuestos',
+            'identificacion' => 'TEC-REP',
+            'especialidad' => 'Hardware',
+            'telefono' => '3001112233',
+            'movil' => '3001112233',
+            'email' => 'tecnicorep@test.com',
+        ]);
+        
+        $mantenimiento = Mantenimiento::create([
+            'equipo_id' => $equipo->id,
+            'id_orden' => 'ORD-REP-1',
+            'fecha_entrada' => now(),
+            'tipo' => 'correctivo',
+            'reparacion' => 'hardware',
+            'descripcion' => 'Cambio de repuesto',
+            'costo' => 250000,
+            'estado' => 'pendiente',
+            'tecnico_id' => $tecnico->id,
+            'user_id' => $guest->id,
+            'anulado' => false,
+        ]);
+
+        $categoria = \App\Models\CategoriaStock::create(['nombre' => 'Discos', 'tipo' => 'categoria']);
+        $stock = \App\Models\Stock::create([
+            'producto' => 'Disco SSD 1TB',
+            'categoria_id' => $categoria->id,
+            'cantidad' => 10,
+            'precio_compra' => 100000,
+            'utilidad' => 50,
+            'precio_venta' => 150000,
+            'user_id' => $guest->id,
+        ]);
+
+        $mantenimiento->stocks()->attach($stock->id, [
+            'cantidad' => 1,
+            'precio_unitario' => 150000,
+        ]);
+
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&query=' . $cliente->identificacion);
+        
+        $response->assertOk();
+        $response->assertSee('Disco SSD 1TB');
+        $response->assertSee('Repuestos / Insumos');
+    }
 }
