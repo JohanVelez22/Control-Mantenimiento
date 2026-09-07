@@ -35,6 +35,14 @@ class MovimientoCajaController extends Controller
         $query->whereDate('fecha', '>=', $fecha_desde);
         $query->whereDate('fecha', '<=', $fecha_hasta);
 
+        if ($request->filled('tipo_entidad') && $request->tipo_entidad !== 'todos') {
+            if ($request->tipo_entidad === 'persona') {
+                $query->whereNotNull('persona')->where('persona', '!=', '');
+            } elseif ($request->tipo_entidad === 'empresa') {
+                $query->whereNotNull('empresa')->where('empresa', '!=', '');
+            }
+        }
+
         if ($request->filled('search')) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {
@@ -53,6 +61,13 @@ class MovimientoCajaController extends Controller
         $totalesQuery = MovimientoCaja::where('estado', 'activo')->where('anulado', false);
         if ($request->filled('tipo_movimiento') && $request->tipo_movimiento !== 'todos') $totalesQuery->where('tipo_movimiento', $request->tipo_movimiento);
         if ($request->filled('tipo_pago') && $request->tipo_pago !== 'todos')       $totalesQuery->where('tipo_pago', $request->tipo_pago);
+        if ($request->filled('tipo_entidad') && $request->tipo_entidad !== 'todos') {
+            if ($request->tipo_entidad === 'persona') {
+                $totalesQuery->whereNotNull('persona')->where('persona', '!=', '');
+            } elseif ($request->tipo_entidad === 'empresa') {
+                $totalesQuery->whereNotNull('empresa')->where('empresa', '!=', '');
+            }
+        }
         
         $totalesQuery->whereDate('fecha', '>=', $fecha_desde);
         $totalesQuery->whereDate('fecha', '<=', $fecha_hasta);

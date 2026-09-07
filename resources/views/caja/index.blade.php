@@ -39,26 +39,31 @@
  </h2>
  <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Gestión de ingresos, egresos y flujo de efectivo</p>
  </div>
- <div class="flex flex-wrap items-center gap-2">
- @if(!auth()->user()->isInvitado())
- <div class="flex gap-3">
- <a href="{{ route('conceptos.index') }}" class="btn-concepts" style="padding: 9px 18px; font-size: 13px;">
- 🏷️ <span class="hidden sm:inline">Gestionar Conceptos</span>
- </a>
- <a href="{{ route('caja.create') }}" class="btn-primary flex items-center gap-2 shadow-lg shadow-indigo-500/30" style="padding: 9px 18px; font-size: 13px;">
- <span>➕</span> <span class="hidden sm:inline">Nuevo Movimiento</span>
- </a>
- </div>
- @endif
- </div>
+   <div class="flex flex-wrap items-center gap-3">
+   <div class="relative">
+    <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
+    <input type="text" id="search-caja" placeholder="Buscar en caja..." class="glass-input pl-9 w-48 sm:w-64 font-semibold" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); }">
+   </div>
+  @if(!auth()->user()->isInvitado())
+  <div class="flex gap-3">
+  <a href="{{ route('conceptos.index') }}" class="btn-concepts" style="padding: 9px 18px; font-size: 13px;">
+  🏷️ <span class="hidden sm:inline">Gestionar Conceptos</span>
+  </a>
+  <a href="{{ route('caja.create') }}" class="btn-primary flex items-center gap-2 shadow-lg shadow-indigo-500/30" style="padding: 9px 18px; font-size: 13px;">
+  <span>➕</span> <span class="hidden sm:inline">Nuevo Movimiento</span>
+  </a>
+  </div>
+  @endif
+  </div>
  </div>
 
  {{-- Filtros --}}
   <form action="{{ route('caja.index') }}" method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-5 glass-card no-print relative z-50">
- <div class="relative">
- <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
- <input type="text" name="search" value="{{ request('search') }}" placeholder="Persona o empresa..." class="glass-input pl-9 w-48 sm:w-64 text-sm h-[42px]">
- </div>
+ <select name="tipo_entidad" class="glass-input w-48 text-sm font-semibold no-search h-[42px]">
+  <option value="todos" {{ request('tipo_entidad') === 'todos' || !request('tipo_entidad') ? 'selected' : '' }}>Todas las entidades</option>
+  <option value="persona" {{ request('tipo_entidad') === 'persona' ? 'selected' : '' }}>👤 Solo Personas</option>
+  <option value="empresa" {{ request('tipo_entidad') === 'empresa' ? 'selected' : '' }}>🏢 Solo Empresas</option>
+  </select>
  <select name="tipo_movimiento" class="glass-input w-48 text-sm font-semibold no-search h-[42px]">
  <option value="todos" {{ request('tipo_movimiento') === 'todos' || !request('tipo_movimiento') ? 'selected' : '' }}>Todos los tipos</option>
  <option value="ingreso" {{ request('tipo_movimiento') === 'ingreso' ? 'selected' : '' }}>📈 Ingreso</option>
@@ -79,7 +84,7 @@
  </form>
 {{-- Tabla adaptable --}}
 <div class="overflow-x-auto pb-2">
-<table class="ts-table responsive-table w-full">
+<table id="tabla-caja" class="ts-table responsive-table w-full">
 <thead>
 <tr>
 <th class="text-center">Código</th>
@@ -199,10 +204,15 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
 </div>
 
 <script>
- document.addEventListener('keydown', e => { 
-     if (e.key === 'Escape') {
-         closeAnularModal();
-     }
- });
+    document.addEventListener('DOMContentLoaded', () => {
+        if(typeof filterTable === 'function') {
+            filterTable('search-caja', 'tabla-caja');
+        }
+    });
+    document.addEventListener('keydown', e => { 
+        if (e.key === 'Escape') {
+            closeAnularModal();
+        }
+    });
 </script>
 @endsection
