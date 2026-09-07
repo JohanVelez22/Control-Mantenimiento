@@ -114,19 +114,9 @@ class DashboardController extends Controller
         $dataEquipos = [];
         $dataMantenimientos = [];
         $dataIngresos = [];
-        $dataIngresosAcumulados = [];
         $dataVentas = [];
         $dataCompras = [];
         $dataEgresos = [];
-
-        // Para el acumulado: saldo histórico de movimientos de caja hasta la fecha de inicio
-        $saldoAnterior = \App\Models\MovimientoCaja::where('estado', 'activo')
-            ->where('anulado', false)
-            ->where('fecha', '<', $startDate)
-            ->selectRaw('SUM(CASE WHEN tipo_movimiento = "ingreso" THEN monto ELSE -monto END) as total')
-            ->value('total') ?? 0;
-
-        $acumulado = (float) $saldoAnterior;
 
         for ($i = 0; $i < 7; $i++) {
             $date = Carbon::today()->subDays(6 - $i);
@@ -139,12 +129,10 @@ class DashboardController extends Controller
             $comprasDia = (float) ($comprasPorDia[$key] ?? 0);
             $egresosDia = (float) ($egresosPorDia[$key] ?? 0);
 
-            $dataIngresos[]           = $ingresoDia;
-            $acumulado               += $ingresoDia;
-            $dataIngresosAcumulados[] = $acumulado;
-            $dataVentas[]           = $ventasDia;
-            $dataCompras[]          = $comprasDia;
-            $dataEgresos[]          = $egresosDia;
+            $dataIngresos[] = $ingresoDia;
+            $dataVentas[]   = $ventasDia;
+            $dataCompras[]  = $comprasDia;
+            $dataEgresos[]  = $egresosDia;
         }
 
         // Estadísticas de Electrónica consolidadas (1 query en lugar de 4)
@@ -183,7 +171,6 @@ class DashboardController extends Controller
             'equipos'                 => $dataEquipos,
             'mantenimientos'          => $dataMantenimientos,
             'ingresos'                => $dataIngresos,
-            'ingresosAcumulados'      => $dataIngresosAcumulados,
             'ventas'                  => $dataVentas,
             'compras'                 => $dataCompras,
             'egresos'                 => $dataEgresos,

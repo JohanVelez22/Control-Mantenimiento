@@ -20,7 +20,7 @@
             {{-- Cliente / Proveedor --}}
             <div class="md:col-span-2 min-w-0">
                 <label class="field-label">Cliente / Proveedor *</label>
-                <select name="facturable_global" required class="glass-input font-bold">
+                <select name="facturable_global" required class="glass-input no-search font-bold" data-placeholder="Seleccionar...">
                     <option value="">Seleccionar...</option>
                     @foreach($proveedores as $p)
                         <option value="Proveedor:{{ $p->id }}" {{ ($factura->facturable_type === 'App\Models\Proveedor' && $factura->facturable_id == $p->id) ? 'selected' : '' }}>
@@ -73,7 +73,7 @@
                                         @if($item->stock_id)
                                             <div class="flex flex-col gap-1">
                                                 <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto Stock</span>
-                                                <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-orange-500">
+                                                <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
                                                     <option value="">Seleccionar producto...</option>
                                                     @foreach($stocks as $s)
                                                         <option value="{{ $s->id }}" data-precio="{{ $factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta }}" {{ $item->stock_id == $s->id ? 'selected' : '' }}>
@@ -154,7 +154,7 @@ function agregarFila() {
         <td>
             <div class="flex flex-col gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto Stock</span>
-                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-blue-500" onchange="actualizarPrecio(this)">
+                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-blue-500" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
                     ${optionsHtml}
                 </select>
             </div>

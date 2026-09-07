@@ -78,7 +78,7 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
 
     if (val === 'stock') {
         tdDesc.innerHTML = `
-            <select class="stock-select glass-input py-1.5" required>
+            <select class="stock-select glass-input no-search py-1.5" required data-placeholder="Seleccionar producto del stock...">
                 ${getStockOptions()}
             </select>
             <input type="hidden" name="items[${idx}][item_id]" class="stock-id-input">

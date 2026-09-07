@@ -8,7 +8,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div class="md:col-span-2">
             <label class="field-label flex items-center gap-2"><span>👤</span> Cliente Propietario *</label>
-            <select name="cliente_id" required class="glass-input mt-1 text-sm font-bold">
+            <select name="cliente_id" required class="glass-input no-search mt-1 text-sm font-bold" data-placeholder="Seleccione un cliente...">
                 <option value="">Seleccione un cliente...</option>
                 @foreach($clientes as $cliente)
                     <option value="{{ $cliente->id }}" {{ $selCliente == $cliente->id ? 'selected' : '' }}>

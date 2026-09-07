@@ -20,7 +20,7 @@
  </div>
  <div class="w-full flex-1 min-w-0">
  <label class="field-label">Cliente / Proveedor *</label>
- <select name="facturable_global" required class="glass-input focus:ring-emerald-500">
+ <select name="facturable_global" required class="glass-input no-search focus:ring-emerald-500" data-placeholder="Seleccionar...">
  <option value="">Seleccionar...</option>
  @foreach($clientes as $c)
  <option value="Cliente:{{ $c->id }}" {{ old('facturable_global') == "Cliente:{$c->id}" ? 'selected' : '' }}>
@@ -67,8 +67,8 @@
  <tbody id="items-body">
 <tr class="item-row bg-transparent">
   <td>
-  <select name="items[0][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500">
-  <option value="">Seleccionar producto...</option>
+   <select name="items[0][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
+   <option value="">Seleccionar producto...</option>
   @foreach($stocks as $s)
   <option value="{{ $s->id }}" data-precio="{{ $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
   {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
@@ -156,8 +156,8 @@ function agregarFila() {
   tr.className = 'item-row bg-transparent border-t border-gray-200 dark:border-gray-700/50';
   tr.innerHTML = `
   <td>
-  <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500">
-  <option value="">Seleccionar producto...</option>
+   <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
+   <option value="">Seleccionar producto...</option>
   ${stockSelectOptions()}
   </select>
   </td>

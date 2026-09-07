@@ -15,7 +15,7 @@
     {{-- Equipo --}}
     <div class="md:col-span-2 min-w-0 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
         <label class="field-label flex items-center gap-2"><span>💻</span> Seleccionar Dispositivo / Equipo *</label>
-        <select name="equipo_id" required class="glass-input text-sm font-bold mt-1">
+        <select name="equipo_id" required class="glass-input no-search text-sm font-bold mt-1" data-placeholder="Seleccione un equipo...">
             <option value="">Seleccione un equipo...</option>
             @foreach($equipos as $equipo)
                 <option value="{{ $equipo->id }}" {{ (old('equipo_id', $electronica->equipo_id ?? '') == $equipo->id) ? 'selected' : '' }}>
@@ -29,7 +29,7 @@
     {{-- Técnico --}}
     <div class="min-w-0">
         <label class="field-label flex items-center gap-2"><span>👨🏻‍🔧</span> Técnico Asignado *</label>
-        <select name="tecnico_id" required class="glass-input mt-1">
+        <select name="tecnico_id" required class="glass-input no-search mt-1" data-placeholder="Seleccione un técnico...">
             <option value="">Seleccione un técnico...</option>
             @foreach($tecnicos as $t)
                 <option value="{{ $t->id }}" {{ (old('tecnico_id', $electronica->tecnico_id ?? '') == $t->id) ? 'selected' : '' }}>

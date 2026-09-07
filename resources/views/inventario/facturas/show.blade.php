@@ -54,7 +54,7 @@
   </div>
  
  <div class="flex items-center gap-3 shrink-0">
- @if($factura->estado !== 'anulada' && $factura->saldo_pendiente > 0 && !auth()->user()->isInvitado() && $movimientoPadre)
+ @if($factura->estado !== 'anulada' && !auth()->user()->isInvitado() && $movimientoPadre)
   <a href="{{ route('caja.edit', $movimientoPadre->id) }}" class="btn-ghost py-2 px-3 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-white/40 border border-gray-200 dark:border-white/10 rounded-xl flex items-center gap-1.5 shadow-sm" title="Ver detalle del movimiento en el módulo de Caja">
   📦 Ver en Caja
   </a>
@@ -242,7 +242,7 @@
 
             <div>
                 <label class="field-label">Tipo de Pago *</label>
-                <select name="tipo_pago" required class="glass-input">
+                <select name="tipo_pago" required class="glass-input no-search">
                     <option value="efectivo">💵 Efectivo</option>
                     <option value="consignacion">🏦 Banco / Transferencia</option>
                 </select>

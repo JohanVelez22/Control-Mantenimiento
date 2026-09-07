@@ -54,8 +54,8 @@
         <div class="lg:col-span-1 space-y-6">
             @if(!$movimiento->parent_id && $movimiento->monto_total > 0)
                 {{-- Resumen de Saldos --}}
-                <div class="glass-card hover-glow glass-card-amber p-6 relative overflow-hidden group">
-                    <h3 class="text-lg font-black text-slate-800 dark:text-white mb-4 z-10 flex items-center gap-2">📊 Resumen de Saldos</h3>
+                <div class="glass-card p-6">
+                    <h3 class="text-lg font-black text-slate-800 dark:text-white mb-4 flex items-center gap-2">📊 Resumen de Saldos</h3>
                     
                     <div class="space-y-3 text-sm z-10 relative">
                         <div class="flex justify-between border-b border-gray-100 dark:border-white/5 pb-2">
@@ -97,7 +97,7 @@
 
                             <div>
                                 <label class="field-label">Tipo de Pago *</label>
-                                <select name="tipo_pago" required class="glass-input">
+                                <select name="tipo_pago" required class="glass-input no-search">
                                     <option value="efectivo">💵 Efectivo</option>
                                     <option value="consignacion">🏦 Banco / Transferencia</option>
                                 </select>

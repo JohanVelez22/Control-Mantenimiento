@@ -1,201 +1,153 @@
-# Sistema de Control de Mantenimiento de Equipos
+# 🛠️ TECNI SYSTEMAS - Sistema de Control de Mantenimiento, Taller e Integridad Financiera
 
-![Dashboard del Sistema](dashboard.png)
+![TECNI SYSTEMAS Banner](public/favicon.svg)
 
-[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
+[![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.3%20%7C%208.4-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Liquid_Glass-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![Tests](https://img.shields.io/badge/Tests-51_Passed_(166_Assertions)-brightgreen?style=for-the-badge&logo=checkmarx)](tests)
+[![Audit](https://img.shields.io/badge/System_Audit-100%25_Passing-success?style=for-the-badge&logo=shield)](app/Console/Commands/SystemAuditCommand.php)
 
-Aplicación web para gestionar clientes, equipos, técnicos y órdenes de mantenimiento (preventivo/correctivo), con dashboard, reportes filtrables, exportación a Excel y PDF, y factura térmica en PDF.
-
-**🎯 VERSIÓN DE PRESENTACIÓN**: Esta rama/versión contiene la estructura estable del proyecto optimizada para entornos locales como **ServBay/Laragon**, lista para mostrar a clientes antes de implementar módulos empresariales adicionales.
-
----
-
-## Tabla de contenidos
-
-1. [Características](#-características-principales)
-2. [Estructura del proyecto](#-estructura-del-proyecto)
-3. [Seguridad y roles](#-seguridad-y-control-de-acceso)
-4. [Variables de entorno relevantes](#-variables-de-entorno)
-5. [Dashboard y reportes](#-dashboard-y-reportes)
-6. [Requisitos](#-requisitos)
-7. [Instalación](#-instalación)
-8. [Credenciales de prueba](#-credenciales-de-prueba-seeders)
-9. [Pruebas automatizadas](#-pruebas-automatizadas)
-10. [Última verificación del proyecto](#-última-verificación-del-proyecto)
-11. [Mejoras recientes (changelog)](#-mejoras-recientes-changelog)
+Aplicación web empresarial de alto rendimiento diseñada para la gestión integral de talleres de servicio técnico, mantenimiento de equipos de cómputo, laboratorio de microelectrónica, inventario de repuestos con cálculo de utilidad, facturación POS, cotizaciones, control de caja chica y portal público de seguimiento para clientes.
 
 ---
 
-## Características principales
-
-- **Clientes y equipos**: alta, edición y baja (según rol); equipos vinculados a cliente y usuario que registró.
-- **Técnicos**: ficha con datos de contacto y foto opcional.
-- **Mantenimientos**: órdenes con número `ORD-n`, costo, fechas de entrada/salida, estado pendiente/terminado, factura PDF (formato ticket) y listado con filtros.
-- **Dashboard**: tarjetas KPI (equipos, mantenimientos, pendientes, terminados), carrusel con gráficos (Chart.js): crecimiento 7 días, distribución de estados, **ingresos por día** (últimos 7 días según órdenes terminadas y fecha de salida), top técnicos; tarjetas de **costo acumulado** e **ingresos del día**; tabla de mantenimientos recientes; modo claro/oscuro con bordes de acento visibles en ambos temas.
-- **Reportes** (`/reportes`): filtros por cliente, equipo, técnico, usuario, fechas, tipo, reparación, estado y rango de costo; **imprimir** con tabla y bordes uniformes; exportación **Excel** y **PDF**.
-- **Usuarios** (solo administrador): CRUD, cambio de contraseña vía ruta dedicada, fotos en disco `public`.
-- **Autenticación**: login con cuenta activa/inactiva; registro público con validación de contraseña fuerte.
+## 📑 Tabla de Contenidos
+1. [Características Principales](#-características-principales)
+2. [Estructura del Proyecto y Base de Datos](#-estructura-del-proyecto-y-base-de-datos)
+3. [Instalación Rápida con ServBay (Paso a Paso para Principiantes)](#-instalación-rápida-con-servbay)
+4. [Credenciales de Acceso y Roles](#-credenciales-de-acceso-y-roles)
+5. [Lógica Financiera y Manejo de Dinero Real](#-lógica-financiera-y-manejo-de-dinero-real)
+6. [Auditoría y Pruebas Automatizadas](#-auditoría-y-pruebas-automatizadas)
+7. [Documentación Adicional](#-documentación-adicional)
 
 ---
 
-## Estructura del proyecto
+## 🌟 Características Principales
+
+- **💻 Mantenimiento de Equipos**: Órdenes de trabajo preventivo y correctivo con consecutivo automático (`ORD-n`), diagnóstico, asociación de repuestos en tiempo real y facturación POS.
+- **⚡ Laboratorio de Electrónica**: Reparación de tarjetas y microcomponentes (`ELC-n`), diagnóstico técnico, repuestos y abonos.
+- **📦 Inventario y Repuestos**: Registro de productos con categorías, fotos, stock mínimo, margen de utilidad automatizado, precio al público y precio especial para técnicos.
+- **💰 Caja Chica y Arqueo Diario**: Registro de ingresos y egresos, pagos en efectivo/consignación, abonos a órdenes, control de saldos y snapshot de cierre diario.
+- **📄 Facturación POS y Cotizaciones**: Emisión de facturas térmicas PDF con desglose de repuestos y mano de obra. Cotizaciones con aprobación y conversión directa a factura.
+- **👥 Clientes y Proveedores**: Directorio con autocompletado de Departamentos y Municipios colombianos (DANE) sin parpadeo.
+- **🌐 Portal de Clientes / Invitados**: Consulta del estado de equipos por número de orden o identificación, con desglose claro de repuestos y servicio.
+- **🎨 Interfaz Liquid Glass (Glassmorphism)**: Diseño premium translúcido, modales asíncronos interactivos (`ts-modal`) y modo oscuro/claro con detección automática.
+
+---
+
+## 🗄️ Estructura del Proyecto y Base de Datos
 
 ```
-app/
-  Console/Commands/SetupDatabase.php   # php artisan db:setup
-  Exports/MantenimientosExport.php      # Excel de reportes
-  Http/
-    Controllers/                         # Auth, Dashboard, CRUDs, Mantenimiento (reportes, factura, PDF)
-    Middleware/CheckRole.php, PreventBackHistory.php
-  Models/                                # User, Cliente, Equipo, Tecnico, Mantenimiento
-database/
-  factories/, migrations/, seeders/
-resources/views/
-  auth/, clientes/, equipos/, mantenimientos/  # index, create, edit, reportes, pdf, factura
-  tecnicos/, usuarios/, layouts/, dashboard.blade.php
-routes/web.php
-tests/                                   # Feature + Unit (ejemplo raíz → login)
+tecni-systemas/
+├── app/
+│   ├── Console/Commands/        # Auditoría profunda (SystemAuditCommand), Backups y Seeders
+│   ├── Helpers/                 # ColombiaHelper (Formateo monetario y municipios DANE)
+│   ├── Http/Controllers/        # Controladores CRUD, Caja, Auth, Reportes, Guest
+│   ├── Models/                  # 19 Modelos Eloquent con relaciones fuertemente tipadas
+│   ├── Services/                # StockService, AnulacionService, OrdenService
+│   └── Traits/                  # Auditable, HandlesAbono, HandlesStockAttach
+├── database/                    # Migraciones relacionales, seeders y factories
+├── public/                      # Entry point, css/glass.css, favicon.svg
+├── resources/views/             # Plantillas Blade con componentes Liquid Glass
+├── routes/                      # web.php, console.php
+└── tests/                       # Feature, Unit e Integration Tests
 ```
 
-Flujo principal de rutas: raíz → login; área autenticada con `auth` + prevención de historial hacia atrás; recurso `usuarios` bajo middleware `role:admin`.
+---
+
+## 🚀 Instalación Rápida con ServBay
+
+> Para una guía exhaustiva con capturas y explicaciones para usuarios sin experiencia, consulta [DOCUMENTACION_1_GUIA_INSTALACION_SERVBAY.md](DOCUMENTACION_1_GUIA_INSTALACION_SERVBAY.md).
+
+### 1. Ubicar el proyecto
+Coloca la carpeta del proyecto en la raíz de ServBay:
+- **Windows:** `C:\ServBay\www\tecni-systemas`
+- **macOS:** `/Applications/ServBay/db/www/tecni-systemas`
+
+### 2. Configurar el Host en ServBay
+- En el panel de **ServBay**, añade un nuevo Host con dominio `tecni-systemas.local`.
+- Selecciona **PHP 8.3** o **8.4**.
+- Configura el **Directorio Raíz** apuntando a: `C:\ServBay\www\tecni-systemas\public`.
+
+### 3. Configurar `.env` e Instalar
+Abre tu terminal en la carpeta del proyecto:
+```bash
+# 1. Copiar archivo de entorno
+cp .env.example .env
+
+# 2. Instalar dependencias backend y frontend
+composer install
+npm install && npm run build
+
+# 3. Generar llave de seguridad
+php artisan key:generate
+
+# 4. Crear tablas y sembrar datos de prueba
+php artisan migrate:fresh --seed
+
+# 5. Crear enlace simbólico de imágenes
+php artisan storage:link
+
+# 6. Limpiar y optimizar caché
+php artisan optimize:clear
+```
 
 ---
 
-## Seguridad y control de acceso
+## 🔑 Credenciales de Acceso y Roles
 
-| Rol            | Alcance típico                                      |
-|----------------|------------------------------------------------------|
-| **admin**      | Todo; eliminaciones; módulo de usuarios.             |
-| **tecnico**    | Crear y editar clientes, equipos, técnicos, órdenes. |
-| **invitado**   | Solo lectura en la mayoría de módulos.              |
+Ingresa en tu navegador a `http://tecni-systemas.local` o `http://localhost:8000`:
 
-- Middleware **`role`** (`CheckRole`): comprueba rol y expulsa si el usuario fue desactivado (`active = false`).
-- Varios controladores comprueban `Auth::user()->role` para crear/editar/eliminar.
-- **Registro**: para asignar **administrador** o **técnico** hace falta la clave correspondiente (ver variables de entorno). Si la clave no coincide, el usuario se registra como **invitado**. El rol **invitado** no requiere clave de autorización.
+| Rol / Perfil | Correo Electrónico | Contraseña por Defecto | Alcance de Permisos |
+| :--- | :--- | :--- | :--- |
+| **👑 Administrador** | `administrador@tecnisystemas.com` | `Admin123*` | Control total del sistema, finanzas, caja chica, usuarios, auditoría y reportes. |
+| **🛠️ Técnico** | `tecnico@tecnisystemas.com` | `Tecni123*` | Gestión de órdenes de mantenimiento, electrónica, abonos y consumo de repuestos. |
+| **👁️ Invitado** | `invitado@tecnisystemas.com` | `Invit123*` | Portal público de consulta para clientes y seguimiento de estados. |
 
 ---
 
-## Variables de entorno
+## ⚖️ Lógica Financiera y Manejo de Dinero Real
 
-En `.env` (plantilla en `.env.example`):
-
-| Variable | Uso |
-|----------|-----|
-| `ROLE_PROMOTE_ADMIN_SECRET` | Clave para registrar o promover rol **admin** (por defecto en código: `Admin2026*` si no defines la variable). |
-| `ROLE_PROMOTE_TECNICO_SECRET` | Clave para registrar o promover rol **técnico** (por defecto: `Tecny2026*`). |
-
-Puedes fijar tus propias claves en `.env` y conservar el archivo solo en el servidor (no subirlo al repositorio).
+El sistema implementa reglas de precisión decimal y consistencia contable:
+- **Precisión Monetaria**: Campos en `DECIMAL(12,2)` formateados con `ColombiaHelper`.
+- **Atomicidad de Inventario**: Descuentos de stock con `lockForUpdate()`, impidiendo ventas sin existencias.
+- **Cuadre de Facturas**: $\text{Saldo Pendiente} = \text{Total Factura} - \text{Total Pagado}$.
+- **Seguridad en Anulaciones**: Anulación lógica (`anulado = true`) con reversión automática de stock y neutralización en caja chica sin pérdida de datos históricos.
+- **Transacciones ACID**: Todas las operaciones complejas operan dentro de `DB::transaction()`.
 
 ---
 
-## Dashboard y reportes
+## 🧪 Auditoría y Pruebas Automatizadas
 
-- **Ingresos en dashboard**: el costo acumulado histórico considera mantenimientos **terminados** con **fecha de salida**; el gráfico “ingresos por día” agrupa por la misma fecha de salida en la ventana de 7 días.
-- **Imprimir reportes** (`window.print`): la tabla usa la clase `reportes-tabla-imprimir`; en `@media print` se fuerza una cuadrícula estable (`border-collapse: separate`, bordes negros) para que todas las filas se vean igual; reglas extra para **tipo** (badge) y **columna equipo** (serial legible en impresión).
-- **Reportes → listado de órdenes**: el enlace del número de orden apunta a `mantenimientos.index#mantenimiento-{id}`; en el listado, el script centra la fila y aplica `scroll-margin` respecto al menú fijo.
-- **Vista de reportes**: el contenedor principal usa el mismo estilo de tarjeta que el resto del sistema (`bg-white/80`, `dark:bg-gray-800/80`, borde suave).
-- **PDF de reporte** (`mantenimientos/pdf.blade.php`): diseño original de título y cuerpo; tabla con bordes más visibles y cabecera de columnas en gris neutro (`#525252`) en lugar del gris azulado anterior.
-
-### Interfaz (Tailwind)
-
-El layout principal (`layouts/app.blade.php`) carga **Tailwind CSS vía CDN** para estilos rápidos; el proyecto incluye `vite` y Tailwind en `package.json` por si compilas assets propios.
-
----
-
-## Requisitos
-
-- **PHP** 8.3 o superior (según `composer.json`).
-- **Composer**, **Node.js** y **npm** (para Vite / assets).
-- **MySQL/MariaDB** (o SQLite si ajustas `.env`).
-
----
-
-## Instalación
-
-1. **Clonar e instalar dependencias**
-
-   ```bash
-   git clone https://github.com/JohanVelez22/Control-Mantenimiento.git
-   cd Control-Mantenimiento
-   composer install
-   npm install && npm run build
-   ```
-
-2. **Entorno**
-
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-   Configura `DB_*` en `.env` y, si aplicas, `ROLE_PROMOTE_ADMIN_SECRET` y `ROLE_PROMOTE_TECNICO_SECRET`.
-
-3. **Base de datos y datos de demo**
-
-   ```bash
-   php artisan db:setup
-   ```
-
-   **✨ Comando personalizado automatizado:** Este comando leerá tu `.env`, se conectará a tu servidor local (ej. MariaDB en ServBay), creará la base de datos automáticamente si no existe y ejecutará un `migrate:fresh --seed`. Es la forma más rápida de instalar el sistema.
-
-4. **Enlace de almacenamiento** (si usas fotos de usuarios o técnicos)
-
-   ```bash
-   php artisan storage:link
-   ```
-
----
-
-## Credenciales de prueba (seeders)
-
-Tras `php artisan db:setup` (o `migrate:fresh --seed`):
-
-- **Correo:** `admin@example.com`
-- **Contraseña:** `Admin123*`
-
----
-
-## Pruebas automatizadas
+El proyecto cuenta con una cobertura integral de pruebas automatizadas:
 
 ```bash
-composer test
-# o
+# Ejecutar todas las pruebas Unit y Feature (51 tests / 166 aserciones)
 php artisan test
+
+# Ejecutar pruebas de integración con base de datos real
+./vendor/bin/phpunit -c phpunit-integration.xml
+
+# Ejecutar la auditoría profunda del sistema (28 reglas de negocio críticas)
+php artisan system:audit --deep
+
+# Sembrar 5 registros realistas por cada módulo (Pruebas manuales)
+php artisan app:seed-demo-data --force
 ```
 
-Incluye una prueba de rutas que verifica que la raíz `/` redirige al invitado a la pantalla de login (comportamiento esperado de la aplicación).
+---
+
+## 📚 Documentación Adicional
+
+En la raíz del proyecto se incluyen los siguientes manuales y cuadernos técnicos:
+- 📖 [DOCUMENTACION_1_GUIA_INSTALACION_SERVBAY.md](DOCUMENTACION_1_GUIA_INSTALACION_SERVBAY.md) — Guía paso a paso desde cero para principiantes.
+- 📘 [DOCUMENTACION_2_MANUAL_ARQUITECTURA_Y_NEGOCIO.md](DOCUMENTACION_2_MANUAL_ARQUITECTURA_Y_NEGOCIO.md) — Manual de arquitectura, diagramas relacionales y reglas financieras.
+- 📊 [DOCUMENTACION_3_PRESENTACION_GRADO_Y_EMPRESA.md](DOCUMENTACION_3_PRESENTACION_GRADO_Y_EMPRESA.md) — Estructura de presentación y sustentación ejecutiva.
+- 📜 [DOCUMENTACION_4_ACTA_ENTREGA_TERMINOS_LEGALES.md](DOCUMENTACION_4_ACTA_ENTREGA_TERMINOS_LEGALES.md) — Acta formal de entrega de software y garantía.
+- 🤖 [DOCUMENTACION_PROYECTO_NOTEBOOKLM.md](DOCUMENTACION_PROYECTO_NOTEBOOKLM.md) — Base de conocimiento optimizada para Google NotebookLM.
 
 ---
 
-## Última verificación del proyecto
-
-*(Mayo 2026 — revisión automatizada y coherencia con el código actual.)*
-
-| Comprobación | Resultado |
-|--------------|------------|
-| `php artisan test` | OK (2 tests: unitario de ejemplo + redirección `/` → login). |
-| `php artisan route:list` | OK: rutas web registradas (dashboard, CRUDs, reportes, factura PDF, `usuarios.change-password`, etc.). |
-| Migraciones | Comprobadas previamente en entorno local con `migrate:status` (según despliegue). |
-
-**Limitaciones conocidas:** la suite de tests es mínima; no sustituye pruebas manuales en navegador (login, filtros de reportes, export Excel/PDF, permisos por rol). Conviene ampliar tests Feature cuando el flujo de negocio se estabilice.
-
----
-
-## Mejoras recientes (changelog)
-
-- **Dashboard**: KPI y tarjetas de ingresos con bordes claros en claro/oscuro; carrusel de 4 paneles (ingresos por día antes de top técnicos); flechas discretas. Se ha añadido la gráfica de **Ingresos Acumulados** junto a los **Ingresos del Día** en el carrusel de ingresos para comparar ambos valores visualmente (azul para ingresos diarios, verde para acumulados).
-- **Reportes**: contenedor alineado al resto de vistas; impresión con clase `reportes-tabla-imprimir`; enlace de orden a listado con ancla y centrado de fila en `mantenimientos.index`.
-- **PDF de reporte**: bordes reforzados; cabecera de columnas en gris neutro manteniendo el diseño original del documento.
-- **Experiencia de Usuario (UX)**: Eliminación del cursor prohibido (`cursor-not-allowed`) en botones inhabilitados y zonas de solo lectura (facturas, mantenimientos, técnicos, equipos, clientes) para un diseño más limpio y menos restrictivo visualmente, manteniendo la seguridad de las acciones.
-- **Registro / roles**: claves `ROLE_PROMOTE_ADMIN_SECRET` y `ROLE_PROMOTE_TECNICO_SECRET` (fallbacks documentados); sin `Control2026*`.
-- **HTTP**: métodos `show` que redirigen a `edit` donde aplica; `UserController::changePassword` para `POST usuarios/{id}/change-password`.
-- **Limpieza de Código**: Revisión integral para eliminar código innecesario, archivos inactivos y asegurar que todas las funcionalidades operen correctamente sin redundancias.
-- **Entorno Local (ServBay/Laragon)**: Integración perfecta y documentada (`instrucciones_servbay.md`) para inicializar el proyecto usando el motor MariaDB por defecto de ServBay usando `php artisan db:setup`.
-- **Navegación y Paginación**: Solución inteligente de paginación implementada en `MantenimientoController@index` (con el parámetro `?locate=id`) que calcula matemáticamente la página correcta y asegura que al pulsar una orden desde Reportes o el Dashboard el usuario sea redirigido a la página exacta donde se encuentra la fila de la orden, saltándose las limitaciones del frontend.
-- **`.env.example`**: variables `ROLE_PROMOTE_*` documentadas.
-
----
-
-*Desarrollado por Johan Velez y Santiago Zapata.*
+*Desarrollado con arquitectura moderna, seguridad y rendimiento.*

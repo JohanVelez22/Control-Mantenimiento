@@ -47,7 +47,8 @@ class DatabaseSeeder extends Seeder
         );
 
         // Categorías base de Stock
-        \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Repuestos', 'tipo' => 'categoria']);
+        \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Tecnologia', 'tipo' => 'categoria']);
+        \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Repuestos', 'tipo' => 'subcategoria']);
         \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Accesorios', 'tipo' => 'categoria']);
         \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Servicios', 'tipo' => 'categoria']);
     }

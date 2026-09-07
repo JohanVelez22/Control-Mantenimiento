@@ -33,7 +33,11 @@ class OrdenService
         bool $lock = true
     ): string {
         $generar = function () use ($prefijo, $modelo, $columna, $pad, $lock) {
-            $query = $modelo::orderByDesc('id');
+            $query = $modelo::query();
+            if (!empty($prefijo)) {
+                $query->where($columna, 'like', "{$prefijo}%");
+            }
+            $query->orderByDesc('id');
             if ($lock) {
                 $query->lockForUpdate();
             }

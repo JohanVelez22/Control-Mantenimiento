@@ -711,9 +711,6 @@ function switchDashTab(tab) {
   const canvasIngresos = document.getElementById('ingresosChart');
   if (canvasIngresos) {
   const ctxIng = canvasIngresos.getContext('2d');
-  const gradientTeal = ctxIng.createLinearGradient(0, 0, 0, 400);
-  gradientTeal.addColorStop(0, 'rgba(20, 184, 166, 0.85)'); // green/teal
-  gradientTeal.addColorStop(1, 'rgba(20, 184, 166, 0.12)');
 
   const gradientBlueIng = ctxIng.createLinearGradient(0, 0, 0, 400);
   gradientBlueIng.addColorStop(0, 'rgba(59, 130, 246, 0.85)'); // blue
@@ -731,7 +728,6 @@ function switchDashTab(tab) {
   gradientRedEgreso.addColorStop(0, 'rgba(239, 68, 68, 0.85)'); // red
   gradientRedEgreso.addColorStop(1, 'rgba(239, 68, 68, 0.12)');
 
-  const ingresosAcumuladosData = (chartData && chartData.ingresosAcumulados) ? chartData.ingresosAcumulados : [];
   const ventasData = (chartData && chartData.ventas) ? chartData.ventas : [];
   const comprasData = (chartData && chartData.compras) ? chartData.compras : [];
   const egresosData = (chartData && chartData.egresos) ? chartData.egresos : [];
@@ -741,17 +737,6 @@ function switchDashTab(tab) {
   data: {
   labels: chartData.labels,
   datasets: [
-  {
-  label: 'Ingresos Acumulados',
-  data: ingresosAcumuladosData,
-  backgroundColor: gradientTeal,
-  borderColor: 'rgb(13, 148, 136)',
-  borderWidth: 2,
-  borderRadius: 6,
-  borderSkipped: false,
-  barPercentage: 0.55,
-  categoryPercentage: 0.85
-  },
   {
   label: 'Ingresos del Día',
   data: ingresosData,
