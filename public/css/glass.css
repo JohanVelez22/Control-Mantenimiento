@@ -165,6 +165,9 @@ body {
     radial-gradient(ellipse at 20% 10%, rgba(37, 99, 235, 0.15) 0%, transparent 55%),
     radial-gradient(ellipse at 80% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 55%),
     radial-gradient(ellipse at 60% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 45%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
   min-height: 100vh;
   transition: background-color 0.4s ease, background-image 0.4s ease;
 }
@@ -175,6 +178,9 @@ html.dark .ts-bg {
     radial-gradient(ellipse at 10% 10%, rgba(37, 99, 235, 0.35) 0%, transparent 60%),
     radial-gradient(ellipse at 90% 90%, rgba(6, 182, 212, 0.25) 0%, transparent 60%),
     radial-gradient(ellipse at 70% 30%, rgba(99, 102, 241, 0.20) 0%, transparent 50%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 /* --- PANEL VIDRIO BASE -------------------------------------------------- */

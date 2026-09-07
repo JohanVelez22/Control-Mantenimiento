@@ -3,7 +3,7 @@
 @section('title', 'Tecni Systemas')
 
 @section('content')
-<div class="min-h-screen relative flex items-center justify-center p-4 sm:p-8">
+<div class="min-h-screen relative overflow-hidden flex items-center justify-center p-4 sm:p-8">
 
     {{-- Botón modo oscuro --}}
     <div class="absolute top-5 right-5 z-50">
@@ -24,13 +24,13 @@
         <!-- Logo TECNI SYSTEMAS (Fuera del recuadro) -->
         <div class="text-center mt-0 mb-8">
             <div class="flex justify-center mb-3">
-                <div class="text-[32px] font-black tracking-widest font-logo flex items-center gap-2">
+                <div class="text-[24px] font-black tracking-widest font-logo flex items-center gap-2">
                     <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
                     <span class="text-slate-800 dark:text-white">SYSTEMAS</span>
                 </div>
             </div>
             <div>
-                <span style="font-size: 100px;" class="drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] text-slate-800 dark:text-white leading-none">💼</span>
+                <span style="font-size: 80px;" class="drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] text-slate-800 dark:text-white leading-none">💼</span>
             </div>
         </div>
 
