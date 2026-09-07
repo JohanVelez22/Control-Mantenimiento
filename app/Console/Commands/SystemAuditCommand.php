@@ -379,6 +379,23 @@ class SystemAuditCommand extends Command
         } finally {
             // REVERSIÓN LIMPIA: No dejar ningún dato de prueba en la base de datos real
             DB::rollBack();
+
+            // Restaurar AUTO_INCREMENT al valor real (1 si está vacía o max(id)+1)
+            $tablesToReset = [
+                'clientes', 'equipos', 'tecnicos', 'mantenimientos', 'stocks', 
+                'electronicas', 'facturas', 'factura_items', 'movimiento_cajas', 
+                'cotizaciones', 'cotizacions', 'cotizacion_items', 'abonos', 'cierre_cajas'
+            ];
+            foreach ($tablesToReset as $tbl) {
+                try {
+                    if (\Illuminate\Support\Facades\Schema::hasTable($tbl)) {
+                        $maxId = (int) DB::table($tbl)->max('id');
+                        $nextId = $maxId > 0 ? $maxId + 1 : 1;
+                        DB::statement("ALTER TABLE `{$tbl}` AUTO_INCREMENT = {$nextId};");
+                    }
+                } catch (\Throwable $ignored) {}
+            }
+
             $this->recordCheck('Auditoría / Aislamiento', 'Rollback transaccional limpio (Cero contaminación de datos)', true, 'Base de datos intacta');
         }
     }

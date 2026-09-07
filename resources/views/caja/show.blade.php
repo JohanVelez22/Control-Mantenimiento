@@ -108,7 +108,7 @@
             </div>
 
             <div class="glass-card hover-glow glass-card-indigo p-4 text-center">
-                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Monto Total Servicio/Factura</p>
+                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Monto Total</p>
                 <p class="text-xl font-black text-slate-800 dark:text-white">${{ number_format($movimiento->effective_monto_total ?: $movimiento->monto, 0, ',', '.') }}</p>
             </div>
 

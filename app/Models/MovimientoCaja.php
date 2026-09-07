@@ -75,31 +75,33 @@ class MovimientoCaja extends Model
 
     public function getTotalPagadoAttribute()
     {
-        $rootId = $this->parent_id ?: $this->id;
-        $refSearch = $this->ref_search;
+        $root = $this->parent_id ? ($this->parent ?: self::find($this->parent_id)) : $this;
 
-        if ($this->relationLoaded('childPayments') && !$refSearch) {
-            $abonosSum = (float) $this->childPayments
+        if (!$root) {
+            return (float) ($this->anulado ? 0 : $this->monto);
+        }
+
+        $rootId = $root->id;
+        $refSearch = $root->ref_search;
+
+        if ($root->relationLoaded('childPayments') && !$refSearch) {
+            $abonosSum = (float) $root->childPayments
                 ->filter(fn($p) => !$p->anulado && $p->estado === 'activo')
                 ->sum('monto');
-            return (float) ($this->anulado ? 0 : $this->monto) + $abonosSum;
+            return (float) ($root->anulado ? 0 : $root->monto) + $abonosSum;
         }
 
-        if ($rootId || $refSearch) {
-            return (float) self::activos()
-                ->where(function($q) use ($rootId, $refSearch) {
-                    if ($rootId) {
-                        $q->where('id', $rootId)
-                          ->orWhere('parent_id', $rootId);
-                    }
-                    if ($refSearch) {
-                        $q->orWhere('descripcion', 'like', "%{$refSearch}%");
-                    }
-                })
-                ->sum('monto');
-        }
-
-        return (float) $this->monto;
+        return (float) self::activos()
+            ->where(function($q) use ($rootId, $refSearch) {
+                if ($rootId) {
+                    $q->where('id', $rootId)
+                      ->orWhere('parent_id', $rootId);
+                }
+                if ($refSearch) {
+                    $q->orWhere('descripcion', 'like', "%{$refSearch}%");
+                }
+            })
+            ->sum('monto');
     }
 
     public function getEffectiveMontoTotalAttribute()
@@ -108,8 +110,9 @@ class MovimientoCaja extends Model
             return (float) $this->monto_total;
         }
 
-        if ($this->parent_id && $this->parent) {
-            return $this->parent->effective_monto_total;
+        $root = $this->parent_id ? ($this->parent ?: self::find($this->parent_id)) : null;
+        if ($root && $root->monto_total && $root->monto_total > 0) {
+            return (float) $root->monto_total;
         }
 
         if ($this->descripcion) {
