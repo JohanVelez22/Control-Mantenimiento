@@ -82,23 +82,18 @@
  <p class="font-medium text-xl text-slate-800 dark:text-slate-200 leading-tight break-words">
  {{ $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? '—' }}
  </p>
- <p class="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1 break-words flex flex-wrap items-center gap-x-2">
-    <span>ID: {{ $factura->facturable->identificacion ?? 'N/A' }}</span>
-    @php
-        $telEntidad = $factura->facturable->movil ?? $factura->facturable->telefono ?? null;
-    @endphp
-    @if($telEntidad)
-        <span>•</span>
-        <span class="inline-flex items-center gap-1">
-            <span>Tel:</span>
-            <x-whatsapp-link :telefono="$telEntidad" class="text-slate-600 dark:text-slate-300 font-medium" />
-        </span>
-    @endif
-    @if(isset($factura->facturable->email))
-        <span>•</span>
-        <span>Correo: {{ $factura->facturable->email }}</span>
-    @endif
- </p>
+            <p class="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1 break-words">
+                ID: {{ $factura->facturable->identificacion ?? 'N/A' }}
+                @php
+                    $telEntidad = $factura->facturable->movil ?? $factura->facturable->telefono ?? null;
+                @endphp
+                @if($telEntidad)
+                    <span class="mx-2"></span> Tel: <x-whatsapp-link :telefono="$telEntidad" class="text-slate-600 dark:text-slate-300 font-medium" />
+                @endif
+                @if(isset($factura->facturable->email) && $factura->facturable->email)
+                    <span class="mx-2"></span> Correo: {{ $factura->facturable->email }}
+                @endif
+            </p>
  </div>
  </div>
 
