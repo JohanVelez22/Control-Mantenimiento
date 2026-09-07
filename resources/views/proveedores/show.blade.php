@@ -58,7 +58,7 @@
  <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Ubicación</span>
  <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">
  @if($proveedor->municipio || $proveedor->departamento)
- 📍 {{ implode(', ', array_filter([$proveedor->municipio, $proveedor->departamento])) }}
+ {{ implode(', ', array_filter([$proveedor->municipio, $proveedor->departamento])) }}
  @else
  —
  @endif

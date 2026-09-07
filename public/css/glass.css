@@ -2552,9 +2552,9 @@ select.glass-input:not(.tomselected) {
   box-sizing: border-box !important;
 }
 
-.ts-control > .item,
+.ts-control>.item,
 .ts-control .ts-item-display,
-.stock-select-wrapper .ts-control > .item {
+.stock-select-wrapper .ts-control>.item {
   width: 0 !important;
   flex: 1 1 0% !important;
   min-width: 0 !important;
