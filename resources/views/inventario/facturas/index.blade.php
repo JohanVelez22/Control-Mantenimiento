@@ -43,12 +43,16 @@
  <span class="text-gray-400 text-sm">a</span>
  <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta', date('Y-m-d')) }}" class="glass-input w-44">
  </div>
+ <div class="relative">
+ <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
+ <input type="text" id="search-facturas" placeholder="Buscar factura..." class="glass-input pl-9 w-48 sm:w-56 font-semibold" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); }">
+ </div>
  <button type="submit" class="btn-primary py-2 px-4 text-sm">🌪️ Filtrar</button>
  <a href="{{ route('inventario.facturas') }}" class="btn-clean text-sm">🧹 Limpiar</a>
  </form>
 
  <div class="overflow-x-auto pb-2">
- <table class="ts-table">
+ <table id="tabla-facturas" class="ts-table">
  <thead>
  <tr>
  <th class="text-center">Número</th>
@@ -167,5 +171,11 @@
  </div>
 </div>
 
-
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if(typeof filterTable === 'function') {
+            filterTable('search-facturas', 'tabla-facturas');
+        }
+    });
+</script>
 @endsection
