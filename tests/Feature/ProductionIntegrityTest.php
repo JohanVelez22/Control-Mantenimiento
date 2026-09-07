@@ -171,4 +171,78 @@ class ProductionIntegrityTest extends TestCase
         $this->assertTrue($movPadre->fresh()->anulado);
         $this->assertEquals(1, $movPadre->childPayments()->where('anulado', true)->count());
     }
+
+    public function test_prevent_back_history_middleware_is_active(): void
+    {
+        $response = $this->actingAs($this->admin)->get(route('dashboard'));
+        $response->assertStatus(200);
+        $response->assertHeader('Cache-Control');
+        $this->assertStringContainsString('no-store', $response->headers->get('Cache-Control'));
+    }
+
+    public function test_show_factura_is_strictly_idempotent_get(): void
+    {
+        $cliente = Cliente::create([
+            'nombres' => 'María',
+            'apellidos' => 'Gómez',
+            'identificacion' => 'CC-987654321',
+            'telefono' => '3110000000',
+            'movil' => '3110000000',
+            'email' => 'maria@test.com',
+            'activo' => true,
+        ]);
+
+        $factura = Factura::create([
+            'numero_factura' => 'VT-IDEMP-001',
+            'tipo_movimiento' => 'venta',
+            'estado' => 'emitida',
+            'facturable_id' => $cliente->id,
+            'facturable_type' => Cliente::class,
+            'total_documento' => 50000,
+            'total_pagado' => 50000,
+            'fecha' => now()->toDateString(),
+            'user_id' => $this->admin->id,
+        ]);
+
+        $initialCount = MovimientoCaja::count();
+
+        // Acceder a la vista GET
+        $response = $this->actingAs($this->admin)->get(route('inventario.facturas.show', $factura->id));
+        $response->assertStatus(200);
+
+        // El conteo de movimientos no debe cambiar bajo ninguna circunstancia
+        $this->assertEquals($initialCount, MovimientoCaja::count());
+    }
+
+    public function test_cierre_caja_race_condition_protection(): void
+    {
+        $hoy = now()->toDateString();
+
+        // Primer cierre exitoso
+        $response1 = $this->actingAs($this->admin)->post(route('cierre.store'), [
+            'fecha' => $hoy,
+            'observaciones' => 'Primer cierre de prueba',
+        ]);
+        $response1->assertRedirect(route('cierre.index'));
+
+        // Intento concurrente para la misma fecha debe ser rechazado
+        $response2 = $this->actingAs($this->admin)->post(route('cierre.store'), [
+            'fecha' => $hoy,
+            'observaciones' => 'Segundo cierre duplicado',
+        ]);
+        $response2->assertSessionHasErrors('fecha');
+        $this->assertEquals(1, \App\Models\CierreCaja::where('fecha', $hoy)->count());
+    }
+
+    public function test_admin_user_seeder_executes_safely(): void
+    {
+        $seeder = new \Database\Seeders\AdminUserSeeder();
+        $seeder->run();
+
+        $admin = User::where('email', 'administrador@tecnisystemas.com')->first();
+        $this->assertNotNull($admin);
+        $this->assertEquals('admin', $admin->role);
+        $this->assertTrue(Hash::check(env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'), $admin->password));
+    }
 }
+

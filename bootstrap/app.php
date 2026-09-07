@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Registramos aliases para middlewares personalizados
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
+            'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

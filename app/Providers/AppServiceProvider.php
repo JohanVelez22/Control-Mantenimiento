@@ -69,96 +69,99 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            // Mantenimientos pendientes
-            $mantList = Mantenimiento::activos()
+            $userId = Auth::id();
+            $data = Cache::remember("topbar_notifs_user_{$userId}", 30, function () {
+                // Mantenimientos pendientes
+                $mantList = Mantenimiento::activos()
                     ->where('estado', 'pendiente')
                     ->select('id', 'id_orden', 'equipo_id', 'estado')
                     ->with('equipo.cliente:id,nombres,apellidos')
                     ->get();
 
-            // Electrónicas pendientes
-            $elecList = Electronica::activos()
-                ->where('estado', 'pendiente')
-                ->select('id', 'id_orden', 'equipo_id', 'estado')
-                ->with('equipo.cliente:id,nombres,apellidos')
-                ->latest()
-                ->limit(50)
-                ->get();
+                // Electrónicas pendientes
+                $elecList = Electronica::activos()
+                    ->where('estado', 'pendiente')
+                    ->select('id', 'id_orden', 'equipo_id', 'estado')
+                    ->with('equipo.cliente:id,nombres,apellidos')
+                    ->latest()
+                    ->limit(50)
+                    ->get();
 
-            // Facturas con saldo pendiente (Compras / Ventas)
-            $cajaList = Factura::where('estado', '!=', 'anulada')
-                ->where('saldo_pendiente', '>', 0)
-                ->select('id', 'numero_factura', 'tipo_movimiento', 'saldo_pendiente', 'total_documento', 'facturable_id', 'facturable_type')
-                ->with('facturable')
-                ->latest()
-                ->limit(50)
-                ->get();
+                // Facturas con saldo pendiente (Compras / Ventas)
+                $cajaList = Factura::where('estado', '!=', 'anulada')
+                    ->where('saldo_pendiente', '>', 0)
+                    ->select('id', 'numero_factura', 'tipo_movimiento', 'saldo_pendiente', 'total_documento', 'facturable_id', 'facturable_type')
+                    ->with('facturable')
+                    ->latest()
+                    ->limit(50)
+                    ->get();
 
-            // Extraer números de factura pendientes para búsqueda en lote (evita N+1 queries)
-            $facturasNumeros = $cajaList->pluck('numero_factura')->filter()->values()->toArray();
+                // Extraer números de factura pendientes para búsqueda en lote (evita N+1 queries)
+                $facturasNumeros = $cajaList->pluck('numero_factura')->filter()->values()->toArray();
 
-            // Movimientos de caja relacionados en lote
-            $movimientosRel = empty($facturasNumeros) ? collect() : MovimientoCaja::whereNull('parent_id')
-                ->where(function ($q) use ($facturasNumeros) {
-                    foreach ($facturasNumeros as $num) {
-                        $q->orWhere('descripcion', 'like', "%#{$num}%");
-                    }
-                })
-                ->select('id', 'descripcion')
-                ->get();
-
-            $cajaList = $cajaList->map(function ($f) use ($movimientosRel) {
-                $matched = $movimientosRel->first(function ($m) use ($f) {
-                    return str_contains($m->descripcion ?? '', "#{$f->numero_factura}");
-                });
-                $f->movimiento_caja_id = $matched?->id;
-                return $f;
-            });
-
-            // Movimientos de caja pendientes independientes (excluye facturas de inventario y movimientos ya saldados)
-            $movimientosPendientes = MovimientoCaja::where('anulado', false)
-                ->whereNull('parent_id')
-                ->whereNotNull('monto_total')
-                ->where('monto_total', '>', 0)
-                ->when(!empty($facturasNumeros), function ($query) use ($facturasNumeros) {
-                    $query->where(function ($q) use ($facturasNumeros) {
+                // Movimientos de caja relacionados en lote
+                $movimientosRel = empty($facturasNumeros) ? collect() : MovimientoCaja::whereNull('parent_id')
+                    ->where(function ($q) use ($facturasNumeros) {
                         foreach ($facturasNumeros as $num) {
-                            $q->where('descripcion', 'not like', "%#{$num}%");
+                            $q->orWhere('descripcion', 'like', "%#{$num}%");
                         }
+                    })
+                    ->select('id', 'descripcion')
+                    ->get();
+
+                $cajaList = $cajaList->map(function ($f) use ($movimientosRel) {
+                    $matched = $movimientosRel->first(function ($m) use ($f) {
+                        return str_contains($m->descripcion ?? '', "#{$f->numero_factura}");
                     });
-                })
-                ->with(['concepto:id,nombre', 'childPayments'])
-                ->latest()
-                ->limit(50)
-                ->get()
-                ->filter(fn($mov) => $mov->saldo_pendiente > 0.01)
-                ->take(50);
+                    $f->movimiento_caja_id = $matched?->id;
+                    return $f;
+                });
 
-            // Cotizaciones pendientes
-            $cotList = Cotizacion::activos()
-                ->where('estado', 'pendiente')
-                ->select('id', 'codigo', 'cliente_id', 'total', 'estado')
-                ->with('cliente:id,nombres,apellidos')
-                ->latest()
-                ->limit(50)
-                ->get();
+                // Movimientos de caja pendientes independientes (excluye facturas de inventario y movimientos ya saldados)
+                $movimientosPendientes = MovimientoCaja::where('anulado', false)
+                    ->whereNull('parent_id')
+                    ->whereNotNull('monto_total')
+                    ->where('monto_total', '>', 0)
+                    ->when(!empty($facturasNumeros), function ($query) use ($facturasNumeros) {
+                        $query->where(function ($q) use ($facturasNumeros) {
+                            foreach ($facturasNumeros as $num) {
+                                $q->where('descripcion', 'not like', "%#{$num}%");
+                            }
+                        });
+                    })
+                    ->with(['concepto:id,nombre', 'childPayments'])
+                    ->latest()
+                    ->limit(50)
+                    ->get()
+                    ->filter(fn($mov) => $mov->saldo_pendiente > 0.01)
+                    ->take(50);
 
-            $data = [
-                'mantList'              => $mantList,
-                'elecList'              => $elecList,
-                'cajaList'              => $cajaList,
-                'movimientosPendientes' => $movimientosPendientes,
-                'cotList'               => $cotList,
-                'mantPendientes'        => $mantList->count(),
-                'elecPendientes'        => $elecList->count(),
-                'cotPendientes'         => $cotList->count(),
-                'cajaPendientes'        => $cajaList->count() + $movimientosPendientes->count(),
-                'totalPendientes'       => $mantList->count()
-                                              + $elecList->count()
-                                              + $cajaList->count()
-                                              + $movimientosPendientes->count()
-                                              + $cotList->count(),
-            ];
+                // Cotizaciones pendientes
+                $cotList = Cotizacion::activos()
+                    ->where('estado', 'pendiente')
+                    ->select('id', 'codigo', 'cliente_id', 'total', 'estado')
+                    ->with('cliente:id,nombres,apellidos')
+                    ->latest()
+                    ->limit(50)
+                    ->get();
+
+                return [
+                    'mantList'              => $mantList,
+                    'elecList'              => $elecList,
+                    'cajaList'              => $cajaList,
+                    'movimientosPendientes' => $movimientosPendientes,
+                    'cotList'               => $cotList,
+                    'mantPendientes'        => $mantList->count(),
+                    'elecPendientes'        => $elecList->count(),
+                    'cotPendientes'         => $cotList->count(),
+                    'cajaPendientes'        => $cajaList->count() + $movimientosPendientes->count(),
+                    'totalPendientes'       => $mantList->count()
+                                                  + $elecList->count()
+                                                  + $cajaList->count()
+                                                  + $movimientosPendientes->count()
+                                                  + $cotList->count(),
+                ];
+            });
 
             $view->with($data);
         });

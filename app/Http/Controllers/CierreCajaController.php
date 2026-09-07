@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Models\CierreCaja;
 use App\Models\MovimientoCaja;
 use App\Models\User;
@@ -29,28 +30,47 @@ class CierreCajaController extends Controller
     /** Realiza el cierre del día indicado */
     public function store(Request $request)
     {
+        $fecha = \Carbon\Carbon::parse($request->fecha)->toDateString();
+        $request->merge(['fecha' => $fecha]);
+
         $request->validate([
-            'fecha'        => 'required|date|unique:cierre_cajas,fecha',
-            'observaciones'=> 'nullable|string|max:1000',
+            'fecha' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) use ($fecha) {
+                    if (CierreCaja::whereDate('fecha', $fecha)->exists()) {
+                        $fail('Ya existe un cierre registrado para esta fecha.');
+                    }
+                },
+            ],
+            'observaciones' => 'nullable|string|max:1000',
         ]);
 
-        $datos = $this->calcularDia($request->fecha);
+        return DB::transaction(function () use ($request, $fecha) {
+            // Protección contra race condition con bloqueo pesimista
+            $yaExiste = CierreCaja::whereDate('fecha', $fecha)->lockForUpdate()->exists();
+            if ($yaExiste) {
+                return back()->with('error', 'Ya existe un cierre registrado para la fecha seleccionada.')->withInput();
+            }
 
-        CierreCaja::create([
-            'fecha'           => $request->fecha,
-            'total_ingresos'  => $datos['total_ingresos'],
-            'total_egresos'   => $datos['total_egresos'],
-            'efectivo'        => $datos['efectivo'],
-            'consignacion'    => $datos['consignacion'],
-            'saldo_final'     => $datos['saldo_final'],
-            'num_movimientos' => $datos['num_movimientos'],
-            'bloqueado'       => true,
-            'observaciones'   => $request->observaciones,
-            'user_id'         => auth()->id(),
-        ]);
+            $datos = $this->calcularDia($fecha);
 
-        return redirect()->route('cierre.index')
-                         ->with('success', "Cierre del " . \Carbon\Carbon::parse($request->fecha)->format('d/m/Y') . " guardado y bloqueado.");
+            CierreCaja::create([
+                'fecha'           => $fecha,
+                'total_ingresos'  => $datos['total_ingresos'],
+                'total_egresos'   => $datos['total_egresos'],
+                'efectivo'        => $datos['efectivo'],
+                'consignacion'    => $datos['consignacion'],
+                'saldo_final'     => $datos['saldo_final'],
+                'num_movimientos' => $datos['num_movimientos'],
+                'bloqueado'       => true,
+                'observaciones'   => $request->observaciones,
+                'user_id'         => auth()->id(),
+            ]);
+
+            return redirect()->route('cierre.index')
+                             ->with('success', "Cierre del " . \Carbon\Carbon::parse($fecha)->format('d/m/Y') . " guardado y bloqueado.");
+        });
     }
 
     /** Eliminar cierre — requiere contraseña */

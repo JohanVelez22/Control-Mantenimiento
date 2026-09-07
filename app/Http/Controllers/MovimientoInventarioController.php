@@ -339,18 +339,6 @@ class MovimientoInventarioController extends Controller
             ->with(['childPayments' => fn($q) => $q->where('anulado', false)->with('user')])
             ->first();
 
-        if (!$movimientoPadre && $factura->estado !== 'anulada') {
-            $entityName = $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? 'Cliente/Proveedor';
-            $movimientoPadre = $this->registrarMovimientoCaja(
-                tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
-                monto: (float) $factura->total_pagado,
-                persona: $entityName,
-                descripcion: ($factura->tipo_movimiento === 'venta' ? "Cobro venta #" : "Pago compra #") . $factura->numero_factura,
-                fecha: $factura->fecha,
-                montoTotal: (float) $factura->total_documento
-            );
-        }
-
         $abonos = $movimientoPadre ? $movimientoPadre->childPayments : collect();
 
         return view('inventario.facturas.show', compact('factura', 'movimientoPadre', 'abonos'));
