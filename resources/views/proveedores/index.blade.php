@@ -48,7 +48,9 @@
  </td>
  <td class="font-bold text-sm tracking-tight text-slate-700 dark:text-slate-300 {{ $dim }}">{{ $p->identificacion }}</td>
  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $p->nombre_razon_social }}</td>
- <td class="font-medium {{ $dim }}">{{ $p->telefono ?? '—' }}</td>
+ <td class="font-medium {{ $dim }}">
+    <x-whatsapp-link :telefono="$p->telefono" />
+  </td>
  <td class="text-sm font-medium {{ $dim }}">{{ $p->email ?? '—' }}</td>
  <td class="text-center font-black text-blue-600 dark:text-cyan-400 {{ $dim }}">
  {{ $p->stocks_count ?? $p->stocks()->count() }}

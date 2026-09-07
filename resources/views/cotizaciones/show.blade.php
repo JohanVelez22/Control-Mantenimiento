@@ -54,7 +54,7 @@
                     <h3 class="text-xs font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">Datos del Cliente</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400"><span class="font-semibold">Nombre:</span> {{ $cotizacion->cliente->nombre }}</p>
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">ID/NIT:</span> {{ $cotizacion->cliente->identificacion }}</p>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Teléfono:</span> {{ $cotizacion->cliente->movil ?? 'N/A' }}</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1 flex items-center gap-1.5"><span class="font-semibold">Teléfono:</span> <x-whatsapp-link :telefono="$cotizacion->cliente->movil" fallback="N/A" class="text-slate-600 dark:text-slate-400 font-medium" /></p>
                     @if($cotizacion->cliente->email)
                         <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Email:</span> {{ $cotizacion->cliente->email }}</p>
                     @endif

@@ -79,4 +79,36 @@ class ColombiaHelper
             'rut'                => 'RUT (Persona Natural)',
         ];
     }
+
+    /**
+     * Genera un enlace directo a WhatsApp sanitizando el número telefónico.
+     * Si es un número colombiano de 10 dígitos (celular o fijo moderno), añade el prefijo 57.
+     */
+    public static function whatsappUrl(?string $telefono, ?string $mensaje = null): ?string
+    {
+        if (!$telefono) {
+            return null;
+        }
+
+        // Extraer únicamente dígitos
+        $digits = preg_replace('/\D/', '', $telefono);
+
+        // Validar longitud mínima razonable para un número
+        if (empty($digits) || strlen($digits) < 7) {
+            return null;
+        }
+
+        // Si tiene 10 dígitos (ej. celular Colombia 3XXXXXXXXX o fijo nacional), anteponer código 57
+        if (strlen($digits) === 10) {
+            $digits = '57' . $digits;
+        }
+
+        $url = 'https://wa.me/' . $digits;
+
+        if (!empty($mensaje)) {
+            $url .= '?text=' . urlencode($mensaje);
+        }
+
+        return $url;
+    }
 }

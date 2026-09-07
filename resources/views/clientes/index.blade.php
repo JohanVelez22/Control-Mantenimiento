@@ -50,7 +50,9 @@
  </td>
  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $cliente->nombre }}</td>
  <td class="text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $cliente->identificacion }}</td>
- <td class="{{ $dim }}">{{ $cliente->movil }}</td>
+ <td class="{{ $dim }}">
+    <x-whatsapp-link :telefono="$cliente->movil" />
+  </td>
  <td class="{{ $dim }}">{{ $cliente->email ?? '-' }}</td>
  <td class="{{ $dim }}">{{ $cliente->direccion ?? '-' }}</td>
  <td class="text-center">

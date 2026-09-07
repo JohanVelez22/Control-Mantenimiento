@@ -59,7 +59,9 @@
      elseif (str_contains($espStr, 'redes')) $espClass = 'pill-banco';
  @endphp
  <td class="{{ $dim }}"><span class="pill {{ $espClass }}">{{ $tecnico->especialidad }}</span></td>
- <td class="{{ $dim }}">{{ $tecnico->movil }}</td>
+  <td class="{{ $dim }}">
+    <x-whatsapp-link :telefono="$tecnico->movil" />
+  </td>
  <td class="{{ $dim }}">{{ $tecnico->email ?? '-' }}</td>
  <td class="text-center">
  <span class="pill {{ $tecnico->active ? 'pill-done' : 'pill-anulado' }}">
