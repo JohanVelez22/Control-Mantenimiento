@@ -52,7 +52,7 @@
  </form>
 
  <div class="overflow-x-auto pb-2">
- <table id="tabla-facturas" class="ts-table">
+ <table id="tabla-facturas" class="ts-table responsive-table w-full">
  <thead>
  <tr>
  <th class="text-center">Número</th>
@@ -72,13 +72,13 @@
     $dimLight = $f->estado === 'anulada' ? 'opacity-60' : '';
   @endphp
    <tr id="factura-{{ $f->id }}" class="scroll-mt-[6.5rem]">
-  <td class="text-center font-mono font-bold text-sm text-slate-700 dark:text-slate-300 {{ $dim }}">{{ $f->numero_factura }}</td>
-  <td class="text-center {{ $dimLight }}">
+  <td data-label="Número:" class="text-center font-mono font-bold text-sm text-slate-700 dark:text-slate-300 {{ $dim }}">{{ $f->numero_factura }}</td>
+  <td data-label="Tipo:" class="text-center {{ $dimLight }}">
   <span class="pill {{ $f->tipo_movimiento === 'compra' ? 'pill-pending' : 'pill-done' }}">
   {{ $f->tipo_movimiento === 'compra' ? '📦 Compra' : '🛒 Venta' }}
   </span>
   </td>
-  <td class="{{ $dim }}">
+  <td data-label="Entidad:" class="{{ $dim }}">
   @if($f->facturable)
   @if(class_basename($f->facturable) === 'Cliente')
   <a href="{{ route('clientes.index') }}#cliente-{{ $f->facturable->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
@@ -103,11 +103,11 @@
   <span class="text-gray-400 font-bold">—</span>
   @endif
   </td>
-  <td class="text-center font-medium {{ $dim }}">{{ $f->fecha->format('d/m/Y') }}</td>
-  <td class="text-right font-black text-slate-800 dark:text-white text-base {{ $dim }}">
+  <td data-label="Fecha:" class="text-center font-medium {{ $dim }}">{{ $f->fecha->format('d/m/Y') }}</td>
+  <td data-label="Total:" class="text-right font-black text-slate-800 dark:text-white text-base {{ $dim }}">
   ${{ number_format($f->total_documento, 0, ',', '.') }}
   </td>
-  <td class="text-right {{ $dim }}">
+  <td data-label="Pagado:" class="text-right {{ $dim }}">
   <span class="font-bold text-sm {{ $f->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
   ${{ number_format($f->total_pagado, 0, ',', '.') }}
   </span>
@@ -115,7 +115,7 @@
   <div class="text-[10px] text-red-500 uppercase tracking-tight mt-0.5 font-bold">Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}</div>
   @endif
   </td>
-  <td class="text-center">
+  <td data-label="Estado:" class="text-center">
   @php
   $stClass = 'pill-pending';
   if($f->estado === 'emitida') $stClass = 'pill-done';

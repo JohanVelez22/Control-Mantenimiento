@@ -171,6 +171,22 @@
             <div class="card-value">${{ number_format($resumen['monto_anulados'] ?? 0, 0, ',', '.') }}</div>
         </div>
     </div>
+    @if(($resumen['total_por_cobrar'] ?? 0) > 0 || ($resumen['total_por_pagar'] ?? 0) > 0)
+    <div class="summary-grid" style="margin-top: 2px;">
+        @if(($resumen['total_por_cobrar'] ?? 0) > 0)
+        <div class="card" style="border-color: #cbd5e0; background-color: #f7fafc;">
+            <div class="card-label">Saldos Por Cobrar</div>
+            <div class="card-value" style="color: #000000;">${{ number_format($resumen['total_por_cobrar'], 0, ',', '.') }}</div>
+        </div>
+        @endif
+        @if(($resumen['total_por_pagar'] ?? 0) > 0)
+        <div class="card" style="border-color: #cbd5e0; background-color: #f7fafc;">
+            <div class="card-label">Saldos Por Pagar</div>
+            <div class="card-value" style="color: #000000;">${{ number_format($resumen['total_por_pagar'], 0, ',', '.') }}</div>
+        </div>
+        @endif
+    </div>
+    @endif
     @endif
 
     <p class="section-title">Movimientos Detallados ({{ count($movimientos) }} registros)</p>

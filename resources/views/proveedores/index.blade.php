@@ -22,7 +22,7 @@
  </div>
 
  <div class="overflow-x-auto pb-2">
- <table id="tabla-proveedores" class="ts-table">
+ <table id="tabla-proveedores" class="ts-table responsive-table w-full">
  <thead>
  <tr>
  <th class="w-16 text-center">ID</th>
@@ -31,8 +31,8 @@
  <th>Nombre / Razón Social</th>
  <th>Teléfono</th>
  <th>Email</th>
- <th class="text-center">Stock Asociado</th>
- <th class="text-center">Estado</th>
+ <th>Stock Asociado</th>
+ <th>Estado</th>
  <th class="text-center w-28">Acciones</th>
  </tr>
  </thead>
@@ -40,22 +40,22 @@
  @forelse($proveedores as $p)
  @php $dim = !$p->active ? 'opacity-60 grayscale' : ''; @endphp
  <tr id="proveedor-{{ $p->id }}" class="scroll-mt-[6.5rem]">
- <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $p->id }}</td>
- <td class="{{ $dim }}">
+ <td data-label="ID:" class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $p->id }}</td>
+ <td data-label="Tipo:" class="{{ $dim }}">
  <span class="pill {{ $p->tipo_entidad === 'empresa' ? 'pill-done' : 'pill-pending' }}">
  {{ $p->tipo_entidad === 'empresa' ? '🏢 Empresa' : '👤 Persona' }}
  </span>
  </td>
- <td class="font-bold text-sm tracking-tight text-slate-700 dark:text-slate-300 {{ $dim }}">{{ $p->identificacion }}</td>
- <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $p->nombre_razon_social }}</td>
- <td class="font-medium {{ $dim }}">
+ <td data-label="Identificación:" class="font-bold text-sm tracking-tight text-slate-700 dark:text-slate-300 {{ $dim }}">{{ $p->identificacion }}</td>
+ <td data-label="Nombre:" class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $p->nombre_razon_social }}</td>
+ <td data-label="Teléfono:" class="font-medium {{ $dim }}">
     <x-whatsapp-link :telefono="$p->telefono" />
   </td>
- <td class="text-sm font-medium {{ $dim }}">{{ $p->email ?? '—' }}</td>
- <td class="text-center font-black text-blue-600 dark:text-cyan-400 {{ $dim }}">
+ <td data-label="Email:" class="text-sm font-medium {{ $dim }}">{{ $p->email ?? '—' }}</td>
+ <td data-label="Stock:" class="text-center font-black text-blue-600 dark:text-cyan-400 {{ $dim }}">
  {{ $p->stocks_count ?? $p->stocks()->count() }}
  </td>
- <td class="text-center">
+ <td data-label="Estado:" class="text-center">
  <span class="pill {{ $p->active ? 'pill-done' : 'pill-anulado' }}">
  {{ $p->active ? 'Activo' : 'Inactivo' }}
  </span>

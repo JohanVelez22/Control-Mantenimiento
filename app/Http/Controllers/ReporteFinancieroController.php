@@ -141,6 +141,69 @@ class ReporteFinancieroController extends Controller
                             + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->sum('monto')
                             + Factura::whereDate('fecha', $fecha)->where('estado', 'anulada')->sum('total_documento');
 
+        // ════════════════════════════════════════════════════════════════════
+        // SALDOS PENDIENTES DEL DÍA (CUENTAS POR COBRAR Y POR PAGAR)
+        // ════════════════════════════════════════════════════════════════════
+        $facturasDia = Factura::where('estado', '!=', 'anulada')->whereDate('fecha', $fecha);
+        $saldoPendienteVenta = (float) ((clone $facturasDia)->where('tipo_movimiento', 'venta')
+            ->selectRaw('SUM(CASE WHEN total_documento > total_pagado THEN total_documento - total_pagado ELSE 0 END) as s')
+            ->value('s') ?? 0);
+        $saldoPendienteCompra = (float) ((clone $facturasDia)->where('tipo_movimiento', 'compra')
+            ->selectRaw('SUM(CASE WHEN total_documento > total_pagado THEN total_documento - total_pagado ELSE 0 END) as s')
+            ->value('s') ?? 0);
+
+        $cajaPendientesDia = MovimientoCaja::with(['childPayments' => function($q) {
+                $q->where('anulado', false)->where('estado', 'activo');
+            }])
+            ->whereNull('parent_id')
+            ->where('anulado', false)
+            ->where('estado', 'activo')
+            ->where('monto_total', '>', 0)
+            ->whereDate('fecha', $fecha)
+            ->get();
+
+        $facturaNumerosDia = (clone $facturasDia)->pluck('numero_factura')->filter()->all();
+        $saldoPendienteCajaIngreso = 0;
+        $saldoPendienteCajaEgreso  = 0;
+
+        foreach ($cajaPendientesDia as $cmov) {
+            $isLinkedToFactura = false;
+            if ($cmov->descripcion) {
+                foreach ($facturaNumerosDia as $fnum) {
+                    if (str_contains($cmov->descripcion, $fnum)) {
+                        $isLinkedToFactura = true;
+                        break;
+                    }
+                }
+                if (!$isLinkedToFactura && (str_contains($cmov->descripcion, '#VT-') || str_contains($cmov->descripcion, '#CP-'))) {
+                    if (preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $cmov->descripcion, $match)) {
+                        if (Factura::where('numero_factura', $match[1])->where('estado', '!=', 'anulada')->exists()) {
+                            $isLinkedToFactura = true;
+                        }
+                    }
+                }
+            }
+
+            if ($isLinkedToFactura) continue;
+
+            $pagado = (float) $cmov->monto + (float) $cmov->childPayments->sum('monto');
+            $pendiente = max(0, (float) $cmov->monto_total - $pagado);
+
+            if ($pendiente > 0) {
+                if ($cmov->tipo_movimiento === 'ingreso') {
+                    $saldoPendienteCajaIngreso += $pendiente;
+                } elseif ($cmov->tipo_movimiento === 'egreso') {
+                    $saldoPendienteCajaEgreso += $pendiente;
+                }
+            }
+        }
+
+        $saldoPendienteMant = (float) Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', false)->with('abonos')->get()->sum(fn($m) => $m->saldo_pendiente);
+        $saldoPendienteElec = (float) Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', false)->with('abonos')->get()->sum(fn($e) => $e->saldo_pendiente);
+
+        $totalPorCobrar = $saldoPendienteVenta + $saldoPendienteCajaIngreso + $saldoPendienteMant + $saldoPendienteElec;
+        $totalPorPagar  = $saldoPendienteCompra + $saldoPendienteCajaEgreso;
+
         $totalPositivos = $ingresosCaja;
         $totalNegativos = $egresosCaja;
         $saldoCaja      = $ingresosCaja - $egresosCaja;
@@ -148,24 +211,32 @@ class ReporteFinancieroController extends Controller
         $balanceOperativo = $totalFacturado - $comprasInv;
 
         $resumen = [
-            'total_ingresos'        => $ingresosCaja,
-            'total_egresos'         => $egresosCaja,
-            'balance_neto'          => $saldoCaja,
-            'saldo_caja'            => $saldoCaja,
-            'total_facturado'       => $totalFacturado,
-            'balance_operativo'     => $balanceOperativo,
-            'total_mantenimientos'  => $facturadoMant,
-            'total_electronica'     => $facturadoElec,
-            'total_ventas'          => $ventasInv,
-            'total_compras'         => $comprasInv,
-            'total_anulados'        => $totalAnuladosCount,
-            'monto_anulados'        => $montoAnuladosSum,
-            'efectivo_ingresos'     => $efectivoIngresos,
-            'efectivo_egresos'      => $efectivoEgresos,
-            'efectivo_saldo'        => $efectivoIngresos - $efectivoEgresos,
-            'consignacion_ingresos' => $consignacionIngresos,
-            'consignacion_egresos'  => $consignacionEgresos,
-            'consignacion_saldo'    => $consignacionIngresos - $consignacionEgresos,
+            'total_ingresos'               => $ingresosCaja,
+            'total_egresos'                => $egresosCaja,
+            'balance_neto'                 => $saldoCaja,
+            'saldo_caja'                   => $saldoCaja,
+            'total_facturado'              => $totalFacturado,
+            'balance_operativo'            => $balanceOperativo,
+            'total_mantenimientos'         => $facturadoMant,
+            'total_electronica'            => $facturadoElec,
+            'total_ventas'                 => $ventasInv,
+            'total_compras'                => $comprasInv,
+            'total_anulados'               => $totalAnuladosCount,
+            'monto_anulados'               => $montoAnuladosSum,
+            'efectivo_ingresos'            => $efectivoIngresos,
+            'efectivo_egresos'             => $efectivoEgresos,
+            'efectivo_saldo'               => $efectivoIngresos - $efectivoEgresos,
+            'consignacion_ingresos'        => $consignacionIngresos,
+            'consignacion_egresos'         => $consignacionEgresos,
+            'consignacion_saldo'           => $consignacionIngresos - $consignacionEgresos,
+            'saldo_pendiente_venta'        => $saldoPendienteVenta,
+            'saldo_pendiente_compra'       => $saldoPendienteCompra,
+            'saldo_pendiente_caja_ingreso' => $saldoPendienteCajaIngreso,
+            'saldo_pendiente_caja_egreso'  => $saldoPendienteCajaEgreso,
+            'saldo_pendiente_mant'         => $saldoPendienteMant,
+            'saldo_pendiente_elec'         => $saldoPendienteElec,
+            'total_por_cobrar'             => $totalPorCobrar,
+            'total_por_pagar'              => $totalPorPagar,
         ];
 
         if ($request->get('export') === 'excel') {
@@ -217,6 +288,68 @@ class ReporteFinancieroController extends Controller
         $facturasBase = Factura::where('estado', '!=', 'anulada')
             ->whereBetween('fecha', [$desde, $hasta]);
 
+        // ════════════════════════════════════════════════════════════════════
+        // SALDOS PENDIENTES DEL PERÍODO (CUENTAS POR COBRAR Y POR PAGAR)
+        // ════════════════════════════════════════════════════════════════════
+        $saldoPendienteVenta = (float) ((clone $facturasBase)->where('tipo_movimiento', 'venta')
+            ->selectRaw('SUM(CASE WHEN total_documento > total_pagado THEN total_documento - total_pagado ELSE 0 END) as s')
+            ->value('s') ?? 0);
+        $saldoPendienteCompra = (float) ((clone $facturasBase)->where('tipo_movimiento', 'compra')
+            ->selectRaw('SUM(CASE WHEN total_documento > total_pagado THEN total_documento - total_pagado ELSE 0 END) as s')
+            ->value('s') ?? 0);
+
+        $cajaPendientes = MovimientoCaja::with(['childPayments' => function($q) {
+                $q->where('anulado', false)->where('estado', 'activo');
+            }])
+            ->whereNull('parent_id')
+            ->where('anulado', false)
+            ->where('estado', 'activo')
+            ->where('monto_total', '>', 0)
+            ->whereBetween('fecha', [$desde, $hasta])
+            ->get();
+
+        $facturaNumeros = (clone $facturasBase)->pluck('numero_factura')->filter()->all();
+        $saldoPendienteCajaIngreso = 0;
+        $saldoPendienteCajaEgreso  = 0;
+
+        foreach ($cajaPendientes as $cmov) {
+            $isLinkedToFactura = false;
+            if ($cmov->descripcion) {
+                foreach ($facturaNumeros as $fnum) {
+                    if (str_contains($cmov->descripcion, $fnum)) {
+                        $isLinkedToFactura = true;
+                        break;
+                    }
+                }
+                if (!$isLinkedToFactura && (str_contains($cmov->descripcion, '#VT-') || str_contains($cmov->descripcion, '#CP-'))) {
+                    if (preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $cmov->descripcion, $match)) {
+                        if (Factura::where('numero_factura', $match[1])->where('estado', '!=', 'anulada')->exists()) {
+                            $isLinkedToFactura = true;
+                        }
+                    }
+                }
+            }
+
+            if ($isLinkedToFactura) continue;
+
+            $pagado = (float) $cmov->monto + (float) $cmov->childPayments->sum('monto');
+            $pendiente = max(0, (float) $cmov->monto_total - $pagado);
+
+            if ($pendiente > 0) {
+                if ($cmov->tipo_movimiento === 'ingreso') {
+                    $saldoPendienteCajaIngreso += $pendiente;
+                } elseif ($cmov->tipo_movimiento === 'egreso') {
+                    $saldoPendienteCajaEgreso += $pendiente;
+                }
+            }
+        }
+
+        $saldoPendienteMant = (float) (clone $mantenimientosQuery)->with('abonos')->get()->sum(fn($m) => $m->saldo_pendiente);
+        $saldoPendienteElec = (float) (clone $electronicasQuery)->with('abonos')->get()->sum(fn($e) => $e->saldo_pendiente);
+
+        $totalPorCobrar = $saldoPendienteVenta + $saldoPendienteCajaIngreso + $saldoPendienteMant + $saldoPendienteElec;
+        $totalPorPagar  = $saldoPendienteCompra + $saldoPendienteCajaEgreso;
+
         $acumulado = [
             // Conteos
             'total_mantenimientos'  => (clone $mantenimientosQuery)->count(),
@@ -248,10 +381,14 @@ class ReporteFinancieroController extends Controller
             'compras_inventario'    => (clone $facturasBase)->where('tipo_movimiento', 'compra')->sum('total_documento'),
 
             // Pendientes
-            'saldo_pendiente_venta' => (clone $facturasBase)->where('tipo_movimiento', 'venta')
-                                        ->selectRaw('SUM(total_documento - total_pagado) as s')->value('s') ?? 0,
-            'saldo_pendiente_compra'=> (clone $facturasBase)->where('tipo_movimiento', 'compra')
-                                        ->selectRaw('SUM(total_documento - total_pagado) as s')->value('s') ?? 0,
+            'saldo_pendiente_venta'        => $saldoPendienteVenta,
+            'saldo_pendiente_compra'       => $saldoPendienteCompra,
+            'saldo_pendiente_caja_ingreso' => $saldoPendienteCajaIngreso,
+            'saldo_pendiente_caja_egreso'  => $saldoPendienteCajaEgreso,
+            'saldo_pendiente_mant'         => $saldoPendienteMant,
+            'saldo_pendiente_elec'         => $saldoPendienteElec,
+            'total_por_cobrar'             => $totalPorCobrar,
+            'total_por_pagar'              => $totalPorPagar,
         ];
 
         $acumulado['balance_caja']         = $acumulado['ingresos_caja'] - $acumulado['egresos_caja'];

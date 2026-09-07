@@ -54,7 +54,9 @@
  </form>
 </div>
 
-{{-- Tarjetas de resumen (1 sola fila horizontal homogénea) --}}
+<div class="space-y-5">
+
+  {{-- Tarjetas de resumen (1 sola fila horizontal homogénea) --}}
   <div class="print-grid-7" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.75rem; width: 100%;">
   <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
   <p class="text-xs xl:text-sm font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📈</span> Ingresos</p>
@@ -92,8 +94,141 @@
   </div>
   </div>
 
- {{-- Tabla de movimientos del día --}}
- <div class="glass-card p-6 md:p-8 mt-4">
+  {{-- Saldos pendientes del día --}}
+  @if(($resumen['total_por_cobrar'] ?? 0) > 0 || ($resumen['total_por_pagar'] ?? 0) > 0)
+  <div class="p-5 md:p-6 relative overflow-hidden saldos-box-ghost">
+      <style>
+          .saldos-box-ghost {
+              background: rgba(245, 158, 11, 0.05);
+              border: 1px solid rgba(245, 158, 11, 0.18);
+              border-radius: 20px;
+              backdrop-filter: blur(20px);
+              -webkit-backdrop-filter: blur(20px);
+          }
+          html.dark .saldos-box-ghost {
+              background: rgba(245, 158, 11, 0.06) !important;
+              border-color: rgba(245, 158, 11, 0.16) !important;
+          }
+          .card-por-cobrar {
+              background: rgba(255, 255, 255, 0.70);
+              border: 1px solid rgba(16, 185, 129, 0.18);
+              border-radius: 16px;
+              box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+          }
+          html.dark .card-por-cobrar {
+              background: rgba(15, 23, 42, 0.55) !important;
+              border: 1px solid rgba(16, 185, 129, 0.15) !important;
+              box-shadow: 0 4px 16px rgba(0, 0, 0, 0.20) !important;
+          }
+          .card-por-pagar {
+              background: rgba(255, 255, 255, 0.70);
+              border: 1px solid rgba(239, 68, 68, 0.18);
+              border-radius: 16px;
+              box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+          }
+          html.dark .card-por-pagar {
+              background: rgba(15, 23, 42, 0.55) !important;
+              border: 1px solid rgba(239, 68, 68, 0.15) !important;
+              box-shadow: 0 4px 16px rgba(0, 0, 0, 0.20) !important;
+          }
+          .saldos-divider {
+              border-top: 1px solid rgba(0, 0, 0, 0.06);
+          }
+          html.dark .saldos-divider {
+              border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+          }
+      </style>
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base font-bold shadow-inner">
+                  ⚠️
+              </span>
+              <div>
+                  <h3 class="font-bold text-slate-800 dark:text-amber-300 text-base leading-tight">
+                      Saldos Pendientes del Día
+                  </h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Obligaciones y recaudos pendientes</p>
+              </div>
+          </div>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+              Cuentas por cobrar y pagar
+          </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {{-- Tarjeta: Por Cobrar --}}
+          @if(($resumen['total_por_cobrar'] ?? 0) > 0)
+          <div class="card-por-cobrar p-4 md:p-5 flex flex-col transition-all">
+              <div class="flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/20 flex items-center justify-center text-xl flex-shrink-0">
+                      📥
+                  </div>
+                  <div>
+                      <p class="text-xs xl:text-sm font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Total por cobrar</p>
+                      <p class="font-black text-emerald-600 dark:text-emerald-400 text-base sm:text-xl xl:text-2xl">${{ number_format($resumen['total_por_cobrar'], 0, ',', '.') }}</p>
+                  </div>
+              </div>
+
+              {{-- Desglose por cobrar --}}
+              <div class="mt-4 pt-3 saldos-divider flex flex-wrap gap-2 text-xs">
+                  @if(($resumen['saldo_pendiente_venta'] ?? 0) > 0)
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-500/10 text-teal-800 dark:text-teal-300 border border-teal-500/20 font-medium">
+                          🛒 <strong>Ventas:</strong> ${{ number_format($resumen['saldo_pendiente_venta'], 0, ',', '.') }}
+                      </span>
+                  @endif
+                  @if(($resumen['saldo_pendiente_caja_ingreso'] ?? 0) > 0)
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/20 font-medium">
+                          📈 <strong>Ingresos Caja:</strong> ${{ number_format($resumen['saldo_pendiente_caja_ingreso'], 0, ',', '.') }}
+                      </span>
+                  @endif
+                  @if(($resumen['saldo_pendiente_mant'] ?? 0) > 0)
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-800 dark:text-blue-300 border border-blue-500/20 font-medium">
+                          🔧 <strong>Mantenimientos:</strong> ${{ number_format($resumen['saldo_pendiente_mant'], 0, ',', '.') }}
+                      </span>
+                  @endif
+                  @if(($resumen['saldo_pendiente_elec'] ?? 0) > 0)
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-800 dark:text-purple-300 border border-purple-500/20 font-medium">
+                          ⚡ <strong>Electrónica:</strong> ${{ number_format($resumen['saldo_pendiente_elec'], 0, ',', '.') }}
+                      </span>
+                  @endif
+              </div>
+          </div>
+          @endif
+
+          {{-- Tarjeta: Por Pagar --}}
+          @if(($resumen['total_por_pagar'] ?? 0) > 0)
+          <div class="card-por-pagar p-4 md:p-5 flex flex-col transition-all">
+              <div class="flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-xl bg-red-500/10 dark:bg-red-500/20 border border-red-500/20 flex items-center justify-center text-xl flex-shrink-0">
+                      📤
+                  </div>
+                  <div>
+                      <p class="text-xs xl:text-sm font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">Total por pagar</p>
+                      <p class="font-black text-red-600 dark:text-red-400 text-base sm:text-xl xl:text-2xl">${{ number_format($resumen['total_por_pagar'], 0, ',', '.') }}</p>
+                  </div>
+              </div>
+
+              {{-- Desglose por pagar --}}
+              <div class="mt-4 pt-3 saldos-divider flex flex-wrap gap-2 text-xs">
+                  @if(($resumen['saldo_pendiente_compra'] ?? 0) > 0)
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/20 font-medium">
+                          📦 <strong>Compras:</strong> ${{ number_format($resumen['saldo_pendiente_compra'], 0, ',', '.') }}
+                      </span>
+                  @endif
+                  @if(($resumen['saldo_pendiente_caja_egreso'] ?? 0) > 0)
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-800 dark:text-rose-300 border border-rose-500/20 font-medium">
+                          📉 <strong>Egresos Caja:</strong> ${{ number_format($resumen['saldo_pendiente_caja_egreso'], 0, ',', '.') }}
+                      </span>
+                  @endif
+              </div>
+          </div>
+          @endif
+      </div>
+  </div>
+  @endif
+
+  {{-- Tabla de movimientos del día --}}
+  <div class="glass-card p-6 md:p-8">
   <div class="flex justify-between items-center mb-4">
      <div>
          <h3 class="text-lg font-bold">Movimientos del Día ({{ $movimientos->count() }})</h3>
@@ -173,6 +308,8 @@
  </div>
  @endif
  </div>
+
+</div>
 
 </div>
 
