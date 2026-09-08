@@ -111,8 +111,15 @@
                     <label class="field-label">Buscar repuesto en stock *</label>
                     <select name="stock_id" required class="glass-input no-search" data-placeholder="Seleccione un repuesto...">
                         <option value="">Seleccione un repuesto...</option>
+                        @php
+                            $esCliTecnico = $electronica->equipo?->cliente?->tipo_cliente === 'tecnico';
+                        @endphp
                         @foreach($stocks_disponibles as $stock)
-                            <option value="{{ $stock->id }}">{{ $stock->producto }} (Disp: {{ $stock->cantidad }} | Venta: ${{ number_format($stock->precio_venta, 0, ',', '.') }})</option>
+                            @php
+                                $precioRep = ($esCliTecnico && $stock->precio_tecnico > 0) ? $stock->precio_tecnico : $stock->precio_venta;
+                                $tagRep = ($esCliTecnico && $stock->precio_tecnico > 0) ? '🔧 P. Técnico' : 'P. Venta';
+                            @endphp
+                            <option value="{{ $stock->id }}">{{ $stock->producto }} (Disp: {{ $stock->cantidad }} | {{ $tagRep }}: ${{ number_format($precioRep, 0, ',', '.') }})</option>
                         @endforeach
                     </select>
                 </div>

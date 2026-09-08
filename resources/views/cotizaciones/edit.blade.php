@@ -20,8 +20,8 @@
                     <select name="cliente_id" required class="glass-input focus:ring-blue-500" data-tomselect>
                         <option value="">Buscar cliente...</option>
                         @foreach($clientes as $c)
-                            <option value="{{ $c->id }}" {{ old('cliente_id', $cotizacion->cliente_id) == $c->id ? 'selected' : '' }}>
-                                {{ $c->nombre }} ({{ $c->identificacion }})
+                            <option value="{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ old('cliente_id', $cotizacion->cliente_id) == $c->id ? 'selected' : '' }}>
+                                {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' — 🔧 Técnico' : '' }}
                             </option>
                         @endforeach
                     </select>
@@ -87,7 +87,7 @@
             <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
                 <a href="{{ route('cotizaciones.index') }}" class="btn-cancel">↩️ Cancelar</a>
                 <button type="submit" class="btn-save">
-                    🔄 Actualizar Cotización
+                    💾 Actualizar Cotización
                 </button>
             </div>
         </form>
@@ -101,10 +101,11 @@
 
 @php
     $stocksJson = $stocks->map(fn($s) => [
-        'id' => $s->id,
-        'nombre' => $s->producto,
-        'precio' => $s->precio_venta,
-        'cantidad' => $s->cantidad,
+        'id'             => $s->id,
+        'nombre'         => $s->producto,
+        'precio_venta'   => (float)$s->precio_venta,
+        'precio_tecnico' => (float)($s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta),
+        'cantidad'       => $s->cantidad,
     ])->values()->all();
 @endphp
 @include('cotizaciones._scripts')

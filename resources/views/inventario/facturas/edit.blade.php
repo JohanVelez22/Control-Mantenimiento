@@ -28,8 +28,8 @@
                         </option>
                     @endforeach
                     @foreach($clientes as $c)
-                        <option value="Cliente:{{ $c->id }}" {{ ($factura->facturable_type === 'App\Models\Cliente' && $factura->facturable_id == $c->id) ? 'selected' : '' }}>
-                            👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }})
+                        <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ ($factura->facturable_type === 'App\Models\Cliente' && $factura->facturable_id == $c->id) ? 'selected' : '' }}>
+                            👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' — 🔧 Técnico' : '' }}
                         </option>
                     @endforeach
                 </select>
@@ -142,9 +142,16 @@ let filaIndex = 999;
 function agregarFila() {
     filaIndex++;
     let optionsHtml = '<option value="">Seleccionar producto...</option>';
+    const selCliente = document.querySelector('select[name="facturable_global"]');
+    const esTecnico = selCliente && selCliente.options[selCliente.selectedIndex]?.dataset?.tipo === 'tecnico';
     stocksData.forEach(s => {
-        // En compras usar precio_compra, en ventas usar precio_venta o dejar 0
-        const defaultPrice = {{ $factura->tipo_movimiento === 'compra' ? 's.precio_compra' : 's.precio_venta' }} || 0;
+        // En compras usar precio_compra, en ventas usar precio_tecnico o precio_venta
+        let defaultPrice = 0;
+        @if($factura->tipo_movimiento === 'compra')
+            defaultPrice = s.precio_compra || 0;
+        @else
+            defaultPrice = (esTecnico && s.precio_tecnico > 0) ? s.precio_tecnico : (s.precio_venta || 0);
+        @endif
         optionsHtml += `<option value="${s.id}" data-precio="${defaultPrice}">${s.producto} (Stock: ${s.cantidad})</option>`;
     });
 

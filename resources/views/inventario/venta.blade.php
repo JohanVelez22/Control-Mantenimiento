@@ -23,12 +23,12 @@
  <select name="facturable_global" required class="glass-input no-search focus:ring-emerald-500" data-placeholder="Seleccionar...">
  <option value="">Seleccionar...</option>
  @foreach($clientes as $c)
- <option value="Cliente:{{ $c->id }}" {{ old('facturable_global') == "Cliente:{$c->id}" ? 'selected' : '' }}>
- 👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }})
+ <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ old('facturable_global') == "Cliente:{$c->id}" ? 'selected' : '' }}>
+ 👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}) {{ $c->tipo_cliente === 'tecnico' ? '— 🔧 Técnico' : '' }}
  </option>
  @endforeach
  @foreach($proveedores as $prov)
- <option value="Proveedor:{{ $prov->id }}" {{ old('facturable_global') == "Proveedor:{$prov->id}" ? 'selected' : '' }}>
+ <option value="Proveedor:{{ $prov->id }}" data-tipo="proveedor" {{ old('facturable_global') == "Proveedor:{$prov->id}" ? 'selected' : '' }}>
  🏢 Proveedor: {{ $prov->nombre_razon_social }} ({{ $prov->identificacion }})
  </option>
  @endforeach
@@ -70,7 +70,7 @@
    <select name="items[0][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
    <option value="">Seleccionar producto...</option>
   @foreach($stocks as $s)
-  <option value="{{ $s->id }}" data-precio="{{ $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
+  <option value="{{ $s->id }}" data-precio-venta="{{ $s->precio_venta }}" data-precio-tecnico="{{ $s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
   {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
   </option>
   @endforeach
@@ -136,7 +136,8 @@
  $stocksJson = $stocks->map(fn($s) => [
  'id' => $s->id,
  'nombre' => $s->producto,
- 'precio' => $s->precio_venta,
+ 'precio_venta' => (float) $s->precio_venta,
+ 'precio_tecnico' => (float) ($s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta),
  'cantidad' => $s->cantidad,
  ])->values()->all();
 @endphp
@@ -144,10 +145,25 @@
 let filaIndex = 1;
 const stocksData = @json($stocksJson);
 
+function esTecnicoActual() {
+    const selCliente = document.querySelector('select[name="facturable_global"]');
+    if (!selCliente) return false;
+    const opt = selCliente.options[selCliente.selectedIndex];
+    return opt ? opt.dataset.tipo === 'tecnico' : false;
+}
+
+function getPrecioStock(stock) {
+    if (!stock) return 0;
+    return esTecnicoActual() ? stock.precio_tecnico : stock.precio_venta;
+}
+
 function stockSelectOptions() {
-    return stocksData.map(s =>
-      `<option value="${s.id}" data-precio="${s.precio}" data-stock="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — P.Venta: $${window.formatNumber(s.precio)}</option>`
-    ).join('');
+    const esTec = esTecnicoActual();
+    return stocksData.map(s => {
+      const p = esTec ? s.precio_tecnico : s.precio_venta;
+      const labelTag = esTec ? '🔧 P.Técnico' : 'P.Venta';
+      return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-stock="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — ${labelTag}: $${window.formatNumber(p)}</option>`;
+    }).join('');
 }
 
 function agregarFila() {
@@ -196,7 +212,9 @@ function bindFila(tr) {
   const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
   sel.addEventListener('change', () => {
     const opt = sel.options[sel.selectedIndex];
-    const precio = parseInt(opt.dataset.precio || 0);
+    if (!opt || !opt.value) return;
+    const stock = stocksData.find(s => s.id == opt.value);
+    const precio = getPrecioStock(stock);
     if (precioReal) precioReal.value = precio;
     if (precioVisual) precioVisual.value = window.formatNumber(precio);
     actualizarSubtotal(tr);
@@ -240,46 +258,25 @@ function calcularSaldo(total) {
   }
 }
 
-function actualizarSubtotal(tr) {
- const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
- const precioText = tr.querySelector('.precio-input').value.replace(/\./g, '');
- const precio = parseFloat(precioText) || 0;
-  tr.querySelector('.subtotal-cell').textContent = '$' + window.formatNumber(cant * precio);
- recalcular();
-}
-
-function recalcular() {
- let total = 0;
- document.querySelectorAll('.item-row').forEach(tr => {
- const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
- const pText = tr.querySelector('.precio-input').value.replace(/\./g, '');
- const p = parseFloat(pText) || 0;
- total += cant * p;
- });
-  document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
-  
-  // Auto-fill o alertar
-  const totalText = document.getElementById('total-display').textContent.replace(/[^0-9,-]+/g,""); 
-  const tot = parseFloat(totalText) || 0;
-  calcularSaldo(tot);
-}
-
-function calcularSaldo(total) {
- const pagadoText = document.getElementById('total_pagado').value.replace(/\./g, '');
- const pagado = parseFloat(pagadoText) || 0;
- const saldo = total - pagado;
- const box = document.getElementById('saldo-preview');
-  if (saldo > 0.01) {
-  document.getElementById('saldo-display').textContent = '$' + window.formatNumber(Math.round(saldo));
- box.classList.remove('hidden');
- box.classList.add('flex');
- } else {
- box.classList.add('hidden');
- box.classList.remove('flex');
- }
+const clienteGlobalSelect = document.querySelector('select[name="facturable_global"]');
+if (clienteGlobalSelect) {
+    clienteGlobalSelect.addEventListener('change', () => {
+        document.querySelectorAll('.item-row').forEach(tr => {
+            const sel = tr.querySelector('.stock-select');
+            if (!sel || !sel.value) return;
+            const stock = stocksData.find(s => s.id == sel.value);
+            if (stock) {
+                const nuevoPrecio = getPrecioStock(stock);
+                const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
+                const precioVisual = tr.querySelector('[id^="precio_unitario_visual_"]');
+                if (precioReal) precioReal.value = nuevoPrecio;
+                if (precioVisual) precioVisual.value = window.formatNumber(nuevoPrecio);
+                actualizarSubtotal(tr);
+            }
+        });
+    });
 }
 
 document.querySelectorAll('.item-row').forEach(bindFila);
- // Listener delegado a global
 </script>
 @endsection

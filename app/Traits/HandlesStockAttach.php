@@ -24,6 +24,13 @@ trait HandlesStockAttach
                 // Salida atómica del stock (bloquea la fila y evita saldo negativo).
                 $stock = app(StockService::class)->salida($stock, $validated['cantidad']);
 
+                // Determinar precio según tipo de cliente (técnico o normal)
+                $cliente = $model->equipo?->cliente;
+                $esTecnico = $cliente && $cliente->tipo_cliente === 'tecnico';
+                $precioUnitario = ($esTecnico && $stock->precio_tecnico > 0)
+                    ? (float) $stock->precio_tecnico
+                    : (float) $stock->precio_venta;
+
                 // Agregar al modelo (suma si ya existía, sino attach).
                 $existing = $model->stocks()->where('stock_id', $stock->id)->first();
                 if ($existing) {
@@ -32,12 +39,12 @@ trait HandlesStockAttach
                 } else {
                     $model->stocks()->attach($stock->id, [
                         'cantidad'        => $validated['cantidad'],
-                        'precio_unitario' => $stock->precio_venta,
+                        'precio_unitario' => $precioUnitario,
                     ]);
                 }
 
                 // Sumar al costo del modelo
-                $model->increment('costo', $stock->precio_venta * $validated['cantidad']);
+                $model->increment('costo', $precioUnitario * $validated['cantidad']);
             });
 
             return redirect()->back()->with('success', $successMsg);

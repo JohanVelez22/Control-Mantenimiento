@@ -19,8 +19,8 @@
                     <select name="cliente_id" required class="glass-input focus:ring-blue-500" data-tomselect>
                         <option value="">Buscar cliente...</option>
                         @foreach($clientes as $c)
-                            <option value="{{ $c->id }}" {{ old('cliente_id') == $c->id ? 'selected' : '' }}>
-                                {{ $c->nombre }} ({{ $c->identificacion }})
+                            <option value="{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ old('cliente_id') == $c->id ? 'selected' : '' }}>
+                                {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' — 🔧 Técnico' : '' }}
                             </option>
                         @endforeach
                     </select>
@@ -97,13 +97,13 @@
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
 
-
 @php
     $stocksJson = $stocks->map(fn($s) => [
-        'id' => $s->id,
-        'nombre' => $s->producto,
-        'precio' => $s->precio_venta,
-        'cantidad' => $s->cantidad,
+        'id'             => $s->id,
+        'nombre'         => $s->producto,
+        'precio_venta'   => (float)$s->precio_venta,
+        'precio_tecnico' => (float)($s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta),
+        'cantidad'       => $s->cantidad,
     ])->values()->all();
 @endphp
 @include('cotizaciones._scripts')

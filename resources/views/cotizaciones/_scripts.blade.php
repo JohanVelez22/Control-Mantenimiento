@@ -2,9 +2,26 @@
 let filaIndex = 0;
 const stocksData = @json($stocksJson);
 
+function esClienteTecnico() {
+    const sel = document.querySelector('select[name="cliente_id"]');
+    if (!sel) return false;
+    const opt = sel.options[sel.selectedIndex];
+    return opt ? opt.dataset.tipo === 'tecnico' : false;
+}
+
+function getPrecioStockCotizacion(stock) {
+    if (!stock) return 0;
+    return esClienteTecnico() ? (stock.precio_tecnico > 0 ? stock.precio_tecnico : stock.precio_venta) : stock.precio_venta;
+}
+
 function getStockOptions() {
+    const esTec = esClienteTecnico();
     return `<option value="">Seleccionar producto del stock...</option>` + 
-           stocksData.map(s => `<option value="${s.id}" data-precio="${s.precio}" data-nombre="${s.nombre}" data-cantidad="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — $${window.formatNumber(s.precio)}</option>`).join('');
+           stocksData.map(s => {
+               const p = esTec ? (s.precio_tecnico > 0 ? s.precio_tecnico : s.precio_venta) : s.precio_venta;
+               const labelTag = esTec ? '🔧 P.Técnico' : 'P.Venta';
+               return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-nombre="${s.nombre}" data-cantidad="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — ${labelTag}: $${window.formatNumber(p)}</option>`;
+           }).join('');
 }
 
 function agregarFila(itemData = null) {
@@ -128,8 +145,9 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
                 const pReal = tr.querySelector('[id^="precio_unitario_real_"]');
                 const pVis = tr.querySelector('[id^="precio_unitario_visual_"]');
                 
-                pReal.value = selectedStock.precio;
-                pVis.value = window.formatNumber(selectedStock.precio);
+                const precio = getPrecioStockCotizacion(selectedStock);
+                pReal.value = precio;
+                pVis.value = window.formatNumber(precio);
                 
                 tr.dataset.maxStock = selectedStock.cantidad;
                 
@@ -277,6 +295,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.showToast('Hay cantidades que superan el stock disponible. Por favor ajuste antes de guardar.', 'error');
                 }
             }
+    const clienteSelectElem = document.querySelector('select[name="cliente_id"]');
+    if (clienteSelectElem) {
+        clienteSelectElem.addEventListener('change', () => {
+            document.querySelectorAll('.item-row').forEach(tr => {
+                const tipoSel = tr.querySelector('.tipo-select');
+                if (tipoSel && tipoSel.value === 'stock') {
+                    const stockIdInput = tr.querySelector('.stock-id-input');
+                    if (stockIdInput && stockIdInput.value) {
+                        const stock = stocksData.find(s => s.id == stockIdInput.value);
+                        if (stock) {
+                            const nuevoPrecio = getPrecioStockCotizacion(stock);
+                            const pReal = tr.querySelector('[id^="precio_unitario_real_"]');
+                            const pVis = tr.querySelector('[id^="precio_unitario_visual_"]');
+                            if (pReal) pReal.value = nuevoPrecio;
+                            if (pVis) pVis.value = window.formatNumber(nuevoPrecio);
+                            actualizarSubtotal(tr);
+                        }
+                    }
+                }
+            });
         });
     }
 });
