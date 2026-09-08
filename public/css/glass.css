@@ -622,6 +622,7 @@ html.dark #ts-topbar {
 .btn-secondary,
 .btn-ghost,
 .btn-danger,
+.btn-blue,
 .btn-success {
   white-space: nowrap !important;
   flex-shrink: 0;
@@ -1244,6 +1245,46 @@ html.dark .btn-ghost.text-indigo-600:hover {
 
 .btn-danger:hover {
   background: rgba(220, 38, 38, 0.15);
+}
+
+.btn-blue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #2563EB;
+  border-radius: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.20);
+  transition: all 0.22s ease;
+}
+
+.btn-blue:hover {
+  background: rgba(37, 99, 235, 0.15);
+}
+
+html.dark .btn-danger {
+  color: #F87171;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(248, 113, 113, 0.25);
+}
+
+html.dark .btn-danger:hover {
+  background: rgba(239, 68, 68, 0.22);
+}
+
+html.dark .btn-blue {
+  color: #60A5FA;
+  background: rgba(37, 99, 235, 0.12);
+  border-color: rgba(96, 165, 250, 0.25);
+}
+
+html.dark .btn-blue:hover {
+  background: rgba(37, 99, 235, 0.22);
 }
 
 /* --- INPUT VIDRIO -------------------------------------------------- */
@@ -3442,16 +3483,19 @@ html.dark tr.active-target {
     border-left: 4px solid #2563EB !important;
     box-shadow: inset 4px 0 20px -4px rgba(37, 99, 235, 0.50), 0 0 16px rgba(37, 99, 235, 0.12);
   }
+
   25% {
     background-color: rgba(37, 99, 235, 0.16) !important;
     border-left: 4px solid #2563EB !important;
     box-shadow: inset 4px 0 12px -4px rgba(37, 99, 235, 0.25);
   }
+
   75% {
     background-color: rgba(37, 99, 235, 0.14) !important;
     border-left: 4px solid #2563EB !important;
     box-shadow: inset 4px 0 12px -4px rgba(37, 99, 235, 0.25);
   }
+
   100% {
     background-color: transparent !important;
     border-left: 4px solid transparent !important;
@@ -3465,16 +3509,19 @@ html.dark tr.active-target {
     border-left: 4px solid #3B82F6 !important;
     box-shadow: inset 4px 0 20px -4px rgba(59, 130, 246, 0.55), 0 0 16px rgba(59, 130, 246, 0.15);
   }
+
   25% {
     background-color: rgba(59, 130, 246, 0.18) !important;
     border-left: 4px solid #3B82F6 !important;
     box-shadow: inset 4px 0 12px -4px rgba(59, 130, 246, 0.35);
   }
+
   75% {
     background-color: rgba(59, 130, 246, 0.16) !important;
     border-left: 4px solid #3B82F6 !important;
     box-shadow: inset 4px 0 12px -4px rgba(59, 130, 246, 0.35);
   }
+
   100% {
     background-color: transparent !important;
     border-left: 4px solid transparent !important;
@@ -3503,16 +3550,19 @@ html.dark tr[id^="electronica-"].active-target {
     border-left: 4px solid #8B5CF6 !important;
     box-shadow: inset 4px 0 20px -4px rgba(139, 92, 246, 0.50), 0 0 16px rgba(139, 92, 246, 0.12);
   }
+
   25% {
     background-color: rgba(139, 92, 246, 0.16) !important;
     border-left: 4px solid #8B5CF6 !important;
     box-shadow: inset 4px 0 12px -4px rgba(139, 92, 246, 0.25);
   }
+
   75% {
     background-color: rgba(139, 92, 246, 0.14) !important;
     border-left: 4px solid #8B5CF6 !important;
     box-shadow: inset 4px 0 12px -4px rgba(139, 92, 246, 0.25);
   }
+
   100% {
     background-color: transparent !important;
     border-left: 4px solid transparent !important;
@@ -3526,16 +3576,19 @@ html.dark tr[id^="electronica-"].active-target {
     border-left: 4px solid #A78BFA !important;
     box-shadow: inset 4px 0 20px -4px rgba(167, 139, 250, 0.55), 0 0 16px rgba(167, 139, 250, 0.15);
   }
+
   25% {
     background-color: rgba(167, 139, 250, 0.18) !important;
     border-left: 4px solid #A78BFA !important;
     box-shadow: inset 4px 0 12px -4px rgba(167, 139, 250, 0.35);
   }
+
   75% {
     background-color: rgba(167, 139, 250, 0.16) !important;
     border-left: 4px solid #A78BFA !important;
     box-shadow: inset 4px 0 12px -4px rgba(167, 139, 250, 0.35);
   }
+
   100% {
     background-color: transparent !important;
     border-left: 4px solid transparent !important;

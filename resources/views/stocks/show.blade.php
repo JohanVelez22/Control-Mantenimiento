@@ -2,7 +2,7 @@
 @section('title', 'Detalles de Producto')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-5xl mx-auto">
     <div class="glass-card p-6 md:p-8">
         
         {{-- Alerta de estado --}}
@@ -14,44 +14,57 @@
         </div>
         @endif
 
-        {{-- Encabezado --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6">
-            <div class="flex items-center gap-4">
-                <a href="{{ route('stocks.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
-@if($stock->photo)
-  <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
-       onclick="openImageLightbox('{{ asset('storage/' . $stock->photo) }}', '{{ addslashes($stock->producto) }}', this)"
-       class="w-16 h-16 rounded-2xl object-cover cursor-pointer border border-white/40 shadow-sm flex-shrink-0 hover:opacity-80 transition">
-@endif
-                <div>
+        {{-- Encabezado: Barra superior de navegación y acciones + Fila centrada de producto --}}
+        <div class="mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6">
+            {{-- Barra superior de botones --}}
+            <div class="flex items-center justify-between gap-3 mb-5">
+                <a href="{{ route('stocks.index') }}" class="btn-ghost px-3 py-1.5 text-sm font-semibold flex items-center gap-1.5" title="Volver al Inventario">
+                    <span>⬅️</span> <span>Volver</span>
+                </a>
+                
+                <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                    <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm py-1.5 px-3">
+                        🖨️ Imprimir
+                    </a>
+                    
+                    @if(!auth()->user()->isInvitado())
+                    <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400 text-sm py-1.5 px-3">
+                        ✏️ Editar
+                    </a>
+                    <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-danger text-sm py-1.5 px-3">
+                        {{ $stock->active ? '🚫 Anular' : '✅ Reactivar' }}
+                    </button>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Fila del Producto: Imagen centrada con el título y detalles --}}
+            <div class="flex items-center gap-4 sm:gap-5">
+                @if($stock->photo)
+                    <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
+                         onclick="openImageLightbox('{{ asset('storage/' . $stock->photo) }}', '{{ addslashes($stock->producto) }}', this)"
+                         class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover cursor-pointer border border-white/40 shadow-md shrink-0 hover:scale-105 transition-transform">
+                @else
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-white/20 flex items-center justify-center text-3xl shadow-inner shrink-0">
+                        📦
+                    </div>
+                @endif
+
+                <div class="min-w-0 flex-1">
                     <div class="flex flex-wrap items-center gap-3">
-                        <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+                        <h2 class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight break-words">
                             {{ $stock->producto }}
                         </h2>
-                        <span class="pill {{ $stock->active ? 'pill-done' : 'pill-anulado' }} text-xs py-1 px-3 font-bold uppercase tracking-wider">
+                        <span class="pill {{ $stock->active ? 'pill-done' : 'pill-anulado' }} text-xs py-1 px-3 font-bold uppercase tracking-wider shrink-0">
                             {{ $stock->active ? 'ACTIVO' : 'INACTIVO' }}
                         </span>
                     </div>
-                    <p class="text-sm font-bold text-gray-500 dark:text-gray-400 mt-3">
-                        Código: <span class="font-mono text-indigo-500">{{ $stock->codigo ?? 'N/A' }}</span> | 
-                        Categoría: {{ $stock->categoria ?? 'General' }} {{ $stock->subcategoria ? ' / ' . $stock->subcategoria : '' }}
+                    <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mt-1.5 flex flex-wrap items-center gap-x-2">
+                        <span>Código: <strong class="font-mono text-indigo-500 dark:text-indigo-400 font-bold">{{ $stock->codigo ?? 'N/A' }}</strong></span>
+                        <span class="text-gray-300 dark:text-gray-600">|</span>
+                        <span>Categoría: <strong class="text-slate-700 dark:text-slate-300 font-semibold">{{ $stock->categoria ?? 'General' }}{{ $stock->subcategoria ? ' / ' . $stock->subcategoria : '' }}</strong></span>
                     </p>
                 </div>
-            </div>
-            
-            <div class="flex items-center gap-3 shrink-0">
-                <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600">
-                    🖨️ Imprimir
-                </a>
-                
-                @if(!auth()->user()->isInvitado())
-                <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
-                    ✏️ Editar
-                </a>
-                <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-danger">
-                    {{ $stock->active ? '🚫 Anular' : '✅ Reactivar' }}
-                </button>
-                @endif
             </div>
         </div>
 

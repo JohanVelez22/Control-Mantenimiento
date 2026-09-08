@@ -99,6 +99,7 @@ class StockController extends Controller
             'precio_venta' => 'nullable|numeric|min:0|decimal:0,2',
             'precio_tecnico' => 'nullable|numeric|min:0|decimal:0,2',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'remove_photo' => 'nullable|in:0,1,true,false',
         ]);
 
         if ($request->hasFile('photo')) {
@@ -106,7 +107,14 @@ class StockController extends Controller
                 Storage::disk('public')->delete($stock->photo);
             }
             $validated['photo'] = $request->file('photo')->store('stocks', 'public');
+        } elseif ($request->boolean('remove_photo') || $request->input('remove_photo') === '1') {
+            if ($stock->photo && Storage::disk('public')->exists($stock->photo)) {
+                Storage::disk('public')->delete($stock->photo);
+            }
+            $validated['photo'] = null;
         }
+
+        unset($validated['remove_photo']);
 
         if (!isset($validated['precio_venta'])) $validated['precio_venta'] = 0;
         if (!isset($validated['precio_tecnico'])) $validated['precio_tecnico'] = 0;

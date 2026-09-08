@@ -36,7 +36,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     
     <!-- CSS Propio (Liquid Glass) - va DESPUÉS para sobreescribir estilos base -->
-    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v=1.3">
+    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ @filemtime(public_path('css/glass.css')) ?: '1.4' }}">
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     

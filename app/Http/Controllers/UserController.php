@@ -79,6 +79,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $usuario->id,
             'role' => 'required|in:admin,tecnico,invitado',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
+            'remove_photo' => 'nullable|in:0,1,true,false',
         ]);
 
         // El administrador puede cambiar roles
@@ -104,6 +105,11 @@ class UserController extends Controller
                 Storage::disk('public')->delete($usuario->photo);
             }
             $usuario->photo = $request->file('photo')->store('users', 'public');
+        } elseif ($request->boolean('remove_photo') || $request->input('remove_photo') === '1') {
+            if ($usuario->photo && Storage::disk('public')->exists($usuario->photo)) {
+                Storage::disk('public')->delete($usuario->photo);
+            }
+            $usuario->photo = null;
         }
 
         $usuario->name = $request->name;
