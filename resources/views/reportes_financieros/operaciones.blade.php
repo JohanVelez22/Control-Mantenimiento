@@ -61,6 +61,17 @@
 
 {{-- Resultados --}}
 <div class="glass-card p-6">
+  <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
+     <div>
+         <h3 class="text-lg font-bold text-slate-800 dark:text-white leading-tight">{{ $tipoLabels[$tipo] }} <span class="text-sm font-normal text-gray-500 dark:text-gray-400">({{ $registros->total() }} registros)</span></h3>
+         <div class="print-date hidden-screen text-xs text-gray-500 font-semibold mt-0.5"><strong>Fecha Impresión:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y h:i A') }}</div>
+     </div>
+     <div class="relative w-full sm:w-64 md:w-72 no-print">
+         <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none opacity-70">🔍</span>
+         <input type="text" id="busqueda-rapida-reportes" placeholder="Búsqueda rápida..." class="glass-input pl-9 w-full text-sm font-semibold py-1.5 focus:ring-teal-500" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); }">
+     </div>
+  </div>
+
  @if($registros->isEmpty())
  <div class="flex flex-col items-center justify-center space-y-3 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm p-12 rounded-2xl border border-white/20 my-4">
      <div class="text-5xl opacity-80">📭</div>
@@ -68,12 +79,6 @@
      <p class="text-sm font-medium text-slate-500 dark:text-slate-400">No se encontraron operaciones en este período.</p>
  </div>
  @else
-  <div class="flex justify-between items-center mb-4">
-     <div>
-         <h3 class="text-lg font-bold">{{ $tipoLabels[$tipo] }} <span class="text-sm font-normal text-gray-500">({{ $registros->total() }} registros)</span></h3>
-         <div class="print-date hidden-screen text-xs text-gray-500 font-semibold mt-0.5"><strong>Fecha Impresión:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y h:i A') }}</div>
-     </div>
-  </div>
 
  {{-- Tabla Mantenimientos --}}
  @if($tipo === 'solo_mantenimientos')
@@ -587,5 +592,31 @@ function exportarOperaciones(tipo, btn) {
             btn.innerHTML = origText;
         });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('busqueda-rapida-reportes');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function() {
+        const filter = this.value.toLowerCase().trim();
+        const tables = document.querySelectorAll('.ts-table');
+        
+        tables.forEach(table => {
+            const tbody = table.querySelector('tbody');
+            if (!tbody) return;
+            const rows = tbody.querySelectorAll('tr');
+            
+            rows.forEach(tr => {
+                if (tr.cells.length === 1 && tr.cells[0].hasAttribute('colspan')) return;
+                const text = tr.textContent.toLowerCase();
+                if (!filter || text.includes(filter)) {
+                    tr.style.display = '';
+                } else {
+                    tr.style.display = 'none';
+                }
+            });
+        });
+    });
+});
 </script>
 
