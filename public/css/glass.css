@@ -3415,42 +3415,70 @@ input.flatpickr-input.form-control {
 }
 
 /* --- UNIFIED ROW TARGET HIGHLIGHTING --- */
-/* Resaltado controlado 100% por JS via clase .active-target */
-/* Se desactiva al hacer click en otro enlace o elemento interactivo */
+/* Resaltado controlado por JS via clase .active-target */
+/* Permanece visible ~2s y luego se desvanece suavemente (Fade-out) */
+tr {
+  transition: background-color 0.5s ease, border-left-color 0.5s ease, box-shadow 0.5s ease;
+}
+
 tr.active-target {
   background-color: rgba(37, 99, 235, 0.12) !important;
   border-left: 4px solid #2563EB !important;
   box-shadow: inset 4px 0 12px -4px rgba(37, 99, 235, 0.25);
-  animation: highlight-pulse 2s ease-out;
+  animation: highlight-pulse-fade 2.5s ease-out forwards;
 }
 
 html.dark tr.active-target {
   background-color: rgba(59, 130, 246, 0.15) !important;
   border-left: 4px solid #3B82F6 !important;
   box-shadow: inset 4px 0 12px -4px rgba(59, 130, 246, 0.35);
-  animation: highlight-pulse-dark 2s ease-out;
+  animation: highlight-pulse-dark-fade 2.5s ease-out forwards;
 }
 
-/* Pulso inicial: empieza fuerte y se asienta */
-@keyframes highlight-pulse {
+/* Pulso inicial brillante, permanece visible 2s y se desvanece suavemente */
+@keyframes highlight-pulse-fade {
   0% {
     background-color: rgba(37, 99, 235, 0.35) !important;
+    border-left: 4px solid #2563EB !important;
     box-shadow: inset 4px 0 20px -4px rgba(37, 99, 235, 0.50), 0 0 16px rgba(37, 99, 235, 0.12);
   }
-  100% {
-    background-color: rgba(37, 99, 235, 0.12) !important;
+  25% {
+    background-color: rgba(37, 99, 235, 0.16) !important;
+    border-left: 4px solid #2563EB !important;
     box-shadow: inset 4px 0 12px -4px rgba(37, 99, 235, 0.25);
+  }
+  75% {
+    background-color: rgba(37, 99, 235, 0.14) !important;
+    border-left: 4px solid #2563EB !important;
+    box-shadow: inset 4px 0 12px -4px rgba(37, 99, 235, 0.25);
+  }
+  100% {
+    background-color: transparent !important;
+    border-left: 4px solid transparent !important;
+    box-shadow: none !important;
   }
 }
 
-@keyframes highlight-pulse-dark {
+@keyframes highlight-pulse-dark-fade {
   0% {
     background-color: rgba(59, 130, 246, 0.40) !important;
+    border-left: 4px solid #3B82F6 !important;
     box-shadow: inset 4px 0 20px -4px rgba(59, 130, 246, 0.55), 0 0 16px rgba(59, 130, 246, 0.15);
   }
-  100% {
-    background-color: rgba(59, 130, 246, 0.15) !important;
+  25% {
+    background-color: rgba(59, 130, 246, 0.18) !important;
+    border-left: 4px solid #3B82F6 !important;
     box-shadow: inset 4px 0 12px -4px rgba(59, 130, 246, 0.35);
+  }
+  75% {
+    background-color: rgba(59, 130, 246, 0.16) !important;
+    border-left: 4px solid #3B82F6 !important;
+    box-shadow: inset 4px 0 12px -4px rgba(59, 130, 246, 0.35);
+  }
+  100% {
+    background-color: transparent !important;
+    border-left: 4px solid transparent !important;
+    box-shadow: none !important;
   }
 }
 
@@ -3459,34 +3487,58 @@ tr[id^="electronica-"].active-target {
   background-color: rgba(139, 92, 246, 0.12) !important;
   border-left: 4px solid #8B5CF6 !important;
   box-shadow: inset 4px 0 12px -4px rgba(139, 92, 246, 0.25);
-  animation: highlight-pulse-purple 2s ease-out;
+  animation: highlight-pulse-purple-fade 2.5s ease-out forwards;
 }
 
 html.dark tr[id^="electronica-"].active-target {
   background-color: rgba(167, 139, 250, 0.15) !important;
   border-left: 4px solid #A78BFA !important;
   box-shadow: inset 4px 0 12px -4px rgba(167, 139, 250, 0.35);
-  animation: highlight-pulse-purple-dark 2s ease-out;
+  animation: highlight-pulse-purple-dark-fade 2.5s ease-out forwards;
 }
 
-@keyframes highlight-pulse-purple {
+@keyframes highlight-pulse-purple-fade {
   0% {
     background-color: rgba(139, 92, 246, 0.35) !important;
+    border-left: 4px solid #8B5CF6 !important;
     box-shadow: inset 4px 0 20px -4px rgba(139, 92, 246, 0.50), 0 0 16px rgba(139, 92, 246, 0.12);
   }
-  100% {
-    background-color: rgba(139, 92, 246, 0.12) !important;
+  25% {
+    background-color: rgba(139, 92, 246, 0.16) !important;
+    border-left: 4px solid #8B5CF6 !important;
     box-shadow: inset 4px 0 12px -4px rgba(139, 92, 246, 0.25);
+  }
+  75% {
+    background-color: rgba(139, 92, 246, 0.14) !important;
+    border-left: 4px solid #8B5CF6 !important;
+    box-shadow: inset 4px 0 12px -4px rgba(139, 92, 246, 0.25);
+  }
+  100% {
+    background-color: transparent !important;
+    border-left: 4px solid transparent !important;
+    box-shadow: none !important;
   }
 }
 
-@keyframes highlight-pulse-purple-dark {
+@keyframes highlight-pulse-purple-dark-fade {
   0% {
     background-color: rgba(167, 139, 250, 0.40) !important;
+    border-left: 4px solid #A78BFA !important;
     box-shadow: inset 4px 0 20px -4px rgba(167, 139, 250, 0.55), 0 0 16px rgba(167, 139, 250, 0.15);
   }
-  100% {
-    background-color: rgba(167, 139, 250, 0.15) !important;
+  25% {
+    background-color: rgba(167, 139, 250, 0.18) !important;
+    border-left: 4px solid #A78BFA !important;
     box-shadow: inset 4px 0 12px -4px rgba(167, 139, 250, 0.35);
+  }
+  75% {
+    background-color: rgba(167, 139, 250, 0.16) !important;
+    border-left: 4px solid #A78BFA !important;
+    box-shadow: inset 4px 0 12px -4px rgba(167, 139, 250, 0.35);
+  }
+  100% {
+    background-color: transparent !important;
+    border-left: 4px solid transparent !important;
+    box-shadow: none !important;
   }
 }

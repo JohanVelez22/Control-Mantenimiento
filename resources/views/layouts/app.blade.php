@@ -1200,15 +1200,25 @@
 
 
             // 3. Auto-centrar elementos al navegar por ancla (hash)
+            let hashTargetFadeTimer = null;
             const activateHashTarget = (hashStr) => {
                 try {
+                    // Limpiar timer anterior si había uno pendiente
+                    if (hashTargetFadeTimer) clearTimeout(hashTargetFadeTimer);
+
                     // Remover clase active-target anterior de cualquier elemento
                     document.querySelectorAll('.active-target').forEach(el => el.classList.remove('active-target'));
                     
                     const target = document.querySelector(hashStr);
                     if (target) {
-                        // Agregar clase para simular :target de forma confiable
+                        // Forzar reflow para reiniciar la animación de fade
+                        void target.offsetWidth;
                         target.classList.add('active-target');
+
+                        // Remover la clase del DOM tras terminar el desvanecimiento suave (2.5s)
+                        hashTargetFadeTimer = setTimeout(() => {
+                            target.classList.remove('active-target');
+                        }, 2500);
                         
                         setTimeout(() => {
                             // Desactivamos temporalmente el comportamiento CSS nativo que puede causar conflictos
