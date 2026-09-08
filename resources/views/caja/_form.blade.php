@@ -11,22 +11,30 @@
  <div id="cliente_resultados" class="mt-2 hidden space-y-1 max-h-40 overflow-y-auto glass-card p-2 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-lg"></div>
  <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2">Selecciona un cliente para autocompletar los campos. También puedes escribir directamente abajo.</p>
  </div>
+ 
+    @php
+        $valEmpresa = old('empresa', request('empresa', $movimiento->empresa ?? ''));
+        $valPersona = old('persona', request('persona', $movimiento->persona ?? ''));
+        $tieneEntidad = !empty(trim($valEmpresa)) || !empty(trim($valPersona));
+    @endphp
 
- {{-- Empresa o Persona (uno de los dos) --}}
- <div class="md:col-span-2">
- <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-2 bg-amber-50 dark:bg-amber-900/20 inline-block px-3 py-1 rounded-full border border-amber-200 dark:border-amber-700/50">⚠️ Rellena al menos uno: <strong>Empresa</strong> o <strong>Persona</strong></p>
- <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
- <div>
- <label class="field-label flex items-center gap-2"><span>🏢</span> Empresa (Opcional)</label>
- <input type="text" name="empresa" id="caja_empresa" value="{{ old('empresa', request('empresa', $movimiento->empresa ?? '')) }}" placeholder="Nombre de la empresa..." class="glass-input">
- </div>
- <div>
- <label class="field-label flex items-center gap-2"><span>👤</span> Persona (Opcional)</label>
- <input type="text" name="persona" id="caja_persona" value="{{ old('persona', request('persona', $movimiento->persona ?? '')) }}" placeholder="Nombre de quien paga/recibe..." class="glass-input">
- @error('persona') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
- </div>
- </div>
- </div>
+    {{-- Empresa o Persona (uno de los dos) --}}
+    <div class="md:col-span-2">
+        <p id="aviso_empresa_persona" class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-2 bg-amber-50 dark:bg-amber-900/20 inline-block px-3 py-1.5 rounded-xl border border-amber-200 dark:border-amber-700/50 transition-all duration-200 {{ $tieneEntidad ? 'hidden' : '' }}">
+            ⚠️ Rellena al menos uno: <strong>Empresa</strong> o <strong>Persona</strong>
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+                <label class="field-label flex items-center gap-2"><span>🏢</span> Empresa (Opcional)</label>
+                <input type="text" name="empresa" id="caja_empresa" value="{{ $valEmpresa }}" placeholder="Nombre de la empresa..." class="glass-input">
+            </div>
+            <div>
+                <label class="field-label flex items-center gap-2"><span>👤</span> Persona (Opcional)</label>
+                <input type="text" name="persona" id="caja_persona" value="{{ $valPersona }}" placeholder="Nombre de quien paga/recibe..." class="glass-input">
+                @error('persona') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+            </div>
+        </div>
+    </div>
 
  {{-- Fecha --}}
  <div>
@@ -295,22 +303,42 @@
  resultadosDiv.classList.remove('hidden');
  }
 
- function seleccionarEntidadCaja(entidad) {
- if (entidad.tipo_entidad === 'cliente') {
-     document.getElementById('caja_persona').value = entidad.nombre;
-     document.getElementById('caja_empresa').value = '';
- } else {
-     document.getElementById('caja_empresa').value = entidad.nombre;
-     document.getElementById('caja_persona').value = '';
- }
- document.getElementById('cliente_busqueda').value = entidad.nombre + ' (' + (entidad.identificacion || '') + ')';
- document.getElementById('cliente_resultados').classList.add('hidden');
- }
+    function actualizarAvisoEntidad() {
+        var aviso = document.getElementById('aviso_empresa_persona');
+        var emp = document.getElementById('caja_empresa');
+        var per = document.getElementById('caja_persona');
+        if (!aviso || !emp || !per) return;
+        var tieneValor = emp.value.trim() !== '' || per.value.trim() !== '';
+        if (tieneValor) {
+            aviso.classList.add('hidden');
+        } else {
+            aviso.classList.remove('hidden');
+        }
+    }
 
- function limpiarClienteCaja() {
- document.getElementById('cliente_busqueda').value = '';
- document.getElementById('cliente_resultados').classList.add('hidden');
- }
+    var inputEmpresa = document.getElementById('caja_empresa');
+    var inputPersona = document.getElementById('caja_persona');
+    if (inputEmpresa) inputEmpresa.addEventListener('input', actualizarAvisoEntidad);
+    if (inputPersona) inputPersona.addEventListener('input', actualizarAvisoEntidad);
+    actualizarAvisoEntidad();
+
+    function seleccionarEntidadCaja(entidad) {
+        if (entidad.tipo_entidad === 'cliente') {
+            document.getElementById('caja_persona').value = entidad.nombre;
+            document.getElementById('caja_empresa').value = '';
+        } else {
+            document.getElementById('caja_empresa').value = entidad.nombre;
+            document.getElementById('caja_persona').value = '';
+        }
+        document.getElementById('cliente_busqueda').value = entidad.nombre + ' (' + (entidad.identificacion || '') + ')';
+        document.getElementById('cliente_resultados').classList.add('hidden');
+        actualizarAvisoEntidad();
+    }
+
+    function limpiarClienteCaja() {
+        document.getElementById('cliente_busqueda').value = '';
+        document.getElementById('cliente_resultados').classList.add('hidden');
+    }
 
  // Búsqueda al presionar Enter (evitando el envío del formulario)
  document.getElementById('cliente_busqueda').addEventListener('keydown', function(e) {

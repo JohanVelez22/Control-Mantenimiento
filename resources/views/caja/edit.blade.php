@@ -9,8 +9,8 @@
     $facturaRel = $numFactura ? \App\Models\Factura::where('numero_factura', $numFactura)->first() : null;
 @endphp
 
-<div class="max-w-7xl mx-auto space-y-6">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+<div class="max-w-7xl mx-auto space-y-5">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="flex items-center gap-3">
             <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
             <div>
@@ -34,9 +34,9 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {{-- Formulario principal --}}
-        <div class="lg:col-span-2 space-y-6">
-            <div class="glass-card p-6 md:p-8">
-                <form action="{{ route('caja.update', $movimiento->id) }}" method="POST" class="space-y-6">
+        <div class="lg:col-span-2">
+            <div class="glass-card p-5 md:p-6">
+                <form action="{{ route('caja.update', $movimiento->id) }}" method="POST">
                     @csrf @method('PUT')
                     @include('caja._form', ['movimiento' => $movimiento])
                     
