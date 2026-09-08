@@ -82,6 +82,23 @@ class Factura extends Model
         return $this->saldo_pendiente > 0;
     }
 
+    /** Costo total de adquisición de los productos en la factura */
+    public function getCostoTotalAttribute(): float
+    {
+        return (float) $this->items->sum(function ($item) {
+            return (float) $item->cantidad * (float) ($item->stock->precio_compra ?? 0);
+        });
+    }
+
+    /** Utilidad o pérdida de la factura (aplica para ventas) */
+    public function getUtilidadAttribute(): float
+    {
+        if ($this->tipo_movimiento !== 'venta') {
+            return 0;
+        }
+        return (float) $this->total_documento - $this->costo_total;
+    }
+
     /**
      * Sincroniza y recalcula el total pagado a partir de los movimientos de caja activos
      * asociados a la factura, actualizando automáticamente el estado y los saldos.

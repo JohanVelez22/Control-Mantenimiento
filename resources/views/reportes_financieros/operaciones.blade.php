@@ -60,8 +60,8 @@
 </div>
 
 {{-- Resultados --}}
-<div class="glass-card p-6">
-  <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
+<div class="glass-card p-6" style="padding-top: 18px;">
+  <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3" style="margin-bottom: 18px;">
      <div>
          <h3 class="text-lg font-bold text-slate-800 dark:text-white leading-tight">{{ $tipoLabels[$tipo] }} <span class="text-sm font-normal text-gray-500 dark:text-gray-400">({{ $registros->total() }} registros)</span></h3>
          <div class="print-date hidden-screen text-xs text-gray-500 font-semibold mt-0.5"><strong>Fecha Impresión:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y h:i A') }}</div>

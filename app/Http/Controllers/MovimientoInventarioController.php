@@ -305,7 +305,7 @@ class MovimientoInventarioController extends Controller
             'fecha_hasta' => $fecha_hasta,
         ]);
 
-        $query = Factura::with(['facturable', 'user'])
+        $query = Factura::with(['facturable', 'user', 'items.stock'])
             ->orderBy('fecha', 'desc')
             ->orderBy('id', 'desc');
 
