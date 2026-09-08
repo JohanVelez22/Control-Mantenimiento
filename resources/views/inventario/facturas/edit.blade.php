@@ -71,17 +71,14 @@
                                     <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
                                         <input type="hidden" name="existing_items[{{ $index }}][id]" value="{{ $item->id }}">
                                         @if($item->stock_id)
-                                            <div class="flex flex-col gap-1">
-                                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto Stock</span>
-                                                <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
-                                                    <option value="">Seleccionar producto...</option>
-                                                    @foreach($stocks as $s)
-                                                        <option value="{{ $s->id }}" data-precio="{{ $factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta }}" {{ $item->stock_id == $s->id ? 'selected' : '' }}>
-                                                            {{ $s->producto }} (Stock: {{ $s->cantidad }})
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                            <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
+                                                <option value="">Seleccionar producto...</option>
+                                                @foreach($stocks as $s)
+                                                    <option value="{{ $s->id }}" data-precio="{{ $factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta }}" {{ $item->stock_id == $s->id ? 'selected' : '' }}>
+                                                        {{ $s->producto }} (Stock: {{ $s->cantidad }})
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         @else
                                             <input type="hidden" name="existing_items[{{ $index }}][stock_id]" value="">
                                             <div class="flex flex-col gap-1">
@@ -188,12 +185,9 @@ function agregarFila() {
     tr.className = 'new-row bg-blue-50/20 dark:bg-blue-900/10';
     tr.innerHTML = `
         <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-            <div class="flex flex-col gap-1">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto Stock</span>
-                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-blue-500" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
-                    ${optionsHtml}
-                </select>
-            </div>
+            <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-blue-500" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
+                ${optionsHtml}
+            </select>
         </td>
         <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
             <input type="number" name="new_items[${filaIndex}][cantidad]" min="1" value="1" required class="glass-input text-center py-1.5 focus:ring-blue-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
