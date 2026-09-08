@@ -47,7 +47,22 @@
  <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">{{ $equipo->marca }} {{ $equipo->modelo }}</div>
  </td>
  <td class="uppercase text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $equipo->serie }}</td>
- <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $equipo->cliente->nombre ?? '-' }}</td>
+ <td class="{{ $dim }}">
+  @if($equipo->cliente)
+  <a href="{{ route('clientes.index') }}#cliente-{{ $equipo->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+  {{ $equipo->cliente->nombre }}
+  </div>
+  @if($equipo->cliente->identificacion)
+  <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+  {{ $equipo->cliente->identificacion }}
+  </div>
+  @endif
+  </a>
+  @else
+  <span class="font-bold text-slate-800 dark:text-white">-</span>
+  @endif
+  </td>
  <td class="{{ $dim }}"><p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2" title="{{ $equipo->observacion }}">{{ $equipo->observacion ?? '-' }}</p></td>
  <td class="{{ $dim }}"><span class="font-medium text-slate-700 dark:text-slate-300">{{ $equipo->user->name ?? '-' }}</span></td>
  <td class="text-center">

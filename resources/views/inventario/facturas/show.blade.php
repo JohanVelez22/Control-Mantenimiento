@@ -17,7 +17,7 @@
  </div>
   <div class="flex flex-col md:flex-row items-center gap-4">
       <div class="text-center md:text-right">
-          <p class="text-[10px] font-bold text-yellow-600/70 uppercase tracking-widest">Saldo Actual</p>
+          <p class="font-black text-yellow-700 dark:text-yellow-400 uppercase tracking-tight">Saldo Actual</p>
           <p class="text-2xl font-black text-yellow-700 dark:text-yellow-400">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</p>
       </div>
 
