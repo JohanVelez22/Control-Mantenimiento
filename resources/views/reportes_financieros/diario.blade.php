@@ -141,7 +141,7 @@
       <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
           <div class="flex items-center gap-2.5">
               <span class="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base font-bold shadow-inner">
-                  ⚠️
+                  <span class="inline-flex items-center justify-center leading-none select-none" style="transform: translateY(-1.5px);">⚠️</span>
               </span>
               <div>
                   <h3 class="font-bold text-slate-800 dark:text-amber-300 text-base leading-tight">

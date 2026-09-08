@@ -59,34 +59,37 @@
  <tr>
  <th class="w-auto px-2 py-3">Artículo del Stock</th>
  <th class="w-24 text-center px-2 py-3">Cant.</th>
- <th class="w-40 text-right px-3 py-3">Precio Un. ($)</th>
+ <th class="w-44 text-right px-3 py-3">Precio Un. ($)</th>
  <th class="w-36 text-right px-3 py-3">Subtotal</th>
  <th class="w-10 text-center px-2 py-3"></th>
  </tr>
  </thead>
  <tbody id="items-body">
 <tr class="item-row bg-transparent">
-  <td>
+  <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
    <select name="items[0][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
    <option value="">Seleccionar producto...</option>
   @foreach($stocks as $s)
-  <option value="{{ $s->id }}" data-precio-venta="{{ $s->precio_venta }}" data-precio-tecnico="{{ $s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
+  <option value="{{ $s->id }}" data-precio-compra="{{ $s->precio_compra }}" data-precio-venta="{{ $s->precio_venta }}" data-precio-tecnico="{{ $s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
   {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
   </option>
   @endforeach
   </select>
   </td>
-  <td>
+  <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
   <input type="number" name="items[0][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-emerald-500">
   </td>
-  <td>
+  <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
   <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
-  <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white">
+  <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
+  <div class="alerta-costo-badge hidden text-xs font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1.5" style="margin-top: 10px !important; margin-bottom: 2px !important;">
+      <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+  </div>
   </td>
-  <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell align-middle pr-4">
+  <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell pr-4" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
   $0
   </td>
-  <td class="text-center align-middle">
+  <td class="text-center" style="vertical-align: top !important; padding-top: 14px; padding-bottom: 10px;">
   <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 transition-colors p-2" title="Eliminar">✕</button>
   </td>
   </tr>
@@ -113,14 +116,36 @@
 </div>
  <div id="saldo-preview" class="hidden w-full md:w-1/2 flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">
  <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 mb-1 tracking-wide uppercase">⚠️ Saldo por Cobrar</p>
- <p class="text-3xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$0</p>
+ <p class="text-2xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$0</p>
  </div>
  </div>
 
  <div>
  <label class="field-label">Observaciones</label>
- <textarea name="observaciones" rows="2" class="glass-input resize-y focus:ring-emerald-500" placeholder="Notas sobre la venta..."></textarea>
+ <textarea name="observaciones" rows="2" class="glass-input resize-y focus:ring-emerald-500" placeholder="Notas sobre la venta (ej: autorización de descuentos especiales)..."></textarea>
  </div>
+
+ {{-- Banner preventivo si se detecta venta bajo costo --}}
+  <div id="banner-alerta-bajo-costo" class="hidden mb-5 p-4 md:p-5 rounded-2xl bg-amber-500/5 dark:bg-amber-500/[0.06] border border-amber-500/20 dark:border-amber-500/20 backdrop-blur-xl shadow-sm transition-all flex-col">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base font-bold shadow-inner shrink-0">
+                  <span class="inline-flex items-center justify-center leading-none select-none" style="transform: translateY(-1.5px);">⚠️</span>
+              </span>
+              <h4 class="font-bold text-slate-800 dark:text-amber-300 text-sm sm:text-base leading-tight">
+                  Advertencia de Margen Negativo
+              </h4>
+          </div>
+          <span class="text-xs font-semibold px-3 py-1 rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+              Venta por debajo del costo
+          </span>
+      </div>
+      <div class="mt-4">
+          <p class="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+              Hay uno o más productos con precio de venta inferior a su costo de adquisición. Puedes procesar la venta si se trata de un descuento autorizado o liquidación, pero generará margen negativo en caja.
+          </p>
+      </div>
+  </div>
 
  <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
  <a href="{{ route('inventario.facturas') }}" class="btn-cancel">↩️ Cancelar</a>
@@ -136,6 +161,7 @@
  $stocksJson = $stocks->map(fn($s) => [
  'id' => $s->id,
  'nombre' => $s->producto,
+ 'precio_compra' => (float) $s->precio_compra,
  'precio_venta' => (float) $s->precio_venta,
  'precio_tecnico' => (float) ($s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta),
  'cantidad' => $s->cantidad,
@@ -162,7 +188,7 @@ function stockSelectOptions() {
     return stocksData.map(s => {
       const p = esTec ? s.precio_tecnico : s.precio_venta;
       const labelTag = esTec ? '🔧 P.Técnico' : 'P.Venta';
-      return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-stock="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — ${labelTag}: $${window.formatNumber(p)}</option>`;
+      return `<option value="${s.id}" data-precio-compra="${s.precio_compra}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-stock="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — ${labelTag}: $${window.formatNumber(p)}</option>`;
     }).join('');
 }
 
@@ -171,21 +197,24 @@ function agregarFila() {
   const tr = document.createElement('tr');
   tr.className = 'item-row bg-transparent border-t border-gray-200 dark:border-gray-700/50';
   tr.innerHTML = `
-  <td>
+  <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
    <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
    <option value="">Seleccionar producto...</option>
   ${stockSelectOptions()}
   </select>
   </td>
-  <td>
+  <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
   <input type="number" name="items[${filaIndex}][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-emerald-500">
   </td>
-  <td>
+  <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
   <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="0" required class="hidden">
-  <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white">
+  <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
+  <div class="alerta-costo-badge hidden text-xs font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1.5" style="margin-top: 10px !important; margin-bottom: 2px !important;">
+      <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+  </div>
   </td>
-  <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell align-middle pr-4">$0</td>
-  <td class="text-center align-middle">
+  <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell pr-4" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$0</td>
+  <td class="text-center" style="vertical-align: top !important; padding-top: 14px; padding-bottom: 10px;">
   <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 p-2">✕</button>
   </td>`;
   tbody.appendChild(tr);
@@ -230,15 +259,60 @@ function actualizarSubtotal(tr) {
   recalcular();
 }
 
+function verificarAlertaCosto(tr) {
+  const sel = tr.querySelector('.stock-select');
+  if (!sel || !sel.value) return false;
+  const stock = stocksData.find(s => s.id == sel.value);
+  if (!stock) return false;
+
+  const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
+  const precioVisual = tr.querySelector('[id^="precio_unitario_visual_"]');
+  const badge = tr.querySelector('.alerta-costo-badge');
+  const costoRef = tr.querySelector('.costo-ref');
+
+  const precioVenta = parseFloat(precioReal?.value || '0') || 0;
+  const precioCompra = parseFloat(stock.precio_compra || '0') || 0;
+
+  if (precioCompra > 0 && precioVenta > 0 && precioVenta < precioCompra) {
+    if (badge) {
+      if (costoRef) costoRef.textContent = '$' + window.formatNumber(precioCompra);
+      badge.classList.remove('hidden');
+      badge.classList.add('flex');
+    }
+    return true;
+  } else {
+    if (badge) {
+      badge.classList.add('hidden');
+      badge.classList.remove('flex');
+    }
+    return false;
+  }
+}
+
 function recalcular() {
   let total = 0;
+  let hayBajoCosto = false;
   document.querySelectorAll('.item-row').forEach(tr => {
     const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
     const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
     const precio = parseFloat(precioReal?.value || '0') || 0;
     total += cant * precio;
+    if (verificarAlertaCosto(tr)) {
+      hayBajoCosto = true;
+    }
   });
   document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
+
+  const banner = document.getElementById('banner-alerta-bajo-costo');
+  if (banner) {
+    if (hayBajoCosto) {
+      banner.classList.remove('hidden');
+      banner.classList.add('flex');
+    } else {
+      banner.classList.add('hidden');
+      banner.classList.remove('flex');
+    }
+  }
   
   calcularSaldo(total);
 }

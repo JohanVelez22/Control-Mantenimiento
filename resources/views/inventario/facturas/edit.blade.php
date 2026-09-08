@@ -68,7 +68,7 @@
                         <tbody id="items-body">
                             @foreach($factura->items as $index => $item)
                                 <tr class="existing-row">
-                                    <td>
+                                    <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
                                         <input type="hidden" name="existing_items[{{ $index }}][id]" value="{{ $item->id }}">
                                         @if($item->stock_id)
                                             <div class="flex flex-col gap-1">
@@ -90,16 +90,21 @@
                                             </div>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
                                         <input type="number" name="existing_items[{{ $index }}][cantidad]" min="1" value="{{ (int)$item->cantidad }}" required class="glass-input text-center py-1.5 focus:ring-orange-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
                                     </td>
-                                    <td>
-                                        <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 focus:ring-orange-500 font-bold text-slate-800 dark:text-white price-input" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
+                                    <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
+                                        <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 focus:ring-orange-500 font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
+                                        @if($factura->tipo_movimiento === 'venta')
+                                             <div class="alerta-costo-badge hidden text-xs font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1.5" style="margin-top: 10px !important; margin-bottom: 2px !important;">
+                                                 <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+                                             </div>
+                                        @endif
                                     </td>
-                                    <td class="text-right subtotal-display py-1.5 align-middle font-bold text-slate-800 dark:text-white">
+                                    <td class="text-right subtotal-display pr-4 font-bold text-slate-800 dark:text-white" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
                                         ${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}
                                     </td>
-                                    <td></td>
+                                    <td style="vertical-align: top !important; padding-top: 14px; padding-bottom: 10px;"></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -122,10 +127,34 @@
             {{-- Observaciones --}}
             <div class="md:col-span-2">
                 <label class="field-label">Observaciones</label>
-                <textarea name="observaciones" rows="3" class="glass-input">{{ old('observaciones', $factura->observaciones) }}</textarea>
+                <textarea name="observaciones" rows="3" class="glass-input" placeholder="Notas sobre la venta o autorización de descuentos...">{{ old('observaciones', $factura->observaciones) }}</textarea>
                 @error('observaciones') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
         </div>
+
+        @if($factura->tipo_movimiento === 'venta')
+            {{-- Banner preventivo si se detecta venta bajo costo --}}
+            <div id="banner-alerta-bajo-costo" class="hidden mb-5 p-4 md:p-5 rounded-2xl bg-amber-500/5 dark:bg-amber-500/[0.06] border border-amber-500/20 dark:border-amber-500/20 backdrop-blur-xl shadow-sm transition-all flex-col">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base font-bold shadow-inner shrink-0">
+                            <span class="inline-flex items-center justify-center leading-none select-none" style="transform: translateY(-1.5px);">⚠️</span>
+                        </span>
+                        <h4 class="font-bold text-slate-800 dark:text-amber-300 text-sm sm:text-base leading-tight">
+                            Advertencia de Margen Negativo
+                        </h4>
+                    </div>
+                    <span class="text-xs font-semibold px-3 py-1 rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                        Venta por debajo del costo
+                    </span>
+                </div>
+                <div class="mt-4">
+                    <p class="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                        Hay uno o más productos con precio de venta inferior a su costo de adquisición. Puedes procesar la factura si es un descuento autorizado o liquidación, pero generará margen negativo en la rentabilidad.
+                    </p>
+                </div>
+            </div>
+        @endif
 
         <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
             <a href="{{ route('inventario.facturas') }}" class="btn-cancel">↩️ Cancelar</a>
@@ -158,7 +187,7 @@ function agregarFila() {
     const tr = document.createElement('tr');
     tr.className = 'new-row bg-blue-50/20 dark:bg-blue-900/10';
     tr.innerHTML = `
-        <td>
+        <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
             <div class="flex flex-col gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto Stock</span>
                 <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-blue-500" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
@@ -166,16 +195,21 @@ function agregarFila() {
                 </select>
             </div>
         </td>
-        <td>
+        <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
             <input type="number" name="new_items[${filaIndex}][cantidad]" min="1" value="1" required class="glass-input text-center py-1.5 focus:ring-blue-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
         </td>
-        <td>
-            <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 focus:ring-blue-500 font-bold text-slate-800 dark:text-white price-input" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
+        <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
+            <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 focus:ring-blue-500 font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
+            @if($factura->tipo_movimiento === 'venta')
+                <div class="alerta-costo-badge hidden text-xs font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1.5" style="margin-top: 10px !important; margin-bottom: 2px !important;">
+                    <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+                </div>
+            @endif
         </td>
-        <td class="text-right subtotal-display py-1.5 align-middle font-bold text-blue-600 dark:text-blue-400">
+        <td class="text-right subtotal-display pr-4 font-bold text-blue-600 dark:text-blue-400" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
             $0
         </td>
-        <td class="text-center align-middle">
+        <td class="text-center" style="vertical-align: top !important; padding-top: 14px; padding-bottom: 10px;">
             <button type="button" onclick="eliminarFilaNueva(this)" class="text-red-400 hover:text-red-600 p-2" title="Eliminar fila nueva">✕</button>
         </td>
     `;
@@ -206,8 +240,42 @@ function actualizarPrecio(selectElem) {
     }
 }
 
+function verificarAlertaCostoEdicion(row) {
+    @if($factura->tipo_movimiento !== 'venta')
+        return false;
+    @endif
+    const sel = row.querySelector('.stock-select');
+    if (!sel || !sel.value) return false;
+    const stock = stocksData.find(s => s.id == sel.value);
+    if (!stock) return false;
+
+    const priceInput = row.querySelector('.price-input');
+    const badge = row.querySelector('.alerta-costo-badge');
+    const costoRef = row.querySelector('.costo-ref');
+
+    let rawVal = priceInput ? priceInput.value.replace(/\./g, '').replace(/,/g, '').trim() : '0';
+    const precioVenta = parseFloat(rawVal) || 0;
+    const precioCompra = parseFloat(stock.precio_compra || '0') || 0;
+
+    if (precioCompra > 0 && precioVenta > 0 && precioVenta < precioCompra) {
+        if (badge) {
+            if (costoRef) costoRef.textContent = '$' + window.formatNumber(precioCompra);
+            badge.classList.remove('hidden');
+            badge.classList.add('flex');
+        }
+        return true;
+    } else {
+        if (badge) {
+            badge.classList.add('hidden');
+            badge.classList.remove('flex');
+        }
+        return false;
+    }
+}
+
 function recalcularTotalesEdicion() {
     let totalDoc = 0;
+    let hayBajoCosto = false;
     
     // Sum all rows (existing and new)
     document.querySelectorAll('tbody tr').forEach(row => {
@@ -222,10 +290,25 @@ function recalcularTotalesEdicion() {
                 subtotalCell.textContent = '$' + window.formatNumber(sub);
             }
             totalDoc += sub;
+
+            if (verificarAlertaCostoEdicion(row)) {
+                hayBajoCosto = true;
+            }
         }
     });
     
     document.getElementById('total_documento_display').textContent = '$' + window.formatNumber(totalDoc);
+
+    const banner = document.getElementById('banner-alerta-bajo-costo');
+    if (banner) {
+        if (hayBajoCosto) {
+            banner.classList.remove('hidden');
+            banner.classList.add('flex');
+        } else {
+            banner.classList.add('hidden');
+            banner.classList.remove('flex');
+        }
+    }
     
     const pagadoInput = document.getElementById('total_pagado');
     if (pagadoInput) {
@@ -243,6 +326,8 @@ function recalcularTotalesEdicion() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    recalcularTotalesEdicion();
+
     const form = document.querySelector('form');
     if (form) {
         form.addEventListener('submit', function() {
