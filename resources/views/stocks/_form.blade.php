@@ -74,10 +74,12 @@
 
             {{-- Foto actual asignada en BD --}}
             @if($st?->photo)
-                <div id="existing-photo-container" class="mb-3 flex items-center gap-4 p-3 rounded-2xl bg-white/40 dark:bg-slate-900/40 border border-white/50 dark:border-white/10 w-fit backdrop-blur-sm shadow-sm">
-                    <img src="{{ asset('storage/' . $st->photo) }}" alt="{{ $st->producto }}"
-                         onclick="openImageLightbox('{{ asset('storage/' . $st->photo) }}', '{{ addslashes($st->producto) }}', this)"
-                         class="w-20 h-20 rounded-xl object-cover cursor-pointer border border-white/40 shadow-sm hover:opacity-80 transition">
+                <div id="existing-photo-container" class="mb-3 flex items-center gap-4">
+                    <div class="p-1 rounded-2xl bg-white/40 dark:bg-slate-900/40 border border-white/50 dark:border-white/10 backdrop-blur-sm shadow-sm shrink-0">
+                        <img src="{{ asset('storage/' . $st->photo) }}" alt="{{ $st->producto }}"
+                             onclick="openImageLightbox('{{ asset('storage/' . $st->photo) }}', '{{ addslashes($st->producto) }}', this)"
+                             class="w-20 h-20 rounded-xl object-cover cursor-pointer hover:opacity-80 transition block">
+                    </div>
                     <div class="space-y-1.5">
                         <span class="text-xs font-bold text-slate-700 dark:text-slate-300 block">Foto actual del producto</span>
                         <button type="button" id="btn-remove-existing" class="btn-danger">
@@ -98,8 +100,10 @@
             @endif
 
             {{-- Previsualización interactiva de nueva foto seleccionada --}}
-            <div id="new-photo-preview-container" class="hidden mb-3 flex items-center gap-4 p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 w-fit backdrop-blur-sm shadow-sm">
-                <img id="new-photo-preview-img" src="" alt="Nueva foto" class="w-20 h-20 rounded-xl object-cover border-2 border-blue-500/40 shadow-sm">
+            <div id="new-photo-preview-container" class="hidden mb-3 flex items-center gap-4">
+                <div class="p-1 rounded-2xl bg-blue-500/10 border border-blue-500/20 backdrop-blur-sm shadow-sm shrink-0">
+                    <img id="new-photo-preview-img" src="" alt="Nueva foto" class="w-20 h-20 rounded-xl object-cover shadow-sm block">
+                </div>
                 <div class="space-y-1.5">
                     <span class="text-xs font-bold text-blue-600 dark:text-blue-400 block">Nueva imagen lista para subir</span>
                     <button type="button" id="btn-clear-new-file" class="btn-danger">
