@@ -96,7 +96,7 @@
 
   {{-- Saldos pendientes del día --}}
   @if(($resumen['total_por_cobrar'] ?? 0) > 0 || ($resumen['total_por_pagar'] ?? 0) > 0)
-  <div class="p-5 md:p-6 relative overflow-hidden saldos-box-ghost">
+  <div class="p-5 md:p-4 relative overflow-hidden saldos-box-ghost">
       <style>
           .saldos-box-ghost {
               background: rgba(245, 158, 11, 0.05);
@@ -138,7 +138,7 @@
               border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
           }
       </style>
-      <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
           <div class="flex items-center gap-2.5">
               <span class="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base font-bold shadow-inner">
                   ⚠️
@@ -150,7 +150,7 @@
                   <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Obligaciones y recaudos pendientes</p>
               </div>
           </div>
-          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+          <span class="text-xs font-semibold px-3 py-1 rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
               Cuentas por cobrar y pagar
           </span>
       </div>

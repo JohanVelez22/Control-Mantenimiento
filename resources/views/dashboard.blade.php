@@ -61,7 +61,7 @@
   </h4>
   <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Comparativa de ingresos de equipos vs órdenes creadas</p>
   </div>
-  <span class="text-xs font-bold px-3 py-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 rounded-full shadow-sm">Últimos 7 Días</span>
+  <span class="text-xs font-bold px-3 py-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 rounded-xl shadow-sm">Últimos 7 Días</span>
   </div>
   <div class="w-full flex-grow relative pl-8 pr-14 pb-8 pt-8">
  <canvas id="barChart"></canvas>
@@ -77,7 +77,7 @@
  </h4>
  <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Estado actual de todos los mantenimientos históricos</p>
  </div>
- <span class="text-xs font-bold px-3 py-1.5 bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 rounded-full shadow-sm">Tiempo Real</span>
+ <span class="text-xs font-bold px-3 py-1.5 bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 rounded-xl shadow-sm">Tiempo Real</span>
  </div>
  <div class="w-full flex-grow relative flex justify-center items-center pb-8">
  <!-- Wrapper para forzar tamaño pequeño -->
@@ -96,7 +96,7 @@
    </h4>
    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Movimientos de caja reales: ingresos menos egresos por fecha</p>
    </div>
-  <span class="text-xs font-bold px-3 py-1.5 bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200 rounded-full shadow-sm">Últimos 7 días</span>
+  <span class="text-xs font-bold px-3 py-1.5 bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200 rounded-xl shadow-sm">Últimos 7 días</span>
   </div>
   <div class="w-full flex-grow relative pl-8 pr-14 pb-8 pt-8">
  <canvas id="ingresosChart"></canvas>
@@ -112,7 +112,7 @@
  </h4>
  <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Estado actual de órdenes de electrónica</p>
  </div>
- <span class="text-xs font-bold px-3 py-1.5 bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 rounded-full shadow-sm">Tiempo Real</span>
+ <span class="text-xs font-bold px-3 py-1.5 bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 rounded-xl shadow-sm">Tiempo Real</span>
  </div>
  <div class="w-full flex-grow relative flex justify-center items-center pb-8">
  <div style="height: 250px; width: 100%; max-width: 400px; position: relative; margin: 0 auto;">

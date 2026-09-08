@@ -680,132 +680,157 @@
             <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1 pb-4">
                 {{-- Filtros / Tabs --}}
                 <div class="flex flex-nowrap justify-center gap-1.5 mb-4 w-full">
-                <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60">Todos</button>
+                <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60">Todos</button>
                 @if($mantPendientes > 0)
-                <button onclick="filterNotifs('mant')" id="btn-notif-mant" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60">Mantenimiento</button>
+                <button onclick="filterNotifs('mant')" id="btn-notif-mant" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60">Mantenimiento</button>
                 @endif
                 @if($elecPendientes > 0)
-                <button onclick="filterNotifs('elec')" id="btn-notif-elec" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60">Electrónica</button>
+                <button onclick="filterNotifs('elec')" id="btn-notif-elec" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60">Electrónica</button>
                 @endif
                 @if($cotPendientes > 0)
-                <button onclick="filterNotifs('cot')" id="btn-notif-cot" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60">Cotizaciones</button>
+                <button onclick="filterNotifs('cot')" id="btn-notif-cot" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60">Cotizaciones</button>
                 @endif
                 @if($cajaPendientes > 0)
-                <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60">Saldos</button>
+                <button onclick="filterNotifs('caja')" id="btn-notif-caja" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60">Saldos</button>
                 @endif
-            </div>
+                </div>
 
             {{-- Scrollable list of all pending items --}}
             <div class="w-full max-h-[50vh] overflow-y-auto space-y-2 pr-1 mb-5 content-scroll">
 
                 {{-- Mantenimientos --}}
                 @foreach($mantList as $m)
-                @if(is_object($m))
-                <a href="{{ route('mantenimientos.show', $m->id) }}" onclick="closeNotifModal()" data-notif-type="mant"
+                @php
+                    $mId = data_get($m, 'id');
+                    $mOrden = data_get($m, 'id_orden');
+                    $mEquipo = data_get($m, 'equipo_nombre', data_get($m, 'equipo.nombre', 'N/A'));
+                    $mCliente = data_get($m, 'cliente_nombre', '—');
+                    $mUrl = data_get($m, 'url', route('mantenimientos.show', $mId ?? 0));
+                @endphp
+                <a href="{{ $mUrl }}" onclick="closeNotifModal()" data-notif-type="mant"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-blue-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Mantenimiento</span>
-                            <span class="text-[10px] font-bold text-blue-500 dark:text-blue-300">{{ $m->id_orden }}</span>
+                            <span class="text-[10px] font-bold text-blue-500 dark:text-blue-300">{{ $mOrden }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $m->equipo?->nombre ?? 'N/A' }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ is_object($m->equipo?->cliente) ? trim(($m->equipo->cliente->nombres ?? '') . ' ' . ($m->equipo->cliente->apellidos ?? '')) : '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $mEquipo }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $mCliente }}</p>
                     </div>
                     <span class="shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
-                @endif
                 @endforeach
 
                 {{-- Electrónica --}}
                 @foreach($elecList as $e)
-                @if(is_object($e))
-                <a href="{{ route('electronicas.show', $e->id) }}" onclick="closeNotifModal()" data-notif-type="elec"
+                @php
+                    $eId = data_get($e, 'id');
+                    $eOrden = data_get($e, 'id_orden');
+                    $eEquipo = data_get($e, 'equipo_nombre', data_get($e, 'equipo.nombre', 'N/A'));
+                    $eCliente = data_get($e, 'cliente_nombre', '—');
+                    $eUrl = data_get($e, 'url', route('electronicas.show', $eId ?? 0));
+                @endphp
+                <a href="{{ $eUrl }}" onclick="closeNotifModal()" data-notif-type="elec"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-purple-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Electrónica</span>
-                            <span class="text-[10px] font-bold text-purple-500 dark:text-purple-300">{{ $e->id_orden }}</span>
+                            <span class="text-[10px] font-bold text-purple-500 dark:text-purple-300">{{ $eOrden }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $e->equipo?->nombre ?? 'N/A' }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ is_object($e->equipo?->cliente) ? trim(($e->equipo->cliente->nombres ?? '') . ' ' . ($e->equipo->cliente->apellidos ?? '')) : '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $eEquipo }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $eCliente }}</p>
                     </div>
                     <span class="shrink-0 text-purple-500 dark:text-purple-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
-                @endif
                 @endforeach
 
                 {{-- Cotizaciones --}}
                 @foreach($cotList as $c)
-                @if(is_object($c))
-                <a href="{{ route('cotizaciones.show', $c->id ?? $c['id'] ?? 0) }}" onclick="closeNotifModal()" data-notif-type="cot"
+                @php
+                    $cId = data_get($c, 'id');
+                    $cCodigo = data_get($c, 'codigo', '—');
+                    $cCliente = data_get($c, 'cliente_nombre', 'N/A');
+                    $cTotal = (float) data_get($c, 'total', 0);
+                    $cUrl = data_get($c, 'url', route('cotizaciones.show', $cId ?? 0));
+                @endphp
+                <a href="{{ $cUrl }}" onclick="closeNotifModal()" data-notif-type="cot"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Cotización</span>
-                            <span class="text-[10px] font-bold text-indigo-500 dark:text-indigo-300">{{ $c->codigo ?? $c['codigo'] ?? '—' }}</span>
+                            <span class="text-[10px] font-bold text-indigo-500 dark:text-indigo-300">{{ $cCodigo }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ is_object($c->cliente) ? trim(($c->cliente->nombres ?? '') . ' ' . ($c->cliente->apellidos ?? '')) : 'N/A' }}</p>
-                        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold truncate">Total: ${{ number_format($c->total ?? $c['total'] ?? 0, 0, ',', '.') }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $cCliente }}</p>
+                        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold truncate">Total: ${{ number_format($cTotal, 0, ',', '.') }}</p>
                     </div>
                     <span class="shrink-0 text-indigo-500 dark:text-indigo-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
-                @endif
                 @endforeach
 
                 {{-- Facturas con saldo pendiente --}}
                 @foreach($cajaList as $f)
-                @if(is_object($f))
-                <a href="{{ $f->movimiento_caja_id ? route('caja.edit', $f->movimiento_caja_id) : route('inventario.facturas.show', $f->id) }}" onclick="closeNotifModal()" data-notif-type="caja"
+                @php
+                    $fMovId = data_get($f, 'movimiento_caja_id');
+                    $fId = data_get($f, 'id');
+                    $fNumero = data_get($f, 'numero_factura');
+                    $fNombre = data_get($f, 'facturable_nombre', '—');
+                    $fSaldo = (float) data_get($f, 'saldo_pendiente', 0);
+                    $fUrl = data_get($f, 'url', ($fMovId ? route('caja.edit', $fMovId) : route('inventario.facturas.show', $fId)));
+                @endphp
+                <a href="{{ $fUrl }}" onclick="closeNotifModal()" data-notif-type="caja"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Factura</span>
-                            <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $f->numero_factura }}</span>
+                            <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $fNumero }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ is_object($f->facturable) ? ($f->facturable->nombre_razon_social ?? $f->facturable->nombre ?? '—') : '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $fNombre }}</p>
                         <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
-                            Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}
+                            Saldo: ${{ number_format($fSaldo, 0, ',', '.') }}
                         </p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <span class="text-xs font-bold px-2.5 py-1 bg-orange-500 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1">💵 Registrar Abono</span>
                     </div>
                 </a>
-                @endif
                 @endforeach
 
                 {{-- Ingresos/Egresos con saldo pendiente --}}
                 @foreach($movimientosPendientes as $mov)
-                @if(is_object($mov))
                 @php
-                    $isIngreso = $mov->tipo_movimiento === 'ingreso';
+                    $movId = data_get($mov, 'id');
+                    $movTipo = data_get($mov, 'tipo_movimiento');
+                    $isIngreso = $movTipo === 'ingreso';
                     $bgClass = $isIngreso ? 'bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border-emerald-100 dark:border-emerald-800' : 'bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 border-orange-100 dark:border-orange-800';
                     $barClass = $isIngreso ? 'bg-emerald-500' : 'bg-orange-500';
                     $titleClass = $isIngreso ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400';
                     $idClass = $isIngreso ? 'text-emerald-500 dark:text-emerald-300' : 'text-orange-500 dark:text-orange-300';
                     $montoClass = $isIngreso ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400';
                     $arrowClass = $isIngreso ? 'text-emerald-500 dark:text-emerald-400' : 'text-orange-500 dark:text-orange-400';
+                    $movConcepto = data_get($mov, 'concepto_nombre', '—');
+                    $movPersona = data_get($mov, 'persona', '—');
+                    $movSaldo = (float) data_get($mov, 'saldo_pendiente', 0);
+                    $movUrl = data_get($mov, 'url', route('caja.edit', $movId));
                 @endphp
-                <a href="{{ route('caja.edit', $mov->id) }}" onclick="closeNotifModal()" data-notif-type="caja"
+                <a href="{{ $movUrl }}" onclick="closeNotifModal()" data-notif-type="caja"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl border {{ $bgClass }} transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full {{ $barClass }} rounded-l-xl"></div>
                     <div class="pl-3 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
-                            <span class="text-[10px] font-black {{ $titleClass }} uppercase tracking-wider">Saldo {{ ucfirst($mov->tipo_movimiento) }}</span>
-                            <span class="text-[10px] font-bold {{ $idClass }}">#{{ $mov->id }}</span>
+                            <span class="text-[10px] font-black {{ $titleClass }} uppercase tracking-wider">Saldo {{ ucfirst($movTipo) }}</span>
+                            <span class="text-[10px] font-bold {{ $idClass }}">#{{ $movId }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ is_object($mov->concepto) ? $mov->concepto->nombre : ($mov->concepto ?? '—') }} - {{ $mov->persona ?? '—' }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $movConcepto }} - {{ $movPersona }}</p>
                         <p class="text-xs {{ $montoClass }} font-semibold">
-                            Falta pagar: ${{ number_format($mov->saldo_pendiente, 0, ',', '.') }}
+                            Falta pagar: ${{ number_format($movSaldo, 0, ',', '.') }}
                         </p>
                     </div>
                     <span class="shrink-0 {{ $arrowClass }} group-hover:translate-x-1 transition-transform text-lg">→</span>
                 </a>
-                @endif
                 @endforeach
 
             </div>
@@ -823,15 +848,15 @@
             allTabs.forEach(btn => {
                 // Restablece a estado no seleccionado
                 if(btn.id === 'btn-notif-all') {
-                    btn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60'; btn.removeAttribute('style');
+                    btn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-mant') {
-                    btn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60'; btn.removeAttribute('style');
+                    btn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-elec') {
-                    btn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60'; btn.removeAttribute('style');
+                    btn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-cot') {
-                    btn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60'; btn.removeAttribute('style');
+                    btn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:hover:bg-indigo-900/60'; btn.removeAttribute('style');
                 } else if(btn.id === 'btn-notif-caja') {
-                    btn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60'; btn.removeAttribute('style');
+                    btn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60'; btn.removeAttribute('style');
                 }
             });
 
@@ -839,15 +864,15 @@
             const activeBtn = document.getElementById('btn-notif-' + type);
             if(activeBtn) {
                 if(type === 'all') {
-                    activeBtn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-emerald-200 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700'; activeBtn.removeAttribute('style');
+                    activeBtn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-emerald-200 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700'; activeBtn.removeAttribute('style');
                 } else if(type === 'mant') {
-                    activeBtn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-blue-200 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200 border border-blue-300 dark:border-blue-700'; activeBtn.removeAttribute('style');
+                    activeBtn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-blue-200 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200 border border-blue-300 dark:border-blue-700'; activeBtn.removeAttribute('style');
                 } else if(type === 'elec') {
-                    activeBtn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-purple-200 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border border-purple-300 dark:border-purple-700'; activeBtn.removeAttribute('style');
+                    activeBtn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-purple-200 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border border-purple-300 dark:border-purple-700'; activeBtn.removeAttribute('style');
                 } else if(type === 'cot') {
-                    activeBtn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-indigo-200 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-700'; activeBtn.removeAttribute('style');
+                    activeBtn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-indigo-200 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-700'; activeBtn.removeAttribute('style');
                 } else if(type === 'caja') {
-                    activeBtn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-full text-xs font-bold transition-colors bg-amber-200 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border border-amber-300 dark:border-amber-700'; activeBtn.removeAttribute('style');
+                    activeBtn.className = 'notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-amber-200 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border border-amber-300 dark:border-amber-700'; activeBtn.removeAttribute('style');
                 }
             }
 
@@ -893,10 +918,9 @@
                 modal.classList.remove('opacity-0');
                 card.classList.remove('scale-95', 'opacity-0');
             }, 10);
-            // Apply tab filter if provided
-            if (tab) {
-                setTimeout(() => filterNotifs(tab), 50);
-            }
+            // Apply tab filter if provided, otherwise default to all
+            const targetTab = tab || 'all';
+            setTimeout(() => filterNotifs(targetTab), 50);
         }
 
         function closeNotifModal() {
