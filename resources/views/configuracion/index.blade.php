@@ -9,12 +9,12 @@
         <p class="text-gray-500 font-medium mt-2">Gestiona la información comercial que aparecerá en los reportes y facturas de tus operaciones.</p>
     </div>
 
-    <form action="{{ route('configuracion.update') }}" method="POST" enctype="multipart/form-data" class="glass-card p-6 md:p-8">
+    <form action="{{ route('configuracion.update') }}" method="POST" enctype="multipart/form-data" class="glass-card p-6 md:p-8" id="form-configuracion" onsubmit="submitConfiguracion(event)">
         @csrf
 
         <div class="flex flex-col md:flex-row gap-8">
             {{-- Columna Izquierda: Logo --}}
-            <div class="w-full md:w-1/3 flex flex-col items-center gap-4">
+            <div class="w-full md:w-1/3 flex flex-col items-center justify-start gap-4">
                 <div class="w-48 h-48 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-slate-800/50 flex flex-col items-center justify-center overflow-hidden relative group cursor-pointer" onclick="document.getElementById('logo-input').click()">
                     @if($configuracion->logo_path)
                         <img src="{{ Storage::url($configuracion->logo_path) }}" id="logo-preview" alt="Logo Empresa" class="w-full h-full object-contain p-2 z-10 bg-white dark:bg-transparent">
@@ -34,44 +34,7 @@
                     </div>
                 </div>
                 <input type="file" name="logo" id="logo-input" accept="image/*" class="hidden" onchange="previewLogo(event)">
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 text-center">Formatos recomendados: PNG, JPG, WEBP. Fondo transparente sugerido.</p>
-
-                {{-- Selector de Formato de Impresión --}}
-                <div class="w-full pt-4 border-t border-gray-200/50 dark:border-white/10">
-                    <label class="field-label block text-center mb-2 font-black">Formato de Impresión</label>
-                    
-                    @php
-                        $formatoActual = old('formato_factura', $configuracion->formato_factura ?? 'estandar');
-                        $isPos = $formatoActual === 'pos';
-                    @endphp
-
-                    <div class="grid grid-cols-2 gap-2.5">
-                        {{-- Opción Estándar --}}
-                        <label for="radio-estandar" onclick="updateFormatSelection('estandar')" id="card-formato-estandar" class="format-card {{ !$isPos ? 'is-active' : '' }}">
-                            <input type="radio" name="formato_factura" value="estandar" id="radio-estandar" class="sr-only" {{ !$isPos ? 'checked' : '' }}>
-                            <span class="text-2xl block mb-1">📄</span>
-                            <span class="text-xs font-black block text-slate-800 dark:text-white">Estándar</span>
-                            <span class="text-[10px] text-gray-500 dark:text-gray-400 block font-medium">Media Carta / A4</span>
-                            <span id="badge-estandar" class="pill {{ !$isPos ? 'pill-done' : 'pill-neutral' }} text-[10px] py-0.5 px-2 mt-2">
-                                {{ !$isPos ? '● Activo' : 'Inactivo' }}
-                            </span>
-                        </label>
-
-                        {{-- Opción POS --}}
-                        <label for="radio-pos" onclick="updateFormatSelection('pos')" id="card-formato-pos" class="format-card {{ $isPos ? 'is-active' : '' }}">
-                            <input type="radio" name="formato_factura" value="pos" id="radio-pos" class="sr-only" {{ $isPos ? 'checked' : '' }}>
-                            <span class="text-2xl block mb-1">🧾</span>
-                            <span class="text-xs font-black block text-slate-800 dark:text-white">Ticket POS</span>
-                            <span class="text-[10px] text-gray-500 dark:text-gray-400 block font-medium">Térmico (80mm)</span>
-                            <span id="badge-pos" class="pill {{ $isPos ? 'pill-done' : 'pill-neutral' }} text-[10px] py-0.5 px-2 mt-2">
-                                {{ $isPos ? '● Activo' : 'Inactivo' }}
-                            </span>
-                        </label>
-                    </div>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 text-center mt-2.5 leading-tight">
-                        Haz clic en el formato que deseas usar y pulsa <strong>"Guardar Configuración"</strong>
-                    </p>
-                </div>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center max-w-[210px] leading-snug">Formatos recomendados: PNG, JPG, WEBP. Fondo transparente sugerido.</p>
             </div>
 
             {{-- Columna Derecha: Datos --}}
@@ -108,11 +71,75 @@
                         <span>Texto para Pie de Página en Reportes / Facturas</span>
                         <span class="text-[10px] font-normal text-gray-500 dark:text-gray-400">Términos, garantías, etc.</span>
                     </label>
-                    <textarea name="pie_pagina_factura" rows="4" class="glass-input" placeholder="Ej: Gracias por su compra. Los equipos reparados tienen garantía de 3 meses.">{{ old('pie_pagina_factura', $configuracion->pie_pagina_factura) }}</textarea>
+                    <textarea name="pie_pagina_factura" rows="3" class="glass-input" placeholder="Ej: Gracias por su compra. Los equipos reparados tienen garantía de 3 meses.">{{ old('pie_pagina_factura', $configuracion->pie_pagina_factura) }}</textarea>
                 </div>
             </div>
         </div>
 
+        {{-- Sección: Formato de Impresión Predeterminado --}}
+        <div class="mt-6 pt-4 md:pt-5 border-t border-gray-200/50 dark:border-white/10">
+            <div class="mb-4">
+                <h3 class="text-base font-black text-slate-800 dark:text-white flex items-center gap-2">
+                    <span>🖨️</span> Formato de Salida para Facturas y Recibos
+                </h3>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-0.5">
+                    Selecciona el tamaño y formato de salida predeterminado para tus ventas, compras y órdenes de servicio.
+                </p>
+            </div>
+
+            @php
+                $formatoActual = old('formato_factura', $configuracion->formato_factura ?? 'estandar');
+                $isPos = $formatoActual === 'pos';
+            @endphp
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {{-- Opción Estándar --}}
+                <label for="radio-estandar" onclick="updateFormatSelection('estandar')" id="card-formato-estandar" class="format-card p-4 rounded-2xl flex items-start gap-4 text-left cursor-pointer transition-all {{ !$isPos ? 'is-active' : '' }}">
+                    <input type="radio" name="formato_factura" value="estandar" id="radio-estandar" class="sr-only" {{ !$isPos ? 'checked' : '' }}>
+                    
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl shrink-0 border border-blue-500/20">
+                        📄
+                    </div>
+                    
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-sm font-black text-slate-800 dark:text-white truncate">Estándar Administrativo</span>
+                            <span id="badge-estandar" class="pill {{ !$isPos ? 'pill-done' : 'pill-neutral' }} text-[10px] py-0.5 px-2.5 shrink-0">
+                                {{ !$isPos ? '● Activo' : 'Inactivo' }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-indigo-500 dark:text-indigo-400 font-bold mt-0.5">Media Carta / A4</p>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
+                            Formato corporativo tradicional con diseño amplio, tablas completas y membrete. Recomendado para garantías y facturas formales.
+                        </p>
+                    </div>
+                </label>
+
+                {{-- Opción POS --}}
+                <label for="radio-pos" onclick="updateFormatSelection('pos')" id="card-formato-pos" class="format-card p-4 rounded-2xl flex items-start gap-4 text-left cursor-pointer transition-all {{ $isPos ? 'is-active' : '' }}">
+                    <input type="radio" name="formato_factura" value="pos" id="radio-pos" class="sr-only" {{ $isPos ? 'checked' : '' }}>
+                    
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl shrink-0 border border-emerald-500/20">
+                        🧾
+                    </div>
+                    
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-sm font-black text-slate-800 dark:text-white truncate">Tirilla Ticket POS</span>
+                            <span id="badge-pos" class="pill {{ $isPos ? 'pill-done' : 'pill-neutral' }} text-[10px] py-0.5 px-2.5 shrink-0">
+                                {{ $isPos ? '● Activo' : 'Inactivo' }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">Térmico (80mm)</p>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
+                            Formato compacto para impresoras de rollo continuo térmico. Ideal para despachos rápidos en mostrador y ahorro de papel.
+                        </p>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        {{-- Botón Guardar --}}
         <div class="pt-6 mt-6 border-t border-gray-200/50 dark:border-white/10 flex justify-end">
             <button type="submit" class="btn-save flex items-center gap-2">
                 <span>💾</span>
@@ -156,11 +183,11 @@ function updateFormatSelection(formato) {
         if (cardEstandar) cardEstandar.classList.remove('is-active');
 
         if (badgePos) {
-            badgePos.className = 'pill pill-done text-[10px] py-0.5 px-2 mt-2';
+            badgePos.className = 'pill pill-done text-[10px] py-0.5 px-2.5 shrink-0';
             badgePos.textContent = '● Activo';
         }
         if (badgeEstandar) {
-            badgeEstandar.className = 'pill pill-neutral text-[10px] py-0.5 px-2 mt-2';
+            badgeEstandar.className = 'pill pill-neutral text-[10px] py-0.5 px-2.5 shrink-0';
             badgeEstandar.textContent = 'Inactivo';
         }
     } else {
@@ -170,13 +197,63 @@ function updateFormatSelection(formato) {
         if (cardPos) cardPos.classList.remove('is-active');
 
         if (badgeEstandar) {
-            badgeEstandar.className = 'pill pill-done text-[10px] py-0.5 px-2 mt-2';
+            badgeEstandar.className = 'pill pill-done text-[10px] py-0.5 px-2.5 shrink-0';
             badgeEstandar.textContent = '● Activo';
         }
         if (badgePos) {
-            badgePos.className = 'pill pill-neutral text-[10px] py-0.5 px-2 mt-2';
+            badgePos.className = 'pill pill-neutral text-[10px] py-0.5 px-2.5 shrink-0';
             badgePos.textContent = 'Inactivo';
         }
+    }
+}
+
+async function submitConfiguracion(event) {
+    event.preventDefault();
+    const form = event.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalContent = submitBtn.innerHTML;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span>⏳</span><span>Guardando...</span>`;
+
+    try {
+        const formData = new FormData(form);
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            if (typeof showToast === 'function') {
+                showToast(data.message || 'Configuración guardada correctamente.', 'success');
+            }
+            if (data.logo_url) {
+                const preview = document.getElementById('logo-preview');
+                if (preview) {
+                    preview.src = data.logo_url;
+                    preview.classList.remove('hidden');
+                }
+            }
+        } else {
+            const errorMsg = data.message || (data.errors ? Object.values(data.errors).flat().join('<br>') : 'Ocurrió un error al guardar.');
+            if (typeof showToast === 'function') {
+                showToast(errorMsg, 'error');
+            }
+        }
+    } catch (error) {
+        console.error('Error al guardar configuración:', error);
+        if (typeof showToast === 'function') {
+            showToast('Error de conexión al intentar guardar.', 'error');
+        }
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalContent;
     }
 }
 </script>

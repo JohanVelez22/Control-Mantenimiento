@@ -57,6 +57,15 @@ class ConfiguracionController extends Controller
         \Illuminate\Support\Facades\Cache::forget('empresa_global_data');
         \Illuminate\Support\Facades\Cache::forget('empresa_logo_base64');
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Configuración de la empresa guardada correctamente.',
+                'nombre' => $configuracion->nombre,
+                'logo_url' => $configuracion->logo_path ? Storage::url($configuracion->logo_path) : null,
+            ]);
+        }
+
         return redirect()->back()->with('success', 'Configuración de la empresa guardada correctamente.');
     }
 }
