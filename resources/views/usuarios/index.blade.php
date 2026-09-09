@@ -62,11 +62,19 @@
  </td>
  <td class="text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
  <td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
-   <div class="actions-grid">
+   <div class="actions-grid flex justify-center items-center mx-auto">
    @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
    <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
    @else
-   <span class="text-gray-400 text-sm">👁️ Lectura</span>
+   <button type="button" onclick="openUserDetailModal({{ json_encode([
+       'id' => $u->id,
+       'name' => $u->name,
+       'email' => $u->email,
+       'role' => ucfirst($u->role),
+       'active' => (bool)$u->active,
+       'created_at' => $u->created_at->format('d/m/Y H:i'),
+       'photo' => $u->photo ? asset('storage/' . $u->photo) : null,
+   ]) }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400" title="Ver Detalles">👁️</button>
    @endif
    
    @if(auth()->user()->isAdmin() && auth()->id() !== $u->id)
@@ -98,5 +106,110 @@
  {{ $users->appends(request()->query())->links() }}
  </div>
 </div>
-<script>document.addEventListener('DOMContentLoaded', () => filterTable('search-usuarios', 'tabla-usuarios'));</script>
+
+{{-- Modal Detalle de Usuario (Homogéneo Claro / Oscuro) --}}
+<div id="modal-user-detail" onclick="if(event.target === this) closeUserDetailModal()" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+    <div id="modal-user-detail-card" class="ts-modal-card scale-95 opacity-0 p-6 w-full max-w-md mx-4 relative transition-all duration-300 shadow-2xl">
+        {{-- Header con línea divisoria sutil --}}
+        <div class="user-detail-divider">
+            <h3 class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
+                <span>👁️</span> Detalle del Usuario
+            </h3>
+        </div>
+
+        {{-- Contenido con espacio vertical optimizado --}}
+        <div class="text-center">
+            {{-- Contenedor Avatar / Foto con separación vertical ajustada --}}
+            <div id="u-detail-photo-container" class="user-detail-avatar-box">
+                <img id="u-detail-photo" src="" class="w-full h-full object-cover hidden">
+                <span id="u-detail-avatar" class="text-3xl">👨🏻‍💻</span>
+            </div>
+
+            <h4 id="u-detail-name" class="text-xl font-extrabold text-slate-800 dark:text-white mb-1"></h4>
+            <p id="u-detail-email" class="text-base font-medium text-slate-700 dark:text-white mb-6"></p>
+
+            {{-- Cajas de información adaptadas al tema claro y oscuro --}}
+            <div class="grid grid-cols-2 gap-3 mb-6 text-left">
+                <div class="user-detail-box">
+                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 block mb-1">Rol en el sistema</span>
+                    <span id="u-detail-role" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 capitalize"></span>
+                </div>
+                <div class="user-detail-box">
+                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 block mb-1">Estado de cuenta</span>
+                    <span id="u-detail-status" class="pill text-xs"></span>
+                </div>
+                <div class="col-span-2 user-detail-box flex justify-between items-center">
+                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Fecha de registro:</span>
+                    <span id="u-detail-date" class="text-xs font-bold text-slate-700 dark:text-gray-300 font-mono"></span>
+                </div>
+            </div>
+
+            <button type="button" onclick="closeUserDetailModal()" class="w-full btn-primary py-3 justify-center text-sm font-bold">
+                Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => filterTable('search-usuarios', 'tabla-usuarios'));
+
+function openUserDetailModal(user) {
+    document.getElementById('u-detail-name').textContent = user.name || 'Sin nombre';
+    document.getElementById('u-detail-email').textContent = user.email || '—';
+    document.getElementById('u-detail-role').textContent = user.role || '—';
+    document.getElementById('u-detail-date').textContent = user.created_at || '—';
+
+    const statusEl = document.getElementById('u-detail-status');
+    if (user.active) {
+        statusEl.className = 'pill pill-done';
+        statusEl.textContent = 'Activo';
+    } else {
+        statusEl.className = 'pill pill-anulado';
+        statusEl.textContent = 'Inactivo';
+    }
+
+    const photoImg = document.getElementById('u-detail-photo');
+    const avatarSpan = document.getElementById('u-detail-avatar');
+    if (user.photo) {
+        photoImg.src = user.photo;
+        photoImg.classList.remove('hidden');
+        avatarSpan.classList.add('hidden');
+    } else {
+        photoImg.classList.add('hidden');
+        avatarSpan.classList.remove('hidden');
+    }
+
+    const modal = document.getElementById('modal-user-detail');
+    const card  = document.getElementById('modal-user-detail-card');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        if (card) card.classList.remove('scale-95', 'opacity-0');
+    }, 10);
+}
+
+function closeUserDetailModal() {
+    const modal = document.getElementById('modal-user-detail');
+    const card  = document.getElementById('modal-user-detail-card');
+    if (!modal) return;
+    modal.classList.add('opacity-0');
+    if (card) card.classList.add('scale-95', 'opacity-0');
+    document.body.style.overflow = 'auto';
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('modal-user-detail');
+        if (modal && !modal.classList.contains('hidden')) {
+            closeUserDetailModal();
+        }
+    }
+});
+</script>
 @endsection

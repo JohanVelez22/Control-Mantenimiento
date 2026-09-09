@@ -3369,6 +3369,66 @@ input.flatpickr-input.form-control {
   justify-self: center !important;
 }
 
+/* Centrar perfectamente cuando solo hay 1 elemento */
+.actions-grid:has(> :only-child) {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: auto !important;
+  margin: 0 auto !important;
+}
+
+.actions-grid:has(> :only-child)>* {
+  margin: 0 auto !important;
+}
+
+/* Modal Detalle de Usuario: Estilos Homogéneos Claro/Oscuro */
+.user-detail-box {
+  background: rgba(248, 250, 252, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 0.875rem;
+  padding: 0.875rem 1rem;
+  transition: all 0.2s ease;
+}
+
+html.dark .user-detail-box {
+  background: rgba(15, 23, 42, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.user-detail-divider {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+html.dark .user-detail-divider {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.user-detail-avatar-box {
+  width: 5rem;
+  height: 5rem;
+  min-width: 5rem;
+  min-height: 5rem;
+  aspect-ratio: 1 / 1;
+  margin: 0.35rem auto 1rem auto;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(241, 245, 249, 0.8);
+  border: 2px solid rgba(99, 102, 241, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+html.dark .user-detail-avatar-box {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
 /* Adaptar tom-select al glassmorphism */
 .ts-control {
   background-color: rgba(255, 255, 255, 0.4) !important;
