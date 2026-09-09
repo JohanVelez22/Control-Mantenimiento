@@ -56,11 +56,9 @@
                 <textarea name="observaciones" id="observaciones" rows="5" placeholder="Escribe notas adicionales sobre el arqueo o la jornada..." class="glass-input w-full p-3 font-medium text-slate-800 dark:text-slate-200">{{ old('observaciones', $cierre->observaciones) }}</textarea>
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200/50 dark:border-white/10">
-                <a href="{{ route('cierre.show', $cierre->id) }}" class="btn-ghost px-5 py-2.5 font-bold">
-                    Cancelar
-                </a>
-                <button type="submit" class="btn-primary px-6 py-2.5 font-bold">
+            <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+                <a href="{{ route('cierre.show', $cierre->id) }}" class="btn-cancel">↩️ Cancelar</a>
+                <button type="submit" class="btn-save">
                     💾 Guardar Cambios
                 </button>
             </div>
