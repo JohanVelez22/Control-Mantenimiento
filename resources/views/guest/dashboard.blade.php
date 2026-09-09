@@ -197,7 +197,7 @@
                 
                 @if(isset($searched) && !$cliente)
                 <div class="mt-8 text-center">
-                    <a href="{{ route('guest.dashboard') }}" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-400 text-black dark:text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 inline-flex items-center gap-2">
+                    <a href="{{ route('guest.dashboard') }}" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 inline-flex items-center gap-2">
                         <span>🔍</span> Buscar Otra Orden
                     </a>
                 </div>
