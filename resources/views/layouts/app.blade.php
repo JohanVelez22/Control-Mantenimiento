@@ -718,7 +718,9 @@
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $mEquipo }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $mCliente }}</p>
                     </div>
-                    <span class="shrink-0 text-blue-500 dark:text-blue-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: #2563eb;">🛠️ Gestionar Orden</span>
+                    </div>
                 </a>
                 @endforeach
 
@@ -742,7 +744,9 @@
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $eEquipo }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $eCliente }}</p>
                     </div>
-                    <span class="shrink-0 text-purple-500 dark:text-purple-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: #9333ea;">🔬 Gestionar Orden</span>
+                    </div>
                 </a>
                 @endforeach
 
@@ -766,7 +770,9 @@
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $cCliente }}</p>
                         <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold truncate">Total: ${{ number_format($cTotal, 0, ',', '.') }}</p>
                     </div>
-                    <span class="shrink-0 text-indigo-500 dark:text-indigo-400 group-hover:translate-x-1 transition-transform text-lg">→</span>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: #4f46e5;">📋 Ver Más Detalles</span>
+                    </div>
                 </a>
                 @endforeach
 
@@ -794,7 +800,7 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
-                        <span class="text-xs font-bold px-2.5 py-1 bg-orange-500 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1">💵 Registrar Abono</span>
+                        <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: #f97316;">💵 Registrar Abono</span>
                     </div>
                 </a>
                 @endforeach
@@ -810,7 +816,7 @@
                     $titleClass = $isIngreso ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400';
                     $idClass = $isIngreso ? 'text-emerald-500 dark:text-emerald-300' : 'text-orange-500 dark:text-orange-300';
                     $montoClass = $isIngreso ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400';
-                    $btnClass = $isIngreso ? 'bg-emerald-500' : 'bg-orange-500';
+                    $btnColor = $isIngreso ? '#10b981' : '#f97316';
                     $movConcepto = data_get($mov, 'concepto_nombre', '—');
                     $movPersona = data_get($mov, 'persona');
                     $movSaldo = (float) data_get($mov, 'saldo_pendiente', 0);
@@ -831,7 +837,7 @@
                         </p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
-                        <span class="text-xs font-bold px-2.5 py-1 {{ $btnClass }} text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1">💵 Registrar Abono</span>
+                        <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: {{ $btnColor }};">💵 Registrar Abono</span>
                     </div>
                 </a>
                 @endforeach
