@@ -104,30 +104,52 @@
 $dim = $m->anulado ? 'opacity-60 grayscale' : '';
 $dimLight = $m->anulado ? 'opacity-60' : '';
 @endphp
-  <tr class="scroll-mt-[6.5rem]">
+  <tr id="caja-{{ $m->id }}" class="scroll-mt-[6.5rem]">
 <td data-label="Código:" class="text-center font-bold {{ $dim }}">{{ $m->id }}</td>
 <td data-label="Fecha:" class="text-center font-medium {{ $dim }}">{{ $m->fecha->format('d/m/Y') }}</td>
  <td data-label="Entidad:" class="{{ $dim }}">
- @if($m->persona)
+ @if($m->cliente)
+ <a href="{{ route('clientes.index') }}#cliente-{{ $m->cliente->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+     <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+         👤 {{ $m->cliente->nombre }}
+     </div>
+     @if($m->cliente->identificacion)
+     <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+         {{ $m->cliente->identificacion }}
+     </div>
+     @endif
+ </a>
+ @elseif($m->persona)
  <a href="{{ route('clientes.index', ['search' => $m->persona]) }}" class="group block hover:opacity-75 transition-opacity" title="Buscar en Clientes">
- <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
- 👤 {{ $m->persona }}
- </div>
- <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
- Persona / Cliente
- </div>
+     <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+         👤 {{ $m->persona }}
+     </div>
+     <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+         Persona / Cliente
+     </div>
+ </a>
+ @elseif($m->proveedor)
+ <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->proveedor->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+     <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+         🏢 {{ $m->proveedor->nombre_razon_social }}
+     </div>
+     @if($m->proveedor->identificacion)
+     <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+         {{ $m->proveedor->identificacion }}
+     </div>
+     @endif
  </a>
  @elseif($m->empresa)
  <a href="{{ route('proveedores.index', ['search' => $m->empresa]) }}" class="group block hover:opacity-75 transition-opacity" title="Buscar en Proveedores">
- <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
- 🏢 {{ $m->empresa }}
- </div>
- <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
- Empresa / Proveedor
- </div>
+     <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+         🏢 {{ $m->empresa }}
+     </div>
+     <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+         Empresa / Proveedor
+     </div>
  </a>
  @else
- <span class="text-gray-400 font-bold">—</span>
+ <span class="font-bold text-slate-800 dark:text-white">-</span>
  @endif
  </td>
  <td data-label="Concepto:" class="font-medium {{ $dim }}">

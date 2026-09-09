@@ -57,6 +57,49 @@ class MovimientoCajaController extends Controller
 
         $movimientos = $query->orderBy('fecha', 'desc')->orderBy('id', 'desc')->paginate(10);
 
+        // Vincular relaciones cliente y proveedor para la vista (permite enlace ancla #cliente-ID / #proveedor-ID como en Equipos)
+        $personas = $movimientos->pluck('persona')->filter()->unique();
+        $empresas = $movimientos->pluck('empresa')->filter()->unique();
+
+        $matchedClientes = $personas->isNotEmpty() 
+            ? \App\Models\Cliente::where(function($q) use ($personas) {
+                $q->whereIn(DB::raw("TRIM(CONCAT(nombres, ' ', COALESCE(apellidos, '')))"), $personas)
+                  ->orWhereIn('identificacion', $personas);
+            })->get()
+            : collect();
+
+        $matchedProveedores = $empresas->isNotEmpty()
+            ? \App\Models\Proveedor::where(function($q) use ($empresas) {
+                $q->whereIn('nombre_razon_social', $empresas)
+                  ->orWhereIn('identificacion', $empresas);
+            })->get()
+            : collect();
+
+        $clientLookup = [];
+        foreach ($matchedClientes as $c) {
+            $clientLookup[trim($c->nombre)] = $c;
+            if ($c->identificacion) {
+                $clientLookup[trim($c->identificacion)] = $c;
+            }
+        }
+
+        $proveedorLookup = [];
+        foreach ($matchedProveedores as $p) {
+            $proveedorLookup[trim($p->nombre_razon_social)] = $p;
+            if ($p->identificacion) {
+                $proveedorLookup[trim($p->identificacion)] = $p;
+            }
+        }
+
+        foreach ($movimientos as $m) {
+            if ($m->persona && isset($clientLookup[trim($m->persona)])) {
+                $m->setRelation('cliente', $clientLookup[trim($m->persona)]);
+            }
+            if ($m->empresa && isset($proveedorLookup[trim($m->empresa)])) {
+                $m->setRelation('proveedor', $proveedorLookup[trim($m->empresa)]);
+            }
+        }
+
         // Totales del período filtrado (sin paginar) — EXCLUYE anulados
         $totalesQuery = MovimientoCaja::where('estado', 'activo')->where('anulado', false);
         if ($request->filled('tipo_movimiento') && $request->tipo_movimiento !== 'todos') $totalesQuery->where('tipo_movimiento', $request->tipo_movimiento);
