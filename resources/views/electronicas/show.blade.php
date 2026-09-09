@@ -9,7 +9,7 @@
 <div class="max-w-4xl mx-auto">
     <div class="glass-card p-6 md:p-8">
         {{-- Header --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 w-full relative z-20">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 w-full relative z-20">
             <div class="flex items-center gap-3">
                 @if(!$esInvitado)
                 <a href="{{ route('electronicas.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
@@ -41,9 +41,7 @@
                 />
                 @endif
                 @if(!auth()->user()->isInvitado())
-                <a href="{{ route('electronicas.edit', $electronica) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
-                    ✏️ Editar
-                </a>
+                <a href="{{ route('electronicas.edit', $electronica) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">✏️ Editar</a>
                 @endif
             </div>
         </div>

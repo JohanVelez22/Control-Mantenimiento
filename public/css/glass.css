@@ -1136,12 +1136,14 @@ html.dark #ts-topbar {
 .btn-ghost {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 15px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 13.5px;
+  line-height: 1.25;
   color: #374151;
-  border-radius: 14px;
+  border-radius: 12px;
   text-decoration: none;
   background: rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -1166,6 +1168,17 @@ html.dark .btn-ghost:hover {
   color: #93C5FD;
 }
 
+/* ---- Botón Volver universal del sistema (⬅️) ---- */
+.btn-ghost.px-3.py-2.text-xl {
+  font-size: 1.40rem !important;
+  /* Calibrado: nítido y fácil de visualizar, sin verse tosco */
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 8px 12px !important;
+}
+
 /* ---- Sobrescrituras botones ghost colores específicos ---- */
 .btn-ghost.text-yellow-600:hover {
   color: #D97706 !important;
@@ -1173,10 +1186,11 @@ html.dark .btn-ghost:hover {
   background: rgba(245, 158, 11, 0.1) !important;
 }
 
-.btn-ghost.text-green-600:hover {
-  color: #16A34A !important;
-  border-color: rgba(22, 163, 74, 0.3) !important;
-  background: rgba(34, 197, 94, 0.1) !important;
+.btn-ghost.text-green-600:hover,
+.btn-ghost.text-emerald-600:hover {
+  color: #059669 !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  background: rgba(16, 185, 129, 0.12) !important;
 }
 
 .btn-ghost.text-red-600:hover {
@@ -1197,16 +1211,25 @@ html.dark .btn-ghost:hover {
   background: rgba(99, 102, 241, 0.1) !important;
 }
 
+.btn-ghost.text-purple-600:hover,
+.btn-ghost.text-purple-500:hover {
+  color: #9333EA !important;
+  border-color: rgba(147, 51, 234, 0.35) !important;
+  background: rgba(168, 85, 247, 0.12) !important;
+}
+
 html.dark .btn-ghost.text-yellow-600:hover {
   color: #FCD34D !important;
   border-color: rgba(252, 211, 77, 0.3) !important;
   background: rgba(251, 191, 36, 0.15) !important;
 }
 
-html.dark .btn-ghost.text-green-600:hover {
-  color: #6EE7B7 !important;
-  border-color: rgba(110, 231, 183, 0.3) !important;
-  background: rgba(52, 211, 153, 0.15) !important;
+html.dark .btn-ghost.text-green-600:hover,
+html.dark .btn-ghost.text-emerald-600:hover,
+html.dark .btn-ghost.text-emerald-400:hover {
+  color: #34D399 !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+  background: rgba(16, 185, 129, 0.20) !important;
 }
 
 html.dark .btn-ghost.text-red-600:hover {
@@ -1227,15 +1250,24 @@ html.dark .btn-ghost.text-indigo-600:hover {
   background: rgba(99, 102, 241, 0.15) !important;
 }
 
+html.dark .btn-ghost.text-purple-600:hover,
+html.dark .btn-ghost.text-purple-400:hover {
+  color: #C084FC !important;
+  border-color: rgba(192, 132, 252, 0.35) !important;
+  background: rgba(168, 85, 247, 0.20) !important;
+}
+
 .btn-danger {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 15px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 13.5px;
+  line-height: 1.25;
   color: #DC2626;
-  border-radius: 14px;
+  border-radius: 12px;
   cursor: pointer;
   text-decoration: none;
   background: rgba(220, 38, 38, 0.08);
@@ -3685,38 +3717,33 @@ html.dark tr[id^="electronica-"].active-target {
 .print-dropdown-box {
   padding: 0 !important;
   gap: 0 !important;
-  border-radius: 14px !important;
+  border-radius: 12px !important;
   display: inline-flex !important;
   align-items: stretch !important;
 }
 
-.print-dropdown-box > a.print-main-btn {
+.print-dropdown-box>a.print-main-btn {
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  padding: 8px 5px 8px 14px !important;
-  font-size: 13px !important;
+  padding: 12px 3px 12px 15px !important;
+  font-size: 13.5px !important;
   font-weight: 600 !important;
+  line-height: 1.25 !important;
   color: inherit !important;
   text-decoration: none !important;
   white-space: nowrap !important;
 }
 
-.print-dropdown-box > .print-divider {
-  width: 1px !important;
-  height: 14px !important;
-  background: currentColor !important;
-  opacity: 0.25 !important;
-  margin: auto 0 !important;
-  flex-shrink: 0 !important;
-  pointer-events: none !important;
+.print-dropdown-box>.print-divider {
+  display: none !important;
 }
 
-.print-dropdown-box > button.print-arrow-btn {
+.print-dropdown-box>button.print-arrow-btn {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 8px 12px 8px 5px !important;
+  padding: 12px 14px 12px 3px !important;
   color: inherit !important;
   background: transparent !important;
   border: none !important;
@@ -3724,7 +3751,7 @@ html.dark tr[id^="electronica-"].active-target {
   outline: none !important;
 }
 
-.print-dropdown-box > button.print-arrow-btn svg {
+.print-dropdown-box>button.print-arrow-btn svg {
   width: 10px !important;
   height: 10px !important;
 }
@@ -3732,29 +3759,31 @@ html.dark tr[id^="electronica-"].active-target {
 
 /* ---- Desplegable homogéneo al sistema (mismo tono que calendarios y selectores) ---- */
 .ts-dropdown-solid {
-  background: rgba(255, 255, 255, 0.96) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-  border: 1px solid rgba(226, 232, 240, 0.85) !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(226, 232, 240, 0.80) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06) !important;
   opacity: 1 !important;
   border-radius: 12px !important;
   z-index: 99999 !important;
   overflow: hidden !important;
-  padding: 5px 0 !important;
+  padding: 0 !important;
 }
 
 .ts-dropdown-solid .option {
   color: #1E293B !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: space-between !important;
-  padding: 9px 15px !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  padding: 10px 14px !important;
   font-size: 13.5px !important;
   font-weight: 500 !important;
   text-decoration: none !important;
   white-space: nowrap !important;
   cursor: pointer !important;
+  border-radius: 0 !important;
   opacity: 1 !important;
   transition: background 0.15s ease, color 0.15s ease !important;
 }
@@ -3763,36 +3792,52 @@ html.dark tr[id^="electronica-"].active-target {
   opacity: 1 !important;
 }
 
-.ts-dropdown-solid .option:hover {
-  background: rgba(37, 99, 235, 0.12) !important;
+.ts-dropdown-solid .option:hover,
+.ts-dropdown-solid .option.active {
+  background: rgba(37, 99, 235, 0.18) !important;
   color: #2563EB !important;
   font-weight: 600 !important;
 }
 
+.ts-dropdown-solid .option.selected {
+  background: rgba(37, 99, 235, 0.22) !important;
+  color: #1D4ED8 !important;
+  font-weight: 700 !important;
+}
+
 html.dark .ts-dropdown-solid {
-  background: rgba(15, 23, 42, 0.95) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  background: rgba(15, 23, 42, 0.90) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
 html.dark .ts-dropdown-solid .option {
-  color: #FFFFFF !important;
+  color: #E2E8F0 !important;
 }
 
-html.dark .ts-dropdown-solid .option:hover {
-  background: rgba(96, 165, 250, 0.20) !important;
+html.dark .ts-dropdown-solid .option:hover,
+html.dark .ts-dropdown-solid .option.active {
+  background: rgba(96, 165, 250, 0.14) !important;
   color: #60A5FA !important;
-  font-weight: 600 !important;
 }
 
-/* Insignia Activo en formato de impresión (siempre verde visible en ambos modos) */
+html.dark .ts-dropdown-solid .option.selected {
+  background: rgba(96, 165, 250, 0.20) !important;
+  color: #93C5FD !important;
+  font-weight: 700 !important;
+}
+
+/* Insignia Activo en formato de impresión (un solo espacio sutil y limpio) */
 .print-active-badge {
   color: #10B981 !important;
   font-size: 11px !important;
   font-weight: 700 !important;
-  margin-left: 12px !important;
+  margin-left: 5px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  vertical-align: middle !important;
 }
 
 html.dark .print-active-badge {

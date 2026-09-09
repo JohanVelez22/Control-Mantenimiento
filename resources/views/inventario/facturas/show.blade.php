@@ -39,7 +39,7 @@
  @endif
 
  {{-- Encabezado --}}
- <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 relative z-20">
+ <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
   <div class="flex items-center gap-3">
   <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
   <div>
@@ -55,22 +55,18 @@
  
  <div class="flex items-center gap-3 shrink-0">
  @if($factura->estado !== 'anulada' && !auth()->user()->isInvitado() && $movimientoPadre)
-  <a href="{{ route('caja.edit', $movimientoPadre->id) }}" class="btn-ghost py-2 px-3 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-white/40 border border-gray-200 dark:border-white/10 rounded-xl flex items-center gap-1.5 shadow-sm" title="Ver detalle del movimiento en el módulo de Caja">
-  📦 Ver en Caja
-  </a>
+  <a href="{{ route('caja.edit', $movimientoPadre->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400" title="Ver detalle del movimiento en el módulo de Caja">📦 Ver en Caja</a>
  @endif
 
   <x-print-dropdown 
       :url="route('inventario.facturas.print', $factura->id)"
       label="Imprimir"
-      colorClass="border-blue-500/20 text-blue-600"
+      colorClass="border-blue-500/20 text-blue-600 dark:text-blue-400"
       id="print-factura-{{ $factura->id }}"
   />
  
 	@if($factura->estado !== 'anulada' && !auth()->user()->isInvitado())
-	<button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $factura->id) }}', false)" class="btn-danger">
-		🚫 Anular
-	</button>
+	<button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $factura->id) }}', false)" class="btn-danger">🚫 Anular</button>
 	@endif
  </div>
  </div>
@@ -161,7 +157,7 @@
   @if($factura->tipo_movimiento === 'venta' && $factura->estado !== 'anulada')
   <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
       <span class="text-sm font-bold text-gray-500 dark:text-gray-400">Costo Total Compra</span>
-      <span class="text-sm font-bold text-slate-700 dark:text-slate-300">${{ number_format($factura->costo_total, 0, ',', '.') }}</span>
+      <span class="text-base font-black text-slate-700 dark:text-slate-300">${{ number_format($factura->costo_total, 0, ',', '.') }}</span>
   </div>
   <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
       <span class="text-sm font-bold {{ $factura->utilidad >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500' }}">

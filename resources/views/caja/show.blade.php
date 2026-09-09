@@ -15,7 +15,7 @@
         @endif
 
         {{-- Encabezado --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 relative z-20">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
             <div class="flex items-center gap-4">
                 <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a la lista de caja">⬅️</a>
                 <div>
@@ -45,12 +45,8 @@
                 />
                 
                 @if(!auth()->user()->isInvitado())
-                <a href="{{ route('caja.edit', $movimiento->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
-                    ✏️ Editar
-                </a>
-                <button type="button" onclick="openAnularModal('{{ route('caja.anular', $movimiento->id) }}', {{ $movimiento->anulado ? 'true' : 'false' }})" class="btn-danger">
-                    {{ $movimiento->anulado ? '✅ Reactivar' : '🚫 Anular' }}
-                </button>
+                <a href="{{ route('caja.edit', $movimiento->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">✏️ Editar</a>
+                <button type="button" onclick="openAnularModal('{{ route('caja.anular', $movimiento->id) }}', {{ $movimiento->anulado ? 'true' : 'false' }})" class="btn-danger">{{ $movimiento->anulado ? '✅ Reactivar' : '🚫 Anular' }}</button>
                 @endif
             </div>
         </div>

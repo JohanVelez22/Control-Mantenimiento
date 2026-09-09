@@ -15,7 +15,7 @@
 
 <div class="relative inline-flex items-center btn-ghost {{ $colorClass }} print-dropdown-box" 
      id="{{ $id }}-container" 
-     style="border-radius: 14px; overflow: visible;">
+     style="border-radius: 12px; overflow: visible;">
 
     {{-- Botón Principal: Formato predeterminado (idéntico en tamaño y padding a Editar/Anular) --}}
     <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" 
@@ -23,9 +23,6 @@
        title="Imprimir en formato predeterminado ({{ $formatoActivo === 'pos' ? 'Ticket POS 80mm' : 'Estándar A4' }})">
         <span>🖨️ {{ $label }}</span>
     </a>
-
-    {{-- Divisor sutil compacto --}}
-    <span class="print-divider"></span>
 
     {{-- Flecha desplegable compacta --}}
     <button type="button" 
@@ -39,30 +36,24 @@
 
     {{-- Desplegable con diseño y tonalidad homogénea al sistema (.ts-dropdown .ts-dropdown-solid) --}}
     <div id="{{ $id }}-menu" class="ts-dropdown ts-dropdown-solid hidden" 
-         style="position: absolute; left: 50%; transform: translateX(-50%); top: calc(100% + 4px); min-width: 220px; width: max-content; text-align: left; box-sizing: border-box; z-index: 99999;">
+         style="position: absolute; left: 50%; transform: translateX(-50%); top: calc(100% + 4px); min-width: 220px; width: max-content; text-align: left; box-sizing: border-box; z-index: 99999; padding: 0 !important; overflow: hidden !important;">
         
         <a href="{{ $posUrl }}" target="_blank" rel="noopener noreferrer" 
-           class="option" 
+           class="option {{ $formatoActivo === 'pos' ? 'selected' : '' }}" 
            onclick="closePrintMenuDelayed('{{ $id }}')">
             <span class="flex items-center gap-2">
                 <span style="font-size: 15px;">🧾</span> 
-                <span>Tirilla POS (80mm)</span>
+                <span>Tirilla POS (80mm)@if($formatoActivo === 'pos')<span class="print-active-badge">• Activo</span>@endif</span>
             </span>
-            @if($formatoActivo === 'pos')
-                <span class="print-active-badge">• Activo</span>
-            @endif
         </a>
 
         <a href="{{ $estandarUrl }}" target="_blank" rel="noopener noreferrer" 
-           class="option" 
+           class="option {{ $formatoActivo !== 'pos' ? 'selected' : '' }}" 
            onclick="closePrintMenuDelayed('{{ $id }}')">
             <span class="flex items-center gap-2">
                 <span style="font-size: 15px;">📄</span> 
-                <span>Estándar (A4 / Carta)</span>
+                <span>Estándar (A4 / Carta)@if($formatoActivo !== 'pos')<span class="print-active-badge">• Activo</span>@endif</span>
             </span>
-            @if($formatoActivo !== 'pos')
-                <span class="print-active-badge">• Activo</span>
-            @endif
         </a>
     </div>
 </div>
