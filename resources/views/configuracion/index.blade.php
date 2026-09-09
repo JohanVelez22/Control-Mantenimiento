@@ -2,11 +2,11 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto">
-    <div class="mb-8">
+    <div class="mb-4 sm:mb-5">
         <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
             🏢 Configuración de Empresa
         </h2>
-        <p class="text-gray-500 font-medium mt-2">Gestiona la información comercial que aparecerá en los reportes y facturas de tus operaciones.</p>
+        <p class="text-gray-500 font-medium mt-1.5">Gestiona la información comercial que aparecerá en los reportes y facturas de tus operaciones.</p>
     </div>
 
     <form action="{{ route('configuracion.update') }}" method="POST" enctype="multipart/form-data" class="glass-card p-6 md:p-8" id="form-configuracion" onsubmit="submitConfiguracion(event)">
