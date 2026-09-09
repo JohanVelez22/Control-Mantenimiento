@@ -810,11 +810,12 @@
                     $titleClass = $isIngreso ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400';
                     $idClass = $isIngreso ? 'text-emerald-500 dark:text-emerald-300' : 'text-orange-500 dark:text-orange-300';
                     $montoClass = $isIngreso ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400';
-                    $arrowClass = $isIngreso ? 'text-emerald-500 dark:text-emerald-400' : 'text-orange-500 dark:text-orange-400';
+                    $btnClass = $isIngreso ? 'bg-emerald-500' : 'bg-orange-500';
                     $movConcepto = data_get($mov, 'concepto_nombre', '—');
-                    $movPersona = data_get($mov, 'persona', '—');
+                    $movPersona = data_get($mov, 'persona');
                     $movSaldo = (float) data_get($mov, 'saldo_pendiente', 0);
                     $movUrl = data_get($mov, 'url', route('caja.edit', $movId));
+                    $displayName = (!empty($movPersona) && $movPersona !== '—') ? "{$movConcepto} - {$movPersona}" : $movConcepto;
                 @endphp
                 <a href="{{ $movUrl }}" onclick="closeNotifModal()" data-notif-type="caja"
                    class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl border {{ $bgClass }} transition-colors group relative overflow-hidden">
@@ -824,12 +825,14 @@
                             <span class="text-[10px] font-black {{ $titleClass }} uppercase tracking-wider">Saldo {{ ucfirst($movTipo) }}</span>
                             <span class="text-[10px] font-bold {{ $idClass }}">#{{ $movId }}</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $movConcepto }} - {{ $movPersona }}</p>
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $displayName }}</p>
                         <p class="text-xs {{ $montoClass }} font-semibold">
                             Falta pagar: ${{ number_format($movSaldo, 0, ',', '.') }}
                         </p>
                     </div>
-                    <span class="shrink-0 {{ $arrowClass }} group-hover:translate-x-1 transition-transform text-lg">→</span>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-xs font-bold px-2.5 py-1 {{ $btnClass }} text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1">💵 Registrar Abono</span>
+                    </div>
                 </a>
                 @endforeach
 
