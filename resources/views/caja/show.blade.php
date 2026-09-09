@@ -15,7 +15,7 @@
         @endif
 
         {{-- Encabezado --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 relative z-20">
             <div class="flex items-center gap-4">
                 <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a la lista de caja">⬅️</a>
                 <div>
@@ -37,9 +37,12 @@
             </div>
             
             <div class="flex items-center gap-3 shrink-0">
-                <a href="{{ route('caja.print', $movimiento->id) }}" target="_blank" class="btn-ghost border-gray-500/20 text-gray-600 dark:text-gray-300">
-                    🖨️ Imprimir
-                </a>
+                <x-print-dropdown 
+                    :url="route('caja.print', $movimiento->id)"
+                    label="Imprimir"
+                    colorClass="border-gray-500/20 text-gray-600 dark:text-gray-300"
+                    id="print-caja-{{ $movimiento->id }}"
+                />
                 
                 @if(!auth()->user()->isInvitado())
                 <a href="{{ route('caja.edit', $movimiento->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">

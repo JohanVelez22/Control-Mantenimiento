@@ -9,7 +9,7 @@
 <div class="max-w-4xl mx-auto">
     <div class="glass-card p-6 md:p-8">
         {{-- Header --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 w-full">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 w-full relative z-20">
             <div class="flex items-center gap-3">
                 @if(!$esInvitado)
                 <a href="{{ route('electronicas.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
@@ -33,9 +33,12 @@
             
             <div class="flex items-center gap-3 shrink-0">
                 @if($electronica->fecha_salida)
-                <a href="{{ route('electronicas.factura', $electronica) }}" target="_blank" class="btn-ghost border-purple-500/20 text-purple-600 dark:text-purple-400">
-                    🖨️ Factura
-                </a>
+                <x-print-dropdown 
+                    :url="route('electronicas.factura', $electronica)"
+                    label="Imprimir"
+                    colorClass="border-purple-500/20 text-purple-600 dark:text-purple-400"
+                    id="print-elec-{{ $electronica->id }}"
+                />
                 @endif
                 @if(!auth()->user()->isInvitado())
                 <a href="{{ route('electronicas.edit', $electronica) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">

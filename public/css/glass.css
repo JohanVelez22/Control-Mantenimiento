@@ -3330,15 +3330,15 @@ input.flatpickr-input.form-control {
   }
 }
 
-/* Grilla de Acciones: Disposición en cuadrícula de 2 columnas con el 3er elemento centrado si el total es impar */
+/* Grilla de Acciones: Disposición balanceada y perfectamente centrada para 1, 2, 3 o 4 botones */
 .actions-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 0.375rem !important;
-  justify-items: center !important;
-  align-items: center !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
   justify-content: center !important;
-  width: fit-content !important;
+  align-items: center !important;
+  gap: 0.375rem !important;
+  max-width: 4.5rem !important;
+  width: auto !important;
   margin: 0 auto !important;
 }
 
@@ -3361,25 +3361,6 @@ input.flatpickr-input.form-control {
   border-radius: 0.75rem !important;
   padding: 0 !important;
   box-sizing: border-box !important;
-}
-
-/* Centrar el 3er elemento si es el último (impar) manteniendo su tamaño 32x32 */
-.actions-grid:has(> :nth-child(3):last-child)> :nth-child(3) {
-  grid-column: 1 / -1 !important;
-  justify-self: center !important;
-}
-
-/* Centrar perfectamente cuando solo hay 1 elemento */
-.actions-grid:has(> :only-child) {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: auto !important;
-  margin: 0 auto !important;
-}
-
-.actions-grid:has(> :only-child)>* {
-  margin: 0 auto !important;
 }
 
 /* Modal Detalle de Usuario: Estilos Homogéneos Claro/Oscuro */
@@ -3698,4 +3679,122 @@ html.dark tr[id^="electronica-"].active-target {
     border-left: 4px solid transparent !important;
     box-shadow: none !important;
   }
+}
+
+/* ---- Botón contenedor Dropdown Imprimir: Mismas dimensiones exactas que .btn-ghost y .btn-danger ---- */
+.print-dropdown-box {
+  padding: 0 !important;
+  gap: 0 !important;
+  border-radius: 14px !important;
+  display: inline-flex !important;
+  align-items: stretch !important;
+}
+
+.print-dropdown-box > a.print-main-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 8px 5px 8px 14px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: inherit !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+}
+
+.print-dropdown-box > .print-divider {
+  width: 1px !important;
+  height: 14px !important;
+  background: currentColor !important;
+  opacity: 0.25 !important;
+  margin: auto 0 !important;
+  flex-shrink: 0 !important;
+  pointer-events: none !important;
+}
+
+.print-dropdown-box > button.print-arrow-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 8px 12px 8px 5px !important;
+  color: inherit !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  outline: none !important;
+}
+
+.print-dropdown-box > button.print-arrow-btn svg {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+
+/* ---- Desplegable homogéneo al sistema (mismo tono que calendarios y selectores) ---- */
+.ts-dropdown-solid {
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(226, 232, 240, 0.85) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+  opacity: 1 !important;
+  border-radius: 12px !important;
+  z-index: 99999 !important;
+  overflow: hidden !important;
+  padding: 5px 0 !important;
+}
+
+.ts-dropdown-solid .option {
+  color: #1E293B !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 9px 15px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+
+.ts-dropdown-solid .option * {
+  opacity: 1 !important;
+}
+
+.ts-dropdown-solid .option:hover {
+  background: rgba(37, 99, 235, 0.12) !important;
+  color: #2563EB !important;
+  font-weight: 600 !important;
+}
+
+html.dark .ts-dropdown-solid {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .ts-dropdown-solid .option {
+  color: #FFFFFF !important;
+}
+
+html.dark .ts-dropdown-solid .option:hover {
+  background: rgba(96, 165, 250, 0.20) !important;
+  color: #60A5FA !important;
+  font-weight: 600 !important;
+}
+
+/* Insignia Activo en formato de impresión (siempre verde visible en ambos modos) */
+.print-active-badge {
+  color: #10B981 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  margin-left: 12px !important;
+}
+
+html.dark .print-active-badge {
+  color: #34D399 !important;
 }

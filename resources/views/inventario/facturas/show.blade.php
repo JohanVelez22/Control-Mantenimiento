@@ -39,7 +39,7 @@
  @endif
 
  {{-- Encabezado --}}
- <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6">
+ <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 relative z-20">
   <div class="flex items-center gap-3">
   <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
   <div>
@@ -60,9 +60,12 @@
   </a>
  @endif
 
- <a href="{{ route('inventario.facturas.print', $factura->id) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600">
- 🖨️ Imprimir
- </a>
+  <x-print-dropdown 
+      :url="route('inventario.facturas.print', $factura->id)"
+      label="Imprimir"
+      colorClass="border-blue-500/20 text-blue-600"
+      id="print-factura-{{ $factura->id }}"
+  />
  
 	@if($factura->estado !== 'anulada' && !auth()->user()->isInvitado())
 	<button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $factura->id) }}', false)" class="btn-danger">

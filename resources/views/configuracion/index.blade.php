@@ -69,7 +69,7 @@
                         </label>
                     </div>
                     <p class="text-[10px] text-gray-500 dark:text-gray-400 text-center mt-2.5 leading-tight">
-                        Haz clic en el formato que deseas usar y pulsa <strong>"Guardar Configuración"</strong>.
+                        Haz clic en el formato que deseas usar y pulsa <strong>"Guardar Configuración"</strong>
                     </p>
                 </div>
             </div>

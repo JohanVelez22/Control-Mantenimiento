@@ -61,8 +61,8 @@
  </span>
  </td>
  <td class="text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
- <td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
-   <div class="actions-grid flex justify-center items-center mx-auto">
+ <td data-label="Acciones:" class="text-center align-middle w-28 {{ $dim }}">
+   <div class="actions-grid">
    @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
    <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
    @else
