@@ -92,7 +92,7 @@
   </a>
   @else
   <a href="{{ route('proveedores.index') }}#proveedor-{{ $f->facturable->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
-  <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
+  <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   🏢 {{ $f->facturable->nombre_razon_social }}
   </div>
   <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">

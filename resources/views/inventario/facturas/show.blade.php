@@ -162,7 +162,7 @@
   </div>
   <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
       <span class="text-sm font-bold {{ $factura->utilidad >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500' }}">
-          {{ $factura->utilidad >= 0 ? 'Utilidad Generada' : '⚠️ Pérdida Generada' }}
+          {{ $factura->utilidad >= 0 ? 'Utilidad Generada' : 'Pérdida Generada' }}
       </span>
       <span class="text-base font-black {{ $factura->utilidad >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500' }}">
           {{ $factura->utilidad >= 0 ? '+' : '-' }}${{ number_format(abs($factura->utilidad), 0, ',', '.') }}
