@@ -223,7 +223,26 @@ class ElectronicaController extends Controller
                 ->route('electronicas.index')
                 ->with('error', 'No se puede generar la factura sin fecha de salida. Registre la salida de la orden e inténtelo de nuevo.');
         }
-        $electronica->load(['equipo.cliente', 'tecnico', 'user']);
+        $electronica->load(['equipo.cliente', 'tecnico', 'user', 'abonos', 'stocks']);
+
+        $empresa = \App\Models\Configuracion::first();
+        $formato = request('formato', $empresa->formato_factura ?? 'estandar');
+
+        if ($formato === 'pos') {
+            $stocksCount = $electronica->stocks ? $electronica->stocks->count() : 0;
+            $abonosCount = $electronica->abonos ? $electronica->abonos->count() : 0;
+            $obsLength = strlen($electronica->descripcion ?? '');
+            $obsExtra = ceil($obsLength / 35) * 14;
+            $fallbackHeight = max(700, 520 + $obsExtra + ($stocksCount * 36) + ($abonosCount * 28));
+
+            return \App\Services\PosTicketService::streamTicket(
+                'electronicas.factura_pos',
+                compact('electronica'),
+                'ticket_electronica_' . $electronica->id_orden . '.pdf',
+                $fallbackHeight
+            );
+        }
+
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('electronicas.factura', compact('electronica'));
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('factura_electronica_' . $electronica->id_orden . '.pdf');

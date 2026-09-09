@@ -31,18 +31,18 @@
   </div>
   </div>
  
- @if(!auth()->user()->isInvitado())
- <div class="flex items-center gap-3 shrink-0">
- <a href="{{ route('mantenimientos.edit', $mantenimiento) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
- ✏️ Editar
- </a>
- @if($mantenimiento->fecha_salida)
- <a href="{{ route('mantenimientos.factura', $mantenimiento) }}" target="_blank" class="btn-primary">
- 🖨️ Factura
- </a>
- @endif
- </div>
- @endif
+            <div class="flex items-center gap-3 shrink-0">
+                @if($mantenimiento->fecha_salida)
+                <a href="{{ route('mantenimientos.factura', $mantenimiento) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400">
+                    🖨️ Factura
+                </a>
+                @endif
+                @if(!auth()->user()->isInvitado())
+                <a href="{{ route('mantenimientos.edit', $mantenimiento) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
+                    ✏️ Editar
+                </a>
+                @endif
+            </div>
  </div>
 
  {{-- Datos del mantenimiento --}}

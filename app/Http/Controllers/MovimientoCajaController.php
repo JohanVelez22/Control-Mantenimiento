@@ -252,6 +252,24 @@ class MovimientoCajaController extends Controller
     public function print(MovimientoCaja $movimiento)
     {
         $movimiento->load(['concepto', 'user', 'parent.concepto', 'parent.user', 'parent.childPayments.user', 'childPayments.user']);
+
+        $empresa = \App\Models\Configuracion::first();
+        $formato = request('formato', $empresa->formato_factura ?? 'estandar');
+
+        if ($formato === 'pos') {
+            $historyCount = ($movimiento->childPayments ? $movimiento->childPayments->count() : 0) + ($movimiento->parent?->childPayments ? $movimiento->parent->childPayments->count() : 0);
+            $descLength = strlen($movimiento->descripcion ?? '') + strlen($movimiento->comprobante_numero ?? '');
+            $descExtra = ceil($descLength / 35) * 14;
+            $fallbackHeight = max(650, 460 + $descExtra + ($historyCount * 28));
+
+            return \App\Services\PosTicketService::streamTicket(
+                'caja.print_pos',
+                compact('movimiento'),
+                'ticket_caja_' . $movimiento->id . '.pdf',
+                $fallbackHeight
+            );
+        }
+
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('caja.print', compact('movimiento'));
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('comprobante_caja_' . $movimiento->id . '.pdf');

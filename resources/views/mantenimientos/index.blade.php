@@ -152,7 +152,7 @@
   <a href="{{ route('mantenimientos.show', $m->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver detalle">👁️</a>
   
   @if($m->estado === 'terminado' && $m->fecha_salida)
-   <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-green-600" title="Factura POS">🖨️</a>
+   <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-green-600" title="Imprimir Factura">🖨️</a>
   @elseif($m->estado === 'terminado')
   <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
   @endif

@@ -357,6 +357,24 @@ class MovimientoInventarioController extends Controller
 
         $abonos = $movimientoPadre ? $movimientoPadre->childPayments : collect();
 
+        $empresa = \App\Models\Configuracion::first();
+        $formato = request('formato', $empresa->formato_factura ?? 'estandar');
+
+        if ($formato === 'pos') {
+            $itemsCount = $factura->items ? $factura->items->count() : ($factura->detalles ? $factura->detalles->count() : 0);
+            $abonosCount = $abonos ? $abonos->count() : 0;
+            $obsLength = strlen($factura->observaciones ?? '');
+            $obsExtra = ceil($obsLength / 35) * 14;
+            $fallbackHeight = max(680, 480 + $obsExtra + ($itemsCount * 36) + ($abonosCount * 28));
+
+            return \App\Services\PosTicketService::streamTicket(
+                'inventario.facturas.print_pos',
+                compact('factura', 'abonos'),
+                'ticket_factura_' . $factura->numero_factura . '.pdf',
+                $fallbackHeight
+            );
+        }
+
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('inventario.facturas.print', compact('factura', 'abonos'));
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('factura_inventario_' . $factura->numero_factura . '.pdf');

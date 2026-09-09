@@ -18,5 +18,6 @@ class Configuracion extends Model
         'correo',
         'logo_path',
         'pie_pagina_factura',
+        'formato_factura',
     ];
 }

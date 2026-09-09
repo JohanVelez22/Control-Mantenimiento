@@ -42,6 +42,20 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo '$' . number_format(($expression) ?? 0, 0, ',', '.'); ?>";
         });
 
+        // Garantizar existencia de formato_factura en configuraciones (Riesgo Cero)
+        if (!Cache::has('schema_config_formato_checked')) {
+            try {
+                if (\Illuminate\Support\Facades\Schema::hasTable('configuraciones') && !\Illuminate\Support\Facades\Schema::hasColumn('configuraciones', 'formato_factura')) {
+                    \Illuminate\Support\Facades\Schema::table('configuraciones', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->string('formato_factura')->default('estandar')->after('pie_pagina_factura');
+                    });
+                }
+                Cache::forever('schema_config_formato_checked', true);
+            } catch (\Throwable $e) {
+                // Fallback silencioso
+            }
+        }
+
         // ─────────────────────────────────────────────────────────────────
         // GATES DE AUTORIZACIÓN CENTRALIZADOS
         // ─────────────────────────────────────────────────────────────────

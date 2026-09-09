@@ -31,18 +31,18 @@
                 </div>
             </div>
             
-            @if(!auth()->user()->isInvitado())
             <div class="flex items-center gap-3 shrink-0">
-                <a href="{{ route('electronicas.edit', $electronica) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
-                    ✏️ Editar
-                </a>
                 @if($electronica->fecha_salida)
-                <a href="{{ route('electronicas.factura', $electronica) }}" target="_blank" class="btn-primary">
+                <a href="{{ route('electronicas.factura', $electronica) }}" target="_blank" class="btn-ghost border-purple-500/20 text-purple-600 dark:text-purple-400">
                     🖨️ Factura
                 </a>
                 @endif
+                @if(!auth()->user()->isInvitado())
+                <a href="{{ route('electronicas.edit', $electronica) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
+                    ✏️ Editar
+                </a>
+                @endif
             </div>
-            @endif
         </div>
 
         {{-- Datos del mantenimiento --}}

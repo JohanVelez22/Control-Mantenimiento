@@ -35,6 +35,43 @@
                 </div>
                 <input type="file" name="logo" id="logo-input" accept="image/*" class="hidden" onchange="previewLogo(event)">
                 <p class="text-[10px] text-gray-500 dark:text-gray-400 text-center">Formatos recomendados: PNG, JPG, WEBP. Fondo transparente sugerido.</p>
+
+                {{-- Selector de Formato de Impresión --}}
+                <div class="w-full pt-4 border-t border-gray-200/50 dark:border-white/10">
+                    <label class="field-label block text-center mb-2 font-black">Formato de Impresión</label>
+                    
+                    @php
+                        $formatoActual = old('formato_factura', $configuracion->formato_factura ?? 'estandar');
+                        $isPos = $formatoActual === 'pos';
+                    @endphp
+
+                    <div class="grid grid-cols-2 gap-2.5">
+                        {{-- Opción Estándar --}}
+                        <label for="radio-estandar" onclick="updateFormatSelection('estandar')" id="card-formato-estandar" class="format-card {{ !$isPos ? 'is-active' : '' }}">
+                            <input type="radio" name="formato_factura" value="estandar" id="radio-estandar" class="sr-only" {{ !$isPos ? 'checked' : '' }}>
+                            <span class="text-2xl block mb-1">📄</span>
+                            <span class="text-xs font-black block text-slate-800 dark:text-white">Estándar</span>
+                            <span class="text-[10px] text-gray-500 dark:text-gray-400 block font-medium">Media Carta / A4</span>
+                            <span id="badge-estandar" class="pill {{ !$isPos ? 'pill-done' : 'pill-neutral' }} text-[10px] py-0.5 px-2 mt-2">
+                                {{ !$isPos ? '● Activo' : 'Inactivo' }}
+                            </span>
+                        </label>
+
+                        {{-- Opción POS --}}
+                        <label for="radio-pos" onclick="updateFormatSelection('pos')" id="card-formato-pos" class="format-card {{ $isPos ? 'is-active' : '' }}">
+                            <input type="radio" name="formato_factura" value="pos" id="radio-pos" class="sr-only" {{ $isPos ? 'checked' : '' }}>
+                            <span class="text-2xl block mb-1">🧾</span>
+                            <span class="text-xs font-black block text-slate-800 dark:text-white">Ticket POS</span>
+                            <span class="text-[10px] text-gray-500 dark:text-gray-400 block font-medium">Térmico (80mm)</span>
+                            <span id="badge-pos" class="pill {{ $isPos ? 'pill-done' : 'pill-neutral' }} text-[10px] py-0.5 px-2 mt-2">
+                                {{ $isPos ? '● Activo' : 'Inactivo' }}
+                            </span>
+                        </label>
+                    </div>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 text-center mt-2.5 leading-tight">
+                        Haz clic en el formato que deseas usar y pulsa <strong>"Guardar Configuración"</strong>.
+                    </p>
+                </div>
             </div>
 
             {{-- Columna Derecha: Datos --}}
@@ -101,6 +138,45 @@ function previewLogo(event) {
             }
         };
         reader.readAsDataURL(file);
+    }
+}
+
+function updateFormatSelection(formato) {
+    const cardEstandar = document.getElementById('card-formato-estandar');
+    const cardPos = document.getElementById('card-formato-pos');
+    const badgeEstandar = document.getElementById('badge-estandar');
+    const badgePos = document.getElementById('badge-pos');
+    const radioEstandar = document.getElementById('radio-estandar');
+    const radioPos = document.getElementById('radio-pos');
+
+    if (formato === 'pos') {
+        if (radioPos) radioPos.checked = true;
+        if (radioEstandar) radioEstandar.checked = false;
+        if (cardPos) cardPos.classList.add('is-active');
+        if (cardEstandar) cardEstandar.classList.remove('is-active');
+
+        if (badgePos) {
+            badgePos.className = 'pill pill-done text-[10px] py-0.5 px-2 mt-2';
+            badgePos.textContent = '● Activo';
+        }
+        if (badgeEstandar) {
+            badgeEstandar.className = 'pill pill-neutral text-[10px] py-0.5 px-2 mt-2';
+            badgeEstandar.textContent = 'Inactivo';
+        }
+    } else {
+        if (radioEstandar) radioEstandar.checked = true;
+        if (radioPos) radioPos.checked = false;
+        if (cardEstandar) cardEstandar.classList.add('is-active');
+        if (cardPos) cardPos.classList.remove('is-active');
+
+        if (badgeEstandar) {
+            badgeEstandar.className = 'pill pill-done text-[10px] py-0.5 px-2 mt-2';
+            badgeEstandar.textContent = '● Activo';
+        }
+        if (badgePos) {
+            badgePos.className = 'pill pill-neutral text-[10px] py-0.5 px-2 mt-2';
+            badgePos.textContent = 'Inactivo';
+        }
     }
 }
 </script>

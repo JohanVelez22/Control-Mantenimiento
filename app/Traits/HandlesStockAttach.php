@@ -18,7 +18,7 @@ trait HandlesStockAttach
         }
 
         try {
-            DB::transaction(function () use ($model, $validated) {
+            DB::transaction(function () use ($model, $validated, &$successMsg) {
                 $stock = \App\Models\Stock::findOrFail($validated['stock_id']);
 
                 // Salida atómica del stock (bloquea la fila y evita saldo negativo).
@@ -36,11 +36,13 @@ trait HandlesStockAttach
                 if ($existing) {
                     $newCantidad = $existing->pivot->cantidad + $validated['cantidad'];
                     $model->stocks()->updateExistingPivot($stock->id, ['cantidad' => $newCantidad]);
+                    $successMsg = "Se sumaron {$validated['cantidad']} unidad(es) a '{$stock->producto}' (total actual: {$newCantidad} uds).";
                 } else {
                     $model->stocks()->attach($stock->id, [
                         'cantidad'        => $validated['cantidad'],
                         'precio_unitario' => $precioUnitario,
                     ]);
+                    $successMsg = "Repuesto '{$stock->producto}' agregado a la orden.";
                 }
 
                 // Sumar al costo del modelo

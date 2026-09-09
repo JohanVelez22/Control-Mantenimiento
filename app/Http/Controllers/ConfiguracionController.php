@@ -31,6 +31,7 @@ class ConfiguracionController extends Controller
             'direccion' => 'nullable|string|max:255',
             'correo' => 'nullable|email|max:255',
             'pie_pagina_factura' => 'nullable|string',
+            'formato_factura' => 'nullable|in:estandar,pos',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048|dimensions:min_width=50,min_height=50,max_width=3000,max_height=3000',
         ]);
 
@@ -42,6 +43,7 @@ class ConfiguracionController extends Controller
         $configuracion->direccion = $request->direccion;
         $configuracion->correo = $request->correo;
         $configuracion->pie_pagina_factura = $request->pie_pagina_factura;
+        $configuracion->formato_factura = $request->input('formato_factura', 'estandar');
 
         if ($request->hasFile('logo')) {
             if ($configuracion->logo_path) {

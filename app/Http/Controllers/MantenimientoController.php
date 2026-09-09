@@ -268,8 +268,26 @@ class MantenimientoController extends Controller
                 ->with('error', 'No se puede generar la factura sin fecha de salida. Registre la salida de la orden e inténtelo de nuevo.');
         }
 
-        $mantenimiento->load(['equipo.cliente', 'tecnico', 'user']);
+        $mantenimiento->load(['equipo.cliente', 'tecnico', 'user', 'abonos', 'stocks']);
         
+        $empresa = \App\Models\Configuracion::first();
+        $formato = request('formato', $empresa->formato_factura ?? 'estandar');
+
+        if ($formato === 'pos') {
+            $stocksCount = $mantenimiento->stocks ? $mantenimiento->stocks->count() : 0;
+            $abonosCount = $mantenimiento->abonos ? $mantenimiento->abonos->count() : 0;
+            $obsLength = strlen($mantenimiento->descripcion ?? '');
+            $obsExtra = ceil($obsLength / 35) * 14;
+            $fallbackHeight = max(700, 520 + $obsExtra + ($stocksCount * 36) + ($abonosCount * 28));
+
+            return \App\Services\PosTicketService::streamTicket(
+                'mantenimientos.factura_pos',
+                compact('mantenimiento'),
+                'ticket_mantenimiento_' . $mantenimiento->id_orden . '.pdf',
+                $fallbackHeight
+            );
+        }
+
         $pdf = Pdf::loadView('mantenimientos.factura', compact('mantenimiento'));
         $pdf->setPaper('a4', 'portrait');
         
