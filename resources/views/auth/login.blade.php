@@ -37,7 +37,7 @@
 
  {{-- Email --}}
  <div>
- <label for="email" class="mb-3 flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-200">
+ <label for="email" class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-200">
  <span class="flex-shrink-0">📧</span>
  <span>Correo Electrónico</span>
  </label>
@@ -49,7 +49,7 @@
 
  {{-- Contraseña --}}
  <div>
- <label for="password" class="mb-3 flex items-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-200">
+ <label for="password" class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-200">
  <span class="flex-shrink-0">🔑</span>
  <span>Contraseña</span>
  </label>
