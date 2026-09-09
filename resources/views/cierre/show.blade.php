@@ -33,7 +33,7 @@
         @endpush
 
         {{-- Encabezado --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 no-print">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 no-print">
             <div class="flex items-center gap-4">
                 <a href="{{ route('cierre.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a la lista de cierres">⬅️</a>
                 <div>
@@ -52,18 +52,18 @@
             </div>
             
             <div class="flex items-center gap-3 shrink-0">
-                <button type="button" onclick="window.print()" class="btn-ghost border-gray-500/20 text-gray-700 dark:text-gray-300 font-bold">
+                <button type="button" onclick="window.print()" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400">
                     🖨️ Imprimir Acta
                 </button>
                 
                 @if(!auth()->user()->isInvitado())
-                <a href="{{ route('cierre.edit', $cierre->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 font-bold">
+                <a href="{{ route('cierre.edit', $cierre->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">
                     ✏️ Editar Notas
                 </a>
                 @endif
 
                 @if(auth()->user()->isAdmin())
-                <button type="button" onclick="openCierrePwd()" class="btn-danger font-bold">
+                <button type="button" onclick="openCierrePwd()" class="btn-danger">
                     🗑️ Eliminar
                 </button>
                 @endif

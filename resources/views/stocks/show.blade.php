@@ -15,7 +15,7 @@
         @endif
 
         {{-- Encabezado unificado: Flecha Volver + Imagen + Título con Auto-Redimensión + Botones de Acción --}}
-        <div class="flex items-center justify-between gap-3 sm:gap-4 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6">
+        <div class="flex items-center justify-between gap-3 sm:gap-4 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8">
             <div class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
                 <a href="{{ route('stocks.index') }}" class="btn-ghost px-3 py-2 text-xl shrink-0" title="Volver">⬅️</a>
 
@@ -48,16 +48,16 @@
             </div>
 
             {{-- Botones de Acción a la derecha --}}
-            <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
-                <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm py-1.5 px-3">
+            <div class="flex items-center gap-3 shrink-0">
+                <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400">
                     🖨️ Imprimir
                 </a>
                 
                 @if(!auth()->user()->isInvitado())
-                <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400 text-sm py-1.5 px-3">
+                <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400">
                     ✏️ Editar
                 </a>
-                <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-danger text-sm py-1.5 px-3">
+                <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-danger">
                     {{ $stock->active ? '🚫 Anular' : '✅ Reactivar' }}
                 </button>
                 @endif

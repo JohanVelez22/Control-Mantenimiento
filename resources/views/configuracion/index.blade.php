@@ -9,7 +9,7 @@
         <p class="text-gray-500 font-medium mt-2">Gestiona la información comercial que aparecerá en los reportes y facturas de tus operaciones.</p>
     </div>
 
-    <form action="{{ route('configuracion.update') }}" method="POST" enctype="multipart/form-data" class="glass-card p-6 md:p-8 space-y-6">
+    <form action="{{ route('configuracion.update') }}" method="POST" enctype="multipart/form-data" class="glass-card p-6 md:p-8">
         @csrf
 
         <div class="flex flex-col md:flex-row gap-8">

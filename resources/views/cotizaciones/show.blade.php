@@ -13,37 +13,39 @@
             </div>
         @endif
 
-        <div class="flex items-center gap-3 mb-8 relative z-10">
-            <a href="{{ route('cotizaciones.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
-            <div class="flex-1">
-                <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">📝 {{ $cotizacion->codigo }}</h2>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Cotización formal - Creada el {{ \Carbon\Carbon::parse($cotizacion->fecha)->format('d/m/Y') }}</p>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('cotizaciones.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+                <div>
+                    <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
+                        📝 {{ $cotizacion->codigo }}
+                    </h2>
+                    <p class="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Cotización formal - Creada el {{ \Carbon\Carbon::parse($cotizacion->fecha)->format('d/m/Y') }}</p>
+                </div>
             </div>
             
-            <div class="flex gap-2">
-                <a href="{{ route('cotizaciones.pdf', $cotizacion) }}" target="_blank" class="btn-clean flex items-center justify-center h-[42px] px-4">
+            <div class="flex items-center gap-3 shrink-0">
+                <a href="{{ route('cotizaciones.pdf', $cotizacion) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400">
                     📄 Ver PDF
                 </a>
                 
                 @if(!$cotizacion->anulado)
-                <div class="flex gap-2">
                     @if($cotizacion->estado === 'pendiente')
                     <form action="{{ route('cotizaciones.convertir', $cotizacion) }}" method="POST" data-confirm-delete="Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?">
                         @csrf
-                        <button type="submit" class="btn-primary flex items-center justify-center h-[42px] px-4">
+                        <button type="submit" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                             ✅ Aprobar y Facturar
                         </button>
                     </form>
                     
-                    <button type="button" onclick="openRechazarModal('{{ route('cotizaciones.rechazar', $cotizacion) }}')" class="btn-danger flex items-center justify-center h-[42px] px-4">
+                    <button type="button" onclick="openRechazarModal('{{ route('cotizaciones.rechazar', $cotizacion) }}')" class="btn-danger">
                         🚫 Rechazar
                     </button>
                     @elseif($cotizacion->estado === 'rechazada')
-                    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.reactivar', $cotizacion) }}', true)" class="btn-ghost flex items-center justify-center h-[42px] px-4">
+                    <button type="button" onclick="openAnularModal('{{ route('cotizaciones.reactivar', $cotizacion) }}', true)" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                         ✅ Reactivar
                     </button>
                     @endif
-                </div>
                 @endif
             </div>
         </div>
