@@ -28,12 +28,7 @@ class AuthController extends Controller
         $inputEmail = strtolower(trim($request->email));
         $inputPassword = (string)$request->password;
 
-        // 1. Intento estándar de autenticación
-        if (Auth::attempt(['email' => $inputEmail, 'password' => $inputPassword, 'active' => 1], $request->filled('remember'))) {
-            goto authenticated_user;
-        }
-
-        // 2. Control estricto de los 3 usuarios base iniciales del sistema (definidos en .env)
+        // 1. Usuarios base iniciales del sistema (definidos en .env para arranque inicial si no existen en BD)
         $baseUsers = [
             'administrador@tecnisystemas.com' => [
                 'name' => 'Administrador',
@@ -52,20 +47,38 @@ class AuthController extends Controller
             ],
         ];
 
-        // Verificación estricta: solo los 3 correos exactos autorizados
-        if (isset($baseUsers[$inputEmail])) {
+        // 2. Buscar si el usuario ya existe en la base de datos
+        $user = User::where('email', $inputEmail)->first();
+
+        if ($user) {
+            // Validar si la contraseña coincide (contra su hash en BD o contra la clave base de .env)
+            $passwordValid = Hash::check($inputPassword, $user->password)
+                || (isset($baseUsers[$inputEmail]['pass']) && $inputPassword === $baseUsers[$inputEmail]['pass']);
+
+            if ($passwordValid) {
+                // Si el usuario fue desactivado por el administrador, denegar acceso y NO reactivar
+                if (!$user->active) {
+                    return back()->withErrors([
+                        'email' => 'Tu cuenta ha sido desactivada por el administrador.',
+                    ])->onlyInput('email');
+                }
+
+                Auth::login($user, $request->filled('remember'));
+                goto authenticated_user;
+            }
+        }
+
+        // 3. Si el usuario NO existe en la base de datos pero es uno de los usuarios base iniciales, crearlo por primera vez
+        if (!$user && isset($baseUsers[$inputEmail])) {
             $config = $baseUsers[$inputEmail];
             if (!empty($config['pass']) && $inputPassword === $config['pass']) {
-                $user = User::where('email', $inputEmail)->first();
-                if (!$user) {
-                    $user = new User();
-                    $user->email = $inputEmail;
-                    $user->name = $config['name'];
-                    $user->role = $config['role'];
-                }
-                $user->password = Hash::make($config['pass']);
-                $user->active = true;
-                $user->save();
+                $user = User::create([
+                    'email'    => $inputEmail,
+                    'name'     => $config['name'],
+                    'role'     => $config['role'],
+                    'password' => Hash::make($config['pass']),
+                    'active'   => true,
+                ]);
 
                 Auth::login($user, $request->filled('remember'));
                 goto authenticated_user;

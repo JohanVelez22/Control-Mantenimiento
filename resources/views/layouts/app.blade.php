@@ -21,7 +21,7 @@
     <title>@yield('title', 'Tecni Systemas')</title>
     
     <!-- Favicon (Apple Liquid Glass) -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=1.0">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=1.5">
     
     <!-- Vite (Tailwind CSS compilado + JS) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
