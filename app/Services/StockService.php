@@ -110,4 +110,25 @@ class StockService
             ]);
         });
     }
+
+    /**
+     * Revierte una baja de stock previamente registrada:
+     * - Restituye las unidades al inventario disponible.
+     * - Elimina el registro de baja (auditable mediante el trait Auditable).
+     */
+    public function revertirBaja(\App\Models\BajaStock|int $bajaStock, ?int $userId = null): void
+    {
+        $id = $bajaStock instanceof \App\Models\BajaStock ? $bajaStock->id : $bajaStock;
+
+        DB::transaction(function () use ($id) {
+            $baja = \App\Models\BajaStock::lockForUpdate()->findOrFail($id);
+            $stock = Stock::lockForUpdate()->findOrFail($baja->stock_id);
+
+            // Restituir las unidades al stock disponible
+            $stock->increment('cantidad', $baja->cantidad);
+
+            // Eliminar el registro de baja
+            $baja->delete();
+        });
+    }
 }

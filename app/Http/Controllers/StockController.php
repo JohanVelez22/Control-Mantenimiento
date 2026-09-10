@@ -306,4 +306,41 @@ class StockController extends Controller
             return redirect()->back()->with('error', 'Error al procesar la baja de stock: ' . $e->getMessage())->withInput();
         }
     }
+
+    public function revertirBaja(\Illuminate\Http\Request $request, \App\Models\BajaStock $bajaStock, \App\Services\StockService $stockService)
+    {
+        if (!$bajaStock->exists && $request->route('bajaStock')) {
+            $bajaStock = \App\Models\BajaStock::findOrFail($request->route('bajaStock'));
+        }
+
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'invitado') {
+            return redirect()->back()->with('error', 'No tienes permisos para realizar esta acción.');
+        }
+
+        $password = $request->input('admin_password') ?? $request->input('password_confirm');
+        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
+
+        if (\Illuminate\Support\Facades\Auth::user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para revertir la baja.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+                return redirect()->back()->with('error', 'Contraseña incorrecta.')->withInput();
+            }
+        }
+
+        $stock = $bajaStock->stock;
+        $cantidad = $bajaStock->cantidad;
+        $producto = $stock ? $stock->producto : 'producto';
+
+        try {
+            $stockService->revertirBaja($bajaStock);
+            return redirect()->back()->with('success', "Se revirtió la baja exitosamente: se reintegraron {$cantidad} unidad(es) al inventario de '{$producto}'.");
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Error al revertir la baja: ' . $e->getMessage());
+        }
+    }
 }

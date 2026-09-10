@@ -177,6 +177,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::post('tecnicos/{tecnico}/anular', [TecnicoController::class, 'anular'])->name('tecnicos.anular');
         Route::post('stocks/{stock}/anular', [App\Http\Controllers\StockController::class, 'anular'])->name('stocks.anular');
         Route::post('stocks/{stock}/dar-de-baja', [App\Http\Controllers\StockController::class, 'darDeBaja'])->name('stocks.dar-de-baja');
+        Route::post('stocks/bajas/{bajaStock}/revertir', [App\Http\Controllers\StockController::class, 'revertirBaja'])->name('stocks.bajas.revertir');
         Route::post('electronicas/{electronica}/anular', [App\Http\Controllers\ElectronicaController::class, 'anular'])->name('electronicas.anular');
         Route::post('mantenimientos/{mantenimiento}/anular', [MantenimientoController::class, 'anular'])->name('mantenimientos.anular');
         Route::post('proveedores/{proveedor}/anular', [App\Http\Controllers\ProveedorController::class, 'anular'])->name('proveedores.anular');

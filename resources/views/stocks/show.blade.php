@@ -192,48 +192,61 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="glass-table w-full text-left">
+            <table class="glass-table w-full text-center">
                 <thead>
                     <tr>
-                        <th class="p-3">Fecha</th>
+                        <th class="p-3 text-center">Fecha</th>
                         <th class="p-3 text-center">Cant.</th>
-                        <th class="p-3 text-right">P. Compra</th>
-                        <th class="p-3 text-right">Pérdida Total</th>
-                        <th class="p-3">Motivo</th>
-                        <th class="p-3">Observación</th>
-                        <th class="p-3">Autorizado Por</th>
+                        <th class="p-3 text-center">P. Compra</th>
+                        <th class="p-3 text-center">Pérdida Total</th>
+                        <th class="p-3 text-center">Motivo</th>
+                        <th class="p-3 text-center">Observación</th>
+                        <th class="p-3 text-center">Autorizado Por</th>
+                        @if(!auth()->user()->isInvitado())
+                        <th class="p-3 text-center w-24">Acciones</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200/50 dark:divide-white/5">
                     @forelse($bajas ?? [] as $baja)
                     <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition text-sm">
-                        <td class="p-3 font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                        <td class="p-3 text-center font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap text-xs">
                             {{ $baja->created_at->format('d/m/Y H:i') }}
                         </td>
-                        <td class="p-3 text-center font-black text-amber-600 dark:text-amber-400">
+                        <td class="p-3 text-center font-black text-amber-600 dark:text-amber-400 text-xs">
                             -{{ $baja->cantidad }}
                         </td>
-                        <td class="p-3 text-right text-slate-600 dark:text-slate-400 font-mono text-xs">
+                        <td class="p-3 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
                             ${{ number_format($baja->precio_compra_unitario, 0, ',', '.') }}
                         </td>
-                        <td class="p-3 text-right font-black text-red-600 dark:text-red-400 font-mono text-xs">
+                        <td class="p-3 text-center font-black text-red-600 dark:text-red-400 font-mono text-xs">
                             ${{ number_format($baja->costo_total_perdida, 0, ',', '.') }}
                         </td>
-                        <td class="p-3">
+                        <td class="p-3 text-center">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
                                 {{ $baja->motivo_label }}
                             </span>
                         </td>
-                        <td class="p-3 text-xs text-slate-600 dark:text-slate-400 max-w-xs truncate" title="{{ $baja->observacion }}">
+                        <td class="p-3 text-center text-xs text-slate-600 dark:text-slate-400 max-w-xs truncate" title="{{ $baja->observacion }}">
                             {{ $baja->observacion ?: '—' }}
                         </td>
-                        <td class="p-3 text-xs font-medium text-slate-700 dark:text-slate-300">
+                        <td class="p-3 text-center text-xs font-medium text-slate-700 dark:text-slate-300">
                             {{ $baja->user->name ?? 'Sistema' }}
                         </td>
+                        @if(!auth()->user()->isInvitado())
+                        <td class="p-3 text-center">
+                            <button type="button" 
+                                onclick="openRevertirBajaModal('{{ route('stocks.bajas.revertir', $baja->id) }}', {{ $baja->cantidad }}, '{{ addslashes($stock->producto) }}')"
+                                class="btn-ghost w-8 h-8 inline-flex items-center justify-center p-0 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-500/10 rounded-lg transition" 
+                                title="Revertir baja (reintegrar {{ $baja->cantidad }} unidad(es) al stock)">
+                                ↩️
+                            </button>
+                        </td>
+                        @endif
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center p-6 text-gray-500 font-medium text-xs">
+                        <td colspan="{{ !auth()->user()->isInvitado() ? '8' : '7' }}" class="text-center p-6 text-gray-500 font-medium text-xs">
                             No se registran bajas ni mermas para este artículo. Todas las unidades ingresadas están en existencias o fueron vendidas/consumidas.
                         </td>
                     </tr>
@@ -314,8 +327,66 @@
                 <button type="button" onclick="closeBajaStockModal()" class="flex-1 btn-ghost border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
                     Cancelar
                 </button>
-                <button type="submit" class="flex-1 btn-ghost border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                <button type="submit" class="flex-1 btn-ghost border-violet-500/30 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
                     📉 Confirmar Baja
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL REVERTIR BAJA DE UNIDADES (Simétrico al Modal de Notificaciones) -->
+<div id="revertir-baja-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+    <div id="revertir-baja-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px;">
+        
+        {{-- Header simétrico a notificaciones --}}
+        <div class="flex items-center gap-3 mb-4">
+            <span class="text-3xl shrink-0 select-none">↩️</span>
+            <div>
+                <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">Revertir Baja de Unidades</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Reintegrar unidades al inventario activo y retirar la pérdida</p>
+            </div>
+        </div>
+
+        <form id="revertir-baja-form" method="POST" action="">
+            @csrf
+            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1 pb-2">
+                
+                {{-- Bloque resumen del reintegro con barra de acento --}}
+                <div class="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 relative overflow-hidden mb-4">
+                    <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500 rounded-l-xl"></div>
+                    <div class="pl-2.5 min-w-0">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Restitución de Stock</span>
+                            <span id="revertir-baja-unidades-badge" class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md"></span>
+                        </div>
+                        <p id="revertir-baja-producto" class="text-sm font-bold text-slate-800 dark:text-gray-100 truncate"></p>
+                        <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-medium">
+                            ✅ Las unidades se sumarán de inmediato al stock disponible y el registro de merma se retirará del historial.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            @if(auth()->user()->isTecnico())
+                                Contraseña de Administrador:
+                            @else
+                                Contraseña de Confirmación:
+                            @endif
+                        </label>
+                        <input type="password" name="password_confirm" id="revertir-baja-password" required placeholder="••••••••" class="glass-input text-center tracking-widest text-sm w-full">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 w-full modal-divider">
+                <button type="button" onclick="closeRevertirBajaModal()" class="flex-1 btn-ghost border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                    Cancelar
+                </button>
+                <button type="submit" class="flex-1 btn-ghost border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                    ↩️ Confirmar Reversión
                 </button>
             </div>
         </form>
@@ -380,6 +451,37 @@ function closeBajaStockModal() {
     if (motivoSel && motivoSel.tomselect && motivoSel.tomselect.isOpen) {
         motivoSel.tomselect.close();
     }
+    modal.classList.add('opacity-0');
+    card.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
+
+function openRevertirBajaModal(actionUrl, cantidad, producto) {
+    const modal = document.getElementById('revertir-baja-modal');
+    const card  = document.getElementById('revertir-baja-card');
+    const form  = document.getElementById('revertir-baja-form');
+    const prodEl = document.getElementById('revertir-baja-producto');
+    const badgeEl = document.getElementById('revertir-baja-unidades-badge');
+    const passInput = document.getElementById('revertir-baja-password');
+
+    form.action = actionUrl;
+    prodEl.textContent = producto;
+    badgeEl.textContent = '+' + cantidad + (cantidad === 1 ? ' unidad' : ' unidades');
+    passInput.value = '';
+
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95', 'opacity-0');
+        passInput.focus();
+    }, 10);
+}
+
+function closeRevertirBajaModal() {
+    const modal = document.getElementById('revertir-baja-modal');
+    const card  = document.getElementById('revertir-baja-card');
     modal.classList.add('opacity-0');
     card.classList.add('scale-95', 'opacity-0');
     setTimeout(() => {

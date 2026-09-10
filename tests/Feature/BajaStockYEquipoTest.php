@@ -197,4 +197,38 @@ class BajaStockYEquipoTest extends TestCase
         $this->assertEquals('operativo', $this->equipo->estado);
         $this->assertTrue($this->equipo->active);
     }
+
+    public function test_revertir_baja_stock_reintegra_unidades_y_elimina_merma()
+    {
+        $stockService = app(StockService::class);
+        $baja = $stockService->darDeBaja($this->stock, 4, 'dano_taller', 'Prueba daño');
+        $this->stock->refresh();
+        $this->assertEquals(6, $this->stock->cantidad); // 10 - 4 = 6
+
+        // Revertir
+        $stockService->revertirBaja($baja);
+        $this->stock->refresh();
+
+        // Existencias restablecidas
+        $this->assertEquals(10, $this->stock->cantidad);
+        $this->assertDatabaseMissing('bajas_stock', ['id' => $baja->id]);
+    }
+
+    public function test_http_revertir_baja_stock_con_password()
+    {
+        $this->actingAs($this->admin);
+        $stockService = app(StockService::class);
+        $baja = $stockService->darDeBaja($this->stock, 3, 'obsoleto', 'Deterioro');
+        $this->stock->refresh();
+        $this->assertEquals(7, $this->stock->cantidad);
+
+        $response = $this->post(route('stocks.bajas.revertir', $baja->id), [
+            'password_confirm' => 'Admin123*',
+        ]);
+
+        $response->assertSessionHas('success');
+        $this->stock->refresh();
+        $this->assertEquals(10, $this->stock->cantidad);
+        $this->assertDatabaseMissing('bajas_stock', ['id' => $baja->id]);
+    }
 }
