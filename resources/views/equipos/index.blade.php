@@ -76,44 +76,175 @@
   </td>
  <td class="{{ $dim }}"><p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2" title="{{ $equipo->observacion }}">{{ $equipo->observacion ?? '-' }}</p></td>
  <td class="{{ $dim }}"><span class="font-medium text-slate-700 dark:text-slate-300">{{ $equipo->user->name ?? '-' }}</span></td>
- <td class="text-center">
- <span class="pill {{ $equipo->active ? 'pill-done' : 'pill-anulado' }}">
- {{ $equipo->active ? 'Activo' : 'Inactivo' }}
- </span>
- </td>
-<td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
-  <div class="actions-grid">
-  @if(!auth()->user()->isInvitado())
-  <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
-                             <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', {{ !$equipo->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $equipo->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $equipo->active ? 'Anular Equipo' : 'Reactivar Equipo' }}">
-  {{ $equipo->active ? '🚫' : '✅' }}
-  </button>
+  <td class="text-center">
+  @if($equipo->estado === 'dado_de_baja')
+  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30" title="{{ $equipo->motivo_baja_label }}{{ $equipo->observacion_baja ? ' - ' . $equipo->observacion_baja : '' }}">
+      ⚠️ Dado de Baja
+  </span>
   @else
-  <span class="text-gray-400 text-sm">👁️ Lectura</span>
+  <span class="pill {{ $equipo->active ? 'pill-done' : 'pill-anulado' }}">
+      {{ $equipo->active ? 'Activo' : 'Inactivo' }}
+  </span>
+  @endif
+  </td>
+ <td data-label="Acciones:" class="text-center w-36 {{ $dim }}">
+   <div class="actions-grid">
+   @if(!auth()->user()->isInvitado())
+   <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
+   
+   @if($equipo->estado !== 'dado_de_baja')
+   <button type="button" onclick="openBajaEquipoModal('{{ route('equipos.dar-de-baja', $equipo->id) }}', '{{ addslashes($equipo->nombre) }} ({{ addslashes($equipo->serie ?? $equipo->modelo ?? '') }})')" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-amber-500 hover:text-amber-600" title="Dar de baja equipo (irreparable / desguace)">
+       ⚠️
+   </button>
+   <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', {{ !$equipo->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $equipo->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $equipo->active ? 'Anular Equipo' : 'Reactivar Equipo' }}">
+       {{ $equipo->active ? '🚫' : '✅' }}
+   </button>
+   @else
+   <button type="button" onclick="openAnularModal('{{ route('equipos.reactivar', $equipo->id) }}', true)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 hover:text-emerald-700" title="Reactivar Equipo dado de baja">
+       ✅
+   </button>
+   @endif
+   @else
+   <span class="text-gray-400 text-sm">👁️ Lectura</span>
+   @endif
+   </div>
+   </td>
+  </tr>
+  @empty
+  <tr>
+  <td colspan="8" class="p-16 text-center">
+  <div class="flex flex-col items-center gap-3">
+  <div class="text-6xl drop-shadow-md mb-2">🖥️</div>
+  <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin equipos registrados</h3>
+  <p class="text-gray-500 font-medium max-w-sm mb-4">Comienza vinculando un equipo a un cliente para iniciar el seguimiento.</p>
+  @if(!auth()->user()->isInvitado())
+  <a href="{{ route('equipos.create') }}" class="btn-primary">➕ Registrar Primer Equipo</a>
   @endif
   </div>
   </td>
- </tr>
- @empty
- <tr>
- <td colspan="8" class="p-16 text-center">
- <div class="flex flex-col items-center gap-3">
- <div class="text-6xl drop-shadow-md mb-2">🖥️</div>
- <h3 class="text-xl font-black text-slate-800 dark:text-white">Sin equipos registrados</h3>
- <p class="text-gray-500 font-medium max-w-sm mb-4">Comienza vinculando un equipo a un cliente para iniciar el seguimiento.</p>
- @if(!auth()->user()->isInvitado())
- <a href="{{ route('equipos.create') }}" class="btn-primary">➕ Registrar Primer Equipo</a>
- @endif
- </div>
- </td>
- </tr>
- @endforelse
- </tbody>
- </table>
- </div>
- <div class="mt-6 flex justify-end">
- {{ $equipos->appends(request()->query())->links() }}
- </div>
+  </tr>
+  @endforelse
+  </tbody>
+  </table>
+  </div>
+  <div class="mt-6 flex justify-end">
+  {{ $equipos->appends(request()->query())->links() }}
+  </div>
 </div>
-<script>document.addEventListener('DOMContentLoaded', () => filterTable('search-equipos', 'tabla-equipos'));</script>
+
+<!-- MODAL DAR DE BAJA EQUIPO (Simétrico al Modal de Notificaciones) -->
+<div id="baja-equipo-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+    <div id="baja-equipo-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px;">
+        
+        {{-- Header simétrico a notificaciones --}}
+        <div class="flex items-center gap-3 mb-4">
+            <span class="text-3xl shrink-0 select-none">⚠️</span>
+            <div>
+                <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">Dar de Baja Equipo</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Declarar equipo irreparable o desecho técnico</p>
+            </div>
+        </div>
+
+        <form id="baja-equipo-form" method="POST" action="">
+            @csrf
+            {{-- Contenedor Central al mismo ancho que el modal de notificaciones --}}
+            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1 pb-2">
+                
+                {{-- Bloque resumen del equipo con barra de acento --}}
+                <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 relative overflow-hidden mb-4">
+                    <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500 rounded-l-xl"></div>
+                    <div class="pl-2.5 min-w-0">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-wider">Equipo en Custodia</span>
+                            <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 rounded-md">Retiro de servicio</span>
+                        </div>
+                        <p id="baja-equipo-nombre" class="text-sm font-bold text-slate-800 dark:text-gray-100 truncate"></p>
+                        <p class="text-xs text-amber-600 dark:text-amber-400 mt-1 font-medium">
+                            ⚠️ El equipo no podrá recibir nuevos mantenimientos. El historial previo permanece intacto.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Motivo de la baja:</label>
+                        <select name="motivo_baja" id="baja-equipo-motivo" required class="glass-input no-search text-sm w-full" data-placeholder="Seleccione el motivo de la baja...">
+                            <option value="">Seleccione el motivo de la baja...</option>
+                            <option value="irreparable" selected>❌ Daño irreparable / Falla crítica en placa</option>
+                            <option value="desguace_repuestos">⚙️ Desguace / Canibalización para repuestos</option>
+                            <option value="chatarrizacion">🗑️ Chatarrización / Desecho definitivo</option>
+                            <option value="siniestro">💥 Siniestro / Pérdida total</option>
+                            <option value="abandonado">📦 Equipo abandonado por cliente/propietario</option>
+                            <option value="otro">📝 Otro motivo técnico</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Diagnóstico u observación técnica:</label>
+                        <textarea name="observacion_baja" id="baja-equipo-observacion" rows="2" placeholder="Describe la causa técnica del descarte..." class="glass-input text-xs w-full"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            @if(auth()->user()->isTecnico())
+                                Contraseña de Administrador:
+                            @else
+                                Contraseña de Confirmación:
+                            @endif
+                        </label>
+                        <input type="password" name="password_confirm" required placeholder="••••••••" class="glass-input text-center tracking-widest text-sm w-full">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 w-full modal-divider">
+                <button type="button" onclick="closeBajaEquipoModal()" class="flex-1 btn-ghost border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                    Cancelar
+                </button>
+                <button type="submit" class="flex-1 btn-ghost border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                    ⚠️ Confirmar Baja
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => filterTable('search-equipos', 'tabla-equipos'));
+
+function openBajaEquipoModal(actionUrl, nombreEquipo) {
+    const modal = document.getElementById('baja-equipo-modal');
+    const card  = document.getElementById('baja-equipo-card');
+    const form  = document.getElementById('baja-equipo-form');
+    const nomEl = document.getElementById('baja-equipo-nombre');
+    const motivoSel = document.getElementById('baja-equipo-motivo');
+
+    form.action = actionUrl;
+    nomEl.textContent = nombreEquipo;
+
+    if (motivoSel && motivoSel.tomselect) {
+        motivoSel.tomselect.setValue('irreparable');
+    }
+
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95', 'opacity-0');
+    }, 10);
+}
+
+function closeBajaEquipoModal() {
+    const modal = document.getElementById('baja-equipo-modal');
+    const card  = document.getElementById('baja-equipo-card');
+    const motivoSel = document.getElementById('baja-equipo-motivo');
+    if (motivoSel && motivoSel.tomselect && motivoSel.tomselect.isOpen) {
+        motivoSel.tomselect.close();
+    }
+    modal.classList.add('opacity-0');
+    card.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
+</script>
 @endsection

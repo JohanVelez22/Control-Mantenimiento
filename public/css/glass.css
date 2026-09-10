@@ -1257,6 +1257,28 @@ html.dark .btn-ghost.text-purple-400:hover {
   background: rgba(168, 85, 247, 0.20) !important;
 }
 
+.btn-ghost.text-blue-600:hover,
+.btn-ghost.text-blue-500:hover {
+  color: #2563EB !important;
+  border-color: rgba(37, 99, 235, 0.35) !important;
+  background: rgba(37, 99, 235, 0.12) !important;
+}
+
+html.dark .btn-ghost.text-blue-600:hover,
+html.dark .btn-ghost.text-blue-400:hover {
+  color: #93C5FD !important;
+  border-color: rgba(147, 197, 253, 0.35) !important;
+  background: rgba(37, 99, 235, 0.20) !important;
+}
+
+.modal-divider {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.dark .modal-divider {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
 .btn-danger {
   display: inline-flex;
   align-items: center;
@@ -2242,6 +2264,9 @@ html.dark .ts-control>input {
   font-size: 14px !important;
   color: #1E293B !important;
   border-radius: 0 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  line-height: 1.35 !important;
   transition: background 0.15s ease !important;
 }
 
@@ -2565,7 +2590,8 @@ html.dark .ts-modal-card {
   transition: all 0.22s ease !important;
   display: flex !important;
   align-items: center !important;
-  height: 42px !important;
+  min-height: 42px !important;
+  height: auto !important;
 }
 
 html.dark .ts-wrapper.glass-input .ts-control {
@@ -2657,13 +2683,15 @@ select.glass-input:not(.tomselected) {
 .ts-control>.item,
 .ts-control .ts-item-display,
 .stock-select-wrapper .ts-control>.item {
-  width: 0 !important;
-  flex: 1 1 0% !important;
+  width: auto !important;
+  flex: 1 1 auto !important;
   min-width: 0 !important;
-  max-width: calc(100% - 25px) !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
+  max-width: calc(100% - 20px) !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: break-word !important;
+  line-height: 1.35 !important;
   display: block !important;
   pointer-events: none;
   text-align: left !important;
@@ -2704,10 +2732,12 @@ select.glass-input:not(.tomselected) {
   width: 100% !important;
   min-width: 0 !important;
   max-width: 100% !important;
+  min-height: 40px !important;
+  height: auto !important;
   box-sizing: border-box !important;
   text-align: left !important;
   justify-content: flex-start !important;
-  overflow: hidden !important;
+  overflow: visible !important;
 }
 
 .desc-cell .ts-item-display,
@@ -2766,9 +2796,11 @@ select.glass-input:not(.tomselected) {
 
 .desc-cell .ts-item-display,
 .stock-select-wrapper .ts-item-display {
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: break-word !important;
+  line-height: 1.35 !important;
   display: block !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -2804,6 +2836,17 @@ select.glass-input:not(.tomselected) {
 /* Si hay un ítem seleccionado, ocultar el input para que no estorbe */
 .ts-wrapper.single.has-items:not(.focus):not(.dropdown-active) .ts-control>input {
   display: none !important;
+}
+
+/* En selects con búsqueda, ocultar el ítem al abrir o enfocar para permitir escribir y filtrar limpiamente */
+.ts-wrapper.single.has-items:not(.no-search).focus .ts-control>.item,
+.ts-wrapper.single.has-items:not(.no-search).dropdown-active .ts-control>.item {
+  display: none !important;
+}
+.ts-wrapper.single.has-items:not(.no-search).focus .ts-control>input,
+.ts-wrapper.single.has-items:not(.no-search).dropdown-active .ts-control>input {
+  display: inline-block !important;
+  width: 100% !important;
 }
 
 /* NOTA: NO ocultamos .item al abrir dropdown para selects sin búsqueda.

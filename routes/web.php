@@ -168,12 +168,15 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::get('electronicas/{electronica}/factura', [App\Http\Controllers\ElectronicaController::class, 'factura'])->name('electronicas.factura');
     });
 
-    // ─── Admin y Técnico: anular (técnico requiere contraseña de admin) ─────
+    // ─── Admin y Técnico: anular y bajas (técnico requiere contraseña de admin) ─────
     Route::middleware(['role:admin,tecnico', 'throttle:10,1'])->group(function () {
         Route::post('clientes/{cliente}/anular', [ClienteController::class, 'anular'])->name('clientes.anular');
         Route::post('equipos/{equipo}/anular', [EquipoController::class, 'anular'])->name('equipos.anular');
+        Route::post('equipos/{equipo}/dar-de-baja', [EquipoController::class, 'darDeBaja'])->name('equipos.dar-de-baja');
+        Route::post('equipos/{equipo}/reactivar', [EquipoController::class, 'reactivar'])->name('equipos.reactivar');
         Route::post('tecnicos/{tecnico}/anular', [TecnicoController::class, 'anular'])->name('tecnicos.anular');
         Route::post('stocks/{stock}/anular', [App\Http\Controllers\StockController::class, 'anular'])->name('stocks.anular');
+        Route::post('stocks/{stock}/dar-de-baja', [App\Http\Controllers\StockController::class, 'darDeBaja'])->name('stocks.dar-de-baja');
         Route::post('electronicas/{electronica}/anular', [App\Http\Controllers\ElectronicaController::class, 'anular'])->name('electronicas.anular');
         Route::post('mantenimientos/{mantenimiento}/anular', [MantenimientoController::class, 'anular'])->name('mantenimientos.anular');
         Route::post('proveedores/{proveedor}/anular', [App\Http\Controllers\ProveedorController::class, 'anular'])->name('proveedores.anular');

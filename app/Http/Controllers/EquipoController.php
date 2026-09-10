@@ -165,6 +165,87 @@ class EquipoController extends Controller
         return redirect()->back()->with('success', "El equipo ha sido {$action} exitosamente.");
     }
 
+    public function darDeBaja(\Illuminate\Http\Request $request, Equipo $equipo)
+    {
+        if (!$equipo->exists && $request->route('equipo')) {
+            $equipo = Equipo::findOrFail($request->route('equipo'));
+        }
+
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'invitado') {
+            return redirect()->back()->with('error', 'No tienes permisos para realizar esta acción.');
+        }
+
+        $password = $request->input('admin_password') ?? $request->input('password_confirm');
+        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
+
+        if (\Illuminate\Support\Facades\Auth::user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para dar de baja un equipo.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+                return redirect()->back()->with('error', 'Contraseña incorrecta.')->withInput();
+            }
+        }
+
+        $validated = $request->validate([
+            'motivo_baja'      => 'required|string|in:irreparable,desguace_repuestos,chatarrizacion,siniestro,abandonado,otro',
+            'observacion_baja' => 'nullable|string|max:500',
+        ], [
+            'motivo_baja.required' => 'Debes indicar el motivo de la baja del equipo.',
+        ]);
+
+        $equipo->update([
+            'estado'           => 'dado_de_baja',
+            'active'           => false,
+            'motivo_baja'      => $validated['motivo_baja'],
+            'observacion_baja' => $validated['observacion_baja'] ?? null,
+            'fecha_baja'       => now(),
+            'baja_user_id'     => auth()->id(),
+        ]);
+
+        return redirect()->back()->with('success', "El equipo '{$equipo->nombre}' ha sido dado de baja exitosamente. Motivo: {$equipo->motivo_baja_label}.");
+    }
+
+    public function reactivar(\Illuminate\Http\Request $request, Equipo $equipo)
+    {
+        if (!$equipo->exists && $request->route('equipo')) {
+            $equipo = Equipo::findOrFail($request->route('equipo'));
+        }
+
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'invitado') {
+            return redirect()->back()->with('error', 'No tienes permisos para realizar esta acción.');
+        }
+
+        $password = $request->input('admin_password') ?? $request->input('password_confirm');
+        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
+
+        if (\Illuminate\Support\Facades\Auth::user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para reactivar el equipo.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+                return redirect()->back()->with('error', 'Contraseña incorrecta.')->withInput();
+            }
+        }
+
+        $equipo->update([
+            'estado'           => 'operativo',
+            'active'           => true,
+            'motivo_baja'      => null,
+            'observacion_baja' => null,
+            'fecha_baja'       => null,
+            'baja_user_id'     => null,
+        ]);
+
+        return redirect()->back()->with('success', "El equipo '{$equipo->nombre}' ha sido reactivado y vuelve a estar disponible para mantenimiento.");
+    }
+
     public function destroy(Equipo $equipo)
     {
         if (Auth::user()->role !== 'admin') {

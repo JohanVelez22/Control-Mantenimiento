@@ -66,4 +66,48 @@ class StockService
             return $model->refresh();
         });
     }
+
+    /**
+     * Da de baja unidades de stock por daño, defecto o merma de forma atómica.
+     *
+     * @param Stock|int $stock Modelo o ID del artículo.
+     * @param int $cantidad Unidades a descartar (debe ser > 0 y <= stock disponible).
+     * @param string $motivo Causa de la baja (defectuoso_fabrica, dano_taller, etc.).
+     * @param string|null $observacion Justificación técnica o detalle.
+     * @param int|null $userId Usuario que autoriza/registra la baja.
+     * @return \App\Models\BajaStock Registro de auditoría de la baja creada.
+     */
+    public function darDeBaja(Stock|int $stock, int $cantidad, string $motivo, ?string $observacion = null, ?int $userId = null): \App\Models\BajaStock
+    {
+        if ($cantidad <= 0) {
+            throw new \DomainException('La cantidad a dar de baja debe ser mayor que cero.');
+        }
+
+        $id = $stock instanceof Stock ? $stock->id : $stock;
+
+        return DB::transaction(function () use ($id, $cantidad, $motivo, $observacion, $userId) {
+            $model = Stock::lockForUpdate()->findOrFail($id);
+
+            if ($model->cantidad < $cantidad) {
+                throw new \DomainException(
+                    "No es posible dar de baja {$cantidad} unidades. Stock disponible actual: {$model->cantidad}."
+                );
+            }
+
+            $model->decrement('cantidad', $cantidad);
+
+            $precioCompra = (float) $model->precio_compra;
+            $costoPerdida = $cantidad * $precioCompra;
+
+            return \App\Models\BajaStock::create([
+                'stock_id'               => $model->id,
+                'user_id'                => $userId ?? auth()->id(),
+                'cantidad'               => $cantidad,
+                'precio_compra_unitario' => $precioCompra,
+                'costo_total_perdida'    => $costoPerdida,
+                'motivo'                 => $motivo,
+                'observacion'            => $observacion,
+            ]);
+        });
+    }
 }

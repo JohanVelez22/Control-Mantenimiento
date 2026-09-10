@@ -210,8 +210,9 @@ class StockController extends Controller
             
         // Obtiene explícitamente la relación proveedor para evitar que la columna 'proveedor' la enmascare
         $proveedor = $stock->proveedor()->first();
-            
-        return view('stocks.show', compact('stock', 'historial', 'proveedor'));
+        $bajas = $stock->bajas()->with('user')->get();
+
+        return view('stocks.show', compact('stock', 'historial', 'proveedor', 'bajas'));
     }
 
     public function print(Stock $stock)
@@ -252,5 +253,57 @@ class StockController extends Controller
 
         $action = $stock->active ? 'reactivado' : 'desactivado (anulado)';
         return redirect()->back()->with('success', "El producto ha sido {$action} exitosamente.");
+    }
+
+    public function darDeBaja(\Illuminate\Http\Request $request, Stock $stock, \App\Services\StockService $stockService)
+    {
+        if (!$stock->exists && $request->route('stock')) {
+            $stock = Stock::findOrFail($request->route('stock'));
+        }
+
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'invitado') {
+            return redirect()->back()->with('error', 'No tienes permisos para realizar esta acción.');
+        }
+
+        $password = $request->input('admin_password') ?? $request->input('password_confirm');
+        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
+
+        if (\Illuminate\Support\Facades\Auth::user()->isTecnico()) {
+            $request->validate(['admin_password' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
+                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para autorizar la baja de inventario.')->withInput();
+            }
+        } else {
+            $request->validate(['password_confirm' => 'required']);
+            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
+                return redirect()->back()->with('error', 'Contraseña incorrecta.')->withInput();
+            }
+        }
+
+        $validated = $request->validate([
+            'cantidad'    => 'required|integer|min:1|max:' . max(1, $stock->cantidad),
+            'motivo'      => 'required|string|in:defectuoso_fabrica,dano_taller,obsoleto,perdida_merma,otro',
+            'observacion' => 'nullable|string|max:500',
+        ], [
+            'cantidad.max' => "No puedes dar de baja más de {$stock->cantidad} unidades disponibles.",
+            'motivo.required' => 'Debes seleccionar el motivo de la baja.',
+        ]);
+
+        try {
+            $baja = $stockService->darDeBaja(
+                $stock,
+                (int) $validated['cantidad'],
+                $validated['motivo'],
+                $validated['observacion'] ?? null,
+                auth()->id()
+            );
+
+            $perdidaFmt = number_format($baja->costo_total_perdida, 0, ',', '.');
+            return redirect()->back()->with('success', "Se dieron de baja {$baja->cantidad} unidad(es) de '{$stock->producto}'. Pérdida registrada: \${$perdidaFmt}.");
+        } catch (\DomainException $e) {
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Error al procesar la baja de stock: ' . $e->getMessage())->withInput();
+        }
     }
 }

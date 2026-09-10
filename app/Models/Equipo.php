@@ -10,10 +10,14 @@ class Equipo extends Model
     use HasFactory, \App\Traits\Auditable;
     protected $fillable = [
         'nombre', 'marca', 'modelo', 'serie',
-        'observacion', 'user_id', 'cliente_id', 'proveedor_id', 'active'
+        'observacion', 'user_id', 'cliente_id', 'proveedor_id', 'active',
+        'estado', 'motivo_baja', 'observacion_baja', 'fecha_baja', 'baja_user_id'
     ];
 
-    protected $casts = ['active' => 'boolean'];
+    protected $casts = [
+        'active' => 'boolean',
+        'fecha_baja' => 'datetime',
+    ];
 
     public function getSerieAttribute($value)
     {
@@ -83,9 +87,32 @@ class Equipo extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Usuario que registró la baja del equipo
+    public function bajaUser()
+    {
+        return $this->belongsTo(User::class, 'baja_user_id');
+    }
+
+    public function getEstaDadoDeBajaAttribute(): bool
+    {
+        return $this->estado === 'dado_de_baja' || !$this->active;
+    }
+
+    public function getMotivoBajaLabelAttribute(): string
+    {
+        return match ($this->motivo_baja) {
+            'irreparable'          => 'Daño irreparable / Irrecuperable',
+            'desguace_repuestos'   => 'Desguace / Uso para repuestos',
+            'chatarrizacion'       => 'Chatarrización / Desecho',
+            'siniestro'            => 'Siniestro / Pérdida total',
+            'abandonado'           => 'Equipo abandonado por el cliente',
+            default                => ucfirst(str_replace('_', ' ', $this->motivo_baja ?? 'Dado de baja')),
+        };
+    }
+
     /** Scope: solo registros activos (no dados de baja lógicamente) */
     public function scopeActivos($query)
     {
-        return $query->where('active', true);
+        return $query->where('active', true)->where('estado', '!=', 'dado_de_baja');
     }
 }

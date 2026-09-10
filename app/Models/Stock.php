@@ -64,7 +64,24 @@ class Stock extends Model
         return $this->hasMany(FacturaItem::class);
     }
 
+    public function bajas(): HasMany
+    {
+        return $this->hasMany(BajaStock::class)->orderBy('created_at', 'desc');
+    }
+
     // ─── Helpers ─────────────────────────────────────────────────
+
+    /** Total de unidades dadas de baja por daño o merma */
+    public function getTotalUnidadesBajaAttribute(): int
+    {
+        return (int) $this->bajas()->sum('cantidad');
+    }
+
+    /** Total en pesos perdido por mermas y artículos defectuosos */
+    public function getTotalPerdidaBajasAttribute(): float
+    {
+        return (float) $this->bajas()->sum('costo_total_perdida');
+    }
 
     /** Verifica que haya stock suficiente */
     public function tieneDisponible(int $cantidad): bool
