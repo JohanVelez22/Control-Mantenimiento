@@ -136,14 +136,14 @@ class SeedDemoData extends Command
                 $tecnicos[] = Tecnico::create($t);
             }
 
-            // 4. EQUIPOS (5 registros)
+            // 4. EQUIPOS (5 registros: 3 de Clientes, 2 de Proveedores)
             $this->info('💻 4. Creando 5 Equipos...');
             $equiposData = [
-                ['nombre' => 'Portátil Corporativo', 'marca' => 'Dell', 'modelo' => 'Latitude 5420', 'serie' => 'DLL-5420-XYZ1', 'cliente_id' => $clientes[0]->id, 'observacion' => 'Equipo de trabajo con cargador original', 'user_id' => $admin->id],
-                ['nombre' => 'PC Gamer Escritorio', 'marca' => 'Asus', 'modelo' => 'ROG Strix G15', 'serie' => 'ASUS-ROG-8899', 'cliente_id' => $clientes[1]->id, 'observacion' => 'Lentitud y recalentamiento', 'user_id' => $admin->id],
-                ['nombre' => 'Servidor Torre', 'marca' => 'Lenovo', 'modelo' => 'ThinkSystem ST250', 'serie' => 'LNV-ST250-9988', 'cliente_id' => $clientes[2]->id, 'observacion' => 'Servidor de base de datos de la empresa', 'user_id' => $admin->id],
-                ['nombre' => 'Impresora Multifuncional', 'marca' => 'Epson', 'modelo' => 'EcoTank L4150', 'serie' => 'EPS-L4150-5544', 'cliente_id' => $clientes[3]->id, 'observacion' => 'Atasco de papel y limpieza de cabezales', 'user_id' => $admin->id],
-                ['nombre' => 'Consola PlayStation 5', 'marca' => 'Sony', 'modelo' => 'PS5 Digital Edition', 'serie' => 'PS5-CFI-1115B', 'cliente_id' => $clientes[4]->id, 'observacion' => 'No da video por puerto HDMI', 'user_id' => $admin->id],
+                ['nombre' => 'Portátil Corporativo', 'marca' => 'Dell', 'modelo' => 'Latitude 5420', 'serie' => 'DLL-5420-XYZ1', 'cliente_id' => $clientes[0]->id, 'proveedor_id' => null, 'observacion' => 'Equipo de trabajo con cargador original', 'user_id' => $admin->id],
+                ['nombre' => 'PC Gamer Escritorio', 'marca' => 'Asus', 'modelo' => 'ROG Strix G15', 'serie' => 'ASUS-ROG-8899', 'cliente_id' => $clientes[1]->id, 'proveedor_id' => null, 'observacion' => 'Lentitud y recalentamiento', 'user_id' => $admin->id],
+                ['nombre' => 'Servidor Torre', 'marca' => 'Lenovo', 'modelo' => 'ThinkSystem ST250', 'serie' => 'LNV-ST250-9988', 'cliente_id' => $clientes[2]->id, 'proveedor_id' => null, 'observacion' => 'Servidor de base de datos de la empresa', 'user_id' => $admin->id],
+                ['nombre' => 'Impresora Multifuncional', 'marca' => 'Epson', 'modelo' => 'EcoTank L4150', 'serie' => 'EPS-L4150-5544', 'cliente_id' => null, 'proveedor_id' => $proveedores[0]->id, 'observacion' => 'Garantía mayorista Epson - Atasco de papel', 'user_id' => $admin->id],
+                ['nombre' => 'Consola PlayStation 5', 'marca' => 'Sony', 'modelo' => 'PS5 Digital Edition', 'serie' => 'PS5-CFI-1115B', 'cliente_id' => null, 'proveedor_id' => $proveedores[1]->id, 'observacion' => 'Equipo para revisión de proveedor Mayorista Electrónica', 'user_id' => $admin->id],
             ];
             $equipos = [];
             foreach ($equiposData as $e) {
@@ -169,18 +169,20 @@ class SeedDemoData extends Command
                 $stocks[] = Stock::create($s);
             }
 
-            // 6. COTIZACIONES (5 registros)
+            // 6. COTIZACIONES (5 registros: 3 a Clientes, 2 a Proveedores)
             $this->info('📝 6. Creando 5 Cotizaciones con Ítems (COT-1 a COT-5)...');
             for ($i = 1; $i <= 5; $i++) {
+                $isProveedor = ($i >= 4);
                 $cot = Cotizacion::create([
                     'codigo' => "COT-{$i}",
-                    'cliente_id' => $clientes[$i - 1]->id,
+                    'cliente_id' => $isProveedor ? null : $clientes[$i - 1]->id,
+                    'proveedor_id' => $isProveedor ? $proveedores[$i - 4]->id : null,
                     'user_id' => $admin->id,
                     'fecha' => Carbon::now()->subDays(rand(1, 10))->toDateString(),
                     'validez_dias' => 15,
                     'total' => 0,
                     'estado' => $i === 1 ? 'aprobada' : ($i === 2 ? 'rechazada' : 'pendiente'),
-                    'notas' => 'Cotización formal emitida para mantenimiento e insumos.',
+                    'notas' => $isProveedor ? 'Cotización formal para insumos/equipos de proveedor.' : 'Cotización formal emitida para mantenimiento e insumos.',
                 ]);
 
                 $s1 = $stocks[$i - 1];

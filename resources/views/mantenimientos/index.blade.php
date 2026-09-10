@@ -28,7 +28,7 @@
   <tr>
   <th class="w-20 text-center">Orden</th>
   <th class="text-center">Equipo</th>
-  <th class="text-center">Cliente</th>
+  <th class="text-center">Cliente / Prov.</th>
   <th class="text-center">Técnico</th>
   <th class="text-center">Tipo/Rep</th>
   <th class="text-center">Observación</th>
@@ -54,9 +54,9 @@
   </td>
   
   <td class="{{ $dim }}">
-  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de equipos">
+  <a href="{{ route('equipos.edit', $m->equipo_id) }}" class="group block hover:opacity-75 transition-opacity" title="Ver detalles del equipo">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
-  {{ $m->equipo->nombre ?? '-' }}
+  {{ $m->equipo->nombre ?? 'Equipo' }}
   </div>
   <div class="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
   {{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}
@@ -68,14 +68,27 @@
   </td>
   
   <td class="{{ $dim }}">
-  <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id ?? '' }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  @if($m->equipo?->proveedor)
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->equipo->proveedor_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
-  {{ $m->equipo->cliente->nombre ?? '-' }}
+  🏢 {{ $m->equipo->proveedor->nombre_razon_social }}
+  </div>
+  <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+  {{ $m->equipo->proveedor->identificacion ?? '-' }}
+  </div>
+  </a>
+  @elseif($m->equipo?->cliente)
+  <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+  👤 {{ $m->equipo->cliente->nombre }}
   </div>
   <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
   {{ $m->equipo->cliente->identificacion ?? '-' }}
   </div>
   </a>
+  @else
+  <span class="font-bold text-slate-800 dark:text-white">-</span>
+  @endif
   </td>
   
   <td class="text-center font-medium text-sm {{ $dim }}">{{ $m->tecnico->nombre ?? '-' }}</td>

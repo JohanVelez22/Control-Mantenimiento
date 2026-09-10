@@ -11,9 +11,9 @@
 @section('content')
 <div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
     <div class="info-col">
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Cliente:</strong> <strong>{{ $cotizacion->cliente->nombre }}</strong></p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Identificación:</strong> <strong>{{ $cotizacion->cliente->identificacion }}</strong></p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Teléfono:</strong> <strong>{{ $cotizacion->cliente->movil ?? 'N/A' }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>{{ $cotizacion->destinatario_tipo === 'proveedor' ? 'Proveedor:' : 'Cliente:' }}</strong> <strong>{{ $cotizacion->destinatario_nombre }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Identificación:</strong> <strong>{{ $cotizacion->destinatario_identificacion }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Teléfono:</strong> <strong>{{ $cotizacion->destinatario_telefono ?: 'N/A' }}</strong></p>
     </div>
     <div class="info-col">
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Emisión:</strong> <strong>{{ \Carbon\Carbon::parse($cotizacion->fecha)->format('d/m/Y') }}</strong></p>
@@ -72,7 +72,7 @@
 
 <div class="signatures-block clearfix" style="position: absolute; bottom: 38px; left: 0; width: 100%;">
     <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 4px; font-size: 7.5pt;">
-        <strong>Aprobación del Cliente</strong>
+        <strong>Aprobación del {{ $cotizacion->destinatario_tipo === 'proveedor' ? 'Proveedor' : 'Cliente' }}</strong>
     </div>
     <div style="float: right; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 4px; font-size: 7.5pt;">
         <strong>{{ $empresa->nombre ?? 'Elaborado por' }}</strong>

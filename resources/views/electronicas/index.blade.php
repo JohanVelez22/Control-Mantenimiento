@@ -29,7 +29,7 @@
   <tr>
   <th class="w-20 text-center">Orden</th>
   <th class="text-center">Equipo</th>
-  <th class="text-center">Cliente</th>
+  <th class="text-center">Cliente / Prov.</th>
   <th class="text-center">Técnico</th>
   <th class="text-center">Tipo/Rep</th>
   <th class="text-center">Observación</th>
@@ -68,15 +68,28 @@
   </a>
   </td>
   
-  <td data-label="Cliente:" class="{{ $dim }}">
-  <a href="{{ route('clientes.index') }}#cliente-{{ $e->equipo->cliente_id ?? '' }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <td data-label="Propietario:" class="{{ $dim }}">
+  @if($e->equipo?->proveedor)
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $e->equipo->proveedor_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
-  {{ $e->equipo->cliente->nombre ?? 'N/A' }}
+  🏢 {{ $e->equipo->proveedor->nombre_razon_social }}
   </div>
   <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
-  {{ $e->equipo->cliente->identificacion ?? 'N/A' }}
+  {{ $e->equipo->proveedor->identificacion ?? '-' }}
   </div>
   </a>
+  @elseif($e->equipo?->cliente)
+  <a href="{{ route('clientes.index') }}#cliente-{{ $e->equipo->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
+  👤 {{ $e->equipo->cliente->nombre }}
+  </div>
+  <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+  {{ $e->equipo->cliente->identificacion ?? '-' }}
+  </div>
+  </a>
+  @else
+  <span class="font-bold text-slate-800 dark:text-white">-</span>
+  @endif
   </td>
   
   <td data-label="Técnico:" class="text-center {{ $dim }}">

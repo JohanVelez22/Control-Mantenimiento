@@ -90,19 +90,16 @@ class AppServiceProvider extends ServiceProvider
                 $mantList = Mantenimiento::activos()
                     ->where('estado', 'pendiente')
                     ->select('id', 'id_orden', 'equipo_id', 'estado')
-                    ->with('equipo.cliente:id,nombres,apellidos')
+                    ->with(['equipo.cliente:id,nombres,apellidos', 'equipo.proveedor:id,nombre_razon_social'])
                     ->latest()
                     ->limit(50)
                     ->get()
                     ->map(function ($m) {
-                        $clienteNombre = is_object($m->equipo?->cliente)
-                            ? trim(($m->equipo->cliente->nombres ?? '') . ' ' . ($m->equipo->cliente->apellidos ?? ''))
-                            : '—';
                         return [
                             'id'             => $m->id,
                             'id_orden'       => $m->id_orden,
                             'equipo_nombre'  => $m->equipo?->nombre ?? 'N/A',
-                            'cliente_nombre' => $clienteNombre ?: '—',
+                            'cliente_nombre' => $m->equipo?->propietario_nombre ?: '—',
                             'url'            => route('mantenimientos.show', $m->id),
                         ];
                     })->values()->all();
@@ -111,19 +108,16 @@ class AppServiceProvider extends ServiceProvider
                 $elecList = Electronica::activos()
                     ->where('estado', 'pendiente')
                     ->select('id', 'id_orden', 'equipo_id', 'estado')
-                    ->with('equipo.cliente:id,nombres,apellidos')
+                    ->with(['equipo.cliente:id,nombres,apellidos', 'equipo.proveedor:id,nombre_razon_social'])
                     ->latest()
                     ->limit(50)
                     ->get()
                     ->map(function ($e) {
-                        $clienteNombre = is_object($e->equipo?->cliente)
-                            ? trim(($e->equipo->cliente->nombres ?? '') . ' ' . ($e->equipo->cliente->apellidos ?? ''))
-                            : '—';
                         return [
                             'id'             => $e->id,
                             'id_orden'       => $e->id_orden,
                             'equipo_nombre'  => $e->equipo?->nombre ?? 'N/A',
-                            'cliente_nombre' => $clienteNombre ?: '—',
+                            'cliente_nombre' => $e->equipo?->propietario_nombre ?: '—',
                             'url'            => route('electronicas.show', $e->id),
                         ];
                     })->values()->all();
@@ -201,19 +195,16 @@ class AppServiceProvider extends ServiceProvider
                 // Cotizaciones pendientes
                 $cotList = Cotizacion::activos()
                     ->where('estado', 'pendiente')
-                    ->select('id', 'codigo', 'cliente_id', 'total', 'estado')
-                    ->with('cliente:id,nombres,apellidos')
+                    ->select('id', 'codigo', 'cliente_id', 'proveedor_id', 'total', 'estado')
+                    ->with(['cliente:id,nombres,apellidos', 'proveedor:id,nombre_razon_social'])
                     ->latest()
                     ->limit(50)
                     ->get()
                     ->map(function ($c) {
-                        $clienteNombre = is_object($c->cliente)
-                            ? trim(($c->cliente->nombres ?? '') . ' ' . ($c->cliente->apellidos ?? ''))
-                            : 'N/A';
                         return [
                             'id'             => $c->id,
                             'codigo'         => $c->codigo ?? '—',
-                            'cliente_nombre' => $clienteNombre ?: '—',
+                            'cliente_nombre' => $c->destinatario_nombre ?: '—',
                             'total'          => (float) ($c->total ?? 0),
                             'url'            => route('cotizaciones.show', $c->id),
                         ];

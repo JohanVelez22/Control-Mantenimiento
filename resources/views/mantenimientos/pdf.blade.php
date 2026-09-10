@@ -291,8 +291,8 @@
             <tr class="{{ $isAnulado ? 'anulado' : '' }}">
                 <td class="col-center col-bold">{{ $m->id_orden }}</td>
                 <td>
-                    <div class="col-bold">{{ $m->equipo->cliente->nombre ?? 'N/A' }}</div>
-                    <div class="sub-text">{{ $m->equipo->cliente->identificacion ?? '-' }}</div>
+                    <div class="col-bold">{{ $m->equipo?->propietario_nombre ?? 'N/A' }}</div>
+                    <div class="sub-text">{{ $m->equipo?->propietario_identificacion ?? '-' }}</div>
                 </td>
                 <td>
                     <div class="col-bold">{{ $m->equipo->nombre ?? 'N/A' }}</div>

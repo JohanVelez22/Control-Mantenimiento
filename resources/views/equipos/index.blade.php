@@ -30,7 +30,7 @@
  <th class="w-16 text-center">ID</th>
  <th>Equipo</th>
  <th>Serie</th>
- <th>Cliente</th>
+ <th>Propietario</th>
  <th>Observación</th>
  <th>Registrado por</th>
  <th class="text-center">Estado</th>
@@ -51,11 +51,22 @@
   @if($equipo->cliente)
   <a href="{{ route('clientes.index') }}#cliente-{{ $equipo->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
-  {{ $equipo->cliente->nombre }}
+  👤 {{ $equipo->cliente->nombre }}
   </div>
   @if($equipo->cliente->identificacion)
   <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
   {{ $equipo->cliente->identificacion }}
+  </div>
+  @endif
+  </a>
+  @elseif($equipo->proveedor)
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $equipo->proveedor_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+  <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+  🏢 {{ $equipo->proveedor->nombre_razon_social }}
+  </div>
+  @if($equipo->proveedor->identificacion)
+  <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+  {{ $equipo->proveedor->identificacion }}
   </div>
   @endif
   </a>

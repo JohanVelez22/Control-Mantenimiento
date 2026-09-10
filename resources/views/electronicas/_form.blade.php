@@ -19,7 +19,7 @@
             <option value="">Seleccione un equipo...</option>
             @foreach($equipos as $equipo)
                 <option value="{{ $equipo->id }}" {{ (old('equipo_id', $electronica->equipo_id ?? '') == $equipo->id) ? 'selected' : '' }}>
-                    {{ $equipo->nombre }} ({{ $equipo->marca }} {{ $equipo->modelo }}) • S/N: {{ $equipo->serie }} • Cliente: {{ $equipo->cliente->nombre ?? 'N/A' }}
+                    {{ $equipo->nombre }} ({{ $equipo->marca }} {{ $equipo->modelo }}) • S/N: {{ $equipo->serie }} • {{ $equipo->propietario_label }}
                 </option>
             @endforeach
         </select>

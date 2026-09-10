@@ -32,7 +32,7 @@
                     <th class="w-24 text-left px-4 py-3">Código</th>
                     <th class="text-left px-4 py-3">Tipo</th>
                     <th class="w-[20%] text-left px-4 py-3">Descripción</th>
-                    <th class="text-left px-4 py-3">Cliente</th>
+                    <th class="text-left px-4 py-3">Destinatario</th>
                     <th class="w-32 text-center px-4 py-3">Fecha</th>
                     <th class="w-32 text-center px-4 py-3">Validez</th>
                     <th class="w-32 text-right px-4 py-3">Total</th>
@@ -58,7 +58,15 @@
                     <td data-label="Código" class="font-bold text-slate-600 dark:text-slate-300">{{ $cot->codigo }}</td>
                     <td data-label="Tipo" class="font-bold text-indigo-600 dark:text-indigo-400 text-sm whitespace-nowrap">{{ $tipoStr }}</td>
                     <td data-label="Descripción" class="text-gray-600 dark:text-gray-300 text-xs font-medium max-w-[200px] truncate" title="{{ $descStr }}">{{ $descStr }}</td>
-                    <td data-label="Cliente" class="font-bold text-slate-800 dark:text-white">{{ $cot->cliente->nombre ?? 'N/A' }}</td>
+                    <td data-label="Destinatario" class="font-bold text-slate-800 dark:text-white">
+                        @if($cot->proveedor)
+                            <span title="Proveedor">🏢 {{ $cot->proveedor->nombre_razon_social }}</span>
+                        @elseif($cot->cliente)
+                            <span title="Cliente">👤 {{ $cot->cliente->nombre }}</span>
+                        @else
+                            N/A
+                        @endif
+                    </td>
                     <td data-label="Fecha" class="text-center font-medium">{{ \Carbon\Carbon::parse($cot->fecha)->format('d/m/Y') }}</td>
                     <td data-label="Validez" class="text-center font-medium">{{ $cot->validez_dias }} días</td>
                     <td data-label="Total" class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($cot->total, 0, '', '.') }}</td>

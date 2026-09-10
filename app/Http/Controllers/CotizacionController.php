@@ -8,21 +8,23 @@ class CotizacionController extends Controller
 {
     public function index()
     {
-        $cotizaciones = \App\Models\Cotizacion::with(['cliente', 'user', 'items'])->orderBy('id', 'desc')->paginate(15);
+        $cotizaciones = \App\Models\Cotizacion::with(['cliente', 'proveedor', 'user', 'items'])->orderBy('id', 'desc')->paginate(15);
         return view('cotizaciones.index', compact('cotizaciones'));
     }
 
     public function create()
     {
         $clientes = \App\Models\Cliente::activos()->orderBy('nombres')->get();
+        $proveedores = \App\Models\Proveedor::activos()->orderBy('nombre_razon_social')->get();
         $stocks = \App\Models\Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
-        return view('cotizaciones.create', compact('clientes', 'stocks'));
+        return view('cotizaciones.create', compact('clientes', 'proveedores', 'stocks'));
     }
 
     public function store(\Illuminate\Http\Request $request)
     {
         $request->validate([
-            'cliente_id' => 'required|exists:clientes,id',
+            'facturable_global' => 'nullable|string',
+            'cliente_id' => 'nullable|exists:clientes,id',
             'fecha' => 'required|date',
             'validez_dias' => 'required|integer|min:1',
             'notas' => 'nullable|string',
@@ -33,6 +35,26 @@ class CotizacionController extends Controller
             'items.*.precio_unitario' => 'required|numeric|min:0',
             'items.*.item_id' => 'nullable|exists:stocks,id',
         ]);
+
+        $clienteId = null;
+        $proveedorId = null;
+
+        if ($request->filled('facturable_global')) {
+            $parts = explode(':', $request->facturable_global);
+            if (count($parts) === 2) {
+                if ($parts[0] === 'Proveedor') {
+                    $proveedorId = (int) $parts[1];
+                } else {
+                    $clienteId = (int) $parts[1];
+                }
+            }
+        } elseif ($request->filled('cliente_id')) {
+            $clienteId = (int) $request->cliente_id;
+        }
+
+        if (!$clienteId && !$proveedorId) {
+            return back()->withErrors(['facturable_global' => 'Debe seleccionar un cliente o proveedor destinatario.'])->withInput();
+        }
 
         try {
             \Illuminate\Support\Facades\DB::beginTransaction();
@@ -47,7 +69,8 @@ class CotizacionController extends Controller
 
             $cotizacion = \App\Models\Cotizacion::create([
                 'codigo' => $codigo,
-                'cliente_id' => $request->cliente_id,
+                'cliente_id' => $clienteId,
+                'proveedor_id' => $proveedorId,
                 'fecha' => $request->fecha,
                 'validez_dias' => $request->validez_dias,
                 'total' => $total,
@@ -84,14 +107,26 @@ class CotizacionController extends Controller
         }
 
         $clientes = \App\Models\Cliente::where(function($q) use ($cotizacion) {
-            $q->activos()->orWhere('id', $cotizacion->cliente_id);
+            $q->activos();
+            if ($cotizacion->cliente_id) {
+                $q->orWhere('id', $cotizacion->cliente_id);
+            }
         })->orderBy('nombres')->get();
+
+        $proveedores = \App\Models\Proveedor::where(function($q) use ($cotizacion) {
+            $q->activos();
+            if ($cotizacion->proveedor_id) {
+                $q->orWhere('id', $cotizacion->proveedor_id);
+            }
+        })->orderBy('nombre_razon_social')->get();
+
         $stocks = \App\Models\Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
-        $cotizacion->load('items');
+        $cotizacion->load(['items', 'cliente', 'proveedor']);
         
         return view('cotizaciones.edit', [
             'cotizacion' => $cotizacion,
             'clientes' => $clientes,
+            'proveedores' => $proveedores,
             'stocks' => $stocks,
         ]);
     }
@@ -103,7 +138,8 @@ class CotizacionController extends Controller
         }
 
         $request->validate([
-            'cliente_id' => 'required|exists:clientes,id',
+            'facturable_global' => 'nullable|string',
+            'cliente_id' => 'nullable|exists:clientes,id',
             'fecha' => 'required|date',
             'validez_dias' => 'required|integer|min:1',
             'notas' => 'nullable|string',
@@ -115,6 +151,26 @@ class CotizacionController extends Controller
             'items.*.item_id' => 'nullable|exists:stocks,id',
         ]);
 
+        $clienteId = null;
+        $proveedorId = null;
+
+        if ($request->filled('facturable_global')) {
+            $parts = explode(':', $request->facturable_global);
+            if (count($parts) === 2) {
+                if ($parts[0] === 'Proveedor') {
+                    $proveedorId = (int) $parts[1];
+                } else {
+                    $clienteId = (int) $parts[1];
+                }
+            }
+        } elseif ($request->filled('cliente_id')) {
+            $clienteId = (int) $request->cliente_id;
+        }
+
+        if (!$clienteId && !$proveedorId) {
+            return back()->withErrors(['facturable_global' => 'Debe seleccionar un cliente o proveedor destinatario.'])->withInput();
+        }
+
         try {
             \Illuminate\Support\Facades\DB::beginTransaction();
 
@@ -124,7 +180,8 @@ class CotizacionController extends Controller
             }
 
             $cotizacion->update([
-                'cliente_id' => $request->cliente_id,
+                'cliente_id' => $clienteId,
+                'proveedor_id' => $proveedorId,
                 'fecha' => $request->fecha,
                 'validez_dias' => $request->validez_dias,
                 'total' => $total,
@@ -157,13 +214,13 @@ class CotizacionController extends Controller
 
     public function show(\App\Models\Cotizacion $cotizacion)
     {
-        $cotizacion->load('cliente', 'items.stock', 'user');
+        $cotizacion->load('cliente', 'proveedor', 'items.stock', 'user');
         return view('cotizaciones.show', ['cotizacion' => $cotizacion]);
     }
 
-public function pdf(\App\Models\Cotizacion $cotizacion)
+    public function pdf(\App\Models\Cotizacion $cotizacion)
     {
-        $cotizacion->load('cliente', 'items.stock', 'user');
+        $cotizacion->load('cliente', 'proveedor', 'items.stock', 'user');
         $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('cotizaciones.pdf', compact('cotizacion', 'empresa'));
         $pdf->setPaper('letter');
@@ -248,8 +305,12 @@ public function pdf(\App\Models\Cotizacion $cotizacion)
         return back()->with('success', 'Cotización reactivada correctamente.');
     }
 
-    public function convertir(\App\Models\Cotizacion $cotizacion)
+    public function convertir($cotizacion)
     {
+        if (!$cotizacion instanceof \App\Models\Cotizacion || !$cotizacion->exists) {
+            $cotizacion = \App\Models\Cotizacion::findOrFail($cotizacion);
+        }
+
         if ($cotizacion->anulado) {
             return back()->with('error', 'No se puede convertir una cotización anulada.');
         }
@@ -278,13 +339,17 @@ public function pdf(\App\Models\Cotizacion $cotizacion)
             // 1. Marcar cotización como aprobada
             $cotizacion->update(['estado' => 'aprobada']);
 
+            $facturableId = $cotizacion->proveedor_id ?: $cotizacion->cliente_id;
+            $facturableType = $cotizacion->proveedor_id ? \App\Models\Proveedor::class : \App\Models\Cliente::class;
+            $destinatarioNombre = $cotizacion->destinatario_nombre;
+
             // 2. Crear Factura de Venta
             $factura = \App\Models\Factura::create([
                 'numero_factura'  => \App\Models\Factura::siguienteNumero('VT-'),
                 'tipo_movimiento' => 'venta',
                 'estado'          => 'pendiente_pago',
-                'facturable_id'   => $cotizacion->cliente_id,
-                'facturable_type' => \App\Models\Cliente::class,
+                'facturable_id'   => $facturableId,
+                'facturable_type' => $facturableType,
                 'total_documento' => $cotizacion->total,
                 'total_pagado'    => 0,
                 'observaciones'   => "Venta generada automáticamente desde Cotización #{$cotizacion->codigo}" . ($cotizacion->notas ? "\nNotas: {$cotizacion->notas}" : ''),
@@ -317,7 +382,7 @@ public function pdf(\App\Models\Cotizacion $cotizacion)
                 'tipo_pago'       => 'efectivo',
                 'monto'           => 0,
                 'monto_total'     => (float) $cotizacion->total,
-                'persona'         => $cotizacion->cliente->nombre ?? 'Cliente',
+                'persona'         => $destinatarioNombre ?: 'Cliente / Proveedor',
                 'concepto_id'     => $conceptoVenta->id,
                 'descripcion'     => "Cobro venta #{$factura->numero_factura}",
                 'fecha'           => now()->toDateString(),

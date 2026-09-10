@@ -49,8 +49,10 @@
  {{-- Datos del mantenimiento --}}
  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20">
  <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Cliente</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->equipo->cliente->nombre ?? '-' }}</span>
+ <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
+   {{ $mantenimiento->equipo?->propietario_tipo === 'proveedor' ? '🏢 Proveedor' : '👤 Cliente' }}
+ </span>
+ <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->equipo?->propietario_nombre ?? '-' }}</span>
  </div>
  <div class="min-w-0">
  <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Equipo</span>

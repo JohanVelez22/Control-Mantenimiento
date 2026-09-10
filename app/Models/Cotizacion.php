@@ -14,6 +14,7 @@ class Cotizacion extends Model
     protected $fillable = [
         'codigo',
         'cliente_id',
+        'proveedor_id',
         'fecha',
         'validez_dias',
         'total',
@@ -33,6 +34,53 @@ class Cotizacion extends Model
     public function cliente()
     {
         return $this->belongsTo(Cliente::class);
+    }
+
+    public function proveedor()
+    {
+        return $this->belongsTo(Proveedor::class);
+    }
+
+    public function getDestinatarioAttribute()
+    {
+        return $this->cliente ?? $this->proveedor;
+    }
+
+    public function getDestinatarioTipoAttribute(): string
+    {
+        return $this->proveedor_id ? 'proveedor' : 'cliente';
+    }
+
+    public function getDestinatarioNombreAttribute(): string
+    {
+        if ($this->cliente) {
+            return $this->cliente->nombre;
+        }
+        if ($this->proveedor) {
+            return $this->proveedor->nombre_razon_social;
+        }
+        return 'N/A';
+    }
+
+    public function getDestinatarioIdentificacionAttribute(): string
+    {
+        return $this->cliente?->identificacion ?? $this->proveedor?->identificacion ?? '-';
+    }
+
+    public function getDestinatarioTelefonoAttribute(): string
+    {
+        return $this->cliente?->movil ?? $this->cliente?->telefono ?? $this->proveedor?->telefono ?? '';
+    }
+
+    public function getDestinatarioLabelAttribute(): string
+    {
+        if ($this->proveedor) {
+            return '🏢 ' . $this->proveedor->nombre_razon_social;
+        }
+        if ($this->cliente) {
+            return '👤 ' . $this->cliente->nombre;
+        }
+        return 'N/A';
     }
 
     public function user()

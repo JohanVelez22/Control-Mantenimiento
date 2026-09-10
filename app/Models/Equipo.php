@@ -10,7 +10,7 @@ class Equipo extends Model
     use HasFactory, \App\Traits\Auditable;
     protected $fillable = [
         'nombre', 'marca', 'modelo', 'serie',
-        'observacion', 'user_id', 'cliente_id', 'active'
+        'observacion', 'user_id', 'cliente_id', 'proveedor_id', 'active'
     ];
 
     protected $casts = ['active' => 'boolean'];
@@ -28,6 +28,53 @@ class Equipo extends Model
     public function cliente()
     {
         return $this->belongsTo(Cliente::class);
+    }
+
+    public function proveedor()
+    {
+        return $this->belongsTo(Proveedor::class);
+    }
+
+    public function getPropietarioAttribute()
+    {
+        return $this->cliente ?? $this->proveedor;
+    }
+
+    public function getPropietarioTipoAttribute(): string
+    {
+        return $this->proveedor_id ? 'proveedor' : 'cliente';
+    }
+
+    public function getPropietarioNombreAttribute(): string
+    {
+        if ($this->cliente) {
+            return $this->cliente->nombre;
+        }
+        if ($this->proveedor) {
+            return $this->proveedor->nombre_razon_social;
+        }
+        return 'N/A';
+    }
+
+    public function getPropietarioIdentificacionAttribute(): string
+    {
+        return $this->cliente?->identificacion ?? $this->proveedor?->identificacion ?? '-';
+    }
+
+    public function getPropietarioTelefonoAttribute(): string
+    {
+        return $this->cliente?->movil ?? $this->cliente?->telefono ?? $this->proveedor?->telefono ?? '';
+    }
+
+    public function getPropietarioLabelAttribute(): string
+    {
+        if ($this->proveedor) {
+            return '🏢 Proveedor: ' . $this->proveedor->nombre_razon_social;
+        }
+        if ($this->cliente) {
+            return '👤 Cliente: ' . $this->cliente->nombre;
+        }
+        return 'N/A';
     }
 
     // Nueva relación: Un equipo fue registrado por un usuario

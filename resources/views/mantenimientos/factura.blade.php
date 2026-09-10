@@ -9,8 +9,8 @@
 @section('content')
 <div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
     <div class="info-col">
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Cliente:</strong> <strong>{{ $mantenimiento->equipo->cliente->nombre ?? 'N/A' }}</strong></p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Teléfono:</strong> <strong>{{ $mantenimiento->equipo->cliente->telefono ?? 'N/A' }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>{{ $mantenimiento->equipo?->propietario_tipo === 'proveedor' ? 'Proveedor:' : 'Cliente:' }}</strong> <strong>{{ $mantenimiento->equipo?->propietario_nombre ?? 'N/A' }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Teléfono:</strong> <strong>{{ $mantenimiento->equipo?->propietario_telefono ?: 'N/A' }}</strong></p>
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Técnico:</strong> <strong>{{ $mantenimiento->tecnico->nombre ?? 'N/A' }}</strong></p>
     </div>
     <div class="info-col">

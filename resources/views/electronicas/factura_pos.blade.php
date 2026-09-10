@@ -13,9 +13,9 @@
 @section('content')
 <div class="info-pos">
     <p><strong>Fecha Ingreso:</strong> {{ $electronica->fecha_entrada ? \Carbon\Carbon::parse($electronica->fecha_entrada)->format('d/m/Y') : '—' }}</p>
-    <p><strong>Cliente:</strong> {{ $electronica->equipo->cliente->nombre ?? 'N/A' }}</p>
-    @if(!empty($electronica->equipo->cliente->telefono))
-        <p><strong>Tel:</strong> {{ $electronica->equipo->cliente->telefono }}</p>
+    <p><strong>{{ $electronica->equipo?->propietario_tipo === 'proveedor' ? 'Proveedor:' : 'Cliente:' }}</strong> {{ $electronica->equipo?->propietario_nombre ?? 'N/A' }}</p>
+    @if(!empty($electronica->equipo?->propietario_telefono))
+        <p><strong>Tel:</strong> {{ $electronica->equipo->propietario_telefono }}</p>
     @endif
     <p><strong>Técnico:</strong> {{ $electronica->tecnico->nombre ?? 'N/A' }}</p>
     <p><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $electronica->estado }}</span></p>
