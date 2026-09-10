@@ -1806,6 +1806,25 @@ html.dark .ts-table.table-electronica tbody tr:hover {
   border-bottom: none;
 }
 
+/* Margen inferior holgado y elegante en tarjetas contenedoras de tablas */
+.glass-card:has(.ts-table),
+.glass-card:has(table) {
+  padding-bottom: 30px !important;
+}
+
+.glass-card .overflow-x-auto {
+  padding-bottom: 4px !important;
+  margin-bottom: 0 !important;
+}
+
+/* Ocultar contenedores de paginación vacíos para evitar huecos innecesarios */
+.glass-card div:has(> nav:empty),
+.glass-card .flex:empty {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 html.dark .ts-table tbody td {
   color: #F1F5F9;
   border-bottom-color: rgba(255, 255, 255, 0.06);
@@ -1833,55 +1852,65 @@ html.dark .ts-table tbody td {
   .ts-table.table-dense thead th,
   #tabla-mantenimientos thead th,
   #tabla-electronicas thead th {
-    padding: 10px 6px !important;
-    font-size: 11px !important;
-    letter-spacing: 0.4px !important;
+    padding: 13px 12px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.8px !important;
   }
 
   .ts-table.table-dense tbody td,
   #tabla-mantenimientos tbody td,
   #tabla-electronicas tbody td {
-    padding: 9px 6px !important;
+    padding: 11px 12px !important;
     font-size: 12px !important;
   }
 
-  /* Reducción columna Orden */
+  /* Columna Orden con mayor espacio horizontal */
   .ts-table.table-dense .col-orden,
   #tabla-mantenimientos .col-orden,
   #tabla-electronicas .col-orden {
-    width: 4rem !important;
-    max-width: 4.5rem !important;
-    padding-left: 3px !important;
-    padding-right: 3px !important;
+    width: 4.5rem !important;
+    min-width: 4.5rem !important;
+    max-width: 5.25rem !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
     white-space: nowrap !important;
     text-align: center !important;
   }
 
-  /* Columna Acciones protegida contra desbordes o cortes */
+  /* Columna Acciones con espaciado horizontal protegido y holgado */
   .ts-table.table-dense .col-acciones,
   #tabla-mantenimientos .col-acciones,
   #tabla-electronicas .col-acciones {
-    width: 5.25rem !important;
-    min-width: 5rem !important;
-    max-width: 5.5rem !important;
-    padding-left: 2px !important;
-    padding-right: 4px !important;
+    width: 5.75rem !important;
+    min-width: 5.5rem !important;
+    max-width: 6rem !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
     white-space: nowrap !important;
     text-align: center !important;
   }
 
-  /* Columna Observación con ancho balanceado y truncado dinámico */
+  /* Columna Observación con lectura completa vertical y ancho balanceado */
   .ts-table.table-dense .col-observacion,
   #tabla-mantenimientos .col-observacion,
   #tabla-electronicas .col-observacion {
-    max-width: 150px !important;
+    min-width: 180px !important;
+    max-width: 260px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    vertical-align: middle !important;
   }
 
   @media (min-width: 1440px) {
     .ts-table.table-dense .col-observacion,
     #tabla-mantenimientos .col-observacion,
     #tabla-electronicas .col-observacion {
-      max-width: 200px !important;
+      min-width: 200px !important;
+      max-width: 300px !important;
     }
   }
 }
@@ -3180,6 +3209,180 @@ select.glass-input:not(.tomselected) {
   padding-left: 20px !important;
   padding-right: 20px !important;
 }
+
+/* ==========================================================================
+   MODO COMPACTO Y RESPONSIVO PARA TABLAS DE ÍTEMS EN MÓVIL (< 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Contenedores con scroll táctil suave y min-width protegido */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+    scroll-behavior: smooth !important;
+  }
+
+  #items-table {
+    min-width: 680px !important;
+  }
+
+  /* Encabezados y celdas compactas */
+  #items-table th {
+    font-size: 11px !important;
+    padding: 8px 4px !important;
+  }
+
+  #items-table td {
+    font-size: 12px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  /* Columna Tipo: Reducida a 140px en móvil para ahorrar espacio */
+  #items-table th.col-tipo,
+  #items-table td.col-tipo {
+    width: 140px !important;
+    min-width: 140px !important;
+    max-width: 145px !important;
+    padding-left: 8px !important;
+    padding-right: 4px !important;
+  }
+
+  #items-table .tipo-select,
+  .tipo-select {
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 12px !important;
+    padding: 4px 6px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Inputs generales dentro de la tabla de ítems */
+  #items-table td.desc-cell,
+  #items-table th.col-descripcion {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  #items-table .desc-cell input,
+  #items-table .desc-cell select,
+  #items-table select.stock-select,
+  #items-table input.glass-input,
+  #items-table select.glass-input {
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 12px !important;
+    padding: 4px 6px !important;
+  }
+
+  /* TomSelect dentro de tabla de ítems en móvil */
+  #items-table .ts-wrapper .ts-control,
+  #items-table .ts-control {
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 2px 6px !important;
+    font-size: 12px !important;
+  }
+
+  #items-table .ts-control > input {
+    height: 24px !important;
+    min-height: 24px !important;
+    font-size: 12px !important;
+  }
+
+  #items-table .ts-dropdown .option {
+    padding: 6px 8px !important;
+    font-size: 12px !important;
+  }
+
+  /* Columna Cantidad: Compacta con altura de 32px */
+  #items-table th.col-cantidad,
+  #items-table td.col-cantidad {
+    width: 76px !important;
+    min-width: 76px !important;
+    max-width: 80px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+  }
+
+  .cantidad-input,
+  #items-table .cantidad-input {
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 4px 2px 4px 6px !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Columna Precio: Compacta con altura de 32px */
+  #items-table th.col-precio,
+  #items-table td.col-precio {
+    width: 125px !important;
+    min-width: 120px !important;
+    max-width: 130px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  #items-table .precio-input {
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 4px 6px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Columna Subtotal */
+  #items-table th.col-subtotal,
+  #items-table td.col-subtotal,
+  #items-table td.subtotal-cell,
+  #items-table td.subtotal-display {
+    width: 110px !important;
+    min-width: 105px !important;
+    max-width: 115px !important;
+    font-size: 12.5px !important;
+    padding-right: 6px !important;
+  }
+
+  /* Columna Acción / Botón eliminar compacto 30x30 */
+  #items-table th.col-accion,
+  #items-table td.col-accion {
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 46px !important;
+    padding-left: 2px !important;
+    padding-right: 6px !important;
+  }
+
+  #items-table td:last-child .btn-danger,
+  #items-table td:last-child .btn-icon-danger,
+  #items-table td.col-accion .btn-danger,
+  #items-table td.col-accion .btn-icon-danger {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    max-width: 30px !important;
+    max-height: 30px !important;
+    font-size: 13px !important;
+    border-radius: 8px !important;
+  }
+
+  #items-table .alerta-costo-badge {
+    font-size: 10.5px !important;
+    margin-top: 4px !important;
+    margin-bottom: 2px !important;
+  }
+
+  /* Tfoot Total display en móvil */
+  #items-table tfoot td {
+    padding: 10px 12px !important;
+  }
+
+  #items-table tfoot #total-display {
+    font-size: 1.25rem !important;
+  }
+}
+
 
 /* Ocultar el icono de calendario nativo de Chrome para evitar salto visual */
 input[type="date"]:not(.flatpickr-input)::-webkit-calendar-picker-indicator {

@@ -8,11 +8,11 @@ use App\Models\Cliente;
 use App\Models\Proveedor;
 use App\Models\Equipo;
 use App\Models\Cotizacion;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CotizacionProveedorTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected User $admin;
     protected Cliente $cliente;
@@ -43,7 +43,7 @@ class CotizacionProveedorTest extends TestCase
             [
                 'nombre_razon_social' => 'Distribuciones Alfa SAS',
                 'tipo_entidad' => 'empresa',
-                'tipo_identificacion' => 'NIT',
+                'tipo_identificacion' => 'nit',
                 'telefono' => '3109876543',
                 'active' => true,
             ]

@@ -98,9 +98,11 @@
  </tbody>
  </table>
  </div>
- <div class="mt-6 flex justify-end">
- {{ $tecnicos->appends(request()->query())->links() }}
- </div>
+  @if($tecnicos->hasPages())
+  <div class="mt-5 flex justify-end">
+  {{ $tecnicos->appends(request()->query())->links() }}
+  </div>
+  @endif
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-tecnicos', 'tabla-tecnicos'));</script>
 @endsection

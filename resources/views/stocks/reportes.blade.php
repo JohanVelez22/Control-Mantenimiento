@@ -228,9 +228,11 @@
             @endif
         </table>
     </div>
-    <div class="mt-4 no-print">
+    @if($stocks->hasPages())
+    <div class="mt-5 no-print">
         {{ $stocks->appends(request()->query())->links() }}
     </div>
+    @endif
 </div>
 
 <style>

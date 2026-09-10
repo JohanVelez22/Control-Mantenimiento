@@ -11,11 +11,11 @@ use App\Models\Equipo;
 use App\Models\BajaStock;
 use App\Models\MovimientoCaja;
 use App\Services\StockService;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BajaStockYEquipoTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected User $admin;
     protected Stock $stock;

@@ -141,9 +141,11 @@
   </table>
   </div>
 
-  <div class="mt-6 flex justify-end">
+  @if($stocks->hasPages())
+  <div class="mt-5 flex justify-end">
   {{ $stocks->appends(request()->query())->links() }}
   </div>
+  @endif
 </div>
 
 <!-- MODAL DAR DE BAJA UNIDADES (Simétrico al Modal de Notificaciones) -->

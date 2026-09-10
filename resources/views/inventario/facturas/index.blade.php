@@ -186,9 +186,11 @@
  </table>
  </div>
  
- <div class="mt-6 flex justify-end">
- {{ $facturas->appends(request()->query())->links() }}
- </div>
+  @if($facturas->hasPages())
+  <div class="mt-5 flex justify-end">
+  {{ $facturas->appends(request()->query())->links() }}
+  </div>
+  @endif
 </div>
 
 <script>

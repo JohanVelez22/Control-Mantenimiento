@@ -164,9 +164,11 @@
             </table>
         </div>
 
-        <div class="mt-6 flex justify-end">
+        @if($eventos->hasPages())
+        <div class="mt-5 flex justify-end">
             {{ $eventos->links() }}
         </div>
+        @endif
     </div>
 </div>
 

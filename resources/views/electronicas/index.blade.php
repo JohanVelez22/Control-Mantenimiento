@@ -104,7 +104,7 @@
   </td>
   
   <td data-label="Observación:" class="col-observacion {{ $dim }}">
-  <p class="text-xs text-gray-600 dark:text-gray-400 whitespace-normal break-words leading-relaxed font-medium line-clamp-2" title="{{ $e->descripcion_problema }}">
+  <p class="text-xs text-gray-600 dark:text-gray-400 whitespace-normal break-words leading-relaxed font-medium" title="{{ $e->descripcion_problema }}">
   {{ $e->descripcion_problema }}
   </p>
   </td>
@@ -203,9 +203,11 @@
   </table>
   </div>
 
-  <div class="mt-6 flex justify-end">
+  @if($electronicas->hasPages())
+  <div class="mt-5 flex justify-end">
   {{ $electronicas->appends(request()->query())->links() }}
   </div>
+  @endif
 </div>
 <script>
   document.addEventListener('DOMContentLoaded', () => {

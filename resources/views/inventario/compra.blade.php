@@ -45,11 +45,11 @@
 
  {{-- Tabla de ítems --}}
  <div>
- <div class="flex justify-between items-center mb-5">
+ <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-5">
  <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
  <span>🏷️</span> Artículos Comprados
  </h3>
- <button type="button" onclick="agregarFila()" class="btn-clean">
+ <button type="button" onclick="agregarFila()" class="btn-clean w-full sm:w-auto justify-center">
  ➕ Agregar artículo
  </button>
  </div>
@@ -125,9 +125,9 @@
  <textarea name="observaciones" rows="2" class="glass-input resize-y focus:ring-orange-500" placeholder="Notas sobre la compra..."></textarea>
  </div>
 
- <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
- <a href="{{ route('inventario.facturas') }}" class="btn-cancel">↩️ Cancelar</a>
- <button type="submit" class="btn-compra">
+ <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+ <a href="{{ route('inventario.facturas') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">↩️ Cancelar</a>
+ <button type="submit" class="btn-compra w-full sm:w-auto justify-center">
  📦 Procesar Compra y Afectar Inventario
  </button>
  </div>

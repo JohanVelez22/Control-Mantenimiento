@@ -107,7 +107,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-4 flex justify-between items-center p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
+                <div class="mt-4 flex flex-col sm:flex-row justify-between sm:items-center gap-2 p-4 sm:p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
                     <span class="font-bold text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">Nuevo Total Documento:</span>
                     <span class="text-2xl font-black text-blue-600 dark:text-blue-400" id="total_documento_display">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>
                 </div>
@@ -153,9 +153,9 @@
             </div>
         @endif
 
-        <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-            <a href="{{ route('inventario.facturas') }}" class="btn-cancel">↩️ Cancelar</a>
-            <button type="submit" class="btn-save">💾 Guardar Cambios</button>
+        <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+            <a href="{{ route('inventario.facturas') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">↩️ Cancelar</a>
+            <button type="submit" class="btn-save w-full sm:w-auto justify-center">💾 Guardar Cambios</button>
         </div>
     </form>
     </div>

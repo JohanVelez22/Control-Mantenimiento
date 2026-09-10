@@ -101,7 +101,7 @@
   </td>
   
   <td class="col-observacion {{ $dim }}">
-  <p class="text-xs text-gray-600 dark:text-gray-400 whitespace-normal break-words leading-relaxed font-medium line-clamp-2" title="{{ $m->descripcion }}">
+  <p class="text-xs text-gray-600 dark:text-gray-400 whitespace-normal break-words leading-relaxed font-medium" title="{{ $m->descripcion }}">
   {{ $m->descripcion ?? '-' }}
   </p>
   </td>
@@ -201,9 +201,11 @@
   </tbody>
   </table>
   </div>
-  <div class="mt-6 flex justify-end">
+  @if($mantenimientos->hasPages())
+  <div class="mt-5 flex justify-end">
   {{ $mantenimientos->appends(request()->query())->links() }}
   </div>
+  @endif
 </div>
 
 <script>

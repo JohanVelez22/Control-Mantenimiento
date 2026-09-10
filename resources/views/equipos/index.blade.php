@@ -150,9 +150,11 @@
   </tbody>
   </table>
   </div>
-  <div class="mt-6 flex justify-end">
+  @if($equipos->hasPages())
+  <div class="mt-5 flex justify-end">
   {{ $equipos->appends(request()->query())->links() }}
   </div>
+  @endif
 </div>
 
 <!-- MODAL DAR DE BAJA EQUIPO (Simétrico al Modal de Notificaciones) -->

@@ -102,9 +102,11 @@
  </tbody>
  </table>
  </div>
- <div class="mt-6 flex justify-end">
- {{ $users->appends(request()->query())->links() }}
- </div>
+  @if($users->hasPages())
+  <div class="mt-5 flex justify-end">
+  {{ $users->appends(request()->query())->links() }}
+  </div>
+  @endif
 </div>
 
 {{-- Modal Detalle de Usuario (Homogéneo Claro / Oscuro) --}}

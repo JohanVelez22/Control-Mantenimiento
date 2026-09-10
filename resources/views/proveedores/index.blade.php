@@ -92,9 +92,11 @@
  </table>
  </div>
 
- <div class="mt-6 flex justify-end">
- {{ $proveedores->appends(request()->query())->links() }}
- </div>
+  @if($proveedores->hasPages())
+  <div class="mt-5 flex justify-end">
+  {{ $proveedores->appends(request()->query())->links() }}
+  </div>
+  @endif
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-proveedores', 'tabla-proveedores'));</script>
 @endsection

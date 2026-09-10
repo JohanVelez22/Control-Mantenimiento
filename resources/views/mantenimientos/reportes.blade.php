@@ -263,9 +263,11 @@
  @endif
  </table>
  </div>
- <div class="mt-4 no-print">
-  {{ $mantenimientos->appends(request()->query())->links() }}
- </div>
+  @if($mantenimientos->hasPages())
+  <div class="mt-5 no-print">
+   {{ $mantenimientos->appends(request()->query())->links() }}
+  </div>
+  @endif
 </div>
 
 <style>

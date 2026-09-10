@@ -48,11 +48,11 @@
 
             {{-- Tabla de ítems --}}
             <div>
-                <div class="flex justify-between items-center mb-5">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-5">
                     <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
                         <span>🛍️</span> Ítems a Cotizar
                     </h3>
-                    <button type="button" onclick="agregarFila()" class="btn-clean">
+                    <button type="button" onclick="agregarFila()" class="btn-clean w-full sm:w-auto justify-center">
                         ➕ Agregar línea
                     </button>
                 </div>
@@ -91,9 +91,9 @@
                 <textarea name="notas" rows="3" class="glass-input resize-y focus:ring-blue-500" placeholder="Ej: Precios sujetos a cambio sin previo aviso. Tiempo estimado de entrega: 3 días hábiles."></textarea>
             </div>
 
-            <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-                <a href="{{ route('cotizaciones.index') }}" class="btn-cancel">↩️ Cancelar</a>
-                <button type="submit" class="btn-save">
+            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+                <a href="{{ route('cotizaciones.index') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">↩️ Cancelar</a>
+                <button type="submit" class="btn-save w-full sm:w-auto justify-center">
                     💾 Guardar Cotización
                 </button>
             </div>

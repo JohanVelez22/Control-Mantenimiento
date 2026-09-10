@@ -157,9 +157,11 @@
   </tbody>
   </table>
   </div>
-  <div class="mt-6 flex justify-end">
+  @if($transacciones->hasPages())
+  <div class="mt-5 flex justify-end">
   {{ $transacciones->appends(request()->query())->links() }}
   </div>
+  @endif
   @endif
   </div>
  

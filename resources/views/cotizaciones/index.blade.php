@@ -124,9 +124,11 @@
             </tbody>
         </table>
     </div>
-    <div class="mt-6 flex justify-end">
+    @if($cotizaciones->hasPages())
+    <div class="mt-5 flex justify-end">
         {{ $cotizaciones->appends(request()->query())->links() }}
     </div>
+    @endif
 </div>
 
 <script>

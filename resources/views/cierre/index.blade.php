@@ -261,9 +261,11 @@
             </table>
         </div>
 
-        <div class="mt-6 flex justify-end">
+        @if($cierres->hasPages())
+        <div class="mt-5 flex justify-end">
             {{ $cierres->links() }}
         </div>
+        @endif
     </div>
 </div>
 

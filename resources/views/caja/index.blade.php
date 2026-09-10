@@ -219,9 +219,11 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
  </table>
  </div>
 
- <div class="mt-6 flex justify-end">
- {{ $movimientos->appends(request()->query())->links() }}
- </div>
+  @if($movimientos->hasPages())
+  <div class="mt-5 flex justify-end">
+  {{ $movimientos->appends(request()->query())->links() }}
+  </div>
+  @endif
  </div>
 </div>
 

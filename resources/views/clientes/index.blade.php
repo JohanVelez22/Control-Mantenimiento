@@ -90,9 +90,11 @@
  </tbody>
  </table>
  </div>
- <div class="mt-6 flex justify-end">
- {{ $clientes->appends(request()->query())->links() }}
- </div>
+  @if($clientes->hasPages())
+  <div class="mt-5 flex justify-end">
+  {{ $clientes->appends(request()->query())->links() }}
+  </div>
+  @endif
 </div>
 <script>document.addEventListener('DOMContentLoaded', () => filterTable('search-clientes', 'tabla-clientes'));</script>
 @endsection

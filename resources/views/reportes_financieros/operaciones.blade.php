@@ -276,9 +276,11 @@
  </tfoot>
  </table>
  </div>
- <div class="mt-6 flex justify-end">
-  {{ $registros->appends(request()->query())->links() }}
+  @if($registros->hasPages())
+  <div class="mt-5 flex justify-end">
+   {{ $registros->appends(request()->query())->links() }}
   </div>
+  @endif
   @endif
   @endif
 </div>
