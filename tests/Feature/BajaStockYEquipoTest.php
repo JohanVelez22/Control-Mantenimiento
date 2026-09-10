@@ -231,4 +231,70 @@ class BajaStockYEquipoTest extends TestCase
         $this->assertEquals(10, $this->stock->cantidad);
         $this->assertDatabaseMissing('bajas_stock', ['id' => $baja->id]);
     }
+
+    public function test_admin_puede_dar_de_baja_y_revertir_sin_password()
+    {
+        $this->actingAs($this->admin);
+
+        // 1. Dar de baja sin password_confirm
+        $response = $this->post(route('stocks.dar-de-baja', $this->stock->id), [
+            'cantidad'    => 2,
+            'motivo'      => 'obsoleto',
+            'observacion' => 'Baja directa por admin sin clave',
+        ]);
+
+        $response->assertSessionHas('success');
+        $this->stock->refresh();
+        $this->assertEquals(8, $this->stock->cantidad);
+
+        $baja = BajaStock::where('stock_id', $this->stock->id)->first();
+        $this->assertNotNull($baja);
+
+        // 2. Revertir sin password_confirm
+        $responseRevertir = $this->post(route('stocks.bajas.revertir', $baja->id), []);
+        $responseRevertir->assertSessionHas('success');
+        $this->stock->refresh();
+        $this->assertEquals(10, $this->stock->cantidad);
+    }
+
+    public function test_tecnico_requiere_password_de_administrador_para_dar_de_baja()
+    {
+        $tecnico = User::create([
+            'name'     => 'Tecnico Test',
+            'email'    => 'tecnico_baja_test_' . uniqid() . '@tecnisystemas.com',
+            'password' => bcrypt('Tecnico123*'),
+            'role'     => 'tecnico',
+            'active'   => true,
+        ]);
+
+        $this->actingAs($tecnico);
+
+        // Intento 1: Sin clave -> Falla
+        $responseSinClave = $this->post(route('stocks.dar-de-baja', $this->stock->id), [
+            'cantidad'    => 1,
+            'motivo'      => 'dano_taller',
+            'observacion' => 'Intento sin clave',
+        ]);
+        $responseSinClave->assertSessionHas('error');
+
+        // Intento 2: Con su propia clave de técnico (no de admin) -> Falla
+        $responseClaveTecnico = $this->post(route('stocks.dar-de-baja', $this->stock->id), [
+            'cantidad'         => 1,
+            'motivo'           => 'dano_taller',
+            'observacion'      => 'Intento con clave incorrecta',
+            'password_confirm' => 'Tecnico123*',
+        ]);
+        $responseClaveTecnico->assertSessionHas('error');
+
+        // Intento 3: Con clave válida de administrador -> Éxito
+        $responseClaveAdmin = $this->post(route('stocks.dar-de-baja', $this->stock->id), [
+            'cantidad'         => 1,
+            'motivo'           => 'dano_taller',
+            'observacion'      => 'Intento con clave admin',
+            'password_confirm' => 'Admin123*',
+        ]);
+        $responseClaveAdmin->assertSessionHas('success');
+        $this->stock->refresh();
+        $this->assertEquals(9, $this->stock->cantidad);
+    }
 }

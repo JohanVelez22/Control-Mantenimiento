@@ -15,13 +15,19 @@
                     </div>
                     <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar / Desbloquear Cierre</h3>
                     <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
-                        Esta acción desbloqueará el día {{ $cierre->fecha->format('d/m/Y') }}. Ingresa tu contraseña o la del administrador.
+                        @if(auth()->check() && auth()->user()->isTecnico())
+                            Esta acción desbloqueará el día {{ $cierre->fecha->format('d/m/Y') }}. Ingresa la contraseña de un administrador.
+                        @else
+                            ¿Estás seguro de eliminar este cierre? Esta acción desbloqueará el día {{ $cierre->fecha->format('d/m/Y') }}.
+                        @endif
                     </p>
                     <form id="delete-cierre-form" action="{{ route('cierre.destroy', $cierre->id) }}" method="POST" class="space-y-4">
                         @csrf @method('DELETE')
+                        @if(auth()->check() && auth()->user()->isTecnico())
                         <div>
-                            <input type="password" name="password_confirm" id="pwd-cierre-input" required placeholder="Contraseña..." class="glass-input text-center tracking-widest text-lg">
+                            <input type="password" name="password_confirm" id="pwd-cierre-input" required placeholder="Contraseña de Administrador..." class="glass-input text-center tracking-widest text-lg">
                         </div>
+                        @endif
                         <div class="flex gap-3 pt-2">
                             <button type="button" onclick="closeCierrePwd()" class="flex-1 btn-ghost justify-center">Cancelar</button>
                             <button type="submit" class="flex-1 btn-danger justify-center font-bold">Eliminar Cierre</button>
@@ -205,11 +211,13 @@
     function openCierrePwd() {
         const modal = document.getElementById('pwd-cierre-modal');
         const card = document.getElementById('pwd-cierre-card');
+        const input = document.getElementById('pwd-cierre-input');
+        if (input) input.value = '';
         modal.classList.remove('hidden');
         setTimeout(() => {
             modal.classList.remove('opacity-0');
             card.classList.remove('scale-95', 'opacity-0');
-            document.getElementById('pwd-cierre-input').focus();
+            if (input) input.focus();
         }, 10);
     }
     

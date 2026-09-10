@@ -229,19 +229,8 @@ class CotizacionController extends Controller
 
     public function anular(\Illuminate\Http\Request $request, \App\Models\Cotizacion $cotizacion)
     {
-        // El modal global usa 'password_confirm'; tecnico requiere contraseña de admin.
-        $password = $request->input('admin_password') ?? $request->input('password_confirm');
-
-        if (auth()->user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required_without:password_confirm']);
-            if (!$password || !app(\App\Services\AnulacionService::class)->adminPasswordValida($password)) {
-                return back()->with('error', 'Se requiere la contraseña de un administrador para anular.')->withInput();
-            }
-        } else {
-            $request->validate(['password_confirm' => 'required_without:admin_password']);
-            if (!$password || !app(\App\Services\AnulacionService::class)->passwordValida($password)) {
-                return back()->with('error', 'Contraseña incorrecta.');
-            }
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return back()->with('error', $error)->withInput();
         }
 
         try {
@@ -283,19 +272,8 @@ class CotizacionController extends Controller
             return back()->with('error', 'Solo las cotizaciones rechazadas pueden ser reactivadas.');
         }
 
-        // El modal global usa 'password_confirm'; tecnico requiere contraseña de admin.
-        $password = $request->input('admin_password') ?? $request->input('password_confirm');
-
-        if (auth()->user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required_without:password_confirm']);
-            if (!$password || !app(\App\Services\AnulacionService::class)->adminPasswordValida($password)) {
-                return back()->with('error', 'Se requiere la contraseña de un administrador para reactivar.')->withInput();
-            }
-        } else {
-            $request->validate(['password_confirm' => 'required_without:admin_password']);
-            if (!$password || !app(\App\Services\AnulacionService::class)->passwordValida($password)) {
-                return back()->with('error', 'Contraseña incorrecta.');
-            }
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return back()->with('error', $error)->withInput();
         }
 
         $cotizacion->anulado = false;

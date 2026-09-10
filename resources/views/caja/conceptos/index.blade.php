@@ -12,13 +12,19 @@
             </div>
             <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Concepto</h3>
             <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
-                Ingresa tu contraseña o la del administrador para confirmar la eliminación.
+                @if(auth()->check() && auth()->user()->isTecnico())
+                    Ingresa la contraseña de un administrador para confirmar la eliminación.
+                @else
+                    ¿Estás seguro de que deseas eliminar este concepto de caja? Esta acción no se puede deshacer.
+                @endif
             </p>
             <form id="delete-form" method="POST" class="space-y-4">
                 @csrf @method('DELETE')
+                @if(auth()->check() && auth()->user()->isTecnico())
                 <div>
-                    <input type="password" name="password_confirm" id="pwd-delete-input" required placeholder="Contraseña..." class="glass-input text-center tracking-widest text-lg">
+                    <input type="password" name="password_confirm" id="pwd-delete-input" required placeholder="Contraseña de Administrador..." class="glass-input text-center tracking-widest text-lg">
                 </div>
+                @endif
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="closeDeletePwd()" class="flex-1 btn-ghost justify-center">Cancelar</button>
                     <button type="submit" class="flex-1 btn-danger justify-center font-bold">Eliminar</button>
@@ -32,13 +38,14 @@
     function openDeletePwd(url) {
         const modal = document.getElementById('pwd-delete-modal');
         const card = document.getElementById('pwd-delete-card');
+        const input = document.getElementById('pwd-delete-input');
         document.getElementById('delete-form').action = url;
-        document.getElementById('pwd-delete-input').value = '';
+        if (input) input.value = '';
         modal.classList.remove('hidden');
         setTimeout(() => {
             modal.classList.remove('opacity-0');
             card.classList.remove('scale-95', 'opacity-0');
-            document.getElementById('pwd-delete-input').focus();
+            if (input) input.focus();
         }, 10);
     }
     

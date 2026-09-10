@@ -47,12 +47,8 @@ class CategoriaStockController extends Controller
 
     public function destroy(Request $request, CategoriaStock $categoria)
     {
-        if (auth()->user()->role === 'invitado') {
-            return redirect()->back()->with('error', 'No tienes permisos.');
-        }
-
-        if (!\Illuminate\Support\Facades\Hash::check($request->password_confirm, auth()->user()->password) && !\Illuminate\Support\Facades\Hash::check($request->password_confirm, \App\Models\User::where('role', 'admin')->first()->password ?? '')) {
-            return redirect()->back()->with('error', 'Contraseña incorrecta.');
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         $categoria->delete();

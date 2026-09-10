@@ -73,20 +73,11 @@ class CierreCajaController extends Controller
         });
     }
 
-    /** Eliminar cierre — requiere contraseña */
+    /** Eliminar cierre — requiere autorización sensible (admin directo, técnico con clave admin) */
     public function destroy(Request $request, CierreCaja $cierre)
     {
-        $request->validate(['password_confirm' => 'required|string']);
-
-        $currentUser = auth()->user();
-        $ok = Hash::check($request->password_confirm, $currentUser->password);
-        if (!$ok) {
-            $ok = User::where('role', 'admin')->where('active', true)->get()
-                      ->contains(fn($a) => Hash::check($request->password_confirm, $a->password));
-        }
-
-        if (!$ok) {
-            return back()->with('error', 'Contraseña incorrecta. El cierre no fue eliminado.');
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return back()->with('error', $error)->withInput();
         }
 
         $cierre->delete();

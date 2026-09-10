@@ -225,26 +225,8 @@ class StockController extends Controller
 
     public function anular(\Illuminate\Http\Request $request, Stock $stock)
     {
-        if (\Illuminate\Support\Facades\Auth::user()->role === 'invitado') {
-            return redirect()->back()->with('error', 'No tienes permisos para realizar esta acción.');
-        }
-
-        $password = $request->input('admin_password') ?? $request->input('password_confirm');
-        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
-
-        if (\Illuminate\Support\Facades\Auth::user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
-                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador.')->withInput();
-            }
-        } else {
-            $request->validate(['password_confirm' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
-                return redirect()->back()->with('error', 'Contraseña incorrecta.');
-            }
-        }
-        if (auth()->user()->role === 'invitado') {
-            return redirect()->route('stocks.index')->with('error', 'No tienes permisos para realizar esta acción.');
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         // Alterna el estado activo
@@ -261,23 +243,8 @@ class StockController extends Controller
             $stock = Stock::findOrFail($request->route('stock'));
         }
 
-        if (\Illuminate\Support\Facades\Auth::user()->role === 'invitado') {
-            return redirect()->back()->with('error', 'No tienes permisos para realizar esta acción.');
-        }
-
-        $password = $request->input('admin_password') ?? $request->input('password_confirm');
-        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
-
-        if (\Illuminate\Support\Facades\Auth::user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
-                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para autorizar la baja de inventario.')->withInput();
-            }
-        } else {
-            $request->validate(['password_confirm' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
-                return redirect()->back()->with('error', 'Contraseña incorrecta.')->withInput();
-            }
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         $validated = $request->validate([
@@ -313,23 +280,8 @@ class StockController extends Controller
             $bajaStock = \App\Models\BajaStock::findOrFail($request->route('bajaStock'));
         }
 
-        if (\Illuminate\Support\Facades\Auth::user()->role === 'invitado') {
-            return redirect()->back()->with('error', 'No tienes permisos para realizar esta acción.');
-        }
-
-        $password = $request->input('admin_password') ?? $request->input('password_confirm');
-        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
-
-        if (\Illuminate\Support\Facades\Auth::user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
-                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para revertir la baja.')->withInput();
-            }
-        } else {
-            $request->validate(['password_confirm' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
-                return redirect()->back()->with('error', 'Contraseña incorrecta.')->withInput();
-            }
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         $stock = $bajaStock->stock;

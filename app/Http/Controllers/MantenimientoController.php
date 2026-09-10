@@ -296,26 +296,8 @@ class MantenimientoController extends Controller
 
     public function anular(Request $request, Mantenimiento $mantenimiento)
     {
-        if (Auth::user()->role === 'invitado') {
-            return redirect()->back()->with('error', 'No tienes permisos para anular.');
-        }
-
-        // El modal global usa 'password_confirm'; tecnico requiere contraseña de admin.
-        // Aceptamos ambos nombres de campo para compatibilidad.
-        $password = $request->input('admin_password') ?? $request->input('password_confirm');
-        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
-
-        // Técnico requiere contraseña de admin; admin usa su propia o la de admin.
-        if (Auth::user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
-                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para anular.')->withInput();
-            }
-        } else {
-            $request->validate(['password_confirm' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
-                return redirect()->back()->with('error', 'Contraseña incorrecta.');
-            }
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         try {

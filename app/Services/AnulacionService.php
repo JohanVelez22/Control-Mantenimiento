@@ -61,6 +61,43 @@ class AnulacionService
     }
 
     /**
+     * Valida la autorización para operaciones críticas (anular, reactivar, dar de baja, revertir, eliminar):
+     * - Si el usuario es 'admin': autoriza sin requerir contraseña (retorna null).
+     * - Si el usuario es 'tecnico': exige y valida contraseña de un administrador activo.
+     * - Si es 'invitado' o no autenticado: deniega la acción.
+     *
+     * @return string|null Mensaje de error si no está autorizado, o null si la operación es permitida.
+     */
+    public function autorizarOperacionSensible(\Illuminate\Http\Request $request): ?string
+    {
+        $user = Auth::user();
+        if (!$user || $user->isInvitado()) {
+            return 'No tienes permisos para realizar esta acción.';
+        }
+
+        // El Administrador está exento de ingresar contraseña
+        if ($user->isAdmin()) {
+            return null;
+        }
+
+        // El Técnico debe ingresar obligatoriamente la clave de un administrador
+        if ($user->isTecnico()) {
+            $password = $request->input('admin_password') ?? $request->input('password_confirm');
+            if (empty($password)) {
+                return 'Se requiere la contraseña de un administrador para autorizar esta operación.';
+            }
+
+            if (!$this->adminPasswordValida($password)) {
+                return 'Contraseña de administrador incorrecta.';
+            }
+
+            return null;
+        }
+
+        return 'Rol no autorizado para realizar esta operación.';
+    }
+
+    /**
      * Revierte (anulación) o restaura (reactivación) stock y abonos en caja de forma atómica.
      *
      * @param \Illuminate\Database\Eloquent\Model $documento Modelo con relaciones 'stocks' (pivot cantidad) y 'abonos'.

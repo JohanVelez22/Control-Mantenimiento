@@ -1271,6 +1271,112 @@ html.dark .btn-ghost.text-blue-400:hover {
   background: rgba(37, 99, 235, 0.20) !important;
 }
 
+/* ---- Botones Ghost con Tonalidades Específicas (Liquid Glass) ---- */
+.btn-ghost-amber {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 10px 16px !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  color: #D97706 !important;
+  background: rgba(217, 119, 6, 0.10) !important;
+  border: 1px solid rgba(217, 119, 6, 0.30) !important;
+  transition: all 0.22s ease !important;
+}
+
+.btn-ghost-amber:hover {
+  background: rgba(217, 119, 6, 0.20) !important;
+  border-color: rgba(217, 119, 6, 0.55) !important;
+  color: #B45309 !important;
+}
+
+html.dark .btn-ghost-amber {
+  color: #FBBF24 !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+}
+
+html.dark .btn-ghost-amber:hover {
+  background: rgba(245, 158, 11, 0.24) !important;
+  border-color: rgba(245, 158, 11, 0.60) !important;
+  color: #FDE68A !important;
+}
+
+.btn-ghost-red {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 10px 16px !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  color: #DC2626 !important;
+  background: rgba(220, 38, 38, 0.08) !important;
+  border: 1px solid rgba(220, 38, 38, 0.25) !important;
+  transition: all 0.22s ease !important;
+}
+
+.btn-ghost-red:hover {
+  background: rgba(220, 38, 38, 0.18) !important;
+  border-color: rgba(220, 38, 38, 0.50) !important;
+  color: #B91C1C !important;
+}
+
+html.dark .btn-ghost-red {
+  color: #F87171 !important;
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(248, 113, 113, 0.35) !important;
+}
+
+html.dark .btn-ghost-red:hover {
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(248, 113, 113, 0.60) !important;
+  color: #FECACA !important;
+}
+
+.btn-ghost-emerald {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 10px 16px !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  color: #059669 !important;
+  background: rgba(16, 185, 129, 0.10) !important;
+  border: 1px solid rgba(16, 185, 129, 0.30) !important;
+  transition: all 0.22s ease !important;
+}
+
+.btn-ghost-emerald:hover {
+  background: rgba(16, 185, 129, 0.20) !important;
+  border-color: rgba(16, 185, 129, 0.55) !important;
+  color: #047857 !important;
+}
+
+html.dark .btn-ghost-emerald {
+  color: #34D399 !important;
+  background: rgba(16, 185, 129, 0.14) !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+html.dark .btn-ghost-emerald:hover {
+  background: rgba(16, 185, 129, 0.25) !important;
+  border-color: rgba(52, 211, 153, 0.60) !important;
+  color: #A7F3D0 !important;
+}
+
 .modal-divider {
   border-color: rgba(0, 0, 0, 0.08) !important;
 }

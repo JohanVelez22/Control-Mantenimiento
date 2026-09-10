@@ -199,16 +199,14 @@
                         <textarea name="observacion" id="baja-stock-observacion" rows="2" placeholder="Detalla la falla o circunstancia..." class="glass-input text-xs w-full"></textarea>
                     </div>
 
+                    @if(auth()->user()->isTecnico())
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                            @if(auth()->user()->isTecnico())
-                                Contraseña de Administrador:
-                            @else
-                                Contraseña de Confirmación:
-                            @endif
+                            Contraseña de Administrador:
                         </label>
                         <input type="password" name="password_confirm" required placeholder="••••••••" class="glass-input text-center tracking-widest text-sm w-full">
                     </div>
+                    @endif
                 </div>
             </div>
 
@@ -216,7 +214,7 @@
                 <button type="button" onclick="closeBajaStockModal()" class="flex-1 btn-ghost border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
                     Cancelar
                 </button>
-                <button type="submit" class="flex-1 btn-ghost border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                <button type="submit" class="flex-1 btn-ghost border-violet-500/30 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
                     📉 Confirmar Baja
                 </button>
             </div>

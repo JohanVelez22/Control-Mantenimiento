@@ -207,16 +207,14 @@
                         <textarea name="observacion_baja" id="baja-equipo-observacion" rows="2" placeholder="Describe la causa técnica del descarte..." class="glass-input text-xs w-full"></textarea>
                     </div>
 
+                    @if(auth()->user()->isTecnico())
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                            @if(auth()->user()->isTecnico())
-                                Contraseña de Administrador:
-                            @else
-                                Contraseña de Confirmación:
-                            @endif
+                            Contraseña de Administrador:
                         </label>
                         <input type="password" name="password_confirm" required placeholder="••••••••" class="glass-input text-center tracking-widest text-sm w-full">
                     </div>
+                    @endif
                 </div>
             </div>
 

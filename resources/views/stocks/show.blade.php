@@ -310,16 +310,14 @@
                         <textarea name="observacion" id="baja-stock-observacion" rows="2" placeholder="Detalla la falla o circunstancia..." class="glass-input text-xs w-full"></textarea>
                     </div>
 
+                    @if(auth()->user()->isTecnico())
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                            @if(auth()->user()->isTecnico())
-                                Contraseña de Administrador:
-                            @else
-                                Contraseña de Confirmación:
-                            @endif
+                            Contraseña de Administrador:
                         </label>
                         <input type="password" name="password_confirm" required placeholder="••••••••" class="glass-input text-center tracking-widest text-sm w-full">
                     </div>
+                    @endif
                 </div>
             </div>
 
@@ -367,18 +365,16 @@
                     </div>
                 </div>
 
+                @if(auth()->user()->isTecnico())
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                            @if(auth()->user()->isTecnico())
-                                Contraseña de Administrador:
-                            @else
-                                Contraseña de Confirmación:
-                            @endif
+                            Contraseña de Administrador:
                         </label>
                         <input type="password" name="password_confirm" id="revertir-baja-password" required placeholder="••••••••" class="glass-input text-center tracking-widest text-sm w-full">
                     </div>
                 </div>
+                @endif
             </div>
 
             <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 w-full modal-divider">
@@ -469,13 +465,13 @@ function openRevertirBajaModal(actionUrl, cantidad, producto) {
     form.action = actionUrl;
     prodEl.textContent = producto;
     badgeEl.textContent = '+' + cantidad + (cantidad === 1 ? ' unidad' : ' unidades');
-    passInput.value = '';
+    if (passInput) passInput.value = '';
 
     modal.classList.remove('hidden');
     setTimeout(() => {
         modal.classList.remove('opacity-0');
         card.classList.remove('scale-95', 'opacity-0');
-        passInput.focus();
+        if (passInput) passInput.focus();
     }, 10);
 }
 

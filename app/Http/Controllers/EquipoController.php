@@ -139,23 +139,8 @@ class EquipoController extends Controller
 
     public function anular(\Illuminate\Http\Request $request, Equipo $equipo)
     {
-        if (\Illuminate\Support\Facades\Auth::user()->role === 'invitado') {
-            return redirect()->back()->with('error', 'No tienes permisos para realizar esta acción.');
-        }
-
-        $password = $request->input('admin_password') ?? $request->input('password_confirm');
-        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
-
-        if (\Illuminate\Support\Facades\Auth::user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
-                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador.')->withInput();
-            }
-        } else {
-            $request->validate(['password_confirm' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
-                return redirect()->back()->with('error', 'Contraseña incorrecta.');
-            }
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         $equipo->active = !$equipo->active;
@@ -171,23 +156,8 @@ class EquipoController extends Controller
             $equipo = Equipo::findOrFail($request->route('equipo'));
         }
 
-        if (\Illuminate\Support\Facades\Auth::user()->role === 'invitado') {
-            return redirect()->back()->with('error', 'No tienes permisos para realizar esta acción.');
-        }
-
-        $password = $request->input('admin_password') ?? $request->input('password_confirm');
-        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
-
-        if (\Illuminate\Support\Facades\Auth::user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
-                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para dar de baja un equipo.')->withInput();
-            }
-        } else {
-            $request->validate(['password_confirm' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
-                return redirect()->back()->with('error', 'Contraseña incorrecta.')->withInput();
-            }
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         $validated = $request->validate([
@@ -215,23 +185,8 @@ class EquipoController extends Controller
             $equipo = Equipo::findOrFail($request->route('equipo'));
         }
 
-        if (\Illuminate\Support\Facades\Auth::user()->role === 'invitado') {
-            return redirect()->back()->with('error', 'No tienes permisos para realizar esta acción.');
-        }
-
-        $password = $request->input('admin_password') ?? $request->input('password_confirm');
-        $request->merge(['admin_password' => $password, 'password_confirm' => $password]);
-
-        if (\Illuminate\Support\Facades\Auth::user()->isTecnico()) {
-            $request->validate(['admin_password' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->adminPasswordValida($request->admin_password)) {
-                return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para reactivar el equipo.')->withInput();
-            }
-        } else {
-            $request->validate(['password_confirm' => 'required']);
-            if (!app(\App\Services\AnulacionService::class)->passwordValida($request->password_confirm)) {
-                return redirect()->back()->with('error', 'Contraseña incorrecta.')->withInput();
-            }
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
         }
 
         $equipo->update([

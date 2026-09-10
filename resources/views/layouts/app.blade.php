@@ -152,22 +152,29 @@
                 </div>
                 <h3 id="global-anular-title" class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Anulación</h3>
                 <p id="global-anular-msg" class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
-                    Ingresa tu contraseña para anular este registro. Se mantendrá el historial pero no afectará saldos.
+                    @if(auth()->check() && auth()->user()->isTecnico())
+                        Ingresa la contraseña de un administrador para anular este registro. Se mantendrá el historial pero no afectará saldos.
+                    @else
+                        ¿Estás seguro de anular este registro? Se mantendrá el historial pero no afectará saldos.
+                    @endif
                 </p>
                 <form id="global-anular-form" method="POST" class="space-y-4">
                     @csrf
+                    @if(auth()->check() && auth()->user()->isTecnico())
                     <div>
+                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 text-center">Contraseña de Administrador</label>
                         <input type="password" name="password_confirm" id="global-anular-input" required
-                            placeholder="Contraseña..." 
+                            placeholder="Contraseña de Administrador..." 
                             class="glass-input text-center tracking-widest text-lg focus:ring-orange-500">
                     </div>
+                    @endif
                     <div class="flex gap-3 pt-2">
-                        <button type="button" onclick="closeAnularModal()" class="flex-1 btn-ghost justify-center">Cancelar</button>
-                        <button type="submit" id="global-anular-submit" class="flex-1 btn-danger justify-center font-bold">🚫 Anular</button>
+                        <button type="button" id="global-anular-cancel" onclick="closeAnularModal()" class="flex-1 btn-ghost-amber">Cancelar</button>
+                        <button type="submit" id="global-anular-submit" class="flex-1 btn-danger justify-center font-bold py-2.5 rounded-xl">🚫 Anular</button>
                     </div>
                 </form>
-</div>
-    </div>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL GLOBAL DE RECHAZAR COTIZACIÓN (Sí/No sin contraseña) -->
@@ -277,6 +284,8 @@
         }
 
         // ─── MODAL GLOBAL DE ANULACIÓN ───────────────────────────────────
+        const isTecnicoGlobal = {{ (auth()->check() && auth()->user()->isTecnico()) ? 'true' : 'false' }};
+
         function openAnularModal(actionUrl, isReactivation = false) {
             const modal = document.getElementById('global-anular-modal');
             const card  = document.getElementById('global-anular-card');
@@ -287,35 +296,53 @@
             const title = document.getElementById('global-anular-title');
             const msg = document.getElementById('global-anular-msg');
             const submitBtn = document.getElementById('global-anular-submit');
+            const cancelBtn = document.getElementById('global-anular-cancel');
 
             form.action  = actionUrl;
-            input.value  = '';
+            if (input) input.value  = '';
 
             if (isReactivation) {
                 // Modo Activación
                 title.textContent = 'Confirmar Activación';
-                msg.textContent = 'Ingresa tu contraseña para activar este registro.';
+                msg.textContent = isTecnicoGlobal 
+                    ? 'Ingresa la contraseña de un administrador para activar este registro.' 
+                    : '¿Estás seguro de reactivar este registro?';
                 icon.textContent = '✅';
                 iconContainer.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center text-3xl mx-auto mb-4';
+                
+                // Botón Activar con estilo ghost verde (como cuando se anula)
                 submitBtn.innerHTML = '✅ Activar';
-                submitBtn.className = 'flex-1 btn-primary justify-center text-white font-bold py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20';
-                input.className = 'glass-input text-center tracking-widest text-lg focus:ring-emerald-500';
+                submitBtn.className = 'flex-1 btn-ghost-emerald';
+                
+                // Botón Cancelar en reactivar: estilo ghost rojo (no azul)
+                if (cancelBtn) {
+                    cancelBtn.className = 'flex-1 btn-ghost-red';
+                }
+
+                if (input) input.className = 'glass-input text-center tracking-widest text-lg focus:ring-emerald-500';
             } else {
                 // Modo Anulación
                 title.textContent = 'Confirmar Anulación';
-                msg.textContent = 'Ingresa tu contraseña para anular este registro. Se mantendrá el historial pero no afectará saldos.';
+                msg.textContent = isTecnicoGlobal
+                    ? 'Ingresa la contraseña de un administrador para anular este registro. Se mantendrá el historial pero no afectará saldos.'
+                    : '¿Estás seguro de anular este registro? Se mantendrá el historial pero no afectará saldos.';
                 icon.textContent = '🚫';
                 iconContainer.className = 'w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4';
                 submitBtn.innerHTML = '🚫 Anular';
                 submitBtn.className = 'flex-1 btn-danger justify-center font-bold py-2.5 rounded-xl';
-                input.className = 'glass-input text-center tracking-widest text-lg focus:ring-orange-500';
+                
+                if (cancelBtn) {
+                    cancelBtn.className = 'flex-1 btn-ghost-amber';
+                }
+
+                if (input) input.className = 'glass-input text-center tracking-widest text-lg focus:ring-orange-500';
             }
 
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 card.classList.remove('scale-95', 'opacity-0');
-                input.focus();
+                if (input) input.focus();
             }, 10);
         }
 
