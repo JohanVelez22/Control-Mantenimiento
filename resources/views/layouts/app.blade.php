@@ -132,7 +132,7 @@
                 </p>
                 
                 <div class="flex gap-3">
-                    <button type="button" onclick="closeTsModal()" class="flex-1 btn-ghost justify-center">
+                    <button type="button" onclick="closeTsModal()" class="flex-1 btn-ghost-amber">
                         Cancelar
                     </button>
                     <button type="button" id="ts-modal-confirm" class="flex-1 btn-danger justify-center font-bold">
@@ -191,7 +191,7 @@
                 <form id="global-rechazar-form" method="POST" class="space-y-4">
                     @csrf
                     <div class="flex gap-3">
-                        <button type="button" onclick="closeRechazarModal()" class="flex-1 btn-ghost justify-center">No, cancelar</button>
+                        <button type="button" onclick="closeRechazarModal()" class="flex-1 btn-ghost-amber">No, cancelar</button>
                         <button type="submit" id="global-rechazar-submit" class="flex-1 btn-danger justify-center font-bold">Sí, rechazar</button>
                     </div>
                 </form>

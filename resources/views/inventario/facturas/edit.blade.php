@@ -29,7 +29,7 @@
                     @endforeach
                     @foreach($clientes as $c)
                         <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ ($factura->facturable_type === 'App\Models\Cliente' && $factura->facturable_id == $c->id) ? 'selected' : '' }}>
-                            👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' — 🔧 Técnico' : '' }}
+                            👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}
                         </option>
                     @endforeach
                 </select>
@@ -55,14 +55,14 @@
                     </button>
                 </div>
                 <div class="overflow-x-auto pb-2">
-                    <table class="ts-table w-full table-fixed">
+                    <table class="ts-table w-full table-fixed" id="items-table">
                         <thead>
                             <tr>
                                 <th class="w-auto px-2 py-3">Artículo</th>
                                 <th class="w-24 text-center px-2 py-3">Cantidad</th>
                                 <th class="w-40 text-right px-3 py-3">Precio Unitario ($)</th>
                                 <th class="w-36 text-right px-3 py-3">Subtotal</th>
-                                <th class="w-10 text-center px-2 py-3"></th>
+                                <th class="col-accion"></th>
                             </tr>
                         </thead>
                         <tbody id="items-body">
@@ -101,7 +101,7 @@
                                     <td class="text-right subtotal-display pr-4 font-bold text-slate-800 dark:text-white" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
                                         ${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}
                                     </td>
-                                    <td style="vertical-align: top !important; padding-top: 14px; padding-bottom: 10px;"></td>
+                                    <td class="col-accion text-right" style="vertical-align: top !important; padding-top: 14px; padding-bottom: 10px;"></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -203,8 +203,8 @@ function agregarFila() {
         <td class="text-right subtotal-display pr-4 font-bold text-blue-600 dark:text-blue-400" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
             $0
         </td>
-        <td class="text-center" style="vertical-align: top !important; padding-top: 14px; padding-bottom: 10px;">
-            <button type="button" onclick="eliminarFilaNueva(this)" class="text-red-400 hover:text-red-600 p-2" title="Eliminar fila nueva">✕</button>
+        <td class="col-accion text-right" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
+            <button type="button" onclick="eliminarFilaNueva(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">🗑️</button>
         </td>
     `;
     document.getElementById('items-body').appendChild(tr);

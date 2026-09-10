@@ -16,21 +16,17 @@
             <label class="field-label flex items-center gap-2"><span>👤 / 🏢</span> Propietario (Cliente / Proveedor) *</label>
             <select name="propietario_global" required class="glass-input no-search mt-1 text-sm font-bold" data-placeholder="Seleccione cliente o proveedor...">
                 <option value="">Seleccione cliente o proveedor...</option>
-                <optgroup label="👤 Clientes">
-                    @foreach($clientes as $cliente)
-                        <option value="Cliente:{{ $cliente->id }}" {{ $selPropietario == 'Cliente:'.$cliente->id ? 'selected' : '' }}>
-                            👤 Cliente: {{ $cliente->nombre }} ({{ $cliente->identificacion }})
+                @foreach($clientes as $cliente)
+                    <option value="Cliente:{{ $cliente->id }}" {{ $selPropietario == 'Cliente:'.$cliente->id ? 'selected' : '' }}>
+                        👤 Cliente: {{ $cliente->nombre }} ({{ $cliente->identificacion }}){{ $cliente->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}
+                    </option>
+                @endforeach
+                @if(isset($proveedores) && $proveedores->isNotEmpty())
+                    @foreach($proveedores as $prov)
+                        <option value="Proveedor:{{ $prov->id }}" {{ $selPropietario == 'Proveedor:'.$prov->id ? 'selected' : '' }}>
+                            🏢 Proveedor: {{ $prov->nombre_razon_social }} ({{ $prov->identificacion }})
                         </option>
                     @endforeach
-                </optgroup>
-                @if(isset($proveedores) && $proveedores->isNotEmpty())
-                    <optgroup label="🏢 Proveedores">
-                        @foreach($proveedores as $prov)
-                            <option value="Proveedor:{{ $prov->id }}" {{ $selPropietario == 'Proveedor:'.$prov->id ? 'selected' : '' }}>
-                                🏢 Proveedor: {{ $prov->nombre_razon_social }} ({{ $prov->identificacion }})
-                            </option>
-                        @endforeach
-                    </optgroup>
                 @endif
             </select>
             @error('propietario_global') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror

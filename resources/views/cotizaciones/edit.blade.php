@@ -29,21 +29,17 @@
                     <label class="field-label">Cliente / Proveedor *</label>
                     <select name="facturable_global" required class="glass-input no-search focus:ring-blue-500" data-placeholder="Seleccionar cliente o proveedor...">
                         <option value="">Seleccionar destinatario...</option>
-                        <optgroup label="👤 Clientes">
-                            @foreach($clientes as $c)
-                                <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ $selFacturable == "Cliente:{$c->id}" ? 'selected' : '' }}>
-                                    👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' — 🔧 Técnico' : '' }}
+                        @foreach($clientes as $c)
+                            <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ $selFacturable == "Cliente:{$c->id}" ? 'selected' : '' }}>
+                                👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}
+                            </option>
+                        @endforeach
+                        @if(isset($proveedores) && $proveedores->isNotEmpty())
+                            @foreach($proveedores as $prov)
+                                <option value="Proveedor:{{ $prov->id }}" data-tipo="proveedor" {{ $selFacturable == "Proveedor:{$prov->id}" ? 'selected' : '' }}>
+                                    🏢 Proveedor: {{ $prov->nombre_razon_social }} ({{ $prov->identificacion }})
                                 </option>
                             @endforeach
-                        </optgroup>
-                        @if(isset($proveedores) && $proveedores->isNotEmpty())
-                            <optgroup label="🏢 Proveedores">
-                                @foreach($proveedores as $prov)
-                                    <option value="Proveedor:{{ $prov->id }}" data-tipo="proveedor" {{ $selFacturable == "Proveedor:{$prov->id}" ? 'selected' : '' }}>
-                                        🏢 Proveedor: {{ $prov->nombre_razon_social }} ({{ $prov->identificacion }})
-                                    </option>
-                                @endforeach
-                            </optgroup>
                         @endif
                     </select>
                     @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror

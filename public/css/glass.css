@@ -4158,3 +4158,23 @@ html.dark .ts-dropdown-solid .option.selected {
 html.dark .print-active-badge {
   color: #34D399 !important;
 }
+
+/* Soporte homogéneo para optgroups en TomSelect y selects nativos sin franjas blancas */
+.ts-dropdown .optgroup-header,
+.ts-dropdown-solid .optgroup-header,
+optgroup {
+  background: transparent !important;
+  color: #64748B !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 6px 12px !important;
+}
+
+html.dark .ts-dropdown .optgroup-header,
+html.dark .ts-dropdown-solid .optgroup-header,
+html.dark optgroup {
+  background: rgba(15, 23, 42, 0.6) !important;
+  color: #94A3B8 !important;
+}

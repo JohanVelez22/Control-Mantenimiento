@@ -28,11 +28,11 @@
  🏢 Proveedor: {{ $prov->nombre_razon_social }} ({{ $prov->identificacion }})
  </option>
  @endforeach
- @foreach($clientes as $cli)
- <option value="Cliente:{{ $cli->id }}" {{ old('facturable_global') == "Cliente:{$cli->id}" ? 'selected' : '' }}>
- 👤 Cliente: {{ $cli->nombre }} ({{ $cli->identificacion ?? 'Cliente' }})
- </option>
- @endforeach
+  @foreach($clientes as $cli)
+  <option value="Cliente:{{ $cli->id }}" {{ old('facturable_global') == "Cliente:{$cli->id}" ? 'selected' : '' }}>
+  👤 Cliente: {{ $cli->nombre }} ({{ $cli->identificacion ?? 'Cliente' }}){{ $cli->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}
+  </option>
+  @endforeach
  </select>
  @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
@@ -62,7 +62,7 @@
  <th class="w-24 text-center px-2 py-3">Cant.</th>
  <th class="w-40 text-right px-3 py-3">Precio Un. ($)</th>
  <th class="w-36 text-right px-3 py-3">Subtotal</th>
- <th class="w-10 text-center px-2 py-3"></th>
+ <th class="col-accion"></th>
  </tr>
  </thead>
  <tbody id="items-body">
@@ -88,8 +88,8 @@
  <td class="text-right font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle pr-4">
  $0
  </td>
- <td class="text-center align-middle">
- <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 transition-colors p-2" title="Eliminar">✕</button>
+ <td class="col-accion align-middle text-right">
+ <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">🗑️</button>
  </td>
  </tr>
  </tbody>
@@ -172,8 +172,8 @@ tr.innerHTML = `
   <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-orange-500 font-bold text-slate-800 dark:text-white">
   </td>
   <td class="text-right font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle pr-4">$0</td>
-  <td class="text-center align-middle">
-  <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 p-2">✕</button>
+  <td class="col-accion align-middle text-right">
+  <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">🗑️</button>
   </td>`;
  tbody.appendChild(tr);
  filaIndex++;
@@ -188,7 +188,14 @@ tr.innerHTML = `
 
 function eliminarFila(btn) {
  const filas = document.querySelectorAll('.item-row');
- if (filas.length === 1) return;
+ if (filas.length === 1) {
+   if (typeof window.showToast === 'function') {
+     window.showToast('Debe haber al menos un ítem en la compra.', 'error');
+   } else {
+     alert('Debe haber al menos un ítem en la compra.');
+   }
+   return;
+ }
  btn.closest('tr').remove();
  recalcular();
 }
@@ -220,10 +227,15 @@ function actualizarSubtotal(tr) {
 function recalcular() {
   let total = 0;
   document.querySelectorAll('.item-row').forEach(tr => {
-    const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
+    const cant = parseFloat(tr.querySelector('.cantidad-input')?.value || '0') || 0;
     const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
     const precio = parseFloat(precioReal?.value || '0') || 0;
-    total += cant * precio;
+    const subtotal = cant * precio;
+    const subCell = tr.querySelector('.subtotal-cell');
+    if (subCell) {
+      subCell.textContent = '$' + window.formatNumber(subtotal);
+    }
+    total += subtotal;
   });
   document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
   

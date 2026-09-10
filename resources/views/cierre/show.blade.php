@@ -29,7 +29,7 @@
                         </div>
                         @endif
                         <div class="flex gap-3 pt-2">
-                            <button type="button" onclick="closeCierrePwd()" class="flex-1 btn-ghost justify-center">Cancelar</button>
+                            <button type="button" onclick="closeCierrePwd()" class="flex-1 btn-ghost-amber">Cancelar</button>
                             <button type="submit" class="flex-1 btn-danger justify-center font-bold">Eliminar Cierre</button>
                         </div>
                     </form>

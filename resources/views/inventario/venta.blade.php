@@ -24,7 +24,7 @@
  <option value="">Seleccionar...</option>
  @foreach($clientes as $c)
  <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ old('facturable_global') == "Cliente:{$c->id}" ? 'selected' : '' }}>
- 👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}) {{ $c->tipo_cliente === 'tecnico' ? '— 🔧 Técnico' : '' }}
+ 👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}
  </option>
  @endforeach
  @foreach($proveedores as $prov)
@@ -61,7 +61,7 @@
  <th class="w-24 text-center px-2 py-3">Cant.</th>
  <th class="w-44 text-right px-3 py-3">Precio Un. ($)</th>
  <th class="w-36 text-right px-3 py-3">Subtotal</th>
- <th class="w-10 text-center px-2 py-3"></th>
+ <th class="col-accion"></th>
  </tr>
  </thead>
  <tbody id="items-body">
@@ -89,8 +89,8 @@
   <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell pr-4" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
   $0
   </td>
-  <td class="text-center" style="vertical-align: top !important; padding-top: 14px; padding-bottom: 10px;">
-  <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 transition-colors p-2" title="Eliminar">✕</button>
+  <td class="col-accion text-right" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
+  <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">🗑️</button>
   </td>
   </tr>
  </tbody>
@@ -214,8 +214,8 @@ function agregarFila() {
   </div>
   </td>
   <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell pr-4" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$0</td>
-  <td class="text-center" style="vertical-align: top !important; padding-top: 14px; padding-bottom: 10px;">
-  <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 p-2">✕</button>
+  <td class="col-accion text-right" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
+  <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">🗑️</button>
   </td>`;
   tbody.appendChild(tr);
   filaIndex++;
@@ -229,9 +229,16 @@ function agregarFila() {
 }
 
 function eliminarFila(btn) {
- if (document.querySelectorAll('.item-row').length === 1) return;
- btn.closest('tr').remove();
- recalcular();
+  if (document.querySelectorAll('.item-row').length === 1) {
+    if (typeof window.showToast === 'function') {
+      window.showToast('Debe haber al menos un ítem en la venta.', 'error');
+    } else {
+      alert('Debe haber al menos un ítem en la venta.');
+    }
+    return;
+  }
+  btn.closest('tr').remove();
+  recalcular();
 }
 
 function bindFila(tr) {
@@ -293,10 +300,15 @@ function recalcular() {
   let total = 0;
   let hayBajoCosto = false;
   document.querySelectorAll('.item-row').forEach(tr => {
-    const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
+    const cant = parseFloat(tr.querySelector('.cantidad-input')?.value || '0') || 0;
     const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
     const precio = parseFloat(precioReal?.value || '0') || 0;
-    total += cant * precio;
+    const subtotal = cant * precio;
+    const subCell = tr.querySelector('.subtotal-cell');
+    if (subCell) {
+      subCell.textContent = '$' + window.formatNumber(subtotal);
+    }
+    total += subtotal;
     if (verificarAlertaCosto(tr)) {
       hayBajoCosto = true;
     }

@@ -57,7 +57,7 @@ function agregarFila(itemData = null) {
         </td>
         <td class="col-precio align-middle">
             <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="${precio}" required class="hidden">
-            <input type="text" id="precio_unitario_visual_${filaIndex}" value="${formatNum(precio)}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-full">
+            <input type="text" id="precio_unitario_visual_${filaIndex}" value="${formatNum(precio)}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); actualizarSubtotal(this.closest('tr'))" required class="precio-input glass-input py-1.5 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-full">
         </td>
         <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$${formatNum(cant * precio)}</td>
         <td class="col-accion align-middle text-right">
@@ -283,16 +283,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function bindInputs(tr) {
+    if (!tr) return;
     const cant = tr.querySelector('.cantidad-input');
-    cant.addEventListener('input', () => {
-        actualizarSubtotal(tr);
-        validarStock(tr);
-    });
+    if (cant) {
+        cant.addEventListener('input', () => {
+            actualizarSubtotal(tr);
+            validarStock(tr);
+        });
+    }
+
+    const precioInput = tr.querySelector('.precio-input');
+    if (precioInput) {
+        precioInput.addEventListener('input', () => {
+            actualizarSubtotal(tr);
+        });
+    }
 }
 
 function validarStock(tr) {
+    if (!tr) return;
     const cantInput = tr.querySelector('.cantidad-input');
     const warning = tr.querySelector('.stock-warning');
+    if (!cantInput || !warning) return;
     const maxStockStr = tr.dataset.maxStock;
     
     if (maxStockStr && maxStockStr !== '') {
@@ -314,22 +326,36 @@ function validarStock(tr) {
 }
 
 function actualizarSubtotal(tr) {
-    const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
+    if (!tr) return;
+    const cantInput = tr.querySelector('.cantidad-input');
+    const cant = parseFloat(cantInput?.value || '0') || 0;
     const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
     const precio = parseFloat(precioReal?.value || '0') || 0;
-    tr.querySelector('.subtotal-cell').textContent = '$' + formatNum(cant * precio);
+    const subtotal = cant * precio;
+    const subCell = tr.querySelector('.subtotal-cell');
+    if (subCell) {
+        subCell.textContent = '$' + formatNum(subtotal);
+    }
     recalcular();
 }
 
 function recalcular() {
     let total = 0;
     document.querySelectorAll('.item-row').forEach(tr => {
-        const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
+        const cant = parseFloat(tr.querySelector('.cantidad-input')?.value || '0') || 0;
         const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
         const precio = parseFloat(precioReal?.value || '0') || 0;
-        total += cant * precio;
+        const subtotal = cant * precio;
+        const subCell = tr.querySelector('.subtotal-cell');
+        if (subCell) {
+            subCell.textContent = '$' + formatNum(subtotal);
+        }
+        total += subtotal;
     });
-    document.getElementById('total-display').textContent = '$' + formatNum(total);
+    const totalDisplay = document.getElementById('total-display');
+    if (totalDisplay) {
+        totalDisplay.textContent = '$' + formatNum(total);
+    }
 }
 
 // Bloquear submit si no hay stock
