@@ -1000,6 +1000,7 @@
                     hideSelected: false,
                     refreshThrottle: 0,
                     dropdownParent: 'body',
+                    selectOnTab: true,
                     plugins: isNoSearch ? [] : ['clear_button'],
                     render: {
                         option: function(data, escape) {
@@ -1053,6 +1054,28 @@
                     let lastKey = '';
                     let cycleIndex = 0;
 
+                    // Función auxiliar para normalizar texto y remover emojis/símbolos iniciales
+                    const getCleanSearchText = (str) => {
+                        if (!str) return '';
+                        const clean = str.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        return clean.replace(/^[^\p{L}\p{N}]+/u, '');
+                    };
+
+                    const checkOptionMatch = (opt, query) => {
+                        if (!opt || !query) return false;
+                        const raw = (opt.text || opt.value || '').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        const clean = getCleanSearchText(raw);
+                        const cleanQuery = query.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        if (!cleanQuery) return false;
+
+                        // 1. Coincide al inicio directo o al inicio sin emojis
+                        if (clean.startsWith(cleanQuery) || raw.startsWith(cleanQuery)) return true;
+
+                        // 2. Coincide con el inicio de alguna palabra dentro del texto
+                        const words = clean.split(/[^\p{L}\p{N}]+/u);
+                        return words.some(w => w.startsWith(cleanQuery));
+                    };
+
                     tsInstance.control.addEventListener('keydown', function(e) {
                         // Ignorar modificadores, teclas de control, flechas, enter, tab, escape y espacio
                         // (TomSelect ya maneja las flechas 1 a 1 y el Enter nativamente sin saltos)
@@ -1071,15 +1094,11 @@
                         const options = Object.values(tsInstance.options).filter(opt => opt && (opt.value || opt.text));
                         if (options.length === 0) return;
 
-                        // Si presiona la misma tecla repetidamente (ej: 'A', 'A', 'A'), ciclar entre todas las opciones con esa inicial
+                        // Si presiona la misma tecla repetidamente (ej: 'D', 'D', 'D'), ciclar entre todas las opciones con esa inicial
                         const isSameKeyRepeat = (pressedKey === lastKey && (typeAheadBuffer === pressedKey || typeAheadBuffer === ''));
 
                         if (isSameKeyRepeat) {
-                            const matchingOptions = options.filter(opt => {
-                                const text = (opt.text || opt.value).trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                                const cleanKey = pressedKey.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                                return text.startsWith(cleanKey);
-                            });
+                            const matchingOptions = options.filter(opt => checkOptionMatch(opt, pressedKey));
 
                             if (matchingOptions.length > 0) {
                                 cycleIndex = (cycleIndex + 1) % matchingOptions.length;
@@ -1092,7 +1111,7 @@
                             }
                         }
 
-                        // Buffer acumulativo (para buscar ej: "ant" -> Antioquia, "ris" -> Risaralda)
+                        // Buffer acumulativo (para buscar ej: "dan" -> Daño, "obs" -> Obsoleto)
                         typeAheadBuffer += pressedKey;
                         lastKey = pressedKey;
                         cycleIndex = 0;
@@ -1103,19 +1122,11 @@
                         }, 800);
 
                         // 1. Buscar coincidencia por buffer acumulado
-                        let match = options.find(opt => {
-                            const text = (opt.text || opt.value).trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                            const cleanBuf = typeAheadBuffer.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                            return text.startsWith(cleanBuf);
-                        });
+                        let match = options.find(opt => checkOptionMatch(opt, typeAheadBuffer));
 
                         // 2. Si no coincide con el buffer acumulado, buscar con solo la última tecla
                         if (!match && typeAheadBuffer.length > 1) {
-                            const cleanKey = pressedKey.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                            match = options.find(opt => {
-                                const text = (opt.text || opt.value).trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                                return text.startsWith(cleanKey);
-                            });
+                            match = options.find(opt => checkOptionMatch(opt, pressedKey));
                             if (match) {
                                 typeAheadBuffer = pressedKey;
                             }

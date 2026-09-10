@@ -59,7 +59,7 @@
                 </a>
                 @if($stock->cantidad > 0)
                 <button type="button" onclick="openBajaStockModal('{{ route('stocks.dar-de-baja', $stock->id) }}', '{{ addslashes($stock->producto) }}', {{ $stock->cantidad }}, {{ $stock->precio_compra }})" class="btn-ghost border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 font-bold">
-                    📉 Dar de Baja Unidades
+                    📉 Dar de Baja
                 </button>
                 @endif
                 <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-danger">

@@ -12,8 +12,8 @@ class EquipoController extends Controller
 {
     public function index()
     {
-        // Cargamos 'cliente', 'proveedor' y 'user' para mostrar quién registró el equipo
-        $equipos = Equipo::with(['cliente', 'proveedor', 'user'])->orderBy('id', 'desc')->paginate(10);
+        // Cargamos 'cliente', 'proveedor', 'user' y 'bajaUser' para mostrar quién registró el equipo y la baja
+        $equipos = Equipo::with(['cliente', 'proveedor', 'user', 'bajaUser'])->orderBy('id', 'desc')->paginate(10);
         return view('equipos.index', compact('equipos'));
     }
 
