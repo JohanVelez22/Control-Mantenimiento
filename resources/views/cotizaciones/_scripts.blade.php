@@ -2,6 +2,14 @@
 let filaIndex = 0;
 const stocksData = @json($stocksJson);
 
+function formatNum(val) {
+    if (typeof window.formatNumber === 'function') {
+        return window.formatNumber(val);
+    }
+    const n = parseFloat(val) || 0;
+    return n.toLocaleString('es-CO');
+}
+
 function esClienteTecnico() {
     const sel = document.querySelector('select[name="cliente_id"]');
     if (!sel) return false;
@@ -20,7 +28,7 @@ function getStockOptions() {
            stocksData.map(s => {
                const p = esTec ? (s.precio_tecnico > 0 ? s.precio_tecnico : s.precio_venta) : s.precio_venta;
                const labelTag = esTec ? '🔧 P.Técnico' : 'P.Venta';
-               return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-nombre="${s.nombre}" data-cantidad="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — ${labelTag}: $${window.formatNumber(p)}</option>`;
+               return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-nombre="${s.nombre}" data-cantidad="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — ${labelTag}: $${formatNum(p)}</option>`;
            }).join('');
 }
 
@@ -34,26 +42,28 @@ function agregarFila(itemData = null) {
     let precio = itemData ? itemData.precio_unitario : 0;
     
     tr.innerHTML = `
-        <td class="align-middle">
+        <td class="col-tipo align-middle">
             <select name="items[${filaIndex}][tipo]" class="tipo-select glass-input no-search py-1.5 font-bold w-full">
                 <option value="libre" ${!isStock ? 'selected' : ''}>Servicio / Libre</option>
                 <option value="stock" ${isStock ? 'selected' : ''}>Producto Stock</option>
             </select>
         </td>
-        <td class="desc-cell align-middle">
+        <td class="desc-cell col-descripcion align-middle">
             <!-- Renderizado dinámico -->
         </td>
-        <td class="align-middle relative">
-            <input type="number" name="items[${filaIndex}][cantidad]" min="1" max="999" value="${cant}" required class="cantidad-input glass-input py-1.5 text-center focus:ring-blue-500 w-24 pl-3 pr-6 font-bold">
+        <td class="col-cantidad align-middle relative text-center">
+            <input type="number" name="items[${filaIndex}][cantidad]" min="1" max="999" value="${cant}" required class="cantidad-input glass-input py-1.5 text-center focus:ring-blue-500 w-full font-bold">
             <div class="stock-warning text-[10px] text-orange-500 font-bold absolute -bottom-3 left-0 w-full text-center hidden">Sin stock</div>
         </td>
-        <td class="align-middle">
+        <td class="col-precio align-middle">
             <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="${precio}" required class="hidden">
-            <input type="text" id="precio_unitario_visual_${filaIndex}" value="${window.formatNumber(precio)}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-36">
+            <input type="text" id="precio_unitario_visual_${filaIndex}" value="${formatNum(precio)}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-full">
         </td>
-        <td class="text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle pr-4">$${window.formatNumber(cant * precio)}</td>
-        <td class="text-center align-middle">
-            <button type="button" onclick="eliminarFila(this)" class="text-red-400 hover:text-red-600 p-2">✕</button>
+        <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$${formatNum(cant * precio)}</td>
+        <td class="col-accion align-middle text-right">
+            <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">
+                🗑️
+            </button>
         </td>
     `;
     tbody.appendChild(tr);
@@ -147,7 +157,7 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
                 
                 const precio = getPrecioStockCotizacion(selectedStock);
                 pReal.value = precio;
-                pVis.value = window.formatNumber(precio);
+                pVis.value = formatNum(precio);
                 
                 tr.dataset.maxStock = selectedStock.cantidad;
                 
@@ -175,6 +185,8 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
     }
 };
 
+let _pendingRowToDelete = null;
+
 function eliminarFila(btn) {
     if (document.querySelectorAll('.item-row').length === 1) {
         if (typeof window.showToast === 'function') {
@@ -184,42 +196,91 @@ function eliminarFila(btn) {
         }
         return;
     }
-    
-    // Si ya confirmó, lo borramos, si no, mostramos modal de confirmación
-    if (!btn.dataset.confirmed) {
-        const modal = document.getElementById('ts-modal');
-        if (modal) {
-            document.getElementById('ts-modal-title').innerText = 'Eliminar fila';
-            document.getElementById('ts-modal-msg').innerText = '¿Está seguro de eliminar este ítem de la cotización?';
-            
-            // Sobreescribir temporalmente el onclick del botón confirmar
-            const confirmBtn = document.getElementById('ts-modal-confirm');
-            const oldClick = confirmBtn.onclick;
-            
-            confirmBtn.onclick = function() {
-                btn.dataset.confirmed = 'true';
-                window.closeTsModal();
-                eliminarFila(btn);
-                confirmBtn.onclick = oldClick; // Restaurar
-            };
-            
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                document.getElementById('ts-modal-card').classList.remove('scale-95', 'opacity-0');
-            }, 10);
-            return;
-        } else if (!confirm('¿Está seguro de eliminar esta fila?')) {
-            return;
+
+    const tr = btn.closest('tr');
+    if (!tr) return;
+
+    // Obtener descripción o nombre del producto para mensaje contextual
+    let itemNombre = '';
+    const descInput = tr.querySelector('.desc-input');
+    const stockSelect = tr.querySelector('.stock-select');
+    if (stockSelect && stockSelect.value) {
+        if (tr.tomselectObj && typeof tr.tomselectObj.getItem === 'function') {
+            const el = tr.tomselectObj.getItem(stockSelect.value);
+            if (el) itemNombre = el.textContent.trim().split('\n')[0].trim();
+        }
+        if (!itemNombre && stockSelect.selectedOptions && stockSelect.selectedOptions.length) {
+            itemNombre = stockSelect.selectedOptions[0].text.trim().split('(')[0].trim();
+        }
+    } else if (descInput && descInput.value.trim()) {
+        itemNombre = descInput.value.trim();
+    }
+
+    const modal = document.getElementById('ts-modal');
+    if (modal) {
+        const titleEl = document.getElementById('ts-modal-title');
+        const msgEl = document.getElementById('ts-modal-msg');
+        if (titleEl) titleEl.innerText = '¿Estás seguro?';
+        if (msgEl) {
+            msgEl.innerText = itemNombre
+                ? `¿Eliminar el ítem "${itemNombre}" de la cotización?`
+                : '¿Eliminar este ítem de la cotización?';
+        }
+
+        _pendingRowToDelete = tr;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            const card = document.getElementById('ts-modal-card');
+            if (card) card.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+    } else {
+        const msg = itemNombre 
+            ? `¿Eliminar el ítem "${itemNombre}" de la cotización?` 
+            : '¿Eliminar este ítem de la cotización?';
+        if (confirm(msg)) {
+            removerFila(tr);
         }
     }
-    
-    const tr = btn.closest('tr');
-    if (tr.tomselectObj) tr.tomselectObj.destroy();
-    if (tr.tipoTomSelectObj) tr.tipoTomSelectObj.destroy();
+}
+
+function removerFila(tr) {
+    if (!tr) return;
+    if (tr.tomselectObj) {
+        try { tr.tomselectObj.destroy(); } catch(e) {}
+    }
+    if (tr.tipoTomSelectObj) {
+        try { tr.tipoTomSelectObj.destroy(); } catch(e) {}
+    }
     tr.remove();
     recalcular();
+    if (typeof window.showToast === 'function') {
+        window.showToast('Ítem eliminado de la cotización.', 'info');
+    }
 }
+
+// Hooks para el modal global de confirmación
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('ts-modal-confirm')?.addEventListener('click', () => {
+        if (_pendingRowToDelete) {
+            const tr = _pendingRowToDelete;
+            _pendingRowToDelete = null;
+            removerFila(tr);
+            if (typeof window.closeTsModal === 'function') {
+                window.closeTsModal();
+            }
+        }
+    });
+
+    if (typeof window.closeTsModal === 'function') {
+        const origCloseTsModal = window.closeTsModal;
+        window.closeTsModal = function() {
+            _pendingRowToDelete = null;
+            origCloseTsModal();
+        };
+    }
+});
 
 function bindInputs(tr) {
     const cant = tr.querySelector('.cantidad-input');
@@ -256,7 +317,7 @@ function actualizarSubtotal(tr) {
     const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
     const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
     const precio = parseFloat(precioReal?.value || '0') || 0;
-    tr.querySelector('.subtotal-cell').textContent = '$' + window.formatNumber(cant * precio);
+    tr.querySelector('.subtotal-cell').textContent = '$' + formatNum(cant * precio);
     recalcular();
 }
 
@@ -268,7 +329,7 @@ function recalcular() {
         const precio = parseFloat(precioReal?.value || '0') || 0;
         total += cant * precio;
     });
-    document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
+    document.getElementById('total-display').textContent = '$' + formatNum(total);
 }
 
 // Bloquear submit si no hay stock
@@ -295,6 +356,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.showToast('Hay cantidades que superan el stock disponible. Por favor ajuste antes de guardar.', 'error');
                 }
             }
+        });
+    }
+
     const clienteSelectElem = document.querySelector('select[name="cliente_id"]');
     if (clienteSelectElem) {
         clienteSelectElem.addEventListener('change', () => {
@@ -309,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             const pReal = tr.querySelector('[id^="precio_unitario_real_"]');
                             const pVis = tr.querySelector('[id^="precio_unitario_visual_"]');
                             if (pReal) pReal.value = nuevoPrecio;
-                            if (pVis) pVis.value = window.formatNumber(nuevoPrecio);
+                            if (pVis) pVis.value = formatNum(nuevoPrecio);
                             actualizarSubtotal(tr);
                         }
                     }

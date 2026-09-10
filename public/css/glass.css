@@ -1279,6 +1279,35 @@ html.dark .btn-ghost.text-purple-400:hover {
   background: rgba(220, 38, 38, 0.15);
 }
 
+.btn-danger.btn-icon,
+.btn-icon-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  padding: 0 !important;
+  font-size: 13px;
+  color: #DC2626;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.20);
+  transition: all 0.22s ease;
+  box-sizing: border-box;
+}
+
+.btn-danger.btn-icon:hover,
+.btn-icon-danger:hover {
+  background: rgba(220, 38, 38, 0.15);
+  transform: scale(1.05);
+}
+
 .btn-blue {
   display: inline-flex;
   align-items: center;
@@ -2790,6 +2819,141 @@ select.glass-input:not(.tomselected) {
   display: inline-block !important;
   opacity: 1 !important;
   visibility: visible !important;
+}
+
+/* ==========================================================================
+   TABLA DE ÍTEMS DE COTIZACIÓN (#items-table) - Diseño Balanceado y Simétrico
+   ========================================================================== */
+#items-table {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+/* Columna 1: Tipo (Alineada al inicio con margen izquierdo de 20px) */
+#items-table th.col-tipo,
+#items-table td.col-tipo,
+#items-table th:first-child,
+#items-table td:first-child {
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
+  padding-left: 20px !important;
+  padding-right: 8px !important;
+  text-align: left !important;
+}
+
+/* Columna 2: Descripción (Flexible, ocupa el ancho dinámico restante) */
+#items-table th.col-descripcion,
+#items-table td.desc-cell {
+  width: auto !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+/* Columna 3: Cantidad (Espaciosa, legible, número centrado y visible) */
+#items-table th.col-cantidad,
+#items-table td.col-cantidad {
+  width: 110px !important;
+  min-width: 110px !important;
+  max-width: 110px !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+  text-align: center !important;
+}
+
+.cantidad-input,
+#items-table .cantidad-input {
+  text-align: center !important;
+  padding: 8px 6px 8px 18px !important;
+  font-weight: 800 !important;
+  font-size: 15px !important;
+  letter-spacing: 0.5px !important;
+}
+
+#items-table .cantidad-input {
+  width: 100% !important;
+}
+
+/* Conservar spinners nativos en cantidad con buen espaciado */
+.cantidad-input::-webkit-outer-spin-button,
+.cantidad-input::-webkit-inner-spin-button,
+#items-table .cantidad-input::-webkit-outer-spin-button,
+#items-table .cantidad-input::-webkit-inner-spin-button {
+  -webkit-appearance: inner-spin-button !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+  margin-left: 4px !important;
+}
+.cantidad-input,
+#items-table .cantidad-input {
+  -moz-appearance: number-input !important;
+}
+
+/* Columna 4: Precio Unitario */
+#items-table th.col-precio,
+#items-table td.col-precio {
+  width: 135px !important;
+  min-width: 135px !important;
+  max-width: 135px !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
+
+#items-table .precio-input {
+  width: 100% !important;
+  padding: 8px 10px !important;
+  font-weight: 800 !important;
+  text-align: right !important;
+}
+
+/* Columna 5: Subtotal */
+#items-table th.col-subtotal,
+#items-table td.col-subtotal {
+  width: 115px !important;
+  min-width: 115px !important;
+  max-width: 115px !important;
+  padding-left: 6px !important;
+  padding-right: 12px !important;
+  text-align: right !important;
+}
+
+/* Columna 6: Acción / Eliminar (Simétrica con el margen izquierdo de 20px) */
+#items-table th.col-accion,
+#items-table td.col-accion,
+#items-table th:last-child,
+#items-table td:last-child {
+  width: 68px !important;
+  min-width: 68px !important;
+  max-width: 68px !important;
+  padding-left: 4px !important;
+  padding-right: 20px !important; /* EXACTAMENTE 20px, idéntico al margen de la izquierda */
+  text-align: right !important;
+}
+
+#items-table td:last-child .btn-danger,
+#items-table td:last-child .btn-icon-danger,
+#items-table td.col-accion .btn-danger,
+#items-table td.col-accion .btn-icon-danger {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  max-width: 34px !important;
+  max-height: 34px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 10px !important;
+}
+
+/* Sincronizar tfoot para respetar el margen derecho de 20px */
+#items-table tfoot td {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
 }
 
 /* Ocultar el icono de calendario nativo de Chrome para evitar salto visual */

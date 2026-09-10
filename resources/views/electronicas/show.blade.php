@@ -126,9 +126,9 @@
                 </div>
                 <div>
                     <label class="field-label">Cantidad *</label>
-                    <div class="flex gap-2">
-                        <input type="number" name="cantidad" required min="1" value="1" class="glass-input w-24">
-                        <button type="submit" class="btn-primary flex-1 justify-center">
+                    <div class="flex gap-4">
+                        <input type="number" name="cantidad" required min="1" value="1" class="glass-input cantidad-input w-24">
+                        <button type="submit" class="btn-clean flex-1 justify-center whitespace-nowrap">
                             ➕ Añadir
                         </button>
                     </div>

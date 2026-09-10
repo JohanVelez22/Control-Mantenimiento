@@ -17,8 +17,8 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-5 p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
                 <div class="md:col-span-2">
                     <label class="field-label">Cliente *</label>
-                    <select name="cliente_id" required class="glass-input focus:ring-blue-500" data-tomselect>
-                        <option value="">Buscar cliente...</option>
+                    <select name="cliente_id" required class="glass-input no-search focus:ring-blue-500" data-placeholder="Seleccionar cliente...">
+                        <option value="">Seleccionar cliente...</option>
                         @foreach($clientes as $c)
                             <option value="{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ old('cliente_id', $cotizacion->cliente_id) == $c->id ? 'selected' : '' }}>
                                 {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' — 🔧 Técnico' : '' }}
@@ -54,12 +54,12 @@
                     <table class="ts-table w-full table-fixed" id="items-table">
                         <thead class="bg-white/30 dark:bg-slate-800/40 backdrop-blur-sm text-slate-700 dark:text-slate-200 font-semibold border-b border-slate-200/50 dark:border-slate-700/50">
                             <tr>
-                                <th class="w-48 px-3 py-3">Tipo</th>
-                                <th class="w-auto px-2 py-3">Descripción / Producto</th>
-                                <th class="w-24 text-center px-2 py-3">Cant.</th>
-                                <th class="w-36 text-right px-3 py-3">Precio Un. ($)</th>
-                                <th class="w-32 text-right px-3 py-3">Subtotal</th>
-                                <th class="w-12 text-center px-2 py-3"></th>
+                                <th class="col-tipo">Tipo</th>
+                                <th class="col-descripcion">Descripción / Producto</th>
+                                <th class="col-cantidad text-center">Cant.</th>
+                                <th class="col-precio text-right">Precio Un. ($)</th>
+                                <th class="col-subtotal text-right">Subtotal</th>
+                                <th class="col-accion"></th>
                             </tr>
                         </thead>
                         <tbody id="items-body" class="divide-y divide-slate-200/50 dark:divide-slate-700/50 bg-white/20 dark:bg-slate-900/20">
@@ -94,11 +94,6 @@
     </div>
 </div>
 
-<!-- TomSelect CDN -->
-<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-
-
 @php
     $stocksJson = $stocks->map(fn($s) => [
         'id'             => $s->id,
@@ -117,25 +112,25 @@
             'item_id' => $i->item_id,
             'descripcion' => $i->descripcion,
             'cantidad' => $i->cantidad,
-            'precio_unitario' => $i->precio_unitario,
+            'precio_unitario' => (float)$i->precio_unitario,
         ];
-    })->toArray();
+    })->values()->all();
 @endphp
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar select de cliente principal
+    // Inicializar select de cliente principal si no fue tomado automáticamente
     const clienteSelect = document.querySelector('select[name="cliente_id"]');
-    if (clienteSelect) {
+    if (clienteSelect && !clienteSelect.classList.contains('tomselected') && typeof window.initGlassTomSelect === 'function') {
         window.initGlassTomSelect(clienteSelect);
     }
 
     const itemsExistentes = @json($existingItems);
-    if (itemsExistentes.length === 0) {
-        agregarFila();
+    if (!itemsExistentes || itemsExistentes.length === 0) {
+        if (typeof agregarFila === 'function') agregarFila();
     } else {
         itemsExistentes.forEach(item => {
-            agregarFila(item);
+            if (typeof agregarFila === 'function') agregarFila(item);
         });
     }
 });
