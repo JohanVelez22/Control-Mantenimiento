@@ -236,12 +236,12 @@
                         <td data-label="Registró:" class="text-xs text-gray-500 font-medium">{{ $c->user->name }}</td>
                         <td data-label="Acciones:" class="text-center w-28">
                             <div class="actions-grid">
-                                <a href="{{ route('cierre.show', $c->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver detalle">👁️</a>
+                                <a href="{{ route('cierre.show', $c->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver detalle">👁️</a>
                                 @if(!auth()->user()->isInvitado())
-                                    <a href="{{ route('cierre.edit', $c->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar observaciones">✏️</a>
+                                    <a href="{{ route('cierre.edit', $c->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar observaciones">✏️</a>
                                 @endif
                                 @if(auth()->user()->isAdmin())
-                                    <button type="button" onclick="openCierrePwd('{{ route('cierre.destroy', $c->id) }}')" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-red-600 hover:bg-red-500/10" title="Eliminar / Desbloquear">🗑️</button>
+                                    <button type="button" onclick="openCierrePwd('{{ route('cierre.destroy', $c->id) }}')" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs text-red-600 dark:text-red-400" title="Eliminar / Desbloquear">🗑️</button>
                                 @endif
                             </div>
                         </td>

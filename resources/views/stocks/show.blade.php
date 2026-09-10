@@ -49,16 +49,16 @@
 
             {{-- Botones de Acción a la derecha --}}
             <div class="flex items-center gap-3 shrink-0">
-                <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400">
+                <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10">
                     🖨️ Imprimir
                 </a>
                 
                 @if(!auth()->user()->isInvitado())
-                <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400">
+                <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/10">
                     ✏️ Editar
                 </a>
                 @if($stock->cantidad > 0)
-                <button type="button" onclick="openBajaStockModal('{{ route('stocks.dar-de-baja', $stock->id) }}', '{{ addslashes($stock->producto) }}', {{ $stock->cantidad }}, {{ $stock->precio_compra }})" class="btn-ghost border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 font-bold">
+                <button type="button" onclick="openBajaStockModal('{{ route('stocks.dar-de-baja', $stock->id) }}', '{{ addslashes($stock->producto) }}', {{ $stock->cantidad }}, {{ $stock->precio_compra }})" class="btn-ghost border-purple-500/30 text-purple-600 dark:text-purple-400 hover:bg-purple-500/10 font-bold">
                     📉 Dar de Baja
                 </button>
                 @endif

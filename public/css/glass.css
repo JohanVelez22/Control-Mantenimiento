@@ -1705,7 +1705,7 @@ html.dark .field-label {
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(37, 99, 235, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.55);
-  transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+  transition: none !important;
 }
 
 html.dark .ts-table {
@@ -1726,7 +1726,7 @@ html.dark .ts-table {
   border-bottom: 1px solid rgba(226, 232, 240, 0.80);
   position: sticky;
   top: 0;
-  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  transition: none !important;
 }
 
 html.dark .ts-table thead th {
@@ -1744,7 +1744,7 @@ html.dark .ts-table thead th {
 }
 
 .ts-table tbody tr {
-  transition: background-color 0.4s ease, transform 0.1s ease;
+  transition: transform 0.1s ease;
 }
 
 /* Hover effect for tables */
@@ -2980,6 +2980,10 @@ select.glass-input:not(.tomselected) {
   border-spacing: 0 !important;
 }
 
+#items-table thead th {
+  transition: none !important;
+}
+
 /* Columna 1: Tipo (Alineada al inicio con margen izquierdo de 20px) */
 #items-table th.col-tipo,
 #items-table td.col-tipo,
@@ -4177,4 +4181,174 @@ html.dark .ts-dropdown-solid .optgroup-header,
 html.dark optgroup {
   background: rgba(15, 23, 42, 0.6) !important;
   color: #94A3B8 !important;
+}
+
+/* ==========================================================================
+   SISTEMA DE ACCIONES GLOBALES (Ver, Imprimir, Editar, Dar de Baja, Anular)
+   Ver: Azul | Imprimir: Verde | Editar: Amarillo | Dar de Baja: Violeta | Anular: Rojo
+   ========================================================================== */
+.btn-action-view,
+.actions-grid a[title*="Ver"],
+.actions-grid a[title*="ver"],
+.actions-grid a[title*="Detalle"],
+.actions-grid a[title*="detalle"],
+.actions-grid button[title*="Ver"],
+.actions-grid button[title*="ver"],
+.actions-grid button[title*="Diagnóstico"] {
+  color: #2563EB !important; /* Azul */
+}
+.btn-action-view:hover,
+.actions-grid a[title*="Ver"]:hover,
+.actions-grid a[title*="ver"]:hover,
+.actions-grid a[title*="Detalle"]:hover,
+.actions-grid a[title*="detalle"]:hover,
+.actions-grid button[title*="Ver"]:hover,
+.actions-grid button[title*="ver"]:hover,
+.actions-grid button[title*="Diagnóstico"]:hover {
+  background: rgba(37, 99, 235, 0.12) !important;
+  color: #1D4ED8 !important;
+}
+html.dark .btn-action-view,
+html.dark .actions-grid a[title*="Ver"],
+html.dark .actions-grid a[title*="ver"],
+html.dark .actions-grid a[title*="Detalle"],
+html.dark .actions-grid a[title*="detalle"],
+html.dark .actions-grid button[title*="Ver"],
+html.dark .actions-grid button[title*="ver"],
+html.dark .actions-grid button[title*="Diagnóstico"] {
+  color: #60A5FA !important; /* Azul en modo oscuro */
+}
+
+.btn-action-print,
+.actions-grid a[title*="Imprimir"],
+.actions-grid a[title*="imprimir"],
+.actions-grid a[title*="Factura"],
+.actions-grid a[title*="PDF"],
+.actions-grid button[title*="Imprimir"],
+.actions-grid button[title*="imprimir"] {
+  color: #059669 !important; /* Verde / Emerald */
+}
+.btn-action-print:hover,
+.actions-grid a[title*="Imprimir"]:hover,
+.actions-grid a[title*="imprimir"]:hover,
+.actions-grid a[title*="Factura"]:hover,
+.actions-grid a[title*="PDF"]:hover,
+.actions-grid button[title*="Imprimir"]:hover,
+.actions-grid button[title*="imprimir"]:hover {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #047857 !important;
+}
+html.dark .btn-action-print,
+html.dark .actions-grid a[title*="Imprimir"],
+html.dark .actions-grid a[title*="imprimir"],
+html.dark .actions-grid a[title*="Factura"],
+html.dark .actions-grid a[title*="PDF"],
+html.dark .actions-grid button[title*="Imprimir"],
+html.dark .actions-grid button[title*="imprimir"] {
+  color: #34D399 !important; /* Verde en modo oscuro */
+}
+
+.btn-action-edit,
+.actions-grid a[title*="Editar"],
+.actions-grid a[title*="editar"],
+.actions-grid button[title*="Editar"],
+.actions-grid button[title*="editar"] {
+  color: #D97706 !important; /* Amarillo / Ámbar */
+}
+.btn-action-edit:hover,
+.actions-grid a[title*="Editar"]:hover,
+.actions-grid a[title*="editar"]:hover,
+.actions-grid button[title*="Editar"]:hover,
+.actions-grid button[title*="editar"]:hover {
+  background: rgba(245, 158, 11, 0.12) !important;
+  color: #B45309 !important;
+}
+html.dark .btn-action-edit,
+html.dark .actions-grid a[title*="Editar"],
+html.dark .actions-grid a[title*="editar"],
+html.dark .actions-grid button[title*="Editar"],
+html.dark .actions-grid button[title*="editar"] {
+  color: #FBBF24 !important; /* Amarillo en modo oscuro */
+}
+
+.btn-action-baja,
+.actions-grid button[title*="baja"],
+.actions-grid button[title*="Baja"],
+.actions-grid button[title*="merma"],
+.actions-grid button[title*="Merma"],
+.actions-grid a[title*="baja"],
+.actions-grid a[title*="Baja"] {
+  color: #9333EA !important; /* Violeta */
+}
+.btn-action-baja:hover,
+.actions-grid button[title*="baja"]:hover,
+.actions-grid button[title*="Baja"]:hover,
+.actions-grid button[title*="merma"]:hover,
+.actions-grid button[title*="Merma"]:hover,
+.actions-grid a[title*="baja"]:hover,
+.actions-grid a[title*="Baja"]:hover {
+  background: rgba(147, 51, 234, 0.12) !important;
+  color: #7E22CE !important;
+}
+html.dark .btn-action-baja,
+html.dark .actions-grid button[title*="baja"],
+html.dark .actions-grid button[title*="Baja"],
+html.dark .actions-grid button[title*="merma"],
+html.dark .actions-grid button[title*="Merma"],
+html.dark .actions-grid a[title*="baja"],
+html.dark .actions-grid a[title*="Baja"] {
+  color: #C084FC !important; /* Violeta en modo oscuro */
+}
+
+.btn-action-anular,
+.actions-grid button[title*="Anular"],
+.actions-grid button[title*="anular"],
+.actions-grid button[title*="Eliminar"],
+.actions-grid a[title*="Anular"],
+.actions-grid a[title*="anular"] {
+  color: #DC2626 !important; /* Rojo */
+}
+.btn-action-anular:hover,
+.actions-grid button[title*="Anular"]:hover,
+.actions-grid button[title*="anular"]:hover,
+.actions-grid button[title*="Eliminar"]:hover,
+.actions-grid a[title*="Anular"]:hover,
+.actions-grid a[title*="anular"]:hover {
+  background: rgba(220, 38, 38, 0.12) !important;
+  color: #B91C1C !important;
+}
+html.dark .btn-action-anular,
+html.dark .actions-grid button[title*="Anular"],
+html.dark .actions-grid button[title*="anular"],
+html.dark .actions-grid button[title*="Eliminar"],
+html.dark .actions-grid a[title*="Anular"],
+html.dark .actions-grid a[title*="anular"] {
+  color: #F87171 !important; /* Rojo en modo oscuro */
+}
+
+/* Excepción para botones de Reactivar (icono verde) */
+.actions-grid button[title*="Reactivar"],
+.actions-grid button[title*="reactivar"],
+.actions-grid a[title*="Reactivar"],
+.actions-grid a[title*="reactivar"] {
+  color: #059669 !important;
+}
+.actions-grid button[title*="Reactivar"]:hover,
+.actions-grid a[title*="Reactivar"]:hover {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #047857 !important;
+}
+html.dark .actions-grid button[title*="Reactivar"],
+html.dark .actions-grid a[title*="Reactivar"] {
+  color: #34D399 !important;
+}
+
+/* Botones de acción deshabilitados en actions-grid */
+.actions-grid .cursor-not-allowed,
+.actions-grid [disabled],
+.actions-grid .opacity-40,
+.actions-grid .opacity-50 {
+  color: #94A3B8 !important;
+  background: transparent !important;
+  cursor: not-allowed !important;
 }

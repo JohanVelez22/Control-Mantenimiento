@@ -58,7 +58,7 @@
             </div>
             
             <div class="flex items-center gap-3 shrink-0">
-                <button type="button" onclick="window.print()" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400">
+                <button type="button" onclick="window.print()" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                     🖨️ Imprimir Acta
                 </button>
                 

@@ -36,7 +36,7 @@
                 <x-print-dropdown 
                     :url="route('electronicas.factura', $electronica)"
                     label="Imprimir"
-                    colorClass="border-purple-500/20 text-purple-600 dark:text-purple-400"
+                    colorClass="border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
                     id="print-elec-{{ $electronica->id }}"
                 />
                 @endif

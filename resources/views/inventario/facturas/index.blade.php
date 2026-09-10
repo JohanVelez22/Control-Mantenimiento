@@ -150,13 +150,13 @@
   </td>
 <td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
   <div class="actions-grid">
-  <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
-  <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs" title="Imprimir">🖨️</a>
+  <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver Detalles">👁️</a>
+  <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400" title="Imprimir">🖨️</a>
   
   @if(!auth()->user()->isInvitado())
-  <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
+  <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
   
-  <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}', {{ $f->estado === 'anulada' ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $f->estado === 'anulada' ? 'text-emerald-600' : 'text-red-600' }}" title="{{ $f->estado === 'anulada' ? 'Reactivar Factura' : 'Anular Factura' }}">
+  <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}', {{ $f->estado === 'anulada' ? 'true' : 'false' }})" class="btn-ghost {{ $f->estado === 'anulada' ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $f->estado === 'anulada' ? 'Reactivar Factura' : 'Anular Factura' }}">
   {{ $f->estado === 'anulada' ? '✅' : '🚫' }}
   </button>
   @else

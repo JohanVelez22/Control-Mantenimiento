@@ -106,31 +106,31 @@
    @endif
    </td>
  <td data-label="Acciones:" class="text-center w-36 {{ $dim }}">
-   <div class="actions-grid">
-   @if(!auth()->user()->isInvitado())
-   <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
-   
-   @if($equipo->estado !== 'dado_de_baja')
-   <button type="button" onclick="openBajaEquipoModal('{{ route('equipos.dar-de-baja', $equipo->id) }}', '{{ addslashes($equipo->nombre) }} ({{ addslashes($equipo->serie ?? $equipo->modelo ?? '') }})')" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-amber-500 hover:text-amber-600" title="Dar de baja equipo (irreparable / desguace)">
-       ⚠️
-   </button>
-   <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', {{ !$equipo->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $equipo->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $equipo->active ? 'Anular Equipo' : 'Reactivar Equipo' }}">
-       {{ $equipo->active ? '🚫' : '✅' }}
-   </button>
-   @else
-    <button type="button" 
-        onclick='openDetalleBajaModal(@json($detallePayload))'
-        class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700" title="Ver Diagnóstico y Motivo de Baja">
-        📋
+    <div class="actions-grid">
+    @if(!auth()->user()->isInvitado())
+    <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/10" title="Editar">✏️</a>
+    
+    @if($equipo->estado !== 'dado_de_baja')
+    <button type="button" onclick="openBajaEquipoModal('{{ route('equipos.dar-de-baja', $equipo->id) }}', '{{ addslashes($equipo->nombre) }} ({{ addslashes($equipo->serie ?? $equipo->modelo ?? '') }})')" class="btn-ghost btn-action-baja w-8 h-8 flex items-center justify-center p-0 text-xs text-purple-600 dark:text-purple-400 hover:bg-purple-500/10" title="Dar de baja equipo (irreparable / desguace)">
+        ⚠️
     </button>
-   <button type="button" onclick="openAnularModal('{{ route('equipos.reactivar', $equipo->id) }}', true)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 hover:text-emerald-700" title="Reactivar Equipo dado de baja">
-       ✅
-   </button>
-   @endif
-   @else
-   <span class="text-gray-400 text-sm">👁️ Lectura</span>
-   @endif
-   </div>
+    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', {{ !$equipo->active ? 'true' : 'false' }})" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs {{ $equipo->active ? 'text-red-600 dark:text-red-400 hover:bg-red-500/10' : 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10' }}" title="{{ $equipo->active ? 'Anular Equipo' : 'Reactivar Equipo' }}">
+        {{ $equipo->active ? '🚫' : '✅' }}
+    </button>
+    @else
+     <button type="button" 
+         onclick='openDetalleBajaModal(@json($detallePayload))'
+         class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Ver Diagnóstico y Motivo de Baja">
+         📋
+     </button>
+    <button type="button" onclick="openAnularModal('{{ route('equipos.reactivar', $equipo->id) }}', true)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Reactivar Equipo dado de baja">
+        ✅
+    </button>
+    @endif
+    @else
+    <span class="text-gray-400 text-sm">👁️ Lectura</span>
+    @endif
+    </div>
    </td>
   </tr>
   @empty

@@ -40,13 +40,13 @@
                 <x-print-dropdown 
                     :url="route('caja.print', $movimiento->id)"
                     label="Imprimir"
-                    colorClass="border-gray-500/20 text-gray-600 dark:text-gray-300"
+                    colorClass="border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
                     id="print-caja-{{ $movimiento->id }}"
                 />
                 
                 @if(!auth()->user()->isInvitado())
                 <a href="{{ route('caja.edit', $movimiento->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">✏️ Editar</a>
-                <button type="button" onclick="openAnularModal('{{ route('caja.anular', $movimiento->id) }}', {{ $movimiento->anulado ? 'true' : 'false' }})" class="btn-danger">{{ $movimiento->anulado ? '✅ Reactivar' : '🚫 Anular' }}</button>
+                <button type="button" onclick="openAnularModal('{{ route('caja.anular', $movimiento->id) }}', {{ $movimiento->anulado ? 'true' : 'false' }})" class="{{ $movimiento->anulado ? 'btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'btn-danger' }}">{{ $movimiento->anulado ? '✅ Reactivar' : '🚫 Anular' }}</button>
                 @endif
             </div>
         </div>

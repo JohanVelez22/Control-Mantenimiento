@@ -163,18 +163,18 @@
   
 <td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
   <div class="actions-grid">
-  <a href="{{ route('electronicas.show', $e->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver detalle">👁️</a>
+  <a href="{{ route('electronicas.show', $e->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver detalle">👁️</a>
   
   @if($e->estado === 'terminado' && $e->fecha_salida)
-  <a href="{{ route('electronicas.factura', $e->id) }}" target="_blank" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-green-600" title="Imprimir Factura">🖨️</a>
+  <a href="{{ route('electronicas.factura', $e->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400" title="Imprimir Factura">🖨️</a>
   @elseif($e->estado === 'terminado')
   <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
   @endif
   
   @if(!auth()->user()->isInvitado())
-  <a href="{{ route('electronicas.edit', $e->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
+  <a href="{{ route('electronicas.edit', $e->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
   
-  <button type="button" onclick="openAnularModal('{{ route('electronicas.anular', $e->id) }}', {{ $e->anulado ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $e->anulado ? 'text-emerald-600' : 'text-red-600' }}" title="{{ $e->anulado ? 'Reactivar orden' : 'Anular orden' }}">
+  <button type="button" onclick="openAnularModal('{{ route('electronicas.anular', $e->id) }}', {{ $e->anulado ? 'true' : 'false' }})" class="btn-ghost {{ $e->anulado ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $e->anulado ? 'Reactivar orden' : 'Anular orden' }}">
   {{ $e->anulado ? '✅' : '🚫' }}
   </button>
   @else

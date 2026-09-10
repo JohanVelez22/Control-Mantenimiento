@@ -62,10 +62,10 @@
  </td>
 <td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
   <div class="actions-grid">
-  <a href="{{ route('proveedores.show', $p->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600" title="Ver Detalles">👁️</a>
+  <a href="{{ route('proveedores.show', $p->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver Detalles">👁️</a>
   @if(!auth()->user()->isInvitado())
-  <a href="{{ route('proveedores.edit', $p->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
-                                    <button type="button" onclick="openAnularModal('{{ route('proveedores.anular', $p->id) }}', {{ !$p->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $p->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $p->active ? 'Anular Proveedor' : 'Reactivar Proveedor' }}">
+  <a href="{{ route('proveedores.edit', $p->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+                                    <button type="button" onclick="openAnularModal('{{ route('proveedores.anular', $p->id) }}', {{ !$p->active ? 'true' : 'false' }})" class="btn-ghost {{ $p->active ? 'btn-action-anular text-red-600 dark:text-red-400' : 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $p->active ? 'Anular Proveedor' : 'Reactivar Proveedor' }}">
   {{ $p->active ? '🚫' : '✅' }}
   </button>
   @else

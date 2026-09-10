@@ -59,7 +59,7 @@
 
                 <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto">
                     <table class="ts-table w-full table-fixed" id="items-table">
-                        <thead class="bg-white/30 dark:bg-slate-800/40 backdrop-blur-sm text-slate-700 dark:text-slate-200 font-semibold border-b border-slate-200/50 dark:border-slate-700/50">
+                        <thead>
                             <tr>
                                 <th class="col-tipo">Tipo</th>
                                 <th class="col-descripcion">Descripción / Producto</th>
@@ -69,11 +69,11 @@
                                 <th class="col-accion"></th>
                             </tr>
                         </thead>
-                        <tbody id="items-body" class="divide-y divide-slate-200/50 dark:divide-slate-700/50 bg-white/20 dark:bg-slate-900/20">
+                        <tbody id="items-body">
                             <!-- La primera fila se inserta por JS -->
                         </tbody>
                         <tfoot>
-                            <tr class="border-t border-slate-200/50 dark:border-slate-700/50 bg-white/30 dark:bg-slate-800/30">
+                            <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
                                 <td colspan="6" class="px-4 py-4">
                                     <div class="flex justify-end items-center gap-4">
                                         <span class="font-bold text-slate-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Cotización:</span>

@@ -62,27 +62,27 @@
  </td>
  <td class="text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
  <td data-label="Acciones:" class="text-center align-middle w-28 {{ $dim }}">
-   <div class="actions-grid">
-   @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
-   <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600" title="Editar">✏️</a>
-   @else
-   <button type="button" onclick="openUserDetailModal({{ json_encode([
-       'id' => $u->id,
-       'name' => $u->name,
-       'email' => $u->email,
-       'role' => ucfirst($u->role),
-       'active' => (bool)$u->active,
-       'created_at' => $u->created_at->format('d/m/Y H:i'),
-       'photo' => $u->photo ? asset('storage/' . $u->photo) : null,
-   ]) }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400" title="Ver Detalles">👁️</button>
-   @endif
-   
-   @if(auth()->user()->isAdmin() && auth()->id() !== $u->id)
-                              <button type="button" onclick="openAnularModal('{{ route('usuarios.anular', $u->id) }}', {{ !$u->active ? 'true' : 'false' }})" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs {{ $u->active ? 'text-red-600' : 'text-emerald-600' }}" title="{{ $u->active ? 'Anular Usuario' : 'Reactivar Usuario' }}">
-   {{ $u->active ? '🚫' : '✅' }}
-   </button>
-   @endif
-   </div>
+    <div class="actions-grid">
+    @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
+    <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+    @else
+    <button type="button" onclick="openUserDetailModal({{ json_encode([
+        'id' => $u->id,
+        'name' => $u->name,
+        'email' => $u->email,
+        'role' => ucfirst($u->role),
+        'active' => (bool)$u->active,
+        'created_at' => $u->created_at->format('d/m/Y H:i'),
+        'photo' => $u->photo ? asset('storage/' . $u->photo) : null,
+    ]) }})" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver Detalles">👁️</button>
+    @endif
+    
+    @if(auth()->user()->isAdmin() && auth()->id() !== $u->id)
+                               <button type="button" onclick="openAnularModal('{{ route('usuarios.anular', $u->id) }}', {{ !$u->active ? 'true' : 'false' }})" class="btn-ghost {{ $u->active ? 'btn-action-anular text-red-600 dark:text-red-400' : 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $u->active ? 'Anular Usuario' : 'Reactivar Usuario' }}">
+    {{ $u->active ? '🚫' : '✅' }}
+    </button>
+    @endif
+    </div>
    </td>
  </tr>
  @empty
