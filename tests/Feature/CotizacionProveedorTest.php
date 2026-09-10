@@ -204,4 +204,22 @@ class CotizacionProveedorTest extends TestCase
         $this->assertEquals('Distribuciones Alfa SAS', $equipo->propietario_nombre);
         $this->assertStringContainsString('🏢 Proveedor:', $equipo->propietario_label);
     }
+
+    public function test_vistas_mantenimientos_y_electronicas_renderizan_clases_responsivas_y_col_acciones()
+    {
+        $this->withoutExceptionHandling();
+        $respMant = $this->actingAs($this->admin)->get(route('mantenimientos.index'));
+        $respMant->assertStatus(200);
+        $respMant->assertSee('table-dense');
+        $respMant->assertSee('col-orden');
+        $respMant->assertSee('col-observacion');
+        $respMant->assertSee('col-acciones');
+
+        $respElec = $this->actingAs($this->admin)->get(route('electronicas.index'));
+        $respElec->assertStatus(200);
+        $respElec->assertSee('table-dense');
+        $respElec->assertSee('col-orden');
+        $respElec->assertSee('col-observacion');
+        $respElec->assertSee('col-acciones');
+    }
 }

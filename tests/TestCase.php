@@ -16,5 +16,7 @@ abstract class TestCase extends BaseTestCase
                 return max(...$args);
             });
         }
+
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
     }
 }

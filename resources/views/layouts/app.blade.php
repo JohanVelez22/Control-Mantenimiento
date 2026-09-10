@@ -250,7 +250,7 @@
         // Leer sesiones de Laravel
         @if(session('success')) showToast("{{ session('success') }}", 'success'); @endif
         @if(session('error')) showToast("{{ session('error') }}", 'error'); @endif
-        @if($errors->any()) showToast("Verifica los campos obligatorios del formulario.", 'error'); @endif
+        @if(isset($errors) && $errors->any()) showToast("Verifica los campos obligatorios del formulario.", 'error'); @endif
 
         // ─── MODAL GLOBAL DE CONFIRMACIÓN ─────────────────────────────
         let _pendingForm = null;

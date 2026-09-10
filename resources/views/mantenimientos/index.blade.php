@@ -23,21 +23,21 @@
   </div>
 
   <div class="overflow-x-auto pb-2">
-  <table id="tabla-mantenimientos" class="ts-table responsive-table w-full">
+  <table id="tabla-mantenimientos" class="ts-table table-dense responsive-table w-full">
   <thead>
   <tr>
-  <th class="w-20 text-center">Orden</th>
+  <th class="col-orden text-center">Orden</th>
   <th class="text-center">Equipo</th>
   <th class="text-center">Cliente / Prov.</th>
   <th class="text-center">Técnico</th>
   <th class="text-center">Tipo/Rep</th>
-  <th class="text-center">Observación</th>
+  <th class="col-observacion text-center">Observación</th>
   <th class="text-center">Costo</th>
   <th class="text-center">Progreso</th>
   <th class="text-center">Estado</th>
-  <th class="text-center w-24">Entrada</th>
-  <th class="text-center w-28">Salida</th>
-  <th class="text-center w-28">Acciones</th>
+  <th class="text-center w-20">Entrada</th>
+  <th class="text-center w-20">Salida</th>
+  <th class="col-acciones text-center">Acciones</th>
   </tr>
   </thead>
   <tbody>
@@ -47,7 +47,7 @@
     $dimLight = $m->anulado ? 'opacity-60' : '';
   @endphp
   <tr id="mantenimiento-{{ $m->id }}" class="scroll-mt-[6.5rem]">
-  <td data-label="Orden:" class="font-bold text-center whitespace-nowrap {{ $dim }}">
+  <td data-label="Orden:" class="col-orden font-bold text-center whitespace-nowrap {{ $dim }}">
   <a href="#mantenimiento-{{ $m->id }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors">
   {{ $m->id_orden }}
   </a>
@@ -100,8 +100,8 @@
   <div class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mt-1">{{ $m->reparacion }}</div>
   </td>
   
-  <td class="max-w-[250px] {{ $dim }}">
-  <p class="text-sm text-gray-600 dark:text-gray-400 whitespace-normal break-words leading-relaxed font-medium">
+  <td class="col-observacion {{ $dim }}">
+  <p class="text-xs text-gray-600 dark:text-gray-400 whitespace-normal break-words leading-relaxed font-medium line-clamp-2" title="{{ $m->descripcion }}">
   {{ $m->descripcion ?? '-' }}
   </p>
   </td>
@@ -160,7 +160,7 @@
   {{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : '-' }}
   </td>
   
-<td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
+<td data-label="Acciones:" class="col-acciones text-center {{ $dim }}">
   <div class="actions-grid">
   <a href="{{ route('mantenimientos.show', $m->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver detalle">👁️</a>
   

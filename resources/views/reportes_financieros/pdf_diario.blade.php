@@ -251,12 +251,12 @@
                     $neto = collect($movimientos)->where('anulado', false)->whereIn('tipo', ['ingreso','venta','mantenimiento','electronica'])->sum('monto')
                           - collect($movimientos)->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
                 @endphp
-                <td colspan="6" style="text-align:left; border:none !important; padding: 5px 6px;">
+                <td colspan="6" style="text-align:left; border:none !important; padding: 5px 6px; font-size:9px;">
                     <span style="float:left; font-weight:700; color:#ffffff;">TOTAL: {{ count($movimientos) }} REGISTROS</span>
                     <span style="float:right; font-weight:700; color:#ffffff;">BALANCE NETO DEL DÍA:</span>
                 </td>
-                <td style="text-align:center; border:none !important; padding: 5px 6px; color:#ffffff; font-weight:800;">
-                    ${{ number_format($neto, 0, ',', '.') }}
+                <td style="text-align:center; border:none !important; padding: 5px 6px; color:#ffffff; font-weight:800; font-size:10.5px; white-space:nowrap;">
+                    {{ $neto < 0 ? '-$' . number_format(abs($neto), 0, ',', '.') : '$' . number_format($neto, 0, ',', '.') }}
                 </td>
             </tr>
         </tfoot>

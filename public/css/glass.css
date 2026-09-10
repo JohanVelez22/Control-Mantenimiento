@@ -1822,6 +1822,70 @@ html.dark .ts-table tbody td {
   color: #94a3b8 !important;
 }
 
+/* --- TABLAS DENSAS (Mantenimientos, Electrónica - 12 Columnas) --- */
+@media screen and (min-width: 768px) {
+  .ts-table.table-dense,
+  #tabla-mantenimientos,
+  #tabla-electronicas {
+    width: 100% !important;
+  }
+
+  .ts-table.table-dense thead th,
+  #tabla-mantenimientos thead th,
+  #tabla-electronicas thead th {
+    padding: 10px 6px !important;
+    font-size: 11px !important;
+    letter-spacing: 0.4px !important;
+  }
+
+  .ts-table.table-dense tbody td,
+  #tabla-mantenimientos tbody td,
+  #tabla-electronicas tbody td {
+    padding: 9px 6px !important;
+    font-size: 12px !important;
+  }
+
+  /* Reducción columna Orden */
+  .ts-table.table-dense .col-orden,
+  #tabla-mantenimientos .col-orden,
+  #tabla-electronicas .col-orden {
+    width: 4rem !important;
+    max-width: 4.5rem !important;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  /* Columna Acciones protegida contra desbordes o cortes */
+  .ts-table.table-dense .col-acciones,
+  #tabla-mantenimientos .col-acciones,
+  #tabla-electronicas .col-acciones {
+    width: 5.25rem !important;
+    min-width: 5rem !important;
+    max-width: 5.5rem !important;
+    padding-left: 2px !important;
+    padding-right: 4px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  /* Columna Observación con ancho balanceado y truncado dinámico */
+  .ts-table.table-dense .col-observacion,
+  #tabla-mantenimientos .col-observacion,
+  #tabla-electronicas .col-observacion {
+    max-width: 150px !important;
+  }
+
+  @media (min-width: 1440px) {
+    .ts-table.table-dense .col-observacion,
+    #tabla-mantenimientos .col-observacion,
+    #tabla-electronicas .col-observacion {
+      max-width: 200px !important;
+    }
+  }
+}
+
 /* --- PILLS DE ESTADO -------------------------------------------------- */
 .pill {
   display: inline-flex;
@@ -2803,12 +2867,12 @@ select.glass-input:not(.tomselected) {
   text-align: left !important;
 }
 
-/* Ancho estático para la columna Tipo que garantiza 'Servicio / Libre' y 'Producto Stock' completos sin recortar */
-.ts-table th:first-child,
-.ts-table td:first-child {
-  width: 192px !important;
-  min-width: 192px !important;
-  max-width: 192px !important;
+/* Ancho estático para la columna Tipo en tablas de ítems que garantiza 'Servicio / Libre' y 'Producto Stock' completos sin recortar */
+#items-table th.col-tipo,
+#items-table td.col-tipo {
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 205px !important;
 }
 
 /* Bloqueo estático absoluto para que la celda de descripción y TomSelect se extiendan al 100% de borde a borde y alineados a la izquierda */
@@ -2984,44 +3048,52 @@ select.glass-input:not(.tomselected) {
   transition: none !important;
 }
 
-/* Columna 1: Tipo (Alineada al inicio con margen izquierdo de 20px) */
+/* Columna 1: Tipo (Alineada al inicio con ancho óptimo para 'Producto Stock' en una sola línea horizontal) */
 #items-table th.col-tipo,
-#items-table td.col-tipo,
-#items-table th:first-child,
-#items-table td:first-child {
-  width: 180px !important;
-  min-width: 180px !important;
-  max-width: 180px !important;
-  padding-left: 20px !important;
-  padding-right: 8px !important;
+#items-table td.col-tipo {
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 205px !important;
+  padding-left: 14px !important;
+  padding-right: 6px !important;
   text-align: left !important;
 }
 
-/* Columna 2: Descripción (Flexible, ocupa el ancho dinámico restante) */
+#items-table .tipo-select,
+.tipo-select {
+  width: 100% !important;
+  padding: 8px 8px 8px 10px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  letter-spacing: -0.2px !important;
+}
+
+/* Columna 2: Descripción (Flexible, ocupa el ancho dinámico restante de borde a borde) */
 #items-table th.col-descripcion,
 #items-table td.desc-cell {
   width: auto !important;
-  padding-left: 8px !important;
-  padding-right: 8px !important;
-}
-
-/* Columna 3: Cantidad (Espaciosa, legible, número centrado y visible) */
-#items-table th.col-cantidad,
-#items-table td.col-cantidad {
-  width: 110px !important;
-  min-width: 110px !important;
-  max-width: 110px !important;
   padding-left: 6px !important;
   padding-right: 6px !important;
+}
+
+/* Columna 3: Cantidad (Optimizada horizontalmente sin derrochar espacio) */
+#items-table th.col-cantidad,
+#items-table td.col-cantidad {
+  width: 88px !important;
+  min-width: 88px !important;
+  max-width: 90px !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
   text-align: center !important;
 }
 
 .cantidad-input,
 #items-table .cantidad-input {
   text-align: center !important;
-  padding: 8px 6px 8px 18px !important;
+  padding: 8px 2px 8px 12px !important;
   font-weight: 800 !important;
-  font-size: 15px !important;
+  font-size: 14.5px !important;
   letter-spacing: 0.5px !important;
 }
 
@@ -3044,44 +3116,44 @@ select.glass-input:not(.tomselected) {
   -moz-appearance: number-input !important;
 }
 
-/* Columna 4: Precio Unitario */
+/* Columna 4: Precio Unitario (Aprovecha el espacio para cifras con separador de miles) */
 #items-table th.col-precio,
 #items-table td.col-precio {
-  width: 135px !important;
+  width: 140px !important;
   min-width: 135px !important;
-  max-width: 135px !important;
-  padding-left: 6px !important;
-  padding-right: 6px !important;
+  max-width: 145px !important;
+  padding-left: 5px !important;
+  padding-right: 5px !important;
 }
 
 #items-table .precio-input {
   width: 100% !important;
-  padding: 8px 10px !important;
+  padding: 8px 8px !important;
   font-weight: 800 !important;
+  font-size: 14px !important;
   text-align: right !important;
 }
 
-/* Columna 5: Subtotal */
+/* Columna 5: Subtotal (Alineación derecha holgada sin saltos) */
 #items-table th.col-subtotal,
 #items-table td.col-subtotal {
-  width: 115px !important;
-  min-width: 115px !important;
-  max-width: 115px !important;
-  padding-left: 6px !important;
-  padding-right: 12px !important;
+  width: 125px !important;
+  min-width: 120px !important;
+  max-width: 130px !important;
+  padding-left: 5px !important;
+  padding-right: 8px !important;
   text-align: right !important;
+  white-space: nowrap !important;
 }
 
-/* Columna 6: Acción / Eliminar (Simétrica con el margen izquierdo de 20px) */
+/* Columna 6: Acción / Eliminar (Compacto y simétrico con el margen derecho) */
 #items-table th.col-accion,
-#items-table td.col-accion,
-#items-table th:last-child,
-#items-table td:last-child {
-  width: 68px !important;
-  min-width: 68px !important;
-  max-width: 68px !important;
-  padding-left: 4px !important;
-  padding-right: 20px !important; /* EXACTAMENTE 20px, idéntico al margen de la izquierda */
+#items-table td.col-accion {
+  width: 58px !important;
+  min-width: 58px !important;
+  max-width: 60px !important;
+  padding-left: 2px !important;
+  padding-right: 14px !important;
   text-align: right !important;
 }
 

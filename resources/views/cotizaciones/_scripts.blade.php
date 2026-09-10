@@ -43,7 +43,7 @@ function agregarFila(itemData = null) {
     
     tr.innerHTML = `
         <td class="col-tipo align-middle">
-            <select name="items[${filaIndex}][tipo]" class="tipo-select glass-input no-search py-1.5 font-bold w-full">
+            <select name="items[${filaIndex}][tipo]" class="tipo-select glass-input no-search py-1.5 px-2 font-bold w-full whitespace-nowrap">
                 <option value="libre" ${!isStock ? 'selected' : ''}>Servicio / Libre</option>
                 <option value="stock" ${isStock ? 'selected' : ''}>Producto Stock</option>
             </select>
@@ -57,7 +57,7 @@ function agregarFila(itemData = null) {
         </td>
         <td class="col-precio align-middle">
             <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="${precio}" required class="hidden">
-            <input type="text" id="precio_unitario_visual_${filaIndex}" value="${formatNum(precio)}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); actualizarSubtotal(this.closest('tr'))" required class="precio-input glass-input py-1.5 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-full">
+            <input type="text" id="precio_unitario_visual_${filaIndex}" value="${formatNum(precio)}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); actualizarSubtotal(this.closest('tr'))" required class="precio-input glass-input py-1.5 px-2 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-full">
         </td>
         <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$${formatNum(cant * precio)}</td>
         <td class="col-accion align-middle text-right">
