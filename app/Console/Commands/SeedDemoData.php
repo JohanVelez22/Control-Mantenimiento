@@ -194,7 +194,8 @@ class SeedDemoData extends Command
                     'item_id' => $s1->id,
                     'descripcion' => $s1->producto,
                     'cantidad' => $cant,
-                    'precio_unitario' => $p1
+                    'precio_unitario' => $p1,
+                    'subtotal' => $p1 * $cant,
                 ]);
 
                 $manoObra = 60000;
@@ -204,7 +205,8 @@ class SeedDemoData extends Command
                     'item_id' => null,
                     'descripcion' => 'Servicio técnico especializado y pruebas de rendimiento',
                     'cantidad' => 1,
-                    'precio_unitario' => $manoObra
+                    'precio_unitario' => $manoObra,
+                    'subtotal' => $manoObra * 1,
                 ]);
 
                 $cot->update(['total' => ($p1 * $cant) + $manoObra]);

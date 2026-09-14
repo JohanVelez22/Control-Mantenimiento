@@ -19,6 +19,23 @@ class CotizacionItem extends Model
         'subtotal'
     ];
 
+    protected static function booted()
+    {
+        static::saving(function ($item) {
+            if (empty($item->subtotal) || (float)$item->subtotal <= 0) {
+                $item->subtotal = (int)($item->cantidad ?? 1) * (float)($item->precio_unitario ?? 0);
+            }
+        });
+    }
+
+    public function getSubtotalAttribute($value): float
+    {
+        if ($value !== null && (float)$value > 0) {
+            return (float)$value;
+        }
+        return (float)((int)($this->cantidad ?? 1) * (float)($this->precio_unitario ?? 0));
+    }
+
     public function cotizacion()
     {
         return $this->belongsTo(Cotizacion::class);

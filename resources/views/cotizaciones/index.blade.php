@@ -58,22 +58,38 @@
                     <td data-label="Código" class="font-bold text-slate-600 dark:text-slate-300">{{ $cot->codigo }}</td>
                     <td data-label="Tipo" class="font-bold text-indigo-600 dark:text-indigo-400 text-sm whitespace-nowrap">{{ $tipoStr }}</td>
                     <td data-label="Descripción" class="text-gray-600 dark:text-gray-300 text-xs font-medium max-w-[200px] truncate" title="{{ $descStr }}">{{ $descStr }}</td>
-                    <td data-label="Destinatario" class="font-bold text-slate-800 dark:text-white">
+                    <td data-label="Destinatario">
                         @if($cot->proveedor)
-                            <span title="Proveedor">🏢 {{ $cot->proveedor->nombre_razon_social }}</span>
+                            <a href="{{ route('proveedores.index') }}#proveedor-{{ $cot->proveedor_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+                                <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+                                    🏢 {{ $cot->proveedor->nombre_razon_social }}
+                                </div>
+                                <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+                                    {{ $cot->proveedor->identificacion ?? '-' }}
+                                </div>
+                            </a>
                         @elseif($cot->cliente)
-                            <span title="Cliente">👤 {{ $cot->cliente->nombre }}</span>
+                            <a href="{{ route('clientes.index') }}#cliente-{{ $cot->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+                                <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+                                    👤 {{ $cot->cliente->nombre }}
+                                </div>
+                                <div class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
+                                    {{ $cot->cliente->identificacion ?? '-' }}
+                                </div>
+                            </a>
                         @else
-                            N/A
+                            <span class="font-bold text-slate-800 dark:text-white">-</span>
                         @endif
                     </td>
                     <td data-label="Fecha" class="text-center font-medium">{{ \Carbon\Carbon::parse($cot->fecha)->format('d/m/Y') }}</td>
                     <td data-label="Validez" class="text-center font-medium">{{ $cot->validez_dias }} días</td>
                     <td data-label="Total" class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($cot->total, 0, '', '.') }}</td>
                     <td data-label="Estado" class="text-center">
-                        <span class="pill {{ $cot->anulado ? 'pill-anulado' : ($cot->estado === 'aprobada' ? 'pill-done' : ($cot->estado === 'rechazada' ? 'pill-egreso' : 'pill-pending')) }}">
+                        <span class="pill {{ $cot->anulado ? 'pill-anulado' : ($cot->estado === 'aprobada' ? 'pill-done' : ($cot->estado === 'rechazada' ? 'pill-anulado' : 'pill-pending')) }}">
                             @if($cot->anulado)
                                 Anulada
+                            @elseif($cot->estado === 'aprobada')
+                                Aprobada
                             @elseif($cot->estado === 'rechazada')
                                 Rechazada
                             @else

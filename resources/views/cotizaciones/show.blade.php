@@ -71,11 +71,15 @@
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Vendedor:</span> {{ $cotizacion->user->name }}</p>
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Estado:</span> 
                         @if($cotizacion->anulado)
-                            <span class="text-red-600 font-bold">Anulada</span>
+                            <span class="text-red-600 dark:text-red-400 font-bold">Anulada</span>
+                        @elseif($cotizacion->estado === 'aprobada')
+                            <span class="text-emerald-600 dark:text-emerald-400 font-bold">Aprobada</span>
+                        @elseif($cotizacion->estado === 'pendiente')
+                            <span class="text-orange-500 dark:text-orange-400 font-bold">Pendiente</span>
                         @elseif($cotizacion->estado === 'rechazada')
-                            <span class="text-orange-600 font-bold">Rechazada</span>
+                            <span class="text-red-600 dark:text-red-400 font-bold">Rechazada</span>
                         @else
-                            <span class="text-blue-600 font-bold capitalize">{{ $cotizacion->estado }}</span>
+                            <span class="text-slate-600 dark:text-slate-400 font-bold capitalize">{{ $cotizacion->estado }}</span>
                         @endif
                     </p>
                 </div>

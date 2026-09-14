@@ -44,7 +44,7 @@
                 @endif
             </td>
             <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
-            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($item->subtotal, 0, ',', '.') }}</td>
+            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($item->subtotal ?: ($item->cantidad * $item->precio_unitario), 0, ',', '.') }}</td>
         </tr>
         @endforeach
     </tbody>
