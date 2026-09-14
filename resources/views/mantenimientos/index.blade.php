@@ -53,8 +53,8 @@
   </a>
   </td>
   
-  <td class="{{ $dim }}">
-  <a href="{{ route('equipos.edit', $m->equipo_id) }}" class="group block hover:opacity-75 transition-opacity" title="Ver detalles del equipo">
+  <td data-label="Equipo:" class="{{ $dim }}">
+  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de equipos">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   {{ $m->equipo->nombre ?? 'Equipo' }}
   </div>
