@@ -54,31 +54,67 @@
                         ➕ Agregar artículo
                     </button>
                 </div>
+<style>
+.table-factura-edit {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+.table-factura-edit th.col-art,
+.table-factura-edit td.col-art {
+    width: auto !important;
+    padding-left: 16px !important;
+    padding-right: 8px !important;
+    text-align: left !important;
+}
+.table-factura-edit th.col-cant,
+.table-factura-edit td.col-cant {
+    width: 96px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    text-align: center !important;
+}
+.table-factura-edit th.col-precio,
+.table-factura-edit td.col-precio {
+    width: 195px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    text-align: right !important;
+}
+.table-factura-edit th.col-subtotal,
+.table-factura-edit td.col-subtotal {
+    width: 290px !important;
+    padding-left: 6px !important;
+    padding-right: 16px !important;
+    text-align: right !important;
+}
+</style>
                 <div class="overflow-x-auto pb-2">
-                    <table class="ts-table w-full table-fixed" id="items-table">
+                    <table class="ts-table w-full table-fixed table-factura-edit" id="factura-items-table">
                         <thead>
                             <tr>
-                                <th class="w-auto px-2 py-3">Artículo</th>
-                                <th class="w-24 text-center px-2 py-3">Cantidad</th>
-                                <th class="w-40 text-right px-3 py-3">Precio Unitario ($)</th>
-                                <th class="w-36 text-right px-3 py-3">Subtotal</th>
-                                <th class="col-accion"></th>
+                                <th class="col-art py-3 text-left">Artículo</th>
+                                <th class="col-cant text-center py-3">Cantidad</th>
+                                <th class="col-precio text-right py-3 whitespace-nowrap">Precio Unitario ($)</th>
+                                <th class="col-subtotal text-right py-3">Subtotal</th>
                             </tr>
                         </thead>
                         <tbody id="items-body">
-                            @foreach($factura->items as $index => $item)
+                                @foreach($factura->items as $index => $item)
                                 <tr class="existing-row">
-                                    <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
+                                    <td class="col-art align-top py-2.5">
                                         <input type="hidden" name="existing_items[{{ $index }}][id]" value="{{ $item->id }}">
                                         @if($item->stock_id)
-                                            <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
-                                                <option value="">Seleccionar producto...</option>
-                                                @foreach($stocks as $s)
-                                                    <option value="{{ $s->id }}" data-precio="{{ $factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta }}" {{ $item->stock_id == $s->id ? 'selected' : '' }}>
-                                                        {{ $s->producto }} (Stock: {{ $s->cantidad }})
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            <div class="flex flex-col gap-1">
+                                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto / Stock</span>
+                                                <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
+                                                    <option value="">Seleccionar producto...</option>
+                                                    @foreach($stocks as $s)
+                                                        <option value="{{ $s->id }}" data-precio="{{ $factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta }}" {{ $item->stock_id == $s->id ? 'selected' : '' }}>
+                                                            {{ $s->producto }} (Stock: {{ $s->cantidad }})
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         @else
                                             <input type="hidden" name="existing_items[{{ $index }}][stock_id]" value="">
                                             <div class="flex flex-col gap-1">
@@ -87,29 +123,41 @@
                                             </div>
                                         @endif
                                     </td>
-                                    <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-                                        <input type="number" name="existing_items[{{ $index }}][cantidad]" min="1" value="{{ (int)$item->cantidad }}" required class="glass-input text-center py-1.5 focus:ring-orange-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
+                                    <td class="col-cant align-top py-2.5">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
+                                            <input type="number" name="existing_items[{{ $index }}][cantidad]" min="1" value="{{ (int)$item->cantidad }}" required class="glass-input text-center py-1.5 focus:ring-orange-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
+                                        </div>
                                     </td>
-                                    <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-                                        <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 focus:ring-orange-500 font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
-                                        @if($factura->tipo_movimiento === 'venta')
-                                             <div class="alerta-costo-badge hidden text-xs font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1.5" style="margin-top: 10px !important; margin-bottom: 2px !important;">
-                                                 <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
-                                             </div>
-                                        @endif
+                                    <td class="col-precio align-top py-2.5">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
+                                            <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 focus:ring-orange-500 font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
+                                            @if($factura->tipo_movimiento === 'venta')
+                                                 <div class="alerta-costo-badge hidden text-[11px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap" style="margin-top: 5px !important; margin-bottom: 2px !important;">
+                                                     <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+                                                 </div>
+                                            @endif
+                                        </div>
                                     </td>
-                                    <td class="text-right subtotal-display pr-4 font-bold text-slate-800 dark:text-white" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
-                                        ${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}
+                                    <td class="col-subtotal align-top py-2.5 text-right">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
+                                            <div class="subtotal-display h-[38px] flex items-center justify-end font-bold text-slate-800 dark:text-white text-right overflow-hidden text-ellipsis whitespace-nowrap">
+                                                ${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td class="col-accion text-right" style="vertical-align: top !important; padding-top: 14px; padding-bottom: 10px;"></td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-4 flex flex-col sm:flex-row justify-between sm:items-center gap-2 p-4 sm:p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
+                <div class="mt-4 flex flex-col sm:flex-row justify-between sm:items-center gap-2 p-4 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
                     <span class="font-bold text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">Nuevo Total Documento:</span>
-                    <span class="text-2xl font-black text-blue-600 dark:text-blue-400" id="total_documento_display">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>
+                    <div class="flex items-center justify-end">
+                        <span class="text-2xl font-black text-blue-600 dark:text-blue-400 text-right" id="total_documento_display">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>
+                    </div>
                 </div>
             </div>
 
@@ -184,27 +232,41 @@ function agregarFila() {
     const tr = document.createElement('tr');
     tr.className = 'new-row bg-blue-50/20 dark:bg-blue-900/10';
     tr.innerHTML = `
-        <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-            <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-blue-500" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
-                ${optionsHtml}
-            </select>
-        </td>
-        <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-            <input type="number" name="new_items[${filaIndex}][cantidad]" min="1" value="1" required class="glass-input text-center py-1.5 focus:ring-blue-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
-        </td>
-        <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-            <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 focus:ring-blue-500 font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
-            @if($factura->tipo_movimiento === 'venta')
-                <div class="alerta-costo-badge hidden text-xs font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1.5" style="margin-top: 10px !important; margin-bottom: 2px !important;">
-                    <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+        <td class="col-art align-top py-2.5">
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto / Stock</span>
+                    <button type="button" onclick="eliminarFilaNueva(this)" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-xs font-bold inline-flex items-center gap-1 transition-colors" title="Eliminar ítem agregado">🗑️ Quitar</button>
                 </div>
-            @endif
+                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-blue-500" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
+                    ${optionsHtml}
+                </select>
+            </div>
         </td>
-        <td class="text-right subtotal-display pr-4 font-bold text-blue-600 dark:text-blue-400" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
-            $0
+        <td class="col-cant align-top py-2.5">
+            <div class="flex flex-col gap-1">
+                <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
+                <input type="number" name="new_items[${filaIndex}][cantidad]" min="1" value="1" required class="glass-input text-center py-1.5 focus:ring-blue-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
+            </div>
         </td>
-        <td class="col-accion text-right" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
-            <button type="button" onclick="eliminarFilaNueva(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">🗑️</button>
+        <td class="col-precio align-top py-2.5">
+            <div class="flex flex-col gap-1">
+                <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
+                <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 focus:ring-blue-500 font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
+                @if($factura->tipo_movimiento === 'venta')
+                    <div class="alerta-costo-badge hidden text-[11px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap" style="margin-top: 5px !important; margin-bottom: 2px !important;">
+                        <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+                    </div>
+                @endif
+            </div>
+        </td>
+        <td class="col-subtotal align-top py-2.5 text-right">
+            <div class="flex flex-col gap-1">
+                <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
+                <div class="subtotal-display h-[38px] flex items-center justify-end font-bold text-blue-600 dark:text-blue-400 text-right overflow-hidden text-ellipsis whitespace-nowrap">
+                    $0
+                </div>
+            </div>
         </td>
     `;
     document.getElementById('items-body').appendChild(tr);

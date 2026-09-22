@@ -87,11 +87,13 @@
                     <td data-label="Estado" class="text-center">
                         <span class="pill {{ $cot->anulado ? 'pill-anulado' : ($cot->estado === 'aprobada' ? 'pill-done' : ($cot->estado === 'rechazada' ? 'pill-anulado' : 'pill-pending')) }}">
                             @if($cot->anulado)
-                                Anulada
+                                🚫 Anulada
                             @elseif($cot->estado === 'aprobada')
-                                Aprobada
+                                ✅ Aprobada
                             @elseif($cot->estado === 'rechazada')
-                                Rechazada
+                                ❌ Rechazada
+                            @elseif($cot->estado === 'pendiente')
+                                ⏳ Pendiente
                             @else
                                 {{ ucfirst($cot->estado) }}
                             @endif

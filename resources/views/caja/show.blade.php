@@ -37,6 +37,18 @@
             </div>
             
             <div class="flex items-center gap-3 shrink-0">
+                @php
+                    $facturaRef = null;
+                    if ($movimiento->descripcion && preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $movimiento->descripcion, $mf)) {
+                        $facturaRef = \App\Models\Factura::where('numero_factura', $mf[1])->first();
+                    }
+                @endphp
+                @if($facturaRef)
+                <a href="{{ route('inventario.facturas.show', $facturaRef->id) }}" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400" title="Ver factura {{ $facturaRef->numero_factura }}">
+                    📄 Ver Factura
+                </a>
+                @endif
+
                 <x-print-dropdown 
                     :url="route('caja.print', $movimiento->id)"
                     label="Imprimir"

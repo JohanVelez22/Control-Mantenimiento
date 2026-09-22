@@ -253,6 +253,24 @@ class SeedDemoData extends Command
                     'total_documento' => $totDoc,
                     'total_pagado' => $totPag,
                 ]);
+
+                $conceptoNombre = $isVenta ? 'Venta de Inventario' : 'Compra de Inventario';
+                $concepto = ConceptoCaja::firstOrCreate(['nombre' => $conceptoNombre]);
+                $persona = $isVenta ? $clientes[$i - 1]->nombre : $proveedores[$i - 4]->nombre_razon_social;
+                $desc = ($isVenta ? "Cobro venta #{$num}" : "Pago compra #{$num}");
+
+                MovimientoCaja::create([
+                    'tipo_movimiento' => $isVenta ? 'ingreso' : 'egreso',
+                    'tipo_pago'       => 'efectivo',
+                    'monto'           => $totPag,
+                    'monto_total'     => $totDoc,
+                    'persona'         => $persona,
+                    'concepto_id'     => $concepto->id,
+                    'descripcion'     => $desc,
+                    'fecha'           => $factura->fecha,
+                    'estado'          => 'activo',
+                    'user_id'         => $admin->id,
+                ]);
             }
 
             // 8. MANTENIMIENTOS (5 registros: ORD-1 a ORD-5)

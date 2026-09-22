@@ -55,7 +55,7 @@
  
  <div class="flex items-center gap-3 shrink-0">
  @if($factura->estado !== 'anulada' && !auth()->user()->isInvitado() && $movimientoPadre)
-  <a href="{{ route('caja.edit', $movimientoPadre->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400" title="Ver detalle del movimiento en el módulo de Caja">📦 Ver en Caja</a>
+  <a href="{{ route('caja.show', $movimientoPadre->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400" title="Ver detalle del movimiento en el módulo de Caja">📦 Ver en Caja</a>
  @endif
 
   <x-print-dropdown 
