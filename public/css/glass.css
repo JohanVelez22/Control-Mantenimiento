@@ -1843,6 +1843,7 @@ html.dark .ts-table tbody td {
 
 /* --- TABLAS DENSAS (Mantenimientos, Electrónica - 12 Columnas) --- */
 @media screen and (min-width: 768px) {
+
   .ts-table.table-dense,
   #tabla-mantenimientos,
   #tabla-electronicas {
@@ -1906,6 +1907,7 @@ html.dark .ts-table tbody td {
   }
 
   @media (min-width: 1440px) {
+
     .ts-table.table-dense .col-observacion,
     #tabla-mantenimientos .col-observacion,
     #tabla-electronicas .col-observacion {
@@ -3042,6 +3044,7 @@ select.glass-input:not(.tomselected) {
 .ts-wrapper.single.has-items:not(.no-search).dropdown-active .ts-control>.item {
   display: none !important;
 }
+
 .ts-wrapper.single.has-items:not(.no-search).focus .ts-control>input,
 .ts-wrapper.single.has-items:not(.no-search).dropdown-active .ts-control>input {
   display: inline-block !important;
@@ -3106,12 +3109,12 @@ select.glass-input:not(.tomselected) {
   padding-right: 6px !important;
 }
 
-/* Columna 3: Cantidad (Optimizada horizontalmente sin derrochar espacio) */
+/* Columna 3: Cantidad (Optimizada horizontalmente con espacio para 1000+) */
 #items-table th.col-cantidad,
 #items-table td.col-cantidad {
-  width: 88px !important;
-  min-width: 88px !important;
-  max-width: 90px !important;
+  width: 100px !important;
+  min-width: 95px !important;
+  max-width: 110px !important;
   padding-left: 4px !important;
   padding-right: 4px !important;
   text-align: center !important;
@@ -3120,10 +3123,10 @@ select.glass-input:not(.tomselected) {
 .cantidad-input,
 #items-table .cantidad-input {
   text-align: center !important;
-  padding: 8px 2px 8px 12px !important;
+  padding: 8px 6px !important;
   font-weight: 800 !important;
-  font-size: 14.5px !important;
-  letter-spacing: 0.5px !important;
+  font-size: 14px !important;
+  letter-spacing: normal !important;
 }
 
 #items-table .cantidad-input {
@@ -3140,6 +3143,7 @@ select.glass-input:not(.tomselected) {
   cursor: pointer !important;
   margin-left: 4px !important;
 }
+
 .cantidad-input,
 #items-table .cantidad-input {
   -moz-appearance: number-input !important;
@@ -3163,27 +3167,36 @@ select.glass-input:not(.tomselected) {
   text-align: right !important;
 }
 
-/* Columna 5: Subtotal (Alineación derecha holgada sin saltos) */
+/* Columna 5: Subtotal (Alineación derecha holgada sin saltos ni desbordes) */
 #items-table th.col-subtotal,
 #items-table td.col-subtotal {
-  width: 125px !important;
-  min-width: 120px !important;
-  max-width: 130px !important;
+  width: 140px !important;
+  min-width: 130px !important;
+  max-width: 160px !important;
   padding-left: 5px !important;
   padding-right: 8px !important;
   text-align: right !important;
   white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
-/* Columna 6: Acción / Eliminar (Compacto y simétrico con el margen derecho) */
+.subtotal-cell,
+#items-table .subtotal-cell {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Columna 6: Acción / Eliminar (Centrado, espacioso y siempre al frente) */
 #items-table th.col-accion,
 #items-table td.col-accion {
   width: 58px !important;
   min-width: 58px !important;
-  max-width: 60px !important;
+  max-width: 64px !important;
   padding-left: 2px !important;
-  padding-right: 14px !important;
-  text-align: right !important;
+  padding-right: 2px !important;
+  text-align: center !important;
 }
 
 #items-table td:last-child .btn-danger,
@@ -3214,6 +3227,7 @@ select.glass-input:not(.tomselected) {
    MODO COMPACTO Y RESPONSIVO PARA TABLAS DE ÍTEMS EN MÓVIL (< 768px)
    ========================================================================== */
 @media (max-width: 768px) {
+
   /* Contenedores con scroll táctil suave y min-width protegido */
   .overflow-x-auto {
     -webkit-overflow-scrolling: touch !important;
@@ -3283,7 +3297,7 @@ select.glass-input:not(.tomselected) {
     font-size: 12px !important;
   }
 
-  #items-table .ts-control > input {
+  #items-table .ts-control>input {
     height: 24px !important;
     min-height: 24px !important;
     font-size: 12px !important;
@@ -4470,8 +4484,10 @@ html.dark optgroup {
 .actions-grid button[title*="Ver"],
 .actions-grid button[title*="ver"],
 .actions-grid button[title*="Diagnóstico"] {
-  color: #2563EB !important; /* Azul */
+  color: #2563EB !important;
+  /* Azul */
 }
+
 .btn-action-view:hover,
 .actions-grid a[title*="Ver"]:hover,
 .actions-grid a[title*="ver"]:hover,
@@ -4483,6 +4499,7 @@ html.dark optgroup {
   background: rgba(37, 99, 235, 0.12) !important;
   color: #1D4ED8 !important;
 }
+
 html.dark .btn-action-view,
 html.dark .actions-grid a[title*="Ver"],
 html.dark .actions-grid a[title*="ver"],
@@ -4491,7 +4508,8 @@ html.dark .actions-grid a[title*="detalle"],
 html.dark .actions-grid button[title*="Ver"],
 html.dark .actions-grid button[title*="ver"],
 html.dark .actions-grid button[title*="Diagnóstico"] {
-  color: #60A5FA !important; /* Azul en modo oscuro */
+  color: #60A5FA !important;
+  /* Azul en modo oscuro */
 }
 
 .btn-action-print,
@@ -4501,8 +4519,10 @@ html.dark .actions-grid button[title*="Diagnóstico"] {
 .actions-grid a[title*="PDF"],
 .actions-grid button[title*="Imprimir"],
 .actions-grid button[title*="imprimir"] {
-  color: #059669 !important; /* Verde / Emerald */
+  color: #059669 !important;
+  /* Verde / Emerald */
 }
+
 .btn-action-print:hover,
 .actions-grid a[title*="Imprimir"]:hover,
 .actions-grid a[title*="imprimir"]:hover,
@@ -4513,6 +4533,7 @@ html.dark .actions-grid button[title*="Diagnóstico"] {
   background: rgba(16, 185, 129, 0.12) !important;
   color: #047857 !important;
 }
+
 html.dark .btn-action-print,
 html.dark .actions-grid a[title*="Imprimir"],
 html.dark .actions-grid a[title*="imprimir"],
@@ -4520,7 +4541,8 @@ html.dark .actions-grid a[title*="Factura"],
 html.dark .actions-grid a[title*="PDF"],
 html.dark .actions-grid button[title*="Imprimir"],
 html.dark .actions-grid button[title*="imprimir"] {
-  color: #34D399 !important; /* Verde en modo oscuro */
+  color: #34D399 !important;
+  /* Verde en modo oscuro */
 }
 
 .btn-action-edit,
@@ -4528,8 +4550,10 @@ html.dark .actions-grid button[title*="imprimir"] {
 .actions-grid a[title*="editar"],
 .actions-grid button[title*="Editar"],
 .actions-grid button[title*="editar"] {
-  color: #D97706 !important; /* Amarillo / Ámbar */
+  color: #D97706 !important;
+  /* Amarillo / Ámbar */
 }
+
 .btn-action-edit:hover,
 .actions-grid a[title*="Editar"]:hover,
 .actions-grid a[title*="editar"]:hover,
@@ -4538,12 +4562,14 @@ html.dark .actions-grid button[title*="imprimir"] {
   background: rgba(245, 158, 11, 0.12) !important;
   color: #B45309 !important;
 }
+
 html.dark .btn-action-edit,
 html.dark .actions-grid a[title*="Editar"],
 html.dark .actions-grid a[title*="editar"],
 html.dark .actions-grid button[title*="Editar"],
 html.dark .actions-grid button[title*="editar"] {
-  color: #FBBF24 !important; /* Amarillo en modo oscuro */
+  color: #FBBF24 !important;
+  /* Amarillo en modo oscuro */
 }
 
 .btn-action-baja,
@@ -4553,8 +4579,10 @@ html.dark .actions-grid button[title*="editar"] {
 .actions-grid button[title*="Merma"],
 .actions-grid a[title*="baja"],
 .actions-grid a[title*="Baja"] {
-  color: #9333EA !important; /* Violeta */
+  color: #9333EA !important;
+  /* Violeta */
 }
+
 .btn-action-baja:hover,
 .actions-grid button[title*="baja"]:hover,
 .actions-grid button[title*="Baja"]:hover,
@@ -4565,6 +4593,7 @@ html.dark .actions-grid button[title*="editar"] {
   background: rgba(147, 51, 234, 0.12) !important;
   color: #7E22CE !important;
 }
+
 html.dark .btn-action-baja,
 html.dark .actions-grid button[title*="baja"],
 html.dark .actions-grid button[title*="Baja"],
@@ -4572,7 +4601,8 @@ html.dark .actions-grid button[title*="merma"],
 html.dark .actions-grid button[title*="Merma"],
 html.dark .actions-grid a[title*="baja"],
 html.dark .actions-grid a[title*="Baja"] {
-  color: #C084FC !important; /* Violeta en modo oscuro */
+  color: #C084FC !important;
+  /* Violeta en modo oscuro */
 }
 
 .btn-action-anular,
@@ -4581,8 +4611,10 @@ html.dark .actions-grid a[title*="Baja"] {
 .actions-grid button[title*="Eliminar"],
 .actions-grid a[title*="Anular"],
 .actions-grid a[title*="anular"] {
-  color: #DC2626 !important; /* Rojo */
+  color: #DC2626 !important;
+  /* Rojo */
 }
+
 .btn-action-anular:hover,
 .actions-grid button[title*="Anular"]:hover,
 .actions-grid button[title*="anular"]:hover,
@@ -4592,13 +4624,15 @@ html.dark .actions-grid a[title*="Baja"] {
   background: rgba(220, 38, 38, 0.12) !important;
   color: #B91C1C !important;
 }
+
 html.dark .btn-action-anular,
 html.dark .actions-grid button[title*="Anular"],
 html.dark .actions-grid button[title*="anular"],
 html.dark .actions-grid button[title*="Eliminar"],
 html.dark .actions-grid a[title*="Anular"],
 html.dark .actions-grid a[title*="anular"] {
-  color: #F87171 !important; /* Rojo en modo oscuro */
+  color: #F87171 !important;
+  /* Rojo en modo oscuro */
 }
 
 /* Excepción para botones de Reactivar (icono verde) */
@@ -4608,11 +4642,13 @@ html.dark .actions-grid a[title*="anular"] {
 .actions-grid a[title*="reactivar"] {
   color: #059669 !important;
 }
+
 .actions-grid button[title*="Reactivar"]:hover,
 .actions-grid a[title*="Reactivar"]:hover {
   background: rgba(16, 185, 129, 0.12) !important;
   color: #047857 !important;
 }
+
 html.dark .actions-grid button[title*="Reactivar"],
 html.dark .actions-grid a[title*="Reactivar"] {
   color: #34D399 !important;

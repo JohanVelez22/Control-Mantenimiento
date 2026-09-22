@@ -6,7 +6,7 @@
 @extends($layout)
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-7xl mx-auto">
     <div class="glass-card p-6 md:p-8">
         {{-- Header --}}
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 w-full relative z-20">
@@ -282,6 +282,9 @@
  if (abonoVisual && abonoReal) {
  abonoVisual.addEventListener('input', function(e) {
  let value = e.target.value.replace(/\D/g, "");
+ if (value.length > 12) {
+ value = value.substring(0, 12);
+ }
  if (value !== "") {
  abonoReal.value = value;
  e.target.value = new Intl.NumberFormat('es-CO').format(value);

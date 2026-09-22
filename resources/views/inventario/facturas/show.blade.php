@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="max-w-5xl mx-auto">
+<div class="max-w-7xl mx-auto">
  <div class="glass-card p-6 md:p-8">
 
  {{-- Alertas de estado especiales --}}
@@ -314,6 +314,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (visualInput && realInput) {
         visualInput.addEventListener('input', function() {
             let raw = this.value.replace(/\D/g, '');
+            if (raw.length > 12) {
+                raw = raw.substring(0, 12);
+            }
             if (!raw) {
                 this.value = '';
                 realInput.value = '';

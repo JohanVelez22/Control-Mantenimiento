@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-7xl mx-auto">
     <div class="mb-4 sm:mb-5">
         <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
             🏢 Configuración de Empresa

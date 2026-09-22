@@ -2,7 +2,7 @@
 @section('title', 'Detalle de Movimiento de Caja')
 
 @section('content')
-<div class="max-w-5xl mx-auto">
+<div class="max-w-7xl mx-auto">
     <div class="glass-card p-6 md:p-8">
         
         {{-- Alerta de estado anulado --}}
@@ -20,13 +20,13 @@
                 <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a la lista de caja">⬅️</a>
                 <div>
                     <div class="flex flex-wrap items-center gap-3">
-                        <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+                        <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight whitespace-nowrap">
                             Movimiento <span class="text-blue-600 dark:text-blue-400">#{{ $movimiento->id }}</span>
                         </h2>
-                        <span class="pill {{ $movimiento->anulado ? 'pill-anulado' : 'pill-done' }} text-xs py-1 px-3 font-bold uppercase tracking-wider">
+                        <span class="pill {{ $movimiento->anulado ? 'pill-anulado' : 'pill-done' }} text-xs py-1 px-3 font-bold uppercase tracking-wider whitespace-nowrap">
                             {{ $movimiento->anulado ? 'ANULADO' : 'ACTIVO' }}
                         </span>
-                        <span class="pill {{ $movimiento->tipo_movimiento === 'ingreso' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20' }} text-xs py-1 px-3 font-bold uppercase tracking-wider">
+                        <span class="pill {{ $movimiento->tipo_movimiento === 'ingreso' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20' }} text-xs py-1 px-3 font-bold uppercase tracking-wider whitespace-nowrap">
                             {{ $movimiento->tipo_movimiento === 'ingreso' ? '📈 INGRESO' : '📉 EGRESO' }}
                         </span>
                     </div>
@@ -36,7 +36,7 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-3 shrink-0">
+            <div class="flex flex-wrap items-center gap-3 shrink-0">
                 @php
                     $facturaRef = null;
                     if ($movimiento->descripcion && preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $movimiento->descripcion, $mf)) {

@@ -2,7 +2,7 @@
 @section('title', 'Detalle de Cierre de Caja — ' . $cierre->fecha->format('d/m/Y'))
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-6">
     <div class="glass-card p-6 md:p-8">
         
         {{-- Modal de contraseña para eliminar cierre --}}

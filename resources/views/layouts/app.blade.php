@@ -440,6 +440,9 @@
             if (abonoVisual && abonoReal) {
                 abonoVisual.addEventListener('input', function(e) {
                     let value = e.target.value.replace(/\D/g, "");
+                    if (value.length > 12) {
+                        value = value.substring(0, 12);
+                    }
                     if (value !== "") {
                         abonoReal.value = value;
                         e.target.value = new Intl.NumberFormat('es-CO').format(value);
@@ -1190,6 +1193,10 @@
                 
                 if (val.length > 1 && val.startsWith('0')) {
                     val = val.substring(1);
+                }
+
+                if (val.length > 12) {
+                    val = val.substring(0, 12);
                 }
 
                 const num = parseInt(val, 10);

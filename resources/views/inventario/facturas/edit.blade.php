@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-7xl mx-auto">
     <div class="glass-card p-6 md:p-8">
         <div class="flex items-center gap-3 mb-6">
             <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
@@ -39,7 +39,7 @@
             {{-- Fecha --}}
             <div>
                 <label class="field-label">Fecha de Factura *</label>
-                <input type="date" name="fecha" required value="{{ old('fecha', $factura->fecha->format('Y-m-d')) }}" class="glass-input">
+                <input type="date" name="fecha" required value="{{ old('fecha', $factura->fecha->format('Y-m-d')) }}" class="glass-input w-40" style="width: 155px !important; max-width: 155px !important;">
                 @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
 
@@ -62,30 +62,61 @@
 .table-factura-edit th.col-art,
 .table-factura-edit td.col-art {
     width: auto !important;
+    min-width: 260px !important;
     padding-left: 16px !important;
     padding-right: 8px !important;
     text-align: left !important;
 }
 .table-factura-edit th.col-cant,
 .table-factura-edit td.col-cant {
-    width: 96px !important;
+    width: 105px !important;
     padding-left: 4px !important;
+    padding-right: 4px !important;
+    text-align: center !important;
+}
+.table-factura-edit input.quantity-input {
+    width: 100% !important;
+    padding-left: 10px !important;
     padding-right: 4px !important;
     text-align: center !important;
 }
 .table-factura-edit th.col-precio,
 .table-factura-edit td.col-precio {
-    width: 195px !important;
+    width: 165px !important;
     padding-left: 6px !important;
     padding-right: 6px !important;
     text-align: right !important;
 }
 .table-factura-edit th.col-subtotal,
 .table-factura-edit td.col-subtotal {
-    width: 290px !important;
+    width: 140px !important;
     padding-left: 6px !important;
     padding-right: 16px !important;
     text-align: right !important;
+}
+/* Evita que descripciones largas rompan altura o se corten verticalmente */
+.table-factura-edit .ts-wrapper .ts-control {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    min-height: 38px !important;
+    height: 38px !important;
+}
+.table-factura-edit .ts-control .ts-item-display,
+.table-factura-edit .ts-control>.item {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    word-break: normal !important;
+    line-height: normal !important;
+    max-width: 100% !important;
+    display: inline-block !important;
+}
+.table-factura-edit select.stock-select {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-height: 38px !important;
+    height: 38px !important;
 }
 </style>
                 <div class="overflow-x-auto pb-2">
@@ -275,6 +306,12 @@ function agregarFila() {
     const newSelect = tr.querySelector('.stock-select');
     if (newSelect && typeof window.initGlassTomSelect === 'function') {
         window.initGlassTomSelect(newSelect);
+        if (newSelect.tomselect) {
+            newSelect.tomselect.on('change', function() {
+                const text = newSelect.options[newSelect.selectedIndex]?.text?.trim() || '';
+                if (newSelect.tomselect.control) newSelect.tomselect.control.setAttribute('title', text);
+            });
+        }
     }
 }
 
@@ -383,6 +420,25 @@ function recalcularTotalesEdicion() {
 
 document.addEventListener('DOMContentLoaded', function() {
     recalcularTotalesEdicion();
+
+    setTimeout(() => {
+        document.querySelectorAll('#factura-items-table .stock-select').forEach(sel => {
+            const updateTitle = () => {
+                const text = sel.options[sel.selectedIndex]?.text?.trim() || '';
+                if (sel.tomselect && sel.tomselect.control) {
+                    sel.tomselect.control.setAttribute('title', text);
+                } else {
+                    sel.setAttribute('title', text);
+                }
+            };
+            updateTitle();
+            if (sel.tomselect) {
+                sel.tomselect.on('change', updateTitle);
+            } else {
+                sel.addEventListener('change', updateTitle);
+            }
+        });
+    }, 150);
 
     const form = document.querySelector('form');
     if (form) {

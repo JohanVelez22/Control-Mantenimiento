@@ -142,6 +142,9 @@
 
             inputVisual.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/\D/g, "");
+                if (value.length > 12) {
+                    value = value.substring(0, 12);
+                }
                 if (value !== "") {
                     inputReal.value = value;
                     e.target.value = new Intl.NumberFormat('es-CO').format(value);

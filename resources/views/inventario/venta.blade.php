@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="max-w-5xl mx-auto">
+<div class="max-w-7xl mx-auto">
  <div class="glass-card p-6 md:p-8">
  <div class="flex items-center gap-3 mb-8">
  <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
@@ -55,53 +55,56 @@
 
  <div class="overflow-x-auto pb-2 max-h-[420px] overflow-y-auto">
  <table class="ts-table w-full table-fixed" id="items-table">
- <thead>
- <tr>
- <th class="w-auto px-2 py-3">Artículo del Stock</th>
- <th class="w-24 text-center px-2 py-3">Cant.</th>
- <th class="w-44 text-right px-3 py-3">Precio Un. ($)</th>
- <th class="w-36 text-right px-3 py-3">Subtotal</th>
- <th class="col-accion"></th>
- </tr>
- </thead>
- <tbody id="items-body">
-<tr class="item-row bg-transparent">
-  <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-   <select name="items[0][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
-   <option value="">Seleccionar producto...</option>
-  @foreach($stocks as $s)
-  <option value="{{ $s->id }}" data-precio-compra="{{ $s->precio_compra }}" data-precio-venta="{{ $s->precio_venta }}" data-precio-tecnico="{{ $s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
-  {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
-  </option>
-  @endforeach
-  </select>
-  </td>
-  <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-  <input type="number" name="items[0][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-emerald-500">
-  </td>
-  <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-  <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
-  <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
-  <div class="alerta-costo-badge hidden text-xs font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1.5" style="margin-top: 10px !important; margin-bottom: 2px !important;">
-      <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
-  </div>
-  </td>
-  <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell pr-4" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
-  $0
-  </td>
-  <td class="col-accion text-right" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
-  <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">🗑️</button>
-  </td>
-  </tr>
- </tbody>
- <tfoot>
- <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
- <td colspan="3" class="text-right font-bold text-gray-500 uppercase tracking-widest text-xs pt-4 pb-4">Total Documento:</td>
- <td class="text-right font-black text-2xl text-emerald-600 dark:text-emerald-400 pt-4 pb-4 pr-4" id="total-display">$0</td>
- <td></td>
- </tr>
- </tfoot>
- </table>
+        <thead>
+            <tr>
+                <th class="w-auto px-2 py-3">Artículo del Stock</th>
+                <th class="w-32 text-center px-2 py-3">Cant.</th>
+                <th class="w-48 text-right px-3 py-3">Precio Un. ($)</th>
+                <th class="w-56 text-right px-3 py-3">Subtotal</th>
+                <th class="w-16 text-center py-3"></th>
+            </tr>
+        </thead>
+        <tbody id="items-body">
+            <tr class="item-row bg-transparent">
+                <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
+                    <select name="items[0][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
+                        <option value="">Seleccionar producto...</option>
+                        @foreach($stocks as $s)
+                            <option value="{{ $s->id }}" data-precio-compra="{{ $s->precio_compra }}" data-precio-venta="{{ $s->precio_venta }}" data-precio-tecnico="{{ $s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
+                                {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
+                            </option>
+                        @endforeach
+                    </select>
+                </td>
+                <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
+                    <input type="number" name="items[0][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-emerald-500">
+                </td>
+                <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
+                    <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
+                    <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
+                    <div class="alerta-costo-badge hidden text-xs font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1.5" style="margin-top: 10px !important; margin-bottom: 2px !important;">
+                        <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+                    </div>
+                </td>
+                <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell pr-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
+                    $0
+                </td>
+                <td class="col-accion text-center" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
+                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
+                <td colspan="5" class="px-5 py-4">
+                    <div class="flex justify-end items-center gap-4">
+                        <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
+                        <span class="font-black text-2xl text-emerald-600 dark:text-emerald-400 whitespace-nowrap" id="total-display">$0</span>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
  </div>
  </div>
 
@@ -213,10 +216,10 @@ function agregarFila() {
       <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
   </div>
   </td>
-  <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell pr-4" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$0</td>
-  <td class="col-accion text-right" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
-  <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">🗑️</button>
-  </td>`;
+    <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell pr-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$0</td>
+    <td class="col-accion text-center" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
+        <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
+    </td>`;
   tbody.appendChild(tr);
   filaIndex++;
   bindFila(tr);

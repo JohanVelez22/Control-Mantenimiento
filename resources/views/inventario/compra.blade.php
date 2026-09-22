@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="max-w-5xl mx-auto">
+<div class="max-w-7xl mx-auto">
  <div class="glass-card p-6 md:p-8">
  <div class="flex items-center gap-3 mb-8">
  <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
@@ -56,51 +56,54 @@
 
  <div class="overflow-x-auto pb-2 max-h-[420px] overflow-y-auto">
  <table class="ts-table w-full table-fixed" id="items-table">
- <thead>
- <tr>
- <th class="w-auto px-2 py-3">Artículo del Stock</th>
- <th class="w-24 text-center px-2 py-3">Cant.</th>
- <th class="w-40 text-right px-3 py-3">Precio Un. ($)</th>
- <th class="w-36 text-right px-3 py-3">Subtotal</th>
- <th class="col-accion"></th>
- </tr>
- </thead>
- <tbody id="items-body">
- {{-- Fila base --}}
- <tr class="item-row bg-transparent">
- <td>
- <select name="items[0][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
- <option value="">Seleccionar producto...</option>
- @foreach($stocks as $s)
- <option value="{{ $s->id }}" data-precio="{{ $s->precio_compra }}">
- {{ $s->producto }} (Stock: {{ $s->cantidad }}) — P.Compra: ${{ number_format($s->precio_compra, 0, ',', '.') }}
- </option>
- @endforeach
- </select>
- </td>
- <td>
- <input type="number" name="items[0][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-orange-500">
- </td>
-<td>
-  <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
-  <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-orange-500 font-bold text-slate-800 dark:text-white">
-</td>
- <td class="text-right font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle pr-4">
- $0
- </td>
- <td class="col-accion align-middle text-right">
- <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">🗑️</button>
- </td>
- </tr>
- </tbody>
- <tfoot>
- <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
- <td colspan="3" class="text-right font-bold text-gray-500 uppercase tracking-widest text-xs pt-4 pb-4">Total Documento:</td>
- <td class="text-right font-black text-2xl text-orange-600 dark:text-orange-400 pt-4 pb-4 pr-4" id="total-display">$0</td>
- <td></td>
- </tr>
- </tfoot>
- </table>
+        <thead>
+            <tr>
+                <th class="w-auto px-2 py-3">Artículo del Stock</th>
+                <th class="w-32 text-center px-2 py-3">Cant.</th>
+                <th class="w-48 text-right px-3 py-3">Precio Un. ($)</th>
+                <th class="w-56 text-right px-3 py-3">Subtotal</th>
+                <th class="w-16 text-center py-3"></th>
+            </tr>
+        </thead>
+        <tbody id="items-body">
+            {{-- Fila base --}}
+            <tr class="item-row bg-transparent">
+                <td>
+                    <select name="items[0][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
+                        <option value="">Seleccionar producto...</option>
+                        @foreach($stocks as $s)
+                            <option value="{{ $s->id }}" data-precio="{{ $s->precio_compra }}">
+                                {{ $s->producto }} (Stock: {{ $s->cantidad }}) — P.Compra: ${{ number_format($s->precio_compra, 0, ',', '.') }}
+                            </option>
+                        @endforeach
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="items[0][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-orange-500">
+                </td>
+                <td>
+                    <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
+                    <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-orange-500 font-bold text-slate-800 dark:text-white">
+                </td>
+                <td class="text-right font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle pr-3 whitespace-nowrap overflow-hidden text-ellipsis">
+                    $0
+                </td>
+                <td class="col-accion align-middle text-center">
+                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
+                <td colspan="5" class="px-5 py-4">
+                    <div class="flex justify-end items-center gap-4">
+                        <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
+                        <span class="font-black text-2xl text-orange-600 dark:text-orange-400 whitespace-nowrap" id="total-display">$0</span>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
  </div>
  </div>
 
@@ -171,10 +174,10 @@ tr.innerHTML = `
   <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="0" required class="hidden">
   <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-orange-500 font-bold text-slate-800 dark:text-white">
   </td>
-  <td class="text-right font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle pr-4">$0</td>
-  <td class="col-accion align-middle text-right">
-  <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">🗑️</button>
-  </td>`;
+    <td class="text-right font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle pr-3 whitespace-nowrap overflow-hidden text-ellipsis">$0</td>
+    <td class="col-accion align-middle text-center">
+        <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
+    </td>`;
  tbody.appendChild(tr);
  filaIndex++;
  bindFila(tr);

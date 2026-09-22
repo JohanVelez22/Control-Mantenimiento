@@ -204,6 +204,9 @@
         }
         vis.addEventListener('input', function (e) {
             var raw = e.target.value.replace(/\D/g, '');
+            if (raw.length > 12) {
+                raw = raw.substring(0, 12);
+            }
             real.value = raw;
             e.target.value = raw ? new Intl.NumberFormat('es-CO').format(parseInt(raw, 10)) : '';
         });

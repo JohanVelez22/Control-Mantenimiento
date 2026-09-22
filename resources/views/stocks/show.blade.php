@@ -2,7 +2,7 @@
 @section('title', 'Detalles de Producto')
 
 @section('content')
-<div class="max-w-5xl mx-auto">
+<div class="max-w-7xl mx-auto">
     <div class="glass-card p-6 md:p-8">
         
         {{-- Alerta de estado --}}
