@@ -1016,10 +1016,6 @@
                     defaultPlaceholder = 'Seleccionar...';
                 }
 
-                if (!isNoSearch) {
-                    defaultPlaceholder = ' '; 
-                }
-
                 let defaultConfig = {
                     create: false,
                     maxOptions: 1000,
@@ -1056,12 +1052,25 @@
 
                 let tsInstance = new TomSelect(el, tsConfig);
 
-                // Asegurar cierre y desenfoque inmediato al seleccionar cualquier opción (con click o Enter)
+                // Asegurar cierre, limpieza de lo escrito y desenfoque al seleccionar cualquier opción
+                // Se usa requestAnimationFrame para que TomSelect termine de renderizar el ítem
+                // seleccionado ANTES de quitar .focus (que lo oculta vía CSS)
                 tsInstance.on('item_add', function() {
                     tsInstance.close();
-                    if (isNoSearch && tsInstance.control) {
-                        tsInstance.control.blur();
-                    }
+                    tsInstance.setTextboxValue('');
+                    requestAnimationFrame(function() {
+                        tsInstance.blur();
+                    });
+                });
+
+                // Al cerrar el desplegable, limpiar cualquier texto que se haya escrito para buscar
+                tsInstance.on('dropdown_close', function() {
+                    tsInstance.setTextboxValue('');
+                });
+
+                // Al abrir el desplegable, asegurar que el campo de búsqueda esté limpio para escribir
+                tsInstance.on('dropdown_open', function() {
+                    tsInstance.setTextboxValue('');
                 });
 
                 // Track open TomSelect instances for sidebar repositioning

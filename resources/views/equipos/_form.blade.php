@@ -14,8 +14,8 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div class="md:col-span-2">
             <label class="field-label flex items-center gap-2"><span>👤 / 🏢</span> Propietario (Cliente / Proveedor) *</label>
-            <select name="propietario_global" required class="glass-input no-search mt-1 text-sm font-bold" data-placeholder="Seleccione cliente o proveedor...">
-                <option value="">Seleccione cliente o proveedor...</option>
+            <select name="propietario_global" required class="glass-input mt-1 text-sm font-bold" data-placeholder="Buscar cliente o proveedor...">
+                <option value="">Buscar cliente o proveedor...</option>
                 @foreach($clientes as $cliente)
                     <option value="Cliente:{{ $cliente->id }}" {{ $selPropietario == 'Cliente:'.$cliente->id ? 'selected' : '' }}>
                         👤 Cliente: {{ $cliente->nombre }} ({{ $cliente->identificacion }}){{ $cliente->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}

@@ -56,8 +56,8 @@
 
         <div>
             <label for="proveedor_id" class="field-label">Proveedor *</label>
-            <select name="proveedor_id" id="proveedor_id" required class="glass-input no-search">
-                <option value="">Seleccione un proveedor...</option>
+            <select name="proveedor_id" id="proveedor_id" required class="glass-input" data-placeholder="Buscar proveedor...">
+                <option value="">Buscar proveedor...</option>
                 @foreach($proveedores as $proveedor)
                     <option value="{{ $proveedor->id }}" {{ $selProv == $proveedor->id ? 'selected' : '' }}>
                         {{ $proveedor->nombre_razon_social }} ({{ $proveedor->identificacion }})

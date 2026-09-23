@@ -20,8 +20,8 @@
             {{-- Cliente / Proveedor --}}
             <div class="md:col-span-2 min-w-0">
                 <label class="field-label">Cliente / Proveedor *</label>
-                <select name="facturable_global" required class="glass-input no-search font-bold" data-placeholder="Seleccionar...">
-                    <option value="">Seleccionar...</option>
+                <select name="facturable_global" required class="glass-input font-bold" data-placeholder="Buscar cliente o proveedor...">
+                    <option value="">Buscar cliente o proveedor...</option>
                     @foreach($proveedores as $p)
                         <option value="Proveedor:{{ $p->id }}" {{ ($factura->facturable_type === 'App\Models\Proveedor' && $factura->facturable_id == $p->id) ? 'selected' : '' }}>
                             🏢 Proveedor: {{ $p->nombre_razon_social }} ({{ $p->identificacion }})

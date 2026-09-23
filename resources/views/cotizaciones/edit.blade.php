@@ -27,8 +27,8 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-5 p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
                 <div class="md:col-span-2">
                     <label class="field-label">Cliente / Proveedor *</label>
-                    <select name="facturable_global" required class="glass-input no-search focus:ring-blue-500" data-placeholder="Seleccionar cliente o proveedor...">
-                        <option value="">Seleccionar destinatario...</option>
+                    <select name="facturable_global" required class="glass-input focus:ring-blue-500" data-placeholder="Buscar cliente o proveedor...">
+                        <option value="">Buscar cliente o proveedor...</option>
                         @foreach($clientes as $c)
                             <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ $selFacturable == "Cliente:{$c->id}" ? 'selected' : '' }}>
                                 👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}
@@ -85,12 +85,13 @@
                         </tbody>
                         <tfoot>
                             <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
-                                <td colspan="6" class="px-4 py-4">
-                                    <div class="flex justify-end items-center gap-4">
-                                        <span class="font-bold text-slate-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Cotización:</span>
-                                        <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">$0</span>
-                                    </div>
+                                <td colspan="4" class="py-4 text-right pr-2">
+                                    <span class="font-bold text-slate-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Cotización:</span>
                                 </td>
+                                <td class="py-4 text-right pr-2">
+                                    <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">$0</span>
+                                </td>
+                                <td class="py-4"></td>
                             </tr>
                         </tfoot>
                     </table>

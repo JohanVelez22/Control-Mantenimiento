@@ -2,14 +2,10 @@
 
  {{-- Buscar cliente o proveedor --}}
  <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
- <label class="field-label flex items-center gap-2"><span>🔍</span> Buscar Cliente / Proveedor (Opcional)</label>
- <div class="flex gap-2 items-center">
- <input type="text" id="cliente_busqueda" placeholder="Buscar por nombre o cédula..." class="glass-input flex-1 h-[42px]">
- <button type="button" onclick="buscarClienteCaja()" class="btn-primary h-[42px] flex items-center justify-center">Buscar</button>
- <button type="button" onclick="limpiarClienteCaja()" class="btn-ghost px-3 h-[42px] flex items-center justify-center">✕</button>
- </div>
+ <label class="field-label flex items-center gap-2"><span>🔍</span> Buscar Cliente / Proveedor</label>
+ <input type="text" id="cliente_busqueda" placeholder="Escribe nombre o cédula para buscar..." class="glass-input h-[42px]">
  <div id="cliente_resultados" class="mt-2 hidden space-y-1 max-h-40 overflow-y-auto glass-card p-2 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-lg"></div>
- <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2">Selecciona un cliente para autocompletar los campos. También puedes escribir directamente abajo.</p>
+ <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2">Escribe para buscar y selecciona un cliente para autocompletar los campos. También puedes escribir directamente abajo.</p>
  </div>
  
     @php
@@ -333,15 +329,20 @@
             document.getElementById('caja_empresa').value = entidad.nombre;
             document.getElementById('caja_persona').value = '';
         }
-        document.getElementById('cliente_busqueda').value = entidad.nombre + ' (' + (entidad.identificacion || '') + ')';
+        const icon = entidad.tipo_entidad === 'cliente' ? '👤' : '🏢';
+        const typeLabel = entidad.tipo_entidad === 'cliente' ? 'Cliente' : 'Proveedor';
+        document.getElementById('cliente_busqueda').value = icon + ' ' + typeLabel + ': ' + entidad.nombre + ' (' + (entidad.identificacion || '') + ')';
         document.getElementById('cliente_resultados').classList.add('hidden');
         actualizarAvisoEntidad();
     }
 
-    function limpiarClienteCaja() {
-        document.getElementById('cliente_busqueda').value = '';
-        document.getElementById('cliente_resultados').classList.add('hidden');
-    }
+ // Búsqueda en tiempo real mientras se escribe
+ const inputBusquedaCaja = document.getElementById('cliente_busqueda');
+ if (inputBusquedaCaja) {
+     inputBusquedaCaja.addEventListener('input', function() {
+         buscarClienteCaja();
+     });
+ }
 
  // Búsqueda al presionar Enter (evitando el envío del formulario)
  document.getElementById('cliente_busqueda').addEventListener('keydown', function(e) {

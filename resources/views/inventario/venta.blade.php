@@ -20,8 +20,8 @@
  </div>
  <div class="w-full flex-1 min-w-0">
  <label class="field-label">Cliente / Proveedor *</label>
- <select name="facturable_global" required class="glass-input no-search focus:ring-emerald-500" data-placeholder="Seleccionar...">
- <option value="">Seleccionar...</option>
+ <select name="facturable_global" required class="glass-input focus:ring-emerald-500" data-placeholder="Buscar cliente o proveedor...">
+ <option value="">Buscar cliente o proveedor...</option>
  @foreach($clientes as $c)
  <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ old('facturable_global') == "Cliente:{$c->id}" ? 'selected' : '' }}>
  👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}
@@ -60,7 +60,7 @@
                 <th class="w-auto px-2 py-3">Artículo del Stock</th>
                 <th class="w-32 text-center px-2 py-3">Cant.</th>
                 <th class="w-48 text-right px-3 py-3">Precio Un. ($)</th>
-                <th class="w-56 text-right px-3 py-3">Subtotal</th>
+                <th class="w-44 text-right px-3 py-3">Subtotal</th>
                 <th class="w-16 text-center py-3"></th>
             </tr>
         </thead>
@@ -96,12 +96,13 @@
         </tbody>
         <tfoot>
             <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
-                <td colspan="5" class="px-5 py-4">
-                    <div class="flex justify-end items-center gap-4">
-                        <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
-                        <span class="font-black text-2xl text-emerald-600 dark:text-emerald-400 whitespace-nowrap" id="total-display">$0</span>
-                    </div>
+                <td colspan="3" class="py-4 text-right pr-2">
+                    <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                 </td>
+                <td class="py-4 text-right pr-3">
+                    <span class="font-black text-2xl text-emerald-600 dark:text-emerald-400 whitespace-nowrap" id="total-display">$0</span>
+                </td>
+                <td class="py-4"></td>
             </tr>
         </tfoot>
     </table>

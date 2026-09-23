@@ -2852,10 +2852,16 @@ html.dark .glass-backdrop {
   transition: color 0.2s ease;
 }
 
-/* Hacer que el placeholder desaparezca al hacer clic (focus) para que quede en blanco */
-.ts-control.focus input::placeholder,
-.ts-control input:focus::placeholder {
+/* Hacer que el placeholder desaparezca al hacer clic (focus) solo en selects no-search */
+.ts-wrapper.no-search .ts-control.focus input::placeholder,
+.ts-wrapper.no-search .ts-control input:focus::placeholder {
   color: transparent !important;
+}
+
+/* En selects con búsqueda, mantener visible el placeholder en tono suave hasta que el usuario escriba */
+.ts-wrapper:not(.no-search) .ts-control input:focus::placeholder {
+  color: #94a3b8 !important;
+  opacity: 0.8 !important;
 }
 
 /* Evitar Flash of Unstyled Content (FOUC) en los selects nativos:
@@ -3017,11 +3023,17 @@ select.glass-input:not(.tomselected) {
   z-index: 10;
 }
 
-/* Ocultar el cursor vertical parpadeante pero mantener la búsqueda / filtrado activo y desplegable abierto */
-.ts-control input,
-.ts-wrapper .ts-control input {
+/* Ocultar el cursor vertical parpadeante solo para selects no-search */
+.ts-wrapper.no-search .ts-control input,
+.ts-control.no-search input {
   caret-color: transparent !important;
   cursor: pointer !important;
+}
+
+/* En selects con búsqueda interactiva (como cliente o proveedor), mostrar cursor de texto y permitir escribir */
+.ts-wrapper:not(.no-search) .ts-control input {
+  caret-color: auto !important;
+  cursor: text !important;
 }
 
 /* Eliminar cualquier subrayado de texto en las opciones del desplegable */
