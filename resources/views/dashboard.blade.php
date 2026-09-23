@@ -155,7 +155,7 @@
   </div>
   </div>
 
-<div class="glass-card p-6 md:px-8 pb-4 md:pb-5">
+<div class="glass-card p-6 md:px-8">
 
  {{-- Tabs --}}
  <div class="flex items-center gap-1 mb-5 border-b border-gray-200 dark:border-gray-600">
@@ -257,7 +257,7 @@
  </tbody>
  </table>
  </div>
-    <div class="mt-3 md:mt-3 text-right">
+    <div class="table-footer-btn flex justify-end">
         <a href="{{ route('mantenimientos.reportes') }}" class="btn-primary">
             📈 Ver reporte detallado →
         </a>
@@ -346,11 +346,11 @@
  </tbody>
  </table>
  </div>
-    <div class="mt-3 md:mt-3 text-right">
+    <div class="table-footer-btn flex justify-end">
         <a href="{{ route('electronicas.reportes') }}" class="btn-purple">
- 📈 Ver reporte detallado →
- </a>
- </div>
+            📈 Ver reporte detallado →
+        </a>
+    </div>
  </div>
 
 </div>

@@ -1806,14 +1806,28 @@ html.dark .ts-table.table-electronica tbody tr:hover {
   border-bottom: none;
 }
 
-/* Margen inferior holgado y elegante en tarjetas contenedoras de tablas */
+/* Margen inferior en tarjetas contenedoras de tablas */
 .glass-card:has(.ts-table),
 .glass-card:has(table) {
-  padding-bottom: 30px !important;
+  padding-bottom: 24px !important;
 }
 
 .glass-card .overflow-x-auto {
   padding-bottom: 4px !important;
+  margin-bottom: 0 !important;
+}
+
+/* Espacio vertical simétrico e idéntico para paginadores y botones de pie de tabla */
+.glass-card:has(nav[role="navigation"]),
+.glass-card:has(.table-footer-btn),
+.glass-card:has(.table-pagination-wrapper) {
+  padding-bottom: 14px !important;
+}
+
+.glass-card .table-footer-btn,
+.glass-card div:has(> nav[role="navigation"]),
+.glass-card .table-pagination-wrapper {
+  margin-top: 10px !important;
   margin-bottom: 0 !important;
 }
 
