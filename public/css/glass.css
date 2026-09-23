@@ -1831,6 +1831,13 @@ html.dark .ts-table.table-electronica tbody tr:hover {
   margin-bottom: 0 !important;
 }
 
+/* Cuando el pie de tabla/formulario tiene un divisor horizontal superior */
+.glass-card .table-footer-btn.border-t,
+.glass-card .table-footer-btn[class*="border-t"] {
+  margin-top: 14px !important;
+  padding-top: 14px !important;
+}
+
 /* Ocultar contenedores de paginación vacíos para evitar huecos innecesarios */
 .glass-card div:has(> nav:empty),
 .glass-card .flex:empty {

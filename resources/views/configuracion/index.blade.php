@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto">
+<div>
     <div class="mb-4 sm:mb-5">
         <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
             🏢 Configuración de Empresa
@@ -9,7 +9,7 @@
         <p class="text-gray-500 font-medium mt-1.5">Gestiona la información comercial que aparecerá en los reportes y facturas de tus operaciones.</p>
     </div>
 
-    <form action="{{ route('configuracion.update') }}" method="POST" enctype="multipart/form-data" class="glass-card p-6 md:p-8" id="form-configuracion" onsubmit="submitConfiguracion(event)">
+    <form action="{{ route('configuracion.update') }}" method="POST" enctype="multipart/form-data" class="glass-card p-6" id="form-configuracion" onsubmit="submitConfiguracion(event)">
         @csrf
 
         <div class="flex flex-col md:flex-row gap-8">
@@ -140,7 +140,7 @@
         </div>
 
         {{-- Botón Guardar --}}
-        <div class="pt-6 mt-6 border-t border-gray-200/50 dark:border-white/10 flex justify-end">
+        <div class="table-footer-btn border-t border-gray-200/50 dark:border-white/10 flex justify-end">
             <button type="submit" class="btn-save flex items-center gap-2">
                 <span>💾</span>
                 <span>Guardar Configuración</span>
