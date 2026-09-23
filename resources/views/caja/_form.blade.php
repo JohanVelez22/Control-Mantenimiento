@@ -1,18 +1,41 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
- {{-- Buscar cliente o proveedor --}}
- <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
- <label class="field-label flex items-center gap-2"><span>🔍</span> Buscar Cliente / Proveedor</label>
- <input type="text" id="cliente_busqueda" placeholder="Escribe nombre o cédula para buscar..." class="glass-input h-[42px]">
- <div id="cliente_resultados" class="mt-2 hidden space-y-1 max-h-40 overflow-y-auto glass-card p-2 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-lg"></div>
- <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2">Escribe para buscar y selecciona un cliente para autocompletar los campos. También puedes escribir directamente abajo.</p>
- </div>
- 
     @php
         $valEmpresa = old('empresa', request('empresa', $movimiento->empresa ?? ''));
         $valPersona = old('persona', request('persona', $movimiento->persona ?? ''));
         $tieneEntidad = !empty(trim($valEmpresa)) || !empty(trim($valPersona));
     @endphp
+
+    {{-- Buscar cliente o proveedor con desplegable interactivo --}}
+    <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
+        <label class="field-label flex items-center justify-between mb-1.5" for="select_entidad_caja">
+            <span class="flex items-center gap-2"><span>🔍</span> Buscar Cliente / Proveedor</span>
+        </label>
+        <select id="select_entidad_caja" class="glass-input w-full" data-placeholder="Buscar cliente o proveedor...">
+            <option value="">Buscar cliente o proveedor...</option>
+            @if(isset($todasEntidades))
+                @foreach($todasEntidades as $ent)
+                    @php
+                        $isCli = $ent->tipo_entidad === 'cliente';
+                        $icon = $isCli ? '👤' : '🏢';
+                        $tipoStr = $isCli ? 'Cliente' : 'Proveedor';
+                        $idStr = !empty($ent->identificacion) ? " ({$ent->identificacion})" : '';
+                        $valStr = ($isCli ? 'Cliente:' : 'Proveedor:') . $ent->id;
+                        $isSelected = false;
+                        if (!empty($valPersona) && $isCli && trim($valPersona) === trim($ent->nombre)) {
+                            $isSelected = true;
+                        } elseif (!empty($valEmpresa) && !$isCli && trim($valEmpresa) === trim($ent->nombre)) {
+                            $isSelected = true;
+                        }
+                    @endphp
+                    <option value="{{ $valStr }}" data-tipo="{{ $ent->tipo_entidad }}" data-nombre="{{ $ent->nombre }}" {{ $isSelected ? 'selected' : '' }}>
+                        {{ $icon }} {{ $tipoStr }}: {{ $ent->nombre }}{{ $idStr }}
+                    </option>
+                @endforeach
+            @endif
+        </select>
+        <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2">Escribe para filtrar o despliega la lista. Al seleccionar uno se completan automáticamente los campos de abajo.</p>
+    </div>
 
     {{-- Empresa o Persona (uno de los dos) --}}
     <div class="md:col-span-2">
@@ -268,40 +291,6 @@
   formatInput('monto_visual', 'monto_real');
   formatInput('monto_total_visual', 'monto_total_real');
 
-  const todasEntidades = @json($todasEntidades);
-
-  function buscarClienteCaja() {
- const termino = document.getElementById('cliente_busqueda').value.trim().toLowerCase();
- const resultadosDiv = document.getElementById('cliente_resultados');
- resultadosDiv.innerHTML = '';
-
- if (!termino) {
- resultadosDiv.classList.add('hidden');
- return;
- }
-
- const encontrados = todasEntidades.filter(c =>
- c.nombre.toLowerCase().includes(termino) ||
- (c.identificacion && c.identificacion.toLowerCase().includes(termino))
- );
-
- if (encontrados.length === 0) {
- resultadosDiv.innerHTML = '<p class="text-xs font-semibold text-gray-500 py-2 text-center">No se encontraron resultados.</p>';
- } else {
- encontrados.forEach(c => {
- const btn = document.createElement('button');
- btn.type = 'button';
- btn.className = 'w-full text-left px-3 py-2 text-sm bg-transparent hover:bg-blue-100/50 dark:hover:bg-slate-800/50 rounded-lg transition-colors border-b border-gray-100 dark:border-white/5 last:border-0';
- const icon = c.tipo_entidad === 'cliente' ? '👤' : '🏢';
- const typeLabel = c.tipo_entidad === 'cliente' ? 'Cliente' : 'Proveedor';
- btn.innerHTML = `<div class="font-bold text-slate-800 dark:text-white">${icon} ${c.nombre}</div> <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">${typeLabel} • ${c.identificacion || 'N/A'}</div>`;
- btn.onclick = () => seleccionarEntidadCaja(c);
- resultadosDiv.appendChild(btn);
- });
- }
- resultadosDiv.classList.remove('hidden');
- }
-
     function actualizarAvisoEntidad() {
         var aviso = document.getElementById('aviso_empresa_persona');
         var emp = document.getElementById('caja_empresa');
@@ -321,36 +310,26 @@
     if (inputPersona) inputPersona.addEventListener('input', actualizarAvisoEntidad);
     actualizarAvisoEntidad();
 
-    function seleccionarEntidadCaja(entidad) {
-        if (entidad.tipo_entidad === 'cliente') {
-            document.getElementById('caja_persona').value = entidad.nombre;
-            document.getElementById('caja_empresa').value = '';
-        } else {
-            document.getElementById('caja_empresa').value = entidad.nombre;
-            document.getElementById('caja_persona').value = '';
-        }
-        const icon = entidad.tipo_entidad === 'cliente' ? '👤' : '🏢';
-        const typeLabel = entidad.tipo_entidad === 'cliente' ? 'Cliente' : 'Proveedor';
-        document.getElementById('cliente_busqueda').value = icon + ' ' + typeLabel + ': ' + entidad.nombre + ' (' + (entidad.identificacion || '') + ')';
-        document.getElementById('cliente_resultados').classList.add('hidden');
-        actualizarAvisoEntidad();
+    // Sincronizar selección del desplegable con los campos Empresa y Persona
+    const selectEntidadCaja = document.getElementById('select_entidad_caja');
+    if (selectEntidadCaja) {
+        selectEntidadCaja.addEventListener('change', function() {
+            const opt = this.options[this.selectedIndex];
+            if (!opt || !this.value) return;
+            const tipo = opt.getAttribute('data-tipo');
+            const nombre = opt.getAttribute('data-nombre');
+            if (!nombre) return;
+
+            if (tipo === 'cliente') {
+                if (inputPersona) inputPersona.value = nombre;
+                if (inputEmpresa) inputEmpresa.value = '';
+            } else if (tipo === 'proveedor') {
+                if (inputEmpresa) inputEmpresa.value = nombre;
+                if (inputPersona) inputPersona.value = '';
+            }
+            actualizarAvisoEntidad();
+        });
     }
-
- // Búsqueda en tiempo real mientras se escribe
- const inputBusquedaCaja = document.getElementById('cliente_busqueda');
- if (inputBusquedaCaja) {
-     inputBusquedaCaja.addEventListener('input', function() {
-         buscarClienteCaja();
-     });
- }
-
- // Búsqueda al presionar Enter (evitando el envío del formulario)
- document.getElementById('cliente_busqueda').addEventListener('keydown', function(e) {
- if (e.key === 'Enter') {
- e.preventDefault();
- buscarClienteCaja();
- }
- });
 
  function cancelarNuevoConcepto() {
  document.getElementById('nuevo-concepto-box').classList.add('hidden');

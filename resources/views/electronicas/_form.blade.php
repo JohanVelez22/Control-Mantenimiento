@@ -15,8 +15,8 @@
     {{-- Equipo --}}
     <div class="md:col-span-2 min-w-0 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
         <label class="field-label flex items-center gap-2"><span>💻</span> Seleccionar Dispositivo / Equipo *</label>
-        <select name="equipo_id" required class="glass-input no-search text-sm font-bold mt-1" data-placeholder="Seleccione un equipo...">
-            <option value="">Seleccione un equipo...</option>
+        <select name="equipo_id" required class="glass-input text-sm font-bold mt-1" data-placeholder="Buscar equipo o cliente...">
+            <option value="">Buscar equipo o cliente...</option>
             @foreach($equipos as $equipo)
                 <option value="{{ $equipo->id }}" {{ (old('equipo_id', $electronica->equipo_id ?? '') == $equipo->id) ? 'selected' : '' }}>
                     {{ $equipo->nombre }} ({{ $equipo->marca }} {{ $equipo->modelo }}) • S/N: {{ $equipo->serie }} • {{ $equipo->propietario_label }}
