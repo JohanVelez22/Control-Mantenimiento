@@ -137,7 +137,7 @@
                                         @if($item->stock_id)
                                             <div class="flex flex-col gap-1">
                                                 <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto / Stock</span>
-                                                <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
+                                                <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
                                                     <option value="">Seleccionar producto...</option>
                                                     @foreach($stocks as $s)
                                                         <option value="{{ $s->id }}" data-precio="{{ $factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta }}" {{ $item->stock_id == $s->id ? 'selected' : '' }}>
@@ -269,7 +269,7 @@ function agregarFila() {
                     <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto / Stock</span>
                     <button type="button" onclick="eliminarFilaNueva(this)" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-xs font-bold inline-flex items-center gap-1 transition-colors" title="Eliminar ítem agregado">🗑️ Quitar</button>
                 </div>
-                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-blue-500" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
+                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-blue-500" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
                     ${optionsHtml}
                 </select>
             </div>

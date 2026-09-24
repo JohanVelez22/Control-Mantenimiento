@@ -71,7 +71,7 @@
 
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Buscar Costo Por</label>
-            <select name="price_type" class="glass-input no-search">
+            <select name="price_type" class="glass-input" data-placeholder="Tipo de precio...">
                 <option value="precio_compra" {{ request('price_type') === 'precio_compra' ? 'selected' : '' }}>P. Compra</option>
                 <option value="precio_venta" {{ request('price_type') === 'precio_venta' ? 'selected' : '' }}>P. Venta</option>
                 <option value="precio_tecnico" {{ request('price_type') === 'precio_tecnico' ? 'selected' : '' }}>P. Técnico</option>
@@ -92,7 +92,7 @@
 
         <div>
             <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Estado</label>
-            <select name="estado" class="glass-input no-search">
+            <select name="estado" class="glass-input" data-placeholder="Todos">
                 <option value="todos" {{ request('estado') === 'todos' ? 'selected' : '' }}>Todos</option>
                 <option value="activo" {{ request('estado') === 'activo' || request('estado') === null ? 'selected' : '' }}>Activo</option>
                 <option value="inactivo" {{ request('estado') === 'inactivo' ? 'selected' : '' }}>Inactivo</option>

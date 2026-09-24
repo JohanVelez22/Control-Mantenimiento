@@ -112,7 +112,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="md:col-span-2">
                     <label class="field-label">Buscar repuesto en stock *</label>
-                    <select name="stock_id" required class="glass-input no-search" data-placeholder="Seleccione un repuesto...">
+                    <select name="stock_id" required class="glass-input" data-placeholder="Seleccione un repuesto...">
                         <option value="">Seleccione un repuesto...</option>
                         @php
                             $esCliTecnico = $mantenimiento->equipo?->cliente?->tipo_cliente === 'tecnico';
@@ -206,7 +206,7 @@
                 </div>
                 <div>
                     <label class="field-label">Tipo de pago *</label>
-                    <select name="tipo_pago" class="glass-input no-search">
+                    <select name="tipo_pago" class="glass-input">
                         <option value="efectivo">💵 Efectivo</option>
                         <option value="consignacion">🏦 Consignación</option>
                     </select>

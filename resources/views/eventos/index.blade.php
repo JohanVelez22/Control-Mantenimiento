@@ -25,21 +25,21 @@
             
             <div class="flex items-center gap-2">
                 <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Acción:</label>
-                <select name="accion" class="glass-input no-search w-36 text-sm">
-                    <option value="todas" {{ request('accion', 'todas') == 'todas' ? 'selected' : '' }}>Ver Todas</option>
-                    <option value="login" {{ request('accion') == 'login' ? 'selected' : '' }}>Login</option>
-                    <option value="logout" {{ request('accion') == 'logout' ? 'selected' : '' }}>Logout</option>
-                    <option value="creado" {{ request('accion') == 'creado' ? 'selected' : '' }}>Creado</option>
-                    <option value="actualizado" {{ request('accion') == 'actualizado' ? 'selected' : '' }}>Actualizado</option>
-                    <option value="eliminado" {{ request('accion') == 'eliminado' ? 'selected' : '' }}>Eliminado</option>
-                    <option value="anulado" {{ request('accion') == 'anulado' ? 'selected' : '' }}>Anulado</option>
+                <select name="accion" class="glass-input w-40 text-sm" data-placeholder="Ver Todas">
+                    <option value="todas" {{ request('accion', 'todas') == 'todas' || request('accion') === '' ? 'selected' : '' }}>👁️ Ver Todas</option>
+                    <option value="login" {{ request('accion') == 'login' ? 'selected' : '' }}>🔑 Login</option>
+                    <option value="logout" {{ request('accion') == 'logout' ? 'selected' : '' }}>🚪 Logout</option>
+                    <option value="creado" {{ request('accion') == 'creado' ? 'selected' : '' }}>✨ Creado</option>
+                    <option value="actualizado" {{ request('accion') == 'actualizado' ? 'selected' : '' }}>✏️ Actualizado</option>
+                    <option value="eliminado" {{ request('accion') == 'eliminado' ? 'selected' : '' }}>🗑️ Eliminado</option>
+                    <option value="anulado" {{ request('accion') == 'anulado' ? 'selected' : '' }}>🚫 Anulado</option>
                 </select>
             </div>
 
             <div class="flex items-center gap-2">
                 <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Usuario:</label>
-                <select name="user_id" class="glass-input w-40 text-sm">
-                    <option value="todos" {{ request('user_id', 'todos') == 'todos' ? 'selected' : '' }}>Ver Todos</option>
+                <select name="user_id" class="glass-input w-40 text-sm" data-placeholder="Ver Todos">
+                    <option value="todos" {{ request('user_id', 'todos') == 'todos' || request('user_id') === '' ? 'selected' : '' }}>Ver Todos</option>
                     @foreach($users as $user)
                         <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
                             {{ $user->name }}

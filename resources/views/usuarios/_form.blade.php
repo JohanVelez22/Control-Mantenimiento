@@ -21,7 +21,7 @@
 @if(!$isEdit || auth()->user()->isAdmin())
 <div class="mb-5">
     <label class="field-label">Rol {{ $isEdit ? 'del Sistema' : '*' }}</label>
-    <select name="role" required class="glass-input no-search mt-1">
+    <select name="role" required class="glass-input mt-1">
         <option value="tecnico" {{ old('role', $user->role ?? '') == 'tecnico' ? 'selected' : '' }}>Técnico</option>
         <option value="admin" {{ old('role', $user->role ?? '') == 'admin' ? 'selected' : '' }}>Administrador</option>
         <option value="invitado" {{ old('role', $user->role ?? '') == 'invitado' ? 'selected' : '' }}>Invitado</option>

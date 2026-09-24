@@ -295,7 +295,7 @@
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Motivo de la baja:</label>
-                        <select name="motivo" id="baja-stock-motivo" required class="glass-input no-search text-sm w-full" data-placeholder="Seleccione el motivo de la baja...">
+                        <select name="motivo" id="baja-stock-motivo" required class="glass-input text-sm w-full" data-placeholder="Seleccione el motivo de la baja...">
                             <option value="">Seleccione el motivo de la baja...</option>
                             <option value="defectuoso_fabrica" selected>🏭 Defectuoso de fábrica (Garantía proveedor)</option>
                             <option value="dano_taller">⚠️ Daño accidental en taller</option>

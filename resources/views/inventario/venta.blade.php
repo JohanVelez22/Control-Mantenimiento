@@ -67,7 +67,7 @@
         <tbody id="items-body">
             <tr class="item-row bg-transparent">
                 <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-                    <select name="items[0][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
+                    <select name="items[0][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
                         <option value="">Seleccionar producto...</option>
                         @foreach($stocks as $s)
                             <option value="{{ $s->id }}" data-precio-compra="{{ $s->precio_compra }}" data-precio-venta="{{ $s->precio_venta }}" data-precio-tecnico="{{ $s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
@@ -202,7 +202,7 @@ function agregarFila() {
   tr.className = 'item-row bg-transparent border-t border-gray-200 dark:border-gray-700/50';
   tr.innerHTML = `
   <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-   <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input no-search py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
+   <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
    <option value="">Seleccionar producto...</option>
   ${stockSelectOptions()}
   </select>

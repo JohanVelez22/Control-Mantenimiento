@@ -36,12 +36,12 @@
 
 <div class="glass-card p-5 mb-4 no-print relative z-50">
   <form id="filtros-acumulado-general" action="{{ route('reportes.index') }}" method="GET" class="flex flex-wrap items-center gap-3">
-   <select name="mes" class="glass-input no-search w-40 font-semibold">
+   <select name="mes" class="glass-input w-40 font-semibold">
    @for($i=1; $i<=12; $i++)
    <option value="{{ $i }}" {{ $mes == $i ? 'selected' : '' }}>{{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}</option>
    @endfor
    </select>
-   <select name="anio" class="glass-input no-search w-28 font-semibold">
+   <select name="anio" class="glass-input w-28 font-semibold">
    @for($i=date('Y')-2; $i<=date('Y'); $i++)
    <option value="{{ $i }}" {{ $anio == $i ? 'selected' : '' }}>{{ $i }}</option>
    @endfor

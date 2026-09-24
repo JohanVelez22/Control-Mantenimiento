@@ -59,17 +59,17 @@
 
  {{-- Filtros --}}
   <form action="{{ route('caja.index') }}" method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-5 glass-card no-print relative z-50">
- <select name="tipo_entidad" class="glass-input w-48 text-sm font-semibold no-search h-[42px]">
+ <select name="tipo_entidad" class="glass-input w-48 text-sm font-semibold h-[42px]" data-placeholder="Todas las entidades">
   <option value="todos" {{ request('tipo_entidad') === 'todos' || !request('tipo_entidad') ? 'selected' : '' }}>Todas las entidades</option>
   <option value="persona" {{ request('tipo_entidad') === 'persona' ? 'selected' : '' }}>👤 Solo Personas</option>
   <option value="empresa" {{ request('tipo_entidad') === 'empresa' ? 'selected' : '' }}>🏢 Solo Empresas</option>
   </select>
- <select name="tipo_movimiento" class="glass-input w-48 text-sm font-semibold no-search h-[42px]">
+ <select name="tipo_movimiento" class="glass-input w-48 text-sm font-semibold h-[42px]" data-placeholder="Todos los tipos">
  <option value="todos" {{ request('tipo_movimiento') === 'todos' || !request('tipo_movimiento') ? 'selected' : '' }}>Todos los tipos</option>
  <option value="ingreso" {{ request('tipo_movimiento') === 'ingreso' ? 'selected' : '' }}>📈 Ingreso</option>
  <option value="egreso" {{ request('tipo_movimiento') === 'egreso' ? 'selected' : '' }}>📉 Egreso</option>
  </select>
- <select name="tipo_pago" class="glass-input w-48 text-sm font-semibold no-search h-[42px]">
+ <select name="tipo_pago" class="glass-input w-48 text-sm font-semibold h-[42px]" data-placeholder="Todos los pagos">
  <option value="todos" {{ request('tipo_pago') === 'todos' || !request('tipo_pago') ? 'selected' : '' }}>Todos los pagos</option>
  <option value="efectivo" {{ request('tipo_pago') === 'efectivo' ? 'selected' : '' }}>💵 Efectivo</option>
  <option value="consignacion" {{ request('tipo_pago') === 'consignacion' ? 'selected' : '' }}>🏦 Consignación</option>

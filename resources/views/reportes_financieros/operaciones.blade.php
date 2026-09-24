@@ -35,7 +35,7 @@
 
 <div class="glass-card p-5 mb-4 no-print relative z-50">
  <form id="filtros-operaciones" method="GET" class="flex flex-wrap items-center gap-3">
-   <select name="tipo" class="glass-input no-search w-72 font-semibold">
+   <select name="tipo" class="glass-input w-72 font-semibold">
    @foreach($tipoLabels as $val => $label)
    <option value="{{ $val }}" {{ $tipo === $val ? 'selected' : '' }}>{{ $label }}</option>
    @endforeach

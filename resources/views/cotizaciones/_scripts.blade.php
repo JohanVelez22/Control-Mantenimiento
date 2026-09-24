@@ -43,7 +43,7 @@ function agregarFila(itemData = null) {
     
     tr.innerHTML = `
         <td class="col-tipo align-middle">
-            <select name="items[${filaIndex}][tipo]" class="tipo-select glass-input no-search py-1.5 px-2 font-bold w-full whitespace-nowrap">
+            <select name="items[${filaIndex}][tipo]" class="tipo-select glass-input py-1.5 px-2 font-bold w-full whitespace-nowrap">
                 <option value="libre" ${!isStock ? 'selected' : ''}>Servicio / Libre</option>
                 <option value="stock" ${isStock ? 'selected' : ''}>Producto Stock</option>
             </select>
@@ -105,7 +105,7 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
 
     if (val === 'stock') {
         tdDesc.innerHTML = `
-            <select class="stock-select glass-input no-search py-1.5" required data-placeholder="Seleccionar producto del stock...">
+            <select class="stock-select glass-input py-1.5" required data-placeholder="Seleccionar producto del stock...">
                 ${getStockOptions()}
             </select>
             <input type="hidden" name="items[${idx}][item_id]" class="stock-id-input">

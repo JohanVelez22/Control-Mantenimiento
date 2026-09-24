@@ -97,7 +97,7 @@
 
                             <div>
                                 <label class="field-label">Tipo de Pago *</label>
-                                <select name="tipo_pago" required class="glass-input no-search">
+                                <select name="tipo_pago" required class="glass-input">
                                     <option value="efectivo">💵 Efectivo</option>
                                     <option value="consignacion">🏦 Banco / Transferencia</option>
                                 </select>

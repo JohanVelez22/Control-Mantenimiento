@@ -28,7 +28,7 @@
     {{-- Técnico --}}
     <div class="min-w-0">
         <label class="field-label flex items-center gap-2"><span>👨🏻‍🔧</span> Técnico Asignado *</label>
-        <select name="tecnico_id" required class="glass-input no-search mt-1" data-placeholder="Seleccione un técnico...">
+        <select name="tecnico_id" required class="glass-input mt-1" data-placeholder="Seleccione un técnico...">
             <option value="">Seleccione un técnico...</option>
             @foreach($tecnicos as $tecnico)
                 <option value="{{ $tecnico->id }}" {{ (old('tecnico_id', $mantenimiento->tecnico_id ?? '') == $tecnico->id) ? 'selected' : '' }}>
@@ -41,7 +41,7 @@
     {{-- Estado --}}
     <div>
         <label class="field-label flex items-center gap-2"><span>🏷️</span> Estado Inicial *</label>
-        <select name="estado" required class="glass-input no-search mt-1 font-bold {{ old('estado', $mantenimiento->estado ?? 'pendiente') === 'terminado' ? 'text-emerald-600 dark:text-emerald-400' : 'text-yellow-600 dark:text-yellow-400' }}">
+        <select name="estado" required class="glass-input mt-1 font-bold {{ old('estado', $mantenimiento->estado ?? 'pendiente') === 'terminado' ? 'text-emerald-600 dark:text-emerald-400' : 'text-yellow-600 dark:text-yellow-400' }}">
             <option value="pendiente" {{ old('estado', $mantenimiento->estado ?? 'pendiente') == 'pendiente' ? 'selected' : '' }} class="text-yellow-600">⏳ Pendiente</option>
             <option value="terminado" {{ old('estado', $mantenimiento->estado ?? '') == 'terminado' ? 'selected' : '' }} class="text-emerald-600">✅ Terminado</option>
         </select>

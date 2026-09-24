@@ -30,12 +30,12 @@
 
  {{-- Filtros --}}
   <form method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-5 glass-card no-print relative z-50">
- <select name="tipo" class="glass-input no-search w-48 font-semibold">
+ <select name="tipo" class="glass-input w-48 font-semibold" data-placeholder="Todos los tipos">
  <option value="todos" {{ request('tipo') === 'todos' || !request('tipo') ? 'selected' : '' }}>Todos los tipos</option>
  <option value="compra" {{ request('tipo') === 'compra' ? 'selected' : '' }}>📦 Compras</option>
  <option value="venta" {{ request('tipo') === 'venta' ? 'selected' : '' }}>🛒 Ventas</option>
  </select>
- <select name="estado" class="glass-input no-search w-48 font-semibold">
+ <select name="estado" class="glass-input w-48 font-semibold" data-placeholder="Todos los estados">
  <option value="todos" {{ request('estado') === 'todos' || !request('estado') ? 'selected' : '' }}>Todos los estados</option>
  <option value="emitida" {{ request('estado') === 'emitida' ? 'selected' : '' }}>✅ Emitida</option>
  <option value="pendiente_pago" {{ request('estado') === 'pendiente_pago' ? 'selected' : '' }}>⏳ Pendiente</option>

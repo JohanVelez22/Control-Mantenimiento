@@ -26,7 +26,7 @@
 
         <div>
             <label for="categoria" class="field-label">Categoría *</label>
-            <select name="categoria" id="categoria" required class="glass-input no-search">
+            <select name="categoria" id="categoria" required class="glass-input">
                 <option value="">Seleccione una categoría...</option>
                 @foreach($categorias as $cat)
                     <option value="{{ $cat }}" {{ $selCat == $cat ? 'selected' : '' }}>{{ $cat }}</option>
@@ -37,7 +37,7 @@
 
         <div>
             <label for="subcategoria" class="field-label">Subcategoría *</label>
-            <select name="subcategoria" id="subcategoria" required class="glass-input no-search">
+            <select name="subcategoria" id="subcategoria" required class="glass-input">
                 <option value="">Seleccione una subcategoría...</option>
                 @foreach($subcategorias as $subcat)
                     <option value="{{ $subcat }}" {{ $selSubcat == $subcat ? 'selected' : '' }}>{{ $subcat }}</option>

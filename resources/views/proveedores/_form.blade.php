@@ -12,7 +12,7 @@
     {{-- ── Tipo de Entidad ──────────────────────────────────────── --}}
     <div>
         <label class="field-label">Tipo de Entidad *</label>
-        <select name="tipo_entidad" required class="glass-input no-search w-full">
+        <select name="tipo_entidad" required class="glass-input w-full">
             <option value="persona"  {{ $selEnt === 'persona'  ? 'selected' : '' }}>👤 Persona Natural</option>
             <option value="empresa"  {{ $selEnt === 'empresa'  ? 'selected' : '' }}>🏢 Empresa / Sociedad</option>
         </select>
@@ -22,7 +22,7 @@
     {{-- ── Tipo de Identificación ────────────────────────────────── --}}
     <div>
         <label class="field-label">Tipo de Identificación *</label>
-        <select name="tipo_identificacion" required class="glass-input no-search w-full">
+        <select name="tipo_identificacion" required class="glass-input w-full">
             @foreach($tiposId as $val => $label)
                 <option value="{{ $val }}" {{ $selTipoId === $val ? 'selected' : '' }}>{{ $label }}</option>
             @endforeach
@@ -94,7 +94,7 @@
     {{-- ── Departamento ──────────────────────────────────────────── --}}
     <div>
         <label class="field-label text-gray-700 dark:text-gray-300">Departamento</label>
-        <select name="departamento" id="prov_departamento" class="glass-input no-search w-full" data-placeholder="Seleccionar departamento..."
+        <select name="departamento" id="prov_departamento" class="glass-input w-full" data-placeholder="Seleccionar departamento..."
                 onchange="cargarMunicipiosProv(this.value)">
             <option value=""></option>
             @foreach($departamentos as $dep)
@@ -107,7 +107,7 @@
     {{-- ── Municipio ─────────────────────────────────────────────── --}}
     <div>
         <label class="field-label text-gray-700 dark:text-gray-300">Municipio / Ciudad</label>
-        <select name="municipio" id="prov_municipio" class="glass-input no-search w-full" data-placeholder="Seleccionar municipio...">
+        <select name="municipio" id="prov_municipio" class="glass-input w-full" data-placeholder="Seleccionar municipio...">
             <option value=""></option>
             @if(!empty($municipios))
                 @foreach($municipios as $mun)

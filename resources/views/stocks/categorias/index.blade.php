@@ -87,7 +87,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="field-label">Tipo de Clasificación</label>
-                        <select name="tipo" class="glass-input no-search font-bold" required>
+                        <select name="tipo" class="glass-input font-bold" required>
                             <option value="categoria">🗂️ Categoría Principal</option>
                             <option value="subcategoria">📂 Subcategoría</option>
                         </select>
@@ -110,7 +110,7 @@
                     <li class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-gray-200/50 dark:border-white/5 gap-2">
                         <form action="{{ route('stocks.categorias.update', $c->id) }}" method="POST" class="flex-1 w-full flex flex-wrap sm:flex-nowrap gap-2 items-center">
                             @csrf @method('PUT')
-                            <select name="tipo" class="glass-input py-1.5 px-2 text-xs w-auto no-search font-bold {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
+                            <select name="tipo" class="glass-input py-1.5 px-2 text-xs w-auto font-bold {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
                                 <option value="categoria" {{ $c->tipo == 'categoria' ? 'selected' : '' }}>🗂️ Categoría</option>
                                 <option value="subcategoria" {{ $c->tipo == 'subcategoria' ? 'selected' : '' }}>📂 Subcat</option>
                             </select>

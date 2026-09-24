@@ -77,7 +77,7 @@
  </div>
    <div>
   <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Tipo/Rep</label>
-  <select name="tipo_rep" class="glass-input no-search">
+  <select name="tipo_rep" class="glass-input" data-placeholder="Todos">
   <option value="todos">Todos</option>
   <option value="preventivo" {{ request('tipo_rep') == 'preventivo' ? 'selected' : '' }}>Preventivo</option>
   <option value="correctivo" {{ request('tipo_rep') == 'correctivo' ? 'selected' : '' }}>Correctivo</option>
@@ -87,7 +87,7 @@
   </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Progreso</label>
- <select name="estado" class="glass-input no-search">
+ <select name="estado" class="glass-input" data-placeholder="Todos">
  <option value="todos">Todos</option>
  <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
  <option value="terminado" {{ request('estado') == 'terminado' ? 'selected' : '' }}>Terminado</option>
@@ -95,7 +95,7 @@
  </div>
  <div>
  <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">Estado</label>
- <select name="anulado" class="glass-input no-search">
+ <select name="anulado" class="glass-input" data-placeholder="Todos">
  <option value="todos" {{ request('anulado') === null || request('anulado') == 'todos' ? 'selected' : '' }}>Todos</option>
  <option value="activo" {{ request('anulado') == 'activo' ? 'selected' : '' }}>Activo</option>
  <option value="anulado" {{ request('anulado') == 'anulado' ? 'selected' : '' }}>Anulado</option>

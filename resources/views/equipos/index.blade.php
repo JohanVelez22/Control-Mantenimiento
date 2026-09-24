@@ -193,7 +193,7 @@
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Motivo de la baja:</label>
-                        <select name="motivo_baja" id="baja-equipo-motivo" required class="glass-input no-search text-sm w-full" data-placeholder="Seleccione el motivo de la baja...">
+                        <select name="motivo_baja" id="baja-equipo-motivo" required class="glass-input text-sm w-full" data-placeholder="Seleccione el motivo de la baja...">
                             <option value="">Seleccione el motivo de la baja...</option>
                             <option value="irreparable" selected>❌ Daño irreparable / Falla crítica en placa</option>
                             <option value="desguace_repuestos">⚙️ Desguace / Canibalización para repuestos</option>
