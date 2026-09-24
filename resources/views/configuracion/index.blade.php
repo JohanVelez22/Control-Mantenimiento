@@ -55,7 +55,7 @@
 
                 <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center max-w-[240px] leading-snug">
                     <span>Formatos: <strong class="text-slate-700 dark:text-slate-300">SVG, PNG, JPG, WEBP</strong> • Máx. 5 MB</span>
-                    <span class="block text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">(Fondo transparente sugerido)</span>
+                    <span class="block text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">(Fondo transparente sugerido)</span>
                 </p>
             </div>
 

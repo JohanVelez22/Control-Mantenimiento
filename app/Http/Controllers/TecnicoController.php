@@ -35,7 +35,10 @@ class TecnicoController extends Controller
             'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
             'email' => 'nullable|email|max:100',
             'direccion' => 'nullable|string|max:500',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg|max:5120',
+        ], [
+            'photo.mimes' => 'La foto debe ser un archivo en formato SVG, PNG, JPG, JPEG o WEBP.',
+            'photo.max' => 'La foto no debe superar los 5 MB de tamaño.',
         ]);
 
         if ($request->hasFile('photo')) {
@@ -63,8 +66,11 @@ class TecnicoController extends Controller
             'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
             'email' => 'nullable|email|max:100',
             'direccion' => 'nullable|string|max:500',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg|max:5120',
             'remove_photo' => 'nullable|in:0,1,true,false',
+        ], [
+            'photo.mimes' => 'La foto debe ser un archivo en formato SVG, PNG, JPG, JPEG o WEBP.',
+            'photo.max' => 'La foto no debe superar los 5 MB de tamaño.',
         ]);
 
         if ($request->hasFile('photo')) {

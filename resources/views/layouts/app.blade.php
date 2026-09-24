@@ -163,7 +163,6 @@
                     @csrf
                     @if(auth()->check() && auth()->user()->isTecnico())
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 text-center">Contraseña de Administrador</label>
                         <input type="password" name="password_confirm" id="global-anular-input" required
                             placeholder="Contraseña de Administrador..." 
                             class="glass-input text-center tracking-widest text-lg focus:ring-orange-500">

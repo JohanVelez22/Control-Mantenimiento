@@ -60,7 +60,10 @@ class StockController extends Controller
             'utilidad' => 'required|numeric|min:0|max:100',
             'precio_venta' => 'nullable|numeric|min:0|decimal:0,2',
             'precio_tecnico' => 'nullable|numeric|min:0|decimal:0,2',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg|max:5120',
+        ], [
+            'photo.mimes' => 'La imagen debe ser un archivo en formato SVG, PNG, JPG, JPEG o WEBP.',
+            'photo.max' => 'La imagen no debe superar los 5 MB de tamaño.',
         ]);
 
         if ($request->hasFile('photo')) {
@@ -98,8 +101,11 @@ class StockController extends Controller
             'utilidad' => 'required|numeric|min:0|max:100',
             'precio_venta' => 'nullable|numeric|min:0|decimal:0,2',
             'precio_tecnico' => 'nullable|numeric|min:0|decimal:0,2',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg|max:5120',
             'remove_photo' => 'nullable|in:0,1,true,false',
+        ], [
+            'photo.mimes' => 'La imagen debe ser un archivo en formato SVG, PNG, JPG, JPEG o WEBP.',
+            'photo.max' => 'La imagen no debe superar los 5 MB de tamaño.',
         ]);
 
         if ($request->hasFile('photo')) {
