@@ -30,7 +30,7 @@
  </div>
 
  {{-- Card --}}
- <div class="glass-card px-6 pb-8 pt-1 md:px-8 md:pb-8 md:pt-2">
+ <div class="glass-card px-6 pb-8 pt-2 md:px-8 md:pb-8 md:pt-2">
 
  <form method="POST" action="{{ route('login') }}" class="space-y-6">
  @csrf
