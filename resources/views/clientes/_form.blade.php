@@ -58,7 +58,7 @@
                 {{ $selTipoCli === 'tecnico' ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30' }}">
                 <input type="radio" name="tipo_cliente" value="tecnico" {{ $selTipoCli === 'tecnico' ? 'checked' : '' }}
                        class="ts-radio-persona w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 cursor-pointer shrink-0">
-                <span class="font-bold {{ $selTipoCli === 'tecnico' ? 'text-orange-700 dark:text-orange-400' : 'text-slate-600 dark:text-slate-400' }}">🔧 Técnico</span>
+                <span class="font-bold {{ $selTipoCli === 'tecnico' ? 'text-orange-700 dark:text-orange-400' : 'text-slate-600 dark:text-slate-400' }}">🛠️ Técnico</span>
             </label>
         </div>
         <p class="text-[11px] text-gray-400 mt-1">Los técnicos acceden al <strong>precio técnico</strong> al facturar productos.</p>
@@ -276,11 +276,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     tecnicoLabel.className = "flex-1 flex justify-center items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30";
                     tecnicoLabel.querySelector('span').className = "font-bold text-slate-600 dark:text-slate-400";
-                    tecnicoLabel.querySelector('span').innerHTML = "🔧 Técnico";
+                    tecnicoLabel.querySelector('span').innerHTML = "🛠️ Técnico";
                 } else {
                     tecnicoLabel.className = "flex-1 flex justify-center items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all border-orange-500 bg-orange-50/50 dark:bg-orange-900/20";
                     tecnicoLabel.querySelector('span').className = "font-bold text-orange-700 dark:text-orange-400";
-                    tecnicoLabel.querySelector('span').innerHTML = "🔧 Técnico";
+                    tecnicoLabel.querySelector('span').innerHTML = "🛠️ Técnico";
                     
                     clienteLabel.className = "flex-1 flex justify-center items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30";
                     clienteLabel.querySelector('span').className = "font-bold text-slate-600 dark:text-slate-400";

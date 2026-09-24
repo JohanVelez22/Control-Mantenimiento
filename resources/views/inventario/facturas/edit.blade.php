@@ -29,7 +29,7 @@
                     @endforeach
                     @foreach($clientes as $c)
                         <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ ($factura->facturable_type === 'App\Models\Cliente' && $factura->facturable_id == $c->id) ? 'selected' : '' }}>
-                            👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}
+                            👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🛠️ Técnico' : '' }}
                         </option>
                     @endforeach
                 </select>

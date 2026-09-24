@@ -215,7 +215,11 @@
      elseif($progreso === 'especialidad') $pillClass = 'pill-especialidad';
      elseif(in_array($progreso, ['en_proceso', 'reparado'])) $pillClass = 'pill-efectivo';
  @endphp
- <span class="pill {{ $pillClass }}">{{ ucfirst($m->estado) ?: '—' }}</span>
+ @php
+     $progresoIcon = in_array($progreso, ['terminado', 'entregado']) ? '✅' : '⏳';
+     if(in_array($progreso, ['en_proceso', 'reparado'])) $progresoIcon = '⚙️';
+ @endphp
+ <span class="pill {{ $pillClass }}">{{ $progresoIcon }} {{ ucfirst($m->estado) ?: '—' }}</span>
  </td>
  
  <td class="text-center">

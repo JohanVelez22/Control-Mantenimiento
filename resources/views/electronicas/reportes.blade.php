@@ -207,7 +207,7 @@
 
   <td class="text-center {{ $dimLight }}">
   <span class="pill {{ $m->estado == 'terminado' ? 'pill-done' : 'pill-pending' }}">
-  {{ ucfirst($m->estado) }}
+  {{ strtolower($m->estado ?? '') === 'terminado' ? '✅' : '⏳' }} {{ ucfirst($m->estado) }}
   </span>
   </td>
 

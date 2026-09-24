@@ -42,7 +42,10 @@
                 @if($cliente)
                     <p class="text-slate-600 dark:text-slate-400 text-lg">Hola, <span class="text-blue-600 dark:text-blue-400 font-black">{{ $cliente->nombres }}</span>. Aquí tienes el estado actual de tus equipos.</p>
                 @elseif(isset($searched))
-                    <p class="text-slate-600 dark:text-slate-400 text-lg">Resultados de la orden o identificación: <span class="text-blue-600 dark:text-blue-400 font-black">{{ strtoupper($query) }}</span></p>
+                    @php
+                        $isElectronicaSearch = ($tipo ?? '') === 'electronica' || ($electronicas->isNotEmpty() && $mantenimientos->isEmpty());
+                    @endphp
+                    <p class="text-slate-600 dark:text-slate-400 text-lg">Resultados de la orden o identificación: <span class="{{ $isElectronicaSearch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400' }} font-black">{{ strtoupper($query) }}</span></p>
                 @else
                     <p class="text-slate-600 dark:text-slate-400 text-lg">Hola. Ingresa tu número de orden o identificación para hacer el seguimiento de tu equipo.</p>
                 @endif
@@ -66,7 +69,7 @@
                                     <div class="flex-1">
                                         <div class="flex items-center gap-3 mb-2">
                                             <span class="px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider">Mantenimiento</span>
-                                            <span class="text-slate-500 dark:text-slate-400 font-medium text-sm">{{ $m->id_orden }}</span>
+                                            <span class="text-blue-600 dark:text-blue-400 font-bold text-sm">{{ $m->id_orden }}</span>
                                         </div>
                                         <h3 class="text-xl font-bold text-slate-800 dark:text-white">{{ $m->equipo->nombre ?? 'Equipo sin registro' }}</h3>
                                     </div>
@@ -74,7 +77,7 @@
                                         <div class="inline-flex items-center px-4 py-2 rounded-xl border
                                             {{ $m->estado === 'terminado' ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400' : 'bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 text-amber-600 dark:text-amber-400' }}">
                                             <span class="w-2 h-2 rounded-full mr-2 {{ $m->estado === 'terminado' ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-amber-500 dark:bg-amber-400 shadow-[0_0_8px_#fbbf24]' }}"></span>
-                                            <span class="font-bold text-sm uppercase tracking-wide">{{ $m->estado }}</span>
+                                            <span class="font-bold text-sm uppercase tracking-wide">{{ in_array($m->estado, ['terminado', 'entregado']) ? '✅' : '⏳' }} {{ $m->estado }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -133,7 +136,7 @@
                                     <div class="flex-1">
                                         <div class="flex items-center gap-3 mb-2">
                                             <span class="px-2.5 py-1 rounded-md bg-purple-50 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold uppercase tracking-wider">Electrónica</span>
-                                            <span class="text-slate-500 dark:text-slate-400 font-medium text-sm">{{ $e->id_orden }}</span>
+                                            <span class="text-purple-600 dark:text-purple-400 font-bold text-sm">{{ $e->id_orden }}</span>
                                         </div>
                                         <h3 class="text-xl font-bold text-slate-800 dark:text-white">{{ $e->equipo->nombre ?? 'Equipo sin registro' }}</h3>
                                     </div>
@@ -141,7 +144,7 @@
                                         <div class="inline-flex items-center px-4 py-2 rounded-xl border
                                             {{ $e->estado === 'terminado' ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400' : 'bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 text-amber-600 dark:text-amber-400' }}">
                                             <span class="w-2 h-2 rounded-full mr-2 {{ $e->estado === 'terminado' ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-amber-500 dark:bg-amber-400 shadow-[0_0_8px_#fbbf24]' }}"></span>
-                                            <span class="font-bold text-sm uppercase tracking-wide">{{ $e->estado }}</span>
+                                            <span class="font-bold text-sm uppercase tracking-wide">{{ $e->estado === 'terminado' ? '✅' : '⏳' }} {{ $e->estado }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -197,7 +200,7 @@
                 
                 @if(isset($searched) && !$cliente)
                 <div class="mt-8 text-center">
-                    <a href="{{ route('guest.dashboard') }}" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 inline-flex items-center gap-2">
+                    <a href="{{ route('guest.dashboard') }}" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl transition-all hover:-translate-y-1 inline-flex items-center gap-2">
                         <span>🔍</span> Buscar Otra Orden
                     </a>
                 </div>
@@ -207,13 +210,13 @@
                 <form method="GET" action="{{ route('guest.search') }}" class="max-w-xl mx-auto">
                     <div class="flex bg-white dark:bg-slate-800/50 p-1 rounded-xl mb-6 border border-gray-200 dark:border-slate-700/50 shadow-sm">
                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="tipo" value="mantenimiento" class="peer sr-only" checked>
+                            <input type="radio" name="tipo" value="mantenimiento" class="peer sr-only" checked onchange="updateGuestTheme('mantenimiento')">
                             <div class="text-center py-2.5 rounded-lg text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-blue-500 peer-checked:text-white transition-all peer-checked:shadow-md">
                                 Mantenimientos
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="tipo" value="electronica" class="peer sr-only">
+                            <input type="radio" name="tipo" value="electronica" class="peer sr-only" onchange="updateGuestTheme('electronica')">
                             <div class="text-center py-2.5 rounded-lg text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-purple-500 peer-checked:text-white transition-all peer-checked:shadow-md">
                                 Electrónica
                             </div>
@@ -221,13 +224,13 @@
                     </div>
 
                     <div class="relative mt-2">
-                        <input type="text" name="query" class="glass-input w-full pl-12 pr-4 py-4 text-lg" placeholder="Ej: ORD-001 o 123456789" required>
+                        <input type="text" name="query" id="guestSearchInput" class="glass-input w-full pl-12 pr-4 py-4 text-lg" placeholder="Ej: ORD-001 o 123456789" required>
                         <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
 
-                    <button type="submit" class="w-full mt-6 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02]">
+                    <button type="submit" id="guestSubmitBtn" class="w-full mt-6 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02]">
                         Consultar Estado
                     </button>
                 </form>
@@ -267,5 +270,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function updateGuestTheme(tipo) {
+    const input = document.getElementById('guestSearchInput');
+    if (input) {
+        input.placeholder = (tipo === 'electronica') ? 'Ej: ELC-001 o 123456789' : 'Ej: ORD-001 o 123456789';
+    }
+}
 </script>
 @endsection

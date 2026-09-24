@@ -64,7 +64,7 @@ class Cliente extends Model
     /** Label del tipo de cliente */
     public function getTipoClienteLabelAttribute(): string
     {
-        return $this->tipo_cliente === 'tecnico' ? '🔧 Técnico' : '👤 Cliente';
+        return $this->tipo_cliente === 'tecnico' ? '🛠️ Técnico' : '👤 Cliente';
     }
 
     /** Relación: Un cliente tiene muchos equipos */

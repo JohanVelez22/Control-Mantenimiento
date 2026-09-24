@@ -40,10 +40,14 @@
     {{-- Header mínimo solo logo y logout --}}
     <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-white/10 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="{{ route('consulta.mantenimientos') }}" class="flex items-center gap-2">
+            @php
+                $isElecHeader = request()->routeIs('consulta.electronicas') || request()->routeIs('electronicas.*');
+                $headerHome = $isElecHeader ? route('consulta.electronicas') : route('consulta.mantenimientos');
+            @endphp
+            <a href="{{ $headerHome }}" class="flex items-center gap-2">
                 <span class="text-[#2563EB] dark:text-[#3B82F6] font-logo font-black text-xl">TECNI</span>
                 <span class="text-slate-800 dark:text-white font-logo font-black text-xl">SYSTEMAS</span>
-                <span class="ml-2 px-2 py-0.5 text-[10px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded">CONSULTA</span>
+                <span class="ml-2 px-2 py-0.5 text-[10px] font-bold {{ $isElecHeader ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' }} rounded">CONSULTA</span>
             </a>
             <form method="POST" action="{{ route('logout') }}" class="m-0">
                 @csrf

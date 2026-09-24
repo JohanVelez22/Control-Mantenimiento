@@ -30,7 +30,7 @@
  @endforeach
   @foreach($clientes as $cli)
   <option value="Cliente:{{ $cli->id }}" {{ old('facturable_global') == "Cliente:{$cli->id}" ? 'selected' : '' }}>
-  👤 Cliente: {{ $cli->nombre }} ({{ $cli->identificacion ?? 'Cliente' }}){{ $cli->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}
+  👤 Cliente: {{ $cli->nombre }} ({{ $cli->identificacion ?? 'Cliente' }}){{ $cli->tipo_cliente === 'tecnico' ? ' 🛠️ Técnico' : '' }}
   </option>
   @endforeach
  </select>

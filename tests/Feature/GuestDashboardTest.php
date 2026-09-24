@@ -278,4 +278,48 @@ class GuestDashboardTest extends TestCase
         $response->assertSee('Repuestos / Insumos');
         $response->assertSee('Servicio / Mano de Obra');
     }
+
+    public function test_dashboard_shows_emojis_in_tables(): void
+    {
+        $admin = $this->createAdminUser();
+        [$cliente, $equipo] = $this->createClienteWithEquipo($admin->id);
+        $tecnico = Tecnico::create([
+            'nombre' => 'Tecnico Test 2',
+            'identificacion' => 'TEC-002',
+            'especialidad' => 'General',
+            'telefono' => '3009876544',
+            'movil' => '3009876544',
+            'email' => 'tecnico2@test.com',
+        ]);
+        Mantenimiento::create([
+            'equipo_id' => $equipo->id,
+            'id_orden' => 'ORD-EMOJI-1',
+            'fecha_entrada' => now(),
+            'tipo' => 'preventivo',
+            'reparacion' => 'software',
+            'descripcion' => 'Test',
+            'costo' => 100,
+            'estado' => 'pendiente',
+            'tecnico_id' => $tecnico->id,
+            'user_id' => $admin->id,
+            'anulado' => false,
+        ]);
+        Electronica::create([
+            'equipo_id' => $equipo->id,
+            'id_orden' => 'ELC-EMOJI-1',
+            'descripcion_problema' => 'Test',
+            'tipo' => 'preventivo',
+            'costo' => 100,
+            'estado' => 'terminado',
+            'fecha_entrada' => now(),
+            'tecnico_id' => $tecnico->id,
+            'user_id' => $admin->id,
+            'anulado' => false,
+        ]);
+
+        $response = $this->actingAs($admin)->get('/dashboard');
+        $response->assertOk();
+        $response->assertSee('⏳ PENDIENTE');
+        $response->assertSee('✅ TERMINADO');
+    }
 }

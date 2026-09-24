@@ -42,9 +42,7 @@
                                     {{ \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y') }}
                                 </p>
                             </div>
-                            <span class="pill {{ $m->estado === 'terminado' ? 'pill-done' : 'pill-pending' }}">
-                                {{ ucfirst($m->estado) }}
-                            </span>
+                            <span class="pill {{ $m->estado === 'terminado' ? 'pill-done' : 'pill-pending' }}">{{ in_array($m->estado, ['terminado', 'entregado']) ? '✅' : '⏳' }} {{ ucfirst($m->estado) }}</span>
                         </div>
                     </a>
                 @endforeach

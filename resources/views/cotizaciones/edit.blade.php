@@ -31,7 +31,7 @@
                         <option value="">Buscar cliente o proveedor...</option>
                         @foreach($clientes as $c)
                             <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ $selFacturable == "Cliente:{$c->id}" ? 'selected' : '' }}>
-                                👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🔧 Técnico' : '' }}
+                                👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🛠️ Técnico' : '' }}
                             </option>
                         @endforeach
                         @if(isset($proveedores) && $proveedores->isNotEmpty())

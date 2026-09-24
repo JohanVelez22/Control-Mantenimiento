@@ -225,8 +225,8 @@
  </td>
 
  <td class="text-center {{ $dimLight }}">
- <span class="pill {{ $m->estado == 'terminado' ? 'pill-done' : 'pill-pending' }} {{ $m->anulado ? 'opacity-70' : '' }}">
- {{ strtoupper($m->estado) }}
+ <span class="pill {{ in_array(strtolower($m->estado ?? ''), ['terminado', 'entregado']) ? 'pill-done' : 'pill-pending' }} {{ $m->anulado ? 'opacity-70' : '' }}">
+ {{ in_array(strtolower($m->estado ?? ''), ['terminado', 'entregado']) ? '✅' : '⏳' }} {{ strtoupper($m->estado) }}
  </span>
  </td>
  <td class="text-center">
@@ -315,7 +315,7 @@
 
  <td class="text-center {{ $dimLight }}">
  <span class="pill {{ $e->estado == 'terminado' ? 'pill-done' : 'pill-pending' }} {{ $e->anulado ? 'opacity-70' : '' }}">
- {{ strtoupper($e->estado) }}
+ {{ strtolower($e->estado ?? '') === 'terminado' ? '✅' : '⏳' }} {{ strtoupper($e->estado) }}
  </span>
  </td>
  <td class="text-center">
