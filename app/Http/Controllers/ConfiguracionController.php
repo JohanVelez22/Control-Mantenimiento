@@ -32,7 +32,10 @@ class ConfiguracionController extends Controller
             'correo' => 'nullable|email|max:255',
             'pie_pagina_factura' => 'nullable|string',
             'formato_factura' => 'nullable|in:estandar,pos',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048|dimensions:min_width=50,min_height=50,max_width=3000,max_height=3000',
+            'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg|max:5120',
+        ], [
+            'logo.mimes' => 'El logo debe ser un archivo en formato SVG, PNG, JPG, JPEG o WEBP.',
+            'logo.max' => 'El logo no debe superar los 5 MB de tamaño.',
         ]);
 
         $configuracion = Configuracion::first() ?? new Configuracion();
@@ -45,7 +48,12 @@ class ConfiguracionController extends Controller
         $configuracion->pie_pagina_factura = $request->pie_pagina_factura;
         $configuracion->formato_factura = $request->input('formato_factura', 'estandar');
 
-        if ($request->hasFile('logo')) {
+        if ($request->boolean('eliminar_logo')) {
+            if ($configuracion->logo_path) {
+                Storage::disk('public')->delete($configuracion->logo_path);
+                $configuracion->logo_path = null;
+            }
+        } elseif ($request->hasFile('logo')) {
             if ($configuracion->logo_path) {
                 Storage::disk('public')->delete($configuracion->logo_path);
             }
@@ -58,9 +66,13 @@ class ConfiguracionController extends Controller
         \Illuminate\Support\Facades\Cache::forget('empresa_logo_base64');
 
         if ($request->ajax() || $request->wantsJson()) {
+            $msg = $request->boolean('eliminar_logo') 
+                ? 'Logo eliminado correctamente.' 
+                : 'Configuración de la empresa guardada correctamente.';
+
             return response()->json([
                 'success' => true,
-                'message' => 'Configuración de la empresa guardada correctamente.',
+                'message' => $msg,
                 'nombre' => $configuracion->nombre,
                 'logo_url' => $configuracion->logo_path ? Storage::url($configuracion->logo_path) : null,
             ]);

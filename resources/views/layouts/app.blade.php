@@ -2,9 +2,10 @@
     $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
     $logoBase64 = \Illuminate\Support\Facades\Cache::remember('empresa_logo_base64', 3600, function () use ($empresa) {
         if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
-            $type = pathinfo($empresa->logo_path, PATHINFO_EXTENSION);
+            $type = strtolower(pathinfo($empresa->logo_path, PATHINFO_EXTENSION));
+            $mime = ($type === 'svg') ? 'image/svg+xml' : 'image/' . $type;
             $data = \Illuminate\Support\Facades\Storage::disk('public')->get($empresa->logo_path);
-            return 'data:image/' . $type . ';base64,' . base64_encode($data);
+            return 'data:' . $mime . ';base64,' . base64_encode($data);
         }
         return null;
     });

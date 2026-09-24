@@ -13,28 +13,50 @@
         @csrf
 
         <div class="flex flex-col md:flex-row gap-8">
-            {{-- Columna Izquierda: Logo --}}
-            <div class="w-full md:w-1/3 flex flex-col items-center justify-start gap-4">
-                <div class="w-48 h-48 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-slate-800/50 flex flex-col items-center justify-center overflow-hidden relative group cursor-pointer" onclick="document.getElementById('logo-input').click()">
+            {{-- Columna Izquierda: Identidad de Marca / Logo --}}
+            <div class="w-full md:w-1/3 flex flex-col items-center justify-center gap-3 self-center">
+                <span class="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Logo de la Empresa</span>
+                <div class="logo-upload-container group" onclick="document.getElementById('logo-input').click()">
                     @if($configuracion->logo_path)
-                        <img src="{{ Storage::url($configuracion->logo_path) }}" id="logo-preview" alt="Logo Empresa" class="w-full h-full object-contain p-2 z-10 bg-white dark:bg-transparent">
-                        <div id="logo-placeholder" class="hidden flex-col items-center z-10">
-                            <div class="text-6xl mb-2 opacity-50">🖼️</div>
+                        <img src="{{ Storage::url($configuracion->logo_path) }}" id="logo-preview" alt="Logo Empresa" class="w-full h-full object-contain p-3.5 z-10 bg-white/40 dark:bg-transparent transition-transform duration-300 group-hover:scale-105">
+                        <div id="logo-placeholder" class="hidden flex-col items-center justify-center z-10 text-center p-4">
+                            <div class="text-5xl mb-2 opacity-40">🖼️</div>
                             <span class="text-xs font-bold text-gray-400">Sin Logo</span>
+                            <span class="text-[10px] text-blue-500 font-semibold mt-1">Clic para subir</span>
                         </div>
                     @else
-                        <img src="" id="logo-preview" alt="Logo Empresa" class="hidden w-full h-full object-contain p-2 z-10 bg-white dark:bg-transparent">
-                        <div id="logo-placeholder" class="flex flex-col items-center z-10">
-                            <div class="text-6xl mb-2 opacity-50">🖼️</div>
+                        <img src="" id="logo-preview" alt="Logo Empresa" class="hidden w-full h-full object-contain p-3.5 z-10 bg-white/40 dark:bg-transparent transition-transform duration-300 group-hover:scale-105">
+                        <div id="logo-placeholder" class="flex flex-col items-center justify-center z-10 text-center p-4">
+                            <div class="text-5xl mb-2 opacity-40">🖼️</div>
                             <span class="text-xs font-bold text-gray-400">Sin Logo</span>
+                            <span class="text-[10px] text-blue-500 font-semibold mt-1">Clic para subir</span>
                         </div>
                     @endif
-                    <div class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center z-20 transition-all">
-                        <span class="text-white text-sm font-bold">Cambiar Logo</span>
+                    
+                    {{-- Overlay animado al hacer hover --}}
+                    <div class="absolute inset-0 bg-slate-900/65 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1.5 transition-opacity duration-200 backdrop-blur-[2px] z-20 pointer-events-none">
+                        <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-base text-white shadow-sm">
+                            📷
+                        </div>
+                        <span class="text-white text-[11px] font-black uppercase tracking-wider">Cambiar Logo</span>
                     </div>
                 </div>
-                <input type="file" name="logo" id="logo-input" accept="image/*" class="hidden" onchange="previewLogo(event)">
-                <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center max-w-[210px] leading-snug">Formatos recomendados: PNG, JPG, WEBP. Fondo transparente sugerido.</p>
+                
+                <input type="file" name="logo" id="logo-input" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp" class="hidden" onchange="previewLogo(event)">
+                <input type="hidden" name="eliminar_logo" id="eliminar-logo-input" value="0">
+
+                <button type="button" 
+                        onclick="confirmRemoveLogo()" 
+                        id="btn-remove-logo" 
+                        class="text-xs font-bold text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-red-500/10 px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-all {{ $configuracion->logo_path ? '' : 'hidden' }}">
+                    <span>🗑️</span>
+                    <span>Quitar logo</span>
+                </button>
+
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center max-w-[240px] leading-snug">
+                    <span>Formatos: <strong class="text-slate-700 dark:text-slate-300">SVG, PNG, JPG, WEBP</strong> • Máx. 5 MB</span>
+                    <span class="block text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">(Fondo transparente sugerido)</span>
+                </p>
             </div>
 
             {{-- Columna Derecha: Datos --}}
@@ -150,23 +172,178 @@
 </div>
 
 <script>
+let hasSavedLogo = {{ $configuracion->logo_path ? 'true' : 'false' }};
+
 function previewLogo(event) {
     const file = event.target.files[0];
     if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+            if (typeof showToast === 'function') {
+                showToast('El archivo seleccionado supera el límite de 5 MB.', 'error');
+            } else {
+                alert('El archivo seleccionado supera el límite de 5 MB.');
+            }
+            event.target.value = '';
+            return;
+        }
+
+        const delInput = document.getElementById('eliminar-logo-input');
+        if (delInput) delInput.value = '0';
+
         const reader = new FileReader();
         reader.onload = function(e) {
             const preview = document.getElementById('logo-preview');
-            preview.src = e.target.result;
-            preview.classList.remove('hidden');
+            if (preview) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+            }
             
             const placeholder = document.getElementById('logo-placeholder');
             if (placeholder) {
                 placeholder.classList.add('hidden');
+                placeholder.style.display = 'none';
+            }
+
+            const btnRemove = document.getElementById('btn-remove-logo');
+            if (btnRemove) {
+                btnRemove.classList.remove('hidden');
             }
         };
         reader.readAsDataURL(file);
     }
 }
+
+let _pendingLogoDelete = false;
+
+function confirmRemoveLogo() {
+    const fileInput = document.getElementById('logo-input');
+    const preview = document.getElementById('logo-preview');
+    const placeholder = document.getElementById('logo-placeholder');
+    const btnRemove = document.getElementById('btn-remove-logo');
+    const delInput = document.getElementById('eliminar-logo-input');
+
+    // Caso 1: El usuario seleccionó un archivo nuevo desde su PC pero aún no lo guarda
+    if (fileInput && fileInput.files.length > 0 && !hasSavedLogo) {
+        fileInput.value = '';
+        if (preview) {
+            preview.src = '';
+            preview.classList.add('hidden');
+        }
+        if (placeholder) {
+            placeholder.classList.remove('hidden');
+            placeholder.style.display = 'flex';
+        }
+        if (btnRemove) btnRemove.classList.add('hidden');
+        if (delInput) delInput.value = '0';
+        return;
+    }
+
+    // Caso 2: Hay un logo guardado en el servidor -> Abrir modal Liquid Glass del sistema
+    if (hasSavedLogo) {
+        const modal = document.getElementById('ts-modal');
+        const card = document.getElementById('ts-modal-card');
+        const titleEl = document.getElementById('ts-modal-title');
+        const msgEl = document.getElementById('ts-modal-msg');
+
+        if (titleEl) titleEl.innerText = '¿Eliminar logo de la empresa?';
+        if (msgEl) msgEl.innerText = 'Esta acción removerá el logo guardado. Los reportes, facturas y tirillas volverán al formato de membrete textual.';
+
+        _pendingLogoDelete = true;
+
+        if (modal) {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                if (card) card.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+    } else {
+        if (fileInput) fileInput.value = '';
+        if (preview) {
+            preview.src = '';
+            preview.classList.add('hidden');
+        }
+        if (placeholder) {
+            placeholder.classList.remove('hidden');
+            placeholder.style.display = 'flex';
+        }
+        if (btnRemove) btnRemove.classList.add('hidden');
+    }
+}
+
+async function ejecutarEliminacionLogo() {
+    const btnRemove = document.getElementById('btn-remove-logo');
+    const fileInput = document.getElementById('logo-input');
+    const preview = document.getElementById('logo-preview');
+    const placeholder = document.getElementById('logo-placeholder');
+    const delInput = document.getElementById('eliminar-logo-input');
+
+    if (btnRemove) {
+        btnRemove.disabled = true;
+        btnRemove.innerHTML = '<span>⏳</span><span>Eliminando...</span>';
+    }
+
+    const form = document.getElementById('form-configuracion');
+    const formData = new FormData(form);
+    formData.set('eliminar_logo', '1');
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            hasSavedLogo = false;
+            if (fileInput) fileInput.value = '';
+            if (preview) {
+                preview.src = '';
+                preview.classList.add('hidden');
+            }
+            if (placeholder) {
+                placeholder.classList.remove('hidden');
+                placeholder.style.display = 'flex';
+            }
+            if (btnRemove) btnRemove.classList.add('hidden');
+            if (delInput) delInput.value = '0';
+
+            if (typeof showToast === 'function') {
+                showToast('Logo eliminado correctamente.', 'success');
+            }
+        } else {
+            const errorMsg = data.message || 'Error al eliminar el logo.';
+            if (typeof showToast === 'function') {
+                showToast(errorMsg, 'error');
+            }
+        }
+    } catch (error) {
+        console.error('Error al eliminar logo:', error);
+        if (typeof showToast === 'function') {
+            showToast('Error de conexión al eliminar el logo.', 'error');
+        }
+    } finally {
+        if (btnRemove) {
+            btnRemove.disabled = false;
+            btnRemove.innerHTML = '<span>🗑️</span><span>Quitar logo</span>';
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('ts-modal-confirm')?.addEventListener('click', async () => {
+        if (_pendingLogoDelete) {
+            _pendingLogoDelete = false;
+            if (typeof closeTsModal === 'function') closeTsModal();
+            await ejecutarEliminacionLogo();
+        }
+    });
+});
 
 function updateFormatSelection(formato) {
     const cardEstandar = document.getElementById('card-formato-estandar');
@@ -234,11 +411,38 @@ async function submitConfiguracion(event) {
                 showToast(data.message || 'Configuración guardada correctamente.', 'success');
             }
             if (data.logo_url) {
+                hasSavedLogo = true;
                 const preview = document.getElementById('logo-preview');
                 if (preview) {
                     preview.src = data.logo_url;
                     preview.classList.remove('hidden');
                 }
+                const placeholder = document.getElementById('logo-placeholder');
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                    placeholder.style.display = 'none';
+                }
+                const btnRemove = document.getElementById('btn-remove-logo');
+                if (btnRemove) {
+                    btnRemove.classList.remove('hidden');
+                }
+            } else if (document.getElementById('eliminar-logo-input')?.value === '1') {
+                hasSavedLogo = false;
+                const preview = document.getElementById('logo-preview');
+                if (preview) {
+                    preview.src = '';
+                    preview.classList.add('hidden');
+                }
+                const placeholder = document.getElementById('logo-placeholder');
+                if (placeholder) {
+                    placeholder.classList.remove('hidden');
+                    placeholder.style.display = 'flex';
+                }
+                const btnRemove = document.getElementById('btn-remove-logo');
+                if (btnRemove) {
+                    btnRemove.classList.add('hidden');
+                }
+                document.getElementById('eliminar-logo-input').value = '0';
             }
         } else {
             const errorMsg = data.message || (data.errors ? Object.values(data.errors).flat().join('<br>') : 'Ocurrió un error al guardar.');
