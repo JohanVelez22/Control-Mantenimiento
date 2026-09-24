@@ -222,4 +222,14 @@ class CotizacionProveedorTest extends TestCase
         $respElec->assertSee('col-observacion');
         $respElec->assertSee('col-acciones');
     }
+
+    public function test_layout_renderiza_elementos_drawer_movil_y_backdrop()
+    {
+        $response = $this->actingAs($this->admin)->get(route('dashboard'));
+        $response->assertStatus(200);
+        $response->assertSee('id="ts-sidebar-backdrop"', false);
+        $response->assertSee('toggleMobileSidebar()', false);
+        $response->assertSee('closeMobileSidebar()', false);
+        $response->assertSee('overflow-x-auto', false);
+    }
 }

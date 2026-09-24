@@ -394,9 +394,57 @@ html.dark #ts-sidebar {
   margin-left: var(--sidebar-expanded) !important;
 }
 
-@media (max-width: 1024px) {
-  #main-wrapper {
+/* --- REGLAS RESPONSIVAS DE SIDEBAR EN MÓVIL Y ZOOM ALTO (< 1024px) --- */
+@media (max-width: 1023px) {
+  #main-wrapper,
+  #ts-sidebar:hover~#main-wrapper,
+  #ts-sidebar.expanded~#main-wrapper {
     margin-left: 0 !important;
+  }
+
+  #ts-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    height: 100dvh !important;
+    width: 280px !important;
+    max-width: 85vw !important;
+    z-index: 50 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, box-shadow 0.3s ease !important;
+    box-shadow: none !important;
+  }
+
+  #ts-sidebar.mobile-open {
+    transform: translateX(0) !important;
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  /* Los elementos dentro del cajón móvil se muestran inmediatamente sin retardo */
+  #ts-sidebar.mobile-open .nav-item {
+    width: 100% !important;
+    padding: 10px 14px !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    font-size: 13.5px !important;
+    opacity: 1 !important;
+  }
+
+  #ts-sidebar.mobile-open .nav-label {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    font-size: 13.5px !important;
+    transition: none !important;
+  }
+
+  #ts-sidebar.mobile-open .sidebar-brand-text {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: none !important;
   }
 }
 
@@ -441,8 +489,8 @@ html.dark .nav-item {
   color: #94A3B8;
 }
 
-/* ---- Sidebar colapsado: centrar iconos ---- */
-#ts-sidebar:not(:hover):not(.expanded) .nav-item {
+/* ---- Sidebar colapsado (Desktop): centrar iconos cuando no está expandido ni abierto en móvil ---- */
+#ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .nav-item {
   padding-left: 0;
   padding-right: 0;
   justify-content: center;
@@ -450,13 +498,59 @@ html.dark .nav-item {
   font-size: 0;
 }
 
-#ts-sidebar:not(:hover):not(.expanded) .nav-label {
+#ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .nav-label {
   display: none !important;
 }
 
-#ts-sidebar:not(:hover):not(.expanded) .sidebar-brand-text {
-  opacity: 0;
+/* --- BRAND HEADER EN SIDEBAR (Adaptativo al Zoom) --- */
+.sidebar-logo-title {
   display: none !important;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 2px;
+}
+
+.sidebar-brand-text {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: #06B6D4;
+  line-height: 1;
+}
+
+/* Cuando el sidebar está colapsado en desktop: ocultar todo el texto de marca */
+#ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .sidebar-brand-text,
+#ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .sidebar-logo-title {
+  opacity: 0 !important;
+  display: none !important;
+}
+
+/* Modo Normal (Zoom < 150%): NAVEGACIÓN solo en el centro */
+#ts-sidebar:not(.show-sidebar-brand):hover .sidebar-brand-text,
+#ts-sidebar:not(.show-sidebar-brand).expanded .sidebar-brand-text {
+  opacity: 1;
+  display: inline-block !important;
+}
+
+/* Modo Zoom >= 150% o Móvil: TECNI SYSTEMAS encima de NAVEGACIÓN */
+#ts-sidebar.show-sidebar-brand:hover .sidebar-logo-title,
+#ts-sidebar.show-sidebar-brand.expanded .sidebar-logo-title,
+#ts-sidebar.show-sidebar-brand.mobile-open .sidebar-logo-title {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+#ts-sidebar.show-sidebar-brand:hover .sidebar-brand-text,
+#ts-sidebar.show-sidebar-brand.expanded .sidebar-brand-text,
+#ts-sidebar.show-sidebar-brand.mobile-open .sidebar-brand-text {
+  display: inline-block !important;
+  opacity: 1 !important;
+  font-size: 9px !important;
+  letter-spacing: 0.2em !important;
+  font-weight: 700 !important;
+  margin-top: 1px !important;
 }
 
 .nav-item .nav-icon {
@@ -532,7 +626,8 @@ html.dark .nav-item.active {
 }
 
 #ts-sidebar:hover .nav-label,
-#ts-sidebar.expanded .nav-label {
+#ts-sidebar.expanded .nav-label,
+#ts-sidebar.mobile-open .nav-label {
   opacity: 1;
   transform: translateX(0);
 }
@@ -555,7 +650,8 @@ html.dark .nav-group-label {
 }
 
 #ts-sidebar:hover .nav-group-label,
-#ts-sidebar.expanded .nav-group-label {
+#ts-sidebar.expanded .nav-group-label,
+#ts-sidebar.mobile-open .nav-group-label {
   opacity: 1;
 }
 
@@ -2302,6 +2398,8 @@ html.dark .entity-tab.active {
   border-radius: 24px;
   max-width: 460px;
   width: 100%;
+  max-height: 90dvh;
+  overflow-y: auto;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease;
 }
 
@@ -2384,46 +2482,115 @@ html.dark .ts-modal-card {
   }
 }
 
-/* --- TABLAS RESPONSIVAS (MÓVIL) -------------------------------------------------- */
-@media screen and (max-width: 767px) {
+/* --- TABLAS RESPONSIVAS PROTEGIDAS Y SCROLL SEGURO (MÓVIL / ZOOM 150%-200%) --- */
+.overflow-x-auto {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-x: contain !important;
+}
 
-  .responsive-table,
-  .responsive-table tbody,
-  .responsive-table tr,
-  .responsive-table td {
+/* Tablas base del sistema: preservar estructura tabular limpia */
+.ts-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Ancho mínimo de seguridad para tablas en pantallas compactas / zoom alto (evita aplastamiento de celdas) */
+@media screen and (max-width: 1023px) {
+  .ts-table {
+    min-width: 680px;
+  }
+
+  .table-dense,
+  #tabla-mantenimientos,
+  #tabla-electronicas,
+  #tabla-cotizaciones,
+  #tabla-stocks,
+  #tabla-caja,
+  #tabla-inventario,
+  #tabla-facturas,
+  #tabla-clientes,
+  #tabla-equipos,
+  #tabla-proveedores {
+    min-width: 820px;
+  }
+}
+
+/* --- ADAPTACIÓN DE TARJETAS Y TOOLBARS EN PANTALLAS COMPACTAS (< 640px / ZOOM 200%) --- */
+@media screen and (max-width: 640px) {
+  .glass-card {
+    padding: 1rem !important;
+    border-radius: 16px !important;
+  }
+
+  .glass-card > div:first-child .glass-input.w-48,
+  .glass-card > div:first-child .glass-input.sm\:w-64 {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .glass-card > div:first-child .relative:has(input[type="text"]) {
+    width: 100% !important;
+    flex-grow: 1 !important;
+  }
+}
+
+/* Modo Tarjetas: solo cuando se especifique explícitamente .responsive-cards */
+@media screen and (max-width: 767px) {
+  .responsive-cards,
+  .responsive-cards tbody,
+  .responsive-cards tr,
+  .responsive-cards td {
     display: block;
     width: 100%;
   }
 
-  .responsive-table thead {
+  .responsive-cards thead {
     display: none;
   }
 
-  .responsive-table tr {
+  .responsive-cards tr {
     margin-bottom: 12px;
     border-radius: 14px;
     overflow: hidden;
+    background: rgba(255, 255, 255, 0.60);
     border: 1px solid rgba(226, 232, 240, 0.70);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   }
 
-  .responsive-table td {
+  html.dark .responsive-cards tr {
+    background: rgba(15, 23, 42, 0.60);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .responsive-cards td {
     display: grid;
-    grid-template-columns: minmax(90px, 35%) 1fr;
+    grid-template-columns: minmax(100px, 35%) 1fr;
     gap: 8px;
     align-items: center;
     padding: 10px 14px !important;
     border-bottom: 1px solid rgba(226, 232, 240, 0.40);
   }
 
-  .responsive-table td:last-child {
+  html.dark .responsive-cards td {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .responsive-cards td:last-child {
     border-bottom: none;
   }
 
-  .responsive-table td::before {
+  .responsive-cards td::before {
     content: attr(data-label);
     font-weight: 700;
     font-size: 11px;
     color: #64748B;
+  }
+
+  html.dark .responsive-cards td::before {
+    color: #94A3B8;
   }
 }
 
@@ -3715,23 +3882,52 @@ input.flatpickr-input.form-control {
   -webkit-user-select: text !important;
 }
 
-/* Centrado absoluto del logo en el topbar ignorando el sidebar */
+/* Centrado del logo en el topbar con animación suave y ocultamiento en zoom >= 150% */
 .topbar-logo-container {
   position: absolute !important;
   left: calc(50vw - var(--sidebar-w)) !important;
   transform: translate(-50%, -50%) !important;
   top: 50% !important;
-  transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: left 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.22s ease !important;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  will-change: opacity, transform;
+  z-index: 20;
 }
 
-#ts-sidebar:hover~#main-wrapper .topbar-logo-container,
-#ts-sidebar.expanded~#main-wrapper .topbar-logo-container {
+#ts-sidebar:hover~#main-wrapper .topbar-logo-container:not(.logo-zoom-hidden),
+#ts-sidebar.expanded~#main-wrapper .topbar-logo-container:not(.logo-zoom-hidden) {
   left: calc(50vw - var(--sidebar-expanded)) !important;
 }
 
 @media (max-width: 1024px) {
   .topbar-logo-container {
     left: 50% !important;
+  }
+}
+
+/* Clase dinámica aplicada cuando el zoom alcanza o supera el 150% */
+.topbar-logo-container.logo-zoom-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translate(-50%, -58%) scale(0.95) !important;
+}
+
+#ts-sidebar:hover~#main-wrapper .topbar-logo-container.logo-zoom-hidden,
+#ts-sidebar.expanded~#main-wrapper .topbar-logo-container.logo-zoom-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 767px) {
+  .topbar-logo-container {
+    display: none !important;
   }
 }
 

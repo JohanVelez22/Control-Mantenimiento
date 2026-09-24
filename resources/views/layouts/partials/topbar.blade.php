@@ -1,13 +1,15 @@
             <!-- TOPBAR DE VIDRIO -->
             <header id="ts-topbar" class="h-16 px-4 md:px-6 flex items-center justify-between no-print">
-                <!-- Izquierda: Toggle móvil -->
+                <!-- Izquierda: Toggle móvil afin al tema (Liquid Glass azul/cyan) -->
                 <div class="flex items-center gap-3">
-                    <button class="lg:hidden p-2 bg-gray-100/50 dark:bg-gray-800/50 rounded-xl transition-colors" onclick="toggleMobileSidebar()">
-                        ☰
+                    <button type="button" aria-label="Abrir menú" class="lg:hidden p-2.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 border border-blue-500/20 dark:border-cyan-500/30 text-blue-600 dark:text-cyan-400 hover:text-blue-700 dark:hover:text-cyan-300 transition-all duration-200 shadow-sm shadow-blue-500/10 flex items-center justify-center active:scale-95 group" onclick="toggleMobileSidebar()">
+                        <svg class="w-5 h-5 transition-transform group-hover:scale-105" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
                     </button>
                 </div>
 
-                <!-- Centro: Logo Centrado -->
+                <!-- Centro: Único Logo Centrado (visible en desktop/tablets, oculto en móvil para no colisionar) -->
                 <div class="topbar-logo-container hidden md:flex justify-center items-center">
                     <a href="{{ route('dashboard') }}" class="text-[20px] font-black tracking-widest hover:scale-105 transition-transform duration-300 font-logo flex items-center gap-2">
                         <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>

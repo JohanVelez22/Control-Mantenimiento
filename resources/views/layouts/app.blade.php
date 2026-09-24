@@ -71,7 +71,10 @@
     <!-- Envoltura Principal -->
     <div class="flex min-h-screen">
         
-        <!-- SIDEBAR DE VIDRIO (Fijo) -->
+        <!-- BACKDROP OVERLAY PARA SIDEBAR MÓVIL (Liquid Glass) -->
+        <div id="ts-sidebar-backdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 no-print" onclick="closeMobileSidebar()"></div>
+
+        <!-- SIDEBAR DE VIDRIO (Fijo en desktop, Drawer en móvil) -->
         @include('layouts.partials.sidebar')
 
         <!-- CONTENEDOR PRINCIPAL (Margen dinámico según sidebar) -->
@@ -84,7 +87,7 @@
             <div id="nav-progress" class="no-print"></div>
 
             <!-- CONTENIDO DINÁMICO -->
-            <main id="ts-main" class="flex-1 p-4 sm:p-6 lg:p-8 pb-[50vh] relative z-10 content-scroll">
+            <main id="ts-main" class="flex-1 p-3 sm:p-5 lg:p-8 pb-[30vh] md:pb-[50vh] relative z-10 content-scroll max-w-full overflow-x-hidden">
                 <!-- Encabezado de Impresión -->
                 <div class="print-header hidden-screen" style="margin-bottom: 20px;">
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; border-bottom: 2px solid #000000;">
@@ -536,18 +539,38 @@
             } catch(e) {}
         }, true);
 
-        // ─── SIDEBAR HOVER → EMPUJAR CONTENIDO ───────────────────────
+        // ─── GESTIÓN DE SIDEBAR: DESKTOP (HOVER) Y MÓVIL (DRAWER) ───────
         (function() {
             const sb = document.getElementById('ts-sidebar');
             const wrapper = document.getElementById('main-wrapper');
+            const backdrop = document.getElementById('ts-sidebar-backdrop');
             if (!sb || !wrapper) return;
 
             const W_COLLAPSED = '72px';
             const W_EXPANDED  = '260px';
 
-            // Inicializa el margen con transición suave
+            function isDesktop() {
+                return window.innerWidth >= 1024;
+            }
+
+            function syncSidebarState() {
+                if (isDesktop()) {
+                    sb.classList.remove('mobile-open');
+                    sb.style.transform = '';
+                    sb.style.width = '';
+                    wrapper.style.marginLeft = W_COLLAPSED;
+                    if (backdrop) {
+                        backdrop.classList.add('hidden', 'opacity-0');
+                    }
+                    document.body.classList.remove('overflow-hidden');
+                } else {
+                    wrapper.style.marginLeft = '0px';
+                }
+            }
+
+            // Inicializar margen con transición suave
             wrapper.style.transition = 'margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
-            wrapper.style.marginLeft = W_COLLAPSED;
+            syncSidebarState();
 
             // Reposiciona el calendario Flatpickr siguiendo al input durante la transición
             function trackOpenCalendars(durationMs) {
@@ -573,48 +596,139 @@
             }
 
             sb.addEventListener('mouseenter', () => {
-                wrapper.style.marginLeft = W_EXPANDED;
-                trackOpenCalendars(300);
+                if (isDesktop()) {
+                    wrapper.style.marginLeft = W_EXPANDED;
+                    trackOpenCalendars(300);
+                }
             });
             sb.addEventListener('mouseleave', () => {
-                wrapper.style.marginLeft = W_COLLAPSED;
-                trackOpenCalendars(300);
+                if (isDesktop()) {
+                    wrapper.style.marginLeft = W_COLLAPSED;
+                    trackOpenCalendars(300);
+                }
+            });
+
+            // Sincronizar en resize / zoom
+            window.addEventListener('resize', syncSidebarState);
+
+            // Control de Drawer Móvil
+            window.openMobileSidebar = function() {
+                if (isDesktop()) return;
+                sb.classList.add('mobile-open');
+                if (backdrop) {
+                    backdrop.classList.remove('hidden');
+                    void backdrop.offsetWidth; // Force reflow
+                    backdrop.classList.remove('opacity-0');
+                }
+                document.body.classList.add('overflow-hidden');
+            };
+
+            window.closeMobileSidebar = function() {
+                sb.classList.remove('mobile-open');
+                if (backdrop) {
+                    backdrop.classList.add('opacity-0');
+                    setTimeout(() => {
+                        if (!sb.classList.contains('mobile-open')) {
+                            backdrop.classList.add('hidden');
+                        }
+                    }, 300);
+                }
+                document.body.classList.remove('overflow-hidden');
+            };
+
+            window.toggleMobileSidebar = function() {
+                if (sb.classList.contains('mobile-open')) {
+                    window.closeMobileSidebar();
+                } else {
+                    window.openMobileSidebar();
+                }
+            };
+
+            // Cerrar menú móvil al hacer clic en un enlace de navegación
+            sb.querySelectorAll('.nav-item').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!isDesktop()) {
+                        window.closeMobileSidebar();
+                    }
+                });
             });
         })();
 
-        // ─── SIDEBAR MÓVIL TOGGLE ─────────────────────────────────────
-        function toggleMobileSidebar() {
-            const sb = document.getElementById('ts-sidebar');
-            // En móvil, el sidebar está en position: fixed, z-index alto.
-            // Si no tiene clases para móvil, las añadimos.
-            if(!sb.classList.contains('mobile-active')) {
-                sb.style.transform = 'translateX(0)';
-                sb.classList.add('mobile-active');
-            } else {
-                sb.style.transform = 'translateX(-100%)';
-                sb.classList.remove('mobile-active');
-            }
-        }
+        // ─── CONTROL DE VISIBILIDAD DE TÍTULO CENTRAL EN ZOOM >= 150% ───
+        (function() {
+            const logo = document.querySelector('.topbar-logo-container');
+            const sidebar = document.getElementById('ts-sidebar');
+            if (!logo && !sidebar) return;
 
-        // Lógica CSS inline para móvil
-        const mediaQuery = window.matchMedia('(max-width: 1024px)');
-        function handleMobileChanges(e) {
-            const sb = document.getElementById('ts-sidebar');
-            const wrapper = document.getElementById('main-wrapper');
-            if (e.matches) {
-                sb.style.transform = 'translateX(-100%)';
-                sb.classList.remove('hover:expanded');
-                sb.style.width = '260px'; // Forzar ancho completo al mostrarse en móvil
-                if (wrapper) wrapper.style.marginLeft = '0';
-            } else {
-                sb.style.transform = 'translateX(0)';
-                sb.classList.add('hover:expanded');
-                sb.style.width = ''; // Limpiar inline
-                if (wrapper) wrapper.style.marginLeft = '72px';
+            function checkZoomVisibility() {
+                // Medir el nivel de zoom real del navegador independientemente de la escala del sistema operativo
+                let zoomFactor = 1;
+                if (window.outerWidth && window.innerWidth) {
+                    const ratio = window.outerWidth / window.innerWidth;
+                    if (ratio > 0.4 && ratio < 5) {
+                        zoomFactor = Math.round(ratio * 100) / 100;
+                    }
+                }
+
+                const dpr = window.devicePixelRatio || 1;
+                const vvScale = (window.visualViewport && window.visualViewport.scale) ? window.visualViewport.scale : 1;
+                const isMobile = window.innerWidth < 1024;
+
+                // Desaparecer estrictamente a partir del 150% de zoom (NO al 125%) o en modo móvil:
+                // - zoomFactor >= 1.48: captura el 150%+ de zoom de página en Chrome, Edge, Safari, Firefox
+                // - vvScale >= 1.48: captura gestos de ampliación táctiles/pinch
+                // - dpr >= 1.95: captura zoom del 200%+ en monitores estándar
+                // - isMobile: en pantallas compactas/móvil se traslada al menú lateral
+                const shouldHideTopbarLogo = zoomFactor >= 1.48 || vvScale >= 1.48 || dpr >= 1.95 || isMobile;
+
+                if (logo) {
+                    if (shouldHideTopbarLogo) {
+                        logo.classList.add('logo-zoom-hidden');
+                        logo.setAttribute('aria-hidden', 'true');
+                        const link = logo.querySelector('a');
+                        if (link) link.setAttribute('tabindex', '-1');
+                    } else {
+                        logo.classList.remove('logo-zoom-hidden');
+                        logo.removeAttribute('aria-hidden');
+                        const link = logo.querySelector('a');
+                        if (link) link.removeAttribute('tabindex');
+                    }
+                }
+
+                if (sidebar) {
+                    // Cuando el título del topbar desaparece, se activa en el sidebar encima de NAVEGACIÓN
+                    if (shouldHideTopbarLogo) {
+                        sidebar.classList.add('show-sidebar-brand');
+                    } else {
+                        sidebar.classList.remove('show-sidebar-brand');
+                    }
+                }
             }
-        }
-        mediaQuery.addListener(handleMobileChanges);
-        handleMobileChanges(mediaQuery);
+
+            checkZoomVisibility();
+
+            // Escuchar resize de ventana y del viewport visual (zoom con teclado Ctrl+/- o gestos táctiles)
+            window.addEventListener('resize', checkZoomVisibility, { passive: true });
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', checkZoomVisibility, { passive: true });
+            }
+
+            // Monitorear dinámicamente cambios en devicePixelRatio mediante matchMedia (Chrome, Firefox, Safari, Edge)
+            function watchDprChange() {
+                const currentDpr = window.devicePixelRatio || 1;
+                const mq = window.matchMedia(`(resolution: ${currentDpr}dppx)`);
+                const update = () => {
+                    checkZoomVisibility();
+                    watchDprChange();
+                };
+                if (mq.addEventListener) {
+                    mq.addEventListener('change', update, { once: true });
+                } else if (mq.addListener) {
+                    mq.addListener(update);
+                }
+            }
+            watchDprChange();
+        })();
 
         // ─── REPOSICIONAR TOMSELECT DROPDOWNS AL CAMBIAR SIDEBAR ───────────────
         // Trackear instancias TomSelect para reposicionar al cambiar sidebar
