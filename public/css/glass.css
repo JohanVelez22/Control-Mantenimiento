@@ -1603,19 +1603,45 @@ html.dark .glass-input {
 .glass-input:focus,
 .ts-wrapper.glass-input.focus {
   border-color: rgba(37, 99, 235, 0.60) !important;
+  border-radius: 12px !important;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
   outline: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
 }
 
 html.dark .glass-input:focus,
 html.dark .ts-wrapper.glass-input.focus {
   border-color: rgba(96, 165, 250, 0.50) !important;
+  border-radius: 12px !important;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.20) !important;
   outline: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
 }
 
 .glass-input::placeholder {
   color: #94A3B8;
+}
+
+/* Ocultar placeholder inmediatamente al hacer clic / enfocar en cualquier input o textarea */
+input:focus::placeholder,
+textarea:focus::placeholder,
+.glass-input:focus::placeholder,
+.glass-input:focus::-webkit-input-placeholder,
+.glass-input:focus::-moz-placeholder,
+.glass-input:focus:-ms-input-placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+
+/* Quitar recuadro o anillo de foco persistente en checkboxes y radios al hacer clic */
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
 }
 
 .glass-input.border-red-500 {

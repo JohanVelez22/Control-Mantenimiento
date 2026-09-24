@@ -137,8 +137,8 @@
 
 @if(!$isEdit)
 <div class="mb-6 flex items-center">
-    <input type="checkbox" name="active" id="active" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-    <label for="active" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Activar usuario inmediatamente</label>
+    <input type="checkbox" name="active" id="active" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-0 focus:outline-none cursor-pointer" style="outline: none !important; box-shadow: none !important;">
+    <label for="active" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer select-none">Activar usuario inmediatamente</label>
 </div>
 @endif
 

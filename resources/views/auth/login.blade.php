@@ -23,7 +23,7 @@
  </div>
 
  {{-- Header --}}
- <div class="text-center mb-6">
+ <div class="text-center mb-2">
  <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 text-3xl shadow-xl mb-4">🔧</div>
  <h1 class="text-xl font-black text-gray-900 dark:text-white">Iniciar Sesión</h1>
  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa tus credenciales para acceder al sistema</p>
@@ -35,34 +35,34 @@
  <form method="POST" action="{{ route('login') }}" class="space-y-6">
  @csrf
 
- {{-- Email --}}
+ {{-- Usuario / Correo --}}
  <div>
- <label for="email" class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-200">
+ <label for="email" class="mb-1.5 flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-200" style="margin-bottom: 5px;">
  <span class="flex-shrink-0">📧</span>
- <span>Correo Electrónico</span>
+ <span>Usuario o Correo Electrónico</span>
  </label>
- <input type="email" id="email" name="email" value="{{ old('email') }}"
- required autofocus placeholder="usuario@empresa.com"
- class="glass-input mt-1 w-full text-base py-3 px-4">
+ <input type="text" id="email" name="email" value="{{ old('email') }}"
+ required autofocus placeholder="usuario o correo@..."
+ class="glass-input w-full text-base py-3 px-4 focus:placeholder-transparent" autocomplete="username">
  @error('email') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
  {{-- Contraseña --}}
  <div>
- <label for="password" class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-200">
+ <label for="password" class="mb-1.5 flex items-center gap-1.5 text-sm font-bold text-slate-700 dark:text-slate-200" style="margin-bottom: 5px;">
  <span class="flex-shrink-0">🔑</span>
  <span>Contraseña</span>
  </label>
  <input type="password" id="password" name="password"
  required placeholder="••••••••"
- class="glass-input mt-1 w-full text-base py-3 px-4">
+ class="glass-input w-full text-base py-3 px-4 focus:placeholder-transparent">
  @error('password') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
  {{-- Remember Me --}}
- <div class="flex items-center gap-2">
- <input type="checkbox" id="remember" name="remember" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
- <label for="remember" class="text-sm font-medium text-gray-900 dark:text-gray-300">Mantener sesión iniciada</label>
+ <div class="flex items-center gap-2 cursor-pointer select-none">
+ <input type="checkbox" id="remember" name="remember" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-0 focus:ring-offset-0 focus:outline-none dark:bg-gray-700 dark:border-gray-600 cursor-pointer" style="outline: none !important; box-shadow: none !important;">
+ <label for="remember" class="text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer select-none">Mantener sesión iniciada</label>
  </div>
 
  {{-- Submit --}}
@@ -74,8 +74,33 @@
   </div>
 </div>
 
+<style>
+.glass-input:focus::placeholder,
+.glass-input:focus::-webkit-input-placeholder,
+.glass-input:focus::-moz-placeholder,
+.glass-input:focus:-ms-input-placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+#remember:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+</style>
+
 <script>
 (function(){
+  // Ocultar placeholder inmediatamente al hacer clic / focus
+  document.querySelectorAll('.glass-input').forEach(function(input) {
+    var originalPlaceholder = input.getAttribute('placeholder') || '';
+    input.addEventListener('focus', function() {
+      this.setAttribute('placeholder', '');
+    });
+    input.addEventListener('blur', function() {
+      this.setAttribute('placeholder', originalPlaceholder);
+    });
+  });
+
  if (localStorage.getItem('color-theme') === 'dark' ||
  (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
  document.documentElement.classList.add('dark');

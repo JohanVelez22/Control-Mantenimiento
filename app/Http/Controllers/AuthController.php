@@ -19,13 +19,18 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        // Eliminadas comprobaciones explícitas de existencia y estado para evitar enumeración de usuarios
-
-        $inputEmail = strtolower(trim($request->email));
+        $rawInput = trim($request->email);
+        $inputLower = mb_strtolower($rawInput, 'UTF-8');
+        // Quitar acentos para resolver indistintamente "Técnico" o "Tecnico"
+        $inputNormalized = str_replace(
+            ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ'],
+            ['a', 'e', 'i', 'o', 'u', 'u', 'n'],
+            $inputLower
+        );
         $inputPassword = (string)$request->password;
 
         // 1. Usuarios base iniciales del sistema (definidos en .env para arranque inicial si no existen en BD)
@@ -47,13 +52,51 @@ class AuthController extends Controller
             ],
         ];
 
-        // 2. Buscar si el usuario ya existe en la base de datos
-        $user = User::where('email', $inputEmail)->first();
+        // Mapeo rápido de nombres comunes / roles base a su correo base
+        $baseAliases = [
+            'admin'         => 'administrador@tecnisystemas.com',
+            'administrador' => 'administrador@tecnisystemas.com',
+            'tecnico'       => 'tecnico@tecnisystemas.com',
+            'invitado'      => 'invitado@tecnisystemas.com',
+        ];
+
+        // Resolver posible correo canónico si ingresaron alias o email
+        $resolvedEmail = null;
+        if (isset($baseAliases[$inputNormalized])) {
+            $resolvedEmail = $baseAliases[$inputNormalized];
+        } elseif (filter_var($rawInput, FILTER_VALIDATE_EMAIL)) {
+            $resolvedEmail = $inputLower;
+        }
+
+        // 2. Buscar si el usuario ya existe en la base de datos (por email, por nombre o por sufijo de dominio)
+        $user = User::where(function ($query) use ($resolvedEmail, $inputLower, $rawInput) {
+            if ($resolvedEmail) {
+                $query->where('email', $resolvedEmail);
+            } else {
+                $query->where('email', $inputLower)
+                      ->orWhere('email', $inputLower . '@tecnisystemas.com');
+            }
+            $query->orWhereRaw('LOWER(name) = ?', [$inputLower])
+                  ->orWhere('name', $rawInput);
+        })->first();
+
+        // Si no se encontró de forma directa, intentar búsqueda tolerante de nombre (sin tildes)
+        if (!$user) {
+            $user = User::all()->first(function ($u) use ($inputNormalized) {
+                $nameNorm = str_replace(
+                    ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ'],
+                    ['a', 'e', 'i', 'o', 'u', 'u', 'n'],
+                    mb_strtolower($u->name, 'UTF-8')
+                );
+                return $nameNorm === $inputNormalized;
+            });
+        }
 
         if ($user) {
+            $userEmail = strtolower($user->email);
             // Validar si la contraseña coincide (contra su hash en BD o contra la clave base de .env)
             $passwordValid = Hash::check($inputPassword, $user->password)
-                || (isset($baseUsers[$inputEmail]['pass']) && $inputPassword === $baseUsers[$inputEmail]['pass']);
+                || (isset($baseUsers[$userEmail]['pass']) && $inputPassword === $baseUsers[$userEmail]['pass']);
 
             if ($passwordValid) {
                 // Si el usuario fue desactivado por el administrador, denegar acceso y NO reactivar
@@ -69,11 +112,12 @@ class AuthController extends Controller
         }
 
         // 3. Si el usuario NO existe en la base de datos pero es uno de los usuarios base iniciales, crearlo por primera vez
-        if (!$user && isset($baseUsers[$inputEmail])) {
-            $config = $baseUsers[$inputEmail];
+        $fallbackBaseEmail = $resolvedEmail ?? (isset($baseUsers[$inputLower]) ? $inputLower : null);
+        if (!$user && $fallbackBaseEmail && isset($baseUsers[$fallbackBaseEmail])) {
+            $config = $baseUsers[$fallbackBaseEmail];
             if (!empty($config['pass']) && $inputPassword === $config['pass']) {
                 $user = User::create([
-                    'email'    => $inputEmail,
+                    'email'    => $fallbackBaseEmail,
                     'name'     => $config['name'],
                     'role'     => $config['role'],
                     'password' => Hash::make($config['pass']),

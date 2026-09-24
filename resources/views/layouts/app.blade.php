@@ -1611,6 +1611,31 @@
 
         // Global Hash Target Row Highlighter
         // (Unificado con activateHashTarget — ya no se necesita un handler separado)
+
+        // Global Placeholder: Ocultar placeholder al enfocar/dar clic y restaurar al desenfocar
+        document.addEventListener('focus', function (e) {
+            var el = e.target;
+            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+                var type = (el.type || '').toLowerCase();
+                if (type !== 'checkbox' && type !== 'radio' && type !== 'submit' && type !== 'button' && type !== 'file') {
+                    if (el.placeholder && !el.dataset.savedPlaceholder) {
+                        el.dataset.savedPlaceholder = el.placeholder;
+                    }
+                    if (el.dataset.savedPlaceholder) {
+                        el.placeholder = '';
+                    }
+                }
+            }
+        }, true);
+
+        document.addEventListener('blur', function (e) {
+            var el = e.target;
+            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+                if (el.dataset.savedPlaceholder) {
+                    el.placeholder = el.dataset.savedPlaceholder;
+                }
+            }
+        }, true);
     </script>
 
     @stack('modals')
