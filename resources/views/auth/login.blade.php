@@ -160,7 +160,7 @@
         submitBtn.disabled = true;
         submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
       }
-      if (btnText) btnText.textContent = '🔒 ⏳ Bloqueado (' + formatTime(seconds) + ')';
+      if (btnText) btnText.textContent = '🔒 Bloqueado (' + formatTime(seconds) + ')';
     }
 
     function unlockUI() {
@@ -178,9 +178,14 @@
         submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
       }
       if (btnText) btnText.textContent = 'Entrar al Sistema →';
+      if (!errorMsg && emailInput) {
+        errorMsg = document.createElement('div');
+        errorMsg.id = 'email-error-msg';
+        emailInput.parentNode.appendChild(errorMsg);
+      }
       if (errorMsg) {
-        errorMsg.className = 'text-emerald-500 text-xs font-bold mt-1.5 flex items-center gap-1';
-        errorMsg.innerHTML = '<span>✅</span><span>Bloqueo finalizado. Ya puedes ingresar tus credenciales.</span>';
+        errorMsg.className = 'text-emerald-500 text-xs font-bold mt-1.5 flex items-start gap-1.5 leading-5';
+        errorMsg.innerHTML = '<span class="flex-shrink-0 inline-flex items-center justify-center h-5 select-none">✅</span><span class="leading-5">Bloqueo finalizado. Ya puedes ingresar tus credenciales.</span>';
       }
     }
 
