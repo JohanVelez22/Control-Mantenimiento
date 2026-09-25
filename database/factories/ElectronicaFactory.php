@@ -21,18 +21,18 @@ class ElectronicaFactory extends Factory
     public function definition(): array
     {
         $faker = \Faker\Factory::create('es_ES');
-        
+
         $descripciones = [
             'Reparación de tarjeta madre, reballing de chip de video.',
             'Cambio de pines de carga y micro-soldadura SMD.',
             'Reparación de circuito de alimentación (MOSFETs y capacitores).',
             'Diagnóstico y cambio de integrado de carga de batería.',
             'Reemplazo de display LCD y calibración de panel táctil.',
-            'Limpieza ultrasónica por sulfatación / derrames de líquido.'
+            'Limpieza ultrasónica por sulfatación / derrames de líquido.',
         ];
 
         return [
-            'id_orden' => 'ELE-' . self::$orderNumber++,
+            'id_orden' => 'ELE-'.self::$orderNumber++,
             'fecha_entrada' => $faker->dateTimeBetween('-1 month', 'now'),
             'fecha_salida' => $faker->optional()->dateTimeBetween('now', '+1 week'),
             'tipo' => $faker->randomElement(['preventivo', 'correctivo']),

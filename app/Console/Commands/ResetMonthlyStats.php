@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Mantenimiento;
+use App\Models\MovimientoCaja;
+use Carbon\Carbon;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use App\Models\MovimientoCaja;
-use App\Models\Mantenimiento;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 #[Signature('stats:reset-monthly')]
@@ -42,10 +42,10 @@ class ResetMonthlyStats extends Command
         $filename = "historial_mensual_{$anio}_{$mes}.json";
         Storage::disk('local')->put("respaldos/{$filename}", json_encode($data, JSON_PRETTY_PRINT));
 
-        // NOTA: No borramos los registros físicos (borrado lógico o físico), 
-        // simplemente archivamos los totales ya que las vistas Dashboard/Reportes 
+        // NOTA: No borramos los registros físicos (borrado lógico o físico),
+        // simplemente archivamos los totales ya que las vistas Dashboard/Reportes
         // usan automáticamente whereMonth(now()), con lo que visualmente inician en 0.
-        
+
         $this->info("¡Reseteo mensual completado! Histórico guardado en storage/app/respaldos/{$filename}");
     }
 }

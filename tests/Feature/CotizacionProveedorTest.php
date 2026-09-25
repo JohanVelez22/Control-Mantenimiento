@@ -2,20 +2,24 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Cliente;
-use App\Models\Proveedor;
-use App\Models\Equipo;
 use App\Models\Cotizacion;
+use App\Models\CotizacionItem;
+use App\Models\Equipo;
+use App\Models\Factura;
+use App\Models\Proveedor;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CotizacionProveedorTest extends TestCase
 {
     use RefreshDatabase;
 
     protected User $admin;
+
     protected Cliente $cliente;
+
     protected Proveedor $proveedor;
 
     protected function setUp(): void
@@ -107,7 +111,7 @@ class CotizacionProveedorTest extends TestCase
     public function test_crear_cotizacion_con_proveedor_via_facturable_global()
     {
         $response = $this->actingAs($this->admin)->post(route('cotizaciones.store'), [
-            'facturable_global' => 'Proveedor:' . $this->proveedor->id,
+            'facturable_global' => 'Proveedor:'.$this->proveedor->id,
             'fecha' => now()->toDateString(),
             'validez_dias' => 15,
             'notas' => 'Cotización de prueba proveedor',
@@ -117,8 +121,8 @@ class CotizacionProveedorTest extends TestCase
                     'descripcion' => 'Servicio de mantenimiento especial',
                     'cantidad' => 2,
                     'precio_unitario' => 50000,
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $response->assertRedirect(route('cotizaciones.index'));
@@ -126,20 +130,20 @@ class CotizacionProveedorTest extends TestCase
         $cot = Cotizacion::where('proveedor_id', $this->proveedor->id)->latest('id')->first();
         $this->assertNotNull($cot);
         $this->assertNull($cot->cliente_id);
-        $this->assertEquals(100000, (float)$cot->total);
+        $this->assertEquals(100000, (float) $cot->total);
         $this->assertEquals('proveedor', $cot->destinatario_tipo);
         $this->assertEquals('Distribuciones Alfa SAS', $cot->destinatario_nombre);
     }
 
     public function test_crear_equipo_con_proveedor_via_propietario_global()
     {
-        $serie = 'TEST-EQ-' . uniqid();
+        $serie = 'TEST-EQ-'.uniqid();
         $response = $this->actingAs($this->admin)->post(route('equipos.store'), [
             'nombre' => 'Laptop Garantía',
             'marca' => 'Lenovo',
             'modelo' => 'ThinkPad',
             'serie' => $serie,
-            'propietario_global' => 'Proveedor:' . $this->proveedor->id,
+            'propietario_global' => 'Proveedor:'.$this->proveedor->id,
             'observacion' => 'Equipo de proveedor para revisión',
         ]);
 
@@ -164,7 +168,7 @@ class CotizacionProveedorTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        \App\Models\CotizacionItem::create([
+        CotizacionItem::create([
             'cotizacion_id' => $cotizacion->id,
             'tipo' => 'libre',
             'descripcion' => 'Revisión técnica de placas',
@@ -179,18 +183,18 @@ class CotizacionProveedorTest extends TestCase
         $cotizacion->refresh();
         $this->assertEquals('aprobada', $cotizacion->estado);
 
-        $factura = \App\Models\Factura::where('facturable_type', Proveedor::class)
+        $factura = Factura::where('facturable_type', Proveedor::class)
             ->where('facturable_id', $this->proveedor->id)
             ->latest('id')
             ->first();
 
         $this->assertNotNull($factura);
-        $this->assertEquals(150000, (float)$factura->total_documento);
+        $this->assertEquals(150000, (float) $factura->total_documento);
     }
 
     public function test_vistas_mantenimiento_y_electronica_con_equipo_proveedor()
     {
-        $serie = 'TEST-EQ-VIEW-' . uniqid();
+        $serie = 'TEST-EQ-VIEW-'.uniqid();
         $equipo = Equipo::create([
             'nombre' => 'Switch Administrable',
             'marca' => 'Cisco',

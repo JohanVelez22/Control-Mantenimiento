@@ -32,7 +32,7 @@ class Evento extends Model
     {
         return $this->morphTo(__FUNCTION__, 'modelo_tipo', 'modelo_id');
     }
-    
+
     public static function registrar($accion, $modelo = null, $viejos = null, $nuevos = null, $descripcion = null)
     {
         return self::create([

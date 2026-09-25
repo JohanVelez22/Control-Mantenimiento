@@ -29,6 +29,10 @@
  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa tus credenciales para acceder al sistema</p>
  </div>
 
+@php
+    $initialLockout = isset($lockoutSeconds) && $lockoutSeconds > 0 ? (int)$lockoutSeconds : (session('lockout_seconds') ? (int)session('lockout_seconds') : 0);
+@endphp
+
  {{-- Card --}}
  <div class="glass-card px-6 pb-8 pt-2 md:px-8 md:pb-8 md:pt-2">
 
@@ -43,8 +47,8 @@
  </label>
  <input type="text" id="email" name="email" value="{{ old('email') }}"
  required autofocus placeholder="usuario o correo@..."
- class="glass-input w-full text-base py-3 px-4 focus:placeholder-transparent" autocomplete="username">
- @error('email') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+ class="glass-input w-full text-base py-3 px-4 focus:placeholder-transparent {{ $initialLockout > 0 ? 'opacity-60 cursor-not-allowed' : '' }}" autocomplete="username" {{ $initialLockout > 0 ? 'disabled' : '' }}>
+ @error('email') <p id="email-error-msg" class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
  {{-- Contraseña --}}
@@ -55,23 +59,25 @@
  </label>
  <input type="password" id="password" name="password"
  required placeholder="••••••••"
- class="glass-input w-full text-base py-3 px-4 focus:placeholder-transparent">
+ class="glass-input w-full text-base py-3 px-4 focus:placeholder-transparent {{ $initialLockout > 0 ? 'opacity-60 cursor-not-allowed' : '' }}" {{ $initialLockout > 0 ? 'disabled' : '' }}>
  @error('password') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  </div>
 
  {{-- Remember Me --}}
  <div class="flex items-center gap-2 cursor-pointer select-none">
- <input type="checkbox" id="remember" name="remember" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-0 focus:ring-offset-0 focus:outline-none dark:bg-gray-700 dark:border-gray-600 cursor-pointer" style="outline: none !important; box-shadow: none !important;">
+ <input type="checkbox" id="remember" name="remember" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-0 focus:ring-offset-0 focus:outline-none dark:bg-gray-700 dark:border-gray-600 cursor-pointer" style="outline: none !important; box-shadow: none !important;" {{ $initialLockout > 0 ? 'disabled' : '' }}>
  <label for="remember" class="text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer select-none">Mantener sesión iniciada</label>
  </div>
 
  {{-- Submit --}}
- <button type="submit" class="w-full btn-primary py-3 justify-center text-sm">
- Entrar al Sistema →
-  </button>
-  </form>
+ <div>
+     <button type="submit" id="login-submit-btn" class="w-full btn-primary py-3 justify-center text-sm transition-all duration-200 {{ $initialLockout > 0 ? 'opacity-60 cursor-not-allowed' : '' }}" {{ $initialLockout > 0 ? 'disabled' : '' }}>
+         <span id="login-btn-text">{{ $initialLockout > 0 ? '🔒 Bloqueado' : 'Entrar al Sistema →' }}</span>
+     </button>
+ </div>
+ </form>
 
-  </div>
+ </div>
 </div>
 
 <style>
@@ -125,6 +131,72 @@
  }
  });
  }
+
+  // Temporizador interactivo de cuenta regresiva de bloqueo en botón
+  var initialSeconds = {{ $initialLockout }};
+  if (initialSeconds > 0) {
+    var emailInput = document.getElementById('email');
+    var passwordInput = document.getElementById('password');
+    var submitBtn = document.getElementById('login-submit-btn');
+    var btnText = document.getElementById('login-btn-text');
+    var errorMsg = document.getElementById('email-error-msg');
+
+    function formatTime(s) {
+      var m = Math.floor(s / 60);
+      var rem = s % 60;
+      return (m < 10 ? '0' : '') + m + ':' + (rem < 10 ? '0' : '') + rem;
+    }
+
+    function lockUI(seconds) {
+      if (emailInput) {
+        emailInput.disabled = true;
+        emailInput.classList.add('opacity-60', 'cursor-not-allowed');
+      }
+      if (passwordInput) {
+        passwordInput.disabled = true;
+        passwordInput.classList.add('opacity-60', 'cursor-not-allowed');
+      }
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
+      }
+      if (btnText) btnText.textContent = '🔒 ⏳ Bloqueado (' + formatTime(seconds) + ')';
+    }
+
+    function unlockUI() {
+      if (emailInput) {
+        emailInput.disabled = false;
+        emailInput.classList.remove('opacity-60', 'cursor-not-allowed');
+        emailInput.focus();
+      }
+      if (passwordInput) {
+        passwordInput.disabled = false;
+        passwordInput.classList.remove('opacity-60', 'cursor-not-allowed');
+      }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+      }
+      if (btnText) btnText.textContent = 'Entrar al Sistema →';
+      if (errorMsg) {
+        errorMsg.className = 'text-emerald-500 text-xs font-bold mt-1.5 flex items-center gap-1';
+        errorMsg.innerHTML = '<span>✅</span><span>Bloqueo finalizado. Ya puedes ingresar tus credenciales.</span>';
+      }
+    }
+
+    var remaining = initialSeconds;
+    lockUI(remaining);
+
+    var interval = setInterval(function() {
+      remaining--;
+      if (remaining <= 0) {
+        clearInterval(interval);
+        unlockUI();
+      } else {
+        lockUI(remaining);
+      }
+    }, 1000);
+  }
 })();
 </script>
 

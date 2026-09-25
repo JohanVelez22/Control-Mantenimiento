@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Mantenimiento;
 use App\Traits\HandlesStockAttach;
+use Illuminate\Http\Request;
 
 class MantenimientoStockController extends Controller
 {
@@ -13,8 +13,8 @@ class MantenimientoStockController extends Controller
     public function store(Request $request, Mantenimiento $mantenimiento)
     {
         $validated = $request->validate([
-            'stock_id'  => 'required|exists:stocks,id',
-            'cantidad'  => 'required|integer|min:1',
+            'stock_id' => 'required|exists:stocks,id',
+            'cantidad' => 'required|integer|min:1',
         ]);
 
         return $this->attachStock(

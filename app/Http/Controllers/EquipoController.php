@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Equipo;
 use App\Models\Cliente;
+use App\Models\Equipo;
 use App\Models\Proveedor;
+use App\Services\AnulacionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,6 +15,7 @@ class EquipoController extends Controller
     {
         // Cargamos 'cliente', 'proveedor', 'user' y 'bajaUser' para mostrar quién registró el equipo y la baja
         $equipos = Equipo::with(['cliente', 'proveedor', 'user', 'bajaUser'])->orderBy('id', 'desc')->paginate(10);
+
         return view('equipos.index', compact('equipos'));
     }
 
@@ -26,6 +28,7 @@ class EquipoController extends Controller
     {
         $clientes = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
         $proveedores = Proveedor::activos()->orderBy('nombre_razon_social')->get();
+
         return view('equipos.create', compact('clientes', 'proveedores'));
     }
 
@@ -36,70 +39,6 @@ class EquipoController extends Controller
             'marca' => 'required|string|max:80',
             'modelo' => 'required|string|max:80',
             'serie' => 'required|string|max:80|unique:equipos',
-            'propietario_global' => 'nullable|string',
-            'cliente_id' => 'nullable|integer|exists:clientes,id',
-            'proveedor_id' => 'nullable|integer|exists:proveedores,id',
-            'observacion' => 'nullable|string|max:500'
-        ]);
-
-        $clienteId = null;
-        $proveedorId = null;
-
-        if ($request->filled('propietario_global')) {
-            $parts = explode(':', $request->propietario_global);
-            if (count($parts) === 2) {
-                if ($parts[0] === 'Proveedor') {
-                    $proveedorId = (int) $parts[1];
-                } else {
-                    $clienteId = (int) $parts[1];
-                }
-            }
-        } elseif ($request->filled('cliente_id')) {
-            $clienteId = (int) $request->cliente_id;
-        } elseif ($request->filled('proveedor_id')) {
-            $proveedorId = (int) $request->proveedor_id;
-        }
-
-        if (!$clienteId && !$proveedorId) {
-            return back()->withErrors(['propietario_global' => 'Debe seleccionar un propietario (cliente o proveedor).'])->withInput();
-        }
-
-        $validated['cliente_id'] = $clienteId;
-        $validated['proveedor_id'] = $proveedorId;
-        unset($validated['propietario_global']);
-        $validated['user_id'] = Auth::id();
-
-        Equipo::create($validated);
-
-        return redirect()->route('equipos.index')->with('success', 'Equipo registrado correctamente.');
-    }
-
-    public function edit(Equipo $equipo)
-    {
-        $clientes = Cliente::where(function($q) use ($equipo) {
-            $q->activos();
-            if ($equipo->cliente_id) {
-                $q->orWhere('id', $equipo->cliente_id);
-            }
-        })->orderBy('nombres')->orderBy('apellidos')->get();
-
-        $proveedores = Proveedor::where(function($q) use ($equipo) {
-            $q->activos();
-            if ($equipo->proveedor_id) {
-                $q->orWhere('id', $equipo->proveedor_id);
-            }
-        })->orderBy('nombre_razon_social')->get();
-
-        return view('equipos.edit', compact('equipo', 'clientes', 'proveedores'));
-    }
-
-    public function update(Request $request, Equipo $equipo)
-    {
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:80',
-            'marca' => 'required|string|max:80',
-            'modelo' => 'required|string|max:80',
-            'serie' => 'required|string|max:80|unique:equipos,serie,' . $equipo->id,
             'propietario_global' => 'nullable|string',
             'cliente_id' => 'nullable|integer|exists:clientes,id',
             'proveedor_id' => 'nullable|integer|exists:proveedores,id',
@@ -124,7 +63,71 @@ class EquipoController extends Controller
             $proveedorId = (int) $request->proveedor_id;
         }
 
-        if (!$clienteId && !$proveedorId) {
+        if (! $clienteId && ! $proveedorId) {
+            return back()->withErrors(['propietario_global' => 'Debe seleccionar un propietario (cliente o proveedor).'])->withInput();
+        }
+
+        $validated['cliente_id'] = $clienteId;
+        $validated['proveedor_id'] = $proveedorId;
+        unset($validated['propietario_global']);
+        $validated['user_id'] = Auth::id();
+
+        Equipo::create($validated);
+
+        return redirect()->route('equipos.index')->with('success', 'Equipo registrado correctamente.');
+    }
+
+    public function edit(Equipo $equipo)
+    {
+        $clientes = Cliente::where(function ($q) use ($equipo) {
+            $q->activos();
+            if ($equipo->cliente_id) {
+                $q->orWhere('id', $equipo->cliente_id);
+            }
+        })->orderBy('nombres')->orderBy('apellidos')->get();
+
+        $proveedores = Proveedor::where(function ($q) use ($equipo) {
+            $q->activos();
+            if ($equipo->proveedor_id) {
+                $q->orWhere('id', $equipo->proveedor_id);
+            }
+        })->orderBy('nombre_razon_social')->get();
+
+        return view('equipos.edit', compact('equipo', 'clientes', 'proveedores'));
+    }
+
+    public function update(Request $request, Equipo $equipo)
+    {
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:80',
+            'marca' => 'required|string|max:80',
+            'modelo' => 'required|string|max:80',
+            'serie' => 'required|string|max:80|unique:equipos,serie,'.$equipo->id,
+            'propietario_global' => 'nullable|string',
+            'cliente_id' => 'nullable|integer|exists:clientes,id',
+            'proveedor_id' => 'nullable|integer|exists:proveedores,id',
+            'observacion' => 'nullable|string|max:500',
+        ]);
+
+        $clienteId = null;
+        $proveedorId = null;
+
+        if ($request->filled('propietario_global')) {
+            $parts = explode(':', $request->propietario_global);
+            if (count($parts) === 2) {
+                if ($parts[0] === 'Proveedor') {
+                    $proveedorId = (int) $parts[1];
+                } else {
+                    $clienteId = (int) $parts[1];
+                }
+            }
+        } elseif ($request->filled('cliente_id')) {
+            $clienteId = (int) $request->cliente_id;
+        } elseif ($request->filled('proveedor_id')) {
+            $proveedorId = (int) $request->proveedor_id;
+        }
+
+        if (! $clienteId && ! $proveedorId) {
             return back()->withErrors(['propietario_global' => 'Debe seleccionar un propietario (cliente o proveedor).'])->withInput();
         }
 
@@ -137,65 +140,66 @@ class EquipoController extends Controller
         return redirect()->route('equipos.index')->with('success', 'Equipo actualizado correctamente.');
     }
 
-    public function anular(\Illuminate\Http\Request $request, Equipo $equipo)
+    public function anular(Request $request, Equipo $equipo)
     {
-        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
         }
 
-        $equipo->active = !$equipo->active;
+        $equipo->active = ! $equipo->active;
         $equipo->save();
 
         $action = $equipo->active ? 'reactivado' : 'desactivado (anulado)';
+
         return redirect()->back()->with('success', "El equipo ha sido {$action} exitosamente.");
     }
 
-    public function darDeBaja(\Illuminate\Http\Request $request, Equipo $equipo)
+    public function darDeBaja(Request $request, Equipo $equipo)
     {
-        if (!$equipo->exists && $request->route('equipo')) {
+        if (! $equipo->exists && $request->route('equipo')) {
             $equipo = Equipo::findOrFail($request->route('equipo'));
         }
 
-        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
         }
 
         $validated = $request->validate([
-            'motivo_baja'      => 'required|string|in:irreparable,desguace_repuestos,chatarrizacion,siniestro,abandonado,otro',
+            'motivo_baja' => 'required|string|in:irreparable,desguace_repuestos,chatarrizacion,siniestro,abandonado,otro',
             'observacion_baja' => 'nullable|string|max:500',
         ], [
             'motivo_baja.required' => 'Debes indicar el motivo de la baja del equipo.',
         ]);
 
         $equipo->update([
-            'estado'           => 'dado_de_baja',
-            'active'           => false,
-            'motivo_baja'      => $validated['motivo_baja'],
+            'estado' => 'dado_de_baja',
+            'active' => false,
+            'motivo_baja' => $validated['motivo_baja'],
             'observacion_baja' => $validated['observacion_baja'] ?? null,
-            'fecha_baja'       => now(),
-            'baja_user_id'     => auth()->id(),
+            'fecha_baja' => now(),
+            'baja_user_id' => auth()->id(),
         ]);
 
         return redirect()->back()->with('success', "El equipo '{$equipo->nombre}' ha sido dado de baja exitosamente. Motivo: {$equipo->motivo_baja_label}.");
     }
 
-    public function reactivar(\Illuminate\Http\Request $request, Equipo $equipo)
+    public function reactivar(Request $request, Equipo $equipo)
     {
-        if (!$equipo->exists && $request->route('equipo')) {
+        if (! $equipo->exists && $request->route('equipo')) {
             $equipo = Equipo::findOrFail($request->route('equipo'));
         }
 
-        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
         }
 
         $equipo->update([
-            'estado'           => 'operativo',
-            'active'           => true,
-            'motivo_baja'      => null,
+            'estado' => 'operativo',
+            'active' => true,
+            'motivo_baja' => null,
             'observacion_baja' => null,
-            'fecha_baja'       => null,
-            'baja_user_id'     => null,
+            'fecha_baja' => null,
+            'baja_user_id' => null,
         ]);
 
         return redirect()->back()->with('success', "El equipo '{$equipo->nombre}' ha sido reactivado y vuelve a estar disponible para mantenimiento.");

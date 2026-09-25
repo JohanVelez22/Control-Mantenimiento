@@ -30,7 +30,7 @@ return new class extends Migration
         Schema::table('movimiento_cajas', function (Blueprint $table) {
             $table->dropColumn('estado');
         });
-        
+
         // Dejar el down() simplificado, no revertir el change() para evitar errores con DBAL
     }
 };

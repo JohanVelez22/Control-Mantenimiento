@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 class SecurityCheck extends Command
 {
     protected $signature = 'security:check';
+
     protected $description = 'Verifica que la configuración del entorno (.env) sea segura para producción';
 
     public function handle()
@@ -32,7 +33,7 @@ class SecurityCheck extends Command
 
         // 3. Validar Contraseñas Críticas
         $adminPass = env('ADMIN_DEFAULT_PASSWORD');
-        if (!$adminPass || $adminPass === 'Admin123*') {
+        if (! $adminPass || $adminPass === 'Admin123*') {
             $this->error('❌ ADMIN_DEFAULT_PASSWORD está ausente o usa un valor inseguro por defecto');
             $warnings++;
         } else {
@@ -40,7 +41,7 @@ class SecurityCheck extends Command
         }
 
         $dbPass = env('DB_PASSWORD');
-        if (!$dbPass) {
+        if (! $dbPass) {
             $this->error('❌ La base de datos no tiene contraseña (DB_PASSWORD vacío)');
             $warnings++;
         } else {
@@ -59,10 +60,12 @@ class SecurityCheck extends Command
         $this->line('---------------------------------------');
         if ($warnings > 0) {
             $this->error("Auditoría fallida: {$warnings} advertencias detectadas. Por favor, corríjalas antes de lanzar a producción.");
+
             return 1;
         }
 
         $this->info('🏆 Auditoría exitosa: El sistema cumple los estándares de seguridad básicos para producción.');
+
         return 0;
     }
 }

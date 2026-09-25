@@ -11,10 +11,10 @@ return new class extends Migration
         Schema::table('stocks', function (Blueprint $table) {
             // Relación formal con proveedores (reemplaza el campo string 'proveedor')
             $table->foreignId('proveedor_id')
-                  ->nullable()
-                  ->after('proveedor')
-                  ->constrained('proveedores')
-                  ->restrictOnDelete();
+                ->nullable()
+                ->after('proveedor')
+                ->constrained('proveedores')
+                ->restrictOnDelete();
         });
     }
 

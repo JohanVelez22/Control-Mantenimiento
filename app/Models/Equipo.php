@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Equipo extends Model
 {
-    use HasFactory, \App\Traits\Auditable;
+    use \App\Traits\Auditable, HasFactory;
+
     protected $fillable = [
         'nombre', 'marca', 'modelo', 'serie',
         'observacion', 'user_id', 'cliente_id', 'proveedor_id', 'active',
-        'estado', 'motivo_baja', 'observacion_baja', 'fecha_baja', 'baja_user_id'
+        'estado', 'motivo_baja', 'observacion_baja', 'fecha_baja', 'baja_user_id',
     ];
 
     protected $casts = [
@@ -57,6 +58,7 @@ class Equipo extends Model
         if ($this->proveedor) {
             return $this->proveedor->nombre_razon_social;
         }
+
         return 'N/A';
     }
 
@@ -73,11 +75,12 @@ class Equipo extends Model
     public function getPropietarioLabelAttribute(): string
     {
         if ($this->proveedor) {
-            return '🏢 Proveedor: ' . $this->proveedor->nombre_razon_social;
+            return '🏢 Proveedor: '.$this->proveedor->nombre_razon_social;
         }
         if ($this->cliente) {
-            return '👤 Cliente: ' . $this->cliente->nombre;
+            return '👤 Cliente: '.$this->cliente->nombre;
         }
+
         return 'N/A';
     }
 
@@ -95,18 +98,18 @@ class Equipo extends Model
 
     public function getEstaDadoDeBajaAttribute(): bool
     {
-        return $this->estado === 'dado_de_baja' || !$this->active;
+        return $this->estado === 'dado_de_baja' || ! $this->active;
     }
 
     public function getMotivoBajaLabelAttribute(): string
     {
         return match ($this->motivo_baja) {
-            'irreparable'          => 'Daño irreparable / Irrecuperable',
-            'desguace_repuestos'   => 'Desguace / Uso para repuestos',
-            'chatarrizacion'       => 'Chatarrización / Desecho',
-            'siniestro'            => 'Siniestro / Pérdida total',
-            'abandonado'           => 'Equipo abandonado por el cliente',
-            default                => ucfirst(str_replace('_', ' ', $this->motivo_baja ?? 'Dado de baja')),
+            'irreparable' => 'Daño irreparable / Irrecuperable',
+            'desguace_repuestos' => 'Desguace / Uso para repuestos',
+            'chatarrizacion' => 'Chatarrización / Desecho',
+            'siniestro' => 'Siniestro / Pérdida total',
+            'abandonado' => 'Equipo abandonado por el cliente',
+            default => ucfirst(str_replace('_', ' ', $this->motivo_baja ?? 'Dado de baja')),
         };
     }
 

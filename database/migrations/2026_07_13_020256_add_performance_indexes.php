@@ -50,7 +50,7 @@ return new class extends Migration
             $table->index(['cliente_id', 'active'], 'idx_equipos_cliente_activo');
         });
 
-// Clientes/Proveedores: queries por activo
+        // Clientes/Proveedores: queries por activo
         Schema::table('clientes', function (Blueprint $table) {
             $table->index('active', 'idx_clientes_active');
         });

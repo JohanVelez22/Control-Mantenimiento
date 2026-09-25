@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CategoriaStock;
+use App\Services\AnulacionService;
 use Illuminate\Http\Request;
 
 class CategoriaStockController extends Controller
@@ -10,6 +11,7 @@ class CategoriaStockController extends Controller
     public function index()
     {
         $categorias = CategoriaStock::orderBy('tipo')->orderBy('nombre')->get();
+
         return view('stocks.categorias.index', compact('categorias'));
     }
 
@@ -26,7 +28,7 @@ class CategoriaStockController extends Controller
 
         CategoriaStock::create($validated);
 
-        return redirect()->route('stocks.categorias.index')->with('success', ucfirst($validated['tipo']) . ' creada exitosamente.');
+        return redirect()->route('stocks.categorias.index')->with('success', ucfirst($validated['tipo']).' creada exitosamente.');
     }
 
     public function update(Request $request, CategoriaStock $categoria)
@@ -47,7 +49,7 @@ class CategoriaStockController extends Controller
 
     public function destroy(Request $request, CategoriaStock $categoria)
     {
-        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
         }
 

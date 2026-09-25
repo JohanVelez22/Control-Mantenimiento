@@ -83,8 +83,8 @@ class TecnicoPricingTest extends TestCase
         $mantenimiento->refresh();
         $this->assertEquals(1, $mantenimiento->stocks()->count());
         $pivot = $mantenimiento->stocks()->first()->pivot;
-        $this->assertEquals(125000, (float)$pivot->precio_unitario);
-        $this->assertEquals(175000, (float)$mantenimiento->costo); // 50000 + 125000
+        $this->assertEquals(125000, (float) $pivot->precio_unitario);
+        $this->assertEquals(175000, (float) $mantenimiento->costo); // 50000 + 125000
     }
 
     public function test_repuesto_aplica_precio_venta_si_cliente_es_normal(): void
@@ -155,7 +155,7 @@ class TecnicoPricingTest extends TestCase
         $mantenimiento->refresh();
         $this->assertEquals(1, $mantenimiento->stocks()->count());
         $pivot = $mantenimiento->stocks()->first()->pivot;
-        $this->assertEquals(150000, (float)$pivot->precio_unitario);
-        $this->assertEquals(190000, (float)$mantenimiento->costo); // 40000 + 150000
+        $this->assertEquals(150000, (float) $pivot->precio_unitario);
+        $this->assertEquals(190000, (float) $mantenimiento->costo); // 40000 + 150000
     }
 }

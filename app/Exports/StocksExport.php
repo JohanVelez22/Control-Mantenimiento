@@ -3,15 +3,17 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents
+class StocksExport implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithMapping, WithStyles
 {
     protected $stocks;
 
@@ -23,19 +25,19 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
+            AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-                
+
                 // Configurar pie de página para impresión
                 $sheet->getHeaderFooter()->setOddFooter('&RPágina &P de &N');
-                
+
                 // Centrar y combinar título (Fila 1)
                 $sheet->mergeCells('A1:J1');
-                $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                
+                $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
                 // Centrar y combinar fecha (Fila 2)
                 $sheet->mergeCells('A2:J2');
-                $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 $lastRow = $sheet->getHighestRow();
                 $footerRow = $lastRow + 2; // Dejamos una fila de espacio
@@ -54,21 +56,21 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                 // Escribir totales
                 $sheet->setCellValue("A{$footerRow}", "Total Registros: {$totalRegistros}");
                 $sheet->setCellValue("F{$footerRow}", "Cant. Total: {$cantidadTotal}");
-                $sheet->setCellValue("G{$footerRow}", "T. Compra: $" . number_format($compraTotal, 0, ',', '.'));
-                $sheet->setCellValue("I{$footerRow}", "T. Venta: $" . number_format($ventaTotal, 0, ',', '.'));
-                $sheet->setCellValue("J{$footerRow}", "T. Técnico: $" . number_format($tecnicoTotal, 0, ',', '.'));
+                $sheet->setCellValue("G{$footerRow}", 'T. Compra: $'.number_format($compraTotal, 0, ',', '.'));
+                $sheet->setCellValue("I{$footerRow}", 'T. Venta: $'.number_format($ventaTotal, 0, ',', '.'));
+                $sheet->setCellValue("J{$footerRow}", 'T. Técnico: $'.number_format($tecnicoTotal, 0, ',', '.'));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:J{$footerRow}")->applyFromArray([
                     'font' => [
                         'bold' => true,
-                        'size' => 11
+                        'size' => 11,
                     ],
                 ]);
 
-                $sheet->getStyle("G{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
-                $sheet->getStyle("I{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
-                $sheet->getStyle("J{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("G{$footerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("I{$footerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("J{$footerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             },
         ];
     }
@@ -81,9 +83,9 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             4 => [
                 'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
                 'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '4A5568']
-                ]
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => '4A5568'],
+                ],
             ],
         ];
     }
@@ -97,11 +99,11 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
     {
         return [
             ['REPORTE DE INVENTARIO (STOCK)'],
-            ['Generado el: ' . date('d/m/Y h:i A')],
+            ['Generado el: '.date('d/m/Y h:i A')],
             [''],
             [
-                'Código', 
-                'Producto', 
+                'Código',
+                'Producto',
                 'Categoría',
                 'Subcategoría',
                 'Proveedor',
@@ -110,8 +112,8 @@ class StocksExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                 'Utilidad (%)',
                 'Precio Venta',
                 'Precio Técnico',
-                'Estado'
-            ]
+                'Estado',
+            ],
         ];
     }
 

@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Auditoría 2026-07-07
- * 
+ *
  * 1. Agrega columna `abono_id` (nullable FK) a movimiento_cajas.
  *    - Permite enlazar un MovimientoCaja exactamente con su Abono origen.
  *    - Soluciona el bug crítico donde destroy() buscaba por monto+fecha (frágil).
  *    - Es nullable para no afectar movimientos existentes ni manuales.
- * 
+ *
  * 2. Agrega índices de rendimiento:
  *    - movimiento_cajas(fecha)              → consultas del Dashboard
  *    - movimiento_cajas(tipo_movimiento)    → filtros de reportes
@@ -30,15 +30,15 @@ return new class extends Migration
             $table->foreign('abono_id')->references('id')->on('abonos')->nullOnDelete();
 
             // Índices de rendimiento para queries frecuentes
-            $table->index('fecha',            'idx_movcaja_fecha');
-            $table->index('tipo_movimiento',  'idx_movcaja_tipo');
-            $table->index('anulado',          'idx_movcaja_anulado');
+            $table->index('fecha', 'idx_movcaja_fecha');
+            $table->index('tipo_movimiento', 'idx_movcaja_tipo');
+            $table->index('anulado', 'idx_movcaja_anulado');
         });
 
         Schema::table('abonos', function (Blueprint $table) {
             // Índices para eager-loading eficiente desde Mantenimiento y Electronica
             $table->index('mantenimiento_id', 'idx_abonos_mantenimiento');
-            $table->index('electronica_id',   'idx_abonos_electronica');
+            $table->index('electronica_id', 'idx_abonos_electronica');
         });
     }
 

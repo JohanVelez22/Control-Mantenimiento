@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Proveedor;
 use App\Models\Stock;
-use App\Models\User;
 use App\Models\Tecnico;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;

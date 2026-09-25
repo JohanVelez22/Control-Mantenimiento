@@ -2,31 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-
 use App\Models\Cliente;
-use App\Models\Mantenimiento;
 use App\Models\Electronica;
+use App\Models\Mantenimiento;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class GuestController extends Controller
 {
     /**
      * Mostrar el panel dedicado para invitados
-     * @return \Illuminate\View\View
+     *
+     * @return View
      */
     public function dashboard()
     {
         $user = Auth::user();
         $cliente = Cliente::where('email', $user->email)->first();
-        
+
         $mantenimientos = collect();
         $electronicas = collect();
 
         if ($cliente) {
             $mantenimientos = Mantenimiento::with(['equipo', 'tecnico', 'stocks'])
-                ->whereHas('equipo', function($q) use ($cliente) {
+                ->whereHas('equipo', function ($q) use ($cliente) {
                     $q->where('cliente_id', $cliente->id);
                 })
                 ->where('anulado', false)
@@ -34,7 +35,7 @@ class GuestController extends Controller
                 ->get();
 
             $electronicas = Electronica::with(['equipo', 'tecnico', 'stocks'])
-                ->whereHas('equipo', function($q) use ($cliente) {
+                ->whereHas('equipo', function ($q) use ($cliente) {
                     $q->where('cliente_id', $cliente->id);
                 })
                 ->where('anulado', false)
@@ -45,10 +46,10 @@ class GuestController extends Controller
         return view('guest.dashboard', compact('cliente', 'mantenimientos', 'electronicas'));
     }
 
-/**
+    /**
      * Redirigir búsquedas desde el panel de invitado a las consultas específicas
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @return RedirectResponse
      */
     public function search(Request $request)
     {
@@ -59,7 +60,7 @@ class GuestController extends Controller
 
         $query = trim($validated['query']);
         $tipo = $validated['tipo'];
-        
+
         $mantenimientos = collect();
         $electronicas = collect();
 
@@ -67,7 +68,7 @@ class GuestController extends Controller
         // para evitar que "ELC-1" encuentre la orden "ORD-1" de mantenimiento.
         $es_numero = null;
         if (is_numeric($query)) {
-            $es_numero = (int)$query;
+            $es_numero = (int) $query;
         } else {
             $upperQuery = strtoupper($query);
             if ($tipo === 'mantenimiento' && str_starts_with($upperQuery, 'ORD')) {
@@ -80,24 +81,24 @@ class GuestController extends Controller
         if ($tipo === 'mantenimiento') {
             $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico', 'stocks'])
                 ->where('anulado', false)
-                ->where(function($q) use ($query, $es_numero) {
+                ->where(function ($q) use ($query, $es_numero) {
                     $q->where('id_orden', 'LIKE', "%{$query}%");
                     if ($es_numero) {
                         $q->orWhere('id', $es_numero);
                     }
-                    $q->orWhereHas('equipo.cliente', function($sub) use ($query) {
+                    $q->orWhereHas('equipo.cliente', function ($sub) use ($query) {
                         $sub->where('identificacion', 'LIKE', "%{$query}%");
                     });
                 })->get();
         } else {
             $electronicas = Electronica::with(['equipo.cliente', 'tecnico', 'stocks'])
                 ->where('anulado', false)
-                ->where(function($q) use ($query, $es_numero) {
+                ->where(function ($q) use ($query, $es_numero) {
                     $q->where('id_orden', 'LIKE', "%{$query}%");
                     if ($es_numero) {
                         $q->orWhere('id', $es_numero);
                     }
-                    $q->orWhereHas('equipo.cliente', function($sub) use ($query) {
+                    $q->orWhereHas('equipo.cliente', function ($sub) use ($query) {
                         $sub->where('identificacion', 'LIKE', "%{$query}%");
                     });
                 })->get();

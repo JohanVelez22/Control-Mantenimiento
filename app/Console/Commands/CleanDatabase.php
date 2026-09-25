@@ -27,8 +27,9 @@ class CleanDatabase extends Command
      */
     public function handle()
     {
-        if (!$this->confirm('¿Estás seguro de que deseas vaciar las tablas de datos? Se perderá toda la información transaccional y de catálogos.')) {
+        if (! $this->confirm('¿Estás seguro de que deseas vaciar las tablas de datos? Se perderá toda la información transaccional y de catálogos.')) {
             $this->info('Operación cancelada.');
+
             return;
         }
 
@@ -72,7 +73,7 @@ class CleanDatabase extends Command
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $this->info('Restaurando claves foráneas...');
-        
+
         $this->info('¡Base de datos limpiada con éxito! Lista para migración limpia.');
     }
 }

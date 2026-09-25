@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AcumuladoExport;
+use App\Exports\ElectronicasExport;
+use App\Exports\MantenimientosExport;
+use App\Exports\ReportesFinancierosExport;
+use App\Models\Electronica;
 use App\Models\Factura;
 use App\Models\Mantenimiento;
-use App\Models\Electronica;
 use App\Models\MovimientoCaja;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReporteFinancieroController extends Controller
@@ -30,18 +33,19 @@ class ReporteFinancieroController extends Controller
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($m) {
-                $equipo  = $m->equipo->nombre  ?? '—';
+                $equipo = $m->equipo->nombre ?? '—';
                 $cliente = $m->equipo->cliente->nombre ?? '—';
+
                 return [
-                    'tipo'        => 'mantenimiento',
-                    'fecha'       => $m->fecha_entrada,
-                    'codigo'      => $m->id_orden,
+                    'tipo' => 'mantenimiento',
+                    'fecha' => $m->fecha_entrada,
+                    'codigo' => $m->id_orden,
                     'descripcion' => "{$equipo} ({$cliente})",
-                    'monto'       => (float) $m->costo,
-                    'estado'      => $m->estado,
-                    'anulado'     => (bool) $m->anulado,
-                    'icono'       => '🔧',
-                    'color'       => 'blue',
+                    'monto' => (float) $m->costo,
+                    'estado' => $m->estado,
+                    'anulado' => (bool) $m->anulado,
+                    'icono' => '🔧',
+                    'color' => 'blue',
                 ];
             });
 
@@ -51,18 +55,19 @@ class ReporteFinancieroController extends Controller
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($e) {
-                $equipo  = $e->equipo->nombre  ?? '—';
+                $equipo = $e->equipo->nombre ?? '—';
                 $cliente = $e->equipo->cliente->nombre ?? '—';
+
                 return [
-                    'tipo'        => 'electronica',
-                    'fecha'       => $e->fecha_entrada,
-                    'codigo'      => $e->id_orden,
+                    'tipo' => 'electronica',
+                    'fecha' => $e->fecha_entrada,
+                    'codigo' => $e->id_orden,
                     'descripcion' => "{$equipo} ({$cliente})",
-                    'monto'       => (float) $e->costo,
-                    'estado'      => $e->estado,
-                    'anulado'     => (bool) $e->anulado,
-                    'icono'       => '⚡',
-                    'color'       => 'purple',
+                    'monto' => (float) $e->costo,
+                    'estado' => $e->estado,
+                    'anulado' => (bool) $e->anulado,
+                    'icono' => '⚡',
+                    'color' => 'purple',
                 ];
             });
 
@@ -73,16 +78,17 @@ class ReporteFinancieroController extends Controller
             ->get()
             ->map(function ($f) {
                 $nombre = $f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—';
+
                 return [
-                    'tipo'        => $f->tipo_movimiento,
-                    'fecha'       => $f->fecha,
-                    'codigo'      => $f->numero_factura,
+                    'tipo' => $f->tipo_movimiento,
+                    'fecha' => $f->fecha,
+                    'codigo' => $f->numero_factura,
                     'descripcion' => "{$nombre}",
-                    'monto'       => (float) $f->total_documento,
-                    'estado'      => $f->estado,
-                    'anulado'     => $f->estado === 'anulada',
-                    'icono'       => $f->tipo_movimiento === 'compra' ? '📦' : '🛒',
-                    'color'       => $f->tipo_movimiento === 'compra' ? 'amber' : 'emerald',
+                    'monto' => (float) $f->total_documento,
+                    'estado' => $f->estado,
+                    'anulado' => $f->estado === 'anulada',
+                    'icono' => $f->tipo_movimiento === 'compra' ? '📦' : '🛒',
+                    'color' => $f->tipo_movimiento === 'compra' ? 'amber' : 'emerald',
                 ];
             });
 
@@ -92,18 +98,19 @@ class ReporteFinancieroController extends Controller
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($c) {
-                $quien    = $c->persona ?? $c->empresa ?? 'Anónimo';
+                $quien = $c->persona ?? $c->empresa ?? 'Anónimo';
                 $concepto = $c->concepto->nombre ?? '—';
+
                 return [
-                    'tipo'        => $c->tipo_movimiento,
-                    'fecha'       => $c->fecha,
-                    'codigo'      => $c->id,
+                    'tipo' => $c->tipo_movimiento,
+                    'fecha' => $c->fecha,
+                    'codigo' => $c->id,
                     'descripcion' => "{$quien} — {$concepto}",
-                    'monto'       => (float) $c->monto,
-                    'estado'      => $c->estado,
-                    'anulado'     => (bool) $c->anulado,
-                    'icono'       => $c->tipo_movimiento === 'ingreso' ? '📈' : '📉',
-                    'color'       => $c->tipo_movimiento === 'ingreso' ? 'emerald' : 'red',
+                    'monto' => (float) $c->monto,
+                    'estado' => $c->estado,
+                    'anulado' => (bool) $c->anulado,
+                    'icono' => $c->tipo_movimiento === 'ingreso' ? '📈' : '📉',
+                    'color' => $c->tipo_movimiento === 'ingreso' ? 'emerald' : 'red',
                 ];
             });
 
@@ -119,24 +126,24 @@ class ReporteFinancieroController extends Controller
         // ════════════════════════════════════════════════════════════════════
         // CONSULTAS DIRECTAS A BASE DE DATOS PARA RIGOR CONTABLE (DINERO REAL)
         // ════════════════════════════════════════════════════════════════════
-        $efectivoIngresos     = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto');
-        $efectivoEgresos      = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto');
+        $efectivoIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto');
+        $efectivoEgresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto');
         $consignacionIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto');
-        $consignacionEgresos  = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto');
+        $consignacionEgresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto');
 
-        $ingresosCaja  = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
-        $egresosCaja   = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
+        $ingresosCaja = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $egresosCaja = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
         $facturadoMant = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
         $facturadoElec = Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
-        $ventasInv     = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->where('tipo_movimiento', 'venta')->sum('total_documento');
-        $comprasInv    = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->where('tipo_movimiento', 'compra')->sum('total_documento');
+        $ventasInv = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->where('tipo_movimiento', 'venta')->sum('total_documento');
+        $comprasInv = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->where('tipo_movimiento', 'compra')->sum('total_documento');
 
         $totalAnuladosCount = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', true)->count()
                             + Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', true)->count()
                             + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->count()
                             + Factura::whereDate('fecha', $fecha)->where('estado', 'anulada')->count();
 
-        $montoAnuladosSum   = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
+        $montoAnuladosSum = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
                             + Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
                             + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->sum('monto')
                             + Factura::whereDate('fecha', $fecha)->where('estado', 'anulada')->sum('total_documento');
@@ -152,9 +159,9 @@ class ReporteFinancieroController extends Controller
             ->selectRaw('SUM(CASE WHEN total_documento > total_pagado THEN total_documento - total_pagado ELSE 0 END) as s')
             ->value('s') ?? 0);
 
-        $cajaPendientesDia = MovimientoCaja::with(['childPayments' => function($q) {
-                $q->where('anulado', false)->where('estado', 'activo');
-            }])
+        $cajaPendientesDia = MovimientoCaja::with(['childPayments' => function ($q) {
+            $q->where('anulado', false)->where('estado', 'activo');
+        }])
             ->whereNull('parent_id')
             ->where('anulado', false)
             ->where('estado', 'activo')
@@ -164,7 +171,7 @@ class ReporteFinancieroController extends Controller
 
         $facturaNumerosDia = (clone $facturasDia)->pluck('numero_factura')->filter()->all();
         $saldoPendienteCajaIngreso = 0;
-        $saldoPendienteCajaEgreso  = 0;
+        $saldoPendienteCajaEgreso = 0;
 
         foreach ($cajaPendientesDia as $cmov) {
             $isLinkedToFactura = false;
@@ -175,7 +182,7 @@ class ReporteFinancieroController extends Controller
                         break;
                     }
                 }
-                if (!$isLinkedToFactura && (str_contains($cmov->descripcion, '#VT-') || str_contains($cmov->descripcion, '#CP-'))) {
+                if (! $isLinkedToFactura && (str_contains($cmov->descripcion, '#VT-') || str_contains($cmov->descripcion, '#CP-'))) {
                     if (preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $cmov->descripcion, $match)) {
                         if (Factura::where('numero_factura', $match[1])->where('estado', '!=', 'anulada')->exists()) {
                             $isLinkedToFactura = true;
@@ -184,7 +191,9 @@ class ReporteFinancieroController extends Controller
                 }
             }
 
-            if ($isLinkedToFactura) continue;
+            if ($isLinkedToFactura) {
+                continue;
+            }
 
             $pagado = (float) $cmov->monto + (float) $cmov->childPayments->sum('monto');
             $pendiente = max(0, (float) $cmov->monto_total - $pagado);
@@ -198,60 +207,60 @@ class ReporteFinancieroController extends Controller
             }
         }
 
-        $saldoPendienteMant = (float) Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', false)->with('abonos')->get()->sum(fn($m) => $m->saldo_pendiente);
-        $saldoPendienteElec = (float) Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', false)->with('abonos')->get()->sum(fn($e) => $e->saldo_pendiente);
+        $saldoPendienteMant = (float) Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', false)->with('abonos')->get()->sum(fn ($m) => $m->saldo_pendiente);
+        $saldoPendienteElec = (float) Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', false)->with('abonos')->get()->sum(fn ($e) => $e->saldo_pendiente);
 
         $totalPorCobrar = $saldoPendienteVenta + $saldoPendienteCajaIngreso + $saldoPendienteMant + $saldoPendienteElec;
-        $totalPorPagar  = $saldoPendienteCompra + $saldoPendienteCajaEgreso;
+        $totalPorPagar = $saldoPendienteCompra + $saldoPendienteCajaEgreso;
 
         $totalPositivos = $ingresosCaja;
         $totalNegativos = $egresosCaja;
-        $saldoCaja      = $ingresosCaja - $egresosCaja;
+        $saldoCaja = $ingresosCaja - $egresosCaja;
         $totalFacturado = $ventasInv + $facturadoMant + $facturadoElec;
         $balanceOperativo = $totalFacturado - $comprasInv;
 
         $resumen = [
-            'total_ingresos'               => $ingresosCaja,
-            'total_egresos'                => $egresosCaja,
-            'balance_neto'                 => $saldoCaja,
-            'saldo_caja'                   => $saldoCaja,
-            'total_facturado'              => $totalFacturado,
-            'balance_operativo'            => $balanceOperativo,
-            'total_mantenimientos'         => $facturadoMant,
-            'total_electronica'            => $facturadoElec,
-            'total_ventas'                 => $ventasInv,
-            'total_compras'                => $comprasInv,
-            'total_anulados'               => $totalAnuladosCount,
-            'monto_anulados'               => $montoAnuladosSum,
-            'efectivo_ingresos'            => $efectivoIngresos,
-            'efectivo_egresos'             => $efectivoEgresos,
-            'efectivo_saldo'               => $efectivoIngresos - $efectivoEgresos,
-            'consignacion_ingresos'        => $consignacionIngresos,
-            'consignacion_egresos'         => $consignacionEgresos,
-            'consignacion_saldo'           => $consignacionIngresos - $consignacionEgresos,
-            'saldo_pendiente_venta'        => $saldoPendienteVenta,
-            'saldo_pendiente_compra'       => $saldoPendienteCompra,
+            'total_ingresos' => $ingresosCaja,
+            'total_egresos' => $egresosCaja,
+            'balance_neto' => $saldoCaja,
+            'saldo_caja' => $saldoCaja,
+            'total_facturado' => $totalFacturado,
+            'balance_operativo' => $balanceOperativo,
+            'total_mantenimientos' => $facturadoMant,
+            'total_electronica' => $facturadoElec,
+            'total_ventas' => $ventasInv,
+            'total_compras' => $comprasInv,
+            'total_anulados' => $totalAnuladosCount,
+            'monto_anulados' => $montoAnuladosSum,
+            'efectivo_ingresos' => $efectivoIngresos,
+            'efectivo_egresos' => $efectivoEgresos,
+            'efectivo_saldo' => $efectivoIngresos - $efectivoEgresos,
+            'consignacion_ingresos' => $consignacionIngresos,
+            'consignacion_egresos' => $consignacionEgresos,
+            'consignacion_saldo' => $consignacionIngresos - $consignacionEgresos,
+            'saldo_pendiente_venta' => $saldoPendienteVenta,
+            'saldo_pendiente_compra' => $saldoPendienteCompra,
             'saldo_pendiente_caja_ingreso' => $saldoPendienteCajaIngreso,
-            'saldo_pendiente_caja_egreso'  => $saldoPendienteCajaEgreso,
-            'saldo_pendiente_mant'         => $saldoPendienteMant,
-            'saldo_pendiente_elec'         => $saldoPendienteElec,
-            'total_por_cobrar'             => $totalPorCobrar,
-            'total_por_pagar'              => $totalPorPagar,
+            'saldo_pendiente_caja_egreso' => $saldoPendienteCajaEgreso,
+            'saldo_pendiente_mant' => $saldoPendienteMant,
+            'saldo_pendiente_elec' => $saldoPendienteElec,
+            'total_por_cobrar' => $totalPorCobrar,
+            'total_por_pagar' => $totalPorPagar,
         ];
 
         if ($request->get('export') === 'excel') {
-            return \Maatwebsite\Excel\Facades\Excel::download(
-                new \App\Exports\ReportesFinancierosExport($movimientos),
-                'Reporte_Diario_' . date('Y-m-d_His') . '.xlsx'
+            return Excel::download(
+                new ReportesFinancierosExport($movimientos),
+                'Reporte_Diario_'.date('Y-m-d_His').'.xlsx'
             );
         }
 
         if ($request->get('export') === 'pdf') {
-            return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_diario', [
+            return Pdf::loadView('reportes_financieros.pdf_diario', [
                 'movimientos' => $movimientos,
-                'resumen'     => $resumen,
-                'fecha'       => \Carbon\Carbon::parse($fecha)->isoFormat('dddd D [de] MMMM [de] YYYY'),
-            ])->setPaper('a4', 'portrait')->download('Reporte_Diario_' . date('Y-m-d_His') . '.pdf');
+                'resumen' => $resumen,
+                'fecha' => Carbon::parse($fecha)->isoFormat('dddd D [de] MMMM [de] YYYY'),
+            ])->setPaper('a4', 'portrait')->download('Reporte_Diario_'.date('Y-m-d_His').'.pdf');
         }
 
         return view('reportes_financieros.diario', compact('movimientos', 'fecha', 'resumen'));
@@ -298,9 +307,9 @@ class ReporteFinancieroController extends Controller
             ->selectRaw('SUM(CASE WHEN total_documento > total_pagado THEN total_documento - total_pagado ELSE 0 END) as s')
             ->value('s') ?? 0);
 
-        $cajaPendientes = MovimientoCaja::with(['childPayments' => function($q) {
-                $q->where('anulado', false)->where('estado', 'activo');
-            }])
+        $cajaPendientes = MovimientoCaja::with(['childPayments' => function ($q) {
+            $q->where('anulado', false)->where('estado', 'activo');
+        }])
             ->whereNull('parent_id')
             ->where('anulado', false)
             ->where('estado', 'activo')
@@ -310,7 +319,7 @@ class ReporteFinancieroController extends Controller
 
         $facturaNumeros = (clone $facturasBase)->pluck('numero_factura')->filter()->all();
         $saldoPendienteCajaIngreso = 0;
-        $saldoPendienteCajaEgreso  = 0;
+        $saldoPendienteCajaEgreso = 0;
 
         foreach ($cajaPendientes as $cmov) {
             $isLinkedToFactura = false;
@@ -321,7 +330,7 @@ class ReporteFinancieroController extends Controller
                         break;
                     }
                 }
-                if (!$isLinkedToFactura && (str_contains($cmov->descripcion, '#VT-') || str_contains($cmov->descripcion, '#CP-'))) {
+                if (! $isLinkedToFactura && (str_contains($cmov->descripcion, '#VT-') || str_contains($cmov->descripcion, '#CP-'))) {
                     if (preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $cmov->descripcion, $match)) {
                         if (Factura::where('numero_factura', $match[1])->where('estado', '!=', 'anulada')->exists()) {
                             $isLinkedToFactura = true;
@@ -330,7 +339,9 @@ class ReporteFinancieroController extends Controller
                 }
             }
 
-            if ($isLinkedToFactura) continue;
+            if ($isLinkedToFactura) {
+                continue;
+            }
 
             $pagado = (float) $cmov->monto + (float) $cmov->childPayments->sum('monto');
             $pendiente = max(0, (float) $cmov->monto_total - $pagado);
@@ -344,60 +355,60 @@ class ReporteFinancieroController extends Controller
             }
         }
 
-        $saldoPendienteMant = (float) (clone $mantenimientosQuery)->with('abonos')->get()->sum(fn($m) => $m->saldo_pendiente);
-        $saldoPendienteElec = (float) (clone $electronicasQuery)->with('abonos')->get()->sum(fn($e) => $e->saldo_pendiente);
+        $saldoPendienteMant = (float) (clone $mantenimientosQuery)->with('abonos')->get()->sum(fn ($m) => $m->saldo_pendiente);
+        $saldoPendienteElec = (float) (clone $electronicasQuery)->with('abonos')->get()->sum(fn ($e) => $e->saldo_pendiente);
 
         $totalPorCobrar = $saldoPendienteVenta + $saldoPendienteCajaIngreso + $saldoPendienteMant + $saldoPendienteElec;
-        $totalPorPagar  = $saldoPendienteCompra + $saldoPendienteCajaEgreso;
+        $totalPorPagar = $saldoPendienteCompra + $saldoPendienteCajaEgreso;
 
         $acumulado = [
             // Conteos
-            'total_mantenimientos'  => (clone $mantenimientosQuery)->count(),
-            'total_electronicas'    => (clone $electronicasQuery)->count(),
-            'total_compras'         => (clone $facturasBase)->where('tipo_movimiento', 'compra')->count(),
-            'total_ventas'          => (clone $facturasBase)->where('tipo_movimiento', 'venta')->count(),
-            'total_ingresos'        => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->count(),
-            'total_egresos'         => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->count(),
-            'total_anulados'        => Mantenimiento::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->count()
+            'total_mantenimientos' => (clone $mantenimientosQuery)->count(),
+            'total_electronicas' => (clone $electronicasQuery)->count(),
+            'total_compras' => (clone $facturasBase)->where('tipo_movimiento', 'compra')->count(),
+            'total_ventas' => (clone $facturasBase)->where('tipo_movimiento', 'venta')->count(),
+            'total_ingresos' => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->count(),
+            'total_egresos' => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->count(),
+            'total_anulados' => Mantenimiento::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->count()
                                      + Electronica::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->count()
                                      + MovimientoCaja::whereBetween('fecha', [$desde, $hasta])->where('anulado', true)->count()
                                      + Factura::whereBetween('fecha', [$desde, $hasta])->where('estado', 'anulada')->count(),
 
-            'total_costo_anulados'  => Mantenimiento::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->sum('costo')
+            'total_costo_anulados' => Mantenimiento::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->sum('costo')
                                      + Electronica::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->sum('costo')
                                      + MovimientoCaja::whereBetween('fecha', [$desde, $hasta])->where('anulado', true)->sum('monto')
                                      + Factura::whereBetween('fecha', [$desde, $hasta])->where('estado', 'anulada')->sum('total_documento'),
 
             // Montos
-            'facturado_mant'        => (clone $mantenimientosQuery)->sum('costo'),
-            'facturado_elec'        => (clone $electronicasQuery)->sum('costo'),
-            'ingresos_caja'         => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->sum('monto'),
-            'egresos_caja'          => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->sum('monto'),
-            'ingresos_efectivo'     => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto'),
-            'egresos_efectivo'      => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto'),
+            'facturado_mant' => (clone $mantenimientosQuery)->sum('costo'),
+            'facturado_elec' => (clone $electronicasQuery)->sum('costo'),
+            'ingresos_caja' => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->sum('monto'),
+            'egresos_caja' => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->sum('monto'),
+            'ingresos_efectivo' => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto'),
+            'egresos_efectivo' => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto'),
             'ingresos_consignacion' => (clone $cajaBase)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto'),
-            'egresos_consignacion'  => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto'),
-            'ventas_inventario'     => (clone $facturasBase)->where('tipo_movimiento', 'venta')->sum('total_documento'),
-            'compras_inventario'    => (clone $facturasBase)->where('tipo_movimiento', 'compra')->sum('total_documento'),
+            'egresos_consignacion' => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto'),
+            'ventas_inventario' => (clone $facturasBase)->where('tipo_movimiento', 'venta')->sum('total_documento'),
+            'compras_inventario' => (clone $facturasBase)->where('tipo_movimiento', 'compra')->sum('total_documento'),
 
             // Pendientes
-            'saldo_pendiente_venta'        => $saldoPendienteVenta,
-            'saldo_pendiente_compra'       => $saldoPendienteCompra,
+            'saldo_pendiente_venta' => $saldoPendienteVenta,
+            'saldo_pendiente_compra' => $saldoPendienteCompra,
             'saldo_pendiente_caja_ingreso' => $saldoPendienteCajaIngreso,
-            'saldo_pendiente_caja_egreso'  => $saldoPendienteCajaEgreso,
-            'saldo_pendiente_mant'         => $saldoPendienteMant,
-            'saldo_pendiente_elec'         => $saldoPendienteElec,
-            'total_por_cobrar'             => $totalPorCobrar,
-            'total_por_pagar'              => $totalPorPagar,
+            'saldo_pendiente_caja_egreso' => $saldoPendienteCajaEgreso,
+            'saldo_pendiente_mant' => $saldoPendienteMant,
+            'saldo_pendiente_elec' => $saldoPendienteElec,
+            'total_por_cobrar' => $totalPorCobrar,
+            'total_por_pagar' => $totalPorPagar,
         ];
 
-        $acumulado['balance_caja']         = $acumulado['ingresos_caja'] - $acumulado['egresos_caja'];
-        $acumulado['balance_neto']         = $acumulado['balance_caja'];
-        $acumulado['balance_efectivo']     = $acumulado['ingresos_efectivo'] - $acumulado['egresos_efectivo'];
+        $acumulado['balance_caja'] = $acumulado['ingresos_caja'] - $acumulado['egresos_caja'];
+        $acumulado['balance_neto'] = $acumulado['balance_caja'];
+        $acumulado['balance_efectivo'] = $acumulado['ingresos_efectivo'] - $acumulado['egresos_efectivo'];
         $acumulado['balance_consignacion'] = $acumulado['ingresos_consignacion'] - $acumulado['egresos_consignacion'];
-        $acumulado['total_facturado']      = $acumulado['ventas_inventario'] + $acumulado['facturado_mant'] + $acumulado['facturado_elec'];
-        $acumulado['balance_operativo']    = $acumulado['total_facturado'] - $acumulado['compras_inventario'];
-        $acumulado['facturado_total']      = $acumulado['total_facturado'];
+        $acumulado['total_facturado'] = $acumulado['ventas_inventario'] + $acumulado['facturado_mant'] + $acumulado['facturado_elec'];
+        $acumulado['balance_operativo'] = $acumulado['total_facturado'] - $acumulado['compras_inventario'];
+        $acumulado['facturado_total'] = $acumulado['total_facturado'];
 
         // — Mantenimientos en el rango
         $mantenimientosList = Mantenimiento::with(['equipo.cliente', 'tecnico'])
@@ -405,18 +416,19 @@ class ReporteFinancieroController extends Controller
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($m) {
-                $equipo  = $m->equipo->nombre  ?? '—';
+                $equipo = $m->equipo->nombre ?? '—';
                 $cliente = $m->equipo->cliente->nombre ?? '—';
+
                 return [
-                    'tipo'        => 'mantenimiento',
-                    'fecha'       => $m->fecha_entrada,
-                    'codigo'      => $m->id_orden,
+                    'tipo' => 'mantenimiento',
+                    'fecha' => $m->fecha_entrada,
+                    'codigo' => $m->id_orden,
                     'descripcion' => "{$equipo} ({$cliente})",
-                    'monto'       => $m->costo,
-                    'estado'      => $m->estado,
-                    'anulado'     => $m->anulado,
-                    'icono'       => '🔧',
-                    'color'       => 'blue',
+                    'monto' => $m->costo,
+                    'estado' => $m->estado,
+                    'anulado' => $m->anulado,
+                    'icono' => '🔧',
+                    'color' => 'blue',
                 ];
             });
 
@@ -426,18 +438,19 @@ class ReporteFinancieroController extends Controller
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($e) {
-                $equipo  = $e->equipo->nombre  ?? '—';
+                $equipo = $e->equipo->nombre ?? '—';
                 $cliente = $e->equipo->cliente->nombre ?? '—';
+
                 return [
-                    'tipo'        => 'electronica',
-                    'fecha'       => $e->fecha_entrada,
-                    'codigo'      => $e->id_orden,
+                    'tipo' => 'electronica',
+                    'fecha' => $e->fecha_entrada,
+                    'codigo' => $e->id_orden,
                     'descripcion' => "{$equipo} ({$cliente})",
-                    'monto'       => $e->costo,
-                    'estado'      => $e->estado,
-                    'anulado'     => $e->anulado,
-                    'icono'       => '⚡',
-                    'color'       => 'purple',
+                    'monto' => $e->costo,
+                    'estado' => $e->estado,
+                    'anulado' => $e->anulado,
+                    'icono' => '⚡',
+                    'color' => 'purple',
                 ];
             });
 
@@ -448,16 +461,17 @@ class ReporteFinancieroController extends Controller
             ->get()
             ->map(function ($f) {
                 $nombre = $f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—';
+
                 return [
-                    'tipo'        => $f->tipo_movimiento,
-                    'fecha'       => $f->fecha,
-                    'codigo'      => $f->numero_factura,
+                    'tipo' => $f->tipo_movimiento,
+                    'fecha' => $f->fecha,
+                    'codigo' => $f->numero_factura,
                     'descripcion' => "{$nombre}",
-                    'monto'       => $f->total_documento,
-                    'estado'      => $f->estado,
-                    'anulado'     => $f->estado === 'anulada',
-                    'icono'       => $f->tipo_movimiento === 'compra' ? '📦' : '🛒',
-                    'color'       => $f->tipo_movimiento === 'compra' ? 'amber' : 'emerald',
+                    'monto' => $f->total_documento,
+                    'estado' => $f->estado,
+                    'anulado' => $f->estado === 'anulada',
+                    'icono' => $f->tipo_movimiento === 'compra' ? '📦' : '🛒',
+                    'color' => $f->tipo_movimiento === 'compra' ? 'amber' : 'emerald',
                 ];
             });
 
@@ -467,18 +481,19 @@ class ReporteFinancieroController extends Controller
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($c) {
-                $quien    = $c->persona ?? $c->empresa ?? 'Anónimo';
+                $quien = $c->persona ?? $c->empresa ?? 'Anónimo';
                 $concepto = $c->concepto->nombre ?? '—';
+
                 return [
-                    'tipo'        => $c->tipo_movimiento,
-                    'fecha'       => $c->fecha,
-                    'codigo'      => $c->id,
+                    'tipo' => $c->tipo_movimiento,
+                    'fecha' => $c->fecha,
+                    'codigo' => $c->id,
                     'descripcion' => "{$quien} — {$concepto}",
-                    'monto'       => $c->monto,
-                    'estado'      => $c->estado,
-                    'anulado'     => $c->anulado,
-                    'icono'       => $c->tipo_movimiento === 'ingreso' ? '📈' : '📉',
-                    'color'       => $c->tipo_movimiento === 'ingreso' ? 'emerald' : 'red',
+                    'monto' => $c->monto,
+                    'estado' => $c->estado,
+                    'anulado' => $c->anulado,
+                    'icono' => $c->tipo_movimiento === 'ingreso' ? '📈' : '📉',
+                    'color' => $c->tipo_movimiento === 'ingreso' ? 'emerald' : 'red',
                 ];
             });
 
@@ -492,18 +507,18 @@ class ReporteFinancieroController extends Controller
             ->values();
 
         if ($request->get('export') === 'excel') {
-            return \Maatwebsite\Excel\Facades\Excel::download(
-                new \App\Exports\AcumuladoExport($acumulado),
-                'Reporte_Acumulado_' . date('Y-m-d_His') . '.xlsx'
+            return Excel::download(
+                new AcumuladoExport($acumulado),
+                'Reporte_Acumulado_'.date('Y-m-d_His').'.xlsx'
             );
         }
 
         if ($request->get('export') === 'pdf') {
-            return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_acumulado', [
+            return Pdf::loadView('reportes_financieros.pdf_acumulado', [
                 'movimientos' => $movimientos,
                 'acumulado' => $acumulado,
-                'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')}"
-            ])->setPaper('a4', 'portrait')->download('Reporte_Acumulado_' . date('Y-m-d_His') . '.pdf');
+                'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')}",
+            ])->setPaper('a4', 'portrait')->download('Reporte_Acumulado_'.date('Y-m-d_His').'.pdf');
         }
 
         return view('reportes_financieros.acumulado', compact('acumulado', 'desde', 'hasta', 'movimientos'));
@@ -515,7 +530,7 @@ class ReporteFinancieroController extends Controller
 
     public function reporteOperaciones(Request $request)
     {
-        $tipo  = $request->get('tipo', 'solo_mantenimientos');
+        $tipo = $request->get('tipo', 'solo_mantenimientos');
         $desde = $request->filled('desde') ? Carbon::parse($request->desde) : now()->startOfMonth();
         $hasta = $request->filled('hasta') ? Carbon::parse($request->hasta)->endOfDay() : now()->endOfDay();
 
@@ -561,11 +576,11 @@ class ReporteFinancieroController extends Controller
 
         $tipoLabels = [
             'solo_mantenimientos' => '🔧 Mantenimientos',
-            'solo_electronica'    => '⚡ Electrónica',
-            'solo_ingresos'       => '📈 Ingresos de Caja',
-            'solo_egresos'        => '📉 Egresos de Caja',
-            'solo_compras'        => '📦 Compras de Inventario',
-            'solo_ventas'         => '🛒 Ventas de Inventario',
+            'solo_electronica' => '⚡ Electrónica',
+            'solo_ingresos' => '📈 Ingresos de Caja',
+            'solo_egresos' => '📉 Egresos de Caja',
+            'solo_compras' => '📦 Compras de Inventario',
+            'solo_ventas' => '🛒 Ventas de Inventario',
         ];
 
         if ($request->get('export')) {
@@ -602,60 +617,62 @@ class ReporteFinancieroController extends Controller
 
             if ($request->get('export') === 'excel') {
                 if ($tipo === 'solo_mantenimientos') {
-                    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\MantenimientosExport($exportData), 'Reporte_Operaciones_' . date('Y-m-d_His') . '.xlsx');
+                    return Excel::download(new MantenimientosExport($exportData), 'Reporte_Operaciones_'.date('Y-m-d_His').'.xlsx');
                 } elseif ($tipo === 'solo_electronica') {
-                    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ElectronicasExport($exportData), 'Reporte_Operaciones_' . date('Y-m-d_His') . '.xlsx');
+                    return Excel::download(new ElectronicasExport($exportData), 'Reporte_Operaciones_'.date('Y-m-d_His').'.xlsx');
                 } else {
-                    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportesFinancierosExport($exportData), 'Reporte_Operaciones_' . date('Y-m-d_His') . '.xlsx');
+                    return Excel::download(new ReportesFinancierosExport($exportData), 'Reporte_Operaciones_'.date('Y-m-d_His').'.xlsx');
                 }
             }
 
             if ($request->get('export') === 'pdf') {
                 if ($tipo === 'solo_mantenimientos') {
-                    return \Barryvdh\DomPDF\Facade\Pdf::loadView('mantenimientos.pdf', [
+                    return Pdf::loadView('mantenimientos.pdf', [
                         'mantenimientos' => $exportData,
-                        'orientation'    => 'portrait'
+                        'orientation' => 'portrait',
                     ])
                         ->setPaper('a4', 'portrait')
-                        ->download('Reporte_Operaciones_' . date('Y-m-d_His') . '.pdf');
+                        ->download('Reporte_Operaciones_'.date('Y-m-d_His').'.pdf');
                 } elseif ($tipo === 'solo_electronica') {
-                    return \Barryvdh\DomPDF\Facade\Pdf::loadView('electronicas.pdf', [
+                    return Pdf::loadView('electronicas.pdf', [
                         'electronicas' => $exportData,
-                        'orientation'  => 'portrait'
+                        'orientation' => 'portrait',
                     ])
                         ->setPaper('a4', 'portrait')
-                        ->download('Reporte_Operaciones_' . date('Y-m-d_His') . '.pdf');
+                        ->download('Reporte_Operaciones_'.date('Y-m-d_His').'.pdf');
                 } else {
-                    $movimientosMapped = $exportData->map(function($tx) use ($tipo) {
+                    $movimientosMapped = $exportData->map(function ($tx) use ($tipo) {
                         $codigo = '—';
-                        if ($tx instanceof \App\Models\MovimientoCaja) {
+                        if ($tx instanceof MovimientoCaja) {
                             $codigo = $tx->id;
-                        } elseif ($tx instanceof \App\Models\Factura) {
+                        } elseif ($tx instanceof Factura) {
                             $codigo = $tx->numero_factura;
                         }
+
                         return [
-                            'codigo'      => $codigo,
-                            'fecha'       => $tx->fecha ?? $tx->fecha_entrada,
-                            'tipo'        => $tx->tipo_movimiento ?? str_replace('solo_', '', $tipo),
+                            'codigo' => $codigo,
+                            'fecha' => $tx->fecha ?? $tx->fecha_entrada,
+                            'tipo' => $tx->tipo_movimiento ?? str_replace('solo_', '', $tipo),
                             'descripcion' => $tx->concepto->nombre ?? $tx->persona ?? ($tx->facturable->nombre ?? 'N/A'),
-                            'monto'       => $tx->monto ?? $tx->total_documento ?? 0,
-                            'estado'      => $tx->estado ?? '—',
-                            'anulado'     => $tx->anulado ?? false,
-                            'icono'       => '📋',
-                            'color'       => 'gray'
+                            'monto' => $tx->monto ?? $tx->total_documento ?? 0,
+                            'estado' => $tx->estado ?? '—',
+                            'anulado' => $tx->anulado ?? false,
+                            'icono' => '📋',
+                            'color' => 'gray',
                         ];
                     });
-                    return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes_financieros.pdf_diario', [
+
+                    return Pdf::loadView('reportes_financieros.pdf_diario', [
                         'movimientos' => $movimientosMapped,
                         'resumen' => [
-                            'total_ingresos'       => $tipo === 'solo_ingresos' ? $movimientosMapped->sum('monto') : 0,
-                            'total_egresos'        => $tipo === 'solo_egresos'  ? $movimientosMapped->sum('monto') : 0,
+                            'total_ingresos' => $tipo === 'solo_ingresos' ? $movimientosMapped->sum('monto') : 0,
+                            'total_egresos' => $tipo === 'solo_egresos' ? $movimientosMapped->sum('monto') : 0,
                             'total_mantenimientos' => 0,
-                            'total_anulados'       => $movimientosMapped->where('anulado', true)->count(),
+                            'total_anulados' => $movimientosMapped->where('anulado', true)->count(),
                         ],
-                        'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')} ({$tipoLabels[$tipo]})"
+                        'fecha' => "Del {$desde->format('d/m/Y')} al {$hasta->format('d/m/Y')} ({$tipoLabels[$tipo]})",
                     ])->setPaper('a4', 'portrait')
-                      ->download('Reporte_Operaciones_' . date('Y-m-d_His') . '.pdf');
+                        ->download('Reporte_Operaciones_'.date('Y-m-d_His').'.pdf');
                 }
             }
         }

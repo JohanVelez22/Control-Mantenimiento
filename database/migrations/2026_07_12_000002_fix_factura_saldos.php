@@ -21,11 +21,11 @@ return new class extends Migration
         Schema::table('facturas', function (Blueprint $table) {
             $table->dropColumn('saldo_pendiente');
             $table->decimal('saldo_pendiente', 12, 2)
-                  ->storedAs('GREATEST(0, total_documento - total_pagado)')
-                  ->after('total_pagado');
+                ->storedAs('GREATEST(0, total_documento - total_pagado)')
+                ->after('total_pagado');
             $table->decimal('saldo_a_favor', 12, 2)
-                  ->storedAs('GREATEST(0, total_pagado - total_documento)')
-                  ->after('saldo_pendiente');
+                ->storedAs('GREATEST(0, total_pagado - total_documento)')
+                ->after('saldo_pendiente');
         });
     }
 
@@ -34,8 +34,8 @@ return new class extends Migration
         Schema::table('facturas', function (Blueprint $table) {
             $table->dropColumn(['saldo_pendiente', 'saldo_a_favor']);
             $table->decimal('saldo_pendiente', 12, 2)
-                  ->storedAs('total_documento - total_pagado')
-                  ->after('total_pagado');
+                ->storedAs('total_documento - total_pagado')
+                ->after('total_pagado');
         });
     }
 };

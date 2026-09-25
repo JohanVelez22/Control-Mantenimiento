@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tecnico;
+use App\Services\AnulacionService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class TecnicoController extends Controller
@@ -12,6 +12,7 @@ class TecnicoController extends Controller
     public function index()
     {
         $tecnicos = Tecnico::orderBy('id', 'desc')->paginate(10);
+
         return view('tecnicos.index', compact('tecnicos'));
     }
 
@@ -52,7 +53,7 @@ class TecnicoController extends Controller
 
     public function edit(Tecnico $tecnico)
     {
-        
+
         return view('tecnicos.edit', compact('tecnico'));
     }
 
@@ -61,7 +62,7 @@ class TecnicoController extends Controller
 
         $validated = $request->validate([
             'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:80',
-            'identificacion' => 'required|string|max:30|unique:tecnicos,identificacion,' . $tecnico->id,
+            'identificacion' => 'required|string|max:30|unique:tecnicos,identificacion,'.$tecnico->id,
             'especialidad' => 'required|string|max:80',
             'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
             'email' => 'nullable|email|max:100',
@@ -92,16 +93,17 @@ class TecnicoController extends Controller
         return redirect()->route('tecnicos.index')->with('success', 'Técnico actualizado correctamente.');
     }
 
-    public function anular(\Illuminate\Http\Request $request, Tecnico $tecnico)
+    public function anular(Request $request, Tecnico $tecnico)
     {
-        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
         }
 
-        $tecnico->active = !$tecnico->active;
+        $tecnico->active = ! $tecnico->active;
         $tecnico->save();
 
         $action = $tecnico->active ? 'reactivado' : 'desactivado (anulado)';
+
         return redirect()->back()->with('success', "El técnico ha sido {$action} exitosamente.");
     }
 }

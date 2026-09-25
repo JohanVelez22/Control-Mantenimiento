@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             // Relación con la tabla clientes (se mantiene igual)
             $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
-            
+
             $table->timestamps();
         });
     }

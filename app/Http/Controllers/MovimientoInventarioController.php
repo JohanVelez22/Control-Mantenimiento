@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
+use App\Models\ConceptoCaja;
+use App\Models\Configuracion;
 use App\Models\Factura;
 use App\Models\FacturaItem;
-use App\Models\Stock;
-use App\Models\Proveedor;
-use App\Models\Cliente;
 use App\Models\MovimientoCaja;
-use App\Models\ConceptoCaja;
-use Illuminate\Http\Request;
+use App\Models\Proveedor;
+use App\Models\Stock;
+use App\Services\AnulacionService;
+use App\Services\PosTicketService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class MovimientoInventarioController extends Controller
 {
@@ -25,8 +29,8 @@ class MovimientoInventarioController extends Controller
     public function createCompra(): View
     {
         $proveedores = Proveedor::activos()->orderBy('nombre_razon_social')->get();
-        $clientes    = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
-        $stocks      = Stock::activos()->orderBy('producto')->get();
+        $clientes = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
+        $stocks = Stock::activos()->orderBy('producto')->get();
 
         return view('inventario.compra', compact('proveedores', 'clientes', 'stocks'));
     }
@@ -47,20 +51,20 @@ class MovimientoInventarioController extends Controller
         }
 
         $request->validate([
-            'facturable_global'       => ['required', 'string'],
-            'fecha'                   => ['required', 'date'],
-            'total_pagado'            => ['required', 'numeric', 'min:0'],
-            'observaciones'           => ['nullable', 'string'],
-            'items'                   => ['required', 'array', 'min:1'],
-            'items.*.stock_id'        => ['required', 'exists:stocks,id'],
-            'items.*.cantidad'        => ['required', 'integer', 'min:1'],
+            'facturable_global' => ['required', 'string'],
+            'fecha' => ['required', 'date'],
+            'total_pagado' => ['required', 'numeric', 'min:0'],
+            'observaciones' => ['nullable', 'string'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.stock_id' => ['required', 'exists:stocks,id'],
+            'items.*.cantidad' => ['required', 'integer', 'min:1'],
             'items.*.precio_unitario' => ['required', 'numeric', 'min:0'],
         ]);
 
         try {
             DB::beginTransaction();
 
-            list($type, $id) = explode(':', $request->facturable_global);
+            [$type, $id] = explode(':', $request->facturable_global);
             if ($type === 'Proveedor') {
                 $entity = Proveedor::findOrFail($id);
                 $facturableType = Proveedor::class;
@@ -72,29 +76,30 @@ class MovimientoInventarioController extends Controller
             }
 
             $totalDocumento = $this->calcularTotal($request->items);
-            $totalPagado    = (float) $request->total_pagado;
+            $totalPagado = (float) $request->total_pagado;
 
             // No permitir pagar más de lo debido (evita saldos negativos)
             if ($totalPagado > $totalDocumento + 0.001) {
                 DB::rollBack();
+
                 return back()->with('error', 'El valor pagado no puede superar el total del documento.')->withInput();
             }
 
-            $saldo          = $totalDocumento - $totalPagado;
-            $estado         = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+            $saldo = $totalDocumento - $totalPagado;
+            $estado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
 
             // 1. Crear la factura
             $factura = Factura::create([
-                'numero_factura'  => Factura::siguienteNumero('CP-'),
+                'numero_factura' => Factura::siguienteNumero('CP-'),
                 'tipo_movimiento' => 'compra',
-                'estado'          => $estado,
-                'facturable_id'   => $entity->id,
+                'estado' => $estado,
+                'facturable_id' => $entity->id,
                 'facturable_type' => $facturableType,
                 'total_documento' => $totalDocumento,
-                'total_pagado'    => $totalPagado,
-                'observaciones'   => $this->buildObservaciones($request->observaciones, $saldo),
-                'fecha'           => $request->fecha,
-                'user_id'         => Auth::id(),
+                'total_pagado' => $totalPagado,
+                'observaciones' => $this->buildObservaciones($request->observaciones, $saldo),
+                'fecha' => $request->fecha,
+                'user_id' => Auth::id(),
             ]);
 
             // 2. Registrar ítems e incrementar stock
@@ -102,9 +107,9 @@ class MovimientoInventarioController extends Controller
                 $stock = Stock::findOrFail($item['stock_id']);
 
                 FacturaItem::create([
-                    'factura_id'      => $factura->id,
-                    'stock_id'        => $stock->id,
-                    'cantidad'        => $item['cantidad'],
+                    'factura_id' => $factura->id,
+                    'stock_id' => $stock->id,
+                    'cantidad' => $item['cantidad'],
                     'precio_unitario' => (float) $item['precio_unitario'],
                 ]);
 
@@ -132,7 +137,7 @@ class MovimientoInventarioController extends Controller
             if ($saldo > 0.01) {
                 session()->flash('alert_compra_pendiente', [
                     'factura' => $factura->numero_factura,
-                    'saldo'   => $saldo,
+                    'saldo' => $saldo,
                     'proveedor' => $entityName,
                 ]);
             }
@@ -140,14 +145,16 @@ class MovimientoInventarioController extends Controller
             DB::commit();
 
             return redirect()->route('inventario.facturas.show', $factura->id)
-                ->with('success', "Compra #{$factura->numero_factura} registrada correctamente." .
-                    ($saldo > 0.01 ? " ⚠️ Saldo pendiente con proveedor: $" . number_format($saldo, 2) : ''));
+                ->with('success', "Compra #{$factura->numero_factura} registrada correctamente.".
+                    ($saldo > 0.01 ? ' ⚠️ Saldo pendiente con proveedor: $'.number_format($saldo, 2) : ''));
         } catch (\DomainException $e) {
             DB::rollBack();
+
             return back()->with('error', $e->getMessage())->withInput();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error registrando compra: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            Log::error('Error registrando compra: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+
             return back()->with('error', 'Error al procesar la compra. Intenta de nuevo.')->withInput();
         }
     }
@@ -158,9 +165,10 @@ class MovimientoInventarioController extends Controller
 
     public function createVenta(): View
     {
-        $clientes    = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
+        $clientes = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
         $proveedores = Proveedor::activos()->orderBy('nombre_razon_social')->get();
-        $stocks      = Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
+        $stocks = Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
+
         return view('inventario.venta', compact('clientes', 'proveedores', 'stocks'));
     }
 
@@ -180,20 +188,20 @@ class MovimientoInventarioController extends Controller
         }
 
         $request->validate([
-            'facturable_global'       => ['required', 'string'],
-            'fecha'                   => ['required', 'date'],
-            'total_pagado'            => ['required', 'numeric', 'min:0'],
-            'observaciones'           => ['nullable', 'string'],
-            'items'                   => ['required', 'array', 'min:1'],
-            'items.*.stock_id'        => ['required', 'exists:stocks,id'],
-            'items.*.cantidad'        => ['required', 'integer', 'min:1'],
+            'facturable_global' => ['required', 'string'],
+            'fecha' => ['required', 'date'],
+            'total_pagado' => ['required', 'numeric', 'min:0'],
+            'observaciones' => ['nullable', 'string'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.stock_id' => ['required', 'exists:stocks,id'],
+            'items.*.cantidad' => ['required', 'integer', 'min:1'],
             'items.*.precio_unitario' => ['required', 'numeric', 'min:0'],
         ]);
 
         try {
             DB::beginTransaction();
 
-            list($type, $id) = explode(':', $request->facturable_global);
+            [$type, $id] = explode(':', $request->facturable_global);
             if ($type === 'Proveedor') {
                 $entity = Proveedor::findOrFail($id);
                 $facturableType = Proveedor::class;
@@ -205,21 +213,22 @@ class MovimientoInventarioController extends Controller
             }
 
             $totalDocumento = $this->calcularTotal($request->items);
-            $totalPagado    = (float) $request->total_pagado;
+            $totalPagado = (float) $request->total_pagado;
 
             // No permitir cobrar más de lo debido (evita saldos negativos)
             if ($totalPagado > $totalDocumento + 0.001) {
                 DB::rollBack();
+
                 return back()->with('error', 'El valor cobrado no puede superar el total del documento.')->withInput();
             }
 
-            $saldo          = $totalDocumento - $totalPagado;
-            $estado         = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+            $saldo = $totalDocumento - $totalPagado;
+            $estado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
 
             // 1. Pre-validar disponibilidad de TODOS los ítems antes de modificar BD
             foreach ($request->items as $item) {
                 $stock = Stock::findOrFail($item['stock_id']);
-                if (!$stock->tieneDisponible((int) $item['cantidad'])) {
+                if (! $stock->tieneDisponible((int) $item['cantidad'])) {
                     throw new \DomainException(
                         "Stock insuficiente para '{$stock->producto}'. Disponible: {$stock->cantidad}."
                     );
@@ -228,16 +237,16 @@ class MovimientoInventarioController extends Controller
 
             // 2. Crear la factura
             $factura = Factura::create([
-                'numero_factura'  => Factura::siguienteNumero('VT-'),
+                'numero_factura' => Factura::siguienteNumero('VT-'),
                 'tipo_movimiento' => 'venta',
-                'estado'          => $estado,
-                'facturable_id'   => $entity->id,
+                'estado' => $estado,
+                'facturable_id' => $entity->id,
                 'facturable_type' => $facturableType,
                 'total_documento' => $totalDocumento,
-                'total_pagado'    => $totalPagado,
-                'observaciones'   => $this->buildObservaciones($request->observaciones, $saldo),
-                'fecha'           => $request->fecha,
-                'user_id'         => Auth::id(),
+                'total_pagado' => $totalPagado,
+                'observaciones' => $this->buildObservaciones($request->observaciones, $saldo),
+                'fecha' => $request->fecha,
+                'user_id' => Auth::id(),
             ]);
 
             // 3. Registrar ítems y descontar stock
@@ -245,9 +254,9 @@ class MovimientoInventarioController extends Controller
                 $stock = Stock::findOrFail($item['stock_id']);
 
                 FacturaItem::create([
-                    'factura_id'      => $factura->id,
-                    'stock_id'        => $stock->id,
-                    'cantidad'        => $item['cantidad'],
+                    'factura_id' => $factura->id,
+                    'stock_id' => $stock->id,
+                    'cantidad' => $item['cantidad'],
                     'precio_unitario' => (float) $item['precio_unitario'],
                 ]);
 
@@ -270,7 +279,7 @@ class MovimientoInventarioController extends Controller
             if ($saldo > 0.01) {
                 session()->flash('alert_venta_pendiente', [
                     'factura' => $factura->numero_factura,
-                    'saldo'   => $saldo,
+                    'saldo' => $saldo,
                     'cliente' => $entityName,
                 ]);
             }
@@ -278,14 +287,16 @@ class MovimientoInventarioController extends Controller
             DB::commit();
 
             return redirect()->route('inventario.facturas.show', $factura->id)
-                ->with('success', "Venta #{$factura->numero_factura} registrada correctamente." .
-                    ($saldo > 0.01 ? " ⚠️ Saldo pendiente por cobrar: $" . number_format($saldo, 2) : ''));
+                ->with('success', "Venta #{$factura->numero_factura} registrada correctamente.".
+                    ($saldo > 0.01 ? ' ⚠️ Saldo pendiente por cobrar: $'.number_format($saldo, 2) : ''));
         } catch (\DomainException $e) {
             DB::rollBack();
+
             return back()->with('error', $e->getMessage())->withInput();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error registrando venta: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            Log::error('Error registrando venta: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+
             return back()->with('error', 'Error al procesar la venta. Intenta de nuevo.')->withInput();
         }
     }
@@ -319,7 +330,7 @@ class MovimientoInventarioController extends Controller
             $valor_total = str_replace('.', '', $request->input('valor_total'));
             $query->where('total_documento', '=', $valor_total);
         }
-        
+
         $query->whereDate('fecha', '>=', $fecha_desde);
         $query->whereDate('fecha', '<=', $fecha_hasta);
 
@@ -336,7 +347,7 @@ class MovimientoInventarioController extends Controller
             ->where('anulado', false)
             ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
             ->whereNull('parent_id')
-            ->with(['childPayments' => fn($q) => $q->where('anulado', false)->with('user')])
+            ->with(['childPayments' => fn ($q) => $q->where('anulado', false)->with('user')])
             ->first();
 
         $abonos = $movimientoPadre ? $movimientoPadre->childPayments : collect();
@@ -352,12 +363,12 @@ class MovimientoInventarioController extends Controller
             ->where('anulado', false)
             ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
             ->whereNull('parent_id')
-            ->with(['childPayments' => fn($q) => $q->where('anulado', false)->with('user')])
+            ->with(['childPayments' => fn ($q) => $q->where('anulado', false)->with('user')])
             ->first();
 
         $abonos = $movimientoPadre ? $movimientoPadre->childPayments : collect();
 
-        $empresa = \App\Models\Configuracion::first();
+        $empresa = Configuracion::first();
         $formato = request('formato', $empresa->formato_factura ?? 'estandar');
 
         if ($formato === 'pos') {
@@ -367,22 +378,23 @@ class MovimientoInventarioController extends Controller
             $obsExtra = ceil($obsLength / 35) * 14;
             $fallbackHeight = max(680, 480 + $obsExtra + ($itemsCount * 36) + ($abonosCount * 28));
 
-            return \App\Services\PosTicketService::streamTicket(
+            return PosTicketService::streamTicket(
                 'inventario.facturas.print_pos',
                 compact('factura', 'abonos'),
-                'ticket_factura_' . $factura->numero_factura . '.pdf',
+                'ticket_factura_'.$factura->numero_factura.'.pdf',
                 $fallbackHeight
             );
         }
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('inventario.facturas.print', compact('factura', 'abonos'));
+        $pdf = Pdf::loadView('inventario.facturas.print', compact('factura', 'abonos'));
         $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('factura_inventario_' . $factura->numero_factura . '.pdf');
+
+        return $pdf->stream('factura_inventario_'.$factura->numero_factura.'.pdf');
     }
 
     public function anularFactura(Request $request, Factura $factura): RedirectResponse
     {
-        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
         }
 
@@ -394,18 +406,18 @@ class MovimientoInventarioController extends Controller
                 // Verificar si hay stock disponible si es una venta
                 if ($factura->tipo_movimiento === 'venta') {
                     foreach ($factura->items as $item) {
-                        if (!$item->stock_id || !$item->stock) {
+                        if (! $item->stock_id || ! $item->stock) {
                             continue;
                         }
                         $stock = $item->stock;
-                        if (!$stock->tieneDisponible($item->cantidad)) {
+                        if (! $stock->tieneDisponible($item->cantidad)) {
                             throw new \DomainException("No se puede reactivar. Stock insuficiente para '{$stock->producto}'. Requerido: {$item->cantidad}, disponible: {$stock->cantidad}.");
                         }
                     }
                 }
 
                 foreach ($factura->items as $item) {
-                    if (!$item->stock_id || !$item->stock) {
+                    if (! $item->stock_id || ! $item->stock) {
                         continue;
                     }
                     $stock = $item->stock;
@@ -421,11 +433,11 @@ class MovimientoInventarioController extends Controller
                 $saldo = $factura->total_documento - $factura->total_pagado;
                 $nuevoEstado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
 
-                \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
+                MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
                     ->update(['estado' => 'activo', 'anulado' => false]);
 
-                $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn($l) => !preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
-                $factura->observaciones = trim($cleanObs . "\n[REACTIVADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']');
+                $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn ($l) => ! preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
+                $factura->observaciones = trim($cleanObs."\n[REACTIVADA el ".now()->format('d/m/Y H:i').' por '.Auth::user()->name.']');
                 $factura->estado = 'emitida'; // provisional, recalcularPagos() ajustará si hay saldo pendiente
                 $factura->save();
                 $factura->recalcularPagos();
@@ -434,7 +446,7 @@ class MovimientoInventarioController extends Controller
             } else {
                 // ANULAR LA FACTURA
                 foreach ($factura->items as $item) {
-                    if (!$item->stock_id || !$item->stock) {
+                    if (! $item->stock_id || ! $item->stock) {
                         continue;
                     }
                     $stock = $item->stock;
@@ -447,14 +459,14 @@ class MovimientoInventarioController extends Controller
                     }
                 }
 
-                \App\Models\MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
+                MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
                     ->update(['estado' => 'anulado', 'anulado' => true]);
 
-                $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn($l) => !preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
+                $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn ($l) => ! preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
                 $factura->update([
-                    'estado'        => 'anulada',
-                    'total_pagado'  => 0,
-                    'observaciones' => trim($cleanObs . "\n[ANULADA el " . now()->format('d/m/Y H:i') . ' por ' . Auth::user()->name . ']'),
+                    'estado' => 'anulada',
+                    'total_pagado' => 0,
+                    'observaciones' => trim($cleanObs."\n[ANULADA el ".now()->format('d/m/Y H:i').' por '.Auth::user()->name.']'),
                 ]);
 
                 $action = 'anulada';
@@ -466,30 +478,33 @@ class MovimientoInventarioController extends Controller
                 ->with('success', "Factura #{$factura->numero_factura} {$action}. El stock fue actualizado.");
         } catch (\DomainException $e) {
             DB::rollBack();
+
             return back()->with('error', $e->getMessage());
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error anulando/reactivando factura: ' . $e->getMessage());
+            Log::error('Error anulando/reactivando factura: '.$e->getMessage());
+
             return back()->with('error', 'Error al cambiar el estado de la factura.');
         }
     }
 
     public function editFactura(Factura $factura): View
     {
-        $proveedores = Proveedor::where(function($q) use ($factura) {
+        $proveedores = Proveedor::where(function ($q) use ($factura) {
             $q->activos();
             if ($factura->facturable_type === Proveedor::class) {
                 $q->orWhere('id', $factura->facturable_id);
             }
         })->orderBy('nombre_razon_social')->get();
-        $clientes = Cliente::where(function($q) use ($factura) {
+        $clientes = Cliente::where(function ($q) use ($factura) {
             $q->activos();
             if ($factura->facturable_type === Cliente::class) {
                 $q->orWhere('id', $factura->facturable_id);
             }
         })->orderBy('nombres')->orderBy('apellidos')->get();
-        $stocks      = Stock::activos()->orderBy('producto')->get();
+        $stocks = Stock::activos()->orderBy('producto')->get();
         $factura->load('items.stock');
+
         return view('inventario.facturas.edit', compact('factura', 'proveedores', 'clientes', 'stocks'));
     }
 
@@ -524,23 +539,23 @@ class MovimientoInventarioController extends Controller
         }
 
         $request->validate([
-            'fecha'                   => 'required|date',
-            'total_pagado'            => 'required|numeric|min:0',
-            'observaciones'           => 'nullable|string',
-            'facturable_global'       => 'required|string',
-            'existing_items'             => 'nullable|array',
-            'existing_items.*.id'        => 'required|exists:factura_items,id',
-            'existing_items.*.stock_id'  => 'nullable|exists:stocks,id',
+            'fecha' => 'required|date',
+            'total_pagado' => 'required|numeric|min:0',
+            'observaciones' => 'nullable|string',
+            'facturable_global' => 'required|string',
+            'existing_items' => 'nullable|array',
+            'existing_items.*.id' => 'required|exists:factura_items,id',
+            'existing_items.*.stock_id' => 'nullable|exists:stocks,id',
             'existing_items.*.descripcion' => 'nullable|string',
-            'existing_items.*.cantidad'  => 'required|integer|min:1',
-            'existing_items.*.precio_unitario'=> 'required|numeric|min:0',
-            'new_items'               => 'nullable|array',
-            'new_items.*.stock_id'    => 'required|exists:stocks,id',
-            'new_items.*.cantidad'    => 'required|integer|min:1',
-            'new_items.*.precio_unitario'=> 'required|numeric|min:0',
+            'existing_items.*.cantidad' => 'required|integer|min:1',
+            'existing_items.*.precio_unitario' => 'required|numeric|min:0',
+            'new_items' => 'nullable|array',
+            'new_items.*.stock_id' => 'required|exists:stocks,id',
+            'new_items.*.cantidad' => 'required|integer|min:1',
+            'new_items.*.precio_unitario' => 'required|numeric|min:0',
         ]);
 
-        list($type, $id) = explode(':', $request->facturable_global);
+        [$type, $id] = explode(':', $request->facturable_global);
         if ($type === 'Proveedor') {
             $entity = Proveedor::findOrFail($id);
             $facturableType = Proveedor::class;
@@ -550,26 +565,24 @@ class MovimientoInventarioController extends Controller
         }
 
         $totalPagado = $this->cleanAmount($request->total_pagado);
-        
+
         $wasAnulada = $factura->estado === 'anulada';
         $shouldBeAnulada = $wasAnulada;
-        
+
         try {
             DB::beginTransaction();
 
             // 2. Ajustar stock por modificación de cantidad o artículo de los ítems existentes
-            if (isset($request->existing_items) && is_array($request->existing_items) && !$shouldBeAnulada) {
+            if (isset($request->existing_items) && is_array($request->existing_items) && ! $shouldBeAnulada) {
                 foreach ($request->existing_items as $itemData) {
                     $item = FacturaItem::findOrFail($itemData['id']);
                     $oldStock = $item->stock;
                     $oldQty = (int) $item->cantidad;
-                    
-                    $newStockId = !empty($itemData['stock_id']) ? (int) $itemData['stock_id'] : null;
+
+                    $newStockId = ! empty($itemData['stock_id']) ? (int) $itemData['stock_id'] : null;
                     $newQty = (int) $itemData['cantidad'];
                     $newPrice = $this->cleanAmount($itemData['precio_unitario']);
                     $newDesc = isset($itemData['descripcion']) ? $itemData['descripcion'] : $item->descripcion;
-
-
 
                     if ($oldStock || $newStockId) {
                         if ($oldStock && $newStockId && $oldStock->id !== $newStockId) {
@@ -579,7 +592,7 @@ class MovimientoInventarioController extends Controller
                                 $newStock->incrementarStock($newQty);
                             } else {
                                 $oldStock->incrementarStock($oldQty);
-                                if (!$newStock->tieneDisponible($newQty)) {
+                                if (! $newStock->tieneDisponible($newQty)) {
                                     throw new \DomainException("Stock insuficiente para '{$newStock->producto}'. Requerido: {$newQty}, disponible: {$newStock->cantidad}.");
                                 }
                                 $newStock->decrementarStock($newQty);
@@ -597,7 +610,7 @@ class MovimientoInventarioController extends Controller
                                     }
                                 } else {
                                     if ($diff > 0) {
-                                        if (!$oldStock->tieneDisponible($diff)) {
+                                        if (! $oldStock->tieneDisponible($diff)) {
                                             throw new \DomainException("Stock insuficiente para '{$oldStock->producto}'. Requerido adicional: {$diff}, disponible: {$oldStock->cantidad}.");
                                         }
                                         $oldStock->decrementarStock($diff);
@@ -606,46 +619,46 @@ class MovimientoInventarioController extends Controller
                                     }
                                 }
                             }
-                        } elseif ($oldStock && !$newStockId) {
+                        } elseif ($oldStock && ! $newStockId) {
                             // Tenía stock y ahora cambió a sin stock
                             if ($factura->tipo_movimiento === 'compra') {
                                 $oldStock->decrementarStock($oldQty);
                             } else {
                                 $oldStock->incrementarStock($oldQty);
                             }
-                        } elseif (!$oldStock && $newStockId) {
+                        } elseif (! $oldStock && $newStockId) {
                             // No tenía stock y se asignó stock
                             $newStock = Stock::where('id', $newStockId)->lockForUpdate()->firstOrFail();
                             if ($factura->tipo_movimiento === 'compra') {
                                 $newStock->incrementarStock($newQty);
                             } else {
-                                if (!$newStock->tieneDisponible($newQty)) {
+                                if (! $newStock->tieneDisponible($newQty)) {
                                     throw new \DomainException("Stock insuficiente para '{$newStock->producto}'. Requerido: {$newQty}, disponible: {$newStock->cantidad}.");
                                 }
                                 $newStock->decrementarStock($newQty);
                             }
                         }
                     }
-                    
+
                     $item->update([
-                        'stock_id'        => $newStockId,
-                        'descripcion'     => $newDesc,
-                        'cantidad'        => $newQty,
+                        'stock_id' => $newStockId,
+                        'descripcion' => $newDesc,
+                        'cantidad' => $newQty,
                         'precio_unitario' => $newPrice,
                     ]);
                 }
             }
 
             // 2.5. Añadir nuevos ítems a la factura
-            if (isset($request->new_items) && is_array($request->new_items) && !$shouldBeAnulada) {
+            if (isset($request->new_items) && is_array($request->new_items) && ! $shouldBeAnulada) {
                 foreach ($request->new_items as $itemData) {
                     $stock = Stock::where('id', $itemData['stock_id'])->lockForUpdate()->firstOrFail();
                     $newPrice = $this->cleanAmount($itemData['precio_unitario']);
-                    
+
                     FacturaItem::create([
-                        'factura_id'      => $factura->id,
-                        'stock_id'        => $stock->id,
-                        'cantidad'        => $itemData['cantidad'],
+                        'factura_id' => $factura->id,
+                        'stock_id' => $stock->id,
+                        'cantidad' => $itemData['cantidad'],
                         'precio_unitario' => $newPrice,
                     ]);
 
@@ -655,7 +668,7 @@ class MovimientoInventarioController extends Controller
                         }
                         $stock->incrementarStock((int) $itemData['cantidad']);
                     } else {
-                        if (!$stock->tieneDisponible((int) $itemData['cantidad'])) {
+                        if (! $stock->tieneDisponible((int) $itemData['cantidad'])) {
                             throw new \DomainException("Stock insuficiente para '{$stock->producto}'. Requerido: {$itemData['cantidad']}, disponible: {$stock->cantidad}.");
                         }
                         $stock->decrementarStock((int) $itemData['cantidad']);
@@ -670,8 +683,9 @@ class MovimientoInventarioController extends Controller
             }
 
             // No permitir que el pagado supere el nuevo total del documento
-            if (!$shouldBeAnulada && $totalPagado > $totalDocumento + 0.001) {
+            if (! $shouldBeAnulada && $totalPagado > $totalDocumento + 0.001) {
                 DB::rollBack();
+
                 return back()->with('error', 'El valor pagado no puede superar el total del documento.')->withInput();
             }
 
@@ -680,7 +694,7 @@ class MovimientoInventarioController extends Controller
 
             // Extraer historial de anulaciones/reactivaciones de la observación actual
             $historial = collect(explode("\n", $factura->observaciones ?? ''))
-                ->filter(fn($line) => str_starts_with($line, '[ANULADA') || str_starts_with($line, '[REACTIVADA'))
+                ->filter(fn ($line) => str_starts_with($line, '[ANULADA') || str_starts_with($line, '[REACTIVADA'))
                 ->implode("\n");
 
             $nuevaObservacion = $this->buildObservaciones($request->observaciones, $saldo, $historial ?: null);
@@ -695,63 +709,69 @@ class MovimientoInventarioController extends Controller
             if ($totalPagado > 0) {
                 if ($baseCaja) {
                     $baseCaja->update([
-                        'monto'       => $totalPagado,
+                        'monto' => $totalPagado,
                         'monto_total' => $totalDocumento > $totalPagado ? $totalDocumento : null,
-                        'persona'     => $entityName,
-                        'fecha'       => $request->fecha,
-                        'estado'      => $shouldBeAnulada ? 'anulado' : 'activo',
+                        'persona' => $entityName,
+                        'fecha' => $request->fecha,
+                        'estado' => $shouldBeAnulada ? 'anulado' : 'activo',
                     ]);
-                } else if (!$shouldBeAnulada) {
+                } elseif (! $shouldBeAnulada) {
                     $this->registrarMovimientoCaja(
                         tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
                         monto: $totalPagado,
                         persona: $entityName,
-                        descripcion: ($factura->tipo_movimiento === 'venta' ? "Cobro venta #" : "Pago compra #") . $factura->numero_factura,
+                        descripcion: ($factura->tipo_movimiento === 'venta' ? 'Cobro venta #' : 'Pago compra #').$factura->numero_factura,
                         fecha: $request->fecha,
                         montoTotal: $totalDocumento > $totalPagado ? $totalDocumento : null
                     );
                 }
-            } else if ($baseCaja) {
+            } elseif ($baseCaja) {
                 $baseCaja->update([
-                    'monto'       => 0,
+                    'monto' => 0,
                     'monto_total' => $totalDocumento,
-                    'estado'      => 'activo',
+                    'estado' => 'activo',
                 ]);
             }
 
             $factura->update([
-                'fecha'           => $request->fecha,
-                'total_pagado'    => $totalPagado,
+                'fecha' => $request->fecha,
+                'total_pagado' => $totalPagado,
                 'total_documento' => $totalDocumento,
-                'estado'          => $estado,
-                'observaciones'   => $nuevaObservacion,
-                'facturable_id'   => $entity->id,
+                'estado' => $estado,
+                'observaciones' => $nuevaObservacion,
+                'facturable_id' => $entity->id,
                 'facturable_type' => $facturableType,
             ]);
 
-            if (!$shouldBeAnulada) {
+            if (! $shouldBeAnulada) {
                 $factura->recalcularPagos();
             }
 
             DB::commit();
+
             return redirect()->route('inventario.facturas')->with('success', 'Factura actualizada correctamente.');
         } catch (\DomainException $e) {
             DB::rollBack();
+
             return back()->with('error', $e->getMessage())->withInput();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error actualizando factura: ' . $e->getMessage());
+            Log::error('Error actualizando factura: '.$e->getMessage());
+
             return back()->with('error', 'Error al actualizar la factura.');
         }
     }
-
 
     // ─── Helpers Privados ─────────────────────────────────────────
 
     private function cleanAmount(mixed $val): float
     {
-        if (is_null($val) || $val === '') return 0.0;
-        if (is_int($val) || is_float($val)) return (float) $val;
+        if (is_null($val) || $val === '') {
+            return 0.0;
+        }
+        if (is_int($val) || is_float($val)) {
+            return (float) $val;
+        }
 
         $str = trim((string) $val);
 
@@ -766,19 +786,22 @@ class MovimientoInventarioController extends Controller
                 // Formato español/colombiano: 5.000.000,00 -> quitar punto, reemplazar coma por punto
                 $clean = str_replace('.', '', $str);
                 $clean = str_replace(',', '.', $clean);
+
                 return (float) $clean;
             } else {
                 // Formato inglés: 5,000,000.00 -> quitar coma
                 $clean = str_replace(',', '', $str);
+
                 return (float) $clean;
             }
         }
 
         // 3. Si contiene solo comas (ej. "50000,00" o "50,000")
-        if (str_contains($str, ',') && !str_contains($str, '.')) {
+        if (str_contains($str, ',') && ! str_contains($str, '.')) {
             if (preg_match('/^\d+,\d{1,2}$/', $str)) {
                 return (float) str_replace(',', '.', $str);
             }
+
             return (float) str_replace(',', '', $str);
         }
 
@@ -792,6 +815,7 @@ class MovimientoInventarioController extends Controller
             if (strlen($decimalPart) === 3) {
                 return (float) str_replace('.', '', $str);
             }
+
             return (float) $str;
         }
 
@@ -800,28 +824,29 @@ class MovimientoInventarioController extends Controller
 
     private function calcularTotal(array $items): float
     {
-        return collect($items)->sum(fn($i) => (float) $i['cantidad'] * $this->cleanAmount($i['precio_unitario']));
+        return collect($items)->sum(fn ($i) => (float) $i['cantidad'] * $this->cleanAmount($i['precio_unitario']));
     }
 
     private function buildObservaciones(?string $obs, float $saldo, ?string $historial = null): ?string
     {
         // Limpiar líneas de saldo pendiente anteriores para no duplicarlas
-        $lineas = array_filter(explode("\n", $obs ?? ''), fn($l) => !str_starts_with($l, '⚠️ SALDO PENDIENTE:'));
+        $lineas = array_filter(explode("\n", $obs ?? ''), fn ($l) => ! str_starts_with($l, '⚠️ SALDO PENDIENTE:'));
         $obsLimpia = implode("\n", $lineas);
 
         $parts = array_filter([$obsLimpia]);
         if ($saldo > 0.01) {
-            $parts[] = "⚠️ SALDO PENDIENTE: $" . number_format($saldo, 0, ',', '.');
+            $parts[] = '⚠️ SALDO PENDIENTE: $'.number_format($saldo, 0, ',', '.');
         }
         if ($historial) {
             $parts[] = $historial;
         }
+
         return implode("\n", $parts) ?: null;
     }
 
     private function registrarMovimientoCaja(
         string $tipo,
-        float  $monto,
+        float $monto,
         string $persona,
         string $descripcion,
         string $fecha,
@@ -833,15 +858,15 @@ class MovimientoInventarioController extends Controller
 
         return MovimientoCaja::create([
             'tipo_movimiento' => $tipo,
-            'tipo_pago'       => 'efectivo',
-            'monto'           => $monto,
-            'monto_total'     => $montoTotal,
-            'persona'         => $persona,
-            'concepto_id'     => $concepto->id,
-            'descripcion'     => $descripcion,
-            'fecha'           => $fecha,
-            'estado'          => 'activo',
-            'user_id'         => Auth::id(),
+            'tipo_pago' => 'efectivo',
+            'monto' => $monto,
+            'monto_total' => $montoTotal,
+            'persona' => $persona,
+            'concepto_id' => $concepto->id,
+            'descripcion' => $descripcion,
+            'fecha' => $fecha,
+            'estado' => 'activo',
+            'user_id' => Auth::id(),
         ]);
     }
 }

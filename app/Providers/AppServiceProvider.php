@@ -2,18 +2,28 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
+use App\Models\Cotizacion;
+use App\Models\Electronica;
+use App\Models\Evento;
+use App\Models\Factura;
+use App\Models\Mantenimiento;
+use App\Models\MovimientoCaja;
+use App\Models\User;
+use App\Policies\ElectronicaPolicy;
+use App\Policies\MantenimientoPolicy;
+use Carbon\Carbon;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Mantenimiento;
-use App\Models\Electronica;
-use App\Models\Factura;
-use App\Models\MovimientoCaja;
-use App\Models\Cotizacion;
-use App\Models\User;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,23 +40,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        \Carbon\Carbon::setLocale('es');
+        Carbon::setLocale('es');
         setlocale(LC_TIME, 'es_ES.utf8', 'es_ES', 'spanish', 'es');
 
         if (request()->isSecure() || request()->header('X-Forwarded-Proto') === 'https') {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
+            URL::forceScheme('https');
         }
 
         // Directiva Blade para formato de moneda uniforme ($1.000.000)
-        \Illuminate\Support\Facades\Blade::directive('money', function ($expression) {
+        Blade::directive('money', function ($expression) {
             return "<?php echo '$' . number_format(($expression) ?? 0, 0, ',', '.'); ?>";
         });
 
         // Garantizar existencia de formato_factura en configuraciones (Riesgo Cero)
-        if (!Cache::has('schema_config_formato_checked')) {
+        if (! Cache::has('schema_config_formato_checked')) {
             try {
-                if (\Illuminate\Support\Facades\Schema::hasTable('configuraciones') && !\Illuminate\Support\Facades\Schema::hasColumn('configuraciones', 'formato_factura')) {
-                    \Illuminate\Support\Facades\Schema::table('configuraciones', function (\Illuminate\Database\Schema\Blueprint $table) {
+                if (Schema::hasTable('configuraciones') && ! Schema::hasColumn('configuraciones', 'formato_factura')) {
+                    Schema::table('configuraciones', function (Blueprint $table) {
                         $table->string('formato_factura')->default('estandar')->after('pie_pagina_factura');
                     });
                 }
@@ -59,33 +69,33 @@ class AppServiceProvider extends ServiceProvider
         // ─────────────────────────────────────────────────────────────────
         // GATES DE AUTORIZACIÓN CENTRALIZADOS
         // ─────────────────────────────────────────────────────────────────
-        Gate::define('promote-admin', fn(User $u) => $u->role === 'admin');
-        Gate::define('promote-tecnico', fn(User $u) => $u->role === 'admin');
+        Gate::define('promote-admin', fn (User $u) => $u->role === 'admin');
+        Gate::define('promote-tecnico', fn (User $u) => $u->role === 'admin');
 
-        Gate::policy(Mantenimiento::class, \App\Policies\MantenimientoPolicy::class);
-        Gate::policy(Electronica::class, \App\Policies\ElectronicaPolicy::class);
-
+        Gate::policy(Mantenimiento::class, MantenimientoPolicy::class);
+        Gate::policy(Electronica::class, ElectronicaPolicy::class);
 
         View::composer('layouts.app', function ($view) {
-            if (!Auth::check()) {
+            if (! Auth::check()) {
                 $view->with([
-                    'mantList'              => collect(),
-                    'elecList'              => collect(),
-                    'cajaList'              => collect(),
+                    'mantList' => collect(),
+                    'elecList' => collect(),
+                    'cajaList' => collect(),
                     'movimientosPendientes' => collect(),
-                    'cotList'               => collect(),
-                    'mantPendientes'        => 0,
-                    'elecPendientes'        => 0,
-                    'cotPendientes'         => 0,
-                    'cajaPendientes'        => 0,
-                    'totalPendientes'       => 0,
+                    'cotList' => collect(),
+                    'mantPendientes' => 0,
+                    'elecPendientes' => 0,
+                    'cotPendientes' => 0,
+                    'cajaPendientes' => 0,
+                    'totalPendientes' => 0,
                 ]);
+
                 return;
             }
 
             $userId = Auth::id();
             $data = Cache::remember("topbar_notifs_user_{$userId}", 30, function () {
-                
+
                 // Mantenimientos pendientes
                 $mantList = Mantenimiento::activos()
                     ->where('estado', 'pendiente')
@@ -96,11 +106,11 @@ class AppServiceProvider extends ServiceProvider
                     ->get()
                     ->map(function ($m) {
                         return [
-                            'id'             => $m->id,
-                            'id_orden'       => $m->id_orden,
-                            'equipo_nombre'  => $m->equipo?->nombre ?? 'N/A',
+                            'id' => $m->id,
+                            'id_orden' => $m->id_orden,
+                            'equipo_nombre' => $m->equipo?->nombre ?? 'N/A',
                             'cliente_nombre' => $m->equipo?->propietario_nombre ?: '—',
-                            'url'            => route('mantenimientos.show', $m->id),
+                            'url' => route('mantenimientos.show', $m->id),
                         ];
                     })->values()->all();
 
@@ -114,11 +124,11 @@ class AppServiceProvider extends ServiceProvider
                     ->get()
                     ->map(function ($e) {
                         return [
-                            'id'             => $e->id,
-                            'id_orden'       => $e->id_orden,
-                            'equipo_nombre'  => $e->equipo?->nombre ?? 'N/A',
+                            'id' => $e->id,
+                            'id_orden' => $e->id_orden,
+                            'equipo_nombre' => $e->equipo?->nombre ?? 'N/A',
                             'cliente_nombre' => $e->equipo?->propietario_nombre ?: '—',
-                            'url'            => route('electronicas.show', $e->id),
+                            'url' => route('electronicas.show', $e->id),
                         ];
                     })->values()->all();
 
@@ -152,13 +162,14 @@ class AppServiceProvider extends ServiceProvider
                     $facturableNombre = is_object($f->facturable)
                         ? ($f->facturable->nombre_razon_social ?? $f->facturable->nombre ?? '—')
                         : '—';
+
                     return [
-                        'id'                => $f->id,
-                        'numero_factura'    => $f->numero_factura,
+                        'id' => $f->id,
+                        'numero_factura' => $f->numero_factura,
                         'facturable_nombre' => $facturableNombre ?: '—',
-                        'saldo_pendiente'   => (float) $f->saldo_pendiente,
-                        'movimiento_caja_id'=> $movCajaId,
-                        'url'               => $movCajaId ? route('caja.edit', $movCajaId) : route('inventario.facturas.show', $f->id),
+                        'saldo_pendiente' => (float) $f->saldo_pendiente,
+                        'movimiento_caja_id' => $movCajaId,
+                        'url' => $movCajaId ? route('caja.edit', $movCajaId) : route('inventario.facturas.show', $f->id),
                     ];
                 })->values()->all();
 
@@ -167,7 +178,7 @@ class AppServiceProvider extends ServiceProvider
                     ->whereNull('parent_id')
                     ->whereNotNull('monto_total')
                     ->where('monto_total', '>', 0)
-                    ->when(!empty($facturasNumeros), function ($query) use ($facturasNumeros) {
+                    ->when(! empty($facturasNumeros), function ($query) use ($facturasNumeros) {
                         $query->where(function ($q) use ($facturasNumeros) {
                             foreach ($facturasNumeros as $num) {
                                 $q->where('descripcion', 'not like', "%#{$num}%");
@@ -178,17 +189,18 @@ class AppServiceProvider extends ServiceProvider
                     ->latest()
                     ->limit(50)
                     ->get()
-                    ->filter(fn($mov) => $mov->saldo_pendiente > 0.01)
+                    ->filter(fn ($mov) => $mov->saldo_pendiente > 0.01)
                     ->take(50)
                     ->map(function ($mov) {
                         $conceptoNombre = is_object($mov->concepto) ? $mov->concepto->nombre : ($mov->concepto ?? '—');
+
                         return [
-                            'id'              => $mov->id,
+                            'id' => $mov->id,
                             'tipo_movimiento' => $mov->tipo_movimiento,
                             'concepto_nombre' => $conceptoNombre ?: '—',
-                            'persona'         => $mov->persona ?? '—',
+                            'persona' => $mov->persona ?? '—',
                             'saldo_pendiente' => (float) $mov->saldo_pendiente,
-                            'url'             => route('caja.edit', $mov->id),
+                            'url' => route('caja.edit', $mov->id),
                         ];
                     })->values()->all();
 
@@ -202,25 +214,25 @@ class AppServiceProvider extends ServiceProvider
                     ->get()
                     ->map(function ($c) {
                         return [
-                            'id'             => $c->id,
-                            'codigo'         => $c->codigo ?? '—',
+                            'id' => $c->id,
+                            'codigo' => $c->codigo ?? '—',
                             'cliente_nombre' => $c->destinatario_nombre ?: '—',
-                            'total'          => (float) ($c->total ?? 0),
-                            'url'            => route('cotizaciones.show', $c->id),
+                            'total' => (float) ($c->total ?? 0),
+                            'url' => route('cotizaciones.show', $c->id),
                         ];
                     })->values()->all();
 
                 return [
-                    'mantList'              => $mantList,
-                    'elecList'              => $elecList,
-                    'cajaList'              => $cajaList,
+                    'mantList' => $mantList,
+                    'elecList' => $elecList,
+                    'cajaList' => $cajaList,
                     'movimientosPendientes' => $movimientosPendientes,
-                    'cotList'               => $cotList,
-                    'mantPendientes'        => count($mantList),
-                    'elecPendientes'        => count($elecList),
-                    'cotPendientes'         => count($cotList),
-                    'cajaPendientes'        => count($cajaList) + count($movimientosPendientes),
-                    'totalPendientes'       => count($mantList)
+                    'cotList' => $cotList,
+                    'mantPendientes' => count($mantList),
+                    'elecPendientes' => count($elecList),
+                    'cotPendientes' => count($cotList),
+                    'cajaPendientes' => count($cajaList) + count($movimientosPendientes),
+                    'totalPendientes' => count($mantList)
                                               + count($elecList)
                                               + count($cajaList)
                                               + count($movimientosPendientes)
@@ -231,13 +243,13 @@ class AppServiceProvider extends ServiceProvider
             $view->with($data);
         });
 
-        Event::listen(\Illuminate\Auth\Events\Login::class, function ($event) {
-            \App\Models\Evento::registrar('login', $event->user, null, null, 'El usuario inició sesión en el sistema.');
+        Event::listen(Login::class, function ($event) {
+            Evento::registrar('login', $event->user, null, null, 'El usuario inició sesión en el sistema.');
         });
 
-        Event::listen(\Illuminate\Auth\Events\Logout::class, function ($event) {
+        Event::listen(Logout::class, function ($event) {
             if ($event->user) {
-                \App\Models\Evento::registrar('logout', $event->user, null, null, 'El usuario cerró sesión en el sistema.');
+                Evento::registrar('logout', $event->user, null, null, 'El usuario cerró sesión en el sistema.');
             }
         });
     }

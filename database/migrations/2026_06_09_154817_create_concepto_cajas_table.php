@@ -15,7 +15,7 @@ return new class extends Migration
         });
 
         // Conceptos predefinidos
-        \DB::table('concepto_cajas')->insert([
+        DB::table('concepto_cajas')->insert([
             ['nombre' => 'Pago de mantenimiento', 'created_at' => now(), 'updated_at' => now()],
             ['nombre' => 'Venta de repuesto',     'created_at' => now(), 'updated_at' => now()],
             ['nombre' => 'Servicio técnico',       'created_at' => now(), 'updated_at' => now()],

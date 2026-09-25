@@ -2,11 +2,14 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Models\Abono;
 use App\Models\ConceptoCaja;
+use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 trait HandlesAbono
 {
@@ -14,12 +17,12 @@ trait HandlesAbono
      * Registrar un abono en un modelo (Mantenimiento o Electronica)
      * y crear el MovimientoCaja correspondiente.
      */
-    protected function storeAbono($model, \Illuminate\Http\Request $request, string $conceptoNombre, string $successMsg): \Illuminate\Http\RedirectResponse
+    protected function storeAbono($model, Request $request, string $conceptoNombre, string $successMsg): RedirectResponse
     {
         $validated = $request->validate([
-            'monto'       => 'required|numeric|min:0.01',
-            'fecha'       => 'required|date',
-            'tipo_pago'   => 'required|in:efectivo,consignacion',
+            'monto' => 'required|numeric|min:0.01',
+            'fecha' => 'required|date',
+            'tipo_pago' => 'required|in:efectivo,consignacion',
             'descripcion' => 'nullable|string|max:500',
         ]);
 
@@ -27,12 +30,12 @@ trait HandlesAbono
         $saldoPendiente = $model->saldo_pendiente;
         if ($validated['monto'] > $saldoPendiente + 0.001) {
             return back()->with('error',
-                'El abono ($' . number_format($validated['monto'], 0, ',', '.') .
-                ') no puede superar el saldo pendiente ($' . number_format($saldoPendiente, 0, ',', '.') . ').')->withInput();
+                'El abono ($'.number_format($validated['monto'], 0, ',', '.').
+                ') no puede superar el saldo pendiente ($'.number_format($saldoPendiente, 0, ',', '.').').')->withInput();
         }
 
         // El ID del campo FK depende del modelo
-        $fkField = $model instanceof \App\Models\Mantenimiento ? 'mantenimiento_id' : 'electronica_id';
+        $fkField = $model instanceof Mantenimiento ? 'mantenimiento_id' : 'electronica_id';
         $validated[$fkField] = $model->id;
         $validated['user_id'] = auth()->id();
 
@@ -46,42 +49,44 @@ trait HandlesAbono
             $totalAbonosCount = $model->abonos()->count();
 
             if ($esPagoCompleto && $totalAbonosCount === 1) {
-                $conceptoNombreFinal = $model instanceof \App\Models\Mantenimiento ? 'Pago Mantenimiento' : 'Pago Electrónica';
-                $prefix = $model instanceof \App\Models\Mantenimiento ? 'Pago Total Orden ' : 'Pago Total ELC ';
+                $conceptoNombreFinal = $model instanceof Mantenimiento ? 'Pago Mantenimiento' : 'Pago Electrónica';
+                $prefix = $model instanceof Mantenimiento ? 'Pago Total Orden ' : 'Pago Total ELC ';
             } elseif ($esPagoCompleto) {
-                $conceptoNombreFinal = $model instanceof \App\Models\Mantenimiento ? 'Pago Mantenimiento' : 'Pago Electrónica';
-                $prefix = $model instanceof \App\Models\Mantenimiento ? 'Pago Final Orden ' : 'Pago Final ELC ';
+                $conceptoNombreFinal = $model instanceof Mantenimiento ? 'Pago Mantenimiento' : 'Pago Electrónica';
+                $prefix = $model instanceof Mantenimiento ? 'Pago Final Orden ' : 'Pago Final ELC ';
             } else {
                 $conceptoNombreFinal = $conceptoNombre; // 'Abono Mantenimiento' / 'Abono Electrónica'
-                $prefix = $model instanceof \App\Models\Mantenimiento ? 'Abono Parcial Orden ' : 'Abono Parcial ELC ';
+                $prefix = $model instanceof Mantenimiento ? 'Abono Parcial Orden ' : 'Abono Parcial ELC ';
             }
 
             $descUser = $validated['descripcion'] ?? null;
-            $descripcionFinal = $prefix . $model->id_orden . ($descUser ? ' — ' . $descUser : '');
+            $descripcionFinal = $prefix.$model->id_orden.($descUser ? ' — '.$descUser : '');
 
             // Registrar en Caja vinculado exactamente a este abono
             $concepto = ConceptoCaja::firstOrCreate(['nombre' => $conceptoNombreFinal]);
             MovimientoCaja::create([
                 'tipo_movimiento' => 'ingreso',
-                'fecha'           => $validated['fecha'],
-                'monto'           => $validated['monto'],
-                'concepto_id'     => $concepto->id,
-                'persona'         => $this->getPersona($model),
-                'descripcion'     => $descripcionFinal,
-                'tipo_pago'       => $validated['tipo_pago'],
-                'estado'          => 'activo',
-                'user_id'         => auth()->id(),
-                'abono_id'        => $abono->id,
+                'fecha' => $validated['fecha'],
+                'monto' => $validated['monto'],
+                'concepto_id' => $concepto->id,
+                'persona' => $this->getPersona($model),
+                'descripcion' => $descripcionFinal,
+                'tipo_pago' => $validated['tipo_pago'],
+                'estado' => 'activo',
+                'user_id' => auth()->id(),
+                'abono_id' => $abono->id,
             ]);
 
             DB::commit();
 
             $tipoMsg = $esPagoCompleto ? 'Pago' : 'Abono';
+
             return back()->with('success',
-                $tipoMsg . ' de $' . number_format($validated['monto'], 0, ',', '.') . ' registrado y añadido a caja correctamente.');
+                $tipoMsg.' de $'.number_format($validated['monto'], 0, ',', '.').' registrado y añadido a caja correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error registrando abono: ' . $e->getMessage());
+            Log::error('Error registrando abono: '.$e->getMessage());
+
             return back()->with('error', 'Error al registrar el movimiento. Intenta de nuevo.');
         }
     }
@@ -89,7 +94,7 @@ trait HandlesAbono
     /**
      * Eliminar un abono y su MovimientoCaja asociado
      */
-    protected function destroyAbono(Abono $abono, string $successMsg): \Illuminate\Http\RedirectResponse
+    protected function destroyAbono(Abono $abono, string $successMsg): RedirectResponse
     {
         try {
             DB::beginTransaction();
@@ -97,7 +102,7 @@ trait HandlesAbono
             // Anular lógicamente el MovimientoCaja asociado para preservar la trazabilidad contable de auditoría
             MovimientoCaja::where('abono_id', $abono->id)->update([
                 'anulado' => true,
-                'estado'  => 'anulado',
+                'estado' => 'anulado',
             ]);
 
             $abono->delete();
@@ -107,7 +112,8 @@ trait HandlesAbono
             return back()->with('success', $successMsg);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error eliminando abono: ' . $e->getMessage());
+            Log::error('Error eliminando abono: '.$e->getMessage());
+
             return back()->with('error', 'Error al eliminar el abono. Intenta de nuevo.');
         }
     }
@@ -117,9 +123,10 @@ trait HandlesAbono
      */
     protected function getPersona($model): string
     {
-        if ($model instanceof \App\Models\Mantenimiento) {
+        if ($model instanceof Mantenimiento) {
             return $model->equipo->cliente->nombre ?? 'Cliente Mantenimiento';
         }
+
         return $model->equipo->cliente->nombre ?? 'Cliente Electrónica';
     }
 
@@ -128,8 +135,9 @@ trait HandlesAbono
      */
     protected function getDescripcion($model, Abono $abono, ?string $descripcion): string
     {
-        $prefix = $model instanceof \App\Models\Mantenimiento ? 'Abono autom. Orden ' : 'Abono autom. ELC ';
-        $desc = $prefix . $model->id_orden;
-        return $desc . ($descripcion ? ' — ' . $descripcion : '');
+        $prefix = $model instanceof Mantenimiento ? 'Abono autom. Orden ' : 'Abono autom. ELC ';
+        $desc = $prefix.$model->id_orden;
+
+        return $desc.($descripcion ? ' — '.$descripcion : '');
     }
 }

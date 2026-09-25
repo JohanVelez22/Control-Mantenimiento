@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Services\StockService;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Stock extends Model
 {
-    use \App\Traits\Auditable;
+    use Auditable;
 
     protected $fillable = [
         'codigo',
@@ -55,8 +57,8 @@ class Stock extends Model
     public function mantenimientos(): BelongsToMany
     {
         return $this->belongsToMany(Mantenimiento::class)
-                    ->withPivot('cantidad', 'precio_unitario')
-                    ->withTimestamps();
+            ->withPivot('cantidad', 'precio_unitario')
+            ->withTimestamps();
     }
 
     public function facturaItems(): HasMany
@@ -92,13 +94,13 @@ class Stock extends Model
     /** Incrementa el stock de forma atómica (delega en StockService) */
     public function incrementarStock(int $cantidad): void
     {
-        app(\App\Services\StockService::class)->entrada($this, $cantidad);
+        app(StockService::class)->entrada($this, $cantidad);
     }
 
     /** Decrementa el stock de forma atómica (lanza excepción si no hay suficiente) */
     public function decrementarStock(int $cantidad): void
     {
-        app(\App\Services\StockService::class)->salida($this, $cantidad);
+        app(StockService::class)->salida($this, $cantidad);
     }
 
     /** Scope: solo artículos activos (no dados de baja lógicamente) */

@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Equipo;
+use App\Models\Mantenimiento;
 use App\Models\Tecnico;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Mantenimiento>
+ * @extends Factory<Mantenimiento>
  */
 class MantenimientoFactory extends Factory
 {
@@ -22,14 +23,14 @@ class MantenimientoFactory extends Factory
     {
         $faker = \Faker\Factory::create('es_ES');
         $reparacion = $faker->randomElement(['software', 'hardware']);
-        
+
         $descripciones = [
             'software' => [
                 'Formateo e instalación de sistema operativo y drivers.',
                 'Limpieza de virus, malware y optimización de registro.',
                 'Actualización de suite ofimática y software corporativo.',
                 'Recuperación de arranque y corrección de errores de sistema.',
-                'Configuración de copia de seguridad en la nube.'
+                'Configuración de copia de seguridad en la nube.',
             ],
             'hardware' => [
                 'Limpieza física interna y cambio de pasta térmica.',
@@ -37,12 +38,12 @@ class MantenimientoFactory extends Factory
                 'Reparación de bisagras y mantenimiento de carcasa.',
                 'Reemplazo de teclado y limpieza de ventiladores.',
                 'Cambio de pasta termica.',
-                'Diagnóstico de fuente de poder y cambio de componentes.'
-            ]
+                'Diagnóstico de fuente de poder y cambio de componentes.',
+            ],
         ];
 
         return [
-            'id_orden' => 'ORD-' . self::$orderNumber++,
+            'id_orden' => 'ORD-'.self::$orderNumber++,
             'fecha_entrada' => $faker->dateTimeBetween('-1 month', 'now'),
             'fecha_salida' => $faker->optional()->dateTimeBetween('now', '+1 week'),
             'tipo' => $faker->randomElement(['preventivo', 'correctivo']),

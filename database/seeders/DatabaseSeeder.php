@@ -2,21 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Cliente;
-use App\Models\Tecnico;
-use App\Models\Equipo;
-use App\Models\Mantenimiento;
-use App\Models\Proveedor;
-use App\Models\Stock;
-use App\Models\Electronica;
+use App\Models\CategoriaStock;
 use App\Models\ConceptoCaja;
-use App\Models\MovimientoCaja;
-use App\Models\Factura;
-use App\Models\FacturaItem;
-use App\Models\CierreCaja;
+use App\Models\Configuracion;
+use App\Models\Stock;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -33,23 +23,23 @@ class DatabaseSeeder extends Seeder
         ConceptoCaja::firstOrCreate(['nombre' => 'Otros egresos']);
 
         // Configuración inicial de la Empresa
-        \App\Models\Configuracion::firstOrCreate(
+        Configuracion::firstOrCreate(
             ['id' => 1],
             [
-                'nombre'             => 'Tecni Systemas',
-                'nit'                => '4.501.927',
-                'telefono'           => '3172697442 - 3165528637',
-                'direccion'          => 'Cra 4 # 20-81 Pereira',
-                'correo'             => 'tecnisystemaspereira@hotmail.com',
-                'logo_path'          => 'configuracion/logo_nuevo_tecnisystemas.png',
+                'nombre' => 'Tecni Systemas',
+                'nit' => '4.501.927',
+                'telefono' => '3172697442 - 3165528637',
+                'direccion' => 'Cra 4 # 20-81 Pereira',
+                'correo' => 'tecnisystemaspereira@hotmail.com',
+                'logo_path' => 'configuracion/logo_nuevo_tecnisystemas.png',
                 'pie_pagina_factura' => 'Gracias por su confianza. Garantía de servicio sujeta a términos y condiciones.',
             ]
         );
 
         // Categorías base de Stock
-        \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Tecnologia', 'tipo' => 'categoria']);
-        \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Repuestos', 'tipo' => 'subcategoria']);
-        \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Accesorios', 'tipo' => 'categoria']);
-        \App\Models\CategoriaStock::firstOrCreate(['nombre' => 'Servicios', 'tipo' => 'categoria']);
+        CategoriaStock::firstOrCreate(['nombre' => 'Tecnologia', 'tipo' => 'categoria']);
+        CategoriaStock::firstOrCreate(['nombre' => 'Repuestos', 'tipo' => 'subcategoria']);
+        CategoriaStock::firstOrCreate(['nombre' => 'Accesorios', 'tipo' => 'categoria']);
+        CategoriaStock::firstOrCreate(['nombre' => 'Servicios', 'tipo' => 'categoria']);
     }
 }

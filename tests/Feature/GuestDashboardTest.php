@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use App\Models\CategoriaStock;
 use App\Models\Cliente;
+use App\Models\Electronica;
 use App\Models\Equipo;
 use App\Models\Mantenimiento;
-use App\Models\Electronica;
+use App\Models\Stock;
 use App\Models\Tecnico;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -67,24 +69,25 @@ class GuestDashboardTest extends TestCase
             'serie' => 'ABC123',
             'user_id' => $user_id,
         ]);
+
         return [$cliente, $equipo];
     }
 
     public function test_guest_is_redirected_to_guest_dashboard(): void
     {
         $guest = $this->createGuestUser();
-        
+
         $response = $this->actingAs($guest)->get('/dashboard');
-        
+
         $response->assertRedirect(route('guest.dashboard'));
     }
 
     public function test_guest_can_access_guest_dashboard(): void
     {
         $guest = $this->createGuestUser();
-        
+
         $response = $this->actingAs($guest)->get('/guest/dashboard');
-        
+
         $response->assertOk();
         $response->assertSee('Consulta de Servicios');
         $response->assertSee('Mantenimientos');
@@ -95,7 +98,7 @@ class GuestDashboardTest extends TestCase
     {
         $guest = $this->createGuestUser();
         [$cliente, $equipo] = $this->createClienteWithEquipo($guest->id);
-        
+
         $tecnico = Tecnico::create([
             'nombre' => 'Tecnico Test',
             'identificacion' => 'TEC-001',
@@ -104,7 +107,7 @@ class GuestDashboardTest extends TestCase
             'movil' => '3009876543',
             'email' => 'tecnico@test.com',
         ]);
-        
+
         $mantenimiento = Mantenimiento::create([
             'equipo_id' => $equipo->id,
             'id_orden' => 'ORD-001',
@@ -118,9 +121,9 @@ class GuestDashboardTest extends TestCase
             'user_id' => $guest->id,
             'anulado' => false,
         ]);
-        
-        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&query=' . $cliente->identificacion);
-        
+
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&query='.$cliente->identificacion);
+
         $response->assertOk();
         $response->assertSessionHasNoErrors();
     }
@@ -129,7 +132,7 @@ class GuestDashboardTest extends TestCase
     {
         $guest = $this->createGuestUser();
         [$cliente, $equipo] = $this->createClienteWithEquipo($guest->id);
-        
+
         $tecnico = Tecnico::create([
             'nombre' => 'Tecnico Test',
             'identificacion' => 'TEC-001',
@@ -138,7 +141,7 @@ class GuestDashboardTest extends TestCase
             'movil' => '3009876543',
             'email' => 'tecnico@test.com',
         ]);
-        
+
         $electronica = Electronica::create([
             'equipo_id' => $equipo->id,
             'id_orden' => 'ELC-001',
@@ -151,9 +154,9 @@ class GuestDashboardTest extends TestCase
             'user_id' => $guest->id,
             'anulado' => false,
         ]);
-        
-        $response = $this->actingAs($guest)->get('/guest/search?tipo=electronica&query=' . $cliente->identificacion);
-        
+
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=electronica&query='.$cliente->identificacion);
+
         $response->assertOk();
         $response->assertSessionHasNoErrors();
     }
@@ -161,13 +164,13 @@ class GuestDashboardTest extends TestCase
     public function test_admin_sees_regular_dashboard(): void
     {
         $admin = $this->createAdminUser();
-        
+
         $response = $this->actingAs($admin)->get('/dashboard');
-        
+
         if ($response->getStatusCode() === 500) {
             $this->markTestSkipped('Dashboard depende de CURDATE() y no aplica en SQLite.');
         }
-        
+
         $response->assertStatus(200);
         $response->assertSee('Dashboard');
     }
@@ -175,13 +178,13 @@ class GuestDashboardTest extends TestCase
     public function test_tecnico_sees_regular_dashboard(): void
     {
         $tecnico = $this->createTecnicoUser();
-        
+
         $response = $this->actingAs($tecnico)->get('/dashboard');
-        
+
         if ($response->getStatusCode() === 500) {
             $this->markTestSkipped('Dashboard depende de CURDATE() y no aplica en SQLite.');
         }
-        
+
         $response->assertStatus(200);
         $response->assertSee('Dashboard');
     }
@@ -189,41 +192,41 @@ class GuestDashboardTest extends TestCase
     public function test_admin_cannot_access_guest_dashboard(): void
     {
         $admin = $this->createAdminUser();
-        
+
         $response = $this->actingAs($admin)->get('/guest/dashboard');
-        
+
         $response->assertRedirect(route('dashboard'));
     }
 
     public function test_tecnico_cannot_access_guest_dashboard(): void
     {
         $tecnico = $this->createTecnicoUser();
-        
+
         $response = $this->actingAs($tecnico)->get('/guest/dashboard');
-        
+
         $response->assertRedirect(route('dashboard'));
     }
 
     public function test_guest_search_validates_input(): void
     {
         $guest = $this->createGuestUser();
-        
+
         $response = $this->actingAs($guest)->get('/guest/search', [
             'tipo' => 'mantenimiento',
             'query' => 'abc', // Too short
         ]);
-        
+
         $response->assertSessionHasErrors('query');
     }
 
     public function test_guest_search_requires_tipo(): void
     {
         $guest = $this->createGuestUser();
-        
+
         $response = $this->actingAs($guest)->get('/guest/search', [
             'query' => '123456789',
         ]);
-        
+
         $response->assertSessionHasErrors('tipo');
     }
 
@@ -231,7 +234,7 @@ class GuestDashboardTest extends TestCase
     {
         $guest = $this->createGuestUser();
         [$cliente, $equipo] = $this->createClienteWithEquipo($guest->id);
-        
+
         $tecnico = Tecnico::create([
             'nombre' => 'Tecnico Repuestos',
             'identificacion' => 'TEC-REP',
@@ -240,7 +243,7 @@ class GuestDashboardTest extends TestCase
             'movil' => '3001112233',
             'email' => 'tecnicorep@test.com',
         ]);
-        
+
         $mantenimiento = Mantenimiento::create([
             'equipo_id' => $equipo->id,
             'id_orden' => 'ORD-REP-1',
@@ -255,8 +258,8 @@ class GuestDashboardTest extends TestCase
             'anulado' => false,
         ]);
 
-        $categoria = \App\Models\CategoriaStock::create(['nombre' => 'Discos', 'tipo' => 'categoria']);
-        $stock = \App\Models\Stock::create([
+        $categoria = CategoriaStock::create(['nombre' => 'Discos', 'tipo' => 'categoria']);
+        $stock = Stock::create([
             'producto' => 'Disco SSD 1TB',
             'categoria_id' => $categoria->id,
             'cantidad' => 10,
@@ -271,8 +274,8 @@ class GuestDashboardTest extends TestCase
             'precio_unitario' => 150000,
         ]);
 
-        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&query=' . $cliente->identificacion);
-        
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&query='.$cliente->identificacion);
+
         $response->assertOk();
         $response->assertSee('Disco SSD 1TB');
         $response->assertSee('Repuestos / Insumos');

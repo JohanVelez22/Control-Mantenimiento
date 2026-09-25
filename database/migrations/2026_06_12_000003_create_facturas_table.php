@@ -19,7 +19,7 @@ return new class extends Migration
             $table->nullableMorphs('facturable'); // facturable_id, facturable_type
 
             $table->decimal('total_documento', 12, 2)->default(0);
-            $table->decimal('total_pagado',    12, 2)->default(0);
+            $table->decimal('total_pagado', 12, 2)->default(0);
             $table->decimal('saldo_pendiente', 12, 2)->storedAs('total_documento - total_pagado');
             $table->text('observaciones')->nullable();
             $table->date('fecha')->default(now()->toDateString());

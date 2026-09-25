@@ -146,3 +146,25 @@ Antes de entregar a los usuarios finales, verifica:
    - Generar un abono a caja.
    - Generar reporte en PDF.
    - Anular y verificar la restitución de saldo y stock.
+
+---
+
+## 💾 7. Sistema de Respaldos Automáticos y Sincronización Cloud
+
+El sistema incluye el comando integral `php artisan app:backup-db` para salvaguardar la información:
+
+### 7.1. Opciones del Comando
+- `php artisan app:backup-db` — Respalda la base de datos MySQL (`.sql`).
+- `php artisan app:backup-db --files` — Respalda la base de datos y empaqueta en `.zip` los archivos multimedia y fotos de repuestos (`storage/app/public`).
+- `php artisan app:backup-db --code` — Genera un snapshot comprimido del código fuente limpio (vía Git).
+- `php artisan app:backup-db --all` — Respalda base de datos, uploads y código fuente simultáneamente.
+
+### 7.2. Sincronización con Google Drive de la Empresa
+Define en el archivo `.env`:
+```dotenv
+GOOGLE_DRIVE_BACKUP_PATH="C:\Users\Usuario\Google Drive\Backups_TecniSistemas"
+# En Linux/Servidor:
+# GOOGLE_DRIVE_BACKUP_PATH="/mnt/google_drive/backups"
+BACKUP_RETENTION_DAYS=15
+```
+Cada vez que se ejecute el comando, copiará automáticamente los respaldos a la carpeta vinculada con la cuenta de Google Drive corporativa y purgará los archivos con antigüedad superior a 15 días.

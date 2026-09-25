@@ -4,23 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\Configuracion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class ConfiguracionController extends Controller
 {
     public function index()
     {
-        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             return redirect()->route('dashboard')->with('error', 'Acceso denegado. Solo administradores pueden ver la configuración.');
         }
 
-        $configuracion = Configuracion::first() ?? new Configuracion();
+        $configuracion = Configuracion::first() ?? new Configuracion;
+
         return view('configuracion.index', compact('configuracion'));
     }
 
     public function update(Request $request)
     {
-        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             return redirect()->route('dashboard')->with('error', 'Acceso denegado. Solo administradores pueden modificar la configuración.');
         }
 
@@ -38,8 +41,8 @@ class ConfiguracionController extends Controller
             'logo.max' => 'El logo no debe superar los 5 MB de tamaño.',
         ]);
 
-        $configuracion = Configuracion::first() ?? new Configuracion();
-        
+        $configuracion = Configuracion::first() ?? new Configuracion;
+
         $configuracion->nombre = $request->nombre;
         $configuracion->nit = $request->nit;
         $configuracion->telefono = $request->telefono;
@@ -62,12 +65,12 @@ class ConfiguracionController extends Controller
 
         $configuracion->save();
 
-        \Illuminate\Support\Facades\Cache::forget('empresa_global_data');
-        \Illuminate\Support\Facades\Cache::forget('empresa_logo_base64');
+        Cache::forget('empresa_global_data');
+        Cache::forget('empresa_logo_base64');
 
         if ($request->ajax() || $request->wantsJson()) {
-            $msg = $request->boolean('eliminar_logo') 
-                ? 'Logo eliminado correctamente.' 
+            $msg = $request->boolean('eliminar_logo')
+                ? 'Logo eliminado correctamente.'
                 : 'Configuración de la empresa guardada correctamente.';
 
             return response()->json([

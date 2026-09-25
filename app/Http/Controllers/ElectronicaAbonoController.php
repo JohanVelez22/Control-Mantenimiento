@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Abono;
 use App\Models\Electronica;
 use App\Traits\HandlesAbono;
+use Illuminate\Http\Request;
 
 class ElectronicaAbonoController extends Controller
 {
@@ -16,11 +17,11 @@ class ElectronicaAbonoController extends Controller
             $electronica,
             $request,
             'Abono Electrónica',
-            'Abono de $' . number_format($request->monto, 0, ',', '.') . ' registrado y añadido a caja correctamente.'
+            'Abono de $'.number_format($request->monto, 0, ',', '.').' registrado y añadido a caja correctamente.'
         );
     }
 
-    public function destroy(\App\Models\Abono $abono)
+    public function destroy(Abono $abono)
     {
         return $this->destroyAbono($abono, 'Abono eliminado correctamente y su ingreso removido de la caja.');
     }

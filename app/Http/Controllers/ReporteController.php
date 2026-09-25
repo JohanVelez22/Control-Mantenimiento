@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\MovimientoCaja;
+use App\Exports\ReportesFinancierosExport;
+use App\Models\Electronica;
 use App\Models\Mantenimiento;
+use App\Models\MovimientoCaja;
 use App\Models\Stock;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReporteController extends Controller
 {
@@ -50,7 +54,7 @@ class ReporteController extends Controller
             ->whereYear('fecha_entrada', $anio)
             ->sum('costo');
 
-        $facturado_electronica = \App\Models\Electronica::where('anulado', false)
+        $facturado_electronica = Electronica::where('anulado', false)
             ->whereMonth('fecha_entrada', $mes)
             ->whereYear('fecha_entrada', $anio)
             ->sum('costo');
@@ -84,13 +88,15 @@ class ReporteController extends Controller
         // Lógica de exportación según el botón presionado
         if ($request->get('export') == 'excel') {
             $transaccionesParaExportar = $queryDetallado->get();
-            return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportesFinancierosExport($transaccionesParaExportar), 'Reporte_Financiero_' . date('Y-m-d_His') . '.xlsx');
+
+            return Excel::download(new ReportesFinancierosExport($transaccionesParaExportar), 'Reporte_Financiero_'.date('Y-m-d_His').'.xlsx');
         }
         if ($request->get('export') == 'pdf') {
             $transaccionesParaExportar = $queryDetallado->get();
-            return \Barryvdh\DomPDF\Facade\Pdf::loadView('reportes.pdf', compact('transaccionesParaExportar', 'acumulado', 'operaciones', 'mes', 'anio'))
+
+            return Pdf::loadView('reportes.pdf', compact('transaccionesParaExportar', 'acumulado', 'operaciones', 'mes', 'anio'))
                 ->setPaper('a4', 'portrait')
-                ->download('Reporte_Financiero_' . date('Y-m-d_His') . '.pdf');
+                ->download('Reporte_Financiero_'.date('Y-m-d_His').'.pdf');
         }
 
         return view('reportes.index', compact('transacciones', 'acumulado', 'operaciones', 'mes', 'anio'));

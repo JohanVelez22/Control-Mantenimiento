@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
-    use HasFactory, \App\Traits\Auditable;
+    use \App\Traits\Auditable, HasFactory;
 
     protected $fillable = [
         'nombres',
@@ -56,8 +56,8 @@ class Cliente extends Model
     {
         return match ($this->genero) {
             'masculino' => '♂ Masculino',
-            'femenino'  => '♀ Femenino',
-            default     => '⊘ Indefinido',
+            'femenino' => '♀ Femenino',
+            default => '⊘ Indefinido',
         };
     }
 

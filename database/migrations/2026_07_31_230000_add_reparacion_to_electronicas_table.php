@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasColumn('electronicas', 'reparacion')) {
+        if (! Schema::hasColumn('electronicas', 'reparacion')) {
             Schema::table('electronicas', function (Blueprint $table) {
                 $table->enum('reparacion', ['software', 'hardware'])->default('hardware')->after('tipo');
             });

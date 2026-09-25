@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class ConceptoCaja extends Model
 {
-    use \App\Traits\Auditable;
+    use Auditable;
 
     protected $fillable = ['nombre'];
 

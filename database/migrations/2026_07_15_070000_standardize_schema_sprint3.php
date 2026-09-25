@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Sprint 3 — Estandarización de esquema:
@@ -15,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Proveedores: renombrar 'activo' a 'active' para consistencia
-        if (Schema::hasColumn('proveedores', 'activo') && !Schema::hasColumn('proveedores', 'active')) {
+        if (Schema::hasColumn('proveedores', 'activo') && ! Schema::hasColumn('proveedores', 'active')) {
             Schema::table('proveedores', function (Blueprint $table) {
                 $table->renameColumn('activo', 'active');
             });
@@ -26,7 +25,7 @@ return new class extends Migration
             Schema::table('proveedores', function (Blueprint $table) {
                 $table->dropIndex('idx_proveedores_activo');
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // El índice puede no existir, ignorar
         }
 
@@ -41,14 +40,14 @@ return new class extends Migration
     public function down(): void
     {
         // Revertir: agregar campo legacy de vuelta
-        if (!Schema::hasColumn('stocks', 'proveedor')) {
+        if (! Schema::hasColumn('stocks', 'proveedor')) {
             Schema::table('stocks', function (Blueprint $table) {
                 $table->string('proveedor')->nullable()->after('subcategoria');
             });
         }
 
         // Revertir: renombrar 'active' a 'activo' en proveedores
-        if (Schema::hasColumn('proveedores', 'active') && !Schema::hasColumn('proveedores', 'activo')) {
+        if (Schema::hasColumn('proveedores', 'active') && ! Schema::hasColumn('proveedores', 'activo')) {
             Schema::table('proveedores', function (Blueprint $table) {
                 $table->renameColumn('active', 'activo');
             });

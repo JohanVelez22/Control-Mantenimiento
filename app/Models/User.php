@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Traits\Auditable;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasFactory, Auditable;
+    use Auditable, HasFactory, Notifiable;
 
     // Campos que permitimos guardar masivamente
     protected $fillable = [
@@ -31,7 +31,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'active' => 'boolean', 
+            'active' => 'boolean',
         ];
     }
 

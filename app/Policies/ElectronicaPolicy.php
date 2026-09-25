@@ -25,7 +25,7 @@ class ElectronicaPolicy
      */
     public function create(User $user): bool
     {
-        return !$user->isInvitado();
+        return ! $user->isInvitado();
     }
 
     /**
@@ -33,7 +33,7 @@ class ElectronicaPolicy
      */
     public function update(User $user, Electronica $electronica): bool
     {
-        return !$user->isInvitado();
+        return ! $user->isInvitado();
     }
 
     /**

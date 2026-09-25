@@ -2,23 +2,23 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Cliente;
-use App\Models\Proveedor;
-use App\Models\Stock;
-use App\Models\Equipo;
 use App\Models\BajaStock;
+use App\Models\Equipo;
 use App\Models\MovimientoCaja;
+use App\Models\Stock;
+use App\Models\User;
 use App\Services\StockService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class BajaStockYEquipoTest extends TestCase
 {
     use RefreshDatabase;
 
     protected User $admin;
+
     protected Stock $stock;
+
     protected Equipo $equipo;
 
     protected function setUp(): void
@@ -155,9 +155,9 @@ class BajaStockYEquipoTest extends TestCase
         $this->actingAs($this->admin);
 
         $response = $this->post(route('stocks.dar-de-baja', $this->stock->id), [
-            'cantidad'         => 3,
-            'motivo'           => 'obsoleto',
-            'observacion'      => 'Deterioro por almacenamiento prolongado',
+            'cantidad' => 3,
+            'motivo' => 'obsoleto',
+            'observacion' => 'Deterioro por almacenamiento prolongado',
             'password_confirm' => 'Admin123*',
         ]);
 
@@ -167,7 +167,7 @@ class BajaStockYEquipoTest extends TestCase
         $this->assertDatabaseHas('bajas_stock', [
             'stock_id' => $this->stock->id,
             'cantidad' => 3,
-            'motivo'   => 'obsoleto',
+            'motivo' => 'obsoleto',
         ]);
     }
 
@@ -177,7 +177,7 @@ class BajaStockYEquipoTest extends TestCase
 
         // 1. Dar de baja
         $response = $this->post(route('equipos.dar-de-baja', $this->equipo->id), [
-            'motivo_baja'      => 'irreparable',
+            'motivo_baja' => 'irreparable',
             'observacion_baja' => 'Falla en CPU irrecuperable',
             'password_confirm' => 'Admin123*',
         ]);
@@ -238,8 +238,8 @@ class BajaStockYEquipoTest extends TestCase
 
         // 1. Dar de baja sin password_confirm
         $response = $this->post(route('stocks.dar-de-baja', $this->stock->id), [
-            'cantidad'    => 2,
-            'motivo'      => 'obsoleto',
+            'cantidad' => 2,
+            'motivo' => 'obsoleto',
             'observacion' => 'Baja directa por admin sin clave',
         ]);
 
@@ -260,37 +260,37 @@ class BajaStockYEquipoTest extends TestCase
     public function test_tecnico_requiere_password_de_administrador_para_dar_de_baja()
     {
         $tecnico = User::create([
-            'name'     => 'Tecnico Test',
-            'email'    => 'tecnico_baja_test_' . uniqid() . '@tecnisystemas.com',
+            'name' => 'Tecnico Test',
+            'email' => 'tecnico_baja_test_'.uniqid().'@tecnisystemas.com',
             'password' => bcrypt('Tecnico123*'),
-            'role'     => 'tecnico',
-            'active'   => true,
+            'role' => 'tecnico',
+            'active' => true,
         ]);
 
         $this->actingAs($tecnico);
 
         // Intento 1: Sin clave -> Falla
         $responseSinClave = $this->post(route('stocks.dar-de-baja', $this->stock->id), [
-            'cantidad'    => 1,
-            'motivo'      => 'dano_taller',
+            'cantidad' => 1,
+            'motivo' => 'dano_taller',
             'observacion' => 'Intento sin clave',
         ]);
         $responseSinClave->assertSessionHas('error');
 
         // Intento 2: Con su propia clave de técnico (no de admin) -> Falla
         $responseClaveTecnico = $this->post(route('stocks.dar-de-baja', $this->stock->id), [
-            'cantidad'         => 1,
-            'motivo'           => 'dano_taller',
-            'observacion'      => 'Intento con clave incorrecta',
+            'cantidad' => 1,
+            'motivo' => 'dano_taller',
+            'observacion' => 'Intento con clave incorrecta',
             'password_confirm' => 'Tecnico123*',
         ]);
         $responseClaveTecnico->assertSessionHas('error');
 
         // Intento 3: Con clave válida de administrador -> Éxito
         $responseClaveAdmin = $this->post(route('stocks.dar-de-baja', $this->stock->id), [
-            'cantidad'         => 1,
-            'motivo'           => 'dano_taller',
-            'observacion'      => 'Intento con clave admin',
+            'cantidad' => 1,
+            'motivo' => 'dano_taller',
+            'observacion' => 'Intento con clave admin',
             'password_confirm' => 'Admin123*',
         ]);
         $responseClaveAdmin->assertSessionHas('success');

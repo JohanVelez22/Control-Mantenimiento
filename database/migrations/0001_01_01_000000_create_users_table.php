@@ -17,7 +17,7 @@ return new class extends Migration
             // Añadimos el campo rol, por defecto será 'invitado' por seguridad
             $table->enum('role', ['admin', 'tecnico', 'invitado'])->default('invitado');
             $table->string('photo')->nullable();
-            $table->boolean('active')->default(true); 
+            $table->boolean('active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

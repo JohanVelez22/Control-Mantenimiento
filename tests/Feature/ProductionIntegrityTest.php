@@ -2,32 +2,29 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Gate;
-use App\Models\User;
-use App\Models\Cliente;
-use App\Models\Equipo;
-use App\Models\Proveedor;
 use App\Models\CategoriaStock;
-use App\Models\Stock;
-use App\Models\Factura;
-use App\Models\FacturaItem;
-use App\Models\MovimientoCaja;
+use App\Models\CierreCaja;
+use App\Models\Cliente;
 use App\Models\ConceptoCaja;
-use App\Models\Cotizacion;
-use App\Models\CotizacionItem;
-use App\Models\Mantenimiento;
-use App\Models\Tecnico;
+use App\Models\Factura;
+use App\Models\MovimientoCaja;
+use App\Models\Stock;
+use App\Models\User;
 use App\Services\StockService;
+use Database\Seeders\AdminUserSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 class ProductionIntegrityTest extends TestCase
 {
     use RefreshDatabase;
 
     private User $admin;
+
     private User $tecnico;
+
     private User $invitado;
 
     protected function setUp(): void
@@ -86,7 +83,7 @@ class ProductionIntegrityTest extends TestCase
         ]);
 
         $stockService = app(StockService::class);
-        
+
         // Entrada
         $stockService->entrada($stock, 10);
         $this->assertEquals(15, $stock->fresh()->cantidad);
@@ -231,12 +228,12 @@ class ProductionIntegrityTest extends TestCase
             'observaciones' => 'Segundo cierre duplicado',
         ]);
         $response2->assertSessionHasErrors('fecha');
-        $this->assertEquals(1, \App\Models\CierreCaja::where('fecha', $hoy)->count());
+        $this->assertEquals(1, CierreCaja::where('fecha', $hoy)->count());
     }
 
     public function test_admin_user_seeder_executes_safely(): void
     {
-        $seeder = new \Database\Seeders\AdminUserSeeder();
+        $seeder = new AdminUserSeeder;
         $seeder->run();
 
         $admin = User::where('email', 'administrador@tecnisystemas.com')->first();
@@ -245,4 +242,3 @@ class ProductionIntegrityTest extends TestCase
         $this->assertTrue(Hash::check(env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'), $admin->password));
     }
 }
-

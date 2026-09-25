@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Servicio para la generación de tickets térmicos POS (80mm) con altura
@@ -20,11 +22,11 @@ class PosTicketService
      * Genera y transmite el PDF de la tirilla POS con el tamaño vertical exacto
      * donde termina la información.
      *
-     * @param string $view Nombre de la vista Blade
-     * @param array $data Datos del contexto
-     * @param string $filename Nombre del archivo PDF resultante
-     * @param float $fallbackHeight Altura de respaldo si la medición no está disponible
-     * @return \Illuminate\Http\Response
+     * @param  string  $view  Nombre de la vista Blade
+     * @param  array  $data  Datos del contexto
+     * @param  string  $filename  Nombre del archivo PDF resultante
+     * @param  float  $fallbackHeight  Altura de respaldo si la medición no está disponible
+     * @return Response
      */
     public static function streamTicket(string $view, array $data, string $filename, float $fallbackHeight = 700.0)
     {
@@ -44,16 +46,16 @@ class PosTicketService
                         if (in_array($nodeName, ['html', 'body', '#document'])) {
                             return;
                         }
-                        $y = (float)$frame->get_position('y') + (float)$frame->get_margin_height();
+                        $y = (float) $frame->get_position('y') + (float) $frame->get_margin_height();
                         if ($y > $maxY) {
                             $maxY = $y;
                         }
-                    }
-                ]
+                    },
+                ],
             ]);
             $measurer->render();
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('Error midiendo altura de ticket POS: ' . $e->getMessage());
+            Log::warning('Error midiendo altura de ticket POS: '.$e->getMessage());
             $maxY = 0;
         }
 

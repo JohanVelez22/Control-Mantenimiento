@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\Cliente;
+use App\Models\Equipo;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Equipo>
+ * @extends Factory<Equipo>
  */
 class EquipoFactory extends Factory
 {
@@ -27,7 +28,7 @@ class EquipoFactory extends Factory
         $faker = \Faker\Factory::create('es_ES');
         $tipo = $faker->randomKey($equipos);
         $marcaModelo = $faker->randomElement($equipos[$tipo]);
-        
+
         $marcas = explode(' ', $marcaModelo);
         $marca = $marcas[0];
         $modelo = isset($marcas[1]) ? $marcas[1] : 'Genérico';
@@ -53,7 +54,7 @@ class EquipoFactory extends Factory
                 'Instalación de Windows 10',
                 'Instalacion Office 365',
                 'Instalacion Antivirus',
-                'Mantenimiento Correctivo'                      
+                'Mantenimiento Correctivo',
             ]),
             'user_id' => User::factory(),
             'cliente_id' => Cliente::factory(),

@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Services\OrdenService;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Factura extends Model
 {
-    use SoftDeletes, \App\Traits\Auditable;
+    use \App\Traits\Auditable, SoftDeletes;
 
     protected $fillable = [
         'numero_factura',
@@ -28,9 +29,9 @@ class Factura extends Model
     protected function casts(): array
     {
         return [
-            'fecha'           => 'date',
+            'fecha' => 'date',
             'total_documento' => 'decimal:2',
-            'total_pagado'    => 'decimal:2',
+            'total_pagado' => 'decimal:2',
         ];
     }
 
@@ -60,6 +61,7 @@ class Factura extends Model
         if (isset($this->attributes['saldo_pendiente'])) {
             return max(0, (float) $this->attributes['saldo_pendiente']);
         }
+
         return max(0, (float) ($this->total_documento ?? 0) - (float) ($this->total_pagado ?? 0));
     }
 
@@ -69,6 +71,7 @@ class Factura extends Model
         if (isset($this->attributes['saldo_a_favor'])) {
             return max(0, (float) $this->attributes['saldo_a_favor']);
         }
+
         return max(0, (float) ($this->total_pagado ?? 0) - (float) ($this->total_documento ?? 0));
     }
 
@@ -96,6 +99,7 @@ class Factura extends Model
         if ($this->tipo_movimiento !== 'venta') {
             return 0;
         }
+
         return (float) $this->total_documento - $this->costo_total;
     }
 
@@ -119,7 +123,7 @@ class Factura extends Model
             ->where(function ($q) use ($directMovIds) {
                 if ($directMovIds->isNotEmpty()) {
                     $q->whereIn('id', $directMovIds)
-                      ->orWhereIn('parent_id', $directMovIds);
+                        ->orWhereIn('parent_id', $directMovIds);
                 }
                 $q->orWhere('descripcion', 'like', "%#{$this->numero_factura}%");
             })
@@ -132,7 +136,7 @@ class Factura extends Model
             $this->estado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
 
             // Limpiar etiqueta "⚠️ SALDO PENDIENTE" antigua y duplicados repetitivos de anulación/reactivación
-            $lineas = array_filter(explode("\n", $this->observaciones ?? ''), fn($l) => !str_contains($l, 'SALDO PENDIENTE:'));
+            $lineas = array_filter(explode("\n", $this->observaciones ?? ''), fn ($l) => ! str_contains($l, 'SALDO PENDIENTE:'));
             $tagLines = [];
             $contentLines = [];
             foreach ($lineas as $l) {
@@ -143,13 +147,13 @@ class Factura extends Model
                     $contentLines[] = $l;
                 }
             }
-            if (!empty($tagLines)) {
+            if (! empty($tagLines)) {
                 $contentLines[] = end($tagLines);
             }
             $obsLimpia = trim(implode("\n", $contentLines));
 
             if ($saldo > 0.01) {
-                $obsLimpia .= ($obsLimpia ? "\n" : "") . "⚠️ SALDO PENDIENTE: $" . number_format($saldo, 0, ',', '.');
+                $obsLimpia .= ($obsLimpia ? "\n" : '').'⚠️ SALDO PENDIENTE: $'.number_format($saldo, 0, ',', '.');
             }
             $this->observaciones = $obsLimpia ?: null;
         }
@@ -162,7 +166,7 @@ class Factura extends Model
     /** Genera el siguiente número de factura correlativo (atómico con lockForUpdate) */
     public static function siguienteNumero(string $prefijo = 'F'): string
     {
-        return app(\App\Services\OrdenService::class)
+        return app(OrdenService::class)
             ->siguiente($prefijo, static::class, 'numero_factura');
     }
 }

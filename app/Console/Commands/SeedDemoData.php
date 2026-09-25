@@ -2,32 +2,32 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Cliente;
-use App\Models\Tecnico;
-use App\Models\Proveedor;
-use App\Models\Equipo;
 use App\Models\CategoriaStock;
-use App\Models\Stock;
+use App\Models\Cliente;
+use App\Models\ConceptoCaja;
+use App\Models\Configuracion;
 use App\Models\Cotizacion;
 use App\Models\CotizacionItem;
+use App\Models\Electronica;
+use App\Models\Equipo;
 use App\Models\Factura;
 use App\Models\FacturaItem;
 use App\Models\Mantenimiento;
-use App\Models\Electronica;
 use App\Models\MovimientoCaja;
-use App\Models\ConceptoCaja;
-use App\Models\Abono;
-use App\Models\Configuracion;
+use App\Models\Proveedor;
+use App\Models\Stock;
+use App\Models\Tecnico;
+use App\Models\User;
 use App\Services\OrdenService;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class SeedDemoData extends Command
 {
     protected $signature = 'app:seed-demo-data {--force : Sobrescribe o limpia datos existentes antes de sembrar}';
+
     protected $description = 'Puebla la base de datos con 5 registros realistas y matemáticamente exactos por cada módulo del sistema.';
 
     public function handle(OrdenService $ordenService): int
@@ -47,7 +47,7 @@ class SeedDemoData extends Command
                     'clientes', 'tecnicos', 'proveedores', 'stocks', 'mantenimientos',
                     'electronicas', 'mantenimiento_stock', 'electronica_stock', 'equipos',
                     'facturas', 'factura_items', 'cotizaciones', 'cotizacion_items',
-                    'movimiento_cajas', 'abonos', 'cierre_cajas', 'eventos'
+                    'movimiento_cajas', 'abonos', 'cierre_cajas', 'eventos',
                 ];
                 foreach ($tables as $t) {
                     DB::table($t)->truncate();
@@ -57,6 +57,7 @@ class SeedDemoData extends Command
         } else {
             $this->error('⚠️ La base de datos ya contiene registros.');
             $this->line('Para reiniciar y sembrar desde cero ejecute: <fg=yellow>php artisan app:seed-demo-data --force</>');
+
             return 1;
         }
 
@@ -68,12 +69,12 @@ class SeedDemoData extends Command
             Configuracion::firstOrCreate(
                 ['id' => 1],
                 [
-                    'nombre'             => 'Tecni Systemas',
-                    'nit'                => '4.501.927',
-                    'telefono'           => '3172697442 - 3165528637',
-                    'direccion'          => 'Cra 4 # 20-81 Pereira',
-                    'correo'             => 'tecnisystemaspereira@hotmail.com',
-                    'logo_path'          => 'configuracion/logo_nuevo_tecnisystemas.png',
+                    'nombre' => 'Tecni Systemas',
+                    'nit' => '4.501.927',
+                    'telefono' => '3172697442 - 3165528637',
+                    'direccion' => 'Cra 4 # 20-81 Pereira',
+                    'correo' => 'tecnisystemaspereira@hotmail.com',
+                    'logo_path' => 'configuracion/logo_nuevo_tecnisystemas.png',
                     'pie_pagina_factura' => 'Gracias por su confianza. Garantía de servicio técnico de 30 días.',
                 ]
             );
@@ -216,7 +217,7 @@ class SeedDemoData extends Command
             $this->info('🧾 7. Creando 5 Facturas (3 Ventas VT-1 a VT-3 / 2 Compras CP-1 a CP-2)...');
             for ($i = 1; $i <= 5; $i++) {
                 $isVenta = $i <= 3;
-                $num = $isVenta ? "VT-{$i}" : "CP-" . ($i - 3);
+                $num = $isVenta ? "VT-{$i}" : 'CP-'.($i - 3);
                 $facturableType = $isVenta ? Cliente::class : Proveedor::class;
                 $facturableId = $isVenta ? $clientes[$i - 1]->id : $proveedores[$i - 4]->id;
 
@@ -261,15 +262,15 @@ class SeedDemoData extends Command
 
                 MovimientoCaja::create([
                     'tipo_movimiento' => $isVenta ? 'ingreso' : 'egreso',
-                    'tipo_pago'       => 'efectivo',
-                    'monto'           => $totPag,
-                    'monto_total'     => $totDoc,
-                    'persona'         => $persona,
-                    'concepto_id'     => $concepto->id,
-                    'descripcion'     => $desc,
-                    'fecha'           => $factura->fecha,
-                    'estado'          => 'activo',
-                    'user_id'         => $admin->id,
+                    'tipo_pago' => 'efectivo',
+                    'monto' => $totPag,
+                    'monto_total' => $totDoc,
+                    'persona' => $persona,
+                    'concepto_id' => $concepto->id,
+                    'descripcion' => $desc,
+                    'fecha' => $factura->fecha,
+                    'estado' => 'activo',
+                    'user_id' => $admin->id,
                 ]);
             }
 
@@ -386,8 +387,9 @@ class SeedDemoData extends Command
             return 0;
         } catch (\Throwable $e) {
             DB::rollBack();
-            $this->error('Ocurrió un error al sembrar los datos: ' . $e->getMessage());
+            $this->error('Ocurrió un error al sembrar los datos: '.$e->getMessage());
             $this->error($e->getTraceAsString());
+
             return 1;
         }
     }

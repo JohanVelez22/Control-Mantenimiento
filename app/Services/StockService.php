@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\BajaStock;
 use App\Models\Stock;
 use Illuminate\Support\Facades\DB;
 
@@ -19,8 +20,8 @@ class StockService
     /**
      * Entrada de stock (compra o devolución).
      *
-     * @param Stock|int $stock Modelo o ID del artículo.
-     * @param int $cantidad Unidades a ingresar (debe ser > 0).
+     * @param  Stock|int  $stock  Modelo o ID del artículo.
+     * @param  int  $cantidad  Unidades a ingresar (debe ser > 0).
      * @return Stock Modelo actualizado.
      */
     public function entrada(Stock|int $stock, int $cantidad): Stock
@@ -34,6 +35,7 @@ class StockService
         return DB::transaction(function () use ($id, $cantidad) {
             $model = Stock::lockForUpdate()->findOrFail($id);
             $model->increment('cantidad', $cantidad);
+
             return $model->refresh();
         });
     }
@@ -41,8 +43,8 @@ class StockService
     /**
      * Salida de stock (venta o repuesto). Lanza DomainException si no alcanza.
      *
-     * @param Stock|int $stock Modelo o ID del artículo.
-     * @param int $cantidad Unidades a retirar (debe ser > 0).
+     * @param  Stock|int  $stock  Modelo o ID del artículo.
+     * @param  int  $cantidad  Unidades a retirar (debe ser > 0).
      * @return Stock Modelo actualizado.
      */
     public function salida(Stock|int $stock, int $cantidad): Stock
@@ -63,6 +65,7 @@ class StockService
             }
 
             $model->decrement('cantidad', $cantidad);
+
             return $model->refresh();
         });
     }
@@ -70,14 +73,14 @@ class StockService
     /**
      * Da de baja unidades de stock por daño, defecto o merma de forma atómica.
      *
-     * @param Stock|int $stock Modelo o ID del artículo.
-     * @param int $cantidad Unidades a descartar (debe ser > 0 y <= stock disponible).
-     * @param string $motivo Causa de la baja (defectuoso_fabrica, dano_taller, etc.).
-     * @param string|null $observacion Justificación técnica o detalle.
-     * @param int|null $userId Usuario que autoriza/registra la baja.
-     * @return \App\Models\BajaStock Registro de auditoría de la baja creada.
+     * @param  Stock|int  $stock  Modelo o ID del artículo.
+     * @param  int  $cantidad  Unidades a descartar (debe ser > 0 y <= stock disponible).
+     * @param  string  $motivo  Causa de la baja (defectuoso_fabrica, dano_taller, etc.).
+     * @param  string|null  $observacion  Justificación técnica o detalle.
+     * @param  int|null  $userId  Usuario que autoriza/registra la baja.
+     * @return BajaStock Registro de auditoría de la baja creada.
      */
-    public function darDeBaja(Stock|int $stock, int $cantidad, string $motivo, ?string $observacion = null, ?int $userId = null): \App\Models\BajaStock
+    public function darDeBaja(Stock|int $stock, int $cantidad, string $motivo, ?string $observacion = null, ?int $userId = null): BajaStock
     {
         if ($cantidad <= 0) {
             throw new \DomainException('La cantidad a dar de baja debe ser mayor que cero.');
@@ -99,14 +102,14 @@ class StockService
             $precioCompra = (float) $model->precio_compra;
             $costoPerdida = $cantidad * $precioCompra;
 
-            return \App\Models\BajaStock::create([
-                'stock_id'               => $model->id,
-                'user_id'                => $userId ?? auth()->id(),
-                'cantidad'               => $cantidad,
+            return BajaStock::create([
+                'stock_id' => $model->id,
+                'user_id' => $userId ?? auth()->id(),
+                'cantidad' => $cantidad,
                 'precio_compra_unitario' => $precioCompra,
-                'costo_total_perdida'    => $costoPerdida,
-                'motivo'                 => $motivo,
-                'observacion'            => $observacion,
+                'costo_total_perdida' => $costoPerdida,
+                'motivo' => $motivo,
+                'observacion' => $observacion,
             ]);
         });
     }
@@ -116,12 +119,12 @@ class StockService
      * - Restituye las unidades al inventario disponible.
      * - Elimina el registro de baja (auditable mediante el trait Auditable).
      */
-    public function revertirBaja(\App\Models\BajaStock|int $bajaStock, ?int $userId = null): void
+    public function revertirBaja(BajaStock|int $bajaStock, ?int $userId = null): void
     {
-        $id = $bajaStock instanceof \App\Models\BajaStock ? $bajaStock->id : $bajaStock;
+        $id = $bajaStock instanceof BajaStock ? $bajaStock->id : $bajaStock;
 
         DB::transaction(function () use ($id) {
-            $baja = \App\Models\BajaStock::lockForUpdate()->findOrFail($id);
+            $baja = BajaStock::lockForUpdate()->findOrFail($id);
             $stock = Stock::lockForUpdate()->findOrFail($baja->stock_id);
 
             // Restituir las unidades al stock disponible

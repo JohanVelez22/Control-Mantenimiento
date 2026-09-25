@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class CierreCaja extends Model
 {
-    use \App\Traits\Auditable;
-    
+    use Auditable;
+
     protected $fillable = [
         'fecha', 'total_ingresos', 'total_egresos',
         'efectivo', 'consignacion', 'saldo_final',
@@ -17,7 +18,7 @@ class CierreCaja extends Model
     protected function casts(): array
     {
         return [
-            'fecha'     => 'date:Y-m-d',
+            'fecha' => 'date:Y-m-d',
             'bloqueado' => 'boolean',
         ];
     }

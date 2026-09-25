@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
-use App\Models\Proveedor;
-use Illuminate\Http\Request;
-use App\Models\MovimientoCaja;
 use App\Models\ConceptoCaja;
+use App\Models\Configuracion;
+use App\Models\Factura;
+use App\Models\MovimientoCaja;
+use App\Models\Proveedor;
+use App\Services\AnulacionService;
+use App\Services\PosTicketService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -31,7 +36,7 @@ class MovimientoCajaController extends Controller
         if ($request->filled('tipo_pago') && $request->tipo_pago !== 'todos') {
             $query->where('tipo_pago', $request->tipo_pago);
         }
-        
+
         $query->whereDate('fecha', '>=', $fecha_desde);
         $query->whereDate('fecha', '<=', $fecha_hasta);
 
@@ -47,11 +52,11 @@ class MovimientoCajaController extends Controller
             $s = $request->search;
             $query->where(function ($q) use ($s) {
                 $q->where('persona', 'like', "%{$s}%")
-                  ->orWhere('empresa', 'like', "%{$s}%")
-                  ->orWhere('descripcion', 'like', "%{$s}%")
-                  ->orWhereHas('concepto', function($q2) use ($s) {
-                      $q2->where('nombre', 'like', "%{$s}%");
-                  });
+                    ->orWhere('empresa', 'like', "%{$s}%")
+                    ->orWhere('descripcion', 'like', "%{$s}%")
+                    ->orWhereHas('concepto', function ($q2) use ($s) {
+                        $q2->where('nombre', 'like', "%{$s}%");
+                    });
             });
         }
 
@@ -61,17 +66,17 @@ class MovimientoCajaController extends Controller
         $personas = $movimientos->pluck('persona')->filter()->unique();
         $empresas = $movimientos->pluck('empresa')->filter()->unique();
 
-        $matchedClientes = $personas->isNotEmpty() 
-            ? \App\Models\Cliente::where(function($q) use ($personas) {
+        $matchedClientes = $personas->isNotEmpty()
+            ? Cliente::where(function ($q) use ($personas) {
                 $q->whereIn(DB::raw("TRIM(CONCAT(nombres, ' ', COALESCE(apellidos, '')))"), $personas)
-                  ->orWhereIn('identificacion', $personas);
+                    ->orWhereIn('identificacion', $personas);
             })->get()
             : collect();
 
         $matchedProveedores = $empresas->isNotEmpty()
-            ? \App\Models\Proveedor::where(function($q) use ($empresas) {
+            ? Proveedor::where(function ($q) use ($empresas) {
                 $q->whereIn('nombre_razon_social', $empresas)
-                  ->orWhereIn('identificacion', $empresas);
+                    ->orWhereIn('identificacion', $empresas);
             })->get()
             : collect();
 
@@ -102,8 +107,12 @@ class MovimientoCajaController extends Controller
 
         // Totales del período filtrado (sin paginar) — EXCLUYE anulados
         $totalesQuery = MovimientoCaja::where('estado', 'activo')->where('anulado', false);
-        if ($request->filled('tipo_movimiento') && $request->tipo_movimiento !== 'todos') $totalesQuery->where('tipo_movimiento', $request->tipo_movimiento);
-        if ($request->filled('tipo_pago') && $request->tipo_pago !== 'todos')       $totalesQuery->where('tipo_pago', $request->tipo_pago);
+        if ($request->filled('tipo_movimiento') && $request->tipo_movimiento !== 'todos') {
+            $totalesQuery->where('tipo_movimiento', $request->tipo_movimiento);
+        }
+        if ($request->filled('tipo_pago') && $request->tipo_pago !== 'todos') {
+            $totalesQuery->where('tipo_pago', $request->tipo_pago);
+        }
         if ($request->filled('tipo_entidad') && $request->tipo_entidad !== 'todos') {
             if ($request->tipo_entidad === 'persona') {
                 $totalesQuery->whereNotNull('persona')->where('persona', '!=', '');
@@ -111,7 +120,7 @@ class MovimientoCajaController extends Controller
                 $totalesQuery->whereNotNull('empresa')->where('empresa', '!=', '');
             }
         }
-        
+
         $totalesQuery->whereDate('fecha', '>=', $fecha_desde);
         $totalesQuery->whereDate('fecha', '<=', $fecha_hasta);
 
@@ -119,24 +128,24 @@ class MovimientoCajaController extends Controller
             $s = $request->search;
             $totalesQuery->where(function ($q) use ($s) {
                 $q->where('persona', 'like', "%{$s}%")
-                  ->orWhere('empresa', 'like', "%{$s}%")
-                  ->orWhere('descripcion', 'like', "%{$s}%")
-                  ->orWhereHas('concepto', function($q2) use ($s) {
-                      $q2->where('nombre', 'like', "%{$s}%");
-                  });
+                    ->orWhere('empresa', 'like', "%{$s}%")
+                    ->orWhere('descripcion', 'like', "%{$s}%")
+                    ->orWhereHas('concepto', function ($q2) use ($s) {
+                        $q2->where('nombre', 'like', "%{$s}%");
+                    });
             });
         }
 
         $efectivoIngresos = (clone $totalesQuery)->where('tipo_pago', 'efectivo')->where('tipo_movimiento', 'ingreso')->sum('monto');
-        $efectivoEgresos  = (clone $totalesQuery)->where('tipo_pago', 'efectivo')->where('tipo_movimiento', 'egreso')->sum('monto');
+        $efectivoEgresos = (clone $totalesQuery)->where('tipo_pago', 'efectivo')->where('tipo_movimiento', 'egreso')->sum('monto');
 
         $consignacionIngresos = (clone $totalesQuery)->where('tipo_pago', 'consignacion')->where('tipo_movimiento', 'ingreso')->sum('monto');
-        $consignacionEgresos  = (clone $totalesQuery)->where('tipo_pago', 'consignacion')->where('tipo_movimiento', 'egreso')->sum('monto');
+        $consignacionEgresos = (clone $totalesQuery)->where('tipo_pago', 'consignacion')->where('tipo_movimiento', 'egreso')->sum('monto');
 
         $totales = [
-            'ingresos'     => (clone $totalesQuery)->where('tipo_movimiento', 'ingreso')->sum('monto'),
-            'egresos'      => (clone $totalesQuery)->where('tipo_movimiento', 'egreso')->sum('monto'),
-            'efectivo'     => $efectivoIngresos - $efectivoEgresos,
+            'ingresos' => (clone $totalesQuery)->where('tipo_movimiento', 'ingreso')->sum('monto'),
+            'egresos' => (clone $totalesQuery)->where('tipo_movimiento', 'egreso')->sum('monto'),
+            'efectivo' => $efectivoIngresos - $efectivoEgresos,
             'consignacion' => $consignacionIngresos - $consignacionEgresos,
         ];
         $totales['saldo'] = $totales['ingresos'] - $totales['egresos'];
@@ -149,6 +158,7 @@ class MovimientoCajaController extends Controller
     public function show(MovimientoCaja $movimiento)
     {
         $movimiento->load('concepto', 'user', 'childPayments.user', 'parent');
+
         return view('caja.show', compact('movimiento'));
     }
 
@@ -156,17 +166,19 @@ class MovimientoCajaController extends Controller
     {
         $conceptos = ConceptoCaja::orderBy('nombre')->get();
 
-        $todasEntidades = \App\Models\Cliente::orderBy('nombres')->orderBy('apellidos')
-            ->get(['id','nombres','apellidos','identificacion','movil'])
-            ->map(function($c) {
+        $todasEntidades = Cliente::orderBy('nombres')->orderBy('apellidos')
+            ->get(['id', 'nombres', 'apellidos', 'identificacion', 'movil'])
+            ->map(function ($c) {
                 $c->tipo_entidad = 'cliente';
                 $c->nombre = $c->nombre;
+
                 return $c;
             })
-            ->concat(\App\Models\Proveedor::orderBy('nombre_razon_social')
-                ->get(['id','nombre_razon_social as nombre','identificacion','telefono as movil'])
-                ->map(function($p) {
+            ->concat(Proveedor::orderBy('nombre_razon_social')
+                ->get(['id', 'nombre_razon_social as nombre', 'identificacion', 'telefono as movil'])
+                ->map(function ($p) {
                     $p->tipo_entidad = 'proveedor';
+
                     return $p;
                 }));
 
@@ -176,30 +188,30 @@ class MovimientoCajaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'empresa'         => 'nullable|string|max:80',
-            'persona'         => 'nullable|string|max:80',
-            'fecha'           => 'required|date',
-            'concepto_id'     => 'required_without:nuevo_concepto|nullable|integer|exists:concepto_cajas,id',
-            'nuevo_concepto'  => 'required_without:concepto_id|nullable|string|max:80',
+            'empresa' => 'nullable|string|max:80',
+            'persona' => 'nullable|string|max:80',
+            'fecha' => 'required|date',
+            'concepto_id' => 'required_without:nuevo_concepto|nullable|integer|exists:concepto_cajas,id',
+            'nuevo_concepto' => 'required_without:concepto_id|nullable|string|max:80',
             'tipo_movimiento' => 'required|in:ingreso,egreso',
-            'tipo_pago'       => 'required|in:efectivo,consignacion',
-            'monto'           => 'required|numeric|min:0.01|decimal:0,2',
-            'monto_total'     => 'nullable|numeric|min:0|decimal:0,2',
-            'descripcion'     => 'nullable|string|max:500',
+            'tipo_pago' => 'required|in:efectivo,consignacion',
+            'monto' => 'required|numeric|min:0.01|decimal:0,2',
+            'monto_total' => 'nullable|numeric|min:0|decimal:0,2',
+            'descripcion' => 'nullable|string|max:500',
         ]);
 
         // Validar que al menos empresa o persona esté presente, pero NO ambas
         if (empty($validated['empresa']) && empty($validated['persona'])) {
             return back()->withErrors(['persona' => 'Debe indicar al menos un nombre de persona o empresa.'])->withInput();
         }
-        if (!empty($validated['empresa']) && !empty($validated['persona'])) {
+        if (! empty($validated['empresa']) && ! empty($validated['persona'])) {
             return back()->withErrors(['persona' => 'No puede ingresar "Persona" y "Empresa" al mismo tiempo. Elija solo uno.'])->withInput();
         }
 
         try {
             DB::beginTransaction();
             // Si ingresaron un nuevo concepto, crearlo o encontrar el existente
-            if (!empty($validated['nuevo_concepto'])) {
+            if (! empty($validated['nuevo_concepto'])) {
                 $concepto = ConceptoCaja::firstOrCreate(['nombre' => trim($validated['nuevo_concepto'])]);
                 $validated['concepto_id'] = $concepto->id;
             }
@@ -219,7 +231,8 @@ class MovimientoCajaController extends Controller
             return redirect()->route('caja.index')->with('success', 'Movimiento registrado correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error guardando movimiento de caja: ' . $e->getMessage());
+            Log::error('Error guardando movimiento de caja: '.$e->getMessage());
+
             return redirect()->back()->with('error', 'Error al guardar el movimiento de caja.')->withInput();
         }
     }
@@ -229,17 +242,19 @@ class MovimientoCajaController extends Controller
         $movimiento->load('childPayments.user');
         $conceptos = ConceptoCaja::orderBy('nombre')->get();
 
-        $todasEntidades = \App\Models\Cliente::orderBy('nombres')->orderBy('apellidos')
-            ->get(['id','nombres','apellidos','identificacion','movil'])
-            ->map(function($c) {
+        $todasEntidades = Cliente::orderBy('nombres')->orderBy('apellidos')
+            ->get(['id', 'nombres', 'apellidos', 'identificacion', 'movil'])
+            ->map(function ($c) {
                 $c->tipo_entidad = 'cliente';
                 $c->nombre = $c->nombre;
+
                 return $c;
             })
-            ->concat(\App\Models\Proveedor::orderBy('nombre_razon_social')
-                ->get(['id','nombre_razon_social as nombre','identificacion','telefono as movil'])
-                ->map(function($p) {
+            ->concat(Proveedor::orderBy('nombre_razon_social')
+                ->get(['id', 'nombre_razon_social as nombre', 'identificacion', 'telefono as movil'])
+                ->map(function ($p) {
                     $p->tipo_entidad = 'proveedor';
+
                     return $p;
                 }));
 
@@ -249,29 +264,29 @@ class MovimientoCajaController extends Controller
     public function update(Request $request, MovimientoCaja $movimiento)
     {
         $validated = $request->validate([
-            'empresa'         => 'nullable|string|max:80',
-            'persona'         => 'nullable|string|max:80',
-            'fecha'           => 'required|date',
-            'concepto_id'     => 'required_without:nuevo_concepto|nullable|integer|exists:concepto_cajas,id',
-            'nuevo_concepto'  => 'required_without:concepto_id|nullable|string|max:80',
+            'empresa' => 'nullable|string|max:80',
+            'persona' => 'nullable|string|max:80',
+            'fecha' => 'required|date',
+            'concepto_id' => 'required_without:nuevo_concepto|nullable|integer|exists:concepto_cajas,id',
+            'nuevo_concepto' => 'required_without:concepto_id|nullable|string|max:80',
             'tipo_movimiento' => 'required|in:ingreso,egreso',
-            'tipo_pago'       => 'required|in:efectivo,consignacion',
-            'monto'           => 'required|numeric|min:0.01|decimal:0,2',
-            'monto_total'     => 'nullable|numeric|min:0|decimal:0,2',
-            'descripcion'     => 'nullable|string|max:500',
+            'tipo_pago' => 'required|in:efectivo,consignacion',
+            'monto' => 'required|numeric|min:0.01|decimal:0,2',
+            'monto_total' => 'nullable|numeric|min:0|decimal:0,2',
+            'descripcion' => 'nullable|string|max:500',
         ]);
 
         // Validar que al menos empresa o persona esté presente, pero NO ambas
         if (empty($validated['empresa']) && empty($validated['persona'])) {
             return back()->withErrors(['persona' => 'Debe indicar al menos un nombre de persona o empresa.'])->withInput();
         }
-        if (!empty($validated['empresa']) && !empty($validated['persona'])) {
+        if (! empty($validated['empresa']) && ! empty($validated['persona'])) {
             return back()->withErrors(['persona' => 'No puede ingresar "Persona" y "Empresa" al mismo tiempo. Elija solo uno.'])->withInput();
         }
 
         try {
             DB::beginTransaction();
-            if (!empty($validated['nuevo_concepto'])) {
+            if (! empty($validated['nuevo_concepto'])) {
                 $concepto = ConceptoCaja::firstOrCreate(['nombre' => trim($validated['nuevo_concepto'])]);
                 $validated['concepto_id'] = $concepto->id;
             }
@@ -284,7 +299,8 @@ class MovimientoCajaController extends Controller
             return redirect()->route('caja.index')->with('success', 'Movimiento actualizado correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error actualizando movimiento de caja: ' . $e->getMessage());
+            Log::error('Error actualizando movimiento de caja: '.$e->getMessage());
+
             return redirect()->back()->with('error', 'Error al actualizar el movimiento de caja.')->withInput();
         }
     }
@@ -296,7 +312,7 @@ class MovimientoCajaController extends Controller
     {
         $movimiento->load(['concepto', 'user', 'parent.concepto', 'parent.user', 'parent.childPayments.user', 'childPayments.user']);
 
-        $empresa = \App\Models\Configuracion::first();
+        $empresa = Configuracion::first();
         $formato = request('formato', $empresa->formato_factura ?? 'estandar');
 
         if ($formato === 'pos') {
@@ -305,17 +321,18 @@ class MovimientoCajaController extends Controller
             $descExtra = ceil($descLength / 35) * 14;
             $fallbackHeight = max(650, 460 + $descExtra + ($historyCount * 28));
 
-            return \App\Services\PosTicketService::streamTicket(
+            return PosTicketService::streamTicket(
                 'caja.print_pos',
                 compact('movimiento'),
-                'ticket_caja_' . $movimiento->id . '.pdf',
+                'ticket_caja_'.$movimiento->id.'.pdf',
                 $fallbackHeight
             );
         }
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('caja.print', compact('movimiento'));
+        $pdf = Pdf::loadView('caja.print', compact('movimiento'));
         $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('comprobante_caja_' . $movimiento->id . '.pdf');
+
+        return $pdf->stream('comprobante_caja_'.$movimiento->id.'.pdf');
     }
 
     /**
@@ -325,6 +342,7 @@ class MovimientoCajaController extends Controller
     {
         $request->validate(['nombre' => 'required|string|max:255|unique:concepto_cajas,nombre']);
         $concepto = ConceptoCaja::create(['nombre' => trim($request->nombre)]);
+
         return response()->json(['id' => $concepto->id, 'nombre' => $concepto->nombre]);
     }
 
@@ -332,15 +350,15 @@ class MovimientoCajaController extends Controller
     public function duplicate(MovimientoCaja $movimiento)
     {
         $nuevo = $movimiento->replicate();
-        $nuevo->fecha     = now()->toDateString();
-        $nuevo->user_id   = auth()->id();
+        $nuevo->fecha = now()->toDateString();
+        $nuevo->user_id = auth()->id();
         $nuevo->parent_id = null;  // Nunca heredar vínculo padre (evita abonos huérfanos)
-        $nuevo->anulado   = false; // Siempre crear como activo
-        $nuevo->estado    = 'activo';
+        $nuevo->anulado = false; // Siempre crear como activo
+        $nuevo->estado = 'activo';
         $nuevo->save();
 
         return redirect()->route('caja.edit', $nuevo)
-                         ->with('success', 'Movimiento duplicado. Revisa y actualiza los datos antes de guardar.');
+            ->with('success', 'Movimiento duplicado. Revisa y actualiza los datos antes de guardar.');
     }
 
     /** Registrar un abono/pago parcial a este movimiento */
@@ -348,13 +366,13 @@ class MovimientoCajaController extends Controller
     {
         $validated = $request->validate([
             'monto_abono' => 'required|numeric|min:0.01',
-            'fecha'       => 'required|date',
-            'tipo_pago'   => 'required|in:efectivo,consignacion',
+            'fecha' => 'required|date',
+            'tipo_pago' => 'required|in:efectivo,consignacion',
             'descripcion' => 'nullable|string|max:500',
         ]);
 
         if ($validated['monto_abono'] > $movimiento->saldo_pendiente) {
-            return back()->with('error', 'El abono supera el saldo pendiente de $' . number_format($movimiento->saldo_pendiente, 0, ',', '.') . '.');
+            return back()->with('error', 'El abono supera el saldo pendiente de $'.number_format($movimiento->saldo_pendiente, 0, ',', '.').'.');
         }
 
         try {
@@ -368,77 +386,80 @@ class MovimientoCajaController extends Controller
             $esPagoCompleto = ($validated['monto_abono'] >= $movimiento->saldo_pendiente);
 
             $descAbono = $validated['descripcion'];
-            if (!$descAbono) {
+            if (! $descAbono) {
                 if ($numFactura) {
-                    $descAbono = $esPagoCompleto 
-                        ? "Pago final de saldo #" . $numFactura 
-                        : "Abono parcial a #" . $numFactura;
+                    $descAbono = $esPagoCompleto
+                        ? 'Pago final de saldo #'.$numFactura
+                        : 'Abono parcial a #'.$numFactura;
                 } else {
-                    $descAbono = $esPagoCompleto 
-                        ? "Pago final de saldo (Movimiento #" . $movimiento->id . ")" 
-                        : "Abono parcial a movimiento #" . $movimiento->id;
+                    $descAbono = $esPagoCompleto
+                        ? 'Pago final de saldo (Movimiento #'.$movimiento->id.')'
+                        : 'Abono parcial a movimiento #'.$movimiento->id;
                 }
-            } else if ($numFactura && !str_contains($descAbono, '#' . $numFactura)) {
-                $descAbono .= " (Ref #" . $numFactura . ")";
+            } elseif ($numFactura && ! str_contains($descAbono, '#'.$numFactura)) {
+                $descAbono .= ' (Ref #'.$numFactura.')';
             }
 
             MovimientoCaja::create([
-                'empresa'         => $movimiento->empresa,
-                'persona'         => $movimiento->persona,
-                'fecha'           => $validated['fecha'],
-                'concepto_id'     => $movimiento->concepto_id,
+                'empresa' => $movimiento->empresa,
+                'persona' => $movimiento->persona,
+                'fecha' => $validated['fecha'],
+                'concepto_id' => $movimiento->concepto_id,
                 'tipo_movimiento' => $movimiento->tipo_movimiento,
-                'tipo_pago'       => $validated['tipo_pago'],
-                'monto'           => $validated['monto_abono'],
-                'monto_total'     => 0, // Los abonos parciales no tienen total propio
-                'descripcion'     => $descAbono,
-                'estado'          => 'activo',
-                'anulado'         => false,
-                'user_id'         => auth()->id(),
-                'parent_id'       => $movimiento->id,
+                'tipo_pago' => $validated['tipo_pago'],
+                'monto' => $validated['monto_abono'],
+                'monto_total' => 0, // Los abonos parciales no tienen total propio
+                'descripcion' => $descAbono,
+                'estado' => 'activo',
+                'anulado' => false,
+                'user_id' => auth()->id(),
+                'parent_id' => $movimiento->id,
             ]);
 
             $this->sincronizarFacturaRelacionada($movimiento);
 
             DB::commit();
 
-            return back()->with('success', 'Abono de $' . number_format($validated['monto_abono'], 0, ',', '.') . ' registrado correctamente.');
+            return back()->with('success', 'Abono de $'.number_format($validated['monto_abono'], 0, ',', '.').' registrado correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error registrando abono de caja: ' . $e->getMessage());
+            Log::error('Error registrando abono de caja: '.$e->getMessage());
+
             return back()->with('error', 'Error al registrar el abono. Intente nuevamente.');
         }
     }
 
     public function anular(Request $request, MovimientoCaja $movimiento)
     {
-        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
         }
 
         try {
             DB::beginTransaction();
-            $esAnulacion = !$movimiento->anulado;
-            
+            $esAnulacion = ! $movimiento->anulado;
+
             // Anular movimiento principal
             $movimiento->update([
                 'anulado' => $esAnulacion,
-                'estado'  => $esAnulacion ? 'anulado' : 'activo',
+                'estado' => $esAnulacion ? 'anulado' : 'activo',
             ]);
-            
+
             // Anular o restaurar todos los abonos asociados en cascada
             $movimiento->childPayments()->update([
                 'anulado' => $esAnulacion,
-                'estado'  => $esAnulacion ? 'anulado' : 'activo',
+                'estado' => $esAnulacion ? 'anulado' : 'activo',
             ]);
 
             $this->sincronizarFacturaRelacionada($movimiento);
 
             DB::commit();
+
             return redirect()->back()->with('success', $esAnulacion ? 'Movimiento y sus abonos anulados correctamente.' : 'Movimiento y sus abonos reactivados correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error anulando movimiento de caja: ' . $e->getMessage());
+            Log::error('Error anulando movimiento de caja: '.$e->getMessage());
+
             return redirect()->back()->with('error', 'Error al anular el movimiento de caja.');
         }
     }
@@ -447,12 +468,12 @@ class MovimientoCajaController extends Controller
     {
         $textToSearch = $movimiento->descripcion;
         if ($movimiento->parent_id && $movimiento->parent) {
-            $textToSearch .= ' ' . $movimiento->parent->descripcion;
+            $textToSearch .= ' '.$movimiento->parent->descripcion;
         }
 
         if (preg_match_all('/#([A-Za-z0-9-]+)/', $textToSearch, $matches)) {
             foreach ($matches[1] as $numFactura) {
-                $factura = \App\Models\Factura::where('numero_factura', $numFactura)->first();
+                $factura = Factura::where('numero_factura', $numFactura)->first();
                 if ($factura) {
                     $factura->recalcularPagos();
                 }

@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminUserSeeder extends Seeder
 {
@@ -15,9 +16,9 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminPass = env('ADMIN_DEFAULT_PASSWORD') ?: \Illuminate\Support\Str::random(16);
-        $tecnicoPass = env('TECNICO_DEFAULT_PASSWORD') ?: \Illuminate\Support\Str::random(16);
-        $invitadoPass = env('INVITADO_DEFAULT_PASSWORD') ?: \Illuminate\Support\Str::random(16);
+        $adminPass = env('ADMIN_DEFAULT_PASSWORD') ?: Str::random(16);
+        $tecnicoPass = env('TECNICO_DEFAULT_PASSWORD') ?: Str::random(16);
+        $invitadoPass = env('INVITADO_DEFAULT_PASSWORD') ?: Str::random(16);
 
         // Admin principal
         User::updateOrCreate(

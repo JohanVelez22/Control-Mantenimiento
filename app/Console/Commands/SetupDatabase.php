@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use PDO;
 use Exception;
+use Illuminate\Console\Command;
+use PDO;
 
 class SetupDatabase extends Command
 {
@@ -27,7 +26,7 @@ class SetupDatabase extends Command
 
         if ($connection === 'sqlite') {
             // Lógica para SQLite: Crea el archivo si no existe
-            if (!file_exists($database)) {
+            if (! file_exists($database)) {
                 touch($database);
                 $this->info("Base de datos SQLite creada en: {$database}");
             }
@@ -47,7 +46,8 @@ class SetupDatabase extends Command
                 $pdo->exec("CREATE DATABASE IF NOT EXISTS `$database` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
                 $this->info("Base de datos '{$database}' asegurada/creada correctamente en {$connection}.");
             } catch (Exception $e) {
-                $this->error("Error al crear la base de datos: " . $e->getMessage());
+                $this->error('Error al crear la base de datos: '.$e->getMessage());
+
                 return;
             }
         }

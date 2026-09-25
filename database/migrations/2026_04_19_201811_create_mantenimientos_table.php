@@ -18,12 +18,12 @@ return new class extends Migration
             $table->text('descripcion');
             $table->decimal('costo', 10, 2)->default(0);
             $table->enum('estado', ['pendiente', 'terminado'])->default('pendiente');
-            
+
             // Relaciones
             $table->foreignId('equipo_id')->constrained('equipos')->onDelete('cascade');
             $table->foreignId('tecnico_id')->constrained('tecnicos')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Usuario que registró
-            
+
             $table->timestamps();
         });
     }

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::hasTable('configuraciones') && !Schema::hasColumn('configuraciones', 'formato_factura')) {
+        if (Schema::hasTable('configuraciones') && ! Schema::hasColumn('configuraciones', 'formato_factura')) {
             Schema::table('configuraciones', function (Blueprint $table) {
                 $table->string('formato_factura')->default('estandar')->after('pie_pagina_factura');
             });

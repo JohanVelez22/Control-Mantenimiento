@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tecnico extends Model
 {
-    use HasFactory, \App\Traits\Auditable;
+    use \App\Traits\Auditable, HasFactory;
+
     // Permitimos la asignación masiva de estos campos
     protected $fillable = [
         'nombre',
@@ -21,7 +22,7 @@ class Tecnico extends Model
     ];
 
     protected $casts = [
-        'active' => 'boolean'
+        'active' => 'boolean',
     ];
 
     // Relación: Un técnico puede tener muchos mantenimientos (Lo usaremos en la siguiente fase)

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BajaStock extends Model
 {
-    use HasFactory, \App\Traits\Auditable;
+    use \App\Traits\Auditable, HasFactory;
 
     protected $table = 'bajas_stock';
 
@@ -42,10 +42,10 @@ class BajaStock extends Model
     {
         return match ($this->motivo) {
             'defectuoso_fabrica' => 'Defectuoso de fábrica (Garantía)',
-            'dano_taller'        => 'Daño accidental en taller',
-            'obsoleto'           => 'Obsoleto / Deterioro',
-            'perdida_merma'      => 'Pérdida / Merma de inventario',
-            default              => ucfirst(str_replace('_', ' ', $this->motivo ?? 'Otro')),
+            'dano_taller' => 'Daño accidental en taller',
+            'obsoleto' => 'Obsoleto / Deterioro',
+            'perdida_merma' => 'Pérdida / Merma de inventario',
+            default => ucfirst(str_replace('_', ' ', $this->motivo ?? 'Otro')),
         };
     }
 }

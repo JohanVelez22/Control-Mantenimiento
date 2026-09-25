@@ -6,7 +6,10 @@ use App\Models\ConceptoCaja;
 use App\Models\MovimientoCaja;
 use App\Models\Stock;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -42,6 +45,7 @@ class AnulacionService
                 return true;
             }
         }
+
         return false;
     }
 
@@ -68,10 +72,10 @@ class AnulacionService
      *
      * @return string|null Mensaje de error si no está autorizado, o null si la operación es permitida.
      */
-    public function autorizarOperacionSensible(\Illuminate\Http\Request $request): ?string
+    public function autorizarOperacionSensible(Request $request): ?string
     {
         $user = Auth::user();
-        if (!$user || $user->isInvitado()) {
+        if (! $user || $user->isInvitado()) {
             return 'No tienes permisos para realizar esta acción.';
         }
 
@@ -87,7 +91,7 @@ class AnulacionService
                 return 'Se requiere la contraseña de un administrador para autorizar esta operación.';
             }
 
-            if (!$this->adminPasswordValida($password)) {
+            if (! $this->adminPasswordValida($password)) {
                 return 'Contraseña de administrador incorrecta.';
             }
 
@@ -100,16 +104,16 @@ class AnulacionService
     /**
      * Revierte (anulación) o restaura (reactivación) stock y abonos en caja de forma atómica.
      *
-     * @param \Illuminate\Database\Eloquent\Model $documento Modelo con relaciones 'stocks' (pivot cantidad) y 'abonos'.
-     * @param bool $esAnulacion true = anular (devolver stock, anular caja); false = reactivar.
-     * @param string $conceptoAbono Nombre del concepto en caja (p.ej. 'Abono Mantenimiento').
-     * @param string[] $prefijosDescripcion Tokens que anteceden al id en la descripción de caja.
+     * @param  Model  $documento  Modelo con relaciones 'stocks' (pivot cantidad) y 'abonos'.
+     * @param  bool  $esAnulacion  true = anular (devolver stock, anular caja); false = reactivar.
+     * @param  string  $conceptoAbono  Nombre del concepto en caja (p.ej. 'Abono Mantenimiento').
+     * @param  string[]  $prefijosDescripcion  Tokens que anteceden al id en la descripción de caja.
      */
     public function revertirStockYAbonos($documento, bool $esAnulacion, string $conceptoAbono, array $prefijosDescripcion): void
     {
-        \Illuminate\Support\Facades\DB::transaction(function () use ($documento, $esAnulacion, $conceptoAbono, $prefijosDescripcion) {
+        DB::transaction(function () use ($documento, $esAnulacion, $conceptoAbono, $prefijosDescripcion) {
             // Revertir stock asociado al documento de forma atómica
-            $stockService = app(\App\Services\StockService::class);
+            $stockService = app(StockService::class);
             foreach ($documento->stocks as $stock) {
                 $delta = (int) $stock->pivot->cantidad;
                 $stockModel = Stock::where('id', $stock->id)->lockForUpdate()->first();
@@ -137,16 +141,16 @@ class AnulacionService
         $query = MovimientoCaja::where('abono_id', $abono->id);
 
         if ($esAnulacion) {
-            $query->where(function($q) {
+            $query->where(function ($q) {
                 $q->where('estado', 'activo')->orWhere('anulado', false);
             })->update([
                 'anulado' => true,
-                'estado'  => 'anulado',
+                'estado' => 'anulado',
             ]);
         } else {
             $query->update([
                 'anulado' => false,
-                'estado'  => 'activo',
+                'estado' => 'activo',
             ]);
         }
     }

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FacturaItem extends Model
 {
-    use \App\Traits\Auditable;
+    use Auditable;
 
     protected $fillable = [
         'factura_id',
@@ -20,7 +21,7 @@ class FacturaItem extends Model
     protected function casts(): array
     {
         return [
-            'cantidad'        => 'integer',
+            'cantidad' => 'integer',
             'precio_unitario' => 'decimal:2',
         ];
     }

@@ -3,14 +3,17 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithStyles, WithEvents
+class AcumuladoExport implements FromArray, ShouldAutoSize, WithEvents, WithHeadings, WithStyles
 {
     protected $acumulado;
 
@@ -22,13 +25,13 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
     public function array(): array
     {
         return [
-            ['Mantenimientos', (int)($this->acumulado['total_mantenimientos'] ?? 0), (float)($this->acumulado['facturado_mant'] ?? 0)],
-            ['Electrónica', (int)($this->acumulado['total_electronicas'] ?? 0), (float)($this->acumulado['facturado_elec'] ?? 0)],
-            ['Compras de Inventario', (int)($this->acumulado['total_compras'] ?? 0), (float)($this->acumulado['compras_inventario'] ?? 0)],
-            ['Ventas de Inventario', (int)($this->acumulado['total_ventas'] ?? 0), (float)($this->acumulado['ventas_inventario'] ?? 0)],
-            ['Ingresos Reales (Caja)', (int)($this->acumulado['total_ingresos'] ?? 0), (float)($this->acumulado['ingresos_caja'] ?? 0)],
-            ['Egresos Reales (Caja)', (int)($this->acumulado['total_egresos'] ?? 0), (float)($this->acumulado['egresos_caja'] ?? 0)],
-            ['Movimientos Anulados', (int)($this->acumulado['total_anulados'] ?? 0), (float)($this->acumulado['total_costo_anulados'] ?? 0)],
+            ['Mantenimientos', (int) ($this->acumulado['total_mantenimientos'] ?? 0), (float) ($this->acumulado['facturado_mant'] ?? 0)],
+            ['Electrónica', (int) ($this->acumulado['total_electronicas'] ?? 0), (float) ($this->acumulado['facturado_elec'] ?? 0)],
+            ['Compras de Inventario', (int) ($this->acumulado['total_compras'] ?? 0), (float) ($this->acumulado['compras_inventario'] ?? 0)],
+            ['Ventas de Inventario', (int) ($this->acumulado['total_ventas'] ?? 0), (float) ($this->acumulado['ventas_inventario'] ?? 0)],
+            ['Ingresos Reales (Caja)', (int) ($this->acumulado['total_ingresos'] ?? 0), (float) ($this->acumulado['ingresos_caja'] ?? 0)],
+            ['Egresos Reales (Caja)', (int) ($this->acumulado['total_egresos'] ?? 0), (float) ($this->acumulado['egresos_caja'] ?? 0)],
+            ['Movimientos Anulados', (int) ($this->acumulado['total_anulados'] ?? 0), (float) ($this->acumulado['total_costo_anulados'] ?? 0)],
         ];
     }
 
@@ -36,7 +39,7 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
     {
         return [
             ['RESUMEN CONSOLIDADO - ACUMULADO'],
-            ['Generado el: ' . date('d/m/Y h:i A')],
+            ['Generado el: '.date('d/m/Y h:i A')],
             [''],
             ['Categoría', 'Cantidad de Movimientos', 'Costo Total'],
         ];
@@ -50,7 +53,7 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
             4 => [
                 'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
                 'fill' => [
-                    'fillType'   => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'fillType' => Fill::FILL_SOLID,
                     'startColor' => ['rgb' => '4A5568'],
                 ],
             ],
@@ -67,43 +70,43 @@ class AcumuladoExport implements FromArray, WithHeadings, ShouldAutoSize, WithSt
                 $sheet->getHeaderFooter()->setOddFooter('&RPágina &P de &N');
 
                 $sheet->mergeCells('A1:C1');
-                $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 $sheet->mergeCells('A2:C2');
-                $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 // Format amount column (C)
                 $sheet->getStyle('C5:C11')->getNumberFormat()->setFormatCode('"$"#,##0');
 
                 // Force B11 and C11 cell values to show "0" and "$0" as strings if they are 0
                 if (($this->acumulado['total_anulados'] ?? 0) == 0) {
-                    $sheet->setCellValueExplicit('B11', '0', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValueExplicit('B11', '0', DataType::TYPE_STRING);
                 }
                 if (($this->acumulado['total_costo_anulados'] ?? 0) == 0) {
-                    $sheet->setCellValueExplicit('C11', '$0', \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    $sheet->setCellValueExplicit('C11', '$0', DataType::TYPE_STRING);
                 }
-                $sheet->getStyle('B11:C11')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
-                
+                $sheet->getStyle('B11:C11')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
                 // Black color for Movimientos Anulados (Row 11)
                 $sheet->getStyle('A11:C11')->applyFromArray([
                     'font' => [
-                        
-                        'color' => ['rgb' => '000000']
-                    ]
+
+                        'color' => ['rgb' => '000000'],
+                    ],
                 ]);
 
                 $lastRow = 11;
                 $footerRow = $lastRow + 2;
 
                 $sheet->setCellValue("B{$footerRow}", 'Balance Neto del Período:');
-                $sheet->setCellValue("C{$footerRow}", (float)($this->acumulado['balance_neto'] ?? 0));
+                $sheet->setCellValue("C{$footerRow}", (float) ($this->acumulado['balance_neto'] ?? 0));
                 $sheet->getStyle("C{$footerRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
 
                 $sheet->getStyle("B{$footerRow}:C{$footerRow}")->applyFromArray([
                     'font' => ['bold' => true, 'size' => 12],
                 ]);
-                
-                $sheet->getStyle("B{$footerRow}:C{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+
+                $sheet->getStyle("B{$footerRow}:C{$footerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             },
         ];
     }

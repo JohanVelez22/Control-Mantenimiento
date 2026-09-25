@@ -2,26 +2,30 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\Stock;
-use App\Models\Proveedor;
+use App\Http\Controllers\MovimientoInventarioController;
 use App\Models\Cliente;
+use App\Models\ConceptoCaja;
+use App\Models\Cotizacion;
+use App\Models\CotizacionItem;
 use App\Models\Factura;
 use App\Models\FacturaItem;
 use App\Models\MovimientoCaja;
-use App\Models\ConceptoCaja;
+use App\Models\Proveedor;
+use App\Models\Stock;
 use App\Models\User;
-use App\Http\Controllers\MovimientoInventarioController;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 class AuditFindingsTest extends TestCase
 {
     use RefreshDatabase;
 
     private $admin;
+
     private $proveedor;
+
     private $cliente;
 
     protected function setUp(): void
@@ -30,7 +34,7 @@ class AuditFindingsTest extends TestCase
 
         $this->admin = User::create([
             'name' => 'Admin Test',
-            'email' => 'admin_test_' . time() . '@test.com',
+            'email' => 'admin_test_'.time().'@test.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
             'active' => true,
@@ -38,7 +42,7 @@ class AuditFindingsTest extends TestCase
 
         $this->proveedor = Proveedor::create([
             'tipo_entidad' => 'empresa',
-            'identificacion' => 'NIT-' . time(),
+            'identificacion' => 'NIT-'.time(),
             'nombre_razon_social' => 'Proveedor Test',
             'telefono' => '3000000001',
             'email' => 'proveedor_test@test.com',
@@ -49,10 +53,10 @@ class AuditFindingsTest extends TestCase
         $this->cliente = Cliente::create([
             'nombres' => 'Cliente',
             'apellidos' => 'Test',
-            'identificacion' => 'CC-' . time(),
+            'identificacion' => 'CC-'.time(),
             'telefono' => '3000000000',
             'movil' => '3000000000',
-            'email' => 'cliente_test_' . time() . '@test.com',
+            'email' => 'cliente_test_'.time().'@test.com',
             'direccion' => 'Calle Test',
             'activo' => true,
         ]);
@@ -63,10 +67,9 @@ class AuditFindingsTest extends TestCase
      * BUG: Number formatting con separador de miles (punto)
      * ============================================================
      */
-
-    public function testCalcularTotalParseaMilesConPuntoCorrectamente()
+    public function test_calcular_total_parsea_miles_con_punto_correctamente()
     {
-        $controller = new MovimientoInventarioController();
+        $controller = new MovimientoInventarioController;
         $method = new \ReflectionMethod($controller, 'calcularTotal');
         $method->setAccessible(true);
 
@@ -81,9 +84,9 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(9000, $total);
     }
 
-    public function testCalcularTotalConUnidadesSinSeparadorMiles()
+    public function test_calcular_total_con_unidades_sin_separador_miles()
     {
-        $controller = new MovimientoInventarioController();
+        $controller = new MovimientoInventarioController;
         $method = new \ReflectionMethod($controller, 'calcularTotal');
         $method->setAccessible(true);
 
@@ -98,9 +101,9 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(2500, $total);
     }
 
-    public function testCalcularTotalConDecimales()
+    public function test_calcular_total_con_decimales()
     {
-        $controller = new MovimientoInventarioController();
+        $controller = new MovimientoInventarioController;
         $method = new \ReflectionMethod($controller, 'calcularTotal');
         $method->setAccessible(true);
 
@@ -115,12 +118,12 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(150050, $total);
     }
 
-    public function testTotalPagadoParseaMilesIgualQueItems()
+    public function test_total_pagado_parsea_miles_igual_que_items()
     {
-        $controller = new MovimientoInventarioController();
+        $controller = new MovimientoInventarioController;
 
         // Simular request con total_pagado formateado
-        $request = new \Illuminate\Http\Request();
+        $request = new Request;
         $request->replace([
             'total_pagado' => '1.500', // 1500
             'items' => [
@@ -144,8 +147,7 @@ class AuditFindingsTest extends TestCase
      * COMPRA: Flujo completo y validaciones
      * ============================================================
      */
-
-    public function testCompraPagoTotalQuedaEmitida()
+    public function test_compra_pago_total_queda_emitida()
     {
         $stock = Stock::create([
             'producto' => 'Producto Compra',
@@ -181,7 +183,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(12, $stock->cantidad);
     }
 
-    public function testCompraPagoParcialQuedaPendientePago()
+    public function test_compra_pago_parcial_queda_pendiente_pago()
     {
         $stock = Stock::create([
             'producto' => 'Producto Compra Parcial',
@@ -213,7 +215,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(2000, $factura->saldo_pendiente);
     }
 
-    public function testCompraPagoSuperiorAlTotalLanzaError()
+    public function test_compra_pago_superior_al_total_lanza_error()
     {
         $stock = Stock::create([
             'producto' => 'Producto Error',
@@ -240,7 +242,7 @@ class AuditFindingsTest extends TestCase
         $this->assertStringContainsString('no puede superar', session('error'));
     }
 
-    public function testCompraMultiplesItemsCalculaTotalCorrecto()
+    public function test_compra_multiples_items_calcula_total_correcto()
     {
         $stock1 = Stock::create([
             'producto' => 'Producto A',
@@ -284,8 +286,7 @@ class AuditFindingsTest extends TestCase
      * VENTA: Flujo completo y validaciones
      * ============================================================
      */
-
-    public function testVentaPagoTotalQuedaEmitida()
+    public function test_venta_pago_total_queda_emitida()
     {
         $stock = Stock::create([
             'producto' => 'Producto Venta',
@@ -320,7 +321,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(18, $stock->cantidad);
     }
 
-    public function testVentaSinStockSuficienteLanzaError()
+    public function test_venta_sin_stock_suficiente_lanza_error()
     {
         $stock = Stock::create([
             'producto' => 'Producto Sin Stock',
@@ -346,7 +347,7 @@ class AuditFindingsTest extends TestCase
         $this->assertStringContainsString('Stock insuficiente', session('error'));
     }
 
-    public function testVentaPagoParcialQuedaPendientePago()
+    public function test_venta_pago_parcial_queda_pendiente_pago()
     {
         $stock = Stock::create([
             'producto' => 'Producto Venta Parcial',
@@ -375,7 +376,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(2000, $factura->saldo_pendiente);
     }
 
-    public function testVentaCobroSuperiorAlTotalLanzaError()
+    public function test_venta_cobro_superior_al_total_lanza_error()
     {
         $stock = Stock::create([
             'producto' => 'Producto Venta Error',
@@ -406,8 +407,7 @@ class AuditFindingsTest extends TestCase
      * ANULACIÓN/REACTIVACIÓN DE FACTURAS
      * ============================================================
      */
-
-    public function testAnularCompraRestauraStock()
+    public function test_anular_compra_restaura_stock()
     {
         $stock = Stock::create([
             'producto' => 'Compra Anular',
@@ -460,7 +460,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals('anulada', $factura->estado);
     }
 
-    public function testAnularVentaRestauraStock()
+    public function test_anular_venta_restaura_stock()
     {
         $stock = Stock::create([
             'producto' => 'Venta Anular',
@@ -513,7 +513,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals('anulada', $factura->estado);
     }
 
-    public function testReactivarFacturaAnuladaRestauraStockYEstado()
+    public function test_reactivar_factura_anulada_restaura_stock_y_estado()
     {
         $stock = Stock::create([
             'producto' => 'Reactivar Test',
@@ -561,7 +561,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals('pendiente_pago', $factura->estado);
     }
 
-    public function testAnularFacturaPendientePagoNoGeneraMovimientoCaja()
+    public function test_anular_factura_pendiente_pago_no_genera_movimiento_caja()
     {
         $stock = Stock::create([
             'producto' => 'Compra Pendiente',
@@ -611,8 +611,7 @@ class AuditFindingsTest extends TestCase
      * EDICIÓN DE FACTURAS
      * ============================================================
      */
-
-    public function testEditarFacturaCambiarCantidadRecalculaTotalYStock()
+    public function test_editar_factura_cambiar_cantidad_recalcula_total_y_stock()
     {
         $stock = Stock::create([
             'producto' => 'Editar Test',
@@ -677,7 +676,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(5000, $factura->total_pagado);
     }
 
-    public function testEditarFacturaPagoSuperiorAlNuevoTotalLanzaError()
+    public function test_editar_factura_pago_superior_al_nuevo_total_lanza_error()
     {
         $stock = Stock::create([
             'producto' => 'Editar Error',
@@ -733,8 +732,7 @@ class AuditFindingsTest extends TestCase
      * MOVIMIENTOS DE CAJA
      * ============================================================
      */
-
-    public function testCrearMovimientoCajaIngreso()
+    public function test_crear_movimiento_caja_ingreso()
     {
         $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Test Ingreso']);
 
@@ -758,7 +756,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(10000, $mov->monto);
     }
 
-    public function testCrearMovimientoCajaEgreso()
+    public function test_crear_movimiento_caja_egreso()
     {
         $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Test Egreso']);
 
@@ -780,7 +778,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(5000, $mov->monto);
     }
 
-    public function testMovimientoCajaConMontoTotalYSaldoPendiente()
+    public function test_movimiento_caja_con_monto_total_y_saldo_pendiente()
     {
         $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Test Saldo']);
 
@@ -804,7 +802,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(7000, $mov->saldo_pendiente);
     }
 
-    public function testAbonoAMovimientoCajaReduceSaldoPendiente()
+    public function test_abono_a_movimiento_caja_reduce_saldo_pendiente()
     {
         $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Test Abono Caja']);
 
@@ -838,7 +836,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(5000, $padre->saldo_pendiente);
     }
 
-    public function testAbonoSuperiorAlSaldoLanzaError()
+    public function test_abono_superior_al_saldo_lanza_error()
     {
         $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Test Abono Error']);
 
@@ -872,10 +870,9 @@ class AuditFindingsTest extends TestCase
      * EDGE CASES: FORMATOS DE NÚMERO
      * ============================================================
      */
-
-    public function testInputConMultiplesPuntos()
+    public function test_input_con_multiples_puntos()
     {
-        $controller = new MovimientoInventarioController();
+        $controller = new MovimientoInventarioController;
         $method = new \ReflectionMethod($controller, 'calcularTotal');
         $method->setAccessible(true);
 
@@ -888,9 +885,9 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(1500000, $total);
     }
 
-    public function testInputConCerosIniciales()
+    public function test_input_con_ceros_iniciales()
     {
-        $controller = new MovimientoInventarioController();
+        $controller = new MovimientoInventarioController;
         $method = new \ReflectionMethod($controller, 'calcularTotal');
         $method->setAccessible(true);
 
@@ -902,9 +899,9 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(1500, $total);
     }
 
-    public function testInputVacioOCero()
+    public function test_input_vacio_o_cero()
     {
-        $controller = new MovimientoInventarioController();
+        $controller = new MovimientoInventarioController;
         $method = new \ReflectionMethod($controller, 'calcularTotal');
         $method->setAccessible(true);
 
@@ -922,8 +919,7 @@ class AuditFindingsTest extends TestCase
      * CONSISTENCIA DE DATOS: CASTS Y ACCESORES
      * ============================================================
      */
-
-    public function testFacturaTotalDocumentoEsDecimal()
+    public function test_factura_total_documento_es_decimal()
     {
         $factura = Factura::create([
             'numero_factura' => Factura::siguienteNumero('F'),
@@ -943,7 +939,7 @@ class AuditFindingsTest extends TestCase
         $this->assertIsNumeric($factura->total_documento);
     }
 
-    public function testFacturaItemPrecioUnitarioEsDecimal()
+    public function test_factura_item_precio_unitario_es_decimal()
     {
         $stock = Stock::create([
             'producto' => 'Item Decimal',
@@ -978,7 +974,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(1500.50, $item->subtotal);
     }
 
-public function testSaldoPendienteNuncaNegativo()
+    public function test_saldo_pendiente_nunca_negativo()
     {
         $factura = Factura::create([
             'numero_factura' => Factura::siguienteNumero('F'),
@@ -1004,8 +1000,7 @@ public function testSaldoPendienteNuncaNegativo()
      * INTEGRACIÓN: COMPRA -> VENTA -> ANULACIONES
      * ============================================================
      */
-
-    public function testFlujoCompletoCompraVentaAnulacion()
+    public function test_flujo_completo_compra_venta_anulacion()
     {
         // 1. Crear proveedor y cliente ya en setUp
 
@@ -1073,9 +1068,9 @@ public function testSaldoPendienteNuncaNegativo()
         $this->assertEquals(0, $stock->cantidad);
     }
 
-    public function testEditarVentaConPagoParcialActualizaCajaYLayoutNoFalla()
+    public function test_editar_venta_con_pago_parcial_actualiza_caja_y_layout_no_falla()
     {
-        $concepto = \App\Models\ConceptoCaja::firstOrCreate(['nombre' => 'Ventas'], ['tipo' => 'ingreso']);
+        $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Ventas'], ['tipo' => 'ingreso']);
 
         $stock = Stock::create([
             'codigo' => 'TEST-PARTIAL',
@@ -1113,7 +1108,7 @@ public function testSaldoPendienteNuncaNegativo()
             'monto_total' => 260000,
             'fecha' => now()->toDateString(),
             'user_id' => $this->admin->id,
-            'descripcion' => "Venta de inventario - Factura V-TEST-PARTIAL",
+            'descripcion' => 'Venta de inventario - Factura V-TEST-PARTIAL',
             'factura_id' => $factura->id,
         ]);
 
@@ -1147,7 +1142,7 @@ public function testSaldoPendienteNuncaNegativo()
             ->assertStatus(200);
     }
 
-    public function testConvertirCotizacionAFacturaExitosamente()
+    public function test_convertir_cotizacion_a_factura_exitosamente()
     {
         $stock = Stock::create([
             'producto' => 'RAM 8GB',
@@ -1159,7 +1154,7 @@ public function testSaldoPendienteNuncaNegativo()
             'activo' => true,
         ]);
 
-        $cotizacion = \App\Models\Cotizacion::create([
+        $cotizacion = Cotizacion::create([
             'codigo' => 'COT-001',
             'cliente_id' => $this->cliente->id,
             'fecha' => now()->toDateString(),
@@ -1169,7 +1164,7 @@ public function testSaldoPendienteNuncaNegativo()
             'user_id' => $this->admin->id,
         ]);
 
-        \App\Models\CotizacionItem::create([
+        CotizacionItem::create([
             'cotizacion_id' => $cotizacion->id,
             'tipo' => 'stock',
             'item_id' => $stock->id,
@@ -1183,7 +1178,7 @@ public function testSaldoPendienteNuncaNegativo()
             ->post(route('cotizaciones.convertir', $cotizacion));
 
         $response->assertRedirect();
-        
+
         $cotizacion->refresh();
         $this->assertEquals('aprobada', $cotizacion->estado);
 
@@ -1196,7 +1191,7 @@ public function testSaldoPendienteNuncaNegativo()
         $this->assertEquals(9, $stock->cantidad);
     }
 
-    public function testEditarFacturaConItemLibreActualizaPagoExitosamente()
+    public function test_editar_factura_con_item_libre_actualiza_pago_exitosamente()
     {
         $factura = Factura::create([
             'numero_factura' => Factura::siguienteNumero('VT-'),
@@ -1243,14 +1238,14 @@ public function testSaldoPendienteNuncaNegativo()
         $this->assertEquals('emitida', $factura->estado);
     }
 
-    public function testReactivarFacturaConItemLibreExitosamente()
+    public function test_reactivar_factura_con_item_libre_exitosamente()
     {
         $factura = Factura::create([
             'numero_factura' => 'VT-TEST-REACTIVAR',
             'tipo_movimiento' => 'venta',
             'estado' => 'anulada',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 0,
             'fecha' => now()->toDateString(),
@@ -1276,14 +1271,14 @@ public function testSaldoPendienteNuncaNegativo()
         $this->assertNotEquals('anulada', $factura->estado);
     }
 
-    public function testEditarFacturaConPagoParcialCreaSaldoPendienteCorrectamente()
+    public function test_editar_factura_con_pago_parcial_crea_saldo_pendiente_correctamente()
     {
         $factura = Factura::create([
             'numero_factura' => 'VT-TEST-PARTIAL',
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 345000,
             'total_pagado' => 345000,
             'fecha' => now()->toDateString(),
@@ -1318,7 +1313,7 @@ public function testSaldoPendienteNuncaNegativo()
         $response = $this->actingAs($this->admin)
             ->put(route('inventario.facturas.update', $factura), [
                 'fecha' => now()->toDateString(),
-                'facturable_global' => 'Cliente:' . $this->cliente->id,
+                'facturable_global' => 'Cliente:'.$this->cliente->id,
                 'total_pagado' => '300.000',
                 'existing_items' => [
                     0 => ['id' => $item1->id, 'stock_id' => '', 'cantidad' => 1, 'precio_unitario' => '100.000', 'descripcion' => 'Servicio Formateo'],

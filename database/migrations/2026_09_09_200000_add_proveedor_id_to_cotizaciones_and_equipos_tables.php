@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::table('cotizaciones', function (Blueprint $table) {
             $table->unsignedBigInteger('cliente_id')->nullable()->change();
-            if (!Schema::hasColumn('cotizaciones', 'proveedor_id')) {
+            if (! Schema::hasColumn('cotizaciones', 'proveedor_id')) {
                 $table->foreignId('proveedor_id')->nullable()->after('cliente_id')->constrained('proveedores')->nullOnDelete();
             }
         });
 
         Schema::table('equipos', function (Blueprint $table) {
             $table->unsignedBigInteger('cliente_id')->nullable()->change();
-            if (!Schema::hasColumn('equipos', 'proveedor_id')) {
+            if (! Schema::hasColumn('equipos', 'proveedor_id')) {
                 $table->foreignId('proveedor_id')->nullable()->after('cliente_id')->constrained('proveedores')->nullOnDelete();
             }
         });

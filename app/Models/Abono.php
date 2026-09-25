@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class Abono extends Model
 {
-    use \App\Traits\Auditable;
+    use Auditable;
 
     protected $fillable = ['mantenimiento_id', 'electronica_id', 'monto', 'fecha', 'tipo_pago', 'descripcion', 'user_id'];
 

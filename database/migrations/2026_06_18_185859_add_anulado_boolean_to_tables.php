@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -24,17 +24,17 @@ return new class extends Migration
         // Migrar datos existentes
         DB::table('mantenimientos')->where('estado', 'anulado')->update([
             'anulado' => true,
-            'estado' => 'pendiente'
+            'estado' => 'pendiente',
         ]);
 
         DB::table('electronicas')->where('estado', 'anulado')->update([
             'anulado' => true,
-            'estado' => 'pendiente'
+            'estado' => 'pendiente',
         ]);
 
         DB::table('movimiento_cajas')->where('estado', 'anulado')->update([
             'anulado' => true,
-            'estado' => 'activo'
+            'estado' => 'activo',
         ]);
     }
 

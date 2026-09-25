@@ -2,39 +2,42 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Gate;
-use App\Models\User;
-use App\Models\Cliente;
-use App\Models\Equipo;
-use App\Models\Proveedor;
 use App\Models\CategoriaStock;
-use App\Models\Stock;
-use App\Models\Factura;
-use App\Models\FacturaItem;
-use App\Models\MovimientoCaja;
+use App\Models\Cliente;
 use App\Models\ConceptoCaja;
-use App\Models\CierreCaja;
+use App\Models\Configuracion;
 use App\Models\Cotizacion;
 use App\Models\CotizacionItem;
+use App\Models\Equipo;
+use App\Models\Factura;
+use App\Models\FacturaItem;
 use App\Models\Mantenimiento;
-use App\Models\Electronica;
+use App\Models\MovimientoCaja;
+use App\Models\Proveedor;
+use App\Models\Stock;
 use App\Models\Tecnico;
-use App\Models\Configuracion;
+use App\Models\User;
 use App\Services\StockService;
-use App\Services\AnulacionService;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 class SystemAuditCommand extends Command
 {
     protected $signature = 'system:audit {--deep : Ejecuta pruebas transaccionales profundas}';
+
     protected $description = 'Ejecuta una auditoría integral automatizada de integridad financiera, seguridad, inventario, caja y roles.';
 
     private int $totalChecks = 0;
+
     private int $passedChecks = 0;
+
     private int $failedChecks = 0;
+
     private array $results = [];
+
     private array $improvements = [];
 
     public function handle(): int
@@ -86,13 +89,13 @@ class SystemAuditCommand extends Command
 
         // 1.1 Existencia y unicidad de los 3 usuarios base del sistema
         $admin = User::where('role', 'admin')->first();
-        $this->recordCheck('Seguridad / RBAC', 'Existencia de Usuario Administrador', (bool)$admin, $admin ? $admin->email : 'Falta crear usuario admin');
+        $this->recordCheck('Seguridad / RBAC', 'Existencia de Usuario Administrador', (bool) $admin, $admin ? $admin->email : 'Falta crear usuario admin');
 
         $tecnico = User::where('role', 'tecnico')->first();
-        $this->recordCheck('Seguridad / RBAC', 'Existencia de Usuario Técnico', (bool)$tecnico, $tecnico ? $tecnico->email : 'Falta crear usuario tecnico');
+        $this->recordCheck('Seguridad / RBAC', 'Existencia de Usuario Técnico', (bool) $tecnico, $tecnico ? $tecnico->email : 'Falta crear usuario tecnico');
 
         $invitado = User::where('role', 'invitado')->first();
-        $this->recordCheck('Seguridad / RBAC', 'Existencia de Usuario Invitado', (bool)$invitado, $invitado ? $invitado->email : 'Falta crear usuario invitado');
+        $this->recordCheck('Seguridad / RBAC', 'Existencia de Usuario Invitado', (bool) $invitado, $invitado ? $invitado->email : 'Falta crear usuario invitado');
 
         // 1.2 Protección de roles y Gates
         if ($admin) {
@@ -112,8 +115,8 @@ class SystemAuditCommand extends Command
         }
 
         // 1.4 Validación de variables críticas en .env
-        $this->recordCheck('Seguridad / .env', 'Configuración de APP_KEY', !empty(config('app.key')));
-        $this->recordCheck('Seguridad / .env', 'Configuración de Base de Datos', !empty(config('database.connections.mysql.database')));
+        $this->recordCheck('Seguridad / .env', 'Configuración de APP_KEY', ! empty(config('app.key')));
+        $this->recordCheck('Seguridad / .env', 'Configuración de Base de Datos', ! empty(config('database.connections.mysql.database')));
     }
 
     /**
@@ -137,7 +140,7 @@ class SystemAuditCommand extends Command
         $facturasParaAuditar = Factura::with('items')->where('estado', '!=', 'anulada')->limit(50)->get();
         foreach ($facturasParaAuditar as $fact) {
             if ($fact->items->isNotEmpty()) {
-                $sumaItems = $fact->items->sum(fn($i) => $i->cantidad * $i->precio_unitario);
+                $sumaItems = $fact->items->sum(fn ($i) => $i->cantidad * $i->precio_unitario);
                 if (abs($sumaItems - $fact->total_documento) > 0.05) {
                     $facturasDescuadradas++;
                 }
@@ -151,7 +154,7 @@ class SystemAuditCommand extends Command
 
         // 2.5 Configuración de la empresa
         $empresa = Configuracion::first();
-        $this->recordCheck('Configuración', 'Datos de Empresa / Taller Configurados', !empty($empresa?->nombre), $empresa?->nombre ?? 'Sin configurar');
+        $this->recordCheck('Configuración', 'Datos de Empresa / Taller Configurados', ! empty($empresa?->nombre), $empresa?->nombre ?? 'Sin configurar');
     }
 
     /**
@@ -174,10 +177,10 @@ class SystemAuditCommand extends Command
             $cliente = Cliente::create([
                 'nombres' => 'Cliente Auditoria',
                 'apellidos' => 'Empresarial',
-                'identificacion' => 'NIT-AUDIT-' . time(),
+                'identificacion' => 'NIT-AUDIT-'.time(),
                 'telefono' => '3009999999',
                 'movil' => '3009999999',
-                'email' => 'audit_cliente_' . time() . '@test.com',
+                'email' => 'audit_cliente_'.time().'@test.com',
                 'direccion' => 'Zona Industrial',
                 'genero' => 'masculino',
                 'tipo_identificacion' => 'NIT',
@@ -186,10 +189,10 @@ class SystemAuditCommand extends Command
 
             $proveedor = Proveedor::create([
                 'tipo_entidad' => 'empresa',
-                'identificacion' => 'NIT-PROV-' . time(),
+                'identificacion' => 'NIT-PROV-'.time(),
                 'nombre_razon_social' => 'Proveedor Global Test',
                 'telefono' => '3008888888',
-                'email' => 'audit_prov_' . time() . '@test.com',
+                'email' => 'audit_prov_'.time().'@test.com',
                 'direccion' => 'Avenida Principal',
                 'activo' => true,
             ]);
@@ -197,7 +200,7 @@ class SystemAuditCommand extends Command
             $categoria = CategoriaStock::firstOrCreate(['nombre' => 'Repuestos Test', 'tipo' => 'categoria']);
 
             $stock = Stock::create([
-                'codigo' => 'STK-AUDIT-' . time(),
+                'codigo' => 'STK-AUDIT-'.time(),
                 'producto' => 'Disco SSD 1TB Test',
                 'categoria_id' => $categoria->id,
                 'cantidad' => 10,
@@ -267,7 +270,7 @@ class SystemAuditCommand extends Command
             ]);
 
             $saldoCalculado = $facturaVenta->saldo_pendiente;
-            $this->recordCheck('Finanzas / Saldos', 'Cálculo exacto de Saldo Pendiente ($100.000)', abs($saldoCalculado - 100000) < 0.01, "Saldo: $" . number_format($saldoCalculado, 0, ',', '.'));
+            $this->recordCheck('Finanzas / Saldos', 'Cálculo exacto de Saldo Pendiente ($100.000)', abs($saldoCalculado - 100000) < 0.01, 'Saldo: $'.number_format($saldoCalculado, 0, ',', '.'));
 
             // ── TEST 3.5: Abono Parcial a Factura y Trazabilidad en Caja ──
             $abonoMonto = 40000;
@@ -288,8 +291,8 @@ class SystemAuditCommand extends Command
 
             $facturaVenta->recalcularPagos();
             $facturaVenta->refresh();
-            $this->recordCheck('Finanzas / Abonos', 'Recálculo automático de Factura tras Abono', abs($facturaVenta->total_pagado - 100000) < 0.01, "Total pagado: $" . number_format($facturaVenta->total_pagado, 0, ',', '.'));
-            $this->recordCheck('Finanzas / Abonos', 'Saldo restante exacto ($60.000)', abs($facturaVenta->saldo_pendiente - 60000) < 0.01, "Saldo restante: $" . number_format($facturaVenta->saldo_pendiente, 0, ',', '.'));
+            $this->recordCheck('Finanzas / Abonos', 'Recálculo automático de Factura tras Abono', abs($facturaVenta->total_pagado - 100000) < 0.01, 'Total pagado: $'.number_format($facturaVenta->total_pagado, 0, ',', '.'));
+            $this->recordCheck('Finanzas / Abonos', 'Saldo restante exacto ($60.000)', abs($facturaVenta->saldo_pendiente - 60000) < 0.01, 'Saldo restante: $'.number_format($facturaVenta->saldo_pendiente, 0, ',', '.'));
 
             // ── TEST 3.6: Protección de Abonos que superan el saldo ──
             $intentoSobreabono = 70000;
@@ -298,7 +301,7 @@ class SystemAuditCommand extends Command
 
             // ── TEST 3.7: Flujo de Cotización (Creación, Rechazo, Reactivación y Conversión) ──
             $cotizacion = Cotizacion::create([
-                'codigo' => 'COT-AUDIT-' . time(),
+                'codigo' => 'COT-AUDIT-'.time(),
                 'cliente_id' => $cliente->id,
                 'fecha' => now()->toDateString(),
                 'validez_dias' => 15,
@@ -336,13 +339,13 @@ class SystemAuditCommand extends Command
                 'nombre' => 'Portátil Asus Audit',
                 'marca' => 'Asus',
                 'modelo' => 'ZenBook',
-                'serie' => 'SN-AUDIT-' . time(),
+                'serie' => 'SN-AUDIT-'.time(),
                 'cliente_id' => $cliente->id,
                 'user_id' => $userAdmin->id,
             ]);
 
             $mantenimiento = Mantenimiento::create([
-                'id_orden' => 'MNT-AUDIT-' . time(),
+                'id_orden' => 'MNT-AUDIT-'.time(),
                 'equipo_id' => $equipo->id,
                 'tecnico_id' => $tecnicoM->id,
                 'user_id' => $userAdmin->id,
@@ -353,11 +356,11 @@ class SystemAuditCommand extends Command
                 'estado' => 'pendiente',
                 'costo' => 40000,
             ]);
-            $this->recordCheck('Taller / Servicios', 'Creación de Orden de Mantenimiento', !empty($mantenimiento->id_orden), "Orden: {$mantenimiento->id_orden}");
+            $this->recordCheck('Taller / Servicios', 'Creación de Orden de Mantenimiento', ! empty($mantenimiento->id_orden), "Orden: {$mantenimiento->id_orden}");
 
             // ── TEST 3.9: Anulación de Venta y Reversión de Stock / Caja ──
             $stockAntesAnulacion = $stock->fresh()->cantidad;
-            
+
             // Simular anulación: Venta anulada devuelve el stock
             $stock->incrementarStock(2);
             $movCajaVenta->update(['estado' => 'anulado', 'anulado' => true]);
@@ -369,10 +372,10 @@ class SystemAuditCommand extends Command
 
             // ── TEST 3.10: Cuadre de Arqueo de Caja Diario ──
             $ingresosActivos = MovimientoCaja::whereDate('fecha', now()->toDateString())->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
-            $egresosActivos  = MovimientoCaja::whereDate('fecha', now()->toDateString())->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
-            $saldoEsperado   = $ingresosActivos - $egresosActivos;
+            $egresosActivos = MovimientoCaja::whereDate('fecha', now()->toDateString())->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
+            $saldoEsperado = $ingresosActivos - $egresosActivos;
 
-            $this->recordCheck('Caja / Arqueo', 'Fórmula de Arqueo: Ingresos - Egresos = Saldo', true, "Balance activo: $" . number_format($saldoEsperado, 0, ',', '.'));
+            $this->recordCheck('Caja / Arqueo', 'Fórmula de Arqueo: Ingresos - Egresos = Saldo', true, 'Balance activo: $'.number_format($saldoEsperado, 0, ',', '.'));
 
         } catch (\Exception $e) {
             $this->recordCheck('Flujos de Negocio', 'Ejecución de pruebas transaccionales', false, $e->getMessage());
@@ -382,18 +385,19 @@ class SystemAuditCommand extends Command
 
             // Restaurar AUTO_INCREMENT al valor real (1 si está vacía o max(id)+1)
             $tablesToReset = [
-                'clientes', 'equipos', 'tecnicos', 'mantenimientos', 'stocks', 
-                'electronicas', 'facturas', 'factura_items', 'movimiento_cajas', 
-                'cotizaciones', 'cotizacions', 'cotizacion_items', 'abonos', 'cierre_cajas'
+                'clientes', 'equipos', 'tecnicos', 'mantenimientos', 'stocks',
+                'electronicas', 'facturas', 'factura_items', 'movimiento_cajas',
+                'cotizaciones', 'cotizacions', 'cotizacion_items', 'abonos', 'cierre_cajas',
             ];
             foreach ($tablesToReset as $tbl) {
                 try {
-                    if (\Illuminate\Support\Facades\Schema::hasTable($tbl)) {
+                    if (Schema::hasTable($tbl)) {
                         $maxId = (int) DB::table($tbl)->max('id');
                         $nextId = $maxId > 0 ? $maxId + 1 : 1;
                         DB::statement("ALTER TABLE `{$tbl}` AUTO_INCREMENT = {$nextId};");
                     }
-                } catch (\Throwable $ignored) {}
+                } catch (\Throwable $ignored) {
+                }
             }
 
             $this->recordCheck('Auditoría / Aislamiento', 'Rollback transaccional limpio (Cero contaminación de datos)', true, 'Base de datos intacta');
@@ -423,6 +427,7 @@ class SystemAuditCommand extends Command
             $this->info('║     Integridad financiera, inventario, caja y seguridad verificadas.       ║');
             $this->info('╚════════════════════════════════════════════════════════════════════════════╝');
             $this->line('');
+
             return 0;
         }
 
@@ -431,6 +436,7 @@ class SystemAuditCommand extends Command
             $this->line("  ⚠️ {$imp}");
         }
         $this->line('');
+
         return 1;
     }
 }

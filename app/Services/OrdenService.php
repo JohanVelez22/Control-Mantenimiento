@@ -18,12 +18,12 @@ class OrdenService
     /**
      * Calcula el siguiente número de orden.
      *
-     * @param string $prefijo    Prefijo del documento (p.ej. 'ORD-', 'ELC-').
-     * @param class-string<Model> $modelo Modelo dueño de la secuencia.
-     * @param string $columna    Columna que almacena el id (por defecto 'id_orden').
-     * @param int|null $pad      Si se indica, rellena con ceros (p.ej. 4 => '0001').
-     * @param bool $lock         true = usa lockForUpdate dentro de transacción (escritura); false = preview sin bloqueo.
-     * @return string            Número de orden generado (p.ej. 'ORD-12' o 'ELC-0003').
+     * @param  string  $prefijo  Prefijo del documento (p.ej. 'ORD-', 'ELC-').
+     * @param  class-string<Model>  $modelo  Modelo dueño de la secuencia.
+     * @param  string  $columna  Columna que almacena el id (por defecto 'id_orden').
+     * @param  int|null  $pad  Si se indica, rellena con ceros (p.ej. 4 => '0001').
+     * @param  bool  $lock  true = usa lockForUpdate dentro de transacción (escritura); false = preview sin bloqueo.
+     * @return string Número de orden generado (p.ej. 'ORD-12' o 'ELC-0003').
      */
     public function siguiente(
         string $prefijo,
@@ -34,7 +34,7 @@ class OrdenService
     ): string {
         $generar = function () use ($prefijo, $modelo, $columna, $pad, $lock) {
             $query = $modelo::query();
-            if (!empty($prefijo)) {
+            if (! empty($prefijo)) {
                 $query->where($columna, 'like', "{$prefijo}%");
             }
             $query->orderByDesc('id');
@@ -46,7 +46,7 @@ class OrdenService
             $numero = $ultimo ? ((int) preg_replace('/[^0-9]/', '', $ultimo->{$columna})) + 1 : 1;
             $numStr = $pad ? str_pad((string) $numero, $pad, '0', STR_PAD_LEFT) : (string) $numero;
 
-            return $prefijo . $numStr;
+            return $prefijo.$numStr;
         };
 
         return $lock ? DB::transaction($generar) : $generar();

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Electronica;
 use App\Traits\HandlesStockAttach;
+use Illuminate\Http\Request;
 
 class ElectronicaStockController extends Controller
 {
@@ -13,8 +13,8 @@ class ElectronicaStockController extends Controller
     public function store(Request $request, Electronica $electronica)
     {
         $validated = $request->validate([
-            'stock_id'  => 'required|exists:stocks,id',
-            'cantidad'  => 'required|integer|min:1',
+            'stock_id' => 'required|exists:stocks,id',
+            'cantidad' => 'required|integer|min:1',
         ]);
 
         return $this->attachStock(

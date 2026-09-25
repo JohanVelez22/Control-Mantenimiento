@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cotizacion extends Model
 {
-    use HasFactory, \App\Traits\Auditable;
+    use \App\Traits\Auditable, HasFactory;
 
     protected $table = 'cotizaciones';
 
@@ -21,7 +21,7 @@ class Cotizacion extends Model
         'estado',
         'anulado',
         'notas',
-        'user_id'
+        'user_id',
     ];
 
     protected function casts(): array
@@ -59,6 +59,7 @@ class Cotizacion extends Model
         if ($this->proveedor) {
             return $this->proveedor->nombre_razon_social;
         }
+
         return 'N/A';
     }
 
@@ -75,11 +76,12 @@ class Cotizacion extends Model
     public function getDestinatarioLabelAttribute(): string
     {
         if ($this->proveedor) {
-            return '🏢 ' . $this->proveedor->nombre_razon_social;
+            return '🏢 '.$this->proveedor->nombre_razon_social;
         }
         if ($this->cliente) {
-            return '👤 ' . $this->cliente->nombre;
+            return '👤 '.$this->cliente->nombre;
         }
+
         return 'N/A';
     }
 

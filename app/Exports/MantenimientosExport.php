@@ -2,16 +2,19 @@
 
 namespace App\Exports;
 
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class MantenimientosExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithEvents
+class MantenimientosExport implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithMapping, WithStyles
 {
     protected $mantenimientos;
 
@@ -26,16 +29,16 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
+            AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-                
+
                 // Centrar y combinar título (Fila 1)
                 $sheet->mergeCells('A1:O1');
-                $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                
+                $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
                 // Centrar y combinar fecha (Fila 2)
                 $sheet->mergeCells('A2:O2');
-                $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 $lastRow = $sheet->getHighestRow();
                 $footerRow = $lastRow + 2; // Dejamos una fila de espacio
@@ -48,20 +51,20 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
 
                 // Escribir el total de registros bajo la columna "Orden" (Columna A)
                 $sheet->setCellValue("A{$footerRow}", "Total: {$totalRegistros}");
-                
+
                 // Escribir el costo total bajo la columna "Costo" (Columna M)
-                $sheet->setCellValue("M{$footerRow}", "Total: $" . number_format($costoTotal, 0, ',', '.'));
+                $sheet->setCellValue("M{$footerRow}", 'Total: $'.number_format($costoTotal, 0, ',', '.'));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:M{$footerRow}")->applyFromArray([
                     'font' => [
                         'bold' => true,
-                        'size' => 11
+                        'size' => 11,
                     ],
                 ]);
 
                 // Alineación a la derecha para el costo total
-                $sheet->getStyle("M{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle("M{$footerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             },
         ];
     }
@@ -70,16 +73,16 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
     {
         return [
             // Estilo para el título principal
-            1    => ['font' => ['bold' => true, 'size' => 16]],
+            1 => ['font' => ['bold' => true, 'size' => 16]],
             // Estilo para la fecha
-            2    => ['font' => ['italic' => true, 'size' => 12]],
+            2 => ['font' => ['italic' => true, 'size' => 12]],
             // Estilo para los encabezados de la tabla (Fila 4)
-            4    => [
+            4 => [
                 'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
                 'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '4A5568']
-                ]
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => '4A5568'],
+                ],
             ],
         ];
     }
@@ -93,25 +96,25 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
     {
         return [
             ['REPORTE DE MANTENIMIENTOS'],
-            ['Generado el: ' . date('d/m/Y h:i A')],
+            ['Generado el: '.date('d/m/Y h:i A')],
             [''], // Fila en blanco para separación
             [
-                'Orden', 
-                'Cliente', 
+                'Orden',
+                'Cliente',
                 'Identificación',
-                'Equipo', 
-                'Marca',  
-                'Modelo', 
+                'Equipo',
+                'Marca',
+                'Modelo',
                 'Serie',
-                'Técnico', 
-                'Tipo', 
-                'Reparación', 
+                'Técnico',
+                'Tipo',
+                'Reparación',
                 'Progreso',
                 'Estado',
-                'Costo', 
-                'Fecha Entrada', 
-                'Fecha Salida'
-            ]
+                'Costo',
+                'Fecha Entrada',
+                'Fecha Salida',
+            ],
         ];
     }
 
@@ -122,8 +125,8 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
             $m->equipo->cliente->nombre ?? 'N/A',
             $m->equipo->cliente->identificacion ?? '-',
             $m->equipo->nombre ?? 'N/A',
-            $m->equipo->marca ?? 'N/A',  
-            $m->equipo->modelo ?? 'N/A', 
+            $m->equipo->marca ?? 'N/A',
+            $m->equipo->modelo ?? 'N/A',
             $m->equipo->serie ?? 'N/A',
             $m->tecnico->nombre ?? 'N/A',
             ucfirst($m->tipo),
@@ -131,8 +134,8 @@ class MantenimientosExport implements FromCollection, WithHeadings, WithMapping,
             ucfirst($m->estado),
             $m->anulado ? 'Anulado' : 'Activo',
             (float) $m->costo,
-            \Carbon\Carbon::parse($m->fecha_entrada)->format('d/m/Y'),
-            $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente',
+            Carbon::parse($m->fecha_entrada)->format('d/m/Y'),
+            $m->fecha_salida ? Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente',
         ];
     }
 }

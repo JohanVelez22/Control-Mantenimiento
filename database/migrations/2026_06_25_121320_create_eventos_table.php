@@ -21,9 +21,9 @@ return new class extends Migration
             $table->json('valores_nuevos')->nullable();
             $table->string('ip_direccion')->nullable();
             $table->string('user_agent')->nullable();
-            $table->text('descripcion')->nullable(); 
+            $table->text('descripcion')->nullable();
             $table->timestamps();
-            
+
             $table->index(['modelo_tipo', 'modelo_id']);
             $table->index('accion');
         });

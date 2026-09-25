@@ -25,7 +25,7 @@ class MantenimientoPolicy
      */
     public function create(User $user): bool
     {
-        return !$user->isInvitado();
+        return ! $user->isInvitado();
     }
 
     /**
@@ -33,7 +33,7 @@ class MantenimientoPolicy
      */
     public function update(User $user, Mantenimiento $mantenimiento): bool
     {
-        return !$user->isInvitado();
+        return ! $user->isInvitado();
     }
 
     /**

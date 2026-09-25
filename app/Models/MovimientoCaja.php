@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class MovimientoCaja extends Model
 {
-    use \App\Traits\Auditable;
+    use Auditable;
 
     protected $fillable = [
         'empresa',
@@ -47,9 +48,10 @@ class MovimientoCaja extends Model
     {
         if ($this->relationLoaded('childPayments')) {
             return (float) $this->childPayments
-                ->filter(fn($p) => !$p->anulado && $p->estado === 'activo')
+                ->filter(fn ($p) => ! $p->anulado && $p->estado === 'activo')
                 ->sum('monto');
         }
+
         return (float) $this->childPayments()
             ->where('anulado', false)
             ->where('estado', 'activo')
@@ -58,16 +60,18 @@ class MovimientoCaja extends Model
 
     public function getRefSearchAttribute()
     {
-        if (!$this->descripcion) return null;
+        if (! $this->descripcion) {
+            return null;
+        }
 
         if (preg_match('/#([A-Za-z0-9-]+)/', $this->descripcion, $m)) {
-            return '#' . $m[1];
+            return '#'.$m[1];
         }
         if (preg_match('/Orden\s+#?([A-Za-z0-9-]+)/i', $this->descripcion, $m)) {
-            return 'Orden ' . $m[1];
+            return 'Orden '.$m[1];
         }
         if (preg_match('/ELC\s+#?([A-Za-z0-9-]+)/i', $this->descripcion, $m)) {
-            return 'ELC ' . $m[1];
+            return 'ELC '.$m[1];
         }
 
         return null;
@@ -77,25 +81,26 @@ class MovimientoCaja extends Model
     {
         $root = $this->parent_id ? ($this->parent ?: self::find($this->parent_id)) : $this;
 
-        if (!$root) {
+        if (! $root) {
             return (float) ($this->anulado ? 0 : $this->monto);
         }
 
         $rootId = $root->id;
         $refSearch = $root->ref_search;
 
-        if ($root->relationLoaded('childPayments') && !$refSearch) {
+        if ($root->relationLoaded('childPayments') && ! $refSearch) {
             $abonosSum = (float) $root->childPayments
-                ->filter(fn($p) => !$p->anulado && $p->estado === 'activo')
+                ->filter(fn ($p) => ! $p->anulado && $p->estado === 'activo')
                 ->sum('monto');
+
             return (float) ($root->anulado ? 0 : $root->monto) + $abonosSum;
         }
 
         return (float) self::activos()
-            ->where(function($q) use ($rootId, $refSearch) {
+            ->where(function ($q) use ($rootId, $refSearch) {
                 if ($rootId) {
                     $q->where('id', $rootId)
-                      ->orWhere('parent_id', $rootId);
+                        ->orWhere('parent_id', $rootId);
                 }
                 if ($refSearch) {
                     $q->orWhere('descripcion', 'like', "%{$refSearch}%");
@@ -118,15 +123,21 @@ class MovimientoCaja extends Model
         if ($this->descripcion) {
             if (preg_match('/#([A-Za-z0-9-]+)/', $this->descripcion, $m)) {
                 $val = Factura::where('numero_factura', $m[1])->value('total_documento');
-                if ($val) return (float) $val;
+                if ($val) {
+                    return (float) $val;
+                }
             }
             if (preg_match('/Orden\s+#?([A-Za-z0-9-]+)/i', $this->descripcion, $m)) {
                 $val = Mantenimiento::where('id_orden', $m[1])->value('costo');
-                if ($val) return (float) $val;
+                if ($val) {
+                    return (float) $val;
+                }
             }
             if (preg_match('/ELC\s+#?([A-Za-z0-9-]+)/i', $this->descripcion, $m)) {
                 $val = Electronica::where('id_orden', $m[1])->value('costo');
-                if ($val) return (float) $val;
+                if ($val) {
+                    return (float) $val;
+                }
             }
         }
 

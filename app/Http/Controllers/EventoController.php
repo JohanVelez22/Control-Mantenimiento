@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Evento;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EventoController extends Controller
 {
     public function index(Request $request)
     {
-        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             return redirect()->route('dashboard')->with('error', 'Acceso denegado. Solo administradores pueden ver la auditoría de eventos.');
         }
 
@@ -20,7 +21,7 @@ class EventoController extends Controller
         if ($request->filled('accion') && $request->accion !== 'todas') {
             $query->where('accion', $request->accion);
         }
-        
+
         if ($request->filled('user_id') && $request->user_id !== 'todos') {
             $query->where('user_id', $request->user_id);
         }
@@ -30,10 +31,10 @@ class EventoController extends Controller
 
         $query->whereDate('created_at', '>=', $fechaDesde);
         $query->whereDate('created_at', '<=', $fechaHasta);
-        
+
         if ($request->filled('search')) {
-            $query->where('descripcion', 'LIKE', '%' . $request->search . '%')
-                  ->orWhere('modelo_tipo', 'LIKE', '%' . $request->search . '%');
+            $query->where('descripcion', 'LIKE', '%'.$request->search.'%')
+                ->orWhere('modelo_tipo', 'LIKE', '%'.$request->search.'%');
         }
 
         $eventos = $query->paginate(30)->withQueryString();
@@ -44,7 +45,7 @@ class EventoController extends Controller
 
     public function show(Evento $evento)
     {
-        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             return redirect()->route('dashboard')->with('error', 'Acceso denegado. Solo administradores pueden ver la auditoría de eventos.');
         }
 
@@ -52,7 +53,7 @@ class EventoController extends Controller
         // Forzar parseo como array si fuera necesario
         $viejos = is_string($evento->valores_antiguos) ? json_decode($evento->valores_antiguos, true) : $evento->valores_antiguos;
         $nuevos = is_string($evento->valores_nuevos) ? json_decode($evento->valores_nuevos, true) : $evento->valores_nuevos;
-        
+
         return view('eventos.show', compact('evento', 'viejos', 'nuevos'));
     }
 }

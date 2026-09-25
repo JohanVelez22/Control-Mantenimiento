@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class Electronica extends Model
 {
-    use HasFactory, \App\Traits\Auditable;
+    use \App\Traits\Auditable, HasFactory;
 
     protected $fillable = [
         'id_orden',
@@ -29,7 +29,7 @@ class Electronica extends Model
     {
         return [
             'fecha_entrada' => 'date',
-            'fecha_salida'  => 'date',
+            'fecha_salida' => 'date',
         ];
     }
 
@@ -39,6 +39,7 @@ class Electronica extends Model
         $fin = ($this->estado === 'terminado' && $this->fecha_salida)
             ? $this->fecha_salida
             : Carbon::today();
+
         return (int) $this->fecha_entrada->diffInDays($fin);
     }
 
@@ -50,6 +51,7 @@ class Electronica extends Model
         if (isset($this->attributes['total_abonado'])) {
             return (float) $this->attributes['total_abonado'];
         }
+
         return (float) $this->abonos()->sum('monto');
     }
 
@@ -87,8 +89,8 @@ class Electronica extends Model
     public function stocks()
     {
         return $this->belongsToMany(Stock::class, 'electronica_stock')
-                    ->withPivot('cantidad', 'precio_unitario')
-                    ->withTimestamps();
+            ->withPivot('cantidad', 'precio_unitario')
+            ->withTimestamps();
     }
 
     public function abonos()

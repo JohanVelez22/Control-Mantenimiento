@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
     public function index()
     {
         $users = User::orderBy('id', 'desc')->paginate(10);
+
         return view('usuarios.index', compact('users'));
     }
 
@@ -26,6 +28,7 @@ class UserController extends Controller
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('usuarios.index')->with('error', 'Solo el administrador puede crear usuarios.');
         }
+
         return view('usuarios.create');
     }
 
@@ -68,6 +71,7 @@ class UserController extends Controller
         if (auth()->user()->role !== 'admin' && auth()->id() !== $usuario->id) {
             return redirect()->route('usuarios.index')->with('error', 'Solo puedes editar tu propio perfil.');
         }
+
         return view('usuarios.edit', ['user' => $usuario]);
     }
 
@@ -79,7 +83,7 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $usuario->id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$usuario->id,
             'role' => 'required|in:admin,tecnico,invitado',
             'photo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg|max:5120',
             'remove_photo' => 'nullable|in:0,1,true,false',
@@ -126,10 +130,9 @@ class UserController extends Controller
         return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado correctamente.');
     }
 
-    
     public function anular(User $usuario)
     {
-        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             return back()->with('error', 'No tienes permisos para modificar el estado.');
         }
 
@@ -137,7 +140,7 @@ class UserController extends Controller
             return back()->with('error', 'No puedes anular tu propio usuario.');
         }
 
-        $usuario->update(['active' => !$usuario->active]);
+        $usuario->update(['active' => ! $usuario->active]);
         $action = $usuario->active ? 'reactivado' : 'desactivado (anulado)';
 
         return back()->with('success', "El usuario ha sido {$action} exitosamente.");

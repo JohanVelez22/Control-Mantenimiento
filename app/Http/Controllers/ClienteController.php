@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cliente;
 use App\Helpers\ColombiaHelper;
+use App\Models\Cliente;
+use App\Services\AnulacionService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ClienteController extends Controller
 {
@@ -15,12 +15,12 @@ class ClienteController extends Controller
 
         if ($request->filled('search')) {
             $s = $request->search;
-            $query->where(function($q) use ($s) {
+            $query->where(function ($q) use ($s) {
                 $q->where('nombres', 'like', "%{$s}%")
-                  ->orWhere('apellidos', 'like', "%{$s}%")
-                  ->orWhere('identificacion', 'like', "%{$s}%")
-                  ->orWhere('movil', 'like', "%{$s}%")
-                  ->orWhere('email', 'like', "%{$s}%");
+                    ->orWhere('apellidos', 'like', "%{$s}%")
+                    ->orWhere('identificacion', 'like', "%{$s}%")
+                    ->orWhere('movil', 'like', "%{$s}%")
+                    ->orWhere('email', 'like', "%{$s}%");
             });
         }
 
@@ -29,6 +29,7 @@ class ClienteController extends Controller
         }
 
         $clientes = $query->orderBy('id', 'desc')->paginate(15);
+
         return view('clientes.index', compact('clientes'));
     }
 
@@ -40,7 +41,8 @@ class ClienteController extends Controller
     public function create()
     {
         $departamentos = ColombiaHelper::departamentos();
-        $tiposId       = ColombiaHelper::tiposIdentificacion();
+        $tiposId = ColombiaHelper::tiposIdentificacion();
+
         return view('clientes.create', compact('departamentos', 'tiposId'));
     }
 
@@ -48,17 +50,17 @@ class ClienteController extends Controller
     {
 
         $validated = $request->validate([
-            'nombres'            => 'required|string|max:60',
-            'apellidos'          => 'required|string|max:80',
-            'tipo_identificacion'=> 'required|in:cedula_ciudadania,cedula_extranjeria,nit,pasaporte,tarjeta_identidad,rut',
-            'identificacion'     => 'required|string|max:30|unique:clientes',
-            'genero'             => 'required|in:masculino,femenino,indefinido',
-            'tipo_cliente'       => 'required|in:cliente,tecnico',
-            'movil'              => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
-            'email'              => 'nullable|email|max:100',
-            'direccion'          => 'nullable|string|max:500',
-            'departamento'       => 'nullable|string|max:60',
-            'municipio'          => 'nullable|string|max:80',
+            'nombres' => 'required|string|max:60',
+            'apellidos' => 'required|string|max:80',
+            'tipo_identificacion' => 'required|in:cedula_ciudadania,cedula_extranjeria,nit,pasaporte,tarjeta_identidad,rut',
+            'identificacion' => 'required|string|max:30|unique:clientes',
+            'genero' => 'required|in:masculino,femenino,indefinido',
+            'tipo_cliente' => 'required|in:cliente,tecnico',
+            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
+            'email' => 'nullable|email|max:100',
+            'direccion' => 'nullable|string|max:500',
+            'departamento' => 'nullable|string|max:60',
+            'municipio' => 'nullable|string|max:80',
         ]);
 
         Cliente::create($validated);
@@ -69,10 +71,11 @@ class ClienteController extends Controller
     public function edit(Cliente $cliente)
     {
         $departamentos = ColombiaHelper::departamentos();
-        $tiposId       = ColombiaHelper::tiposIdentificacion();
-        $municipios    = $cliente->departamento
+        $tiposId = ColombiaHelper::tiposIdentificacion();
+        $municipios = $cliente->departamento
             ? ColombiaHelper::municipiosDe($cliente->departamento)
             : [];
+
         return view('clientes.edit', compact('cliente', 'departamentos', 'tiposId', 'municipios'));
     }
 
@@ -80,17 +83,17 @@ class ClienteController extends Controller
     {
 
         $validated = $request->validate([
-            'nombres'            => 'required|string|max:60',
-            'apellidos'          => 'required|string|max:80',
-            'tipo_identificacion'=> 'required|in:cedula_ciudadania,cedula_extranjeria,nit,pasaporte,tarjeta_identidad,rut',
-            'identificacion'     => 'required|string|max:30|unique:clientes,identificacion,' . $cliente->id,
-            'genero'             => 'required|in:masculino,femenino,indefinido',
-            'tipo_cliente'       => 'required|in:cliente,tecnico',
-            'movil'              => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
-            'email'              => 'nullable|email|max:100',
-            'direccion'          => 'nullable|string|max:500',
-            'departamento'       => 'nullable|string|max:60',
-            'municipio'          => 'nullable|string|max:80',
+            'nombres' => 'required|string|max:60',
+            'apellidos' => 'required|string|max:80',
+            'tipo_identificacion' => 'required|in:cedula_ciudadania,cedula_extranjeria,nit,pasaporte,tarjeta_identidad,rut',
+            'identificacion' => 'required|string|max:30|unique:clientes,identificacion,'.$cliente->id,
+            'genero' => 'required|in:masculino,femenino,indefinido',
+            'tipo_cliente' => 'required|in:cliente,tecnico',
+            'movil' => 'required|string|regex:/^[\d\+\-\s\(\)]+$/|max:30',
+            'email' => 'nullable|email|max:100',
+            'direccion' => 'nullable|string|max:500',
+            'departamento' => 'nullable|string|max:60',
+            'municipio' => 'nullable|string|max:80',
         ]);
 
         $cliente->update($validated);
@@ -98,16 +101,17 @@ class ClienteController extends Controller
         return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
     }
 
-    public function anular(\Illuminate\Http\Request $request, Cliente $cliente)
+    public function anular(Request $request, Cliente $cliente)
     {
-        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible($request)) {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
         }
 
-        $cliente->active = !$cliente->active;
+        $cliente->active = ! $cliente->active;
         $cliente->save();
 
         $action = $cliente->active ? 'reactivado' : 'desactivado';
+
         return redirect()->back()->with('success', "El cliente ha sido {$action} exitosamente.");
     }
 
@@ -117,6 +121,7 @@ class ClienteController extends Controller
     public function municipios(Request $request)
     {
         $dep = $request->get('departamento', '');
+
         return response()->json(ColombiaHelper::municipiosDe($dep));
     }
 }

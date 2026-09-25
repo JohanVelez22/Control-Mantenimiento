@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mantenimiento extends Model
 {
-    use HasFactory, \App\Traits\Auditable;
+    use \App\Traits\Auditable, HasFactory;
+
     protected $fillable = [
         'id_orden',
         'fecha_entrada',
@@ -20,7 +21,7 @@ class Mantenimiento extends Model
         'anulado',
         'equipo_id',
         'tecnico_id',
-        'user_id'
+        'user_id',
     ];
 
     protected function casts(): array
@@ -54,8 +55,8 @@ class Mantenimiento extends Model
     public function stocks()
     {
         return $this->belongsToMany(Stock::class)
-                    ->withPivot('cantidad', 'precio_unitario')
-                    ->withTimestamps();
+            ->withPivot('cantidad', 'precio_unitario')
+            ->withTimestamps();
     }
 
     // ─── Scopes ───────────────────────────────────────────────────
@@ -81,6 +82,7 @@ class Mantenimiento extends Model
         if (isset($this->attributes['total_abonado'])) {
             return (float) $this->attributes['total_abonado'];
         }
+
         return (float) $this->abonos()->sum('monto');
     }
 

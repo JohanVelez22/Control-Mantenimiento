@@ -18,10 +18,10 @@ trait Auditable
                     $model,
                     null,
                     clone_model_data($model->getAttributes()),
-                    'Creó un nuevo registro en ' . class_basename($model)
+                    'Creó un nuevo registro en '.class_basename($model)
                 );
             } catch (\Exception $e) {
-                Log::warning('Auditable::created — no se pudo registrar evento: ' . $e->getMessage());
+                Log::warning('Auditable::created — no se pudo registrar evento: '.$e->getMessage());
             }
         });
 
@@ -53,25 +53,25 @@ trait Auditable
                     return;
                 }
 
-                $accion  = 'actualizado';
-                $mensaje = 'Actualizó un registro de ' . class_basename($model);
+                $accion = 'actualizado';
+                $mensaje = 'Actualizó un registro de '.class_basename($model);
 
                 if (isset($changedNuevos['anulado']) && $changedNuevos['anulado'] == 1
                     && isset($changedViejos['anulado']) && $changedViejos['anulado'] == 0) {
-                    $accion  = 'anulado';
-                    $mensaje = 'Anuló un registro de ' . class_basename($model);
+                    $accion = 'anulado';
+                    $mensaje = 'Anuló un registro de '.class_basename($model);
                 } elseif (isset($changedNuevos['estado']) && $changedNuevos['estado'] === 'anulada') {
-                    $accion  = 'anulado';
-                    $mensaje = 'Anuló un registro de ' . class_basename($model);
+                    $accion = 'anulado';
+                    $mensaje = 'Anuló un registro de '.class_basename($model);
                 } elseif (isset($changedNuevos['active']) && $changedNuevos['active'] == 0
                           && isset($changedViejos['active']) && $changedViejos['active'] == 1) {
-                    $accion  = 'anulado';
-                    $mensaje = 'Inactivó (anuló) un registro de ' . class_basename($model);
+                    $accion = 'anulado';
+                    $mensaje = 'Inactivó (anuló) un registro de '.class_basename($model);
                 }
 
                 Evento::registrar($accion, $model, $changedViejos, $changedNuevos, $mensaje);
             } catch (\Exception $e) {
-                Log::warning('Auditable::updated — no se pudo registrar evento: ' . $e->getMessage());
+                Log::warning('Auditable::updated — no se pudo registrar evento: '.$e->getMessage());
             }
         });
 
@@ -82,10 +82,10 @@ trait Auditable
                     $model,
                     clone_model_data($model->getOriginal()),
                     null,
-                    'Eliminó un registro de ' . class_basename($model)
+                    'Eliminó un registro de '.class_basename($model)
                 );
             } catch (\Exception $e) {
-                Log::warning('Auditable::deleted — no se pudo registrar evento: ' . $e->getMessage());
+                Log::warning('Auditable::deleted — no se pudo registrar evento: '.$e->getMessage());
             }
         });
     }
@@ -104,6 +104,7 @@ if (! function_exists('clone_model_data')) {
                 $data[$key] = '*** ENMASCARADO ***';
             }
         }
+
         return $data;
     }
 }

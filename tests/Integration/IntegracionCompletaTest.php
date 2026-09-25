@@ -2,23 +2,21 @@
 
 namespace Tests\Integration;
 
-use Tests\TestCase;
-use App\Models\Stock;
-use App\Models\Proveedor;
+use App\Models\Abono;
 use App\Models\Cliente;
+use App\Models\ConceptoCaja;
+use App\Models\Equipo;
 use App\Models\Factura;
 use App\Models\FacturaItem;
-use App\Models\MovimientoCaja;
-use App\Models\ConceptoCaja;
 use App\Models\Mantenimiento;
-use App\Models\Electronica;
-use App\Models\Abono;
+use App\Models\MovimientoCaja;
+use App\Models\Proveedor;
+use App\Models\Stock;
 use App\Models\Tecnico;
-use App\Models\Equipo;
 use App\Models\User;
 use App\Services\StockService;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 /**
  * Test de integración completa - Lógica Financiera / Inventario / Caja
@@ -26,50 +24,55 @@ use Illuminate\Support\Facades\Hash;
 class IntegracionCompletaTest extends TestCase
 {
     private $admin;
+
     private $tecnico;
+
     private $cliente;
+
     private $proveedor;
+
     private $tecnicoM;
+
     private $equipo;
 
     protected function setUp(): void
     {
         parent::setUp();
         // Usar datos ya existentes en la BD (seed previa)
-        $this->admin = User::where('role','admin')->first();
-        $this->tecnico = User::where('role','tecnico')->first();
+        $this->admin = User::where('role', 'admin')->first();
+        $this->tecnico = User::where('role', 'tecnico')->first();
         $this->cliente = Cliente::first();
         $this->proveedor = Proveedor::first();
         $this->tecnicoM = Tecnico::first();
         $this->equipo = Equipo::first();
 
         // Si no existen (primer test), crearlos mínimamente
-        if (!$this->admin) {
+        if (! $this->admin) {
             $this->admin = User::create([
                 'name' => 'Admin Test', 'email' => 'admin_test_'.time().'@test.com',
                 'password' => Hash::make('password'), 'role' => 'admin', 'active' => true,
             ]);
         }
-        if (!$this->tecnico) {
+        if (! $this->tecnico) {
             $this->tecnico = User::create([
                 'name' => 'Tecnico Test', 'email' => 'tecnico_test_'.time().'@test.com',
                 'password' => Hash::make('password'), 'role' => 'tecnico', 'active' => true,
             ]);
         }
-        if (!User::where('role', 'invitado')->exists()) {
+        if (! User::where('role', 'invitado')->exists()) {
             User::create([
                 'name' => 'Invitado Test', 'email' => 'invitado_test_'.time().'@test.com',
                 'password' => Hash::make('password'), 'role' => 'invitado', 'active' => true,
             ]);
         }
-        if (!$this->cliente) {
+        if (! $this->cliente) {
             $this->cliente = Cliente::create([
                 'nombre' => 'Cliente Test', 'identificacion' => 'CC-'.time(),
                 'telefono' => '3000000000', 'movil' => '3000000000',
                 'email' => 'cliente_test_'.time().'@test.com', 'direccion' => 'Calle Test',
             ]);
         }
-        if (!$this->proveedor) {
+        if (! $this->proveedor) {
             $this->proveedor = Proveedor::create([
                 'tipo_entidad' => 'empresa',
                 'identificacion' => 'NIT-'.time(),
@@ -79,14 +82,14 @@ class IntegracionCompletaTest extends TestCase
                 'direccion' => 'Calle Proveedor',
             ]);
         }
-        if (!$this->tecnicoM) {
+        if (! $this->tecnicoM) {
             $this->tecnicoM = Tecnico::create([
                 'nombre' => 'Tecnico Test', 'identificacion' => 'CC-'.time(),
                 'especialidad' => 'General', 'movil' => '3000000002', 'email' => 'tecnico_m_test@test.com',
                 'direccion' => 'Calle Tec',
             ]);
         }
-        if (!$this->equipo) {
+        if (! $this->equipo) {
             $this->equipo = Equipo::create([
                 'nombre' => 'Equipo Test', 'marca' => 'Marca Test', 'modelo' => 'Modelo Test',
                 'serie' => 'SN-'.time(), 'cliente_id' => $this->cliente->id, 'user_id' => $this->admin->id,
@@ -94,15 +97,15 @@ class IntegracionCompletaTest extends TestCase
         }
     }
 
-    public function testStockServiceAtomicidad()
+    public function test_stock_service_atomicidad()
     {
         // Asegurar stock existente
         $stock = Stock::first();
-        if (!$stock) {
-            $stock = Stock::create(['producto'=>'Test Stock','categoria'=>'Test','cantidad'=>10,'precio_compra'=>1000,'utilidad'=>30,'proveedor_id'=>$this->proveedor->id]);
+        if (! $stock) {
+            $stock = Stock::create(['producto' => 'Test Stock', 'categoria' => 'Test', 'cantidad' => 10, 'precio_compra' => 1000, 'utilidad' => 30, 'proveedor_id' => $this->proveedor->id]);
         }
         $orig = $stock->cantidad;
-        $svc = new \App\Services\StockService();
+        $svc = new StockService;
 
         $stock = $svc->entrada($stock, 5);
         $this->assertEquals($orig + 5, $stock->cantidad);
@@ -120,71 +123,75 @@ class IntegracionCompletaTest extends TestCase
         $svc->salida($stock2, 1);
     }
 
-    public function testCompraAnularRestauraStock()
+    public function test_compra_anular_restaura_stock()
     {
-        $sc = Stock::create(['producto'=>'Test Compra','categoria'=>'Test','cantidad'=>10,'precio_compra'=>1000,'utilidad'=>30,'proveedor_id'=>$this->proveedor->id]);
+        $sc = Stock::create(['producto' => 'Test Compra', 'categoria' => 'Test', 'cantidad' => 10, 'precio_compra' => 1000, 'utilidad' => 30, 'proveedor_id' => $this->proveedor->id]);
         $origC = $sc->cantidad;
 
         $fCompra = Factura::create([
-            'numero_factura'=>Factura::siguienteNumero('F'),
-            'tipo_movimiento'=>'compra','estado'=>'emitida',
-            'facturable_type'=>Proveedor::class,'facturable_id'=>$this->proveedor->id,
-            'total_documento'=>4000,'total_pagado'=>4000,
-            'fecha'=>now()->toDateString(),'user_id'=>$this->admin->id,
+            'numero_factura' => Factura::siguienteNumero('F'),
+            'tipo_movimiento' => 'compra', 'estado' => 'emitida',
+            'facturable_type' => Proveedor::class, 'facturable_id' => $this->proveedor->id,
+            'total_documento' => 4000, 'total_pagado' => 4000,
+            'fecha' => now()->toDateString(), 'user_id' => $this->admin->id,
         ]);
-        FacturaItem::create(['factura_id'=>$fCompra->id,'stock_id'=>$sc->id,'cantidad'=>4,'precio_unitario'=>$sc->precio_compra]);
-        
+        FacturaItem::create(['factura_id' => $fCompra->id, 'stock_id' => $sc->id, 'cantidad' => 4, 'precio_unitario' => $sc->precio_compra]);
+
         // Simular lo que hace el controlador: incrementar stock
         $sc->incrementarStock(4);
         $sc->refresh();
         $this->assertEquals($origC + 4, $sc->cantidad);
 
         /* Anular compra -> stock debe volver a original */
-        $fCompra->update(['estado'=>'anulada']);
-        foreach($fCompra->items as $it) { $it->stock->decrementarStock($it->cantidad); }
+        $fCompra->update(['estado' => 'anulada']);
+        foreach ($fCompra->items as $it) {
+            $it->stock->decrementarStock($it->cantidad);
+        }
         $sc->refresh();
         $this->assertEquals($origC, $sc->cantidad);
     }
 
-    public function testVentaAnularRestauraStock()
+    public function test_venta_anular_restaura_stock()
     {
-        $sv = Stock::create(['producto'=>'Test Venta','categoria'=>'Test','cantidad'=>20,'precio_compra'=>500,'utilidad'=>50,'proveedor_id'=>$this->proveedor->id]);
+        $sv = Stock::create(['producto' => 'Test Venta', 'categoria' => 'Test', 'cantidad' => 20, 'precio_compra' => 500, 'utilidad' => 50, 'proveedor_id' => $this->proveedor->id]);
         $origV = $sv->cantidad;
 
         $fVenta = Factura::create([
-            'numero_factura'=>Factura::siguienteNumero('F'),
-            'tipo_movimiento'=>'venta','estado'=>'emitida',
-            'facturable_type'=>Cliente::class,'facturable_id'=>$this->cliente->id,
-            'total_documento'=>$sv->precio_venta*6,'total_pagado'=>$sv->precio_venta*6,
-            'fecha'=>now()->toDateString(),'user_id'=>$this->admin->id,
+            'numero_factura' => Factura::siguienteNumero('F'),
+            'tipo_movimiento' => 'venta', 'estado' => 'emitida',
+            'facturable_type' => Cliente::class, 'facturable_id' => $this->cliente->id,
+            'total_documento' => $sv->precio_venta * 6, 'total_pagado' => $sv->precio_venta * 6,
+            'fecha' => now()->toDateString(), 'user_id' => $this->admin->id,
         ]);
-        FacturaItem::create(['factura_id'=>$fVenta->id,'stock_id'=>$sv->id,'cantidad'=>6,'precio_unitario'=>$sv->precio_venta]);
-        
+        FacturaItem::create(['factura_id' => $fVenta->id, 'stock_id' => $sv->id, 'cantidad' => 6, 'precio_unitario' => $sv->precio_venta]);
+
         $sv->decrementarStock(6);
         $sv->refresh();
         $this->assertEquals($origV - 6, $sv->cantidad);
 
-        $fVenta->update(['estado'=>'anulada']);
-        foreach($fVenta->items as $it) { $it->stock->incrementarStock($it->cantidad); }
+        $fVenta->update(['estado' => 'anulada']);
+        foreach ($fVenta->items as $it) {
+            $it->stock->incrementarStock($it->cantidad);
+        }
         $sv->refresh();
         $this->assertEquals($origV, $sv->cantidad);
     }
 
-    public function testAbonoMantenimientoAnularRevierteStockYCaja()
+    public function test_abono_mantenimiento_anular_revierte_stock_y_caja()
     {
         $tecnicoM = Tecnico::first();
         $equipo = Equipo::first();
         $mant = Mantenimiento::create([
-            'id_orden'=>'MNT-TEST-'.time(),'equipo_id'=>$equipo->id,'tecnico_id'=>$tecnicoM->id,'user_id'=>$this->admin->id,
-            'fecha_entrada'=>now(),'tipo'=>'correctivo','descripcion'=>'Test','costo'=>100000,'estado'=>'pendiente','anulado'=>false,
+            'id_orden' => 'MNT-TEST-'.time(), 'equipo_id' => $equipo->id, 'tecnico_id' => $tecnicoM->id, 'user_id' => $this->admin->id,
+            'fecha_entrada' => now(), 'tipo' => 'correctivo', 'descripcion' => 'Test', 'costo' => 100000, 'estado' => 'pendiente', 'anulado' => false,
         ]);
-        $abono = Abono::create(['mantenimiento_id'=>$mant->id,'monto'=>50000,'fecha'=>now()->toDateString(),'tipo_pago'=>'efectivo','user_id'=>$this->admin->id]);
-        $concepto = ConceptoCaja::firstOrCreate(['nombre'=>'Abono Mantenimiento']);
+        $abono = Abono::create(['mantenimiento_id' => $mant->id, 'monto' => 50000, 'fecha' => now()->toDateString(), 'tipo_pago' => 'efectivo', 'user_id' => $this->admin->id]);
+        $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Abono Mantenimiento']);
         $mov = MovimientoCaja::create([
-            'tipo_movimiento'=>'ingreso','fecha'=>now()->toDateString(),
-            'monto'=>50000,'concepto_id'=>$concepto->id,
-            'persona'=>$mant->equipo->cliente->nombre,'descripcion'=>"Abono Orden {$mant->id_orden}",
-            'tipo_pago'=>'efectivo','estado'=>'activo','anulado'=>false,'user_id'=>$this->admin->id,'abono_id'=>$abono->id,
+            'tipo_movimiento' => 'ingreso', 'fecha' => now()->toDateString(),
+            'monto' => 50000, 'concepto_id' => $concepto->id,
+            'persona' => $mant->equipo->cliente->nombre, 'descripcion' => "Abono Orden {$mant->id_orden}",
+            'tipo_pago' => 'efectivo', 'estado' => 'activo', 'anulado' => false, 'user_id' => $this->admin->id, 'abono_id' => $abono->id,
         ]);
 
         $this->assertFalse($mov->anulado);
@@ -195,17 +202,17 @@ class IntegracionCompletaTest extends TestCase
         $this->assertTrue($mov->anulado);
     }
 
-    public function testFacturaPagoParcialSaldosCorrectos()
+    public function test_factura_pago_parcial_saldos_correctos()
     {
-        $fp = Stock::create(['producto'=>'FP Test','categoria'=>'Test','cantidad'=>50,'precio_compra'=>1000,'utilidad'=>40,'proveedor_id'=>$this->proveedor->id]);
+        $fp = Stock::create(['producto' => 'FP Test', 'categoria' => 'Test', 'cantidad' => 50, 'precio_compra' => 1000, 'utilidad' => 40, 'proveedor_id' => $this->proveedor->id]);
         $fParcial = Factura::create([
-            'numero_factura'=>Factura::siguienteNumero('F'),
-            'tipo_movimiento'=>'venta','estado'=>'emitida',
-            'facturable_type'=>Cliente::class,'facturable_id'=>$this->cliente->id,
-            'total_documento'=>100000,'total_pagado'=>30000,
-            'fecha'=>now()->toDateString(),'user_id'=>$this->admin->id,
+            'numero_factura' => Factura::siguienteNumero('F'),
+            'tipo_movimiento' => 'venta', 'estado' => 'emitida',
+            'facturable_type' => Cliente::class, 'facturable_id' => $this->cliente->id,
+            'total_documento' => 100000, 'total_pagado' => 30000,
+            'fecha' => now()->toDateString(), 'user_id' => $this->admin->id,
         ]);
-        FacturaItem::create(['factura_id'=>$fParcial->id,'stock_id'=>$fp->id,'cantidad'=>10,'precio_unitario'=>$fp->precio_venta]);
+        FacturaItem::create(['factura_id' => $fParcial->id, 'stock_id' => $fp->id, 'cantidad' => 10, 'precio_unitario' => $fp->precio_venta]);
 
         $fParcial->refresh();
         $this->assertEquals(70000, $fParcial->saldo_pendiente);
@@ -213,18 +220,18 @@ class IntegracionCompletaTest extends TestCase
 
         /* Sobrepago -> saldo_a_favor > 0 */
         $fOver = Factura::create([
-            'numero_factura'=>Factura::siguienteNumero('F'),
-            'tipo_movimiento'=>'venta','estado'=>'emitida',
-            'facturable_type'=>Cliente::class,'facturable_id'=>$this->cliente->id,
-            'total_documento'=>50000,'total_pagado'=>70000,
-            'fecha'=>now()->toDateString(),'user_id'=>$this->admin->id,
+            'numero_factura' => Factura::siguienteNumero('F'),
+            'tipo_movimiento' => 'venta', 'estado' => 'emitida',
+            'facturable_type' => Cliente::class, 'facturable_id' => $this->cliente->id,
+            'total_documento' => 50000, 'total_pagado' => 70000,
+            'fecha' => now()->toDateString(), 'user_id' => $this->admin->id,
         ]);
         $fOver->refresh();
         $this->assertEquals(0, $fOver->saldo_pendiente);
         $this->assertEquals(20000, $fOver->saldo_a_favor);
     }
 
-    public function testCajaSaldosHistoricoVsDiaActual()
+    public function test_caja_saldos_historico_vs_dia_actual()
     {
         $hoy = now()->toDateString();
         $ayer = now()->subDay()->toDateString();
@@ -232,19 +239,19 @@ class IntegracionCompletaTest extends TestCase
         /* Ingreso ayer 500k TOTAL, pagado 0 -> saldo 500k.
            Luego pago hoy 100k -> saldo queda 400k. */
         $ingAyer = MovimientoCaja::create([
-            'tipo_movimiento'=>'ingreso','fecha'=>now()->subDay()->toDateString(),
-            'monto'=>0,'monto_total'=>500000,
-            'concepto_id'=>ConceptoCaja::first()->id,'tipo_pago'=>'efectivo',
-            'estado'=>'activo','anulado'=>false,'user_id'=>$this->admin->id,
-            'descripcion'=>'Ingreso prueba ayer',
+            'tipo_movimiento' => 'ingreso', 'fecha' => now()->subDay()->toDateString(),
+            'monto' => 0, 'monto_total' => 500000,
+            'concepto_id' => ConceptoCaja::first()->id, 'tipo_pago' => 'efectivo',
+            'estado' => 'activo', 'anulado' => false, 'user_id' => $this->admin->id,
+            'descripcion' => 'Ingreso prueba ayer',
         ]);
         /* Pago hoy 100k como abono hijo */
         MovimientoCaja::create([
-            'tipo_movimiento'=>'ingreso','fecha'=>now()->toDateString(),
-            'monto'=>100000,'monto_total'=>500000,
-            'concepto_id'=>ConceptoCaja::first()->id,'tipo_pago'=>'efectivo',
-            'estado'=>'activo','anulado'=>false,'user_id'=>$this->admin->id,'parent_id'=>$ingAyer->id,
-            'descripcion'=>'Abono hoy',
+            'tipo_movimiento' => 'ingreso', 'fecha' => now()->toDateString(),
+            'monto' => 100000, 'monto_total' => 500000,
+            'concepto_id' => ConceptoCaja::first()->id, 'tipo_pago' => 'efectivo',
+            'estado' => 'activo', 'anulado' => false, 'user_id' => $this->admin->id, 'parent_id' => $ingAyer->id,
+            'descripcion' => 'Abono hoy',
         ]);
 
         $ingAyer->refresh();
@@ -259,47 +266,49 @@ class IntegracionCompletaTest extends TestCase
         $this->assertEquals(0, $hijosComoPadre);
     }
 
-    public function testAnularFacturaCompraVentaRestauraStock()
+    public function test_anular_factura_compra_venta_restaura_stock()
     {
         $fv2 = Factura::create([
-            'numero_factura'=>Factura::siguienteNumero('F'),
-            'tipo_movimiento'=>'venta','estado'=>'emitida',
-            'facturable_type'=>Cliente::class,'facturable_id'=>$this->cliente->id,
-            'total_documento'=>200000,'total_pagado'=>0,
-            'fecha'=>now()->toDateString(),'user_id'=>$this->admin->id,
+            'numero_factura' => Factura::siguienteNumero('F'),
+            'tipo_movimiento' => 'venta', 'estado' => 'emitida',
+            'facturable_type' => Cliente::class, 'facturable_id' => $this->cliente->id,
+            'total_documento' => 200000, 'total_pagado' => 0,
+            'fecha' => now()->toDateString(), 'user_id' => $this->admin->id,
         ]);
-        $stk = Stock::create(['producto'=>'TestV2','categoria'=>'T','cantidad'=>100,'precio_compra'=>1000,'utilidad'=>20,'proveedor_id'=>$this->proveedor->id]);
-        FacturaItem::create(['factura_id'=>$fv2->id,'stock_id'=>$stk->id,'cantidad'=>15,'precio_unitario'=>$stk->precio_venta]);
-        
+        $stk = Stock::create(['producto' => 'TestV2', 'categoria' => 'T', 'cantidad' => 100, 'precio_compra' => 1000, 'utilidad' => 20, 'proveedor_id' => $this->proveedor->id]);
+        FacturaItem::create(['factura_id' => $fv2->id, 'stock_id' => $stk->id, 'cantidad' => 15, 'precio_unitario' => $stk->precio_venta]);
+
         $stk->decrementarStock(15);
         $stk->refresh();
         $this->assertEquals(85, $stk->cantidad);
 
-        $fv2->update(['estado'=>'anulada']);
-        foreach($fv2->items as $it) { $it->stock->incrementarStock($it->cantidad); }
+        $fv2->update(['estado' => 'anulada']);
+        foreach ($fv2->items as $it) {
+            $it->stock->incrementarStock($it->cantidad);
+        }
         $stk->refresh();
         $this->assertEquals(100, $stk->cantidad);
     }
 
-    public function testAnularMovimientoCajaAbonosCascada()
+    public function test_anular_movimiento_caja_abonos_cascada()
     {
         $movPadre = MovimientoCaja::create([
-            'tipo_movimiento'=>'ingreso','fecha'=>now()->toDateString(),
-            'monto'=>1000,'monto_total'=>1000,
-            'concepto_id'=>ConceptoCaja::first()->id,'tipo_pago'=>'efectivo',
-            'estado'=>'activo','anulado'=>false,'user_id'=>$this->admin->id,
-            'descripcion'=>'Padre test',
+            'tipo_movimiento' => 'ingreso', 'fecha' => now()->toDateString(),
+            'monto' => 1000, 'monto_total' => 1000,
+            'concepto_id' => ConceptoCaja::first()->id, 'tipo_pago' => 'efectivo',
+            'estado' => 'activo', 'anulado' => false, 'user_id' => $this->admin->id,
+            'descripcion' => 'Padre test',
         ]);
         $hijo = MovimientoCaja::create([
-            'tipo_movimiento'=>'ingreso','fecha'=>now()->toDateString(),
-            'monto'=>200,'monto_total'=>1000,
-            'concepto_id'=>ConceptoCaja::first()->id,'tipo_pago'=>'efectivo',
-            'estado'=>'activo','anulado'=>false,'user_id'=>$this->admin->id,'parent_id'=>$movPadre->id,
-            'descripcion'=>'Abono hijo',
+            'tipo_movimiento' => 'ingreso', 'fecha' => now()->toDateString(),
+            'monto' => 200, 'monto_total' => 1000,
+            'concepto_id' => ConceptoCaja::first()->id, 'tipo_pago' => 'efectivo',
+            'estado' => 'activo', 'anulado' => false, 'user_id' => $this->admin->id, 'parent_id' => $movPadre->id,
+            'descripcion' => 'Abono hijo',
         ]);
 
-        $movPadre->update(['anulado'=>true]);
-        $hijo->update(['anulado'=>true]); // actualizar hijo manualmente
+        $movPadre->update(['anulado' => true]);
+        $hijo->update(['anulado' => true]); // actualizar hijo manualmente
 
         $movPadre->refresh();
         $hijo->refresh();
@@ -307,33 +316,33 @@ class IntegracionCompletaTest extends TestCase
         $this->assertTrue($hijo->anulado);
 
         /* Reactivar -> hijos también */
-        $movPadre->update(['anulado'=>false]);
-        $hijo->update(['anulado'=>false]);
+        $movPadre->update(['anulado' => false]);
+        $hijo->update(['anulado' => false]);
         $movPadre->refresh();
         $hijo->refresh();
         $this->assertFalse($movPadre->anulado);
         $this->assertFalse($hijo->anulado);
     }
 
-    public function testReportesConsistenciaTotales()
+    public function test_reportes_consistencia_totales()
     {
-        $totalIngresos = MovimientoCaja::where('estado','activo')->where('anulado',false)->where('tipo_movimiento','ingreso')->sum('monto');
-        $totalEgresos = MovimientoCaja::where('estado','activo')->where('anulado',false)->where('tipo_movimiento','egreso')->sum('monto');
+        $totalIngresos = MovimientoCaja::where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $totalEgresos = MovimientoCaja::where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
         $this->assertGreaterThanOrEqual(0, $totalIngresos);
         $this->assertGreaterThanOrEqual(0, $totalEgresos);
     }
 
-    public function testScopesActivos()
+    public function test_scopes_activos()
     {
         $act = Stock::activos()->count();
         $all = Stock::count();
         $this->assertLessThanOrEqual($all, $act);
     }
 
-    public function testRolesExisten()
+    public function test_roles_existen()
     {
         // El seeder crea admin y tecnico; el setUp crea invitado si no existe
-        $this->assertTrue(User::where('role','invitado')->exists());
-        $this->assertTrue(User::where('role','tecnico')->exists());
+        $this->assertTrue(User::where('role', 'invitado')->exists());
+        $this->assertTrue(User::where('role', 'tecnico')->exists());
     }
 }

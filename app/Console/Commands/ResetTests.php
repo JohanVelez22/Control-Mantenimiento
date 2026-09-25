@@ -27,8 +27,9 @@ class ResetTests extends Command
      */
     public function handle()
     {
-        if (!$this->confirm('⚠️ ¿Estás seguro que deseas borrar todas las transacciones de prueba? Esto vaciará Equipos, Mantenimientos, Caja y Facturas.')) {
+        if (! $this->confirm('⚠️ ¿Estás seguro que deseas borrar todas las transacciones de prueba? Esto vaciará Equipos, Mantenimientos, Caja y Facturas.')) {
             $this->info('Operación cancelada.');
+
             return;
         }
 

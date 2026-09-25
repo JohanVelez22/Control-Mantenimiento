@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Cliente;
-use App\Models\Equipo;
-use App\Models\Mantenimiento;
+use App\Models\Cotizacion;
 use App\Models\Electronica;
+use App\Models\Equipo;
+use App\Models\Factura;
+use App\Models\Mantenimiento;
+use App\Models\MovimientoCaja;
+use App\Models\Stock;
 use App\Models\Tecnico;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 class DashboardController extends Controller
@@ -23,18 +28,18 @@ class DashboardController extends Controller
             return Redirect::route('guest.dashboard');
         }
         // ─── Métricas consolidadas (Eloquent puro) ───────────
-        $totalEquipos = \App\Models\Equipo::count();
-        $totalMantenimientos = \App\Models\Mantenimiento::where('anulado', 0)->count();
+        $totalEquipos = Equipo::count();
+        $totalMantenimientos = Mantenimiento::where('anulado', 0)->count();
         $counts = (object) [
-            'mant_pendientes' => \App\Models\Mantenimiento::where('anulado', 0)->where('estado', 'pendiente')->count(),
-            'mant_terminados' => \App\Models\Mantenimiento::where('anulado', 0)->where('estado', 'terminado')->count(),
-            'stock_bajo' => \App\Models\Stock::where('cantidad', '<=', 5)->count(),
-            'elec_pendientes' => \App\Models\Electronica::where('anulado', 0)->where('estado', 'pendiente')->count(),
+            'mant_pendientes' => Mantenimiento::where('anulado', 0)->where('estado', 'pendiente')->count(),
+            'mant_terminados' => Mantenimiento::where('anulado', 0)->where('estado', 'terminado')->count(),
+            'stock_bajo' => Stock::where('cantidad', '<=', 5)->count(),
+            'elec_pendientes' => Electronica::where('anulado', 0)->where('estado', 'pendiente')->count(),
         ];
 
         $today = Carbon::today()->toDateString();
-        
-        $baseCaja = \App\Models\MovimientoCaja::where('estado', 'activo')->where('anulado', 0);
+
+        $baseCaja = MovimientoCaja::where('estado', 'activo')->where('anulado', 0);
         $cajaIngresos = (clone $baseCaja)->where('tipo_movimiento', 'ingreso')->sum('monto');
         $cajaEgresos = (clone $baseCaja)->where('tipo_movimiento', 'egreso')->sum('monto');
         $cajaIngresosHoy = (clone $baseCaja)->where('tipo_movimiento', 'ingreso')->whereDate('fecha', $today)->sum('monto');
@@ -64,7 +69,7 @@ class DashboardController extends Controller
 
         // --- Gráficos de los últimos 7 días: queries agrupadas ---
         $startDate = Carbon::today()->subDays(6)->startOfDay();
-        $endDate   = Carbon::today()->endOfDay();
+        $endDate = Carbon::today()->endOfDay();
 
         // 1 query: equipos registrados por día
         $equiposPorDia = Equipo::whereBetween('created_at', [$startDate, $endDate])
@@ -79,7 +84,7 @@ class DashboardController extends Controller
             ->pluck('total', 'fecha');
 
         // 1 query: ingresos reales de caja por día (ingresos - egresos)
-        $ingresosPorDia = \App\Models\MovimientoCaja::where('estado', 'activo')
+        $ingresosPorDia = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
             ->whereBetween('fecha', [$startDate, $endDate])
             ->selectRaw('DATE(fecha) as fecha, SUM(CASE WHEN tipo_movimiento = "ingreso" THEN monto ELSE -monto END) as total')
@@ -87,21 +92,21 @@ class DashboardController extends Controller
             ->pluck('total', 'fecha');
 
         // 1 query: ventas e ingresos por día (para desglose)
-        $ventasPorDia = \App\Models\Factura::where('estado', '!=', 'anulada')
+        $ventasPorDia = Factura::where('estado', '!=', 'anulada')
             ->whereBetween('fecha', [$startDate, $endDate])
             ->where('tipo_movimiento', 'venta')
             ->selectRaw('DATE(fecha) as fecha, SUM(total_documento) as total')
             ->groupBy('fecha')
             ->pluck('total', 'fecha');
 
-        $comprasPorDia = \App\Models\Factura::where('estado', '!=', 'anulada')
+        $comprasPorDia = Factura::where('estado', '!=', 'anulada')
             ->whereBetween('fecha', [$startDate, $endDate])
             ->where('tipo_movimiento', 'compra')
             ->selectRaw('DATE(fecha) as fecha, SUM(total_documento) as total')
             ->groupBy('fecha')
             ->pluck('total', 'fecha');
 
-        $egresosPorDia = \App\Models\MovimientoCaja::where('estado', 'activo')
+        $egresosPorDia = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
             ->whereBetween('fecha', [$startDate, $endDate])
             ->where('tipo_movimiento', 'egreso')
@@ -120,23 +125,23 @@ class DashboardController extends Controller
 
         for ($i = 0; $i < 7; $i++) {
             $date = Carbon::today()->subDays(6 - $i);
-            $key  = $date->format('Y-m-d');
-            $labels[]             = $date->format('d/m');
-            $dataEquipos[]        = (int)   ($equiposPorDia[$key]  ?? 0);
-            $dataMantenimientos[] = (int)   ($mantPorDia[$key]     ?? 0);
+            $key = $date->format('Y-m-d');
+            $labels[] = $date->format('d/m');
+            $dataEquipos[] = (int) ($equiposPorDia[$key] ?? 0);
+            $dataMantenimientos[] = (int) ($mantPorDia[$key] ?? 0);
             $ingresoDia = (float) ($ingresosPorDia[$key] ?? 0);
-            $ventasDia  = (float) ($ventasPorDia[$key] ?? 0);
+            $ventasDia = (float) ($ventasPorDia[$key] ?? 0);
             $comprasDia = (float) ($comprasPorDia[$key] ?? 0);
             $egresosDia = (float) ($egresosPorDia[$key] ?? 0);
 
             $dataIngresos[] = $ingresoDia;
-            $dataVentas[]   = $ventasDia;
-            $dataCompras[]  = $comprasDia;
-            $dataEgresos[]  = $egresosDia;
+            $dataVentas[] = $ventasDia;
+            $dataCompras[] = $comprasDia;
+            $dataEgresos[] = $egresosDia;
         }
 
         // Estadísticas de Electrónica consolidadas (1 query en lugar de 4)
-        $elecStats = \Illuminate\Support\Facades\DB::selectOne("
+        $elecStats = DB::selectOne("
             SELECT
                 SUM(anulado = 0 AND estado = 'pendiente') as pendientes,
                 SUM(anulado = 0 AND estado = 'terminado') as terminados,
@@ -144,8 +149,8 @@ class DashboardController extends Controller
                 SUM(anulado = 0 AND tipo = 'preventivo') as preventivos
             FROM electronicas
         ");
-        $electronicaPendientes  = (int) $elecStats->pendientes;
-        $electronicaTerminados  = (int) $elecStats->terminados;
+        $electronicaPendientes = (int) $elecStats->pendientes;
+        $electronicaTerminados = (int) $elecStats->terminados;
         $electronicaCorrectivos = (int) $elecStats->correctivos;
         $electronicaPreventivos = (int) $elecStats->preventivos;
         // 5 más recientes (cualquier estado) para la tabla del dashboard
@@ -161,24 +166,24 @@ class DashboardController extends Controller
             ->get();
 
         // 5 cotizaciones más recientes para el dashboard
-        $recentCot = \App\Models\Cotizacion::with(['cliente', 'items'])
+        $recentCot = Cotizacion::with(['cliente', 'items'])
             ->orderBy('id', 'desc')
             ->take(5)
             ->get();
 
         $chartData = [
-            'labels'                  => $labels,
-            'equipos'                 => $dataEquipos,
-            'mantenimientos'          => $dataMantenimientos,
-            'ingresos'                => $dataIngresos,
-            'ventas'                  => $dataVentas,
-            'compras'                 => $dataCompras,
-            'egresos'                 => $dataEgresos,
+            'labels' => $labels,
+            'equipos' => $dataEquipos,
+            'mantenimientos' => $dataMantenimientos,
+            'ingresos' => $dataIngresos,
+            'ventas' => $dataVentas,
+            'compras' => $dataCompras,
+            'egresos' => $dataEgresos,
             // Datos para el slide 4: resumen electrónica
-            'electronicaPendientes'   => $electronicaPendientes,
-            'electronicaTerminados'   => $electronicaTerminados,
-            'electronicaCorrectivos'  => $electronicaCorrectivos,
-            'electronicaPreventivos'  => $electronicaPreventivos,
+            'electronicaPendientes' => $electronicaPendientes,
+            'electronicaTerminados' => $electronicaTerminados,
+            'electronicaCorrectivos' => $electronicaCorrectivos,
+            'electronicaPreventivos' => $electronicaPreventivos,
         ];
 
         // Pasar los recientes por separado para el blade
@@ -205,5 +210,4 @@ class DashboardController extends Controller
             'electronicaRecientes'
         ));
     }
-
 }
