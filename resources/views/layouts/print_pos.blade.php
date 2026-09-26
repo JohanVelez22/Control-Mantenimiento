@@ -35,10 +35,10 @@
             page-break-inside: avoid !important;
         }
         .header-logo {
-            max-width: 120px;
-            max-height: 44px;
+            max-width: 165px;
+            max-height: 65px;
             object-fit: contain;
-            margin: 0 auto 2px auto;
+            margin: 0 auto 3px auto;
             display: block;
         }
         .header-pos h1 {
@@ -170,8 +170,9 @@
         <div class="header-pos">
             @if($logoBase64)
                 <img src="{{ $logoBase64 }}" alt="Logo" class="header-logo">
+            @else
+                <h1>{{ Str::upper($empresa->nombre) }}</h1>
             @endif
-            <h1>{{ Str::upper($empresa->nombre) }}</h1>
             @if($empresa->nit)<p><strong>NIT:</strong> {{ $empresa->nit }}</p>@endif
             @if($empresa->direccion)<p>{{ $empresa->direccion }}</p>@endif
             @if($empresa->telefono)<p><strong>Tel:</strong> {{ $empresa->telefono }}</p>@endif
