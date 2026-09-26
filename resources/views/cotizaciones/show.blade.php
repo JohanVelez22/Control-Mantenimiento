@@ -31,7 +31,7 @@
                 
                 @if(!$cotizacion->anulado)
                     @if($cotizacion->estado === 'pendiente')
-                    <form action="{{ route('cotizaciones.convertir', $cotizacion) }}" method="POST" data-confirm-delete="Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?">
+                    <form action="{{ route('cotizaciones.convertir', $cotizacion) }}" method="POST" data-confirm-delete="Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?" data-confirm-type="success">
                         @csrf
                         <button type="submit" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                             ✅ Aprobar y Facturar

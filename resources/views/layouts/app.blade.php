@@ -124,11 +124,11 @@
     <div id="toast-container" class="fixed bottom-6 right-6 z-[999] flex flex-col gap-3 pointer-events-none w-full max-w-sm"></div>
 
     <!-- MODAL DE CONFIRMACIÓN DE ALERTA/ELIMINACIÓN (Liquid Glass) -->
-    <div id="ts-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+    <div id="ts-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" onclick="if(event.target === this) closeTsModal()">
         <div class="ts-modal-card scale-95 opacity-0" id="ts-modal-card">
             <div class="p-6">
-                <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
-                    ⚠️
+                <div id="ts-modal-icon-box" class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
+                    <span id="ts-modal-icon">⚠️</span>
                 </div>
                 <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2" id="ts-modal-title">¿Estás seguro?</h3>
                 <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-8" id="ts-modal-msg">
@@ -136,7 +136,7 @@
                 </p>
                 
                 <div class="flex gap-3">
-                    <button type="button" onclick="closeTsModal()" class="flex-1 btn-ghost-amber">
+                    <button type="button" id="ts-modal-cancel" onclick="closeTsModal()" class="flex-1 btn-ghost-amber">
                         Cancelar
                     </button>
                     <button type="button" id="ts-modal-confirm" class="flex-1 btn-danger justify-center font-bold">
@@ -262,8 +262,45 @@
             _pendingForm = form;
             const modal = document.getElementById('ts-modal');
             const card = document.getElementById('ts-modal-card');
+            const confirmBtn = document.getElementById('ts-modal-confirm');
+            const cancelBtn = document.getElementById('ts-modal-cancel');
+            const iconBox = document.getElementById('ts-modal-icon-box');
+            const icon = document.getElementById('ts-modal-icon');
+            const titleEl = document.getElementById('ts-modal-title');
             
-            if(message) document.getElementById('ts-modal-msg').innerText = message;
+            if (message) document.getElementById('ts-modal-msg').innerText = message;
+
+            const isSuccessType = form && (
+                form.dataset.confirmType === 'success' ||
+                form.dataset.confirmVariant === 'success' ||
+                (form.action && form.action.includes('cotizaciones') && form.action.includes('convertir'))
+            );
+
+            if (isSuccessType) {
+                if (titleEl) titleEl.innerText = '¿Estás seguro?';
+                if (icon) icon.innerText = '✅';
+                if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center text-3xl mx-auto mb-4';
+                if (cancelBtn) {
+                    cancelBtn.className = 'flex-1 btn-ghost-red';
+                    cancelBtn.textContent = 'Cancelar';
+                }
+                if (confirmBtn) {
+                    confirmBtn.className = 'flex-1 btn-ghost-emerald';
+                    confirmBtn.textContent = 'Confirmar';
+                }
+            } else {
+                if (titleEl) titleEl.innerText = '¿Estás seguro?';
+                if (icon) icon.innerText = '⚠️';
+                if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4';
+                if (cancelBtn) {
+                    cancelBtn.className = 'flex-1 btn-ghost-amber';
+                    cancelBtn.textContent = 'Cancelar';
+                }
+                if (confirmBtn) {
+                    confirmBtn.className = 'flex-1 btn-danger justify-center font-bold';
+                    confirmBtn.textContent = 'Confirmar';
+                }
+            }
 
             modal.classList.remove('hidden');
             // Timeout pequeño para permitir display:flex antes de animar
@@ -283,6 +320,15 @@
             setTimeout(() => {
                 modal.classList.add('hidden');
                 _pendingForm = null;
+                // Restaurar estado por defecto
+                const confirmBtn = document.getElementById('ts-modal-confirm');
+                const cancelBtn = document.getElementById('ts-modal-cancel');
+                const iconBox = document.getElementById('ts-modal-icon-box');
+                const icon = document.getElementById('ts-modal-icon');
+                if (icon) icon.innerText = '⚠️';
+                if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4';
+                if (cancelBtn) cancelBtn.className = 'flex-1 btn-ghost-amber';
+                if (confirmBtn) confirmBtn.className = 'flex-1 btn-danger justify-center font-bold';
             }, 300);
         }
 
