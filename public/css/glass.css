@@ -396,6 +396,7 @@ html.dark #ts-sidebar {
 
 /* --- REGLAS RESPONSIVAS DE SIDEBAR EN MÓVIL Y ZOOM ALTO (< 1024px) --- */
 @media (max-width: 1023px) {
+
   #main-wrapper,
   #ts-sidebar:hover~#main-wrapper,
   #ts-sidebar.expanded~#main-wrapper {
@@ -508,7 +509,7 @@ html.dark .nav-item {
   opacity: 0;
   transform: translateY(-4px);
   transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   margin-bottom: 2px;
 }
 
@@ -851,7 +852,7 @@ html.dark #ts-topbar {
   transform: translateY(0);
 }
 
-/* ---- Botón cancelar formularios (grande, rojo como btn-pdf) ---- */
+/* ---- Botón cancelar formularios (Opción 3: Coral Ahumado / Rosa Viejo elegante) ---- */
 .btn-cancel {
   display: inline-flex;
   align-items: center;
@@ -861,13 +862,13 @@ html.dark #ts-topbar {
   font-weight: 800;
   font-size: 15px;
   color: white !important;
-  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+  background: linear-gradient(135deg, #E05263 0%, #B82C40 100%) !important;
   border-radius: 14px;
   border: none !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 18px rgba(184, 44, 64, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   transition: all 0.25s ease;
   text-decoration: none;
 }
@@ -886,7 +887,7 @@ html.dark #ts-topbar {
 
 .btn-cancel:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 24px rgba(184, 44, 64, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   color: white !important;
 }
 
@@ -2551,13 +2552,13 @@ html.dark .ts-modal-card {
     border-radius: 16px !important;
   }
 
-  .glass-card > div:first-child .glass-input.w-48,
-  .glass-card > div:first-child .glass-input.sm\:w-64 {
+  .glass-card>div:first-child .glass-input.w-48,
+  .glass-card>div:first-child .glass-input.sm\:w-64 {
     width: 100% !important;
     max-width: 100% !important;
   }
 
-  .glass-card > div:first-child .relative:has(input[type="text"]) {
+  .glass-card>div:first-child .relative:has(input[type="text"]) {
     width: 100% !important;
     flex-grow: 1 !important;
   }
@@ -2565,6 +2566,7 @@ html.dark .ts-modal-card {
 
 /* Modo Tarjetas: solo cuando se especifique explícitamente .responsive-cards */
 @media screen and (max-width: 767px) {
+
   .responsive-cards,
   .responsive-cards tbody,
   .responsive-cards tr,
@@ -3922,9 +3924,9 @@ input.flatpickr-input.form-control {
   transform: translate(-50%, -50%) !important;
   top: 50% !important;
   transition: left 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 0.22s ease !important;
+    opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.22s ease !important;
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -4955,4 +4957,11 @@ html.dark .actions-grid a[title*="Reactivar"] {
   color: #94A3B8 !important;
   background: transparent !important;
   cursor: not-allowed !important;
+}
+
+/* Espaciado del título TECNI SYSTEMAS exclusivamente en móviles para no colisionar con el botón de tema */
+@media (max-width: 639px) {
+  .login-brand-title {
+    margin-top: 3.5rem !important;
+  }
 }

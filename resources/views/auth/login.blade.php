@@ -15,7 +15,7 @@
 <div class="w-full max-w-md px-6 pb-16">
 
  {{-- Logo TECNI SYSTEMAS --}}
- <div class="flex justify-center mb-4">
+ <div class="flex justify-center mb-4 login-brand-title">
      <div class="text-[24px] font-black tracking-widest font-logo flex items-center gap-2">
          <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
          <span class="text-slate-800 dark:text-white">SYSTEMAS</span>
@@ -95,6 +95,11 @@
 #remember:focus {
   outline: none !important;
   box-shadow: none !important;
+}
+@media (max-width: 639px) {
+  .login-brand-title {
+    margin-top: 3.5rem !important;
+  }
 }
 </style>
 
