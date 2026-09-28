@@ -214,7 +214,7 @@ class AuthController extends Controller
         $attemptMsg = $remainingAttempts === 1 ? 'te queda 1 intento' : "te quedan {$remainingAttempts} intentos";
 
         return back()->withErrors([
-            'email' => "Las credenciales ingresadas son incorrectas ({$attemptMsg}).",
+            'email' => "❌ Las credenciales ingresadas son incorrectas ({$attemptMsg}).",
         ])->onlyInput('email');
 
         authenticated_user:
