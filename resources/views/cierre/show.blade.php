@@ -57,7 +57,7 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-3 shrink-0">
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full md:w-auto">
                 <button type="button" onclick="window.print()" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                     🖨️ Imprimir Acta
                 </button>
@@ -123,7 +123,7 @@
                 <p class="text-xl font-black text-slate-800 dark:text-white print:text-black">${{ number_format($cierre->consignacion, 0, ',', '.') }}</p>
             </div>
 
-            <div class="glass-card hover-glow {{ $cierre->saldo_final >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 text-center">
+            <div class="glass-card hover-glow {{ $cierre->saldo_final >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 text-center col-span-2 lg:col-span-1">
                 <p class="text-[11px] font-bold text-slate-900 dark:text-white print:text-black uppercase tracking-wider mb-1">⚖️ Saldo Final</p>
                 <p class="text-xl font-black text-slate-800 dark:text-white print:text-black">${{ number_format($cierre->saldo_final, 0, ',', '.') }}</p>
             </div>

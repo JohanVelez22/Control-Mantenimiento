@@ -33,26 +33,32 @@
  </a>
 </div>
 
-<div class="glass-card p-5 mb-4 no-print relative z-50">
- <form id="filtros-operaciones" method="GET" class="flex flex-wrap items-center gap-3">
-   <select name="tipo" class="glass-input w-72 font-semibold">
-   @foreach($tipoLabels as $val => $label)
-   <option value="{{ $val }}" {{ $tipo === $val ? 'selected' : '' }}>{{ $label }}</option>
-   @endforeach
-   </select>
-   <label class="font-semibold text-sm">Desde:</label>
-   <input type="date" name="desde" value="{{ $desde->toDateString() }}" class="glass-input w-36">
-   <label class="font-semibold text-sm">Hasta:</label>
-   <input type="date" name="hasta" value="{{ $hasta->toDateString() }}" class="glass-input w-36">
-   <button class="btn-primary py-2 px-4 text-sm" title="Filtrar">🔍 Filtrar</button>
-   <div class="flex items-center gap-2 ml-auto">
-        <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
+<div class="glass-card p-4 sm:p-5 mb-4 no-print relative z-50">
+ <form id="filtros-operaciones" method="GET" class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+   <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
+     <select name="tipo" class="glass-input w-full sm:w-64 font-semibold">
+     @foreach($tipoLabels as $val => $label)
+     <option value="{{ $val }}" {{ $tipo === $val ? 'selected' : '' }}>{{ $label }}</option>
+     @endforeach
+     </select>
+     <div class="flex items-center gap-2 w-full sm:w-auto">
+       <label class="font-semibold text-sm whitespace-nowrap">Desde:</label>
+       <input type="date" name="desde" value="{{ $desde->toDateString() }}" class="glass-input w-full sm:w-36">
+     </div>
+     <div class="flex items-center gap-2 w-full sm:w-auto">
+       <label class="font-semibold text-sm whitespace-nowrap">Hasta:</label>
+       <input type="date" name="hasta" value="{{ $hasta->toDateString() }}" class="glass-input w-full sm:w-36">
+     </div>
+     <button class="btn-primary py-2 px-4 text-sm w-full sm:w-auto justify-center" title="Filtrar">🔍 Filtrar</button>
+   </div>
+   <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-start lg:justify-end border-t lg:border-t-0 pt-3 lg:pt-0 border-gray-200/50 dark:border-white/10">
+        <button type="button" onclick="window.print()" class="btn-print text-sm flex-1 sm:flex-initial justify-center" title="Imprimir Reporte">
         <span>🖨️</span> Imprimir
         </button>
-        <button type="button" onclick="exportarOperaciones('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">
+        <button type="button" onclick="exportarOperaciones('excel', this)" class="btn-excel text-sm flex-1 sm:flex-initial justify-center" title="Exportar a Excel">
         <span>📊</span> Excel
         </button>
-        <button type="button" onclick="exportarOperaciones('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
+        <button type="button" onclick="exportarOperaciones('pdf', this)" class="btn-pdf text-sm flex-1 sm:flex-initial justify-center" title="Exportar a PDF">
         <span>📄</span> PDF
         </button>
     </div>

@@ -14,32 +14,32 @@
 }
 </style>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
-  <div class="glass-card hover-glow glass-card-blue p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-  <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💻</span> Equipos</div>
-  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalEquipos ?? 0 }}</div>
+<div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-4">
+  <div class="glass-card hover-glow glass-card-blue p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+  <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">💻</span> <span class="break-words">Equipos</span></div>
+  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalEquipos ?? 0 }}</div>
   </div>
   
-  <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-  <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">🔧</span> Órdenes</div>
-  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalMantenimientos ?? 0 }}</div>
+  <div class="glass-card hover-glow glass-card-emerald p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+  <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">🔧</span> <span class="break-words">Órdenes</span></div>
+  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalMantenimientos ?? 0 }}</div>
   </div>
   
-  <div class="glass-card hover-glow glass-card-amber p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-  <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⏳</span> Mantenimientos Pend.</div>
-  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['pendientes'] ?? 0 }}</div>
+  <div class="glass-card hover-glow glass-card-amber p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+  <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">⏳</span> <span class="break-words">Mant. Pend.</span></div>
+  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['pendientes'] ?? 0 }}</div>
   </div>
   
-  <div class="glass-card hover-glow glass-card-purple p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-  <div class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⚡</span> Electrónica Pend.</div>
-  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['electronica_pendientes'] ?? 0 }}</div>
+  <div class="glass-card hover-glow glass-card-purple p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+  <div class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">⚡</span> <span class="break-words">Elec. Pend.</span></div>
+  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['electronica_pendientes'] ?? 0 }}</div>
   </div>
 
-  <div class="glass-card hover-glow glass-card-red p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-  <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📦</span> Stock Bajo (<5)</div>
-  <div class="text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
+  <div class="glass-card hover-glow glass-card-red p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0 col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+  <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">📦</span> <span class="break-words">Stock Bajo (<5)</span></div>
+  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
   </div>
-  </div>
+</div>
 
 <!-- Carrusel de Gráficos -->
 <h3 class="text-lg font-bold mb-4 text-gray-700 dark:text-gray-300 flex items-center gap-2">
