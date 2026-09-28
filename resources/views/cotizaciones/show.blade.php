@@ -25,7 +25,7 @@
             </div>
             
             <div class="flex items-center gap-3 shrink-0">
-                <a href="{{ route('cotizaciones.pdf', $cotizacion) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400">
+                <a href="{{ route('cotizaciones.pdf', $cotizacion) }}" target="_blank" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30">
                     📄 Ver PDF
                 </a>
                 

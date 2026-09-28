@@ -101,10 +101,10 @@
                     </td>
                     <td data-label="Acciones" class="text-center w-28">
                         <div class="actions-grid">
-                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver detalle">👁️</a>
+                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver detalle">👁️</a>
                             
                             @if($cot->estado === 'aprobada')
-                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Imprimir PDF">🖨️</a>
+                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir PDF">🖨️</a>
                             @else
                                 <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-40 cursor-not-allowed" title="Requiere estar aprobada para imprimir PDF">🖨️</span>
                             @endif

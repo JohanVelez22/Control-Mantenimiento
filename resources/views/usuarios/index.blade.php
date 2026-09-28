@@ -74,7 +74,7 @@
         'active' => (bool)$u->active,
         'created_at' => $u->created_at->format('d/m/Y H:i'),
         'photo' => $u->photo ? asset('storage/' . $u->photo) : null,
-    ]) }})" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver Detalles">👁️</button>
+    ]) }})" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Detalles">👁️</button>
     @endif
     
     @if(auth()->user()->isAdmin() && auth()->id() !== $u->id)

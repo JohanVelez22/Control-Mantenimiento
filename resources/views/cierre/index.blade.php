@@ -236,7 +236,7 @@
                         <td data-label="Registró:" class="text-xs text-gray-500 font-medium">{{ $c->user->name }}</td>
                         <td data-label="Acciones:" class="text-center w-28">
                             <div class="actions-grid">
-                                <a href="{{ route('cierre.show', $c->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver detalle">👁️</a>
+                                <a href="{{ route('cierre.show', $c->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver detalle">👁️</a>
                                 @if(!auth()->user()->isInvitado())
                                     <a href="{{ route('cierre.edit', $c->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar observaciones">✏️</a>
                                 @endif

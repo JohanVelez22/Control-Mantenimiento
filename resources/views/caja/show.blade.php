@@ -44,7 +44,7 @@
                     }
                 @endphp
                 @if($facturaRef)
-                <a href="{{ route('inventario.facturas.show', $facturaRef->id) }}" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400" title="Ver factura {{ $facturaRef->numero_factura }}">
+                <a href="{{ route('inventario.facturas.show', $facturaRef->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30" title="Ver factura {{ $facturaRef->numero_factura }}">
                     📄 Ver Factura
                 </a>
                 @endif
@@ -52,7 +52,7 @@
                 <x-print-dropdown 
                     :url="route('caja.print', $movimiento->id)"
                     label="Imprimir"
-                    colorClass="border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+                    colorClass="border-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
                     id="print-caja-{{ $movimiento->id }}"
                 />
                 

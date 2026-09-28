@@ -162,10 +162,10 @@
   
 <td data-label="Acciones:" class="col-acciones text-center {{ $dim }}">
   <div class="actions-grid">
-  <a href="{{ route('mantenimientos.show', $m->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver detalle">👁️</a>
+  <a href="{{ route('mantenimientos.show', $m->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver detalle">👁️</a>
   
   @if($m->estado === 'terminado' && $m->fecha_salida)
-   <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Imprimir Factura">🖨️</a>
+   <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir Factura">🖨️</a>
   @elseif($m->estado === 'terminado')
   <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
   @endif

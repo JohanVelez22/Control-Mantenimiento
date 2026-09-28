@@ -120,7 +120,7 @@
     @else
      <button type="button" 
          onclick='openDetalleBajaModal(@json($detallePayload))'
-         class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Ver Diagnóstico y Motivo de Baja">
+         class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Diagnóstico y Motivo de Baja">
          📋
      </button>
     <button type="button" onclick="openAnularModal('{{ route('equipos.reactivar', $equipo->id) }}', true)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Reactivar Equipo dado de baja">

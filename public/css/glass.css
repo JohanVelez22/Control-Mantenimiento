@@ -851,7 +851,7 @@ html.dark #ts-topbar {
   transform: translateY(0);
 }
 
-/* ---- Botón cancelar formularios (grande) ---- */
+/* ---- Botón cancelar formularios (grande, rojo como btn-pdf) ---- */
 .btn-cancel {
   display: inline-flex;
   align-items: center;
@@ -861,13 +861,13 @@ html.dark #ts-topbar {
   font-weight: 800;
   font-size: 15px;
   color: white !important;
-  background: linear-gradient(135deg, #EC4899 0%, #A21CAF 100%) !important;
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
   border-radius: 14px;
   border: none !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(236, 72, 153, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   transition: all 0.25s ease;
   text-decoration: none;
 }
@@ -886,7 +886,7 @@ html.dark #ts-topbar {
 
 .btn-cancel:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(236, 72, 153, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   color: white !important;
 }
 
@@ -4767,7 +4767,7 @@ html.dark optgroup {
 
 /* ==========================================================================
    SISTEMA DE ACCIONES GLOBALES (Ver, Imprimir, Editar, Dar de Baja, Anular, Reactivar)
-   Ver: Azul | Imprimir: Índigo | Editar: Amarillo | Dar de Baja: Violeta | Anular: Rojo | Reactivar: Verde
+   Ver: Índigo | Imprimir: Azul | Editar: Amarillo | Dar de Baja: Violeta | Anular: Rojo | Reactivar: Verde
    ========================================================================== */
 .btn-action-view,
 .actions-grid a[title*="Ver"],
@@ -4777,8 +4777,8 @@ html.dark optgroup {
 .actions-grid button[title*="Ver"],
 .actions-grid button[title*="ver"],
 .actions-grid button[title*="Diagnóstico"] {
-  color: #2563EB !important;
-  /* Azul */
+  color: #4F46E5 !important;
+  /* Índigo */
 }
 
 .btn-action-view:hover,
@@ -4789,8 +4789,8 @@ html.dark optgroup {
 .actions-grid button[title*="Ver"]:hover,
 .actions-grid button[title*="ver"]:hover,
 .actions-grid button[title*="Diagnóstico"]:hover {
-  background: rgba(37, 99, 235, 0.12) !important;
-  color: #1D4ED8 !important;
+  background: rgba(79, 70, 229, 0.12) !important;
+  color: #4338CA !important;
 }
 
 html.dark .btn-action-view,
@@ -4801,8 +4801,8 @@ html.dark .actions-grid a[title*="detalle"],
 html.dark .actions-grid button[title*="Ver"],
 html.dark .actions-grid button[title*="ver"],
 html.dark .actions-grid button[title*="Diagnóstico"] {
-  color: #60A5FA !important;
-  /* Azul en modo oscuro */
+  color: #818CF8 !important;
+  /* Índigo en modo oscuro */
 }
 
 .btn-action-print,
@@ -4812,8 +4812,8 @@ html.dark .actions-grid button[title*="Diagnóstico"] {
 .actions-grid a[title*="PDF"],
 .actions-grid button[title*="Imprimir"],
 .actions-grid button[title*="imprimir"] {
-  color: #4F46E5 !important;
-  /* Índigo */
+  color: #2563EB !important;
+  /* Azul */
 }
 
 .btn-action-print:hover,
@@ -4823,8 +4823,8 @@ html.dark .actions-grid button[title*="Diagnóstico"] {
 .actions-grid a[title*="PDF"]:hover,
 .actions-grid button[title*="Imprimir"]:hover,
 .actions-grid button[title*="imprimir"]:hover {
-  background: rgba(79, 70, 229, 0.12) !important;
-  color: #4338CA !important;
+  background: rgba(37, 99, 235, 0.12) !important;
+  color: #1D4ED8 !important;
 }
 
 html.dark .btn-action-print,
@@ -4834,8 +4834,8 @@ html.dark .actions-grid a[title*="Factura"],
 html.dark .actions-grid a[title*="PDF"],
 html.dark .actions-grid button[title*="Imprimir"],
 html.dark .actions-grid button[title*="imprimir"] {
-  color: #818CF8 !important;
-  /* Índigo en modo oscuro */
+  color: #60A5FA !important;
+  /* Azul en modo oscuro */
 }
 
 .btn-action-edit,

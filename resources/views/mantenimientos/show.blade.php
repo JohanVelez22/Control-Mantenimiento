@@ -36,7 +36,7 @@
                 <x-print-dropdown 
                     :url="route('mantenimientos.factura', $mantenimiento)"
                     label="Imprimir"
-                    colorClass="border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+                    colorClass="border-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
                     id="print-mant-{{ $mantenimiento->id }}"
                 />
                 @endif
