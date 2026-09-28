@@ -173,7 +173,7 @@
                     @endif
                     <div class="flex gap-3 pt-2">
                         <button type="button" id="global-anular-cancel" onclick="closeAnularModal()" class="flex-1 btn-ghost-amber">Cancelar</button>
-                        <button type="submit" id="global-anular-submit" class="flex-1 btn-danger justify-center font-bold py-2.5 rounded-xl">🚫 Anular</button>
+                        <button type="submit" id="global-anular-submit" class="flex-1 btn-danger justify-center font-bold py-2.5 rounded-xl">Anular</button>
                     </div>
                 </form>
             </div>
@@ -270,11 +270,11 @@
             
             if (message) document.getElementById('ts-modal-msg').innerText = message;
 
-            const isSuccessType = form && (
-                form.dataset.confirmType === 'success' ||
-                form.dataset.confirmVariant === 'success' ||
-                (form.action && form.action.includes('cotizaciones') && form.action.includes('convertir'))
-            );
+            const isSuccessType = (form && typeof form === 'object' && (
+                form.dataset?.confirmType === 'success' ||
+                form.dataset?.confirmVariant === 'success' ||
+                (typeof form.action === 'string' && form.action.includes('cotizaciones') && form.action.includes('convertir'))
+            )) || (typeof message === 'string' && (message.includes('Nueva Venta') || message.includes('cotización') || message.includes('cotizacion')));
 
             if (isSuccessType) {
                 if (titleEl) titleEl.innerText = '¿Estás seguro?';
@@ -360,7 +360,7 @@
                 iconContainer.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center text-3xl mx-auto mb-4';
                 
                 // Botón Activar con estilo ghost verde (como cuando se anula)
-                submitBtn.innerHTML = '✅ Activar';
+                submitBtn.innerHTML = 'Activar';
                 submitBtn.className = 'flex-1 btn-ghost-emerald';
                 
                 // Botón Cancelar en reactivar: estilo ghost rojo (no azul)
@@ -377,7 +377,7 @@
                     : '¿Estás seguro de anular este registro? Se mantendrá el historial pero no afectará saldos.';
                 icon.textContent = '🚫';
                 iconContainer.className = 'w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4';
-                submitBtn.innerHTML = '🚫 Anular';
+                submitBtn.innerHTML = 'Anular';
                 submitBtn.className = 'flex-1 btn-danger justify-center font-bold py-2.5 rounded-xl';
                 
                 if (cancelBtn) {

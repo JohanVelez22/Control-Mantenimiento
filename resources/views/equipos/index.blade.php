@@ -225,7 +225,7 @@
                     Cancelar
                 </button>
                 <button type="submit" class="flex-1 btn-ghost border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
-                    ⚠️ Confirmar Baja
+                    Confirmar Baja
                 </button>
             </div>
         </form>

@@ -49,7 +49,7 @@
 
             {{-- Botones de Acción a la derecha --}}
             <div class="flex items-center gap-3 shrink-0">
-                <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10">
+                <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30">
                     🖨️ Imprimir
                 </a>
                 
@@ -326,7 +326,7 @@
                     Cancelar
                 </button>
                 <button type="submit" class="flex-1 btn-ghost border-violet-500/30 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
-                    📉 Confirmar Baja
+                    Confirmar Baja
                 </button>
             </div>
         </form>
@@ -382,7 +382,7 @@
                     Cancelar
                 </button>
                 <button type="submit" class="flex-1 btn-ghost border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
-                    ↩️ Confirmar Reversión
+                    Confirmar Reversión
                 </button>
             </div>
         </form>

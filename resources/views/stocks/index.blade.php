@@ -106,7 +106,7 @@
  <td data-label="Acciones:" class="text-center w-36 {{ $dim }}">
     <div class="actions-grid">
     <a href="{{ route('stocks.show', $stock->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Ver Detalles">👁️</a>
-    <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Imprimir">🖨️</a>
+    <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Imprimir">🖨️</a>
     @if(!auth()->user()->isInvitado())
     <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/10" title="Editar">✏️</a>
     @if($stock->cantidad > 0)
@@ -217,7 +217,7 @@
                     Cancelar
                 </button>
                 <button type="submit" class="flex-1 btn-ghost border-violet-500/30 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
-                    📉 Confirmar Baja
+                    Confirmar Baja
                 </button>
             </div>
         </form>

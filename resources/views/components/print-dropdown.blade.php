@@ -1,7 +1,7 @@
 @props([
     'url',
     'label' => 'Imprimir',
-    'colorClass' => 'border-emerald-500/20 text-emerald-600 dark:text-emerald-400',
+    'colorClass' => 'border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30',
     'id' => 'print-dd-' . uniqid()
 ])
 

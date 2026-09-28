@@ -2626,8 +2626,7 @@ html.dark .ts-modal-card {
 }
 
 
-/* --- - -------------------------------------------------- */
-GLASSMORPHISM: TOM-SELECT ------------------------------------------------------------------- */
+/* --- GLASSMORPHISM: TOM-SELECT -------------------------------------------------- */
 
 /* ---- Wrapper: eliminar fondo/borde evitar cuadro en cuadro ---- */
 .ts-wrapper {
@@ -2669,6 +2668,13 @@ GLASSMORPHISM: TOM-SELECT ------------------------------------------------------
 
 .ts-control>input::placeholder {
   color: #94A3B8 !important;
+}
+
+.ts-wrapper.focus .ts-control>input::placeholder,
+.ts-wrapper.dropdown-active .ts-control>input::placeholder,
+.ts-control>input:focus::placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
 }
 
 /* ---- Modo oscuro control ---- */
@@ -2757,8 +2763,8 @@ select.tomselected {
 }
 
 
-/* --- - -------------------------------------------------- */
-GLASSMORPHISM: FLATPICKR CALENDAR ------------------------------------------------------------------- */ .flatpickr-calendar {
+/* --- GLASSMORPHISM: FLATPICKR CALENDAR -------------------------------------------------- */
+.flatpickr-calendar {
   background: rgba(255, 255, 255, 0.70) !important;
   backdrop-filter: blur(28px) saturate(200%) !important;
   -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
@@ -3097,16 +3103,17 @@ html.dark .glass-backdrop {
   transition: color 0.2s ease;
 }
 
-/* Hacer que el placeholder desaparezca al hacer clic (focus) solo en selects no-search */
-.ts-wrapper.no-search .ts-control.focus input::placeholder,
-.ts-wrapper.no-search .ts-control input:focus::placeholder {
+/* Hacer que el placeholder desaparezca inmediatamente al hacer clic / enfocar en cualquier select, igual que en los demás campos */
+.ts-wrapper .ts-control.focus input::placeholder,
+.ts-wrapper .ts-control input:focus::placeholder,
+.ts-wrapper.focus .ts-control input::placeholder,
+.ts-wrapper.dropdown-active .ts-control input::placeholder,
+.ts-wrapper.input-active .ts-control input::placeholder,
+.ts-control input:focus::-webkit-input-placeholder,
+.ts-control input:focus::-moz-placeholder,
+.ts-control input:focus:-ms-input-placeholder {
   color: transparent !important;
-}
-
-/* En selects con búsqueda, mantener visible el placeholder en tono suave hasta que el usuario escriba */
-.ts-wrapper:not(.no-search) .ts-control input:focus::placeholder {
-  color: #94a3b8 !important;
-  opacity: 0.8 !important;
+  opacity: 0 !important;
 }
 
 /* Evitar Flash of Unstyled Content (FOUC) en los selects nativos:
@@ -4759,8 +4766,8 @@ html.dark optgroup {
 }
 
 /* ==========================================================================
-   SISTEMA DE ACCIONES GLOBALES (Ver, Imprimir, Editar, Dar de Baja, Anular)
-   Ver: Azul | Imprimir: Verde | Editar: Amarillo | Dar de Baja: Violeta | Anular: Rojo
+   SISTEMA DE ACCIONES GLOBALES (Ver, Imprimir, Editar, Dar de Baja, Anular, Reactivar)
+   Ver: Azul | Imprimir: Índigo | Editar: Amarillo | Dar de Baja: Violeta | Anular: Rojo | Reactivar: Verde
    ========================================================================== */
 .btn-action-view,
 .actions-grid a[title*="Ver"],
@@ -4805,8 +4812,8 @@ html.dark .actions-grid button[title*="Diagnóstico"] {
 .actions-grid a[title*="PDF"],
 .actions-grid button[title*="Imprimir"],
 .actions-grid button[title*="imprimir"] {
-  color: #059669 !important;
-  /* Verde / Emerald */
+  color: #4F46E5 !important;
+  /* Índigo */
 }
 
 .btn-action-print:hover,
@@ -4816,8 +4823,8 @@ html.dark .actions-grid button[title*="Diagnóstico"] {
 .actions-grid a[title*="PDF"]:hover,
 .actions-grid button[title*="Imprimir"]:hover,
 .actions-grid button[title*="imprimir"]:hover {
-  background: rgba(16, 185, 129, 0.12) !important;
-  color: #047857 !important;
+  background: rgba(79, 70, 229, 0.12) !important;
+  color: #4338CA !important;
 }
 
 html.dark .btn-action-print,
@@ -4827,8 +4834,8 @@ html.dark .actions-grid a[title*="Factura"],
 html.dark .actions-grid a[title*="PDF"],
 html.dark .actions-grid button[title*="Imprimir"],
 html.dark .actions-grid button[title*="imprimir"] {
-  color: #34D399 !important;
-  /* Verde en modo oscuro */
+  color: #818CF8 !important;
+  /* Índigo en modo oscuro */
 }
 
 .btn-action-edit,

@@ -52,13 +52,13 @@
                 <x-print-dropdown 
                     :url="route('caja.print', $movimiento->id)"
                     label="Imprimir"
-                    colorClass="border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                    colorClass="border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
                     id="print-caja-{{ $movimiento->id }}"
                 />
                 
                 @if(!auth()->user()->isInvitado())
-                <a href="{{ route('caja.edit', $movimiento->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">✏️ Editar</a>
-                <button type="button" onclick="openAnularModal('{{ route('caja.anular', $movimiento->id) }}', {{ $movimiento->anulado ? 'true' : 'false' }})" class="{{ $movimiento->anulado ? 'btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'btn-danger' }}">{{ $movimiento->anulado ? '✅ Reactivar' : '🚫 Anular' }}</button>
+                <a href="{{ route('caja.edit', $movimiento->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/30">✏️ Editar</a>
+                <button type="button" onclick="openAnularModal('{{ route('caja.anular', $movimiento->id) }}', {{ $movimiento->anulado ? 'true' : 'false' }})" class="{{ $movimiento->anulado ? 'btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30' : 'btn-danger' }}">{{ $movimiento->anulado ? '✅ Reactivar' : '🚫 Anular' }}</button>
                 @endif
             </div>
         </div>

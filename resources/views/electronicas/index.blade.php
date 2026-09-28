@@ -166,7 +166,7 @@
   <a href="{{ route('electronicas.show', $e->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400" title="Ver detalle">👁️</a>
   
   @if($e->estado === 'terminado' && $e->fecha_salida)
-  <a href="{{ route('electronicas.factura', $e->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400" title="Imprimir Factura">🖨️</a>
+  <a href="{{ route('electronicas.factura', $e->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Imprimir Factura">🖨️</a>
   @elseif($e->estado === 'terminado')
   <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
   @endif

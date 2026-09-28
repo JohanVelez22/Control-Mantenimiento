@@ -55,13 +55,13 @@
  
  <div class="flex items-center gap-3 shrink-0">
  @if($factura->estado !== 'anulada' && !auth()->user()->isInvitado() && $movimientoPadre)
-  <a href="{{ route('caja.show', $movimientoPadre->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400" title="Ver detalle del movimiento en el módulo de Caja">📦 Ver en Caja</a>
+  <a href="{{ route('caja.show', $movimientoPadre->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" title="Ver detalle del movimiento en el módulo de Caja">💵 Ver en Caja</a>
  @endif
 
   <x-print-dropdown 
       :url="route('inventario.facturas.print', $factura->id)"
       label="Imprimir"
-      colorClass="border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+      colorClass="border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
       id="print-factura-{{ $factura->id }}"
   />
  

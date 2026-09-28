@@ -36,12 +36,12 @@
                 <x-print-dropdown 
                     :url="route('mantenimientos.factura', $mantenimiento)"
                     label="Imprimir"
-                    colorClass="border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                    colorClass="border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
                     id="print-mant-{{ $mantenimiento->id }}"
                 />
                 @endif
                 @if(!auth()->user()->isInvitado())
-                <a href="{{ route('mantenimientos.edit', $mantenimiento) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">✏️ Editar</a>
+                <a href="{{ route('mantenimientos.edit', $mantenimiento) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/30">✏️ Editar</a>
                 @endif
             </div>
  </div>

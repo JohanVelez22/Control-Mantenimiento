@@ -31,9 +31,9 @@
                 
                 @if(!$cotizacion->anulado)
                     @if($cotizacion->estado === 'pendiente')
-                    <form action="{{ route('cotizaciones.convertir', $cotizacion) }}" method="POST" data-confirm-delete="Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?" data-confirm-type="success">
+                    <form id="form-convertir-cotizacion" action="{{ route('cotizaciones.convertir', $cotizacion) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                        <button type="button" onclick="openAprobarCotizacionModal()" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                             ✅ Aprobar y Facturar
                         </button>
                     </form>
@@ -140,4 +140,40 @@
 
     </div>
 </div>
+
+<script>
+function openAprobarCotizacionModal() {
+    const modal = document.getElementById('ts-modal');
+    const card = document.getElementById('ts-modal-card');
+    const confirmBtn = document.getElementById('ts-modal-confirm');
+    const cancelBtn = document.getElementById('ts-modal-cancel');
+    const iconBox = document.getElementById('ts-modal-icon-box');
+    const icon = document.getElementById('ts-modal-icon');
+    const titleEl = document.getElementById('ts-modal-title');
+    const msgEl = document.getElementById('ts-modal-msg');
+
+    window._pendingForm = document.getElementById('form-convertir-cotizacion');
+
+    if (titleEl) titleEl.innerText = '¿Estás seguro?';
+    if (msgEl) msgEl.innerText = 'Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?';
+    if (icon) icon.innerText = '✅';
+    if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center text-3xl mx-auto mb-4';
+    if (cancelBtn) {
+        cancelBtn.className = 'flex-1 btn-ghost-red';
+        cancelBtn.textContent = 'Cancelar';
+    }
+    if (confirmBtn) {
+        confirmBtn.className = 'flex-1 btn-ghost-emerald';
+        confirmBtn.textContent = 'Confirmar';
+    }
+
+    if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            if (card) card.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+    }
+}
+</script>
 @endsection
