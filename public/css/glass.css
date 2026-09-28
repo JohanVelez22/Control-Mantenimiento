@@ -91,6 +91,7 @@ html.dark .content-scroll::-webkit-scrollbar-thumb:hover {
 
 /* --- TOKENS DE DISEÑO (VARIABLES CSS) -------------------------------------------------- */
 :root {
+  color-scheme: light;
   --ts-blue: #2563EB;
   --ts-blue-dark: #1D4ED8;
   --ts-cyan: #06B6D4;
@@ -127,6 +128,10 @@ html.dark .content-scroll::-webkit-scrollbar-thumb:hover {
   sans-serif;
   --font-display: 'Orbitron',
   sans-serif;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 /* --- CLASES DE TIPOGRAFÍA -------------------------------------------------- */
