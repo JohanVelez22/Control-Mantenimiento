@@ -61,6 +61,10 @@
  required placeholder="••••••••"
  class="glass-input w-full text-base py-3 px-4 focus:placeholder-transparent {{ $initialLockout > 0 ? 'opacity-60 cursor-not-allowed' : '' }}" {{ $initialLockout > 0 ? 'disabled' : '' }}>
  @error('password') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+ <div id="caps-lock-warning" class="hidden text-amber-600 dark:text-amber-400 text-xs font-bold mt-1 flex items-center gap-1 select-none" role="alert">
+     <span class="select-none text-sm leading-none">⚠️</span>
+     <span>Bloq Mayús está activado</span>
+ </div>
  </div>
 
  {{-- Remember Me --}}
@@ -131,6 +135,48 @@
  }
  });
  }
+
+  // Detección en tiempo real de Bloq Mayús (Caps Lock) en campo contraseña
+  var passwordInput = document.getElementById('password');
+  var capsWarning = document.getElementById('caps-lock-warning');
+  if (passwordInput && capsWarning) {
+    var isCapsActive = false;
+
+    function setCapsWarningVisible(show) {
+      if (show) {
+        capsWarning.classList.remove('hidden');
+      } else {
+        capsWarning.classList.add('hidden');
+      }
+    }
+
+    function handleCapsCheck(e) {
+      if (e && typeof e.getModifierState === 'function') {
+        isCapsActive = e.getModifierState('CapsLock');
+        if (document.activeElement === passwordInput || e.target === passwordInput) {
+          setCapsWarningVisible(isCapsActive);
+        }
+      }
+    }
+
+    // Monitoreo de teclas global y en el campo para mantener actualizado el estado
+    window.addEventListener('keydown', handleCapsCheck);
+    window.addEventListener('keyup', handleCapsCheck);
+    passwordInput.addEventListener('keydown', handleCapsCheck);
+    passwordInput.addEventListener('keyup', handleCapsCheck);
+    passwordInput.addEventListener('click', handleCapsCheck);
+    passwordInput.addEventListener('mousedown', handleCapsCheck);
+
+    passwordInput.addEventListener('focus', function() {
+      if (isCapsActive) {
+        setCapsWarningVisible(true);
+      }
+    });
+
+    passwordInput.addEventListener('blur', function() {
+      setCapsWarningVisible(false);
+    });
+  }
 
   // Temporizador interactivo de cuenta regresiva de bloqueo en botón
   var initialSeconds = {{ $initialLockout }};
