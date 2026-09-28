@@ -143,7 +143,7 @@
 @endif
 
 <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-    <a href="{{ route('usuarios.index') }}" class="btn-cancel">↩️ Cancelar</a>
+    <a href="{{ route('usuarios.index') }}" class="btn-cancel">✕<space>Cancelar</a>
     <button type="submit" class="btn-save">
         {{ $isEdit ? '🔄 Actualizar Usuario' : '💾 Guardar Usuario' }}
     </button>

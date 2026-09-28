@@ -47,7 +47,7 @@
    @endfor
    </select>
    <button type="submit" class="btn-primary py-2 px-3 text-sm" title="Filtrar">
-   🔍 Filtrar
+   🌪️ Filtrar
    </button>
    
    <div class="flex items-center gap-2 ml-auto">

@@ -49,7 +49,7 @@
        <label class="font-semibold text-sm whitespace-nowrap">Hasta:</label>
        <input type="date" name="hasta" value="{{ $hasta->toDateString() }}" class="glass-input w-full sm:w-36">
      </div>
-     <button class="btn-primary py-2 px-4 text-sm w-full sm:w-auto justify-center" title="Filtrar">🔍 Filtrar</button>
+     <button class="btn-primary py-2 px-4 text-sm w-full sm:w-auto justify-center" title="Filtrar">🌪️ Filtrar</button>
    </div>
    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-start lg:justify-end border-t lg:border-t-0 pt-3 lg:pt-0 border-gray-200/50 dark:border-white/10">
         <button type="button" onclick="window.print()" class="btn-print text-sm flex-1 sm:flex-initial justify-center" title="Imprimir Reporte">

@@ -60,7 +60,7 @@
 
             <div class="flex gap-2">
                 <button type="submit" class="btn-primary px-4 py-2 font-bold text-sm">
-                    🔍 Filtrar
+                    🌪️ Filtrar
                 </button>
                 <a href="{{ route('eventos.index') }}" class="btn-clean px-4 py-2 flex items-center justify-center font-bold text-sm">
                     🧹 Limpiar

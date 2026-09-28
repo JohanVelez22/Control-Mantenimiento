@@ -22,7 +22,7 @@
     <div class="w-full max-w-2xl z-10 flex flex-col items-center pb-16">
         
         <!-- Logo TECNI SYSTEMAS (Fuera del recuadro) -->
-        <div class="text-center mt-0 mb-8">
+        <div class="text-center mt-0 mb-8 login-brand-title">
             <div class="flex justify-center mb-3">
                 <div class="text-[24px] font-black tracking-widest font-logo flex items-center gap-2">
                     <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
@@ -253,6 +253,14 @@
         </div>
     </div>
 </div>
+
+<style>
+@media (max-width: 639px) {
+  .login-brand-title {
+    margin-top: 3.5rem !important;
+  }
+}
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

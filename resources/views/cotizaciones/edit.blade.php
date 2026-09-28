@@ -104,7 +104,7 @@
             </div>
 
             <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-                <a href="{{ route('cotizaciones.index') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">↩️ Cancelar</a>
+                <a href="{{ route('cotizaciones.index') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">✕<space>Cancelar</a>
                 <button type="submit" class="btn-save w-full sm:w-auto justify-center">
                     💾 Actualizar Cotización
                 </button>

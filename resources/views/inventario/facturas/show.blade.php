@@ -276,7 +276,7 @@
             </div>
 
             <div class="flex gap-2 pt-3">
-                <button type="button" onclick="closeAbonoFacturaModal()" class="btn-cancel w-1/3 justify-center">Cancelar</button>
+                <button type="button" onclick="closeAbonoFacturaModal()" class="btn-cancel w-1/3 justify-center">✕<space>Cancelar</button>
                 <button type="submit" class="btn-primary w-2/3 justify-center shadow-lg shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700">💾 Guardar Abono</button>
             </div>
         </form>
