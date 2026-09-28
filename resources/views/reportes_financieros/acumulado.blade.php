@@ -18,7 +18,7 @@
  </div>
 </div>
 
-<div class="glass-card p-4 mb-6 flex flex-wrap items-center gap-2 no-print">
+<div class="glass-card p-4 mb-6 reportes-nav-tabs flex flex-wrap items-center gap-2 no-print">
  <a href="{{ route('reportes.financiero.diario') }}"
  class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20">
  📅 Diario
@@ -33,73 +33,78 @@
  </a>
 </div>
 
-<div class="glass-card p-4 sm:p-5 mb-4 no-print relative z-50">
- <form id="filtros-acumulado" method="GET" class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-   <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
-     <div class="flex items-center gap-2 w-full sm:w-auto">
-       <label class="font-semibold text-sm whitespace-nowrap">Desde:</label>
-       <input type="date" name="desde" value="{{ $desde->toDateString() }}" class="glass-input w-full sm:w-40">
-     </div>
-     <div class="flex items-center gap-2 w-full sm:w-auto">
-       <label class="font-semibold text-sm whitespace-nowrap">Hasta:</label>
-       <input type="date" name="hasta" value="{{ $hasta->toDateString() }}" class="glass-input w-full sm:w-40">
-     </div>
-     <button class="btn-primary py-2 px-5 text-sm w-full sm:w-auto justify-center">
-       🔍 Ver Período
-     </button>
+<div class="glass-card p-5 mb-4 no-print relative z-50">
+ <form id="filtros-acumulado" method="GET" class="reportes-filter-form flex flex-wrap items-center gap-3">
+  <div class="reportes-filter-date-range">
+   <div class="reportes-date-field">
+    <label class="reportes-date-label">Desde:</label>
+    <input type="date" name="desde" value="{{ $desde->toDateString() }}" class="glass-input reportes-date-input">
    </div>
-   
-   <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-start lg:justify-end border-t lg:border-t-0 pt-3 lg:pt-0 border-gray-200/50 dark:border-white/10">
-       <button type="button" onclick="window.print()" class="btn-print text-sm flex-1 sm:flex-initial justify-center" title="Imprimir Reporte">
-       <span>🖨️</span> Imprimir
-       </button>
-       <button type="button" onclick="exportarAcumulado('excel', this)" class="btn-excel text-sm flex-1 sm:flex-initial justify-center" title="Exportar a Excel">
-       <span class="no-print-emoji">📊</span> Excel
-       </button>
-       <button type="button" onclick="exportarAcumulado('pdf', this)" class="btn-pdf text-sm flex-1 sm:flex-initial justify-center" title="Exportar a PDF">
-       <span class="no-print-emoji">📄</span> PDF
-       </button>
+   <div class="reportes-date-field">
+    <label class="reportes-date-label">Hasta:</label>
+    <input type="date" name="hasta" value="{{ $hasta->toDateString() }}" class="glass-input reportes-date-input">
    </div>
+  </div>
+  <div class="reportes-filter-actions flex items-center gap-2">
+   <button class="btn-primary py-2 px-5 text-sm">
+   🔍 Ver Período
+   </button>
+   <a href="{{ route('reportes.financiero.acumulado') }}" class="btn-clean text-sm" title="Reestablecer filtros">
+   <span>🧹</span> Limpiar
+   </a>
+  </div>
+  
+  <div class="reportes-filter-export flex items-center gap-2 ml-auto">
+      <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
+      <span>🖨️</span> Imprimir
+      </button>
+      <button type="button" onclick="exportarAcumulado('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">
+      <span>📊</span> Excel
+      </button>
+      <button type="button" onclick="exportarAcumulado('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
+      <span>📄</span> PDF
+      </button>
+  </div>
  </form>
 </div>
 
 <div class="space-y-5">
 
  {{-- Resumen Consolidado (1 sola fila horizontal permanente homogénea) --}}
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 gap-2.5 sm:gap-3 w-full print-grid-7">
-  <div class="glass-card hover-glow glass-card-emerald p-3 sm:p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-  <p class="text-[11px] sm:text-xs xl:text-sm font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-tight sm:tracking-wider mb-1 z-10 flex items-center gap-1 sm:gap-1.5 justify-center w-full leading-tight"><span class="text-sm sm:text-base no-print-emoji flex-shrink-0">📈</span> <span class="break-words">Ingresos (Caja)</span></p>
-  <p class="text-base sm:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['ingresos_caja'], 0, ',', '.') }}</p>
+  <div class="reportes-cards-grid print-grid-7" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.75rem; width: 100%;">
+  <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📈</span> Ingresos (Caja)</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['ingresos_caja'], 0, ',', '.') }}</p>
   </div>
 
-  <div class="glass-card hover-glow glass-card-red p-3 sm:p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-  <p class="text-[11px] sm:text-xs xl:text-sm font-bold text-red-600 dark:text-red-400 uppercase tracking-tight sm:tracking-wider mb-1 z-10 flex items-center gap-1 sm:gap-1.5 justify-center w-full leading-tight"><span class="text-sm sm:text-base no-print-emoji flex-shrink-0">📉</span> <span class="break-words">Egresos (Caja)</span></p>
-  <p class="text-base sm:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['egresos_caja'], 0, ',', '.') }}</p>
+  <div class="glass-card hover-glow glass-card-red p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-red-600 dark:text-red-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📉</span> Egresos (Caja)</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['egresos_caja'], 0, ',', '.') }}</p>
   </div>
 
-  <div class="glass-card hover-glow glass-card-blue p-3 sm:p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-  <p class="text-[11px] sm:text-xs xl:text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-tight sm:tracking-wider mb-1 z-10 flex items-center gap-1 sm:gap-1.5 justify-center w-full leading-tight"><span class="text-sm sm:text-base no-print-emoji flex-shrink-0">🔧</span> <span class="break-words">Mantenimiento</span></p>
-  <p class="text-base sm:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['facturado_mant'], 0, ',', '.') }}</p>
+  <div class="glass-card hover-glow glass-card-blue p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">🔧</span> Mantenimiento</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['facturado_mant'], 0, ',', '.') }}</p>
   </div>
 
-  <div class="glass-card hover-glow glass-card-purple p-3 sm:p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-  <p class="text-[11px] sm:text-xs xl:text-sm font-bold text-purple-600 dark:text-purple-400 uppercase tracking-tight sm:tracking-wider mb-1 z-10 flex items-center gap-1 sm:gap-1.5 justify-center w-full leading-tight"><span class="text-sm sm:text-base no-print-emoji flex-shrink-0">⚡</span> <span class="break-words">Electrónica</span></p>
-  <p class="text-base sm:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['facturado_elec'], 0, ',', '.') }}</p>
+  <div class="glass-card hover-glow glass-card-purple p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">⚡</span> Electrónica</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['facturado_elec'], 0, ',', '.') }}</p>
   </div>
 
-  <div class="glass-card hover-glow glass-card-teal p-3 sm:p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-  <p class="text-[11px] sm:text-xs xl:text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-tight sm:tracking-wider mb-1 z-10 flex items-center gap-1 sm:gap-1.5 justify-center w-full leading-tight"><span class="text-sm sm:text-base no-print-emoji flex-shrink-0">🛒</span> <span class="break-words">Ventas</span></p>
-  <p class="text-base sm:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['ventas_inventario'], 0, ',', '.') }}</p>
+  <div class="glass-card hover-glow glass-card-teal p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">🛒</span> Ventas</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['ventas_inventario'], 0, ',', '.') }}</p>
   </div>
 
-  <div class="glass-card hover-glow glass-card-orange p-3 sm:p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-  <p class="text-[11px] sm:text-xs xl:text-sm font-bold text-orange-600 dark:text-orange-400 uppercase tracking-tight sm:tracking-wider mb-1 z-10 flex items-center gap-1 sm:gap-1.5 justify-center w-full leading-tight"><span class="text-sm sm:text-base no-print-emoji flex-shrink-0">📦</span> <span class="break-words">Compras</span></p>
-  <p class="text-base sm:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['compras_inventario'], 0, ',', '.') }}</p>
+  <div class="glass-card hover-glow glass-card-orange p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📦</span> Compras</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['compras_inventario'], 0, ',', '.') }}</p>
   </div>
 
-  <div class="glass-card hover-glow {{ $acumulado['balance_neto'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-3 sm:p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0 col-span-2 sm:col-span-3 md:col-span-2 xl:col-span-1">
-  <p class="text-[11px] sm:text-xs xl:text-sm font-bold {{ $acumulado['balance_neto'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-tight sm:tracking-wider mb-1 z-10 flex items-center gap-1 sm:gap-1.5 justify-center w-full leading-tight"><span class="text-sm sm:text-base no-print-emoji flex-shrink-0">⚖️</span> <span class="break-words">Balance Neto</span></p>
-  <p class="text-base sm:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}</p>
+  <div class="glass-card hover-glow {{ $acumulado['balance_neto'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+  <p class="text-xs xl:text-sm font-bold {{ $acumulado['balance_neto'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">⚖️</span> Balance Neto</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($acumulado['balance_neto'], 0, ',', '.') }}</p>
   </div>
   </div>
 

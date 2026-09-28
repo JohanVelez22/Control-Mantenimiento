@@ -86,19 +86,19 @@
         {{-- Resumen financiero --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 mt-8">Resumen Financiero</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="glass-card hover-glow glass-card-blue p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-                <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💰</span> Costo Total</div>
-                <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($mantenimiento->costo, 0, ',', '.') }}</div>
+            <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">💰</span> Costo Total</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($mantenimiento->costo, 0, ',', '.') }}</p>
             </div>
             
-            <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-                <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💵</span> Total Abonado</div>
-                <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($mantenimiento->total_abonado, 0, ',', '.') }}</div>
+            <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">💵</span> Total Abonado</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($mantenimiento->total_abonado, 0, ',', '.') }}</p>
             </div>
             
-            <div class="glass-card hover-glow {{ $mantenimiento->saldo_pendiente > 0 ? 'glass-card-red' : 'glass-card-teal' }} p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-                <div class="text-[11px] font-bold {{ $mantenimiento->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⚖️</span> Saldo Pendiente</div>
-                <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($mantenimiento->saldo_pendiente, 0, ',', '.') }}</div>
+            <div class="glass-card hover-glow {{ $mantenimiento->saldo_pendiente > 0 ? 'glass-card-red' : 'glass-card-teal' }} p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+                <p class="text-xs font-bold {{ $mantenimiento->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">⚖️</span> Saldo Pendiente</p>
+                <p class="text-2xl font-black {{ $mantenimiento->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">${{ number_format($mantenimiento->saldo_pendiente, 0, ',', '.') }}</p>
             </div>
         </div>
 

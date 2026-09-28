@@ -137,8 +137,8 @@
                             </td>
                             <td data-label="Detalles:" class="text-center">
                                 @if($evento->valores_antiguos || $evento->valores_nuevos)
-                                    <button onclick="openDetalle({{ $evento->id }})" class="btn-clean px-2 py-1 text-xs font-bold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-md transition-colors">
-                                        👁️ Ver
+                                    <button type="button" onclick="openDetalle({{ $evento->id }}, '{{ $evento->accion }}')" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 mx-auto" title="Ver Detalles">
+                                        👁️
                                     </button>
                                     
                                     {{-- Data escondida para el modal --}}
@@ -173,39 +173,40 @@
 </div>
 
 @push('modals')
-{{-- Modal de Detalles de Cambios --}}
+{{-- Modal de Detalles de Cambios / Trazabilidad --}}
 <div id="detalle-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
     <div class="ts-modal-card scale-95 opacity-0 max-w-4xl w-full" id="detalle-card">
         <div class="p-6">
             <div class="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
                 <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">
-                    <span class="text-2xl">📋</span> Detalles del Cambio
+                    <span id="detalle-icon" class="text-2xl">📋</span>
+                    <span id="detalle-title">Detalles del Cambio</span>
                 </h3>
                 <button type="button" onclick="closeDetalle()" class="text-gray-400 hover:text-red-500 transition-colors text-xl leading-none">✕</button>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                {{-- Columna Anterior --}}
+                {{-- Columna Anterior / Intentos Fallidos --}}
                 <div class="bg-red-50/50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30 overflow-hidden flex flex-col">
                     <div class="px-4 py-3 bg-red-100/50 dark:bg-red-900/30 border-b border-red-200 dark:border-red-900/50">
-                        <h4 class="font-bold text-red-700 dark:text-red-400 text-sm uppercase tracking-wider flex items-center gap-2">
+                        <h4 id="col-ant-title" class="font-bold text-red-700 dark:text-red-400 text-sm uppercase tracking-wider flex items-center gap-2">
                             <span>➖</span> Antes
                         </h4>
                     </div>
                     <div class="p-4 flex-1">
-                        <pre id="pre-ant" class="text-xs font-mono text-red-900 dark:text-red-300 whitespace-pre-wrap break-all"></pre>
+                        <pre id="pre-ant" class="text-xs font-mono text-red-900 dark:text-red-300 whitespace-pre-wrap break-words"></pre>
                     </div>
                 </div>
 
-                {{-- Columna Nuevo --}}
+                {{-- Columna Nuevo / Acceso Exitoso --}}
                 <div class="bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden flex flex-col">
                     <div class="px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-900/50">
-                        <h4 class="font-bold text-emerald-700 dark:text-emerald-400 text-sm uppercase tracking-wider flex items-center gap-2">
+                        <h4 id="col-nue-title" class="font-bold text-emerald-700 dark:text-emerald-400 text-sm uppercase tracking-wider flex items-center gap-2">
                             <span>➕</span> Después
                         </h4>
                     </div>
                     <div class="p-4 flex-1">
-                        <pre id="pre-nue" class="text-xs font-mono text-emerald-900 dark:text-emerald-300 whitespace-pre-wrap break-all"></pre>
+                        <pre id="pre-nue" class="text-xs font-mono text-emerald-900 dark:text-emerald-300 whitespace-pre-wrap break-words"></pre>
                     </div>
                 </div>
             </div>
@@ -251,10 +252,27 @@
         }
     }
 
-    function openDetalle(id) {
+    function openDetalle(id, accion) {
         const modal = document.getElementById('detalle-modal');
         const card = document.getElementById('detalle-card');
         
+        const titleEl = document.getElementById('detalle-title');
+        const iconEl = document.getElementById('detalle-icon');
+        const colAntTitle = document.getElementById('col-ant-title');
+        const colNueTitle = document.getElementById('col-nue-title');
+
+        if (accion === 'login') {
+            if (iconEl) iconEl.textContent = '🔐';
+            if (titleEl) titleEl.textContent = 'Trazabilidad de Acceso / Intentos de Login';
+            if (colAntTitle) colAntTitle.innerHTML = '<span>⚠️</span> Historial de Intentos Previos';
+            if (colNueTitle) colNueTitle.innerHTML = '<span>✅</span> Acceso Logrado / Exitoso';
+        } else {
+            if (iconEl) iconEl.textContent = '📋';
+            if (titleEl) titleEl.textContent = 'Detalles del Cambio';
+            if (colAntTitle) colAntTitle.innerHTML = '<span>➖</span> Antes';
+            if (colNueTitle) colNueTitle.innerHTML = '<span>➕</span> Después';
+        }
+
         const dataAnt = document.getElementById('data-ant-' + id).innerText;
         const dataNue = document.getElementById('data-nue-' + id).innerText;
         

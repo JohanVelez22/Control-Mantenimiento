@@ -244,7 +244,39 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Event::listen(Login::class, function ($event) {
-            Evento::registrar('login', $event->user, null, null, 'El usuario inició sesión en el sistema.');
+            $history = session()->pull('login_attempts_history', []);
+            $totalFallidos = count($history);
+
+            if ($totalFallidos > 0) {
+                $viejos = [
+                    'Total Intentos Fallidos' => $totalFallidos,
+                ];
+                foreach ($history as $h) {
+                    $viejos["Intento #{$h['intento']}"] = "❌ {$h['motivo']} a las {$h['hora']} (IP: {$h['ip']})";
+                }
+
+                $nuevos = [
+                    'Resultado' => '✅ Inicio de sesión exitoso',
+                    'Total Intentos Requeridos' => ($totalFallidos + 1)." (1 exitoso + {$totalFallidos} ".($totalFallidos === 1 ? 'fallido' : 'fallidos').')',
+                    'Hora de Conexión' => now()->format('d/m/Y H:i:s'),
+                    'Dirección IP' => request()->ip(),
+                    'Navegador' => substr(request()->userAgent() ?? 'N/D', 0, 100),
+                ];
+                $descripcion = "El usuario inició sesión tras {$totalFallidos} ".($totalFallidos === 1 ? 'intento fallido' : 'intentos fallidos').'.';
+            } else {
+                $viejos = [
+                    'Intentos Previos' => '0 (Acceso directo sin fallos)',
+                ];
+                $nuevos = [
+                    'Resultado' => '✅ Inicio de sesión exitoso al primer intento',
+                    'Hora de Conexión' => now()->format('d/m/Y H:i:s'),
+                    'Dirección IP' => request()->ip(),
+                    'Navegador' => substr(request()->userAgent() ?? 'N/D', 0, 100),
+                ];
+                $descripcion = 'El usuario inició sesión en el sistema al primer intento.';
+            }
+
+            Evento::registrar('login', $event->user, $viejos, $nuevos, $descripcion);
         });
 
         Event::listen(Logout::class, function ($event) {

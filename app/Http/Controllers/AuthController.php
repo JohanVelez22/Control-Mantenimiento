@@ -49,6 +49,7 @@ class AuthController extends Controller
 
         // Claves de control de intentos y penalización progresiva
         $throttleKey = 'login_attempts:'.sha1($inputNormalized.'|'.$request->ip());
+        $historyKey = 'login_history:'.sha1($inputNormalized.'|'.$request->ip());
         $lockoutUntilKey = 'login_locked_until:'.sha1($inputNormalized.'|'.$request->ip());
         $lockoutLevelKey = 'login_lockout_level:'.sha1($inputNormalized.'|'.$request->ip());
         $ipLockoutKey = 'login_ip_locked_until:'.sha1($request->ip());
@@ -139,6 +140,11 @@ class AuthController extends Controller
                     ])->onlyInput('email');
                 }
 
+                // Guardar historial de intentos fallidos para trazabilidad en auditoría
+                $history = Cache::get($historyKey, []);
+                session()->put('login_attempts_history', $history);
+                Cache::forget($historyKey);
+
                 Auth::login($user, $request->filled('remember'));
                 goto authenticated_user;
             }
@@ -157,6 +163,11 @@ class AuthController extends Controller
                     'active' => true,
                 ]);
 
+                // Guardar historial de intentos fallidos para trazabilidad en auditoría
+                $history = Cache::get($historyKey, []);
+                session()->put('login_attempts_history', $history);
+                Cache::forget($historyKey);
+
                 Auth::login($user, $request->filled('remember'));
                 goto authenticated_user;
             }
@@ -171,6 +182,16 @@ class AuthController extends Controller
 
         $attempts = (int) Cache::get($throttleKey, 0) + 1;
         Cache::put($throttleKey, $attempts, now()->addMinutes(15));
+
+        // Registrar intento en historial de trazabilidad de acceso
+        $history = Cache::get($historyKey, []);
+        $history[] = [
+            'intento' => count($history) + 1,
+            'hora' => now()->format('d/m/Y H:i:s'),
+            'ip' => $request->ip(),
+            'motivo' => 'Credenciales incorrectas',
+        ];
+        Cache::put($historyKey, $history, now()->addHours(2));
 
         if ($attempts >= $threshold) {
             $newLevel = $level + 1;
@@ -199,6 +220,11 @@ class AuthController extends Controller
                 default => '30 minutos',
             };
 
+            if (!empty($history)) {
+                $history[count($history) - 1]['motivo'] = "Credenciales incorrectas (Provocó bloqueo de {$minutosTexto})";
+                Cache::put($historyKey, $history, now()->addHours(2));
+            }
+
             $motivo = ($newLevel === 1)
                 ? 'Has superado el límite de 5 intentos fallidos.'
                 : 'Intento fallido tras bloqueo previo.';
@@ -221,6 +247,7 @@ class AuthController extends Controller
 
         // Limpiar contadores de throttling y bloqueos al autenticarse exitosamente
         Cache::forget($throttleKey);
+        Cache::forget($historyKey);
         Cache::forget($lockoutUntilKey);
         Cache::forget($lockoutLevelKey);
         Cache::forget($ipLockoutKey);

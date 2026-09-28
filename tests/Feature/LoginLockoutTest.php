@@ -155,4 +155,36 @@ class LoginLockoutTest extends TestCase
         $throttleKey = 'login_attempts:'.sha1($inputNormalized.'|127.0.0.1');
         $this->assertNull(Cache::get($throttleKey));
     }
+
+    public function test_login_con_intentos_fallidos_registra_trazabilidad_en_eventos(): void
+    {
+        // 2 intentos fallidos
+        for ($i = 1; $i <= 2; $i++) {
+            $this->post(route('login'), [
+                'email' => 'Administrador',
+                'password' => 'clave_invalida',
+            ]);
+        }
+
+        // Intento 3 exitoso
+        $response = $this->post(route('login'), [
+            'email' => 'Administrador',
+            'password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+        ]);
+
+        $response->assertRedirect(route('dashboard'));
+        $this->assertTrue(Auth::check());
+
+        // Verificar registro de auditoría en eventos
+        $evento = \App\Models\Evento::where('accion', 'login')->latest('id')->first();
+        $this->assertNotNull($evento);
+        $this->assertNotNull($evento->valores_antiguos);
+        $this->assertNotNull($evento->valores_nuevos);
+        $this->assertEquals(2, $evento->valores_antiguos['Total Intentos Fallidos']);
+        $this->assertArrayHasKey('Intento #1', $evento->valores_antiguos);
+        $this->assertArrayHasKey('Intento #2', $evento->valores_antiguos);
+        $this->assertStringContainsString('Inicio de sesión exitoso', $evento->valores_nuevos['Resultado']);
+        $this->assertStringContainsString('3', (string) $evento->valores_nuevos['Total Intentos Requeridos']);
+    }
 }
+

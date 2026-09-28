@@ -76,19 +76,19 @@
         {{-- Resumen financiero --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 mt-8">Resumen Financiero</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="glass-card hover-glow glass-card-blue p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📦</span> Total Comprado</p>
-                <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($comprasTotales, 0, ',', '.') }}</p>
+            <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📦</span> Total Comprado</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($comprasTotales, 0, ',', '.') }}</p>
             </div>
             
-            <div class="glass-card hover-glow glass-card-emerald p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <p class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">✅</span> Total Pagado</p>
-                <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($comprasPagadas, 0, ',', '.') }}</p>
+            <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">✅</span> Total Pagado</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($comprasPagadas, 0, ',', '.') }}</p>
             </div>
             
-            <div class="glass-card hover-glow {{ $saldoProveedor > 0 ? 'glass-card-red' : 'glass-card-teal' }} p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <p class="text-[10px] font-black {{ $saldoProveedor > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Pendiente</p>
-                <p class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($saldoProveedor, 0, ',', '.') }}</p>
+            <div class="glass-card hover-glow {{ $saldoProveedor > 0 ? 'glass-card-red' : 'glass-card-teal' }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold {{ $saldoProveedor > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Pendiente</p>
+                <p class="text-2xl font-black {{ $saldoProveedor > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">${{ number_format($saldoProveedor, 0, ',', '.') }}</p>
             </div>
         </div>
 

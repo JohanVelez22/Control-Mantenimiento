@@ -144,10 +144,10 @@
 
 <div class="space-y-4">
 
-    {{-- Preview del día actual (si no cerrado) --}}
+    {{-- Header del Cierre del Día actual --}}
     @if(!$yaExiste && $preview)
-    <div class="glass-card p-6">
-        <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+    <div class="glass-card p-5 mb-4">
+        <div class="flex flex-wrap justify-between items-center gap-4">
             <div>
                 <h2 class="text-xl font-bold flex items-center gap-2"><span class="text-2xl">📅</span> Cierre del Día — {{ \Carbon\Carbon::parse($hoy)->format('d/m/Y') }}</h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Vista previa — aún no cerrado</p>
@@ -165,31 +165,32 @@
                 </div>
             </form>
         </div>
-        
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-            <div class="glass-card hover-glow glass-card-emerald p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_ingresos'], 0, ',', '.') }}</p>
-            </div>
-            <div class="glass-card hover-glow glass-card-red p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_egresos'], 0, ',', '.') }}</p>
-            </div>
-            <div class="glass-card hover-glow glass-card-blue p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💵</span> Efectivo</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['efectivo'], 0, ',', '.') }}</p>
-            </div>
-            <div class="glass-card hover-glow glass-card-purple p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
-                <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🏦</span> Consignación</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['consignacion'], 0, ',', '.') }}</p>
-            </div>
-            <div class="glass-card hover-glow {{ $preview['saldo_final'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center col-span-2 lg:col-span-1">
-                <p class="text-xs font-bold {{ $preview['saldo_final'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Final</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['saldo_final'], 0, ',', '.') }}</p>
-            </div>
-        </div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold mt-4 text-right">{{ $preview['num_movimientos'] }} movimiento(s) registrados hoy</p>
     </div>
+        
+    {{-- Tarjetas de resumen del Cierre del Día (Mismo nivel y luminosidad que Dashboard e Informes) --}}
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-2">
+        <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+            <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_ingresos'], 0, ',', '.') }}</p>
+        </div>
+        <div class="glass-card hover-glow glass-card-red p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+            <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_egresos'], 0, ',', '.') }}</p>
+        </div>
+        <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+            <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💵</span> Efectivo</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['efectivo'], 0, ',', '.') }}</p>
+        </div>
+        <div class="glass-card hover-glow glass-card-purple p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+            <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🏦</span> Consignación</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['consignacion'], 0, ',', '.') }}</p>
+        </div>
+        <div class="glass-card hover-glow {{ $preview['saldo_final'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0 col-span-2 lg:col-span-1">
+            <p class="text-xs font-bold {{ $preview['saldo_final'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Final</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['saldo_final'], 0, ',', '.') }}</p>
+        </div>
+    </div>
+    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-4 text-right pr-1">{{ $preview['num_movimientos'] }} movimiento(s) registrados hoy</div>
     @elseif($yaExiste)
     <div class="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-4">
         <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-600 text-2xl">✅</div>

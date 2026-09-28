@@ -19,7 +19,7 @@
  </div>
 </div>
 
-<div class="glass-card p-4 mb-6 flex flex-wrap items-center gap-2 no-print">
+<div class="glass-card p-4 mb-6 reportes-nav-tabs flex flex-wrap items-center gap-2 no-print">
  <a href="{{ route('reportes.financiero.diario') }}"
  class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20">
  📅 Diario
@@ -70,31 +70,31 @@
   <div class="glass-card p-6">
   <h3 class="text-xl font-bold mb-4">📈 Informe Acumulado (Mes {{ $mes }}/{{ $anio }})</h3>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-   <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-   <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📈</span> Ingresos</div>
-   <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['ingresos'], 0, ',', '.') }}</div>
+   <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+   <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">📈</span> Ingresos</div>
+   <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['ingresos'], 0, ',', '.') }}</div>
    </div>
-   <div class="glass-card hover-glow glass-card-red p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-   <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📉</span> Egresos / Gastos</div>
-   <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['egresos'], 0, ',', '.') }}</div>
+   <div class="glass-card hover-glow glass-card-red p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+   <div class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">📉</span> Egresos / Gastos</div>
+   <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['egresos'], 0, ',', '.') }}</div>
    </div>
-   <div class="glass-card hover-glow glass-card-blue p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-   <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💎</span> Facturación Total</div>
-   <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</div>
+   <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+   <div class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">💎</span> Facturación Total</div>
+   <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</div>
    </div>
-   <div class="glass-card hover-glow {{ $acumulado['utilidad_neta'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-   <div class="text-[11px] font-bold {{ $acumulado['utilidad_neta'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">⚖️</span> Utilidad Neta</div>
-   <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</div>
+   <div class="glass-card hover-glow {{ $acumulado['utilidad_neta'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+   <div class="text-xs font-bold {{ $acumulado['utilidad_neta'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">⚖️</span> Utilidad Neta</div>
+   <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</div>
    </div>
    </div>
   
   <div class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-   <div class="glass-card hover-glow glass-card-blue p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-   <div class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">📦</span> Valorización Inventario (Costo)</div>
+   <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+   <div class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">📦</span> Valorización Inventario (Costo)</div>
    <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['inventario_costo'], 0, ',', '.') }}</div>
    </div>
-   <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-   <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">✨</span> Utilidad Esperada Inventario</div>
+   <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+   <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">✨</span> Utilidad Esperada Inventario</div>
    <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['inventario_utilidad_esperada'], 0, ',', '.') }}</div>
    </div>
   </div>
@@ -173,10 +173,11 @@
  <h3 class="text-xl font-bold mb-4">🧮 Informe por Operaciones (Tipos de Dinero)</h3>
  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
   {{-- Efectivo --}}
-  <div class="glass-card hover-glow glass-card-emerald p-5">
+  <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 min-w-0">
    <div class="flex flex-col items-center justify-center mb-4 text-center">
-    <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💵</span> Efectivo Global</div>
-    <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($operaciones['efectivo'], 0, ',', '.') }}</div>
+    <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">💵</span> Efectivo Global</div>
+    <div class="text-lg no-print-emoji">💵</span> Efectivo Global</div>
+    <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($operaciones['efectivo'], 0, ',', '.') }}</div>
    </div>
    <div class="space-y-3 pt-3 border-t border-gray-200/50 dark:border-gray-700/50 text-sm">
     <div class="flex justify-between items-center px-2">
@@ -191,10 +192,11 @@
   </div>
 
   {{-- Consignacion --}}
-  <div class="glass-card hover-glow glass-card-blue p-5">
+  <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 min-w-0">
    <div class="flex flex-col items-center justify-center mb-4 text-center">
-    <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">🏦</span> Consignación Global</div>
-    <div class="text-3xl font-black text-slate-800 dark:text-white z-10">${{ number_format($operaciones['consignacion'], 0, ',', '.') }}</div>
+    <div class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg">🏦</span> Consignación Global</div>
+    <div class="text-lg no-print-emoji">🏦</span> Consignación Global</div>
+    <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($operaciones['consignacion'], 0, ',', '.') }}</div>
    </div>
    <div class="space-y-3 pt-3 border-t border-gray-200/50 dark:border-gray-700/50 text-sm">
     <div class="flex justify-between items-center px-2">

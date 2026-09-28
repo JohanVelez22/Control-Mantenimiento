@@ -98,22 +98,22 @@
         {{-- Estructura de Precios --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Estructura de Precios</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="glass-card hover-glow glass-card-orange p-4 text-center">
-                <p class="text-[10px] font-bold text-orange-500 dark:text-orange-400 uppercase tracking-widest mb-1">Costo de Compra</p>
-                <p class="text-xl font-black text-orange-600 dark:text-orange-400">${{ number_format($stock->precio_compra, 0, ',', '.') }}</p>
+            <div class="glass-card hover-glow glass-card-orange p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+                <p class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">📦</span> Costo de Compra</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($stock->precio_compra, 0, ',', '.') }}</p>
             </div>
-            <div class="glass-card hover-glow glass-card-purple p-4 text-center">
-                <p class="text-[10px] font-bold text-purple-500 uppercase tracking-widest mb-1">Precio a Técnico</p>
-                <p class="text-xl font-black text-purple-600 dark:text-purple-400">${{ number_format($stock->precio_tecnico, 0, ',', '.') }}</p>
+            <div class="glass-card hover-glow glass-card-purple p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+                <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">⚡</span> Precio a Técnico</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($stock->precio_tecnico, 0, ',', '.') }}</p>
             </div>
-            <div class="glass-card hover-glow glass-card-emerald p-4 text-center">
-                <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Precio Público Venta</p>
-                <p class="text-xl font-black text-emerald-600 dark:text-emerald-400">${{ number_format($stock->precio_venta, 0, ',', '.') }}</p>
+            <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
+                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">🛒</span> Precio Público Venta</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($stock->precio_venta, 0, ',', '.') }}</p>
                 @php
                     $utilidadPesos = $stock->precio_venta - $stock->precio_compra;
                     $utilidadPct = $stock->utilidad ?? 0;
                 @endphp
-                <p class="text-xs font-bold text-emerald-500 mt-1" title="Margen: {{ $utilidadPct }}%">+${{ number_format($utilidadPesos, 0, ',', '.') }}</p>
+                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1 z-10" title="Margen: {{ $utilidadPct }}%">+${{ number_format($utilidadPesos, 0, ',', '.') }}</p>
             </div>
         </div>
 

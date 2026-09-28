@@ -1152,9 +1152,43 @@
                 disableMobile: true,
                 monthSelectorType: "static",
                 appendTo: document.body,
-                position: "auto center",
+                position: "below center",
                 onReady: function(_, __, fp) {
                     window._flatpickrInstances.push(fp);
+                },
+                onOpen: function(selectedDates, dateStr, instance) {
+                    if (instance.calendarContainer) {
+                        var input = instance.altInput || instance.input;
+                        var rect = input.getBoundingClientRect();
+                        var scrollY = window.scrollY || window.pageYOffset;
+                        var scrollX = window.scrollX || window.pageXOffset;
+                        var calWidth = instance.calendarContainer.offsetWidth || 308;
+                        
+                        // Forzar que siempre abra hacia abajo
+                        var topPos = rect.bottom + scrollY + 4;
+                        var leftPos = rect.left + scrollX + ((rect.width - calWidth) / 2);
+                        
+                        // Respetar márgenes de pantalla en dispositivos móviles
+                        var maxLeft = (window.innerWidth || document.documentElement.clientWidth) - calWidth - 8;
+                        if (leftPos < 8) leftPos = 8;
+                        if (leftPos > maxLeft) leftPos = maxLeft;
+                        
+                        instance.calendarContainer.style.top = topPos + 'px';
+                        instance.calendarContainer.style.left = leftPos + 'px';
+                        instance.calendarContainer.classList.remove('arrowBottom');
+                        instance.calendarContainer.classList.add('arrowTop');
+
+                        // Si en pantalla pequeña queda parcialmente debajo del viewport, auto-scroll suave
+                        setTimeout(function() {
+                            var currentRect = instance.calendarContainer.getBoundingClientRect();
+                            if (currentRect.bottom > window.innerHeight) {
+                                window.scrollBy({
+                                    top: currentRect.bottom - window.innerHeight + 24,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }, 50);
+                    }
                 }
             });
 
