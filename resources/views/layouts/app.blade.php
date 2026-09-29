@@ -1189,12 +1189,19 @@
                         
                         // Forzar que siempre abra hacia abajo
                         var topPos = rect.bottom + scrollY + 4;
-                        var leftPos = rect.left + scrollX + ((rect.width - calWidth) / 2);
-                        
-                        // Respetar márgenes de pantalla en dispositivos móviles
-                        var maxLeft = (window.innerWidth || document.documentElement.clientWidth) - calWidth - 8;
-                        if (leftPos < 8) leftPos = 8;
-                        if (leftPos > maxLeft) leftPos = maxLeft;
+                        var clientWidth = window.innerWidth || document.documentElement.clientWidth;
+                        var leftPos;
+
+                        if (clientWidth <= 640) {
+                            // En modo móvil (<= 640px) centrar perfectamente en la pantalla para evitar que se recorte
+                            leftPos = Math.max(8, Math.round((clientWidth - calWidth) / 2));
+                        } else {
+                            // En modo web (> 640px) comportamiento 100% original idéntico sin alteración
+                            leftPos = rect.left + scrollX + ((rect.width - calWidth) / 2);
+                            var maxLeft = clientWidth - calWidth - 8;
+                            if (leftPos < 8) leftPos = 8;
+                            if (leftPos > maxLeft) leftPos = maxLeft;
+                        }
                         
                         instance.calendarContainer.style.top = topPos + 'px';
                         instance.calendarContainer.style.left = leftPos + 'px';

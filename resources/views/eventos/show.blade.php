@@ -7,12 +7,12 @@
     {{-- Encabezado con Botón de Regreso --}}
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3.5">
                 <a href="{{ route('eventos.index') }}" class="btn-ghost w-9 h-9 p-0 flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white" title="Volver a Eventos">
                     ←
                 </a>
-                <h1 class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white flex items-center gap-3">
-                    <span>🕵🏻</span> Detalle de Evento #{{ $evento->id }}
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white flex items-center gap-3.5">
+                    <span class="text-2xl sm:text-3xl">🕵🏻</span> Detalle de Evento #{{ $evento->id }}
                 </h1>
             </div>
             <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium ml-12">
@@ -35,7 +35,7 @@
                 };
             @endphp
             <span class="badge-evento {{ $badgeClass }}">
-                <span class="text-base mb-0.5">{{ $icon }}</span>
+                <span class="badge-evento-icon">{{ $icon }}</span>
                 <span>{{ $evento->accion }}</span>
             </span>
         </div>
@@ -100,8 +100,11 @@
             $isBackup = $evento->accion === 'backup';
             $isLogin = $evento->accion === 'login';
             
-            $colAntTitle = $isBackup ? '📦 Archivos y Almacenamiento' : ($isLogin ? '⚠️ Historial de Intentos Previos' : '➖ Valores Anteriores');
-            $colNueTitle = $isBackup ? '✅ Estado y Parámetros' : ($isLogin ? '✅ Acceso Logrado / Exitoso' : '➕ Valores Nuevos');
+            $colAntEmoji = $isBackup ? '📦' : ($isLogin ? '⚠️' : '➖');
+            $colAntText = $isBackup ? 'Archivos y Almacenamiento' : ($isLogin ? 'Historial de Intentos Previos' : 'Valores Anteriores');
+
+            $colNueEmoji = $isBackup ? '✅' : ($isLogin ? '✅' : '➕');
+            $colNueText = $isBackup ? 'Estado y Parámetros' : ($isLogin ? 'Acceso Logrado / Exitoso' : 'Valores Nuevos');
 
             $colAntClass = $isBackup ? 'event-col-cyan' : ($isLogin ? 'event-col-amber' : 'event-col-rose');
             $colNueClass = 'event-col-emerald';
@@ -111,26 +114,71 @@
             {{-- Columna Anterior --}}
             <div class="event-col-card {{ $colAntClass }}">
                 <div class="event-col-header">
-                    <span>{{ $colAntTitle }}</span>
+                    <span class="event-col-title"><span class="event-col-emoji">{{ $colAntEmoji }}</span><span>{{ $colAntText }}</span></span>
                 </div>
                 <div class="event-col-content">
                     @if(!empty($viejos) && is_array($viejos))
                         @foreach($viejos as $k => $v)
                             @php
-                                $isPath = str_contains(strtolower($k), 'directorio') || str_contains(strtolower($k), 'archivo') || str_contains(strtolower($k), 'ruta') || str_contains(strtolower($k), 'path');
+                                $lowerK = strtolower($k);
+                                $isPath = str_contains($lowerK, 'directorio') || str_contains($lowerK, 'archivo') || str_contains($lowerK, 'ruta') || str_contains($lowerK, 'path');
                                 if ($isPath && is_string($v) && preg_match('/^[a-zA-Z]:\\\\/i', $v)) {
                                     $v = str_replace('/', '\\', $v);
                                 }
+                                
+                                $resolvedName = null;
+                                if ($v !== null && $v !== '' && !is_array($v)) {
+                                    if (in_array($lowerK, ['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by'])) {
+                                        $resolvedName = $lookups['users'][$v] ?? null;
+                                    } elseif ($lowerK === 'cliente_id') {
+                                        $resolvedName = $lookups['clientes'][$v] ?? null;
+                                    } elseif ($lowerK === 'proveedor_id') {
+                                        $resolvedName = $lookups['proveedores'][$v] ?? null;
+                                    } elseif ($lowerK === 'tecnico_id') {
+                                        $resolvedName = $lookups['tecnicos'][$v] ?? null;
+                                    } elseif (in_array($lowerK, ['categoria_id', 'categoria_stock_id'])) {
+                                        $resolvedName = $lookups['categorias'][$v] ?? null;
+                                    } elseif ($lowerK === 'equipo_id') {
+                                        $resolvedName = $lookups['equipos'][$v] ?? null;
+                                    } elseif (in_array($lowerK, ['stock_id', 'producto_id', 'repuesto_id'])) {
+                                        $resolvedName = $lookups['stocks'][$v] ?? null;
+                                    } elseif (in_array($lowerK, ['concepto_id', 'concepto_caja_id'])) {
+                                        $resolvedName = $lookups['conceptos'][$v] ?? null;
+                                    } elseif ($lowerK === 'id' && (isset($viejos['nombre']) || isset($viejos['name']) || isset($viejos['producto']))) {
+                                        $resolvedName = $viejos['nombre'] ?? $viejos['name'] ?? $viejos['producto'] ?? null;
+                                    }
+                                }
+
+                                $icon = '🏷️';
+                                if ($isPath) $icon = '📁';
+                                elseif (in_array($lowerK, ['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by'])) $icon = '👤';
+                                elseif (str_contains($lowerK, 'cliente')) $icon = '👥';
+                                elseif (str_contains($lowerK, 'proveedor')) $icon = '🏢';
+                                elseif (str_contains($lowerK, 'tecnico')) $icon = '🔧';
+                                elseif (str_contains($lowerK, 'equipo')) $icon = '💻';
+                                elseif (str_contains($lowerK, 'bloqueado')) $icon = '🔒';
+                                elseif (str_contains($lowerK, 'fecha') || str_contains($lowerK, 'hora')) $icon = '🕒';
+
+                                $isBlocked = str_contains($lowerK, 'bloqueado');
                             @endphp
                             <div class="event-prop-item">
                                 <div class="event-prop-key">
-                                    <span>{{ $isPath ? '📁' : '🏷️' }}</span>
+                                    <span class="event-prop-key-icon">{{ $icon }}</span>
                                     <span>{{ $k }}</span>
                                 </div>
-                                @if($isPath)
+                                @if($resolvedName)
+                                    <div class="event-prop-val flex items-center gap-2 flex-wrap">
+                                        <span class="font-bold text-slate-800 dark:text-white">{{ $resolvedName }}</span>
+                                        <span class="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">ID #{{ $v }}</span>
+                                    </div>
+                                @elseif($isPath)
                                     <div class="event-prop-path">
                                         {{ $v }}
                                     </div>
+                                @elseif($isBlocked && ($v === true || $v === 1 || $v === '1' || $v === 'true'))
+                                    <div class="event-prop-val">Sí</div>
+                                @elseif($isBlocked && ($v === false || $v === 0 || $v === '0' || $v === 'false'))
+                                    <div class="event-prop-val">No</div>
                                 @else
                                     <div class="event-prop-val">
                                         {{ is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : $v }}
@@ -155,22 +203,71 @@
             {{-- Columna Nueva --}}
             <div class="event-col-card {{ $colNueClass }}">
                 <div class="event-col-header">
-                    <span>{{ $colNueTitle }}</span>
+                    <span class="event-col-title"><span class="event-col-emoji">{{ $colNueEmoji }}</span><span>{{ $colNueText }}</span></span>
                 </div>
                 <div class="event-col-content">
                     @if(!empty($nuevos) && is_array($nuevos))
                         @foreach($nuevos as $k => $v)
                             @php
+                                $lowerK = strtolower($k);
+                                $isPath = str_contains($lowerK, 'directorio') || str_contains($lowerK, 'archivo') || str_contains($lowerK, 'ruta') || str_contains($lowerK, 'path');
+                                if ($isPath && is_string($v) && preg_match('/^[a-zA-Z]:\\\\/i', $v)) {
+                                    $v = str_replace('/', '\\', $v);
+                                }
+
+                                $resolvedName = null;
+                                if ($v !== null && $v !== '' && !is_array($v)) {
+                                    if (in_array($lowerK, ['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by'])) {
+                                        $resolvedName = $lookups['users'][$v] ?? null;
+                                    } elseif ($lowerK === 'cliente_id') {
+                                        $resolvedName = $lookups['clientes'][$v] ?? null;
+                                    } elseif ($lowerK === 'proveedor_id') {
+                                        $resolvedName = $lookups['proveedores'][$v] ?? null;
+                                    } elseif ($lowerK === 'tecnico_id') {
+                                        $resolvedName = $lookups['tecnicos'][$v] ?? null;
+                                    } elseif (in_array($lowerK, ['categoria_id', 'categoria_stock_id'])) {
+                                        $resolvedName = $lookups['categorias'][$v] ?? null;
+                                    } elseif ($lowerK === 'equipo_id') {
+                                        $resolvedName = $lookups['equipos'][$v] ?? null;
+                                    } elseif (in_array($lowerK, ['stock_id', 'producto_id', 'repuesto_id'])) {
+                                        $resolvedName = $lookups['stocks'][$v] ?? null;
+                                    } elseif (in_array($lowerK, ['concepto_id', 'concepto_caja_id'])) {
+                                        $resolvedName = $lookups['conceptos'][$v] ?? null;
+                                    } elseif ($lowerK === 'id' && (isset($nuevos['nombre']) || isset($nuevos['name']) || isset($nuevos['producto']))) {
+                                        $resolvedName = $nuevos['nombre'] ?? $nuevos['name'] ?? $nuevos['producto'] ?? null;
+                                    }
+                                }
+
                                 $valStr = is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : (string)$v;
                                 $isSuccess = str_starts_with($valStr, '✅');
                                 $isError = str_starts_with($valStr, '❌');
+                                $isBlocked = str_contains($lowerK, 'bloqueado');
+
+                                $icon = '🏷️';
+                                if ($isPath) $icon = '📁';
+                                elseif (in_array($lowerK, ['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by'])) $icon = '👤';
+                                elseif (str_contains($lowerK, 'cliente')) $icon = '👥';
+                                elseif (str_contains($lowerK, 'proveedor')) $icon = '🏢';
+                                elseif (str_contains($lowerK, 'tecnico')) $icon = '🔧';
+                                elseif (str_contains($lowerK, 'equipo')) $icon = '💻';
+                                elseif ($isBlocked) $icon = '🔒';
+                                elseif (str_contains($lowerK, 'fecha') || str_contains($lowerK, 'hora')) $icon = '🕒';
                             @endphp
                             <div class="event-prop-item">
                                 <div class="event-prop-key">
-                                    <span>⚡</span>
+                                    <span class="event-prop-key-icon">{{ $icon }}</span>
                                     <span>{{ $k }}</span>
                                 </div>
-                                @if($isSuccess)
+                                @if($resolvedName)
+                                    <div class="event-prop-val flex items-center gap-2 flex-wrap">
+                                        <span class="font-bold text-slate-800 dark:text-white">{{ $resolvedName }}</span>
+                                        <span class="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">ID #{{ $v }}</span>
+                                    </div>
+                                @elseif($isPath)
+                                    <div class="event-prop-path">
+                                        {{ $v }}
+                                    </div>
+                                @elseif($isSuccess)
                                     <span class="event-prop-success">
                                         {{ $valStr }}
                                     </span>
@@ -178,6 +275,10 @@
                                     <span class="event-prop-error">
                                         {{ $valStr }}
                                     </span>
+                                @elseif($isBlocked && ($v === true || $v === 1 || $v === '1' || $v === 'true'))
+                                    <div class="event-prop-val">Sí</div>
+                                @elseif($isBlocked && ($v === false || $v === 0 || $v === '0' || $v === 'false'))
+                                    <div class="event-prop-val">No</div>
                                 @else
                                     <div class="event-prop-val">
                                         {{ $valStr }}

@@ -49,12 +49,12 @@
                 </select>
             </div>
 
-            <div class="flex items-center gap-1.5 shrink-0">
+            <div class="flex items-center gap-1.5 shrink-0 eventos-filter-date">
                 <label class="font-semibold text-xs sm:text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Desde:</label>
                 <input type="date" name="fecha_desde" value="{{ $fechaDesde }}" class="glass-input w-32 sm:w-36 text-sm">
             </div>
 
-            <div class="flex items-center gap-1.5 shrink-0">
+            <div class="flex items-center gap-1.5 shrink-0 eventos-filter-date">
                 <label class="font-semibold text-xs sm:text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Hasta:</label>
                 <input type="date" name="fecha_hasta" value="{{ $fechaHasta }}" class="glass-input w-32 sm:w-36 text-sm">
             </div>
@@ -149,6 +149,7 @@
                                     {{-- Data escondida para el modal --}}
                                     <div id="data-ant-{{ $evento->id }}" class="hidden">@json($evento->valores_antiguos)</div>
                                     <div id="data-nue-{{ $evento->id }}" class="hidden">@json($evento->valores_nuevos)</div>
+                                    <div id="data-model-{{ $evento->id }}" class="hidden" data-model-type="{{ class_basename($evento->modelo_tipo) }}" data-model-id="{{ $evento->modelo_id }}" data-desc="{{ $evento->descripcion }}"></div>
                                 @else
                                     <span class="text-gray-400 text-xs">—</span>
                                 @endif
@@ -183,9 +184,9 @@
     <div class="event-modal-card scale-95 opacity-0 mx-auto shadow-2xl relative" id="detalle-card">
         {{-- Encabezado Fijo del Modal con Identidad Visual --}}
         <div class="event-modal-header">
-            <div class="flex items-center gap-3.5 min-w-0">
-                <div id="detalle-icon-wrap" class="w-11 h-11 rounded-2xl bg-indigo-500/10 dark:bg-indigo-400/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl shrink-0 border border-indigo-500/20 shadow-sm">
-                    <span id="detalle-icon">📋</span>
+            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div id="detalle-icon-wrap" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-indigo-500/15 dark:bg-indigo-400/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none" style="border: none !important; outline: none !important; box-shadow: none !important;">
+                    <span id="detalle-icon" class="inline-flex items-center justify-center leading-none">📋</span>
                 </div>
                 <div class="min-w-0">
                     <h3 id="detalle-title" class="text-base sm:text-lg font-black text-slate-800 dark:text-white tracking-tight leading-snug truncate">
@@ -196,9 +197,6 @@
                     </p>
                 </div>
             </div>
-            <button type="button" onclick="closeDetalle()" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all text-lg leading-none shrink-0" title="Cerrar ventana (Esc)">
-                ✕
-            </button>
         </div>
         
         {{-- Cuerpo con Scroll Interno Independiente --}}
@@ -207,7 +205,7 @@
                 {{-- Columna Izquierda (Anterior / Archivos / Intentos) --}}
                 <div id="col-ant-card" class="event-col-card event-col-rose">
                     <div id="col-ant-header" class="event-col-header">
-                        <span id="col-ant-title">➖ Valores Anteriores</span>
+                        <span id="col-ant-title" class="event-col-title"><span class="event-col-emoji">➖</span><span>Valores Anteriores</span></span>
                     </div>
                     <div class="event-col-content">
                         <div id="body-ant" class="space-y-2 flex-1"></div>
@@ -217,7 +215,7 @@
                 {{-- Columna Derecha (Nuevo / Parámetros / Acceso) --}}
                 <div id="col-nue-card" class="event-col-card event-col-emerald">
                     <div id="col-nue-header" class="event-col-header">
-                        <span id="col-nue-title">➕ Valores Nuevos</span>
+                        <span id="col-nue-title" class="event-col-title"><span class="event-col-emoji">➕</span><span>Valores Nuevos</span></span>
                     </div>
                     <div class="event-col-content">
                         <div id="body-nue" class="space-y-2 flex-1"></div>
@@ -236,6 +234,8 @@
 </div>
 
 <script>
+    const entityLookups = @json($lookups ?? []);
+
     function renderEventDataHtml(jsonStr, type, accion) {
         if (!jsonStr || jsonStr === 'null' || jsonStr === '""') {
             return renderEmptyState(type, accion);
@@ -281,9 +281,40 @@
                 isDate = true;
             }
 
+            // Resolución inteligente de IDs a nombres legibles
+            let resolvedName = null;
+            if (val !== null && val !== undefined && val !== '') {
+                if (['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by'].includes(lowerKey)) {
+                    resolvedName = entityLookups?.users?.[val] || null;
+                } else if (lowerKey === 'cliente_id') {
+                    resolvedName = entityLookups?.clientes?.[val] || null;
+                } else if (lowerKey === 'proveedor_id') {
+                    resolvedName = entityLookups?.proveedores?.[val] || null;
+                } else if (lowerKey === 'tecnico_id') {
+                    resolvedName = entityLookups?.tecnicos?.[val] || null;
+                } else if (['categoria_id', 'categoria_stock_id'].includes(lowerKey)) {
+                    resolvedName = entityLookups?.categorias?.[val] || null;
+                } else if (lowerKey === 'equipo_id') {
+                    resolvedName = entityLookups?.equipos?.[val] || null;
+                } else if (['stock_id', 'producto_id', 'repuesto_id'].includes(lowerKey)) {
+                    resolvedName = entityLookups?.stocks?.[val] || null;
+                } else if (['concepto_id', 'concepto_caja_id'].includes(lowerKey)) {
+                    resolvedName = entityLookups?.conceptos?.[val] || null;
+                } else if (lowerKey === 'id' && (obj.nombre || obj.name || obj.producto || obj.descripcion)) {
+                    resolvedName = obj.nombre || obj.name || obj.producto || obj.descripcion;
+                }
+            }
+
             // Renderizado del valor
             let valueHtml = '';
-            if (isPath && typeof val === 'string') {
+            if (resolvedName) {
+                valueHtml = `
+                    <div class="event-prop-val flex items-center gap-2 flex-wrap">
+                        <span class="font-bold text-slate-800 dark:text-white">${escapeHtml(resolvedName)}</span>
+                        <span class="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">ID #${escapeHtml(String(val))}</span>
+                    </div>
+                `;
+            } else if (isPath && typeof val === 'string') {
                 let cleanPath = val;
                 if (/^[a-zA-Z]:\\/i.test(cleanPath)) {
                     cleanPath = cleanPath.replace(/\//g, '\\');
@@ -293,6 +324,12 @@
                 valueHtml = `<span class="event-prop-success">${escapeHtml(val)}</span>`;
             } else if (typeof val === 'string' && val.startsWith('❌')) {
                 valueHtml = `<span class="event-prop-error">${escapeHtml(val)}</span>`;
+            } else if (val === true || val === 'true' || (val === 1 && ['bloqueado', 'active', 'activo', 'anulado'].includes(lowerKey))) {
+                let text = (lowerKey === 'active' || lowerKey === 'activo') ? 'Activo' : 'Sí';
+                valueHtml = `<div class="event-prop-val">${text}</div>`;
+            } else if (val === false || val === 'false' || (val === 0 && ['bloqueado', 'active', 'activo', 'anulado'].includes(lowerKey))) {
+                let text = (lowerKey === 'active' || lowerKey === 'activo') ? 'Inactivo' : 'No';
+                valueHtml = `<div class="event-prop-val">${text}</div>`;
             } else if (val === null || val === undefined || val === '') {
                 valueHtml = `<span class="text-xs text-slate-400 italic">No especificado</span>`;
             } else {
@@ -302,13 +339,18 @@
             // Ícono contextual
             let icon = '🏷️';
             if (isPath) icon = '📁';
+            else if (['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by', 'ejecutado', 'por'].some(k => lowerKey.includes(k))) icon = '👤';
+            else if (lowerKey.includes('cliente')) icon = '👥';
+            else if (lowerKey.includes('proveedor')) icon = '🏢';
+            else if (lowerKey.includes('tecnico')) icon = '🔧';
+            else if (lowerKey.includes('equipo')) icon = '💻';
+            else if (lowerKey.includes('bloqueado')) icon = '🔒';
             else if (isDate || lowerKey.includes('fecha') || lowerKey.includes('hora')) icon = '🕒';
             else if (lowerKey.includes('resultado') || lowerKey.includes('estado')) icon = '⚡';
-            else if (lowerKey.includes('usuario') || lowerKey.includes('ejecutado') || lowerKey.includes('por')) icon = '👤';
             else if (lowerKey.includes('nube') || lowerKey.includes('sincroniz')) icon = '☁️';
             else if (lowerKey.includes('retención') || lowerKey.includes('días')) icon = '⏳';
             else if (lowerKey.includes('tamaño') || lowerKey.includes('peso') || lowerKey.includes('kb')) icon = '⚖️';
-            else if (lowerKey.includes('tipo')) icon = '📌';
+            else if (lowerKey.includes('tipo') || lowerKey.includes('categoria')) icon = '📌';
             else if (lowerKey.includes('ip')) icon = '🌐';
             else if (lowerKey.includes('intento')) icon = '⚠️';
             else if (isMonetary) icon = '💵';
@@ -316,7 +358,7 @@
             html += `
                 <div class="event-prop-item">
                     <div class="event-prop-key">
-                        <span class="text-xs">${icon}</span>
+                        <span class="event-prop-key-icon">${icon}</span>
                         <span>${escapeHtml(key)}</span>
                     </div>
                     ${valueHtml}
@@ -386,36 +428,62 @@
         const colAntCard = document.getElementById('col-ant-card');
         const colNueCard = document.getElementById('col-nue-card');
 
+        const modelEl = document.getElementById('data-model-' + id);
+        const modelType = modelEl?.getAttribute('data-model-type') || '';
+        const modelId = modelEl?.getAttribute('data-model-id') || '';
+        const modelDesc = modelEl?.getAttribute('data-desc') || '';
+
         if (accion === 'backup') {
             if (iconEl) iconEl.textContent = '💾';
-            if (iconWrap) iconWrap.className = 'w-11 h-11 rounded-2xl bg-cyan-500/10 dark:bg-cyan-400/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-2xl shrink-0 border border-cyan-500/20 shadow-sm';
+            if (iconWrap) {
+                iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-500/15 dark:bg-cyan-400/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
+                iconWrap.style.border = 'none';
+                iconWrap.style.outline = 'none';
+                iconWrap.style.boxShadow = 'none';
+            }
             if (titleEl) titleEl.textContent = 'Trazabilidad de Respaldo / Copia de Seguridad';
             if (subtitleEl) subtitleEl.textContent = 'Detalle de la copia de seguridad, archivos generados y retención';
             
-            if (colAntTitle) colAntTitle.innerHTML = '<span>📦</span> Archivos y Almacenamiento';
-            if (colNueTitle) colNueTitle.innerHTML = '<span>✅</span> Estado y Parámetros';
+            if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">📦</span><span>Archivos y Almacenamiento</span>';
+            if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">✅</span><span>Estado y Parámetros</span>';
             
             if (colAntCard) colAntCard.className = 'event-col-card event-col-cyan';
             if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
         } else if (accion === 'login') {
             if (iconEl) iconEl.textContent = '🔐';
-            if (iconWrap) iconWrap.className = 'w-11 h-11 rounded-2xl bg-amber-500/10 dark:bg-amber-400/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl shrink-0 border border-amber-500/20 shadow-sm';
+            if (iconWrap) {
+                iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500/15 dark:bg-amber-400/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
+                iconWrap.style.border = 'none';
+                iconWrap.style.outline = 'none';
+                iconWrap.style.boxShadow = 'none';
+            }
             if (titleEl) titleEl.textContent = 'Trazabilidad de Acceso / Intentos de Login';
             if (subtitleEl) subtitleEl.textContent = 'Historial de verificación de seguridad e intentos registrados';
             
-            if (colAntTitle) colAntTitle.innerHTML = '<span>⚠️</span> Historial de Intentos Previos';
-            if (colNueTitle) colNueTitle.innerHTML = '<span>✅</span> Acceso Logrado / Exitoso';
+            if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">⚠️</span><span>Historial de Intentos Previos</span>';
+            if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">✅</span><span>Acceso Logrado / Exitoso</span>';
             
             if (colAntCard) colAntCard.className = 'event-col-card event-col-amber';
             if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
         } else {
             if (iconEl) iconEl.textContent = '📋';
-            if (iconWrap) iconWrap.className = 'w-11 h-11 rounded-2xl bg-indigo-500/10 dark:bg-indigo-400/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl shrink-0 border border-indigo-500/20 shadow-sm';
-            if (titleEl) titleEl.textContent = 'Detalles del Cambio';
-            if (subtitleEl) subtitleEl.textContent = 'Comparativa de datos entre el estado previo y el nuevo estado';
+            if (iconWrap) {
+                iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-indigo-500/15 dark:bg-indigo-400/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
+                iconWrap.style.border = 'none';
+                iconWrap.style.outline = 'none';
+                iconWrap.style.boxShadow = 'none';
+            }
             
-            if (colAntTitle) colAntTitle.innerHTML = '<span>➖</span> Valores Anteriores';
-            if (colNueTitle) colNueTitle.innerHTML = '<span>➕</span> Valores Nuevos';
+            if (modelType) {
+                if (titleEl) titleEl.textContent = `Detalles del Cambio — ${modelType} ${modelId ? '#' + modelId : ''}`;
+                if (subtitleEl) subtitleEl.textContent = modelDesc || 'Comparativa de datos entre el estado previo y el nuevo estado';
+            } else {
+                if (titleEl) titleEl.textContent = 'Detalles del Cambio';
+                if (subtitleEl) subtitleEl.textContent = 'Comparativa de datos entre el estado previo y el nuevo estado';
+            }
+            
+            if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">➖</span><span>Valores Anteriores</span>';
+            if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">➕</span><span>Valores Nuevos</span>';
             
             if (colAntCard) colAntCard.className = 'event-col-card event-col-rose';
             if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';

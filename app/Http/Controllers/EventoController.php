@@ -2,7 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CategoriaStock;
+use App\Models\Cliente;
+use App\Models\ConceptoCaja;
+use App\Models\Equipo;
 use App\Models\Evento;
+use App\Models\Proveedor;
+use App\Models\Stock;
+use App\Models\Tecnico;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,8 +46,9 @@ class EventoController extends Controller
 
         $eventos = $query->paginate(30)->withQueryString();
         $users = User::orderBy('name')->get();
+        $lookups = $this->getEntityLookups();
 
-        return view('eventos.index', compact('eventos', 'users', 'fechaDesde', 'fechaHasta'));
+        return view('eventos.index', compact('eventos', 'users', 'lookups', 'fechaDesde', 'fechaHasta'));
     }
 
     public function show(Evento $evento)
@@ -53,8 +61,30 @@ class EventoController extends Controller
         // Forzar parseo como array si fuera necesario
         $viejos = is_string($evento->valores_antiguos) ? json_decode($evento->valores_antiguos, true) : $evento->valores_antiguos;
         $nuevos = is_string($evento->valores_nuevos) ? json_decode($evento->valores_nuevos, true) : $evento->valores_nuevos;
+        $lookups = $this->getEntityLookups();
 
-        return view('eventos.show', compact('evento', 'viejos', 'nuevos'));
+        return view('eventos.show', compact('evento', 'viejos', 'nuevos', 'lookups'));
+    }
+
+    /**
+     * Diccionario de resolución de llaves foráneas a nombres descriptivos
+     */
+    protected function getEntityLookups(): array
+    {
+        return [
+            'users' => User::pluck('name', 'id')->toArray(),
+            'clientes' => Cliente::get(['id', 'nombres', 'apellidos'])->mapWithKeys(function ($c) {
+                return [$c->id => trim(($c->nombres ?? '').' '.($c->apellidos ?? ''))];
+            })->filter(fn ($v) => ! empty($v))->toArray(),
+            'proveedores' => Proveedor::pluck('nombre_razon_social', 'id')->toArray(),
+            'tecnicos' => Tecnico::pluck('nombre', 'id')->toArray(),
+            'categorias' => CategoriaStock::pluck('nombre', 'id')->toArray(),
+            'conceptos' => ConceptoCaja::pluck('nombre', 'id')->toArray(),
+            'stocks' => Stock::pluck('producto', 'id')->toArray(),
+            'equipos' => Equipo::get(['id', 'nombre', 'marca', 'modelo'])->mapWithKeys(function ($e) {
+                return [$e->id => trim(($e->nombre ?? '').' '.($e->marca ?? '').' '.($e->modelo ?? ''))];
+            })->filter(fn ($v) => ! empty($v))->toArray(),
+        ];
     }
 
     public function backup(Request $request)
