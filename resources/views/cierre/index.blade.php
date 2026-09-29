@@ -38,9 +38,8 @@
 <div id="calc-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
     <div class="ts-modal-card scale-95 opacity-0 max-w-md w-full" id="calc-card">
         <div class="p-6">
-            <div class="flex justify-between items-center mb-4">
+            <div class="mb-4">
                 <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🧮 Calculadora de Dinero</h3>
-                <button type="button" onclick="closeCalc()" class="text-gray-400 hover:text-red-500 transition-colors text-xl leading-none">✕</button>
             </div>
             <div class="space-y-3">
                 <div class="grid grid-cols-2 gap-3 items-center">
@@ -83,8 +82,8 @@
                 <p class="text-3xl font-black text-slate-800 dark:text-white" id="calc-total">$0</p>
             </div>
             <div class="mt-4 flex gap-3">
-                <button type="button" onclick="resetCalc()" class="btn-cancel flex-1 justify-center font-bold" style="padding: 9px 18px;">Limpiar</button>
-                <button type="button" onclick="closeCalc()" class="btn-primary flex-1 justify-center font-bold" style="padding: 9px 18px;">Hecho</button>
+                <button type="button" onclick="resetCalc()" class="btn-cancel flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Limpiar</button>
+                <button type="button" onclick="closeCalc()" class="btn-primary flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Hecho</button>
             </div>
         </div>
     </div>

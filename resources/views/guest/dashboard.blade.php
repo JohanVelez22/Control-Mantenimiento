@@ -46,9 +46,9 @@
         </div>
 
         <!-- Tarjeta Principal (Liquid Glass) -->
-        <div class="glass-card w-full p-6 sm:p-10 relative">
+        <div class="glass-card guest-card w-full relative">
             <!-- Encabezado -->
-            <div class="text-center mb-5">
+            <div class="text-center mb-6 sm:mb-8">
                 <h1 class="text-2xl font-bold text-slate-800 dark:text-white mb-2 tracking-tight">Consulta de Servicios</h1>
                 @if($cliente)
                     <p class="text-slate-600 dark:text-slate-400 text-lg">Hola, <span class="text-blue-600 dark:text-blue-400 font-black">{{ $cliente->nombres }}</span>. Aquí tienes el estado actual de tus equipos.</p>
@@ -210,7 +210,7 @@
                 @endif
                 
                 @if(isset($searched) && !$cliente)
-                <div class="mt-8 text-center">
+                <div class="mt-6 sm:mt-8 text-center">
                     <a href="{{ route('guest.dashboard') }}" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl transition-all hover:-translate-y-1 inline-flex items-center gap-2">
                         <span>🔍</span> Buscar Otra Orden
                     </a>
@@ -219,7 +219,7 @@
             @else
                 <!-- Formulario de Búsqueda si no hay cliente asociado -->
                 <form method="GET" action="{{ route('guest.search') }}" class="max-w-xl mx-auto">
-                    <div class="flex bg-white dark:bg-slate-800/50 p-1 rounded-xl mb-6 border border-gray-200 dark:border-slate-700/50 shadow-sm">
+                    <div class="flex bg-white dark:bg-slate-800/50 p-1 rounded-xl mb-6 sm:mb-8 border border-gray-200 dark:border-slate-700/50 shadow-sm">
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="tipo" value="mantenimiento" class="peer sr-only" checked onchange="updateGuestTheme('mantenimiento')">
                             <div class="text-center py-2.5 rounded-lg text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-blue-500 peer-checked:text-white transition-all peer-checked:shadow-md">
@@ -234,14 +234,14 @@
                         </label>
                     </div>
 
-                        <div class="relative mt-2">
+                    <div class="relative">
                         <input type="text" name="query" id="guestSearchInput" class="glass-input w-full pl-12 pr-4 py-4 text-lg" placeholder="Ej: ORD-001 o 123456789" required>
                         <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
 
-                    <button type="submit" id="guestSubmitBtn" class="w-full mt-6 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02]">
+                    <button type="submit" id="guestSubmitBtn" class="w-full mt-6 sm:mt-8 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02] cursor-pointer">
                         Consultar Estado
                     </button>
                 </form>
@@ -253,6 +253,18 @@
 </div>
 
 <style>
+.guest-card {
+  padding: 1.5rem !important;
+  border-radius: 20px !important;
+}
+
+@media (min-width: 640px) {
+  .guest-card {
+    padding: 2rem !important;
+    border-radius: 24px !important;
+  }
+}
+
 @media (max-width: 639px) {
   .login-brand-title {
     margin-top: 3.5rem !important;
