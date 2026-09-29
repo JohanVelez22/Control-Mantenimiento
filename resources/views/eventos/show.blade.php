@@ -126,6 +126,9 @@
                                     $v = str_replace('/', '\\', $v);
                                 }
                                 
+                                $isUserAgent = str_contains($lowerK, 'navegador') || str_contains($lowerK, 'user_agent') || str_contains($lowerK, 'browser') || (is_string($v) && (str_starts_with($v, 'Mozilla/') || str_contains($v, 'AppleWebKit/') || str_contains($v, 'Gecko/')));
+                                $friendlyUa = ($isUserAgent && is_string($v)) ? \App\Models\Evento::parseUserAgent($v) : null;
+
                                 $resolvedName = null;
                                 if ($v !== null && $v !== '' && !is_array($v)) {
                                     if (in_array($lowerK, ['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by'])) {
@@ -150,7 +153,8 @@
                                 }
 
                                 $icon = '🏷️';
-                                if ($isPath) $icon = '📁';
+                                if ($isUserAgent) $icon = '🌐';
+                                elseif ($isPath) $icon = '📁';
                                 elseif (in_array($lowerK, ['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by'])) $icon = '👤';
                                 elseif (str_contains($lowerK, 'cliente')) $icon = '👥';
                                 elseif (str_contains($lowerK, 'proveedor')) $icon = '🏢';
@@ -166,7 +170,14 @@
                                     <span class="event-prop-key-icon">{{ $icon }}</span>
                                     <span>{{ $k }}</span>
                                 </div>
-                                @if($resolvedName)
+                                @if($friendlyUa)
+                                    <div class="event-prop-val flex flex-col gap-1 w-full">
+                                        <span class="font-bold text-slate-800 dark:text-white">{{ $friendlyUa }}</span>
+                                        <div class="text-[11px] font-mono text-slate-400 dark:text-slate-500 break-all select-text opacity-75" title="{{ $v }}">
+                                            {{ $v }}
+                                        </div>
+                                    </div>
+                                @elseif($resolvedName)
                                     <div class="event-prop-val flex items-center gap-2 flex-wrap">
                                         <span class="font-bold text-slate-800 dark:text-white">{{ $resolvedName }}</span>
                                         <span class="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">ID #{{ $v }}</span>
@@ -215,6 +226,9 @@
                                     $v = str_replace('/', '\\', $v);
                                 }
 
+                                $isUserAgent = str_contains($lowerK, 'navegador') || str_contains($lowerK, 'user_agent') || str_contains($lowerK, 'browser') || (is_string($v) && (str_starts_with($v, 'Mozilla/') || str_contains($v, 'AppleWebKit/') || str_contains($v, 'Gecko/')));
+                                $friendlyUa = ($isUserAgent && is_string($v)) ? \App\Models\Evento::parseUserAgent($v) : null;
+
                                 $resolvedName = null;
                                 if ($v !== null && $v !== '' && !is_array($v)) {
                                     if (in_array($lowerK, ['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by'])) {
@@ -244,7 +258,8 @@
                                 $isBlocked = str_contains($lowerK, 'bloqueado');
 
                                 $icon = '🏷️';
-                                if ($isPath) $icon = '📁';
+                                if ($isUserAgent) $icon = '🌐';
+                                elseif ($isPath) $icon = '📁';
                                 elseif (in_array($lowerK, ['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by'])) $icon = '👤';
                                 elseif (str_contains($lowerK, 'cliente')) $icon = '👥';
                                 elseif (str_contains($lowerK, 'proveedor')) $icon = '🏢';
@@ -258,7 +273,14 @@
                                     <span class="event-prop-key-icon">{{ $icon }}</span>
                                     <span>{{ $k }}</span>
                                 </div>
-                                @if($resolvedName)
+                                @if($friendlyUa)
+                                    <div class="event-prop-val flex flex-col gap-1 w-full">
+                                        <span class="font-bold text-slate-800 dark:text-white">{{ $friendlyUa }}</span>
+                                        <div class="text-[11px] font-mono text-slate-400 dark:text-slate-500 break-all select-text opacity-75" title="{{ $valStr }}">
+                                            {{ $valStr }}
+                                        </div>
+                                    </div>
+                                @elseif($resolvedName)
                                     <div class="event-prop-val flex items-center gap-2 flex-wrap">
                                         <span class="font-bold text-slate-800 dark:text-white">{{ $resolvedName }}</span>
                                         <span class="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">ID #{{ $v }}</span>

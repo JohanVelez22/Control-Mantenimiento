@@ -236,6 +236,87 @@
 <script>
     const entityLookups = @json($lookups ?? []);
 
+    function parseUserAgentFriendly(ua) {
+        if (!ua || typeof ua !== 'string') return null;
+        if (!ua.includes('Mozilla/') && !ua.includes('Chrome/') && !ua.includes('Safari/') && !ua.includes('Firefox/') && !ua.includes('Windows NT') && !ua.includes('WebKit/')) {
+            return ua;
+        }
+
+        let browser = 'Navegador Web';
+        let version = '';
+        let m;
+
+        if ((m = ua.match(/Edg(?:e)?\/([0-9.]+)/i))) {
+            browser = 'Microsoft Edge';
+            version = m[1];
+        } else if ((m = ua.match(/OPR\/([0-9.]+)/i)) || (m = ua.match(/Opera\/([0-9.]+)/i))) {
+            browser = 'Opera';
+            version = m[1];
+        } else if ((m = ua.match(/Vivaldi\/([0-9.]+)/i))) {
+            browser = 'Vivaldi';
+            version = m[1];
+        } else if (/Brave/i.test(ua)) {
+            browser = 'Brave';
+        } else if ((m = ua.match(/Firefox\/([0-9.]+)/i))) {
+            browser = 'Mozilla Firefox';
+            version = m[1];
+        } else if ((m = ua.match(/Chrome\/([0-9.]+)/i))) {
+            browser = 'Google Chrome';
+            version = m[1];
+        } else if ((m = ua.match(/Version\/([0-9.]+).*Safari/i))) {
+            browser = 'Apple Safari';
+            version = m[1];
+        } else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) {
+            browser = 'Apple Safari';
+        }
+
+        let versionClean = '';
+        if (version) {
+            let vParts = version.split('.');
+            versionClean = vParts.length > 2 ? `v${vParts[0]}.${vParts[1]}` : `v${version}`;
+        }
+
+        let os = 'Sistema Operativo';
+        if (/Windows NT 10\.0/i.test(ua)) {
+            os = 'Windows 10/11';
+        } else if (/Windows NT 6\.3/i.test(ua)) {
+            os = 'Windows 8.1';
+        } else if (/Windows NT 6\.2/i.test(ua)) {
+            os = 'Windows 8';
+        } else if (/Windows NT 6\.1/i.test(ua)) {
+            os = 'Windows 7';
+        } else if (/Windows NT 6\.0/i.test(ua)) {
+            os = 'Windows Vista';
+        } else if (/Windows/i.test(ua)) {
+            os = 'Windows';
+        } else if ((m = ua.match(/Android\s+([0-9.]+)/i))) {
+            os = `Android ${m[1]}`;
+        } else if ((m = ua.match(/OS ([0-9_]+) like Mac OS X/i))) {
+            os = 'iOS ' + m[1].replace(/_/g, '.');
+        } else if ((m = ua.match(/Mac OS X\s+([0-9_]+)/i))) {
+            os = 'macOS ' + m[1].replace(/_/g, '.');
+        } else if (/Linux/i.test(ua)) {
+            os = 'Linux';
+        } else if (/CrOS/i.test(ua)) {
+            os = 'Chrome OS';
+        }
+
+        let arch = '';
+        if (/x86_64|x64|Win64|WOW64|amd64/i.test(ua)) {
+            arch = '64 bits';
+        } else if (/arm64|aarch64/i.test(ua)) {
+            arch = 'ARM 64 bits';
+        } else if (/i[3-6]86|x86|Win32/i.test(ua)) {
+            arch = '32 bits';
+        }
+
+        let parts = [browser];
+        if (versionClean) parts.push(versionClean);
+        let osPart = os + (arch ? ` (${arch})` : '');
+
+        return `${parts.join(' ')} · ${osPart}`;
+    }
+
     function renderEventDataHtml(jsonStr, type, accion) {
         if (!jsonStr || jsonStr === 'null' || jsonStr === '""') {
             return renderEmptyState(type, accion);
@@ -265,12 +346,21 @@
             // Detección de Directorio / Archivo / Ruta
             const isPath = lowerKey.includes('directorio') || lowerKey.includes('archivo') || lowerKey.includes('ruta') || lowerKey.includes('path');
 
-            // Formateo de valores monetarios
-            const isMonetary = monetaryKeys.some(mk => lowerKey.includes(mk));
+            // Detección de Navegador / Agente de Usuario
+            const isUserAgent = lowerKey.includes('navegador') || lowerKey.includes('user_agent') || lowerKey.includes('browser') || (typeof val === 'string' && (val.startsWith('Mozilla/') || val.includes('AppleWebKit/') || val.includes('Gecko/')));
+            const friendlyUa = (isUserAgent && typeof val === 'string') ? parseUserAgentFriendly(val) : null;
+
+            // Excluir de formato monetario claves cuantitativas que no son dinero (intentos, copias, unidades, etc.)
+            const isNonMonetary = ['intento', 'archivo', 'copia', 'cantidad', 'item', 'registro', 'dia', 'hora', 'tiempo', 'vez', 'veces'].some(nm => lowerKey.includes(nm));
+
+            // Formateo de valores monetarios (solo para números puros)
+            const isMonetary = !isNonMonetary && monetaryKeys.some(mk => lowerKey.includes(mk));
             if (isMonetary && val !== null && val !== '') {
-                let num = parseFloat(val);
-                if (!isNaN(num)) {
-                    val = '$ ' + new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(num);
+                if (typeof val === 'number' || (typeof val === 'string' && /^-?\d+(\.\d+)?$/.test(val.trim()))) {
+                    let num = parseFloat(val);
+                    if (!isNaN(num)) {
+                        val = '$ ' + new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(num);
+                    }
                 }
             }
 
@@ -307,7 +397,16 @@
 
             // Renderizado del valor
             let valueHtml = '';
-            if (resolvedName) {
+            if (friendlyUa) {
+                valueHtml = `
+                    <div class="event-prop-val flex flex-col gap-1 w-full">
+                        <span class="font-bold text-slate-800 dark:text-white">${escapeHtml(friendlyUa)}</span>
+                        <div class="text-[11px] font-mono text-slate-400 dark:text-slate-500 break-all select-text opacity-75" title="${escapeHtml(val)}">
+                            ${escapeHtml(val)}
+                        </div>
+                    </div>
+                `;
+            } else if (resolvedName) {
                 valueHtml = `
                     <div class="event-prop-val flex items-center gap-2 flex-wrap">
                         <span class="font-bold text-slate-800 dark:text-white">${escapeHtml(resolvedName)}</span>
@@ -338,7 +437,8 @@
 
             // Ícono contextual
             let icon = '🏷️';
-            if (isPath) icon = '📁';
+            if (isUserAgent) icon = '🌐';
+            else if (isPath) icon = '📁';
             else if (['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by', 'ejecutado', 'por'].some(k => lowerKey.includes(k))) icon = '👤';
             else if (lowerKey.includes('cliente')) icon = '👥';
             else if (lowerKey.includes('proveedor')) icon = '🏢';

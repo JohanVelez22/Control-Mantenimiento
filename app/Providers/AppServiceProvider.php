@@ -260,7 +260,7 @@ class AppServiceProvider extends ServiceProvider
                     'Total Intentos Requeridos' => ($totalFallidos + 1)." (1 exitoso + {$totalFallidos} ".($totalFallidos === 1 ? 'fallido' : 'fallidos').')',
                     'Hora de Conexión' => now()->format('d/m/Y H:i:s'),
                     'Dirección IP' => request()->ip(),
-                    'Navegador' => substr(request()->userAgent() ?? 'N/D', 0, 100),
+                    'Navegador' => substr(request()->userAgent() ?? 'N/D', 0, 255),
                 ];
                 $descripcion = "El usuario inició sesión tras {$totalFallidos} ".($totalFallidos === 1 ? 'intento fallido' : 'intentos fallidos').'.';
             } else {

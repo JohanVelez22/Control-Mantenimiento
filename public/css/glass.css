@@ -6541,20 +6541,22 @@ html.dark .event-col-amber .event-col-header {
   border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 0.75rem;
   padding: 0.625rem 0.875rem;
-  transition: all 0.2s ease;
+  cursor: default;
 }
 
 .dark .event-prop-item,
 html.dark .event-prop-item {
   background: rgba(15, 23, 42, 0.7) !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: none !important;
 }
 
+.event-prop-item:hover,
 .dark .event-prop-item:hover,
 html.dark .event-prop-item:hover {
-  background: rgba(30, 41, 59, 0.75) !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
+  background: inherit;
+  border-color: inherit;
+  box-shadow: none !important;
 }
 
 .event-prop-key {
@@ -6567,6 +6569,8 @@ html.dark .event-prop-item:hover {
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  user-select: none;
+  pointer-events: none;
 }
 
 .event-prop-key-icon {
@@ -6576,6 +6580,8 @@ html.dark .event-prop-item:hover {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  user-select: none;
+  pointer-events: none;
 }
 
 .dark .event-prop-key,
@@ -6588,7 +6594,7 @@ html.dark .event-prop-key {
   font-weight: 600;
   line-height: 1.4;
   word-break: break-word;
-  user-select: all;
+  user-select: text;
   color: #1e293b;
 }
 
@@ -6606,7 +6612,7 @@ html.dark .event-prop-val {
   word-break: break-all;
   hyphens: none;
   -webkit-hyphens: none;
-  user-select: all;
+  user-select: text;
   background: rgba(241, 245, 249, 0.9);
   border: 1px solid rgba(203, 213, 225, 0.8);
   color: #0f172a;
