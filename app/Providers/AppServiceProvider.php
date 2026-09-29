@@ -257,7 +257,7 @@ class AppServiceProvider extends ServiceProvider
 
                 $nuevos = [
                     'Resultado' => '✅ Inicio de sesión exitoso',
-                    'Total Intentos Requeridos' => ($totalFallidos + 1)." (1 exitoso + {$totalFallidos} ".($totalFallidos === 1 ? 'fallido' : 'fallidos').')',
+                    'Total Intentos Requeridos' => $totalFallidos + 1,
                     'Hora de Conexión' => now()->format('d/m/Y H:i:s'),
                     'Dirección IP' => request()->ip(),
                     'Navegador' => substr(request()->userAgent() ?? 'N/D', 0, 255),

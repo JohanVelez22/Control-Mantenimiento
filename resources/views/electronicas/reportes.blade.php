@@ -117,12 +117,12 @@
  </div>
 
  <div class="lg:col-span-4 flex justify-end gap-2 mt-2">
- <a href="{{ route('electronicas.reportes') }}" class="btn-clean">
- 🧹 Limpiar
- </a>
  <button type="submit" class="btn-primary">
  🌪️ Filtrar Reporte
  </button>
+ <a href="{{ route('electronicas.reportes') }}" class="btn-clean">
+ 🧹 Limpiar
+ </a>
  </div>
  </form>
 

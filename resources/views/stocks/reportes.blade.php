@@ -105,12 +105,12 @@
         </div>
 
         <div class="md:col-span-4 lg:col-span-5 flex justify-end gap-2 mt-2">
-            <a href="{{ route('stocks.reportes') }}" class="btn-clean">
-                🧹 Limpiar
-            </a>
             <button type="submit" class="btn-primary">
                 🌪️ Filtrar Reporte
             </button>
+            <a href="{{ route('stocks.reportes') }}" class="btn-clean">
+                🧹 Limpiar
+            </a>
         </div>
     </form>
 

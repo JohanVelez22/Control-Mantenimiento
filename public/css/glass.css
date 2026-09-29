@@ -1768,7 +1768,29 @@ input[type="number"].no-spinners,
   }
 }
 
-@media (min-width: 1024px) {
+/* Selector de tipo de operación horizontal y amplio */
+.reportes-filter-select {
+  min-width: 260px;
+  flex-shrink: 0;
+}
+
+.reportes-filter-select select,
+.reportes-filter-select .ts-wrapper {
+  min-width: 260px !important;
+  width: 100% !important;
+}
+
+.reportes-filter-select .ts-control,
+.reportes-filter-select .ts-control .item,
+.reportes-filter-select .ts-item-display {
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  line-height: normal !important;
+}
+
+@media (min-width: 1280px) {
   .reportes-filter-form {
     flex-wrap: nowrap !important;
   }
@@ -1871,10 +1893,13 @@ input[type="number"].no-spinners,
   /* Selector de tipo en operaciones móvil */
   .reportes-filter-select {
     width: 100% !important;
+    min-width: 0 !important;
   }
 
-  .reportes-filter-select select {
+  .reportes-filter-select select,
+  .reportes-filter-select .ts-wrapper {
     width: 100% !important;
+    min-width: 0 !important;
     height: 42px !important;
   }
 
