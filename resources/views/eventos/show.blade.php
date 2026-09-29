@@ -1,41 +1,209 @@
 @extends('layouts.app')
 
-@section('title', 'Detalle de Evento')
-
-@section('page-title', 'Evento de Auditoría')
+@section('title', 'Detalle de Evento #' . $evento->id)
 
 @section('content')
-    <div class="card" style="max-width:700px; padding:1.8rem;">
-        <div class="flex-between mb-3">
-            <div>
-                <span class="badge badge-blue" style="text-transform:capitalize;">{{ $evento->accion }}</span>
-                <span class="text-secondary" style="margin-left:0.5rem;">{{ $evento->created_at?->format('d/m/Y H:i') }}</span>
+<div class="max-w-5xl mx-auto space-y-6">
+    {{-- Encabezado con Botón de Regreso --}}
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('eventos.index') }}" class="btn-ghost w-9 h-9 p-0 flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white" title="Volver a Eventos">
+                    ←
+                </a>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white flex items-center gap-3">
+                    <span>🕵🏻</span> Detalle de Evento #{{ $evento->id }}
+                </h1>
             </div>
-            <span class="text-secondary">{{ $evento->user->name ?? 'Sistema' }}</span>
+            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium ml-12">
+                Registro de auditoría y trazabilidad en {{ $evento->created_at?->format('d/m/Y h:i A') }}
+            </p>
         </div>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
-            <div><span class="text-secondary" style="font-size:0.8rem;">Modelo</span><br><strong>{{ class_basename($evento->modelo_tipo) ?: '—' }}</strong></div>
-            <div><span class="text-secondary" style="font-size:0.8rem;">ID del modelo</span><br><strong>{{ $evento->modelo_id ?: '—' }}</strong></div>
-        </div>
-
-        <div class="mt-3"><span class="text-secondary" style="font-size:0.8rem;">Descripción</span><p style="margin:0.2rem 0 0;">{{ $evento->descripcion }}</p></div>
-
-        <hr style="border:none; border-top:1px solid rgba(0,0,0,0.08); margin:1.2rem 0;">
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.2rem;">
-            <div>
-                <h4 style="margin:0 0 0.6rem;">Valores anteriores</h4>
-                <pre style="background:rgba(0,0,0,0.04); padding:0.8rem; border-radius:10px; font-size:0.78rem; overflow:auto; max-height:300px;">{{ json_encode($viejos, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-            </div>
-            <div>
-                <h4 style="margin:0 0 0.6rem;">Valores nuevos</h4>
-                <pre style="background:rgba(0,0,0,0.04); padding:0.8rem; border-radius:10px; font-size:0.78rem; overflow:auto; max-height:300px;">{{ json_encode($nuevos, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-            </div>
-        </div>
-
-        <div class="flex-center mt-3" style="justify-content:flex-start;">
-            <a href="{{ route('eventos.index') }}" class="btn btn-secondary">← Volver</a>
+        <div class="flex items-center gap-2 self-end sm:self-auto">
+            @php
+                $badgeClass = 'badge-evento-' . $evento->accion;
+                $icon = match($evento->accion) {
+                    'creado' => '✨',
+                    'actualizado' => '✏️',
+                    'eliminado' => '🗑️',
+                    'anulado' => '🚫',
+                    'login' => '🔑',
+                    'logout' => '🚪',
+                    'backup' => '💾',
+                    default => '📌',
+                };
+            @endphp
+            <span class="badge-evento {{ $badgeClass }}">
+                <span class="text-base mb-0.5">{{ $icon }}</span>
+                <span>{{ $evento->accion }}</span>
+            </span>
         </div>
     </div>
+
+    {{-- Tarjeta Principal Informativa --}}
+    <div class="glass-card p-6 space-y-6">
+        {{-- Metadata Grid --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
+                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                    <span>👤</span> Usuario Responsable
+                </span>
+                <span class="text-sm font-bold text-slate-800 dark:text-slate-100">
+                    {{ $evento->user->name ?? 'Sistema' }}
+                </span>
+            </div>
+
+            <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
+                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                    <span>📦</span> Módulo / Modelo
+                </span>
+                <span class="text-sm font-bold text-slate-800 dark:text-slate-100 font-mono">
+                    {{ class_basename($evento->modelo_tipo) ?: 'General / Sistema' }}
+                    @if($evento->modelo_id)
+                        #{{ $evento->modelo_id }}
+                    @endif
+                </span>
+            </div>
+
+            <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
+                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                    <span>🌐</span> Dirección IP
+                </span>
+                <span class="text-sm font-bold text-slate-800 dark:text-slate-100 font-mono">
+                    {{ $evento->ip_direccion ?: '127.0.0.1' }}
+                </span>
+            </div>
+
+            <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
+                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                    <span>🕒</span> Fecha y Hora
+                </span>
+                <span class="text-sm font-bold text-slate-800 dark:text-slate-100">
+                    {{ $evento->created_at?->format('d/m/Y h:i:s A') }}
+                </span>
+            </div>
+        </div>
+
+        {{-- Descripción del Movimiento --}}
+        <div class="bg-white/80 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-white/10">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                <span>📝</span> Descripción del Evento
+            </span>
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-200">
+                {{ $evento->descripcion }}
+            </p>
+        </div>
+
+        {{-- Grid Comparativo de Valores (Simétrico a Modal) --}}
+        @php
+            $isBackup = $evento->accion === 'backup';
+            $isLogin = $evento->accion === 'login';
+            
+            $colAntTitle = $isBackup ? '📦 Archivos y Almacenamiento' : ($isLogin ? '⚠️ Historial de Intentos Previos' : '➖ Valores Anteriores');
+            $colNueTitle = $isBackup ? '✅ Estado y Parámetros' : ($isLogin ? '✅ Acceso Logrado / Exitoso' : '➕ Valores Nuevos');
+
+            $colAntClass = $isBackup ? 'event-col-cyan' : ($isLogin ? 'event-col-amber' : 'event-col-rose');
+            $colNueClass = 'event-col-emerald';
+        @endphp
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{-- Columna Anterior --}}
+            <div class="event-col-card {{ $colAntClass }}">
+                <div class="event-col-header">
+                    <span>{{ $colAntTitle }}</span>
+                </div>
+                <div class="event-col-content">
+                    @if(!empty($viejos) && is_array($viejos))
+                        @foreach($viejos as $k => $v)
+                            @php
+                                $isPath = str_contains(strtolower($k), 'directorio') || str_contains(strtolower($k), 'archivo') || str_contains(strtolower($k), 'ruta') || str_contains(strtolower($k), 'path');
+                                if ($isPath && is_string($v) && preg_match('/^[a-zA-Z]:\\\\/i', $v)) {
+                                    $v = str_replace('/', '\\', $v);
+                                }
+                            @endphp
+                            <div class="event-prop-item">
+                                <div class="event-prop-key">
+                                    <span>{{ $isPath ? '📁' : '🏷️' }}</span>
+                                    <span>{{ $k }}</span>
+                                </div>
+                                @if($isPath)
+                                    <div class="event-prop-path">
+                                        {{ $v }}
+                                    </div>
+                                @else
+                                    <div class="event-prop-val">
+                                        {{ is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : $v }}
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="event-empty-box">
+                            <div class="event-empty-icon">
+                                <span>✨</span>
+                            </div>
+                            <span class="event-empty-title">Sin valores anteriores</span>
+                            <p class="event-empty-desc">
+                                {{ $evento->accion === 'creado' ? 'Este registro fue creado directamente en el sistema.' : 'No se registraron cambios previos.' }}
+                            </p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Columna Nueva --}}
+            <div class="event-col-card {{ $colNueClass }}">
+                <div class="event-col-header">
+                    <span>{{ $colNueTitle }}</span>
+                </div>
+                <div class="event-col-content">
+                    @if(!empty($nuevos) && is_array($nuevos))
+                        @foreach($nuevos as $k => $v)
+                            @php
+                                $valStr = is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : (string)$v;
+                                $isSuccess = str_starts_with($valStr, '✅');
+                                $isError = str_starts_with($valStr, '❌');
+                            @endphp
+                            <div class="event-prop-item">
+                                <div class="event-prop-key">
+                                    <span>⚡</span>
+                                    <span>{{ $k }}</span>
+                                </div>
+                                @if($isSuccess)
+                                    <span class="event-prop-success">
+                                        {{ $valStr }}
+                                    </span>
+                                @elseif($isError)
+                                    <span class="event-prop-error">
+                                        {{ $valStr }}
+                                    </span>
+                                @else
+                                    <div class="event-prop-val">
+                                        {{ $valStr }}
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="event-empty-box">
+                            <span class="text-3xl mb-1.5 opacity-60">🗑️</span>
+                            <span class="event-empty-title">Sin valores nuevos</span>
+                            <p class="event-empty-desc">
+                                {{ $evento->accion === 'eliminado' ? 'El registro fue eliminado del sistema.' : 'No se registraron nuevos valores.' }}
+                            </p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- Botón Volver --}}
+        <div class="pt-4 border-t border-slate-200/60 dark:border-white/10 flex justify-between items-center">
+            <a href="{{ route('eventos.index') }}" class="btn-clean px-5 py-2 font-bold text-xs flex items-center gap-2">
+                ← Volver al Listado
+            </a>
+        </div>
+    </div>
+</div>
 @endsection

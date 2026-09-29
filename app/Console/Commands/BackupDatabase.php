@@ -35,7 +35,7 @@ class BackupDatabase extends Command
             $retentionDays = (int) env('BACKUP_RETENTION_DAYS', 15);
 
             // Directorio local de almacenamiento
-            $backupDir = storage_path('app/backups');
+            $backupDir = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, storage_path('app/backups'));
             if (! File::exists($backupDir)) {
                 File::makeDirectory($backupDir, 0755, true);
             }

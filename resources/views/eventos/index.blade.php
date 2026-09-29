@@ -86,35 +86,35 @@
                 <tbody>
                     @forelse($eventos as $evento)
                         @php
-                            $badgeClass = 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+                            $badgeClass = 'badge-evento-default';
                             $icon = '📌';
                             switch($evento->accion) {
                                 case 'creado': 
-                                    $badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300';
+                                    $badgeClass = 'badge-evento-creado';
                                     $icon = '✨'; 
                                     break;
                                 case 'actualizado': 
-                                    $badgeClass = 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-300';
+                                    $badgeClass = 'badge-evento-actualizado';
                                     $icon = '✏️'; 
                                     break;
                                 case 'eliminado': 
-                                    $badgeClass = 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/40 dark:text-red-300';
+                                    $badgeClass = 'badge-evento-eliminado';
                                     $icon = '🗑️'; 
                                     break;
                                 case 'anulado': 
-                                    $badgeClass = 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/40 dark:text-orange-300';
+                                    $badgeClass = 'badge-evento-anulado';
                                     $icon = '🚫'; 
                                     break;
                                 case 'login': 
-                                    $badgeClass = 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-300';
+                                    $badgeClass = 'badge-evento-login';
                                     $icon = '🔑'; 
                                     break;
                                 case 'logout': 
-                                    $badgeClass = 'bg-slate-200 text-slate-800 border-slate-300 dark:bg-slate-800 dark:text-slate-300';
+                                    $badgeClass = 'badge-evento-logout';
                                     $icon = '🚪'; 
                                     break;
                                 case 'backup': 
-                                    $badgeClass = 'bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-900/40 dark:text-teal-300';
+                                    $badgeClass = 'badge-evento-backup';
                                     $icon = '💾'; 
                                     break;
                             }
@@ -124,7 +124,7 @@
                                 {{ $evento->created_at->format('d/m/Y h:i A') }}
                             </td>
                             <td data-label="Acción:" class="text-center">
-                                <span class="inline-flex flex-col items-center justify-center px-2 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider border w-24 leading-tight {{ $badgeClass }}">
+                                <span class="badge-evento {{ $badgeClass }}">
                                     <span class="text-base mb-0.5">{{ $icon }}</span>
                                     <span>{{ $evento->accion }}</span>
                                 </span>
@@ -178,94 +178,198 @@
 </div>
 
 @push('modals')
-{{-- Modal de Detalles de Cambios / Trazabilidad --}}
+{{-- Modal de Detalles de Cambios / Trazabilidad Liquid Glass --}}
 <div id="detalle-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-[200]" onclick="if(event.target === this) closeDetalle()">
-    <div class="ts-modal-card scale-95 opacity-0 max-w-4xl w-full" id="detalle-card">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
-                <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">
-                    <span id="detalle-icon" class="text-2xl">📋</span>
-                    <span id="detalle-title">Detalles del Cambio</span>
-                </h3>
-                <button type="button" onclick="closeDetalle()" class="text-gray-400 hover:text-red-500 transition-colors text-xl leading-none">✕</button>
+    <div class="event-modal-card scale-95 opacity-0 mx-auto shadow-2xl relative" id="detalle-card">
+        {{-- Encabezado Fijo del Modal con Identidad Visual --}}
+        <div class="event-modal-header">
+            <div class="flex items-center gap-3.5 min-w-0">
+                <div id="detalle-icon-wrap" class="w-11 h-11 rounded-2xl bg-indigo-500/10 dark:bg-indigo-400/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl shrink-0 border border-indigo-500/20 shadow-sm">
+                    <span id="detalle-icon">📋</span>
+                </div>
+                <div class="min-w-0">
+                    <h3 id="detalle-title" class="text-base sm:text-lg font-black text-slate-800 dark:text-white tracking-tight leading-snug truncate">
+                        Detalles del Cambio
+                    </h3>
+                    <p id="detalle-subtitle" class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                        Auditoría del sistema y trazabilidad de operaciones
+                    </p>
+                </div>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                {{-- Columna Anterior / Intentos Fallidos / Archivos --}}
-                <div id="col-ant-card" class="bg-red-50/50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30 overflow-hidden flex flex-col transition-colors">
-                    <div id="col-ant-header" class="px-4 py-3 bg-red-100/50 dark:bg-red-900/30 border-b border-red-200 dark:border-red-900/50">
-                        <h4 id="col-ant-title" class="font-bold text-red-700 dark:text-red-400 text-sm uppercase tracking-wider flex items-center gap-2">
-                            <span>➖</span> Antes
-                        </h4>
+            <button type="button" onclick="closeDetalle()" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all text-lg leading-none shrink-0" title="Cerrar ventana (Esc)">
+                ✕
+            </button>
+        </div>
+        
+        {{-- Cuerpo con Scroll Interno Independiente --}}
+        <div class="event-modal-body">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 min-h-0">
+                {{-- Columna Izquierda (Anterior / Archivos / Intentos) --}}
+                <div id="col-ant-card" class="event-col-card event-col-rose">
+                    <div id="col-ant-header" class="event-col-header">
+                        <span id="col-ant-title">➖ Valores Anteriores</span>
                     </div>
-                    <div class="p-4 flex-1">
-                        <pre id="pre-ant" class="text-xs font-mono text-slate-800 dark:text-slate-200 whitespace-pre-wrap break-words leading-relaxed"></pre>
+                    <div class="event-col-content">
+                        <div id="body-ant" class="space-y-2 flex-1"></div>
                     </div>
                 </div>
 
-                {{-- Columna Nuevo / Acceso Exitoso / Parámetros --}}
-                <div id="col-nue-card" class="bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden flex flex-col transition-colors">
-                    <div id="col-nue-header" class="px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-900/50">
-                        <h4 id="col-nue-title" class="font-bold text-emerald-700 dark:text-emerald-400 text-sm uppercase tracking-wider flex items-center gap-2">
-                            <span>➕</span> Después
-                        </h4>
+                {{-- Columna Derecha (Nuevo / Parámetros / Acceso) --}}
+                <div id="col-nue-card" class="event-col-card event-col-emerald">
+                    <div id="col-nue-header" class="event-col-header">
+                        <span id="col-nue-title">➕ Valores Nuevos</span>
                     </div>
-                    <div class="p-4 flex-1">
-                        <pre id="pre-nue" class="text-xs font-mono text-slate-800 dark:text-slate-200 whitespace-pre-wrap break-words leading-relaxed"></pre>
+                    <div class="event-col-content">
+                        <div id="body-nue" class="space-y-2 flex-1"></div>
                     </div>
                 </div>
             </div>
-            
-            <div class="mt-6 flex justify-end">
-                <button type="button" onclick="closeDetalle()" class="btn-primary px-6 py-2 font-bold text-sm">Cerrar</button>
-            </div>
+        </div>
+        
+        {{-- Pie Fijo del Modal (Siempre visible, nunca cortado) --}}
+        <div class="event-modal-footer">
+            <button type="button" onclick="closeDetalle()" class="btn-primary px-6 py-2.5 font-bold text-sm shadow-md">
+                Cerrar
+            </button>
         </div>
     </div>
 </div>
 
 <script>
-    function formatJsonToReadable(jsonStr) {
-        if (!jsonStr || jsonStr === 'null') return 'Ninguno';
-        try {
-            const obj = JSON.parse(jsonStr);
-            if(Object.keys(obj).length === 0) return 'Sin cambios relevantes';
-            
-            let output = '';
-            const monetaryKeys = ['costo', 'monto', 'precio', 'total', 'abono', 'saldo', 'valor'];
-            
-            for(let key in obj) {
-                // Ignora tokens o cadenas hash largas si existen
-                if(key === 'remember_token' || key === 'password') continue;
-                
-                let val = obj[key];
-                
-                // Formatear valores monetarios (sin decimales, con puntos)
-                const isMonetary = monetaryKeys.some(mk => key.toLowerCase().includes(mk));
-                if (isMonetary && val !== null && val !== '') {
-                    let num = parseFloat(val);
-                    if (!isNaN(num)) {
-                        val = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(num);
-                    }
-                }
+    function renderEventDataHtml(jsonStr, type, accion) {
+        if (!jsonStr || jsonStr === 'null' || jsonStr === '""') {
+            return renderEmptyState(type, accion);
+        }
 
-                // Formatear fechas y horas ISO (eliminar microsegundos / .000000Z y 'T' para que quede horizontal)
-                let isDate = false;
-                if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}/i.test(val)) {
-                    val = val.replace('T', ' ').replace(/\.\d+(?:Z|[+-]\d{2}:\d{2})?$/i, '').replace(/(?:Z|[+-]\d{2}:\d{2})$/i, '');
-                    isDate = true;
-                }
-                
-                output += `<span class="font-bold text-gray-500 uppercase text-[10px] tracking-wider">${key}</span>\n`;
-                if (isDate) {
-                    output += `<span class="inline-block whitespace-nowrap font-mono">${val}</span>\n\n`;
-                } else {
-                    output += `${val}\n\n`;
+        let obj;
+        try {
+            obj = (typeof jsonStr === 'object') ? jsonStr : JSON.parse(jsonStr);
+        } catch (e) {
+            return `<div class="event-prop-item"><div class="event-prop-path">${escapeHtml(jsonStr)}</div></div>`;
+        }
+
+        const keys = Object.keys(obj || {});
+        if (keys.length === 0) {
+            return renderEmptyState(type, accion);
+        }
+
+        const monetaryKeys = ['costo', 'monto', 'precio', 'total', 'abono', 'saldo', 'valor'];
+        let html = '<div class="space-y-2 w-full">';
+
+        for (let key of keys) {
+            if (key === 'remember_token' || key === 'password') continue;
+
+            let val = obj[key];
+            let lowerKey = key.toLowerCase();
+
+            // Detección de Directorio / Archivo / Ruta
+            const isPath = lowerKey.includes('directorio') || lowerKey.includes('archivo') || lowerKey.includes('ruta') || lowerKey.includes('path');
+
+            // Formateo de valores monetarios
+            const isMonetary = monetaryKeys.some(mk => lowerKey.includes(mk));
+            if (isMonetary && val !== null && val !== '') {
+                let num = parseFloat(val);
+                if (!isNaN(num)) {
+                    val = '$ ' + new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(num);
                 }
             }
-            return output || 'Ninguno';
-        } catch (e) {
-            return jsonStr;
+
+            // Formateo de fechas ISO
+            let isDate = false;
+            if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}/i.test(val)) {
+                val = val.replace('T', ' ').replace(/\.\d+(?:Z|[+-]\d{2}:\d{2})?$/i, '').replace(/(?:Z|[+-]\d{2}:\d{2})$/i, '');
+                isDate = true;
+            }
+
+            // Renderizado del valor
+            let valueHtml = '';
+            if (isPath && typeof val === 'string') {
+                let cleanPath = val;
+                if (/^[a-zA-Z]:\\/i.test(cleanPath)) {
+                    cleanPath = cleanPath.replace(/\//g, '\\');
+                }
+                valueHtml = `<div class="event-prop-path">${escapeHtml(cleanPath)}</div>`;
+            } else if (typeof val === 'string' && val.startsWith('✅')) {
+                valueHtml = `<span class="event-prop-success">${escapeHtml(val)}</span>`;
+            } else if (typeof val === 'string' && val.startsWith('❌')) {
+                valueHtml = `<span class="event-prop-error">${escapeHtml(val)}</span>`;
+            } else if (val === null || val === undefined || val === '') {
+                valueHtml = `<span class="text-xs text-slate-400 italic">No especificado</span>`;
+            } else {
+                valueHtml = `<div class="event-prop-val">${escapeHtml(String(val))}</div>`;
+            }
+
+            // Ícono contextual
+            let icon = '🏷️';
+            if (isPath) icon = '📁';
+            else if (isDate || lowerKey.includes('fecha') || lowerKey.includes('hora')) icon = '🕒';
+            else if (lowerKey.includes('resultado') || lowerKey.includes('estado')) icon = '⚡';
+            else if (lowerKey.includes('usuario') || lowerKey.includes('ejecutado') || lowerKey.includes('por')) icon = '👤';
+            else if (lowerKey.includes('nube') || lowerKey.includes('sincroniz')) icon = '☁️';
+            else if (lowerKey.includes('retención') || lowerKey.includes('días')) icon = '⏳';
+            else if (lowerKey.includes('tamaño') || lowerKey.includes('peso') || lowerKey.includes('kb')) icon = '⚖️';
+            else if (lowerKey.includes('tipo')) icon = '📌';
+            else if (lowerKey.includes('ip')) icon = '🌐';
+            else if (lowerKey.includes('intento')) icon = '⚠️';
+            else if (isMonetary) icon = '💵';
+
+            html += `
+                <div class="event-prop-item">
+                    <div class="event-prop-key">
+                        <span class="text-xs">${icon}</span>
+                        <span>${escapeHtml(key)}</span>
+                    </div>
+                    ${valueHtml}
+                </div>
+            `;
         }
+
+        html += '</div>';
+        return html;
+    }
+
+    function renderEmptyState(type, accion) {
+        let icon = 'ℹ️';
+        let title = 'Sin valores registrados';
+        let msg = 'No hay información adicional registrada para este bloque.';
+
+        if (type === 'ant') {
+            if (accion === 'creado') {
+                icon = '✨';
+                title = 'Registro Inicial';
+                msg = 'Este registro fue creado directamente en el sistema, por lo que no cuenta con valores anteriores.';
+            } else if (accion === 'login') {
+                icon = '🛡️';
+                title = 'Sin Intentos Fallidos';
+                msg = 'El inicio de sesión fue exitoso al primer intento sin bloqueos previos.';
+            }
+        } else {
+            if (accion === 'eliminado') {
+                icon = '🗑️';
+                title = 'Registro Eliminado';
+                msg = 'El registro fue dado de baja o removido permanentemente del sistema.';
+            }
+        }
+
+        return `
+            <div class="event-empty-box">
+                <div class="event-empty-icon">
+                    <span>${icon}</span>
+                </div>
+                <span class="event-empty-title">${title}</span>
+                <p class="event-empty-desc">${msg}</p>
+            </div>
+        `;
+    }
+
+    function escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        return String(text)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
     function openDetalle(id, accion) {
@@ -273,52 +377,55 @@
         const card = document.getElementById('detalle-card');
         
         const titleEl = document.getElementById('detalle-title');
+        const subtitleEl = document.getElementById('detalle-subtitle');
         const iconEl = document.getElementById('detalle-icon');
+        const iconWrap = document.getElementById('detalle-icon-wrap');
         const colAntTitle = document.getElementById('col-ant-title');
         const colNueTitle = document.getElementById('col-nue-title');
 
         const colAntCard = document.getElementById('col-ant-card');
-        const colAntHeader = document.getElementById('col-ant-header');
         const colNueCard = document.getElementById('col-nue-card');
-        const colNueHeader = document.getElementById('col-nue-header');
 
-        if (accion === 'login') {
-            if (iconEl) iconEl.textContent = '🔐';
-            if (titleEl) titleEl.textContent = 'Trazabilidad de Acceso / Intentos de Login';
-            if (colAntTitle) colAntTitle.innerHTML = '<span>⚠️</span> Historial de Intentos Previos';
-            if (colNueTitle) colNueTitle.innerHTML = '<span>✅</span> Acceso Logrado / Exitoso';
-            if (colAntCard) colAntCard.className = 'bg-amber-50/50 dark:bg-amber-900/10 rounded-xl border border-amber-200 dark:border-amber-900/30 overflow-hidden flex flex-col transition-colors';
-            if (colAntHeader) colAntHeader.className = 'px-4 py-3 bg-amber-100/60 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-900/50';
-            if (colAntTitle) colAntTitle.className = 'font-bold text-amber-800 dark:text-amber-400 text-sm uppercase tracking-wider flex items-center gap-2';
-            if (colNueCard) colNueCard.className = 'bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden flex flex-col transition-colors';
-            if (colNueHeader) colNueHeader.className = 'px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-900/50';
-        } else if (accion === 'backup') {
+        if (accion === 'backup') {
             if (iconEl) iconEl.textContent = '💾';
+            if (iconWrap) iconWrap.className = 'w-11 h-11 rounded-2xl bg-cyan-500/10 dark:bg-cyan-400/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-2xl shrink-0 border border-cyan-500/20 shadow-sm';
             if (titleEl) titleEl.textContent = 'Trazabilidad de Respaldo / Copia de Seguridad';
+            if (subtitleEl) subtitleEl.textContent = 'Detalle de la copia de seguridad, archivos generados y retención';
+            
             if (colAntTitle) colAntTitle.innerHTML = '<span>📦</span> Archivos y Almacenamiento';
             if (colNueTitle) colNueTitle.innerHTML = '<span>✅</span> Estado y Parámetros';
-            if (colAntCard) colAntCard.className = 'bg-slate-50/60 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col transition-colors';
-            if (colAntHeader) colAntHeader.className = 'px-4 py-3 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700';
-            if (colAntTitle) colAntTitle.className = 'font-bold text-slate-700 dark:text-slate-300 text-sm uppercase tracking-wider flex items-center gap-2';
-            if (colNueCard) colNueCard.className = 'bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden flex flex-col transition-colors';
-            if (colNueHeader) colNueHeader.className = 'px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-900/50';
+            
+            if (colAntCard) colAntCard.className = 'event-col-card event-col-cyan';
+            if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
+        } else if (accion === 'login') {
+            if (iconEl) iconEl.textContent = '🔐';
+            if (iconWrap) iconWrap.className = 'w-11 h-11 rounded-2xl bg-amber-500/10 dark:bg-amber-400/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl shrink-0 border border-amber-500/20 shadow-sm';
+            if (titleEl) titleEl.textContent = 'Trazabilidad de Acceso / Intentos de Login';
+            if (subtitleEl) subtitleEl.textContent = 'Historial de verificación de seguridad e intentos registrados';
+            
+            if (colAntTitle) colAntTitle.innerHTML = '<span>⚠️</span> Historial de Intentos Previos';
+            if (colNueTitle) colNueTitle.innerHTML = '<span>✅</span> Acceso Logrado / Exitoso';
+            
+            if (colAntCard) colAntCard.className = 'event-col-card event-col-amber';
+            if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
         } else {
             if (iconEl) iconEl.textContent = '📋';
+            if (iconWrap) iconWrap.className = 'w-11 h-11 rounded-2xl bg-indigo-500/10 dark:bg-indigo-400/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl shrink-0 border border-indigo-500/20 shadow-sm';
             if (titleEl) titleEl.textContent = 'Detalles del Cambio';
-            if (colAntTitle) colAntTitle.innerHTML = '<span>➖</span> Antes';
-            if (colNueTitle) colNueTitle.innerHTML = '<span>➕</span> Después';
-            if (colAntCard) colAntCard.className = 'bg-red-50/50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30 overflow-hidden flex flex-col transition-colors';
-            if (colAntHeader) colAntHeader.className = 'px-4 py-3 bg-red-100/50 dark:bg-red-900/30 border-b border-red-200 dark:border-red-900/50';
-            if (colAntTitle) colAntTitle.className = 'font-bold text-red-700 dark:text-red-400 text-sm uppercase tracking-wider flex items-center gap-2';
-            if (colNueCard) colNueCard.className = 'bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden flex flex-col transition-colors';
-            if (colNueHeader) colNueHeader.className = 'px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-900/50';
+            if (subtitleEl) subtitleEl.textContent = 'Comparativa de datos entre el estado previo y el nuevo estado';
+            
+            if (colAntTitle) colAntTitle.innerHTML = '<span>➖</span> Valores Anteriores';
+            if (colNueTitle) colNueTitle.innerHTML = '<span>➕</span> Valores Nuevos';
+            
+            if (colAntCard) colAntCard.className = 'event-col-card event-col-rose';
+            if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
         }
 
-        const dataAnt = document.getElementById('data-ant-' + id).innerText;
-        const dataNue = document.getElementById('data-nue-' + id).innerText;
+        const dataAnt = document.getElementById('data-ant-' + id)?.innerText || '';
+        const dataNue = document.getElementById('data-nue-' + id)?.innerText || '';
         
-        document.getElementById('pre-ant').innerHTML = formatJsonToReadable(dataAnt);
-        document.getElementById('pre-nue').innerHTML = formatJsonToReadable(dataNue);
+        document.getElementById('body-ant').innerHTML = renderEventDataHtml(dataAnt, 'ant', accion);
+        document.getElementById('body-nue').innerHTML = renderEventDataHtml(dataNue, 'nue', accion);
         
         modal.classList.remove('hidden');
         setTimeout(() => {
@@ -336,6 +443,16 @@
             modal.classList.add('hidden');
         }, 300);
     }
+
+    // Cerrar modal con tecla Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('detalle-modal');
+            if (modal && !modal.classList.contains('hidden')) {
+                closeDetalle();
+            }
+        }
+    });
 </script>
 @endpush
 
