@@ -48,7 +48,7 @@
  <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
  <span>🛍️</span> Artículos a Vender
  </h3>
- <button type="button" onclick="agregarFila()" class="btn-clean w-full sm:w-auto justify-center">
+ <button type="button" onclick="agregarFila()" class="btn-add w-full sm:w-auto justify-center">
  ➕ Agregar artículo
  </button>
  </div>

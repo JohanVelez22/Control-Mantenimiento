@@ -20,5 +20,12 @@ class Configuracion extends Model
         'logo_path',
         'pie_pagina_factura',
         'formato_factura',
+        'backup_automatico',
+        'backup_frecuencia',
+        'backup_hora',
+        'backup_dia_semana',
+        'backup_dia_mes',
+        'backup_max_copias',
+        'backup_tipo_incluido',
     ];
 }

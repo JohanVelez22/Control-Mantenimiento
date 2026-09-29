@@ -15,6 +15,7 @@ class BackupDatabase extends Command
                             {--files : Respaldar también los archivos multimedia y uploads (storage/app/public)}
                             {--code : Generar un snapshot empaquetado del código fuente}
                             {--all : Respaldar base de datos, uploads y snapshot de código}
+                            {--max-copies= : Límite máximo de copias a conservar antes de sobrescribir/rotar}
                             {--drive-path= : Ruta manual de sincronización de Google Drive}';
 
     protected $description = 'Crea un respaldo integral de MySQL, archivos y código, con sincronización automática a Google Drive';
@@ -33,6 +34,9 @@ class BackupDatabase extends Command
             $host = env('DB_HOST', '127.0.0.1');
             $port = env('DB_PORT', '3306');
             $retentionDays = (int) env('BACKUP_RETENTION_DAYS', 15);
+
+            $configEmpresa = \App\Models\Configuracion::first();
+            $maxCopies = (int) ($this->option('max-copies') ?: ($configEmpresa?->backup_max_copias ?: 10));
 
             // Directorio local de almacenamiento
             $backupDir = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, storage_path('app/backups'));
@@ -126,7 +130,8 @@ class BackupDatabase extends Command
                 $this->comment('ℹ️ Para sincronizar automáticamente con Google Drive, configura GOOGLE_DRIVE_BACKUP_PATH en tu .env');
             }
 
-            // 5. Política de retención local
+            // 5. Política de retención y rotación local
+            $this->aplicarPoliticaRotacion($backupDir, $maxCopies);
             $this->limpiarBackupsAntiguos($backupDir, $retentionDays, 'local');
 
             // 6. Registrar en Auditoría de Eventos
@@ -146,7 +151,8 @@ class BackupDatabase extends Command
                     'Fecha y Hora' => now()->format('d/m/Y H:i:s'),
                     'Ejecutado Por' => $ejecutadoPor,
                     'Sincronización Nube' => $drivePath ? "Google Drive ({$drivePath})" : 'Almacenamiento Local',
-                    'Retención Configurada' => "{$retentionDays} días",
+                    'Retención Días' => "{$retentionDays} días",
+                    'Cupo Máximo Copias' => "{$maxCopies} respaldos (rotación automática)",
                 ];
 
                 $descripcion = "Copia de seguridad del sistema realizada exitosamente ({$sizeKb} KB).";
@@ -346,4 +352,49 @@ class BackupDatabase extends Command
             Log::info("Retención de backups ({$label}): {$deleted} archivo(s) eliminados.");
         }
     }
+
+    /**
+     * Aplica la política de rotación por cupo máximo de copias.
+     * Si los respaldos superan $maxCopies, elimina los más antiguos para dar espacio a los nuevos.
+     */
+    protected function aplicarPoliticaRotacion(string $dir, int $maxCopies): void
+    {
+        if ($maxCopies <= 0 || ! File::exists($dir)) {
+            return;
+        }
+
+        $files = File::files($dir);
+        $backupFiles = [];
+
+        foreach ($files as $file) {
+            $ext = strtolower($file->getExtension());
+            if (in_array($ext, ['sql', 'zip', 'gz'])) {
+                $backupFiles[] = [
+                    'path' => $file->getRealPath(),
+                    'mtime' => $file->getMTime(),
+                    'name' => $file->getFilename(),
+                ];
+            }
+        }
+
+        // Ordenar del más reciente al más antiguo
+        usort($backupFiles, fn ($a, $b) => $b['mtime'] <=> $a['mtime']);
+
+        // Si excede el cupo máximo de copias, eliminar los excedentes más antiguos
+        if (count($backupFiles) > $maxCopies) {
+            $exceso = array_slice($backupFiles, $maxCopies);
+            $deleted = 0;
+            foreach ($exceso as $item) {
+                if (File::delete($item['path'])) {
+                    $deleted++;
+                }
+            }
+
+            if ($deleted > 0) {
+                $this->line("  🔄 Rotación de copias: Se eliminaron {$deleted} archivo(s) antiguo(s) para respetar el límite de {$maxCopies} copias.");
+                Log::info("Rotación de backups: {$deleted} archivo(s) eliminados para respetar límite de {$maxCopies} copias.");
+            }
+        }
+    }
 }
+

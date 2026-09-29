@@ -121,10 +121,10 @@
     @endguest
 
     <!-- CONTENEDOR DE TOASTS (Notificaciones Glass) -->
-    <div id="toast-container" class="fixed bottom-6 right-6 z-[999] flex flex-col gap-3 pointer-events-none w-full max-w-sm"></div>
+    <div id="toast-container" class="fixed bottom-6 right-6 flex flex-col gap-3 pointer-events-none w-full max-w-sm" style="z-index: 100000 !important;"></div>
 
     <!-- MODAL DE CONFIRMACIÓN DE ALERTA/ELIMINACIÓN (Liquid Glass) -->
-    <div id="ts-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" onclick="if(event.target === this) closeTsModal()">
+    <div id="ts-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" style="z-index: 50000 !important;" onclick="if(event.target === this) closeTsModal()">
         <div class="ts-modal-card scale-95 opacity-0" id="ts-modal-card">
             <div class="p-6">
                 <div id="ts-modal-icon-box" class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">

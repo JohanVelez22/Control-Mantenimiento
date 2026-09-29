@@ -226,7 +226,7 @@
         
         {{-- Pie Fijo del Modal (Siempre visible, nunca cortado) --}}
         <div class="event-modal-footer">
-            <button type="button" onclick="closeDetalle()" class="btn-primary px-6 py-2.5 font-bold text-sm shadow-md">
+            <button type="button" onclick="closeDetalle()" class="btn-close-modal">
                 Cerrar
             </button>
         </div>

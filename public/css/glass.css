@@ -720,8 +720,12 @@ html.dark #ts-topbar {
 /* --- BOTÓN GLOBAL CONFIGURACIÓN DE HORIZONTALIDAD Y NO WRAP --- */
 .btn-primary,
 .btn-clean,
+.btn-add,
+.btn-today,
+.btn-backup,
 .btn-save,
 .btn-cancel,
+.btn-close-modal,
 .btn-save-print,
 .btn-concepts,
 .btn-venta,
@@ -778,22 +782,23 @@ html.dark #ts-topbar {
   transform: translateY(0);
 }
 
-/* ---- Botón Limpiar / Reset / Hoy (Violeta Real / Alto Contraste para Emojis) ---- */
+/* ---- Botón Limpiar / Reset (Liquid Glass Violeta Orquídea / Alto Contraste para 🧹) ---- */
 .btn-clean {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
   padding: 9px 18px;
   font-weight: 700;
   font-size: 13px;
   color: #FFFFFF !important;
-  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
   border-radius: 14px;
   border: none !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32);
   transition: all 0.25s ease;
   text-decoration: none;
 }
@@ -805,21 +810,929 @@ html.dark #ts-topbar {
   left: 0;
   right: 0;
   height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.30), transparent);
   border-radius: 14px 14px 0 0;
   pointer-events: none;
 }
 
 .btn-clean:hover {
   transform: translateY(-1px);
-  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%) !important;
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.42);
   color: #FFFFFF !important;
 }
 
 .btn-clean:active {
   transform: translateY(0);
 }
+
+/* ---- Botón Agregar Línea / Artículo (Liquid Glass Esmeralda Constructivo) ---- */
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 13px;
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  border-radius: 14px;
+  border: none !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.btn-add::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent);
+  border-radius: 14px 14px 0 0;
+  pointer-events: none;
+}
+
+.btn-add:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #34D399 0%, #10B981 100%) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  color: #FFFFFF !important;
+}
+
+.btn-add:active {
+  transform: translateY(0);
+}
+
+/* ---- Botón Hoy (Liquid Glass Cian Sólido / Atajo Temporal) ---- */
+.btn-today {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 13px;
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%) !important;
+  border-radius: 14px;
+  border: none !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.btn-today::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent);
+  border-radius: 14px 14px 0 0;
+  pointer-events: none;
+}
+
+.btn-today:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #38BDF8 0%, #0EA5E9 100%) !important;
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  color: #FFFFFF !important;
+}
+
+.btn-today:active {
+  transform: translateY(0);
+}
+
+/* ---- Botón Respaldos / Seguridad (Liquid Glass Teal Tecnológico / Petróleo Blindado) ---- */
+.btn-backup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 13px;
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  border-radius: 14px;
+  border: none !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.btn-backup::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent);
+  border-radius: 14px 14px 0 0;
+  pointer-events: none;
+}
+
+.btn-backup:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%) !important;
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40);
+  color: #FFFFFF !important;
+}
+
+.btn-backup:active {
+  transform: translateY(0);
+}
+
+/* ================================================================
+   Modal de Respaldos y Copias de Seguridad (Liquid Glass Pro)
+   ================================================================ */
+
+.backup-modal-card {
+  width: 95vw !important;
+  max-width: 860px !important;
+  max-height: 88vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+  border-radius: 1.5rem !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.75) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.16) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.dark .backup-modal-card,
+html.dark .backup-modal-card {
+  background: rgba(11, 18, 33, 0.96) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Encabezado fijo del modal */
+.backup-modal-header {
+  padding: 1.25rem 1.75rem !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  flex-shrink: 0 !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .backup-modal-header,
+html.dark .backup-modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+}
+
+/* Barra de pestañas segmentadas */
+.backup-modal-tabs {
+  padding: 0.75rem 1.75rem 0.5rem 1.75rem !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  flex-shrink: 0 !important;
+  background: rgba(248, 250, 252, 0.55) !important;
+}
+
+.dark .backup-modal-tabs,
+html.dark .backup-modal-tabs {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+}
+
+/* Botones de pestaña con identidad cromática individual inspirada en reportes financieros (diario, acumulado, operaciones) */
+.backup-tab-btn {
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  border-radius: 12px !important;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+}
+
+/* 1. Pestaña 1: Respaldo Inmediato (Ámbar / Oro Solar) */
+.backup-tab-manual {
+  color: #B45309 !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+  border: 1px solid rgba(245, 158, 11, 0.28) !important;
+}
+.backup-tab-manual:hover {
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  color: #92400E !important;
+}
+.dark .backup-tab-manual,
+html.dark .backup-tab-manual {
+  color: #FCD34D !important;
+  background: rgba(245, 158, 11, 0.14) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+.dark .backup-tab-manual:hover,
+html.dark .backup-tab-manual:hover {
+  background: rgba(245, 158, 11, 0.25) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+  color: #FEF3C7 !important;
+}
+.backup-tab-manual.is-active,
+.dark .backup-tab-manual.is-active,
+html.dark .backup-tab-manual.is-active {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  border-color: #D97706 !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.38) !important;
+}
+
+/* 2. Pestaña 2: Programación Automática (Púrpura / Violeta Cósmico) */
+.backup-tab-schedule {
+  color: #7C3AED !important;
+  background: rgba(139, 92, 246, 0.12) !important;
+  border: 1px solid rgba(139, 92, 246, 0.28) !important;
+}
+.backup-tab-schedule:hover {
+  background: rgba(139, 92, 246, 0.22) !important;
+  border-color: rgba(139, 92, 246, 0.45) !important;
+  color: #6D28D9 !important;
+}
+.dark .backup-tab-schedule,
+html.dark .backup-tab-schedule {
+  color: #C084FC !important;
+  background: rgba(139, 92, 246, 0.14) !important;
+  border-color: rgba(139, 92, 246, 0.3) !important;
+}
+.dark .backup-tab-schedule:hover,
+html.dark .backup-tab-schedule:hover {
+  background: rgba(139, 92, 246, 0.25) !important;
+  border-color: rgba(139, 92, 246, 0.5) !important;
+  color: #F3E8FF !important;
+}
+.backup-tab-schedule.is-active,
+.dark .backup-tab-schedule.is-active,
+html.dark .backup-tab-schedule.is-active {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
+  border-color: #7C3AED !important;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.38) !important;
+}
+
+/* 3. Pestaña 3: Ubicación y Archivos (Teal / Cian Blindado) */
+.backup-tab-files {
+  color: #0F766E !important;
+  background: rgba(13, 148, 136, 0.12) !important;
+  border: 1px solid rgba(13, 148, 136, 0.28) !important;
+}
+.backup-tab-files:hover {
+  background: rgba(13, 148, 136, 0.22) !important;
+  border-color: rgba(13, 148, 136, 0.45) !important;
+  color: #115E59 !important;
+}
+.dark .backup-tab-files,
+html.dark .backup-tab-files {
+  color: #2DD4BF !important;
+  background: rgba(13, 148, 136, 0.14) !important;
+  border-color: rgba(13, 148, 136, 0.3) !important;
+}
+.dark .backup-tab-files:hover,
+html.dark .backup-tab-files:hover {
+  background: rgba(13, 148, 136, 0.25) !important;
+  border-color: rgba(13, 148, 136, 0.5) !important;
+  color: #CCFBF1 !important;
+}
+.backup-tab-files.is-active,
+.dark .backup-tab-files.is-active,
+html.dark .backup-tab-files.is-active {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  border-color: #0F766E !important;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.38) !important;
+}
+
+/* Badge de contador en pestaña */
+.backup-tab-badge {
+  padding: 2px 7px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  border-radius: 9999px !important;
+  background: rgba(13, 148, 136, 0.22) !important;
+  color: #0F766E !important;
+  transition: all 0.2s ease !important;
+}
+
+.dark .backup-tab-badge,
+html.dark .backup-tab-badge {
+  background: rgba(45, 212, 191, 0.25) !important;
+  color: #2DD4BF !important;
+}
+
+.backup-tab-files.is-active .backup-tab-badge,
+.dark .backup-tab-files.is-active .backup-tab-badge,
+html.dark .backup-tab-files.is-active .backup-tab-badge {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #FFFFFF !important;
+}
+
+/* Cuerpo con scroll independiente */
+.backup-modal-body {
+  padding: 1.25rem 1.75rem 1.5rem !important;
+  overflow-y: auto !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+}
+
+#tab-content-manual,
+#tab-content-schedule,
+#tab-content-files {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.backup-modal-body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.backup-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.backup-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+.dark .backup-modal-body::-webkit-scrollbar-thumb,
+html.dark .backup-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+}
+.dark .backup-modal-body::-webkit-scrollbar-thumb:hover,
+html.dark .backup-modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* Pie fijo del modal */
+.backup-modal-footer {
+  padding: 1rem 1.75rem !important;
+  border-top: 1px solid rgba(226, 232, 240, 0.8) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  flex-shrink: 0 !important;
+  background: rgba(248, 250, 252, 0.55) !important;
+}
+
+.dark .backup-modal-footer,
+html.dark .backup-modal-footer {
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+}
+
+/* Tarjetas de opciones en Tab 1 con identidad cromática diferenciada e integradas en el sistema Liquid Glass */
+.backup-option-card {
+  border-radius: 20px !important;
+  padding: 1.15rem 1.25rem !important;
+  cursor: pointer !important;
+  position: relative !important;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+.backup-option-card:hover {
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.dark .backup-option-card,
+html.dark .backup-option-card {
+  background: rgba(30, 41, 59, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+.dark .backup-option-card:hover,
+html.dark .backup-option-card:hover {
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 1. Variante DB - Teal / Cian */
+.backup-option-card.card-type-db.is-selected {
+  border-color: #0D9488 !important;
+  background: rgba(13, 148, 136, 0.08) !important;
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .backup-option-card.card-type-db.is-selected,
+html.dark .backup-option-card.card-type-db.is-selected {
+  border-color: #2DD4BF !important;
+  background: rgba(45, 212, 191, 0.12) !important;
+  box-shadow: 0 0 20px rgba(45, 212, 191, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 2. Variante Files - Indigo / Azul Eléctrico */
+.backup-option-card.card-type-files.is-selected {
+  border-color: #6366F1 !important;
+  background: rgba(99, 102, 241, 0.08) !important;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .backup-option-card.card-type-files.is-selected,
+html.dark .backup-option-card.card-type-files.is-selected {
+  border-color: #818CF8 !important;
+  background: rgba(129, 140, 248, 0.12) !important;
+  box-shadow: 0 0 20px rgba(129, 140, 248, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 3. Variante All - Púrpura / Violeta */
+.backup-option-card.card-type-all.is-selected {
+  border-color: #A855F7 !important;
+  background: rgba(168, 85, 247, 0.08) !important;
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .backup-option-card.card-type-all.is-selected,
+html.dark .backup-option-card.card-type-all.is-selected {
+  border-color: #C084FC !important;
+  background: rgba(192, 132, 252, 0.12) !important;
+  box-shadow: 0 0 20px rgba(192, 132, 252, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Tarjeta informativa general (Tab 1 último respaldo, Tab 2 scheduler, Tab 3 path) */
+.backup-info-card {
+  border-radius: 20px !important;
+  padding: 1.15rem 1.25rem !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  transition: all 0.25s ease !important;
+}
+
+.dark .backup-info-card,
+html.dark .backup-info-card {
+  background: rgba(30, 41, 59, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Tarjeta de rotación / cupo teal */
+.backup-quota-card {
+  border-radius: 20px !important;
+  padding: 1.2rem 1.35rem !important;
+  background: rgba(236, 253, 245, 0.65) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  transition: all 0.25s ease !important;
+}
+
+.dark .backup-quota-card,
+html.dark .backup-quota-card {
+  background: rgba(16, 185, 129, 0.08) !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Métricas en Grid Responsivo 3 Columnas */
+.backup-metrics-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.875rem !important;
+}
+
+@media (max-width: 580px) {
+  .backup-metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.backup-metric-card {
+  border-radius: 20px !important;
+  padding: 1.15rem 1rem !important;
+  text-align: center !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.backup-metric-card:hover {
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.dark .backup-metric-card,
+html.dark .backup-metric-card {
+  background: rgba(30, 41, 59, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+.dark .backup-metric-card:hover,
+html.dark .backup-metric-card:hover {
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+.backup-metric-label {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: #64748B !important;
+  display: block !important;
+}
+
+.dark .backup-metric-label,
+html.dark .backup-metric-label {
+  color: #94A3B8 !important;
+}
+
+.backup-metric-val {
+  font-size: 1.5rem !important;
+  font-weight: 900 !important;
+  color: #0F172A !important;
+  margin-top: 0.25rem !important;
+  display: block !important;
+}
+
+.dark .backup-metric-val,
+html.dark .backup-metric-val {
+  color: #FFFFFF !important;
+}
+
+.backup-metric-val.val-teal {
+  color: #0D9488 !important;
+}
+
+.dark .backup-metric-val.val-teal,
+html.dark .backup-metric-val.val-teal {
+  color: #2DD4BF !important;
+}
+
+/* Botones de acción rápida: Copiar Ruta (Índigo Glass) y Abrir Carpeta (Teal Pro) */
+.btn-copy-path {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  padding: 6px 14px !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: rgba(79, 70, 229, 0.1) !important;
+  border: 1px solid rgba(79, 70, 229, 0.3) !important;
+  color: #4338CA !important;
+}
+
+.btn-copy-path:hover {
+  background: rgba(79, 70, 229, 0.2) !important;
+  border-color: rgba(79, 70, 229, 0.45) !important;
+  color: #3730A3 !important;
+  transform: translateY(-1px) !important;
+}
+
+.dark .btn-copy-path,
+html.dark .btn-copy-path {
+  background: rgba(99, 102, 241, 0.18) !important;
+  border: 1px solid rgba(129, 140, 248, 0.35) !important;
+  color: #A5B4FC !important;
+}
+
+.dark .btn-copy-path:hover,
+html.dark .btn-copy-path:hover {
+  background: rgba(99, 102, 241, 0.28) !important;
+  border-color: rgba(129, 140, 248, 0.6) !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-open-folder {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  padding: 6px 13px !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  border: none !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35) !important;
+}
+
+.btn-open-folder:hover {
+  background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.45) !important;
+}
+
+/* Código de ruta física */
+.backup-path-code {
+  display: block !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 11.5px !important;
+  padding: 0.65rem 0.85rem !important;
+  border-radius: 0.625rem !important;
+  word-break: break-all !important;
+  user-select: all !important;
+  background: rgba(241, 245, 249, 0.9) !important;
+  color: #0F172A !important;
+  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+}
+
+.dark .backup-path-code,
+html.dark .backup-path-code {
+  background: rgba(2, 6, 23, 0.7) !important;
+  color: #38BDF8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Contenedor y tabla de archivos integrados con Liquid Glass */
+.backup-files-wrapper {
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .backup-files-wrapper,
+html.dark .backup-files-wrapper {
+  background: rgba(30, 41, 59, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+.backup-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  text-align: left !important;
+  font-size: 12px !important;
+}
+
+.backup-table th {
+  padding: 11px 16px !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: #64748B !important;
+  background: rgba(241, 245, 249, 0.6) !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7) !important;
+}
+
+.dark .backup-table th,
+html.dark .backup-table th {
+  color: #94A3B8 !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.backup-table td {
+  padding: 11px 14px !important;
+  vertical-align: middle !important;
+}
+
+.backup-file-row {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6) !important;
+  transition: background 0.15s ease !important;
+}
+
+.backup-file-row:hover {
+  background: rgba(13, 148, 136, 0.04) !important;
+}
+
+.dark .backup-file-row,
+html.dark .backup-file-row {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.dark .backup-file-row:hover,
+html.dark .backup-file-row:hover {
+  background: rgba(45, 212, 191, 0.06) !important;
+}
+
+.backup-file-name {
+  font-family: ui-monospace, SFMono-Regular, monospace !important;
+  font-weight: 700 !important;
+  color: #0F172A !important;
+}
+
+.dark .backup-file-name,
+html.dark .backup-file-name {
+  color: #FFFFFF !important;
+}
+
+.backup-file-date {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+.dark .backup-file-date,
+html.dark .backup-file-date {
+  color: #CBD5E1 !important;
+}
+
+.backup-file-rel {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  color: #64748B !important;
+}
+
+.dark .backup-file-rel,
+html.dark .backup-file-rel {
+  color: #94A3B8 !important;
+}
+
+.backup-file-size {
+  font-family: ui-monospace, SFMono-Regular, monospace !important;
+  font-weight: 800 !important;
+  color: #0D9488 !important;
+}
+
+.dark .backup-file-size,
+html.dark .backup-file-size {
+  color: #2DD4BF !important;
+}
+
+/* Botones de acción en tabla */
+.btn-backup-download {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 5px 11px !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+  background: rgba(13, 148, 136, 0.12) !important;
+  color: #0F766E !important;
+  border: 1px solid rgba(13, 148, 136, 0.25) !important;
+}
+
+.btn-backup-download:hover {
+  background: rgba(13, 148, 136, 0.22) !important;
+}
+
+.dark .btn-backup-download,
+html.dark .btn-backup-download {
+  background: rgba(45, 212, 191, 0.15) !important;
+  color: #2DD4BF !important;
+  border-color: rgba(45, 212, 191, 0.3) !important;
+}
+
+.dark .btn-backup-download:hover,
+html.dark .btn-backup-download:hover {
+  background: rgba(45, 212, 191, 0.25) !important;
+}
+
+.btn-backup-delete {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  padding: 5px 8px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #DC2626 !important;
+}
+
+.btn-backup-delete:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+}
+
+.dark .btn-backup-delete,
+html.dark .btn-backup-delete {
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #F87171 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.dark .btn-backup-delete:hover,
+html.dark .btn-backup-delete:hover {
+  background: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Preset buttons en scheduler */
+.btn-preset-time {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 4px 9px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: #F1F5F9 !important;
+  color: #334155 !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+.btn-preset-time:hover {
+  background: rgba(13, 148, 136, 0.15) !important;
+  color: #0F766E !important;
+  border-color: rgba(13, 148, 136, 0.35) !important;
+}
+
+.dark .btn-preset-time,
+html.dark .btn-preset-time {
+  background: rgba(30, 41, 59, 0.8) !important;
+  color: #CBD5E1 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.dark .btn-preset-time:hover,
+html.dark .btn-preset-time:hover {
+  background: rgba(45, 212, 191, 0.2) !important;
+  color: #2DD4BF !important;
+  border-color: rgba(45, 212, 191, 0.45) !important;
+}
+
+/* Stepper buttons (- y +) */
+.btn-stepper {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 900 !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+.btn-stepper:hover {
+  background: #F1F5F9 !important;
+}
+
+.dark .btn-stepper,
+html.dark .btn-stepper {
+  background: rgba(30, 41, 59, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #FFFFFF !important;
+}
+
+.dark .btn-stepper:hover,
+html.dark .btn-stepper:hover {
+  background: rgba(51, 65, 85, 0.9) !important;
+}
+
+/* Ocultar flechas / spinners en inputs numéricos y centrar texto */
+input[type="number"].no-spinners::-webkit-outer-spin-button,
+input[type="number"].no-spinners::-webkit-inner-spin-button,
+.no-spinners::-webkit-outer-spin-button,
+.no-spinners::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+input[type="number"].no-spinners,
+.no-spinners {
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
+  text-align: center !important;
+}
+
+
 
 /* Helper responsivo exclusivo para filtros y navegación de reportes financieros */
 @media (min-width: 641px) {
@@ -1107,6 +2020,49 @@ html.dark #ts-topbar {
 
 .btn-cancel:active {
   transform: translateY(0);
+}
+
+/* ---- Botón Cerrar en modales (Mismo color y acabado que Cancelar: Rojo Opaco / Coral Ahumado) ---- */
+.btn-close-modal {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 10px 24px !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
+  color: white !important;
+  background: linear-gradient(135deg, #E05263 0%, #B82C40 100%) !important;
+  border-radius: 12px !important;
+  border: none !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 18px rgba(184, 44, 64, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  transition: all 0.25s ease !important;
+  text-decoration: none !important;
+}
+
+.btn-close-modal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
+  border-radius: 12px 12px 0 0;
+  pointer-events: none;
+}
+
+.btn-close-modal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(184, 44, 64, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  color: white !important;
+}
+
+.btn-close-modal:active {
+  transform: translateY(0) !important;
 }
 
 /* ---- Botón guardar e imprimir ---- */
@@ -3349,8 +4305,14 @@ html.dark .glass-backdrop {
 
 /* Evitar Flash of Unstyled Content (FOUC) en los selects nativos:
            Usamos visibility:hidden (no color) para no afectar elementos hijos */
-select.glass-input:not(.tomselected) {
+select.glass-input:not(.tomselected):not(.no-tomselect) {
   visibility: hidden !important;
+}
+
+select.glass-input.no-tomselect {
+  visibility: visible !important;
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
 }
 
 /* Evitar expansión horizontal o vertical cuando se seleccionan textos muy largos en TomSelect */

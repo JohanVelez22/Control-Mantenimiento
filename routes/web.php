@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbonoController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CategoriaStockController;
 use App\Http\Controllers\CierreCajaController;
 use App\Http\Controllers\ClienteController;
@@ -168,6 +169,14 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::get('/eventos', [EventoController::class, 'index'])->name('eventos.index');
         Route::post('/eventos/backup', [EventoController::class, 'backup'])->name('eventos.backup');
         Route::get('/eventos/{evento}', [EventoController::class, 'show'])->name('eventos.show');
+
+        // Gestión y Programación de Respaldos (Backups)
+        Route::get('/backups/config', [BackupController::class, 'getConfig'])->name('backups.config');
+        Route::post('/backups/manual', [BackupController::class, 'createManual'])->name('backups.manual');
+        Route::post('/backups/schedule', [BackupController::class, 'saveSchedule'])->name('backups.schedule');
+        Route::get('/backups/download/{filename}', [BackupController::class, 'download'])->where('filename', '.*')->name('backups.download');
+        Route::delete('/backups/destroy/{filename}', [BackupController::class, 'destroy'])->where('filename', '.*')->name('backups.destroy');
+        Route::post('/backups/open-folder', [BackupController::class, 'openFolder'])->name('backups.open-folder');
 
         // Usuarios (admin y técnico pueden gestionar; anular es solo admin)
         Route::resource('usuarios', UserController::class)->except(['destroy']);

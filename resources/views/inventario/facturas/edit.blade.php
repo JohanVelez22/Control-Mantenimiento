@@ -50,7 +50,7 @@
                     <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
                         <span>📦</span> Artículos de la Factura
                     </h3>
-                    <button type="button" onclick="agregarFila()" class="btn-clean">
+                    <button type="button" onclick="agregarFila()" class="btn-add">
                         ➕ Agregar artículo
                     </button>
                 </div>
