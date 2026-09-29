@@ -235,7 +235,7 @@
                     </div>
 
                     <div class="relative">
-                        <input type="text" name="query" id="guestSearchInput" class="glass-input w-full pl-12 pr-4 py-4 text-lg" placeholder="Ej: ORD-001 o 123456789" required>
+                        <input type="text" name="query" id="guestSearchInput" class="glass-input w-full pl-12 pr-4 py-4 text-lg focus:placeholder-transparent" placeholder="Ej: ORD-001 o 123456789" onfocus="this.dataset.placeholder = this.placeholder; this.placeholder = '';" onblur="if(!this.value) this.placeholder = this.dataset.placeholder || getSearchPlaceholder();" required>
                         <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -289,10 +289,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+function getSearchPlaceholder() {
+    const isElec = document.querySelector('input[name=tipo]:checked')?.value === 'electronica';
+    return isElec ? 'Ej: ELC-001 o 123456789' : 'Ej: ORD-001 o 123456789';
+}
+
 function updateGuestTheme(tipo) {
     const input = document.getElementById('guestSearchInput');
     if (input) {
-        input.placeholder = (tipo === 'electronica') ? 'Ej: ELC-001 o 123456789' : 'Ej: ORD-001 o 123456789';
+        const ph = (tipo === 'electronica') ? 'Ej: ELC-001 o 123456789' : 'Ej: ORD-001 o 123456789';
+        input.dataset.placeholder = ph;
+        if (document.activeElement !== input || input.value) {
+            input.placeholder = ph;
+        }
     }
 }
 </script>
