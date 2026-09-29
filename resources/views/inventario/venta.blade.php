@@ -13,10 +13,10 @@
  <form action="{{ route('inventario.venta.store') }}" method="POST" id="venta-form" class="space-y-5">
  @csrf
 
- <div class="flex flex-col md:flex-row gap-5 p-5 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl">
- <div class="w-full md:w-48 flex-shrink-0">
- <label class="field-label">N° Factura (Auto)</label>
- <input type="text" value="Automático" readonly class="glass-input font-mono bg-white/40 dark:bg-black/20 text-gray-500 cursor-not-allowed">
+ <div class="flex flex-col md:flex-row gap-5 p-5 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl">
+ <div class="col-factura-header">
+ <label class="field-label whitespace-nowrap">N° Factura</label>
+ <input type="text" value="{{ $nextFactura ?? 'VT-...' }}" readonly class="glass-input font-mono font-bold bg-white/40 dark:bg-black/20 text-emerald-600 dark:text-emerald-400 text-left pl-3 cursor-not-allowed w-full" style="width: 7rem !important;">
  </div>
  <div class="w-full flex-1 min-w-0">
  <label class="field-label">Cliente / Proveedor *</label>
@@ -35,9 +35,9 @@
  </select>
  @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
- <div class="w-full md:w-48 flex-shrink-0">
+ <div class="col-fecha-header">
  <label class="field-label">Fecha *</label>
- <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}" class="glass-input focus:ring-emerald-500">
+ <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}" class="glass-input reportes-date-input focus:ring-emerald-500" style="width: 8.5rem !important;">
  @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
  </div>
@@ -60,7 +60,7 @@
                 <th class="w-auto px-2 py-3">Artículo del Stock</th>
                 <th class="w-32 text-center px-2 py-3">Cant.</th>
                 <th class="w-48 text-right px-3 py-3">Precio Un. ($)</th>
-                <th class="w-44 text-right px-3 py-3">Subtotal</th>
+                <th class="w-48 text-center px-3 py-3">Subtotal</th>
                 <th class="w-16 text-center py-3"></th>
             </tr>
         </thead>
@@ -86,7 +86,7 @@
                         <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
                     </div>
                 </td>
-                <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell pr-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
+                <td class="text-center font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell px-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
                     $0
                 </td>
                 <td class="col-accion text-center" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
@@ -95,14 +95,14 @@
             </tr>
         </tbody>
         <tfoot>
-            <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
-                <td colspan="3" class="py-4 text-right pr-2">
+            <tr class="border-0 bg-transparent">
+                <td colspan="3" class="py-4 text-right pr-2 border-0">
                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                 </td>
-                <td class="py-4 text-right pr-3">
+                <td class="py-4 text-right pr-3 border-0">
                     <span class="font-black text-2xl text-emerald-600 dark:text-emerald-400 whitespace-nowrap" id="total-display">$0</span>
                 </td>
-                <td class="py-4"></td>
+                <td class="py-4 border-0"></td>
             </tr>
         </tfoot>
     </table>
@@ -217,7 +217,7 @@ function agregarFila() {
       <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
   </div>
   </td>
-    <td class="text-right font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell pr-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$0</td>
+    <td class="text-center font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell px-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$0</td>
     <td class="col-accion text-center" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
         <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
     </td>`;

@@ -1040,23 +1040,27 @@ html.dark .backup-modal-tabs {
   background: rgba(245, 158, 11, 0.12) !important;
   border: 1px solid rgba(245, 158, 11, 0.28) !important;
 }
+
 .backup-tab-manual:hover {
   background: rgba(245, 158, 11, 0.22) !important;
   border-color: rgba(245, 158, 11, 0.45) !important;
   color: #92400E !important;
 }
+
 .dark .backup-tab-manual,
 html.dark .backup-tab-manual {
   color: #FCD34D !important;
   background: rgba(245, 158, 11, 0.14) !important;
   border-color: rgba(245, 158, 11, 0.3) !important;
 }
+
 .dark .backup-tab-manual:hover,
 html.dark .backup-tab-manual:hover {
   background: rgba(245, 158, 11, 0.25) !important;
   border-color: rgba(245, 158, 11, 0.5) !important;
   color: #FEF3C7 !important;
 }
+
 .backup-tab-manual.is-active,
 .dark .backup-tab-manual.is-active,
 html.dark .backup-tab-manual.is-active {
@@ -1072,23 +1076,27 @@ html.dark .backup-tab-manual.is-active {
   background: rgba(139, 92, 246, 0.12) !important;
   border: 1px solid rgba(139, 92, 246, 0.28) !important;
 }
+
 .backup-tab-schedule:hover {
   background: rgba(139, 92, 246, 0.22) !important;
   border-color: rgba(139, 92, 246, 0.45) !important;
   color: #6D28D9 !important;
 }
+
 .dark .backup-tab-schedule,
 html.dark .backup-tab-schedule {
   color: #C084FC !important;
   background: rgba(139, 92, 246, 0.14) !important;
   border-color: rgba(139, 92, 246, 0.3) !important;
 }
+
 .dark .backup-tab-schedule:hover,
 html.dark .backup-tab-schedule:hover {
   background: rgba(139, 92, 246, 0.25) !important;
   border-color: rgba(139, 92, 246, 0.5) !important;
   color: #F3E8FF !important;
 }
+
 .backup-tab-schedule.is-active,
 .dark .backup-tab-schedule.is-active,
 html.dark .backup-tab-schedule.is-active {
@@ -1104,23 +1112,27 @@ html.dark .backup-tab-schedule.is-active {
   background: rgba(13, 148, 136, 0.12) !important;
   border: 1px solid rgba(13, 148, 136, 0.28) !important;
 }
+
 .backup-tab-files:hover {
   background: rgba(13, 148, 136, 0.22) !important;
   border-color: rgba(13, 148, 136, 0.45) !important;
   color: #115E59 !important;
 }
+
 .dark .backup-tab-files,
 html.dark .backup-tab-files {
   color: #2DD4BF !important;
   background: rgba(13, 148, 136, 0.14) !important;
   border-color: rgba(13, 148, 136, 0.3) !important;
 }
+
 .dark .backup-tab-files:hover,
 html.dark .backup-tab-files:hover {
   background: rgba(13, 148, 136, 0.25) !important;
   border-color: rgba(13, 148, 136, 0.5) !important;
   color: #CCFBF1 !important;
 }
+
 .backup-tab-files.is-active,
 .dark .backup-tab-files.is-active,
 html.dark .backup-tab-files.is-active {
@@ -1173,17 +1185,21 @@ html.dark .backup-tab-files.is-active .backup-tab-badge {
   width: 6px;
   height: 6px;
 }
+
 .backup-modal-body::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .backup-modal-body::-webkit-scrollbar-thumb {
   background: rgba(148, 163, 184, 0.35);
   border-radius: 9999px;
 }
+
 .dark .backup-modal-body::-webkit-scrollbar-thumb,
 html.dark .backup-modal-body::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.16);
 }
+
 .dark .backup-modal-body::-webkit-scrollbar-thumb:hover,
 html.dark .backup-modal-body::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.32);
@@ -4207,17 +4223,49 @@ html.dark input:-webkit-autofill:active {
 }
 
 /* Modificadores de ancho para modales Liquid Glass */
-.ts-modal-card.max-w-sm { max-width: 24rem !important; }
-.ts-modal-card.max-w-md { max-width: 28rem !important; }
-.ts-modal-card.max-w-lg { max-width: 32rem !important; }
-.ts-modal-card.max-w-xl { max-width: 36rem !important; }
-.ts-modal-card.max-w-2xl { max-width: 42rem !important; }
-.ts-modal-card.max-w-3xl { max-width: 48rem !important; }
-.ts-modal-card.max-w-4xl { max-width: 56rem !important; }
-.ts-modal-card.max-w-5xl { max-width: 64rem !important; }
-.ts-modal-card.max-w-6xl { max-width: 72rem !important; }
-.ts-modal-card.max-w-7xl { max-width: 80rem !important; }
-.ts-modal-card.max-w-full { max-width: 100% !important; }
+.ts-modal-card.max-w-sm {
+  max-width: 24rem !important;
+}
+
+.ts-modal-card.max-w-md {
+  max-width: 28rem !important;
+}
+
+.ts-modal-card.max-w-lg {
+  max-width: 32rem !important;
+}
+
+.ts-modal-card.max-w-xl {
+  max-width: 36rem !important;
+}
+
+.ts-modal-card.max-w-2xl {
+  max-width: 42rem !important;
+}
+
+.ts-modal-card.max-w-3xl {
+  max-width: 48rem !important;
+}
+
+.ts-modal-card.max-w-4xl {
+  max-width: 56rem !important;
+}
+
+.ts-modal-card.max-w-5xl {
+  max-width: 64rem !important;
+}
+
+.ts-modal-card.max-w-6xl {
+  max-width: 72rem !important;
+}
+
+.ts-modal-card.max-w-7xl {
+  max-width: 80rem !important;
+}
+
+.ts-modal-card.max-w-full {
+  max-width: 100% !important;
+}
 
 html.dark .ts-modal-card,
 .dark .ts-modal-card {
@@ -4282,6 +4330,14 @@ html.dark .ts-wrapper.glass-input.dropdown-active .ts-control {
   font-size: 14px !important;
   font-weight: 500 !important;
   color: inherit !important;
+}
+
+.ts-wrapper.glass-input .ts-control .item,
+.ts-wrapper.glass-input .ts-control .ts-item-display {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
 }
 
 /* Glass Backdrop for Lightbox */
@@ -4549,8 +4605,122 @@ select.glass-input.no-tomselect {
 }
 
 /* ==========================================================================
+   CABECERA FORMULARIO COTIZACIÓN (Cliente/Proveedor, Fecha, Validez)
+   ========================================================================== */
+.cotizacion-header-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 8.5rem 130px !important;
+  gap: 1.25rem !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+}
+
+.cotizacion-header-grid>div {
+  min-width: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .cotizacion-header-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Columnas compactas (N° Factura y Fecha) para cabeceras de Operaciones y Facturas */
+.col-factura-header {
+  width: 7rem !important;
+  min-width: 7rem !important;
+  max-width: 7rem !important;
+  flex: 0 0 7rem !important;
+}
+
+.col-factura-header input {
+  width: 7rem !important;
+  min-width: 7rem !important;
+  max-width: 7rem !important;
+  text-align: left !important;
+  padding-left: 0.75rem !important;
+  box-sizing: border-box !important;
+}
+
+.col-fecha-header {
+  width: 8.5rem !important;
+  min-width: 8.5rem !important;
+  max-width: 8.5rem !important;
+  flex: 0 0 8.5rem !important;
+}
+
+.col-fecha-header input {
+  width: 8.5rem !important;
+  min-width: 8.5rem !important;
+  max-width: 8.5rem !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  .col-factura-header,
+  .col-fecha-header {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+  .col-factura-header input,
+  .col-fecha-header input {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Pie de tabla con fondo gris tenue y sin líneas blancas para Total Documento */
+#items-table tfoot tr,
+#factura-items-table tfoot tr,
+.table-factura-edit tfoot tr {
+  border: none !important;
+  border-top: none !important;
+  background-color: rgba(31, 41, 55, 0.45) !important;
+}
+
+html:not(.dark) #items-table tfoot tr,
+html:not(.dark) #factura-items-table tfoot tr,
+html:not(.dark) .table-factura-edit tfoot tr {
+  background-color: rgba(243, 244, 246, 0.6) !important;
+}
+
+#items-table tfoot td,
+#factura-items-table tfoot td,
+.table-factura-edit tfoot td {
+  border: none !important;
+  border-top: none !important;
+  background-color: transparent !important;
+}
+
+/* Badge de alerta 'Menor al costo' posicionado abajo sin aumentar la altura de la fila */
+.alerta-costo-badge {
+  position: absolute !important;
+  right: 0 !important;
+  top: 100% !important;
+  margin-top: 2px !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  font-size: 10px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+  line-height: normal !important;
+}
+
+/* ==========================================================================
    TABLA DE ÍTEMS DE COTIZACIÓN (#items-table) - Diseño Balanceado y Simétrico
    ========================================================================== */
+.cotizacion-table-scroll {
+  min-height: 165px !important;
+}
+
 #items-table {
   width: 100% !important;
   table-layout: fixed !important;
@@ -4562,13 +4732,21 @@ select.glass-input.no-tomselect {
   transition: none !important;
 }
 
-/* Columna 1: Tipo (Alineada al inicio con ancho óptimo para 'Producto Stock' en una sola línea horizontal) */
-#items-table th.col-tipo,
+/* Columna 1: Tipo (Encabezado centrado, celdas alineadas con ancho óptimo) */
+#items-table th.col-tipo {
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 205px !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+  text-align: center !important;
+}
+
 #items-table td.col-tipo {
   width: 200px !important;
   min-width: 200px !important;
   max-width: 205px !important;
-  padding-left: 14px !important;
+  padding-left: 10px !important;
   padding-right: 6px !important;
   text-align: left !important;
 }
@@ -4631,30 +4809,30 @@ select.glass-input.no-tomselect {
   -moz-appearance: number-input !important;
 }
 
-/* Columna 4: Precio Unitario (Aprovecha el espacio para cifras con separador de miles) */
+/* Columna 4: Precio Unitario (Espacioso para valores grandes con separadores de miles sin recortar dígitos) */
 #items-table th.col-precio,
 #items-table td.col-precio {
-  width: 140px !important;
-  min-width: 135px !important;
-  max-width: 145px !important;
+  width: 175px !important;
+  min-width: 175px !important;
+  max-width: 175px !important;
   padding-left: 5px !important;
   padding-right: 5px !important;
 }
 
 #items-table .precio-input {
   width: 100% !important;
-  padding: 8px 8px !important;
+  padding: 8px 10px !important;
   font-weight: 800 !important;
   font-size: 14px !important;
   text-align: right !important;
 }
 
-/* Columna 5: Subtotal (Alineación derecha holgada sin saltos ni desbordes) */
+/* Columna 5: Subtotal (Alineación derecha holgada sin saltos, cortes ni elipsis) */
 #items-table th.col-subtotal,
 #items-table td.col-subtotal {
-  width: 140px !important;
-  min-width: 130px !important;
-  max-width: 160px !important;
+  width: 220px !important;
+  min-width: 220px !important;
+  max-width: 220px !important;
   padding-left: 5px !important;
   padding-right: 8px !important;
   text-align: right !important;
@@ -4675,7 +4853,7 @@ select.glass-input.no-tomselect {
 #items-table td.col-accion {
   width: 58px !important;
   min-width: 58px !important;
-  max-width: 64px !important;
+  max-width: 58px !important;
   padding-left: 2px !important;
   padding-right: 2px !important;
   text-align: center !important;
@@ -4691,18 +4869,22 @@ select.glass-input.no-tomselect {
   width: 34px !important;
   height: 34px !important;
   min-width: 34px !important;
-  min-height: 34px !important;
   max-width: 34px !important;
-  max-height: 34px !important;
   padding: 0 !important;
   margin: 0 !important;
   border-radius: 10px !important;
 }
 
-/* Sincronizar tfoot para respetar el margen derecho de 20px */
+/* Sincronizar tfoot para respetar espaciado y alineación */
 #items-table tfoot td {
-  padding-left: 20px !important;
-  padding-right: 20px !important;
+  padding-left: 10px !important;
+  padding-right: 18px !important;
+}
+
+#items-table #total-display {
+  font-size: 1.35rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.02em !important;
 }
 
 /* ==========================================================================
@@ -4718,7 +4900,7 @@ select.glass-input.no-tomselect {
   }
 
   #items-table {
-    min-width: 680px !important;
+    min-width: 740px !important;
   }
 
   /* Encabezados y celdas compactas */
@@ -4733,14 +4915,23 @@ select.glass-input.no-tomselect {
     padding-bottom: 6px !important;
   }
 
-  /* Columna Tipo: Reducida a 140px en móvil para ahorrar espacio */
-  #items-table th.col-tipo,
+  /* Columna Tipo: Reducida a 140px en móvil para ahorrar espacio con título centrado */
+  #items-table th.col-tipo {
+    width: 140px !important;
+    min-width: 140px !important;
+    max-width: 145px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    text-align: center !important;
+  }
+
   #items-table td.col-tipo {
     width: 140px !important;
     min-width: 140px !important;
     max-width: 145px !important;
     padding-left: 8px !important;
     padding-right: 4px !important;
+    text-align: left !important;
   }
 
   #items-table .tipo-select,
@@ -4812,9 +5003,9 @@ select.glass-input.no-tomselect {
   /* Columna Precio: Compacta con altura de 32px */
   #items-table th.col-precio,
   #items-table td.col-precio {
-    width: 125px !important;
-    min-width: 120px !important;
-    max-width: 130px !important;
+    width: 145px !important;
+    min-width: 140px !important;
+    max-width: 155px !important;
     padding-left: 4px !important;
     padding-right: 4px !important;
   }
@@ -4832,9 +5023,9 @@ select.glass-input.no-tomselect {
   #items-table td.col-subtotal,
   #items-table td.subtotal-cell,
   #items-table td.subtotal-display {
-    width: 110px !important;
-    min-width: 105px !important;
-    max-width: 115px !important;
+    width: 145px !important;
+    min-width: 140px !important;
+    max-width: 155px !important;
     font-size: 12.5px !important;
     padding-right: 6px !important;
   }
@@ -5642,11 +5833,31 @@ html.dark .pill-neutral {
   width: 11rem !important;
 }
 
-.glass-input.w-48 {
+.glass-input.w-48,
+.ts-wrapper.w-48 {
   width: 12rem !important;
 }
 
-.glass-input.w-64 {
+.glass-input.w-52,
+.ts-wrapper.w-52,
+.w-52 {
+  width: 13rem !important;
+}
+
+.glass-input.w-56,
+.ts-wrapper.w-56,
+.w-56 {
+  width: 14rem !important;
+}
+
+.glass-input.w-60,
+.ts-wrapper.w-60,
+.w-60 {
+  width: 15rem !important;
+}
+
+.glass-input.w-64,
+.ts-wrapper.w-64 {
   width: 16rem !important;
 }
 
@@ -6477,16 +6688,19 @@ html.dark .event-modal-footer {
   background: rgba(255, 241, 242, 0.4);
   border-color: rgba(244, 63, 94, 0.25);
 }
+
 .event-col-rose .event-col-header {
   background: rgba(254, 226, 226, 0.7);
   border-bottom-color: rgba(244, 63, 94, 0.25);
   color: #9f1239;
 }
+
 .dark .event-col-rose,
 html.dark .event-col-rose {
   background: rgba(225, 29, 72, 0.05) !important;
   border-color: rgba(244, 63, 94, 0.2) !important;
 }
+
 .dark .event-col-rose .event-col-header,
 html.dark .event-col-rose .event-col-header {
   background: rgba(225, 29, 72, 0.15) !important;
@@ -6499,16 +6713,19 @@ html.dark .event-col-rose .event-col-header {
   background: rgba(236, 253, 245, 0.4);
   border-color: rgba(16, 185, 129, 0.25);
 }
+
 .event-col-emerald .event-col-header {
   background: rgba(209, 250, 229, 0.7);
   border-bottom-color: rgba(16, 185, 129, 0.25);
   color: #065f46;
 }
+
 .dark .event-col-emerald,
 html.dark .event-col-emerald {
   background: rgba(16, 185, 129, 0.05) !important;
   border-color: rgba(16, 185, 129, 0.2) !important;
 }
+
 .dark .event-col-emerald .event-col-header,
 html.dark .event-col-emerald .event-col-header {
   background: rgba(16, 185, 129, 0.15) !important;
@@ -6521,16 +6738,19 @@ html.dark .event-col-emerald .event-col-header {
   background: rgba(236, 254, 255, 0.4);
   border-color: rgba(6, 182, 212, 0.25);
 }
+
 .event-col-cyan .event-col-header {
   background: rgba(207, 250, 254, 0.7);
   border-bottom-color: rgba(6, 182, 212, 0.25);
   color: #155e75;
 }
+
 .dark .event-col-cyan,
 html.dark .event-col-cyan {
   background: rgba(6, 182, 212, 0.05) !important;
   border-color: rgba(6, 182, 212, 0.2) !important;
 }
+
 .dark .event-col-cyan .event-col-header,
 html.dark .event-col-cyan .event-col-header {
   background: rgba(6, 182, 212, 0.15) !important;
@@ -6543,16 +6763,19 @@ html.dark .event-col-cyan .event-col-header {
   background: rgba(255, 251, 235, 0.4);
   border-color: rgba(245, 158, 11, 0.25);
 }
+
 .event-col-amber .event-col-header {
   background: rgba(254, 243, 199, 0.7);
   border-bottom-color: rgba(245, 158, 11, 0.25);
   color: #92400e;
 }
+
 .dark .event-col-amber,
 html.dark .event-col-amber {
   background: rgba(245, 158, 11, 0.05) !important;
   border-color: rgba(245, 158, 11, 0.2) !important;
 }
+
 .dark .event-col-amber .event-col-header,
 html.dark .event-col-amber .event-col-header {
   background: rgba(245, 158, 11, 0.15) !important;
@@ -6767,10 +6990,12 @@ html.dark .event-empty-desc {
     display: flex !important;
     align-items: center !important;
   }
+
   .eventos-filter-date label {
     width: 50px !important;
     flex-shrink: 0 !important;
   }
+
   .eventos-filter-date .glass-input,
   .eventos-filter-date .flatpickr-input {
     width: 100% !important;

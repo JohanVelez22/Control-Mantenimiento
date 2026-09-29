@@ -24,8 +24,8 @@
                 $selFacturable = old('facturable_global', $defaultFacturable);
             @endphp
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-5 p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
-                <div class="md:col-span-2">
+            <div class="cotizacion-header-grid p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
+                <div>
                     <label class="field-label">Cliente / Proveedor *</label>
                     <select name="facturable_global" required class="glass-input focus:ring-blue-500" data-placeholder="Buscar cliente o proveedor...">
                         <option value="">Buscar cliente o proveedor...</option>
@@ -47,7 +47,7 @@
                 </div>
                 <div>
                     <label class="field-label">Fecha *</label>
-                    <input type="date" name="fecha" required value="{{ old('fecha', \Carbon\Carbon::parse($cotizacion->fecha)->format('Y-m-d')) }}" class="glass-input focus:ring-blue-500">
+                    <input type="date" name="fecha" required value="{{ old('fecha', \Carbon\Carbon::parse($cotizacion->fecha)->format('Y-m-d')) }}" class="glass-input reportes-date-input focus:ring-blue-500" style="width: 8.5rem !important;">
                     @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>
                 <div>
@@ -68,11 +68,11 @@
                     </button>
                 </div>
 
-                <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto">
+                <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto cotizacion-table-scroll min-h-[165px]">
                     <table class="ts-table w-full table-fixed" id="items-table">
                         <thead>
                             <tr>
-                                <th class="col-tipo">Tipo</th>
+                                <th class="col-tipo text-center">Tipo</th>
                                 <th class="col-descripcion">Descripción / Producto</th>
                                 <th class="col-cantidad text-center">Cant.</th>
                                 <th class="col-precio text-right">Precio Un. ($)</th>
@@ -81,17 +81,89 @@
                             </tr>
                         </thead>
                         <tbody id="items-body">
-                            <!-- Filas cargadas por JS -->
+                            {{-- Filas renderizadas directamente desde el servidor (sin flash/salto visual) --}}
+                            @forelse($cotizacion->items as $idx => $item)
+                                @php
+                                    $isStock = $item->tipo === 'stock';
+                                    $cant = $item->cantidad;
+                                    $precio = (float)$item->precio_unitario;
+                                    $subtotal = $cant * $precio;
+                                @endphp
+                                <tr class="item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-slate-700/50 hover:bg-white/50 dark:hover:bg-slate-800/30 transition-colors">
+                                    <td class="col-tipo align-middle">
+                                        <select name="items[{{ $idx }}][tipo]" class="tipo-select glass-input py-1.5 px-2 font-bold w-full whitespace-nowrap">
+                                            <option value="libre" {{ !$isStock ? 'selected' : '' }}>🛠️ Servicio / Libre</option>
+                                            <option value="stock" {{ $isStock ? 'selected' : '' }}>📦 Producto Stock</option>
+                                        </select>
+                                    </td>
+                                    <td class="desc-cell col-descripcion align-middle">
+                                        @if($isStock)
+                                            <select class="stock-select glass-input py-1.5" required data-placeholder="Seleccionar producto del stock...">
+                                                <option value="">Seleccionar producto del stock...</option>
+                                                @foreach($stocks as $s)
+                                                    <option value="{{ $s->id }}" {{ $item->item_id == $s->id ? 'selected' : '' }} data-precio-venta="{{ $s->precio_venta }}" data-precio-tecnico="{{ $s->precio_tecnico }}" data-nombre="{{ $s->producto }}" data-cantidad="{{ $s->cantidad }}">
+                                                        {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <input type="hidden" name="items[{{ $idx }}][item_id]" class="stock-id-input" value="{{ $item->item_id }}">
+                                            <input type="hidden" name="items[{{ $idx }}][descripcion]" class="stock-desc-input" value="{{ $item->descripcion }}">
+                                        @else
+                                            <input type="text" name="items[{{ $idx }}][descripcion]" value="{{ $item->descripcion }}" class="desc-input glass-input py-1.5 focus:ring-blue-500 w-full min-w-0" placeholder="Descripción de mano de obra o servicio..." required>
+                                        @endif
+                                    </td>
+                                    <td class="col-cantidad align-middle relative text-center">
+                                        <input type="number" name="items[{{ $idx }}][cantidad]" min="1" max="999" value="{{ $cant }}" required class="cantidad-input glass-input py-1.5 text-center focus:ring-blue-500 w-full font-bold">
+                                        <div class="stock-warning text-[10px] text-orange-500 font-bold absolute -bottom-3 left-0 w-full text-center hidden">Sin stock</div>
+                                    </td>
+                                    <td class="col-precio align-middle">
+                                        <input type="text" name="items[{{ $idx }}][precio_unitario]" id="precio_unitario_real_{{ $idx }}" value="{{ $precio }}" required class="hidden">
+                                        <input type="text" id="precio_unitario_visual_{{ $idx }}" value="{{ number_format($precio, 0, ',', '.') }}" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_{{ $idx }}'); actualizarSubtotal(this.closest('tr'))" required class="precio-input glass-input py-1.5 px-2 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-full">
+                                    </td>
+                                    <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">${{ number_format($subtotal, 0, ',', '.') }}</td>
+                                    <td class="col-accion align-middle text-right">
+                                        <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">
+                                            🗑️
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr class="item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-slate-700/50 hover:bg-white/50 dark:hover:bg-slate-800/30 transition-colors">
+                                    <td class="col-tipo align-middle">
+                                        <select name="items[0][tipo]" class="tipo-select glass-input py-1.5 px-2 font-bold w-full whitespace-nowrap">
+                                            <option value="libre" selected>🛠️ Servicio / Libre</option>
+                                            <option value="stock">📦 Producto Stock</option>
+                                        </select>
+                                    </td>
+                                    <td class="desc-cell col-descripcion align-middle">
+                                        <input type="text" name="items[0][descripcion]" value="" class="desc-input glass-input py-1.5 focus:ring-blue-500 w-full min-w-0" placeholder="Descripción de mano de obra o servicio..." required>
+                                    </td>
+                                    <td class="col-cantidad align-middle relative text-center">
+                                        <input type="number" name="items[0][cantidad]" min="1" max="999" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-blue-500 w-full font-bold">
+                                        <div class="stock-warning text-[10px] text-orange-500 font-bold absolute -bottom-3 left-0 w-full text-center hidden">Sin stock</div>
+                                    </td>
+                                    <td class="col-precio align-middle">
+                                        <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
+                                        <input type="text" id="precio_unitario_visual_0" value="0" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); actualizarSubtotal(this.closest('tr'))" required class="precio-input glass-input py-1.5 px-2 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-full">
+                                    </td>
+                                    <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$0</td>
+                                    <td class="col-accion align-middle text-right">
+                                        <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">
+                                            🗑️
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                         <tfoot>
                             <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
-                                <td colspan="4" class="py-4 text-right pr-2">
+                                <td colspan="3" class="py-4"></td>
+                                <td class="col-precio py-4 text-center align-middle">
                                     <span class="font-bold text-slate-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Cotización:</span>
                                 </td>
-                                <td class="py-4 text-right pr-2">
-                                    <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">$0</span>
+                                <td colspan="2" class="py-4 text-right pr-3 align-middle">
+                                    <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">${{ number_format($cotizacion->total, 0, ',', '.') }}</span>
                                 </td>
-                                <td class="py-4"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -137,21 +209,21 @@
 @endphp
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+function initCotizacionRows() {
     // Inicializar select de cliente principal si no fue tomado automáticamente
     const clienteSelect = document.querySelector('select[name="cliente_id"]');
     if (clienteSelect && !clienteSelect.classList.contains('tomselected') && typeof window.initGlassTomSelect === 'function') {
         window.initGlassTomSelect(clienteSelect);
     }
+    // Conectar las filas existentes que vienen renderizadas desde el servidor
+    document.querySelectorAll('.item-row').forEach(bindFilaCotizacion);
+    filaIndex = document.querySelectorAll('.item-row').length || 1;
+}
 
-    const itemsExistentes = @json($existingItems);
-    if (!itemsExistentes || itemsExistentes.length === 0) {
-        if (typeof agregarFila === 'function') agregarFila();
-    } else {
-        itemsExistentes.forEach(item => {
-            if (typeof agregarFila === 'function') agregarFila(item);
-        });
-    }
-});
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCotizacionRows);
+} else {
+    initCotizacionRows();
+}
 </script>
 @endsection

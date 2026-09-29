@@ -11,6 +11,7 @@ use App\Models\MovimientoCaja;
 use App\Models\Proveedor;
 use App\Models\Stock;
 use App\Services\AnulacionService;
+use App\Services\OrdenService;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
@@ -31,8 +32,9 @@ class MovimientoInventarioController extends Controller
         $proveedores = Proveedor::activos()->orderBy('nombre_razon_social')->get();
         $clientes = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
         $stocks = Stock::activos()->orderBy('producto')->get();
+        $nextFactura = app(OrdenService::class)->siguiente('CP-', Factura::class, 'numero_factura', null, false);
 
-        return view('inventario.compra', compact('proveedores', 'clientes', 'stocks'));
+        return view('inventario.compra', compact('proveedores', 'clientes', 'stocks', 'nextFactura'));
     }
 
     public function registrarCompra(Request $request): RedirectResponse
@@ -168,8 +170,9 @@ class MovimientoInventarioController extends Controller
         $clientes = Cliente::activos()->orderBy('nombres')->orderBy('apellidos')->get();
         $proveedores = Proveedor::activos()->orderBy('nombre_razon_social')->get();
         $stocks = Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
+        $nextFactura = app(OrdenService::class)->siguiente('VT-', Factura::class, 'numero_factura', null, false);
 
-        return view('inventario.venta', compact('clientes', 'proveedores', 'stocks'));
+        return view('inventario.venta', compact('clientes', 'proveedores', 'stocks', 'nextFactura'));
     }
 
     public function registrarVenta(Request $request): RedirectResponse
@@ -571,6 +574,25 @@ class MovimientoInventarioController extends Controller
 
         try {
             DB::beginTransaction();
+
+            // 1.5. Eliminar ítems removidos de la factura y ajustar su inventario
+            if (! $shouldBeAnulada) {
+                $submittedIds = collect($request->existing_items ?? [])->pluck('id')->filter()->all();
+                $deletedItems = $factura->items()->whereNotIn('id', $submittedIds)->get();
+                foreach ($deletedItems as $delItem) {
+                    if ($delItem->stock_id) {
+                        $stockItem = Stock::where('id', $delItem->stock_id)->lockForUpdate()->first();
+                        if ($stockItem) {
+                            if ($factura->tipo_movimiento === 'compra') {
+                                $stockItem->decrementarStock((int) $delItem->cantidad);
+                            } else {
+                                $stockItem->incrementarStock((int) $delItem->cantidad);
+                            }
+                        }
+                    }
+                    $delItem->delete();
+                }
+            }
 
             // 2. Ajustar stock por modificación de cantidad o artículo de los ítems existentes
             if (isset($request->existing_items) && is_array($request->existing_items) && ! $shouldBeAnulada) {

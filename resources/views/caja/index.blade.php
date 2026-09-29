@@ -59,7 +59,7 @@
 
  {{-- Filtros --}}
   <form action="{{ route('caja.index') }}" method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-5 glass-card no-print relative z-50">
- <select name="tipo_entidad" class="glass-input w-48 text-sm font-semibold h-[42px]" data-placeholder="Todas las entidades">
+ <select name="tipo_entidad" class="glass-input w-56 text-sm font-semibold h-[42px]" data-placeholder="Todas las entidades">
   <option value="todos" {{ request('tipo_entidad') === 'todos' || !request('tipo_entidad') ? 'selected' : '' }}>✳️ Todas las entidades</option>
   <option value="persona" {{ request('tipo_entidad') === 'persona' ? 'selected' : '' }}>👤 Solo Personas</option>
   <option value="empresa" {{ request('tipo_entidad') === 'empresa' ? 'selected' : '' }}>🏢 Solo Empresas</option>
@@ -75,9 +75,9 @@
  <option value="consignacion" {{ request('tipo_pago') === 'consignacion' ? 'selected' : '' }}>🏦 Consignación</option>
  </select>
  <div class="flex items-center gap-2">
- <input type="date" name="fecha_desde" value="{{ request('fecha_desde', date('Y-m-01')) }}" class="glass-input w-36 sm:w-44 text-sm h-[42px]">
+ <input type="date" name="fecha_desde" value="{{ request('fecha_desde', date('Y-m-01')) }}" class="glass-input reportes-date-input text-sm h-[42px]" style="width: 8.5rem !important;">
  <span class="text-gray-400 text-sm">a</span>
- <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta', date('Y-m-d')) }}" class="glass-input w-36 sm:w-44 text-sm h-[42px]">
+ <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta', date('Y-m-d')) }}" class="glass-input reportes-date-input text-sm h-[42px]" style="width: 8.5rem !important;">
  </div>
  <button type="submit" class="btn-primary py-2 px-4 text-sm h-[42px]">🌪️ Filtrar</button>
  <a href="{{ route('caja.index') }}" class="btn-clean text-sm h-[42px] flex items-center">🧹 Limpiar</a>

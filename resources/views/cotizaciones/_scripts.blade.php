@@ -44,8 +44,8 @@ function agregarFila(itemData = null) {
     tr.innerHTML = `
         <td class="col-tipo align-middle">
             <select name="items[${filaIndex}][tipo]" class="tipo-select glass-input py-1.5 px-2 font-bold w-full whitespace-nowrap">
-                <option value="libre" ${!isStock ? 'selected' : ''}>Servicio / Libre</option>
-                <option value="stock" ${isStock ? 'selected' : ''}>Producto Stock</option>
+                <option value="libre" ${!isStock ? 'selected' : ''}>🛠️ Servicio / Libre</option>
+                <option value="stock" ${isStock ? 'selected' : ''}>📦 Producto Stock</option>
             </select>
         </td>
         <td class="desc-cell col-descripcion align-middle">
@@ -67,26 +67,76 @@ function agregarFila(itemData = null) {
         </td>
     `;
     tbody.appendChild(tr);
-    bindInputs(tr);
+    filaIndex++;
     
     const newTipoSel = tr.querySelector('.tipo-select');
-    
-    // Inyectar el campo de descripción según el tipo (stock o libre)
     window.cambiarTipo(newTipoSel, tr, newTipoSel.value, itemData);
+    bindFilaCotizacion(tr);
+    recalcular();
+}
 
-    // Inicializar TomSelect en el selector Tipo para que herede la UI Glass completa y desplegable TomSelect
-    if (typeof window.initGlassTomSelect === 'function') {
-        const tsTipo = window.initGlassTomSelect(newTipoSel);
-        if (tsTipo) {
-            tr.tipoTomSelectObj = tsTipo;
-            tsTipo.on('change', function(val) {
-                window.cambiarTipo(newTipoSel, tr, val);
+function bindFilaCotizacion(tr) {
+    if (!tr || tr.dataset.bound) return;
+    tr.dataset.bound = 'true';
+    bindInputs(tr);
+
+    const tipoSel = tr.querySelector('.tipo-select');
+    if (tipoSel) {
+        if (typeof window.initGlassTomSelect === 'function' && !tipoSel.classList.contains('tomselected')) {
+            const tsTipo = window.initGlassTomSelect(tipoSel);
+            if (tsTipo) {
+                tr.tipoTomSelectObj = tsTipo;
+                tsTipo.on('change', function(val) {
+                    window.cambiarTipo(tipoSel, tr, val);
+                });
+            }
+        } else {
+            tipoSel.addEventListener('change', function() {
+                window.cambiarTipo(this, tr, this.value);
             });
         }
     }
 
-    filaIndex++;
-    recalcular();
+    const stockSel = tr.querySelector('.stock-select');
+    if (stockSel && typeof window.initGlassTomSelect === 'function' && !stockSel.classList.contains('tomselected')) {
+        const tsStock = window.initGlassTomSelect(stockSel, { create: true });
+        tr.tomselectObj = tsStock;
+        if (tsStock) {
+            if (stockSel.value) {
+                const initialStock = stocksData.find(s => s.id == stockSel.value);
+                if (initialStock) {
+                    tr.dataset.maxStock = initialStock.cantidad;
+                    validarStock(tr);
+                }
+            }
+            tsStock.on('change', function(selectedVal) {
+                const stockVal = selectedVal || stockSel.value;
+                if (!stockVal) {
+                    tr.querySelector('.stock-id-input').value = '';
+                    tr.querySelector('.stock-desc-input').value = '';
+                    return;
+                }
+                const selectedStock = stocksData.find(s => s.id == stockVal);
+                if (selectedStock) {
+                    tr.querySelector('.stock-id-input').value = selectedStock.id;
+                    tr.querySelector('.stock-desc-input').value = selectedStock.nombre;
+                    const pReal = tr.querySelector('[id^="precio_unitario_real_"]');
+                    const pVis = tr.querySelector('[id^="precio_unitario_visual_"]');
+                    const precio = getPrecioStockCotizacion(selectedStock);
+                    if (pReal) pReal.value = precio;
+                    if (pVis) pVis.value = formatNum(precio);
+                    tr.dataset.maxStock = selectedStock.cantidad;
+                    actualizarSubtotal(tr);
+                    validarStock(tr);
+                } else {
+                    tr.querySelector('.stock-id-input').value = '';
+                    tr.querySelector('.stock-desc-input').value = stockVal;
+                    tr.dataset.maxStock = '';
+                    validarStock(tr);
+                }
+            });
+        }
+    }
 }
 
 window.cambiarTipo = function(select, tr, val, itemData = null) {

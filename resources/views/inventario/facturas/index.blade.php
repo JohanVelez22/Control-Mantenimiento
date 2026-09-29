@@ -35,7 +35,7 @@
  <option value="compra" {{ request('tipo') === 'compra' ? 'selected' : '' }}>📦 Compras</option>
  <option value="venta" {{ request('tipo') === 'venta' ? 'selected' : '' }}>🛒 Ventas</option>
  </select>
- <select name="estado" class="glass-input w-48 font-semibold" data-placeholder="Todos los estados">
+ <select name="estado" class="glass-input w-56 font-semibold" data-placeholder="Todos los estados">
  <option value="todos" {{ request('estado') === 'todos' || !request('estado') ? 'selected' : '' }}>✳️ Todos los estados</option>
  <option value="emitida" {{ request('estado') === 'emitida' ? 'selected' : '' }}>✅ Emitida</option>
  <option value="pendiente_pago" {{ request('estado') === 'pendiente_pago' ? 'selected' : '' }}>⏳ Pendiente</option>
@@ -43,9 +43,9 @@
  </select>
  <input type="text" name="valor_total" value="{{ request('valor_total') }}" placeholder="Valor Total" class="glass-input w-40 font-semibold" oninput="let val = this.value.replace(/\D/g, ''); this.value = val === '' ? '' : parseInt(val, 10).toLocaleString('es-CO');">
  <div class="flex items-center gap-2">
- <input type="date" name="fecha_desde" value="{{ request('fecha_desde', date('Y-m-01')) }}" class="glass-input w-44">
+ <input type="date" name="fecha_desde" value="{{ request('fecha_desde', date('Y-m-01')) }}" class="glass-input reportes-date-input" style="width: 8.5rem !important;">
  <span class="text-gray-400 text-sm">a</span>
- <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta', date('Y-m-d')) }}" class="glass-input w-44">
+ <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta', date('Y-m-d')) }}" class="glass-input reportes-date-input" style="width: 8.5rem !important;">
  </div>
  <button type="submit" class="btn-primary py-2 px-4 text-sm">🌪️ Filtrar</button>
  <a href="{{ route('inventario.facturas') }}" class="btn-clean text-sm">🧹 Limpiar</a>

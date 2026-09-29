@@ -13,8 +13,8 @@
         <form action="{{ route('cotizaciones.store') }}" method="POST" id="cotizacion-form" class="space-y-5">
             @csrf
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-5 p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
-                <div class="md:col-span-2">
+            <div class="cotizacion-header-grid p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
+                <div>
                     <label class="field-label">Cliente / Proveedor *</label>
                     <select name="facturable_global" required class="glass-input focus:ring-blue-500" data-placeholder="Buscar cliente o proveedor...">
                         <option value="">Buscar cliente o proveedor...</option>
@@ -36,7 +36,7 @@
                 </div>
                 <div>
                     <label class="field-label">Fecha *</label>
-                    <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}" class="glass-input focus:ring-blue-500">
+                    <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}" class="glass-input reportes-date-input focus:ring-blue-500" style="width: 8.5rem !important;">
                     @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>
                 <div>
@@ -57,11 +57,11 @@
                     </button>
                 </div>
 
-                <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto">
+                <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto cotizacion-table-scroll min-h-[165px]">
                     <table class="ts-table w-full table-fixed" id="items-table">
                         <thead>
                             <tr>
-                                <th class="col-tipo">Tipo</th>
+                                <th class="col-tipo text-center">Tipo</th>
                                 <th class="col-descripcion">Descripción / Producto</th>
                                 <th class="col-cantidad text-center">Cant.</th>
                                 <th class="col-precio text-right">Precio Un. ($)</th>
@@ -70,17 +70,42 @@
                             </tr>
                         </thead>
                         <tbody id="items-body">
-                            <!-- La primera fila se inserta por JS -->
+                            {{-- Fila base renderizada directamente desde el servidor (sin flash/salto visual) --}}
+                            <tr class="item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-slate-700/50 hover:bg-white/50 dark:hover:bg-slate-800/30 transition-colors">
+                                <td class="col-tipo align-middle">
+                                    <select name="items[0][tipo]" class="tipo-select glass-input py-1.5 px-2 font-bold w-full whitespace-nowrap">
+                                        <option value="libre" selected>🛠️ Servicio / Libre</option>
+                                        <option value="stock">📦 Producto Stock</option>
+                                    </select>
+                                </td>
+                                <td class="desc-cell col-descripcion align-middle">
+                                    <input type="text" name="items[0][descripcion]" value="" class="desc-input glass-input py-1.5 focus:ring-blue-500 w-full min-w-0" placeholder="Descripción de mano de obra o servicio..." required>
+                                </td>
+                                <td class="col-cantidad align-middle relative text-center">
+                                    <input type="number" name="items[0][cantidad]" min="1" max="999" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-blue-500 w-full font-bold">
+                                    <div class="stock-warning text-[10px] text-orange-500 font-bold absolute -bottom-3 left-0 w-full text-center hidden">Sin stock</div>
+                                </td>
+                                <td class="col-precio align-middle">
+                                    <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
+                                    <input type="text" id="precio_unitario_visual_0" value="0" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); actualizarSubtotal(this.closest('tr'))" required class="precio-input glass-input py-1.5 px-2 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-full">
+                                </td>
+                                <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$0</td>
+                                <td class="col-accion align-middle text-right">
+                                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">
+                                        🗑️
+                                    </button>
+                                </td>
+                            </tr>
                         </tbody>
                         <tfoot>
                             <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
-                                <td colspan="4" class="py-4 text-right pr-2">
+                                <td colspan="3" class="py-4"></td>
+                                <td class="col-precio py-4 text-center align-middle">
                                     <span class="font-bold text-slate-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Cotización:</span>
                                 </td>
-                                <td class="py-4 text-right pr-2">
+                                <td colspan="2" class="py-4 text-right pr-3 align-middle">
                                     <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">$0</span>
                                 </td>
-                                <td class="py-4"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -114,16 +139,21 @@
 @include('cotizaciones._scripts')
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+function initCotizacionRows() {
     // Inicializar select de cliente principal si no fue tomado automáticamente
     const clienteSelect = document.querySelector('select[name="cliente_id"]');
     if (clienteSelect && !clienteSelect.classList.contains('tomselected') && typeof window.initGlassTomSelect === 'function') {
         window.initGlassTomSelect(clienteSelect);
     }
-    // Inicializamos con una fila limpia
-    if (typeof agregarFila === 'function') {
-        agregarFila();
-    }
-});
+    // Conectar las filas existentes renderizadas desde el servidor
+    document.querySelectorAll('.item-row').forEach(bindFilaCotizacion);
+    filaIndex = document.querySelectorAll('.item-row').length || 1;
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCotizacionRows);
+} else {
+    initCotizacionRows();
+}
 </script>
 @endsection

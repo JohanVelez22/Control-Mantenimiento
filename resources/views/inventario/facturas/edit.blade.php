@@ -16,31 +16,44 @@
         <form action="{{ route('inventario.facturas.update', $factura->id) }}" method="POST" class="space-y-6">
             @csrf @method('PUT')
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {{-- Cliente / Proveedor --}}
-            <div class="md:col-span-2 min-w-0">
-                <label class="field-label">Cliente / Proveedor *</label>
-                <select name="facturable_global" required class="glass-input font-bold" data-placeholder="Buscar cliente o proveedor...">
-                    <option value="">Buscar cliente o proveedor...</option>
-                    @foreach($proveedores as $p)
-                        <option value="Proveedor:{{ $p->id }}" {{ ($factura->facturable_type === 'App\Models\Proveedor' && $factura->facturable_id == $p->id) ? 'selected' : '' }}>
-                            🏢 Proveedor: {{ $p->nombre_razon_social }} ({{ $p->identificacion }})
-                        </option>
-                    @endforeach
-                    @foreach($clientes as $c)
-                        <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ ($factura->facturable_type === 'App\Models\Cliente' && $factura->facturable_id == $c->id) ? 'selected' : '' }}>
-                            👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🛠️ Técnico' : '' }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
-            </div>
+        @php
+            $isCompra = $factura->tipo_movimiento === 'compra';
+            $nroFacturaText = $isCompra ? 'text-orange-600 dark:text-orange-400' : 'text-emerald-600 dark:text-emerald-400';
+            $ringColor = $isCompra ? 'focus:ring-orange-500' : 'focus:ring-emerald-500';
+            $totalTextColor = $isCompra ? 'text-orange-600 dark:text-orange-400' : 'text-emerald-600 dark:text-emerald-400';
+        @endphp
 
-            {{-- Fecha --}}
-            <div>
-                <label class="field-label">Fecha de Factura *</label>
-                <input type="date" name="fecha" required value="{{ old('fecha', $factura->fecha->format('Y-m-d')) }}" class="glass-input w-40" style="width: 155px !important; max-width: 155px !important;">
-                @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{-- Encabezado: Factura, Cliente/Proveedor y Fecha en una sola fila --}}
+            <div class="md:col-span-2">
+                <div class="flex flex-col md:flex-row gap-5 p-5 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl">
+                    <div class="col-factura-header">
+                        <label class="field-label whitespace-nowrap">N° Factura</label>
+                        <input type="text" value="{{ $factura->numero_factura }}" readonly class="glass-input font-mono font-bold bg-white/40 dark:bg-black/20 {{ $nroFacturaText }} text-left pl-3 cursor-not-allowed w-full" style="width: 7rem !important;">
+                    </div>
+                    <div class="w-full flex-1 min-w-0">
+                        <label class="field-label">Cliente / Proveedor *</label>
+                        <select name="facturable_global" required class="glass-input font-bold {{ $ringColor }}" data-placeholder="Buscar cliente o proveedor...">
+                            <option value="">Buscar cliente o proveedor...</option>
+                            @foreach($proveedores as $p)
+                                <option value="Proveedor:{{ $p->id }}" {{ ($factura->facturable_type === 'App\Models\Proveedor' && $factura->facturable_id == $p->id) ? 'selected' : '' }}>
+                                    🏢 Proveedor: {{ $p->nombre_razon_social }} ({{ $p->identificacion }})
+                                </option>
+                            @endforeach
+                            @foreach($clientes as $c)
+                                <option value="Cliente:{{ $c->id }}" data-tipo="{{ $c->tipo_cliente }}" {{ ($factura->facturable_type === 'App\Models\Cliente' && $factura->facturable_id == $c->id) ? 'selected' : '' }}>
+                                    👤 Cliente: {{ $c->nombre }} ({{ $c->identificacion }}){{ $c->tipo_cliente === 'tecnico' ? ' 🛠️ Técnico' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="col-fecha-header">
+                        <label class="field-label whitespace-nowrap">Fecha Factura *</label>
+                        <input type="date" name="fecha" required value="{{ old('fecha', $factura->fecha->format('Y-m-d')) }}" class="glass-input reportes-date-input {{ $ringColor }}" style="width: 8.5rem !important;">
+                        @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+                    </div>
+                </div>
             </div>
 
 
@@ -59,20 +72,31 @@
     width: 100% !important;
     table-layout: fixed !important;
 }
+.table-factura-edit th,
+.table-factura-edit td {
+    vertical-align: top !important;
+}
+.table-factura-edit tfoot td {
+    vertical-align: middle !important;
+}
 .table-factura-edit th.col-art,
 .table-factura-edit td.col-art {
     width: auto !important;
-    min-width: 260px !important;
+    min-width: 250px !important;
     padding-left: 16px !important;
     padding-right: 8px !important;
     text-align: left !important;
+    vertical-align: top !important;
 }
 .table-factura-edit th.col-cant,
 .table-factura-edit td.col-cant {
-    width: 105px !important;
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
     padding-left: 4px !important;
     padding-right: 4px !important;
     text-align: center !important;
+    vertical-align: top !important;
 }
 .table-factura-edit input.quantity-input {
     width: 100% !important;
@@ -82,17 +106,54 @@
 }
 .table-factura-edit th.col-precio,
 .table-factura-edit td.col-precio {
-    width: 165px !important;
+    width: 190px !important;
+    min-width: 190px !important;
+    max-width: 190px !important;
     padding-left: 6px !important;
     padding-right: 6px !important;
     text-align: right !important;
+    vertical-align: top !important;
 }
 .table-factura-edit th.col-subtotal,
 .table-factura-edit td.col-subtotal {
-    width: 140px !important;
-    padding-left: 6px !important;
-    padding-right: 16px !important;
-    text-align: right !important;
+    width: 175px !important;
+    min-width: 175px !important;
+    max-width: 175px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    text-align: center !important;
+    vertical-align: top !important;
+}
+.table-factura-edit th.col-accion,
+.table-factura-edit td.col-accion {
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    text-align: center !important;
+    vertical-align: top !important;
+}
+.table-factura-edit td.col-accion .btn-danger {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.table-factura-edit .alerta-costo-badge {
+    font-size: 10px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: normal !important;
 }
 /* Evita que descripciones largas rompan altura o se corten verticalmente */
 .table-factura-edit .ts-wrapper .ts-control {
@@ -126,18 +187,19 @@
                                 <th class="col-art py-3 text-left">Artículo</th>
                                 <th class="col-cant text-center py-3">Cantidad</th>
                                 <th class="col-precio text-right py-3 whitespace-nowrap">Precio Unitario ($)</th>
-                                <th class="col-subtotal text-right py-3">Subtotal</th>
+                                <th class="col-subtotal text-center py-3">Subtotal</th>
+                                <th class="col-accion text-center py-3"></th>
                             </tr>
                         </thead>
                         <tbody id="items-body">
                                 @foreach($factura->items as $index => $item)
                                 <tr class="existing-row">
-                                    <td class="col-art align-top py-2.5">
+                                    <td class="col-art py-2.5" style="vertical-align: top !important;">
                                         <input type="hidden" name="existing_items[{{ $index }}][id]" value="{{ $item->id }}">
                                         @if($item->stock_id)
                                             <div class="flex flex-col gap-1">
                                                 <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto / Stock</span>
-                                                <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
+                                                <select name="existing_items[{{ $index }}][stock_id]" required class="stock-select glass-input py-1.5 {{ $ringColor }}" data-placeholder="Seleccionar producto...">
                                                     <option value="">Seleccionar producto...</option>
                                                     @foreach($stocks as $s)
                                                         <option value="{{ $s->id }}" data-precio="{{ $factura->tipo_movimiento === 'compra' ? $s->precio_compra : $s->precio_venta }}" {{ $item->stock_id == $s->id ? 'selected' : '' }}>
@@ -150,45 +212,62 @@
                                             <input type="hidden" name="existing_items[{{ $index }}][stock_id]" value="">
                                             <div class="flex flex-col gap-1">
                                                 <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-cyan-400">🛠️ Servicio / Ítem Libre</span>
-                                                <input type="text" name="existing_items[{{ $index }}][descripcion]" value="{{ $item->descripcion }}" required class="glass-input py-1.5 focus:ring-orange-500 font-bold" placeholder="Descripción del artículo/servicio">
+                                                <input type="text" name="existing_items[{{ $index }}][descripcion]" value="{{ $item->descripcion }}" required class="glass-input py-1.5 {{ $ringColor }} font-bold" placeholder="Descripción del artículo/servicio">
                                             </div>
                                         @endif
                                     </td>
-                                    <td class="col-cant align-top py-2.5">
+                                    <td class="col-cant py-2.5" style="vertical-align: top !important;">
                                         <div class="flex flex-col gap-1">
                                             <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
-                                            <input type="number" name="existing_items[{{ $index }}][cantidad]" min="1" value="{{ (int)$item->cantidad }}" required class="glass-input text-center py-1.5 focus:ring-orange-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
+                                            <input type="number" name="existing_items[{{ $index }}][cantidad]" min="1" value="{{ (int)$item->cantidad }}" required class="glass-input text-center py-1.5 {{ $ringColor }} quantity-input font-bold" oninput="recalcularTotalesEdicion()">
                                         </div>
                                     </td>
-                                    <td class="col-precio align-top py-2.5">
+                                    <td class="col-precio py-2.5" style="vertical-align: top !important;">
                                         <div class="flex flex-col gap-1">
-                                            <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
-                                            <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 focus:ring-orange-500 font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
-                                            @if($factura->tipo_movimiento === 'venta')
-                                                 <div class="alerta-costo-badge hidden text-[11px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap" style="margin-top: 5px !important; margin-bottom: 2px !important;">
-                                                     <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
-                                                 </div>
-                                            @endif
+                                            <div class="h-[15px] flex items-center justify-end overflow-hidden">
+                                                @if($factura->tipo_movimiento === 'venta')
+                                                     <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis leading-none">
+                                                         <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+                                                     </div>
+                                                @endif
+                                                <span class="alerta-costo-placeholder text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none leading-none" aria-hidden="true">&nbsp;</span>
+                                            </div>
+                                            <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 {{ $ringColor }} font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
                                         </div>
                                     </td>
-                                    <td class="col-subtotal align-top py-2.5 text-right">
+                                    <td class="col-subtotal py-2.5 text-center" style="vertical-align: top !important;">
                                         <div class="flex flex-col gap-1">
                                             <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
-                                            <div class="subtotal-display h-[38px] flex items-center justify-end font-bold text-slate-800 dark:text-white text-right overflow-hidden text-ellipsis whitespace-nowrap">
+                                            <div class="subtotal-display h-[38px] flex items-center justify-center font-bold text-slate-800 dark:text-white text-center whitespace-nowrap overflow-hidden text-ellipsis px-2">
                                                 ${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="col-accion py-2.5 text-center" style="vertical-align: top !important;">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
+                                            <div class="h-[38px] flex items-center justify-center">
+                                                <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">
+                                                    🗑️
+                                                </button>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr class="border-0 bg-transparent">
+                                <td colspan="3" class="py-4 text-right pr-2 align-middle border-0">
+                                    <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
+                                </td>
+                                <td class="py-4 text-right pr-3 align-middle border-0">
+                                    <span class="font-black text-2xl {{ $totalTextColor }} whitespace-nowrap" id="total_documento_display">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>
+                                </td>
+                                <td class="py-4 align-middle border-0"></td>
+                            </tr>
+                        </tfoot>
                     </table>
-                </div>
-                <div class="mt-4 flex flex-col sm:flex-row justify-between sm:items-center gap-2 p-4 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
-                    <span class="font-bold text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">Nuevo Total Documento:</span>
-                    <div class="flex items-center justify-end">
-                        <span class="text-2xl font-black text-blue-600 dark:text-blue-400 text-right" id="total_documento_display">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>
-                    </div>
                 </div>
             </div>
 
@@ -261,41 +340,50 @@ function agregarFila() {
     });
 
     const tr = document.createElement('tr');
-    tr.className = 'new-row bg-blue-50/20 dark:bg-blue-900/10';
+    tr.className = 'new-row ' + ({{ $isCompra ? 'true' : 'false' }} ? 'bg-orange-50/20 dark:bg-orange-900/10' : 'bg-emerald-50/20 dark:bg-emerald-900/10');
     tr.innerHTML = `
-        <td class="col-art align-top py-2.5">
+        <td class="col-art py-2.5" style="vertical-align: top !important;">
             <div class="flex flex-col gap-1">
-                <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto / Stock</span>
-                    <button type="button" onclick="eliminarFilaNueva(this)" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-xs font-bold inline-flex items-center gap-1 transition-colors" title="Eliminar ítem agregado">🗑️ Quitar</button>
-                </div>
-                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-blue-500" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto / Stock</span>
+                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 {{ $ringColor }}" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
                     ${optionsHtml}
                 </select>
             </div>
         </td>
-        <td class="col-cant align-top py-2.5">
+        <td class="col-cant py-2.5" style="vertical-align: top !important;">
             <div class="flex flex-col gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
-                <input type="number" name="new_items[${filaIndex}][cantidad]" min="1" value="1" required class="glass-input text-center py-1.5 focus:ring-blue-500 quantity-input font-bold" oninput="recalcularTotalesEdicion()">
+                <input type="number" name="new_items[${filaIndex}][cantidad]" min="1" value="1" required class="glass-input text-center py-1.5 {{ $ringColor }} quantity-input font-bold" oninput="recalcularTotalesEdicion()">
             </div>
         </td>
-        <td class="col-precio align-top py-2.5">
+        <td class="col-precio py-2.5" style="vertical-align: top !important;">
             <div class="flex flex-col gap-1">
-                <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
-                <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 focus:ring-blue-500 font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
-                @if($factura->tipo_movimiento === 'venta')
-                    <div class="alerta-costo-badge hidden text-[11px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap" style="margin-top: 5px !important; margin-bottom: 2px !important;">
-                        <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
-                    </div>
-                @endif
+                <div class="h-[15px] flex items-center justify-end overflow-hidden">
+                    @if($factura->tipo_movimiento === 'venta')
+                        <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis leading-none">
+                            <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+                        </div>
+                    @endif
+                    <span class="alerta-costo-placeholder text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none leading-none" aria-hidden="true">&nbsp;</span>
+                </div>
+                <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 {{ $ringColor }} font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
             </div>
         </td>
-        <td class="col-subtotal align-top py-2.5 text-right">
+        <td class="col-subtotal py-2.5 text-center" style="vertical-align: top !important;">
             <div class="flex flex-col gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
-                <div class="subtotal-display h-[38px] flex items-center justify-end font-bold text-blue-600 dark:text-blue-400 text-right overflow-hidden text-ellipsis whitespace-nowrap">
+                <div class="subtotal-display h-[38px] flex items-center justify-center font-bold {{ $totalTextColor }} text-center whitespace-nowrap overflow-hidden text-ellipsis px-2">
                     $0
+                </div>
+            </div>
+        </td>
+        <td class="col-accion py-2.5 text-center" style="vertical-align: top !important;">
+            <div class="flex flex-col gap-1">
+                <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
+                <div class="h-[38px] flex items-center justify-center">
+                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">
+                        🗑️
+                    </button>
                 </div>
             </div>
         </td>
@@ -315,9 +403,82 @@ function agregarFila() {
     }
 }
 
-function eliminarFilaNueva(btn) {
-    btn.closest('tr').remove();
+let _pendingRowToDelete = null;
+
+function eliminarFila(btn) {
+    const filas = document.querySelectorAll('#items-body tr');
+    if (filas.length <= 1) {
+        if (typeof window.showToast === 'function') {
+            window.showToast('Debe haber al menos un artículo en la factura.', 'error');
+        } else {
+            alert('Debe haber al menos un artículo en la factura.');
+        }
+        return;
+    }
+
+    const tr = btn.closest('tr');
+    if (!tr) return;
+
+    // Obtener descripción o producto para mensaje
+    let itemNombre = '';
+    const stockSelect = tr.querySelector('.stock-select');
+    const descInput = tr.querySelector('input[type="text"][name*="descripcion"]');
+    if (stockSelect && stockSelect.value) {
+        if (stockSelect.tomselect && typeof stockSelect.tomselect.getItem === 'function') {
+            const el = stockSelect.tomselect.getItem(stockSelect.value);
+            if (el) itemNombre = el.textContent.trim().split('\n')[0].trim();
+        }
+        if (!itemNombre && stockSelect.selectedOptions && stockSelect.selectedOptions.length) {
+            itemNombre = stockSelect.selectedOptions[0].text.trim().split('(')[0].trim();
+        }
+    } else if (descInput && descInput.value.trim()) {
+        itemNombre = descInput.value.trim();
+    }
+
+    const modal = document.getElementById('ts-modal');
+    if (modal) {
+        const titleEl = document.getElementById('ts-modal-title');
+        const msgEl = document.getElementById('ts-modal-msg');
+        if (titleEl) titleEl.innerText = '¿Estás seguro?';
+        if (msgEl) {
+            msgEl.innerText = itemNombre
+                ? `¿Eliminar el ítem "${itemNombre}" de la factura?`
+                : '¿Eliminar este ítem de la factura?';
+        }
+
+        _pendingRowToDelete = tr;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            const card = document.getElementById('ts-modal-card');
+            if (card) card.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+    } else {
+        const msg = itemNombre 
+            ? `¿Eliminar el ítem "${itemNombre}" de la factura?` 
+            : '¿Eliminar este ítem de la factura?';
+        if (confirm(msg)) {
+            removerFila(tr);
+        }
+    }
+}
+
+function removerFila(tr) {
+    if (!tr) return;
+    const stockSel = tr.querySelector('.stock-select');
+    if (stockSel && stockSel.tomselect) {
+        try { stockSel.tomselect.destroy(); } catch(e) {}
+    }
+    tr.remove();
     recalcularTotalesEdicion();
+    if (typeof window.showToast === 'function') {
+        window.showToast('Ítem eliminado de la factura.', 'info');
+    }
+}
+
+function eliminarFilaNueva(btn) {
+    eliminarFila(btn);
 }
 
 function actualizarPrecio(selectElem) {
@@ -355,12 +516,16 @@ function verificarAlertaCostoEdicion(row) {
             if (costoRef) costoRef.textContent = '$' + window.formatNumber(precioCompra);
             badge.classList.remove('hidden');
             badge.classList.add('flex');
+            const placeholder = row.querySelector('.alerta-costo-placeholder');
+            if (placeholder) placeholder.classList.add('hidden');
         }
         return true;
     } else {
         if (badge) {
             badge.classList.add('hidden');
             badge.classList.remove('flex');
+            const placeholder = row.querySelector('.alerta-costo-placeholder');
+            if (placeholder) placeholder.classList.remove('hidden');
         }
         return false;
     }
@@ -419,6 +584,26 @@ function recalcularTotalesEdicion() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Hooks para el modal global de confirmación de eliminación
+    document.getElementById('ts-modal-confirm')?.addEventListener('click', () => {
+        if (_pendingRowToDelete) {
+            const tr = _pendingRowToDelete;
+            _pendingRowToDelete = null;
+            removerFila(tr);
+            if (typeof window.closeTsModal === 'function') {
+                window.closeTsModal();
+            }
+        }
+    });
+
+    if (typeof window.closeTsModal === 'function') {
+        const origCloseTsModal = window.closeTsModal;
+        window.closeTsModal = function() {
+            _pendingRowToDelete = null;
+            origCloseTsModal();
+        };
+    }
+
     recalcularTotalesEdicion();
 
     setTimeout(() => {
