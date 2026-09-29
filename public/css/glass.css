@@ -1763,20 +1763,20 @@ input[type="number"].no-spinners,
   }
 
   .reportes-date-input {
-    width: 11rem !important;
-    /* w-44 */
+    width: 8.5rem !important;
+    /* Compacto: se ajusta al texto dd/mm/yyyy sin espacio sobrante */
   }
 }
 
-/* Selector de tipo de operación horizontal y amplio */
+/* Selector de tipo de operación horizontal y compacto */
 .reportes-filter-select {
-  min-width: 260px;
+  min-width: 215px;
   flex-shrink: 0;
 }
 
 .reportes-filter-select select,
 .reportes-filter-select .ts-wrapper {
-  min-width: 260px !important;
+  min-width: 215px !important;
   width: 100% !important;
 }
 

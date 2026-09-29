@@ -33,7 +33,7 @@
  </a>
 </div>
 
-<div class="glass-card p-5 mb-4 no-print">
+<div class="glass-card py-3 px-4 sm:py-3.5 sm:px-5 mb-4 no-print">
  <form id="filtros-diario" method="GET" class="reportes-filter-form flex flex-wrap items-center gap-3">
    <div class="reportes-filter-date">
      <label class="reportes-date-label">📅 Fecha:</label>

@@ -33,7 +33,7 @@
  </a>
 </div>
 
-<div class="glass-card p-5 mb-4 no-print relative z-50">
+<div class="glass-card py-3 px-4 sm:py-3.5 sm:px-5 mb-4 no-print relative z-50">
  <form id="filtros-acumulado" method="GET" class="reportes-filter-form flex flex-wrap items-center gap-3">
   <div class="reportes-filter-date-range">
    <div class="reportes-date-field">

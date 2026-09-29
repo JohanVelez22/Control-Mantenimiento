@@ -33,10 +33,10 @@
  </a>
 </div>
 
-<div class="glass-card p-5 mb-4 no-print relative z-50">
+<div class="glass-card py-3 px-4 sm:py-3.5 sm:px-5 mb-4 no-print relative z-50">
  <form id="filtros-operaciones" method="GET" class="reportes-filter-form flex flex-wrap items-center gap-3">
-   <div class="reportes-filter-select w-full sm:w-auto shrink-0 min-w-[260px]">
-    <select name="tipo" class="glass-input w-full font-semibold min-w-[260px]">
+   <div class="reportes-filter-select w-full sm:w-auto shrink-0 min-w-[215px]">
+    <select name="tipo" class="glass-input w-full font-semibold min-w-[215px]">
     @foreach($tipoLabels as $val => $label)
     <option value="{{ $val }}" {{ $tipo === $val ? 'selected' : '' }}>{{ $label }}</option>
     @endforeach
