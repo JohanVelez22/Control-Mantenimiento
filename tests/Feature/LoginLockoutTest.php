@@ -186,5 +186,25 @@ class LoginLockoutTest extends TestCase
         $this->assertStringContainsString('Inicio de sesión exitoso', $evento->valores_nuevos['Resultado']);
         $this->assertStringContainsString('3', (string) $evento->valores_nuevos['Total Intentos Requeridos']);
     }
+
+    public function test_login_al_primer_intento_no_activa_detalles_en_eventos(): void
+    {
+        // Login directo exitoso sin intentos previos erróneos
+        $response = $this->post(route('login'), [
+            'email' => 'Administrador',
+            'password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+        ]);
+
+        $response->assertRedirect(route('dashboard'));
+        $this->assertTrue(Auth::check());
+
+        $evento = \App\Models\Evento::where('accion', 'login')->latest('id')->first();
+        $this->assertNotNull($evento);
+        // Debe ser nulo para que en la vista solo aparezca el guión '—' y no el botón 'Ver'
+        $this->assertNull($evento->valores_antiguos);
+        $this->assertNull($evento->valores_nuevos);
+        $this->assertEquals('El usuario inició sesión en el sistema al primer intento.', $evento->descripcion);
+    }
 }
+
 

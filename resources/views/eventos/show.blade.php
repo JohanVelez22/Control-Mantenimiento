@@ -15,8 +15,8 @@
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
-            <div><span class="text-secondary" style="font-size:0.8rem;">Modelo</span><br><strong>{{ class_basename($evento->modelo_tipo) ?? '—' }}</strong></div>
-            <div><span class="text-secondary" style="font-size:0.8rem;">ID del modelo</span><br><strong>{{ $evento->modelo_id ?? '—' }}</strong></div>
+            <div><span class="text-secondary" style="font-size:0.8rem;">Modelo</span><br><strong>{{ class_basename($evento->modelo_tipo) ?: '—' }}</strong></div>
+            <div><span class="text-secondary" style="font-size:0.8rem;">ID del modelo</span><br><strong>{{ $evento->modelo_id ?: '—' }}</strong></div>
         </div>
 
         <div class="mt-3"><span class="text-secondary" style="font-size:0.8rem;">Descripción</span><p style="margin:0.2rem 0 0;">{{ $evento->descripcion }}</p></div>

@@ -16,19 +16,20 @@
     </div>
 
     {{-- Filtros (Liquid Glass) --}}
-    <div class="glass-card p-5 relative z-50">
-        <form action="{{ route('eventos.index') }}" method="GET" class="flex flex-wrap items-center gap-4">
-            <div class="flex items-center gap-2">
-                <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Buscar:</label>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Módulo, observación..." class="glass-input w-48 text-sm">
+    <div class="glass-card p-4 sm:p-5 relative z-50">
+        <form action="{{ route('eventos.index') }}" method="GET" class="flex flex-wrap lg:flex-nowrap items-center gap-2.5 sm:gap-3">
+            <div class="flex items-center gap-1.5 shrink-0">
+                <label class="font-semibold text-xs sm:text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Buscar:</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Módulo..." class="glass-input w-28 sm:w-32 lg:w-36 text-sm">
             </div>
             
-            <div class="flex items-center gap-2">
-                <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Acción:</label>
+            <div class="flex items-center gap-1.5 shrink-0">
+                <label class="font-semibold text-xs sm:text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Acción:</label>
                 <select name="accion" class="glass-input w-40 text-sm" data-placeholder="Ver Todas">
                     <option value="todas" {{ request('accion', 'todas') == 'todas' || request('accion') === '' ? 'selected' : '' }}>👁️ Ver Todas</option>
                     <option value="login" {{ request('accion') == 'login' ? 'selected' : '' }}>🔑 Login</option>
                     <option value="logout" {{ request('accion') == 'logout' ? 'selected' : '' }}>🚪 Logout</option>
+                    <option value="backup" {{ request('accion') == 'backup' ? 'selected' : '' }}>💾 Backup</option>
                     <option value="creado" {{ request('accion') == 'creado' ? 'selected' : '' }}>✨ Creado</option>
                     <option value="actualizado" {{ request('accion') == 'actualizado' ? 'selected' : '' }}>✏️ Actualizado</option>
                     <option value="eliminado" {{ request('accion') == 'eliminado' ? 'selected' : '' }}>🗑️ Eliminado</option>
@@ -36,8 +37,8 @@
                 </select>
             </div>
 
-            <div class="flex items-center gap-2">
-                <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Usuario:</label>
+            <div class="flex items-center gap-1.5 shrink-0">
+                <label class="font-semibold text-xs sm:text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Usuario:</label>
                 <select name="user_id" class="glass-input w-40 text-sm" data-placeholder="Ver Todos">
                     <option value="todos" {{ request('user_id', 'todos') == 'todos' || request('user_id') === '' ? 'selected' : '' }}>Ver Todos</option>
                     @foreach($users as $user)
@@ -48,21 +49,21 @@
                 </select>
             </div>
 
-            <div class="flex items-center gap-2">
-                <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Desde:</label>
-                <input type="date" name="fecha_desde" value="{{ $fechaDesde }}" class="glass-input w-36 text-sm">
+            <div class="flex items-center gap-1.5 shrink-0">
+                <label class="font-semibold text-xs sm:text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Desde:</label>
+                <input type="date" name="fecha_desde" value="{{ $fechaDesde }}" class="glass-input w-32 sm:w-36 text-sm">
             </div>
 
-            <div class="flex items-center gap-2">
-                <label class="font-semibold text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Hasta:</label>
-                <input type="date" name="fecha_hasta" value="{{ $fechaHasta }}" class="glass-input w-36 text-sm">
+            <div class="flex items-center gap-1.5 shrink-0">
+                <label class="font-semibold text-xs sm:text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">Hasta:</label>
+                <input type="date" name="fecha_hasta" value="{{ $fechaHasta }}" class="glass-input w-32 sm:w-36 text-sm">
             </div>
 
-            <div class="flex gap-2">
-                <button type="submit" class="btn-primary px-4 py-2 font-bold text-sm">
+            <div class="flex gap-2 shrink-0">
+                <button type="submit" class="btn-primary px-3 sm:px-4 py-2 font-bold text-xs sm:text-sm whitespace-nowrap">
                     🌪️ Filtrar
                 </button>
-                <a href="{{ route('eventos.index') }}" class="btn-clean px-4 py-2 flex items-center justify-center font-bold text-sm">
+                <a href="{{ route('eventos.index') }}" class="btn-clean px-3 sm:px-4 py-2 flex items-center justify-center font-bold text-xs sm:text-sm whitespace-nowrap">
                     🧹 Limpiar
                 </a>
             </div>
@@ -111,6 +112,10 @@
                                 case 'logout': 
                                     $badgeClass = 'bg-slate-200 text-slate-800 border-slate-300 dark:bg-slate-800 dark:text-slate-300';
                                     $icon = '🚪'; 
+                                    break;
+                                case 'backup': 
+                                    $badgeClass = 'bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-900/40 dark:text-teal-300';
+                                    $icon = '💾'; 
                                     break;
                             }
                         @endphp
@@ -174,7 +179,7 @@
 
 @push('modals')
 {{-- Modal de Detalles de Cambios / Trazabilidad --}}
-<div id="detalle-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+<div id="detalle-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-[200]" onclick="if(event.target === this) closeDetalle()">
     <div class="ts-modal-card scale-95 opacity-0 max-w-4xl w-full" id="detalle-card">
         <div class="p-6">
             <div class="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
@@ -186,33 +191,33 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                {{-- Columna Anterior / Intentos Fallidos --}}
-                <div class="bg-red-50/50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30 overflow-hidden flex flex-col">
-                    <div class="px-4 py-3 bg-red-100/50 dark:bg-red-900/30 border-b border-red-200 dark:border-red-900/50">
+                {{-- Columna Anterior / Intentos Fallidos / Archivos --}}
+                <div id="col-ant-card" class="bg-red-50/50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30 overflow-hidden flex flex-col transition-colors">
+                    <div id="col-ant-header" class="px-4 py-3 bg-red-100/50 dark:bg-red-900/30 border-b border-red-200 dark:border-red-900/50">
                         <h4 id="col-ant-title" class="font-bold text-red-700 dark:text-red-400 text-sm uppercase tracking-wider flex items-center gap-2">
                             <span>➖</span> Antes
                         </h4>
                     </div>
                     <div class="p-4 flex-1">
-                        <pre id="pre-ant" class="text-xs font-mono text-red-900 dark:text-red-300 whitespace-pre-wrap break-words"></pre>
+                        <pre id="pre-ant" class="text-xs font-mono text-slate-800 dark:text-slate-200 whitespace-pre-wrap break-words leading-relaxed"></pre>
                     </div>
                 </div>
 
-                {{-- Columna Nuevo / Acceso Exitoso --}}
-                <div class="bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden flex flex-col">
-                    <div class="px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-900/50">
+                {{-- Columna Nuevo / Acceso Exitoso / Parámetros --}}
+                <div id="col-nue-card" class="bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden flex flex-col transition-colors">
+                    <div id="col-nue-header" class="px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-900/50">
                         <h4 id="col-nue-title" class="font-bold text-emerald-700 dark:text-emerald-400 text-sm uppercase tracking-wider flex items-center gap-2">
                             <span>➕</span> Después
                         </h4>
                     </div>
                     <div class="p-4 flex-1">
-                        <pre id="pre-nue" class="text-xs font-mono text-emerald-900 dark:text-emerald-300 whitespace-pre-wrap break-words"></pre>
+                        <pre id="pre-nue" class="text-xs font-mono text-slate-800 dark:text-slate-200 whitespace-pre-wrap break-words leading-relaxed"></pre>
                     </div>
                 </div>
             </div>
             
             <div class="mt-6 flex justify-end">
-                <button type="button" onclick="closeDetalle()" class="btn-primary px-6 py-2">Cerrar</button>
+                <button type="button" onclick="closeDetalle()" class="btn-primary px-6 py-2 font-bold text-sm">Cerrar</button>
             </div>
         </div>
     </div>
@@ -242,9 +247,20 @@
                         val = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(num);
                     }
                 }
+
+                // Formatear fechas y horas ISO (eliminar microsegundos / .000000Z y 'T' para que quede horizontal)
+                let isDate = false;
+                if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}/i.test(val)) {
+                    val = val.replace('T', ' ').replace(/\.\d+(?:Z|[+-]\d{2}:\d{2})?$/i, '').replace(/(?:Z|[+-]\d{2}:\d{2})$/i, '');
+                    isDate = true;
+                }
                 
                 output += `<span class="font-bold text-gray-500 uppercase text-[10px] tracking-wider">${key}</span>\n`;
-                output += `${val}\n\n`;
+                if (isDate) {
+                    output += `<span class="inline-block whitespace-nowrap font-mono">${val}</span>\n\n`;
+                } else {
+                    output += `${val}\n\n`;
+                }
             }
             return output || 'Ninguno';
         } catch (e) {
@@ -261,16 +277,41 @@
         const colAntTitle = document.getElementById('col-ant-title');
         const colNueTitle = document.getElementById('col-nue-title');
 
+        const colAntCard = document.getElementById('col-ant-card');
+        const colAntHeader = document.getElementById('col-ant-header');
+        const colNueCard = document.getElementById('col-nue-card');
+        const colNueHeader = document.getElementById('col-nue-header');
+
         if (accion === 'login') {
             if (iconEl) iconEl.textContent = '🔐';
             if (titleEl) titleEl.textContent = 'Trazabilidad de Acceso / Intentos de Login';
             if (colAntTitle) colAntTitle.innerHTML = '<span>⚠️</span> Historial de Intentos Previos';
             if (colNueTitle) colNueTitle.innerHTML = '<span>✅</span> Acceso Logrado / Exitoso';
+            if (colAntCard) colAntCard.className = 'bg-amber-50/50 dark:bg-amber-900/10 rounded-xl border border-amber-200 dark:border-amber-900/30 overflow-hidden flex flex-col transition-colors';
+            if (colAntHeader) colAntHeader.className = 'px-4 py-3 bg-amber-100/60 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-900/50';
+            if (colAntTitle) colAntTitle.className = 'font-bold text-amber-800 dark:text-amber-400 text-sm uppercase tracking-wider flex items-center gap-2';
+            if (colNueCard) colNueCard.className = 'bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden flex flex-col transition-colors';
+            if (colNueHeader) colNueHeader.className = 'px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-900/50';
+        } else if (accion === 'backup') {
+            if (iconEl) iconEl.textContent = '💾';
+            if (titleEl) titleEl.textContent = 'Trazabilidad de Respaldo / Copia de Seguridad';
+            if (colAntTitle) colAntTitle.innerHTML = '<span>📦</span> Archivos y Almacenamiento';
+            if (colNueTitle) colNueTitle.innerHTML = '<span>✅</span> Estado y Parámetros';
+            if (colAntCard) colAntCard.className = 'bg-slate-50/60 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col transition-colors';
+            if (colAntHeader) colAntHeader.className = 'px-4 py-3 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700';
+            if (colAntTitle) colAntTitle.className = 'font-bold text-slate-700 dark:text-slate-300 text-sm uppercase tracking-wider flex items-center gap-2';
+            if (colNueCard) colNueCard.className = 'bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden flex flex-col transition-colors';
+            if (colNueHeader) colNueHeader.className = 'px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-900/50';
         } else {
             if (iconEl) iconEl.textContent = '📋';
             if (titleEl) titleEl.textContent = 'Detalles del Cambio';
             if (colAntTitle) colAntTitle.innerHTML = '<span>➖</span> Antes';
             if (colNueTitle) colNueTitle.innerHTML = '<span>➕</span> Después';
+            if (colAntCard) colAntCard.className = 'bg-red-50/50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30 overflow-hidden flex flex-col transition-colors';
+            if (colAntHeader) colAntHeader.className = 'px-4 py-3 bg-red-100/50 dark:bg-red-900/30 border-b border-red-200 dark:border-red-900/50';
+            if (colAntTitle) colAntTitle.className = 'font-bold text-red-700 dark:text-red-400 text-sm uppercase tracking-wider flex items-center gap-2';
+            if (colNueCard) colNueCard.className = 'bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30 overflow-hidden flex flex-col transition-colors';
+            if (colNueHeader) colNueHeader.className = 'px-4 py-3 bg-emerald-100/50 dark:bg-emerald-900/30 border-b border-emerald-200 dark:border-emerald-900/50';
         }
 
         const dataAnt = document.getElementById('data-ant-' + id).innerText;

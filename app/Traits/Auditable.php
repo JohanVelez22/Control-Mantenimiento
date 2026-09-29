@@ -44,8 +44,9 @@ trait Auditable
                         $changedViejos[$key] = '*** ENMASCARADO ***';
                         $changedNuevos[$key] = '*** ENMASCARADO ***';
                     } else {
-                        $changedViejos[$key] = $model->getOriginal($key);
-                        $changedNuevos[$key] = $value;
+                        $orig = $model->getOriginal($key);
+                        $changedViejos[$key] = ($orig instanceof \DateTimeInterface) ? $orig->format('Y-m-d H:i:s') : $orig;
+                        $changedNuevos[$key] = ($value instanceof \DateTimeInterface) ? $value->format('Y-m-d H:i:s') : $value;
                     }
                 }
 
@@ -102,6 +103,12 @@ if (! function_exists('clone_model_data')) {
         foreach ($sensibles as $key) {
             if (isset($data[$key])) {
                 $data[$key] = '*** ENMASCARADO ***';
+            }
+        }
+
+        foreach ($data as $key => $value) {
+            if ($value instanceof \DateTimeInterface) {
+                $data[$key] = $value->format('Y-m-d H:i:s');
             }
         }
 

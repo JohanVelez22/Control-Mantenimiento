@@ -264,15 +264,8 @@ class AppServiceProvider extends ServiceProvider
                 ];
                 $descripcion = "El usuario inició sesión tras {$totalFallidos} ".($totalFallidos === 1 ? 'intento fallido' : 'intentos fallidos').'.';
             } else {
-                $viejos = [
-                    'Intentos Previos' => '0 (Acceso directo sin fallos)',
-                ];
-                $nuevos = [
-                    'Resultado' => '✅ Inicio de sesión exitoso al primer intento',
-                    'Hora de Conexión' => now()->format('d/m/Y H:i:s'),
-                    'Dirección IP' => request()->ip(),
-                    'Navegador' => substr(request()->userAgent() ?? 'N/D', 0, 100),
-                ];
+                $viejos = null;
+                $nuevos = null;
                 $descripcion = 'El usuario inició sesión en el sistema al primer intento.';
             }
 

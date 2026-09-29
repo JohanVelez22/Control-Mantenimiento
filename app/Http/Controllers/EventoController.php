@@ -56,4 +56,19 @@ class EventoController extends Controller
 
         return view('eventos.show', compact('evento', 'viejos', 'nuevos'));
     }
+
+    public function backup(Request $request)
+    {
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Acceso denegado. Solo administradores pueden generar copias de seguridad.');
+        }
+
+        try {
+            \Illuminate\Support\Facades\Artisan::call('app:backup-db');
+
+            return redirect()->route('eventos.index')->with('success', 'Copia de seguridad del sistema generada exitosamente.');
+        } catch (\Throwable $e) {
+            return redirect()->route('eventos.index')->with('error', 'Error al generar la copia de seguridad: '.$e->getMessage());
+        }
+    }
 }

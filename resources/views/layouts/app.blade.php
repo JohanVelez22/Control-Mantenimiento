@@ -33,7 +33,7 @@
     
     <!-- Scripts de Librerías (cargados en el head para prevenir FOUC) -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     
     <!-- CSS Propio (Liquid Glass) - va DESPUÉS para sobreescribir estilos base -->
@@ -270,35 +270,41 @@
             
             if (message) document.getElementById('ts-modal-msg').innerText = message;
 
+            const customTitle = form?.dataset?.confirmTitle;
+            const customIcon = form?.dataset?.confirmIcon;
+            const customBtn = form?.dataset?.confirmBtn;
+            const customCancel = form?.dataset?.confirmCancel;
+
             const isSuccessType = (form && typeof form === 'object' && (
                 form.dataset?.confirmType === 'success' ||
                 form.dataset?.confirmVariant === 'success' ||
-                (typeof form.action === 'string' && form.action.includes('cotizaciones') && form.action.includes('convertir'))
-            )) || (typeof message === 'string' && (message.includes('Nueva Venta') || message.includes('cotización') || message.includes('cotizacion')));
+                (typeof form.action === 'string' && form.action.includes('cotizaciones') && form.action.includes('convertir')) ||
+                (typeof form.action === 'string' && form.action.includes('backup'))
+            )) || (typeof message === 'string' && (message.includes('Nueva Venta') || message.includes('cotización') || message.includes('cotizacion') || message.includes('seguridad') || message.includes('Respaldo') || message.includes('copia')));
 
             if (isSuccessType) {
-                if (titleEl) titleEl.innerText = '¿Estás seguro?';
-                if (icon) icon.innerText = '✅';
+                if (titleEl) titleEl.innerText = customTitle || '¿Estás seguro?';
+                if (icon) icon.innerText = customIcon || '✅';
                 if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center text-3xl mx-auto mb-4';
                 if (cancelBtn) {
                     cancelBtn.className = 'flex-1 btn-ghost-red';
-                    cancelBtn.textContent = 'Cancelar';
+                    cancelBtn.textContent = customCancel || 'Cancelar';
                 }
                 if (confirmBtn) {
                     confirmBtn.className = 'flex-1 btn-ghost-emerald';
-                    confirmBtn.textContent = 'Confirmar';
+                    confirmBtn.textContent = customBtn || 'Confirmar';
                 }
             } else {
-                if (titleEl) titleEl.innerText = '¿Estás seguro?';
-                if (icon) icon.innerText = '⚠️';
+                if (titleEl) titleEl.innerText = customTitle || '¿Estás seguro?';
+                if (icon) icon.innerText = customIcon || '⚠️';
                 if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4';
                 if (cancelBtn) {
                     cancelBtn.className = 'flex-1 btn-ghost-amber';
-                    cancelBtn.textContent = 'Cancelar';
+                    cancelBtn.textContent = customCancel || 'Cancelar';
                 }
                 if (confirmBtn) {
                     confirmBtn.className = 'flex-1 btn-danger justify-center font-bold';
-                    confirmBtn.textContent = 'Confirmar';
+                    confirmBtn.textContent = customBtn || 'Confirmar';
                 }
             }
 
@@ -1142,10 +1148,27 @@
     <script>
         // Inicialización INMEDIATA sin esperar a DOMContentLoaded para evitar FOUC
         (function() {
-            // 1. Flatpickr para todos los inputs de tipo date
+            // 1. Flatpickr para todos los inputs de tipo date con idioma español garantizado
             window._flatpickrInstances = [];
+            const FlatpickrSpanish = (window.flatpickr && flatpickr.l10ns && flatpickr.l10ns.es) ? flatpickr.l10ns.es : {
+                weekdays: {
+                    shorthand: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+                    longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                },
+                months: {
+                    shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                },
+                firstDayOfWeek: 1,
+                rangeSeparator: ' a ',
+                time_24hr: true,
+            };
+            if (window.flatpickr) {
+                flatpickr.localize(FlatpickrSpanish);
+            }
+
             flatpickr("input[type='date']", {
-                locale: "es",
+                locale: FlatpickrSpanish,
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "d/m/Y",

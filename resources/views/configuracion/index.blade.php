@@ -2,11 +2,23 @@
 
 @section('content')
 <div>
-    <div class="mb-4 sm:mb-5">
-        <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
-            🏢 Configuración de Empresa
-        </h2>
-        <p class="text-gray-500 font-medium mt-1.5">Gestiona la información comercial que aparecerá en los reportes y facturas de tus operaciones.</p>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-5">
+        <div>
+            <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
+                🏢 Configuración de Empresa
+            </h2>
+            <p class="text-gray-500 font-medium mt-1.5">Gestiona la información comercial que aparecerá en los reportes y facturas de tus operaciones.</p>
+        </div>
+        @if(auth()->user()->role === 'admin')
+        <div class="shrink-0">
+            <form action="{{ route('eventos.backup') }}" method="POST" data-confirm-delete="¿Deseas generar una copia de seguridad completa del sistema y la base de datos en este momento?" data-confirm-type="success" data-confirm-title="Copia de Seguridad del Sistema" data-confirm-icon="💾" data-confirm-btn="Iniciar Respaldo">
+                @csrf
+                <button type="submit" class="btn-primary flex items-center gap-2 px-4 py-2 font-bold text-sm shadow-lg shadow-indigo-500/20 whitespace-nowrap">
+                    <span>💾</span> Generar Respaldo
+                </button>
+            </form>
+        </div>
+        @endif
     </div>
 
     <form action="{{ route('configuracion.update') }}" method="POST" enctype="multipart/form-data" class="glass-card p-6" id="form-configuracion" onsubmit="submitConfiguracion(event)">

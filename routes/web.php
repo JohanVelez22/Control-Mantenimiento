@@ -166,6 +166,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
         // Eventos / Auditoría
         Route::get('/eventos', [EventoController::class, 'index'])->name('eventos.index');
+        Route::post('/eventos/backup', [EventoController::class, 'backup'])->name('eventos.backup');
         Route::get('/eventos/{evento}', [EventoController::class, 'show'])->name('eventos.show');
 
         // Usuarios (admin y técnico pueden gestionar; anular es solo admin)
