@@ -145,15 +145,29 @@
     padding: 0 !important;
     margin: 0 !important;
 }
+.table-factura-edit .alerta-costo-badge,
+.table-factura-edit .alerta-costo-badge span,
+.table-factura-edit .alerta-costo-badge .costo-ref {
+    font-size: 10px !important;
+    text-transform: uppercase !important;
+}
 .table-factura-edit .alerta-costo-badge {
+    position: absolute !important;
+    right: 4px !important;
+    top: 100% !important;
+    margin-top: 2px !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
     font-size: 10px !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
     line-height: normal !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
 }
 /* Evita que descripciones largas rompan altura o se corten verticalmente */
 .table-factura-edit .ts-wrapper .ts-control {
@@ -224,15 +238,15 @@
                                     </td>
                                     <td class="col-precio py-2.5" style="vertical-align: top !important;">
                                         <div class="flex flex-col gap-1">
-                                            <div class="h-[15px] flex items-center justify-end overflow-hidden">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
+                                            <div class="relative">
+                                                <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 {{ $ringColor }} font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
                                                 @if($factura->tipo_movimiento === 'venta')
-                                                     <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis leading-none">
-                                                         <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+                                                     <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis absolute right-1 top-full pointer-events-none uppercase tracking-wider">
+                                                         <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$0</span>)</span>
                                                      </div>
                                                 @endif
-                                                <span class="alerta-costo-placeholder text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none leading-none" aria-hidden="true">&nbsp;</span>
                                             </div>
-                                            <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 {{ $ringColor }} font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
                                         </div>
                                     </td>
                                     <td class="col-subtotal py-2.5 text-center" style="vertical-align: top !important;">
@@ -257,7 +271,7 @@
                             @endforeach
                         </tbody>
                         <tfoot>
-                            <tr class="border-0 bg-transparent">
+                            <tr class="border-0 bg-gray-50/50 dark:bg-gray-800/50">
                                 <td colspan="3" class="py-4 text-right pr-2 align-middle border-0">
                                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                                 </td>
@@ -340,7 +354,7 @@ function agregarFila() {
     });
 
     const tr = document.createElement('tr');
-    tr.className = 'new-row ' + ({{ $isCompra ? 'true' : 'false' }} ? 'bg-orange-50/20 dark:bg-orange-900/10' : 'bg-emerald-50/20 dark:bg-emerald-900/10');
+    tr.className = 'new-row bg-transparent';
     tr.innerHTML = `
         <td class="col-art py-2.5" style="vertical-align: top !important;">
             <div class="flex flex-col gap-1">
@@ -358,15 +372,15 @@ function agregarFila() {
         </td>
         <td class="col-precio py-2.5" style="vertical-align: top !important;">
             <div class="flex flex-col gap-1">
-                <div class="h-[15px] flex items-center justify-end overflow-hidden">
+                <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
+                <div class="relative">
+                    <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 {{ $ringColor }} font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
                     @if($factura->tipo_movimiento === 'venta')
-                        <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis leading-none">
-                            <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+                        <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis absolute right-1 top-full pointer-events-none uppercase tracking-wider">
+                            <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$0</span>)</span>
                         </div>
                     @endif
-                    <span class="alerta-costo-placeholder text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none leading-none" aria-hidden="true">&nbsp;</span>
                 </div>
-                <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 {{ $ringColor }} font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
             </div>
         </td>
         <td class="col-subtotal py-2.5 text-center" style="vertical-align: top !important;">
@@ -516,16 +530,12 @@ function verificarAlertaCostoEdicion(row) {
             if (costoRef) costoRef.textContent = '$' + window.formatNumber(precioCompra);
             badge.classList.remove('hidden');
             badge.classList.add('flex');
-            const placeholder = row.querySelector('.alerta-costo-placeholder');
-            if (placeholder) placeholder.classList.add('hidden');
         }
         return true;
     } else {
         if (badge) {
             badge.classList.add('hidden');
             badge.classList.remove('flex');
-            const placeholder = row.querySelector('.alerta-costo-placeholder');
-            if (placeholder) placeholder.classList.remove('hidden');
         }
         return false;
     }

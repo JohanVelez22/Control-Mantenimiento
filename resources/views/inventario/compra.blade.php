@@ -94,7 +94,7 @@
             </tr>
         </tbody>
         <tfoot>
-            <tr class="border-0 bg-transparent">
+            <tr class="border-0 bg-gray-50/50 dark:bg-gray-800/50">
                 <td colspan="3" class="py-4 text-right pr-2 border-0">
                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                 </td>

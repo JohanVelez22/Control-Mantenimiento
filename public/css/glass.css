@@ -4697,9 +4697,16 @@ html:not(.dark) .table-factura-edit tfoot tr {
 }
 
 /* Badge de alerta 'Menor al costo' posicionado abajo sin aumentar la altura de la fila */
+.alerta-costo-badge,
+.alerta-costo-badge span,
+.alerta-costo-badge .costo-ref {
+  font-size: 10px !important;
+  text-transform: uppercase !important;
+}
+
 .alerta-costo-badge {
   position: absolute !important;
-  right: 0 !important;
+  right: 4px !important;
   top: 100% !important;
   margin-top: 2px !important;
   margin-bottom: 0 !important;
@@ -4712,6 +4719,8 @@ html:not(.dark) .table-factura-edit tfoot tr {
   z-index: 10 !important;
   pointer-events: none !important;
   line-height: normal !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
 }
 
 /* ==========================================================================
@@ -5055,9 +5064,10 @@ html:not(.dark) .table-factura-edit tfoot tr {
   }
 
   #items-table .alerta-costo-badge {
-    font-size: 10.5px !important;
-    margin-top: 4px !important;
-    margin-bottom: 2px !important;
+    font-size: 10px !important;
+    right: 4px !important;
+    margin-top: 2px !important;
+    margin-bottom: 0 !important;
   }
 
   /* Tfoot Total display en móvil */

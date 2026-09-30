@@ -81,9 +81,11 @@
                 </td>
                 <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
                     <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
-                    <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
-                    <div class="alerta-costo-badge hidden text-xs font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1.5" style="margin-top: 10px !important; margin-bottom: 2px !important;">
-                        <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+                    <div class="relative">
+                        <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
+                        <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis absolute right-1 top-full pointer-events-none uppercase tracking-wider">
+                            <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$0</span>)</span>
+                        </div>
                     </div>
                 </td>
                 <td class="text-center font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell px-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
@@ -95,7 +97,7 @@
             </tr>
         </tbody>
         <tfoot>
-            <tr class="border-0 bg-transparent">
+            <tr class="border-0 bg-gray-50/50 dark:bg-gray-800/50">
                 <td colspan="3" class="py-4 text-right pr-2 border-0">
                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                 </td>
@@ -212,9 +214,11 @@ function agregarFila() {
   </td>
   <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
   <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="0" required class="hidden">
-  <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
-  <div class="alerta-costo-badge hidden text-xs font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1.5" style="margin-top: 10px !important; margin-bottom: 2px !important;">
-      <span>⚠️ Menor al costo (<span class="costo-ref font-black">$0</span>)</span>
+  <div class="relative">
+      <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
+      <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis absolute right-1 top-full pointer-events-none uppercase tracking-wider">
+          <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$0</span>)</span>
+      </div>
   </div>
   </td>
     <td class="text-center font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell px-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$0</td>
