@@ -867,13 +867,10 @@
                 <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center shrink-0">
                     <span class="text-2xl">🔔</span>
                 </div>
-                <div class="flex-1 min-w-0">
+                <div>
                     <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">¡Tienes tareas pendientes!</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalPendientes }} elemento(s) requieren atención</p>
                 </div>
-                <button onclick="closeNotifModal()" type="button" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors shrink-0 text-base" title="Cerrar">
-                    ✕
-                </button>
             </div>
 
             {{-- Contenedor Central para alinear filtros e información al mismo ancho --}}
@@ -911,9 +908,9 @@
                    class="notif-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-blue-500 rounded-l-xl"></div>
                     <div class="pl-2 sm:pl-3 min-w-0 flex-1">
-                        <div class="flex items-center justify-between sm:justify-start gap-2 mb-0.5">
-                            <span class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Mantenimiento</span>
-                            <span class="text-[10px] font-bold text-blue-500 dark:text-blue-300">{{ $mOrden }}</span>
+                        <div class="notif-item-header flex items-center justify-between sm:justify-start gap-2 mb-0.5">
+                            <span class="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Mantenimiento</span>
+                            <span class="text-xs font-bold text-blue-500 dark:text-blue-300">{{ $mOrden }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $mEquipo }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $mCliente }}</p>
@@ -937,9 +934,9 @@
                    class="notif-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-purple-500 rounded-l-xl"></div>
                     <div class="pl-2 sm:pl-3 min-w-0 flex-1">
-                        <div class="flex items-center justify-between sm:justify-start gap-2 mb-0.5">
-                            <span class="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Electrónica</span>
-                            <span class="text-[10px] font-bold text-purple-500 dark:text-purple-300">{{ $eOrden }}</span>
+                        <div class="notif-item-header flex items-center justify-between sm:justify-start gap-2 mb-0.5">
+                            <span class="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Electrónica</span>
+                            <span class="text-xs font-bold text-purple-500 dark:text-purple-300">{{ $eOrden }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $eEquipo }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $eCliente }}</p>
@@ -963,9 +960,9 @@
                    class="notif-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl"></div>
                     <div class="pl-2 sm:pl-3 min-w-0 flex-1">
-                        <div class="flex items-center justify-between sm:justify-start gap-2 mb-0.5">
-                            <span class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Cotización</span>
-                            <span class="text-[10px] font-bold text-indigo-500 dark:text-indigo-300">{{ $cCodigo }}</span>
+                        <div class="notif-item-header flex items-center justify-between sm:justify-start gap-2 mb-0.5">
+                            <span class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Cotización</span>
+                            <span class="text-xs font-bold text-indigo-500 dark:text-indigo-300">{{ $cCodigo }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $cCliente }}</p>
                         <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold truncate">Total: ${{ number_format($cTotal, 0, ',', '.') }}</p>
@@ -990,9 +987,9 @@
                    class="notif-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
                     <div class="pl-2 sm:pl-3 min-w-0 flex-1">
-                        <div class="flex items-center justify-between sm:justify-start gap-2 mb-0.5">
-                            <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Factura</span>
-                            <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $fNumero }}</span>
+                        <div class="notif-item-header flex items-center justify-between sm:justify-start gap-2 mb-0.5">
+                            <span class="text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Factura</span>
+                            <span class="text-xs font-bold text-orange-500 dark:text-orange-300">{{ $fNumero }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $fNombre }}</p>
                         <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
@@ -1027,9 +1024,9 @@
                    class="notif-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-3 rounded-xl border {{ $bgClass }} transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full {{ $barClass }} rounded-l-xl"></div>
                     <div class="pl-2 sm:pl-3 min-w-0 flex-1">
-                        <div class="flex items-center justify-between sm:justify-start gap-2 mb-0.5">
-                            <span class="text-[10px] font-black {{ $titleClass }} uppercase tracking-wider">Saldo {{ ucfirst($movTipo) }}</span>
-                            <span class="text-[10px] font-bold {{ $idClass }}">#{{ $movId }}</span>
+                        <div class="notif-item-header flex items-center justify-between sm:justify-start gap-2 mb-0.5">
+                            <span class="text-xs font-black {{ $titleClass }} uppercase tracking-wider">Saldo {{ ucfirst($movTipo) }}</span>
+                            <span class="text-xs font-bold {{ $idClass }}">#{{ $movId }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $displayName }}</p>
                         <p class="text-xs {{ $montoClass }} font-semibold">

@@ -2690,6 +2690,28 @@ html.dark .logout-toggle-btn:active {
   border-color: rgba(239, 68, 68, 0.25) !important;
 }
 
+/* ================================================================
+   Modal de Notificaciones (Responsive: móvil separado, web junto)
+   ================================================================ */
+@media (max-width: 639px) {
+  .notif-item .notif-item-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 640px) {
+  .notif-item .notif-item-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 0.5rem !important;
+    width: auto !important;
+  }
+}
+
 /* ---- Sobrescrituras botones ghost colores específicos ---- */
 .btn-ghost.text-yellow-600:hover {
   color: #D97706 !important;

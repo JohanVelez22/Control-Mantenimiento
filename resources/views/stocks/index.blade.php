@@ -8,17 +8,17 @@
  </h2>
  <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Control de repuestos y productos</p>
  </div>
- <div class="flex flex-wrap items-center gap-3">
-  <div class="relative">
+ <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+  <div class="relative w-full sm:w-auto">
   <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
-  <input type="text" id="search-stocks" placeholder="Buscar producto, cod..." class="glass-input pl-9 w-48 sm:w-64">
+  <input type="text" id="search-stocks" placeholder="Buscar producto, cod..." class="glass-input pl-9 w-full sm:w-64">
   </div>
  @if(!auth()->user()->isInvitado())
- <div class="flex flex-wrap gap-2.5 sm:gap-3">
- <a href="{{ route('stocks.categorias.index') }}" class="btn-concepts flex items-center gap-2" style="padding: 9px 18px; font-size: 13px;">
+ <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 w-full sm:w-auto">
+ <a href="{{ route('stocks.categorias.index') }}" class="btn-concepts flex items-center justify-center gap-2 w-full sm:w-auto text-center" style="padding: 9px 18px; font-size: 13px;">
  🏷️ <span>Gestionar Categorías</span>
  </a>
- <a href="{{ route('stocks.create') }}" class="btn-primary flex items-center gap-2 shadow-lg shadow-indigo-500/30" style="padding: 9px 18px; font-size: 13px;">
+ <a href="{{ route('stocks.create') }}" class="btn-primary flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30 w-full sm:w-auto text-center" style="padding: 9px 18px; font-size: 13px;">
  <span>➕</span> <span>Nuevo Producto</span>
  </a>
  </div>
