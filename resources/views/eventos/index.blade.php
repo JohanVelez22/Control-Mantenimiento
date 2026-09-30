@@ -88,6 +88,41 @@
                         @php
                             $badgeClass = 'badge-evento-default';
                             $icon = '📌';
+                            $textoAccion = $evento->accion;
+
+                            $descLower = mb_strtolower($evento->descripcion ?? '', 'UTF-8');
+                            $antStr = is_array($evento->valores_antiguos) ? json_encode($evento->valores_antiguos, JSON_UNESCAPED_UNICODE) : ($evento->valores_antiguos ?? '');
+                            $nueStr = is_array($evento->valores_nuevos) ? json_encode($evento->valores_nuevos, JSON_UNESCAPED_UNICODE) : ($evento->valores_nuevos ?? '');
+                            $contextLower = mb_strtolower($descLower . ' ' . $antStr . ' ' . $nueStr, 'UTF-8');
+
+                            $isLoginAlert = ($evento->accion === 'login' && (
+                                str_contains($contextLower, 'fallid') || 
+                                str_contains($contextLower, 'intentos') || 
+                                str_contains($contextLower, 'incorrect') || 
+                                str_contains($contextLower, 'errad') ||
+                                str_contains($contextLower, 'alerta') ||
+                                str_contains($contextLower, 'bloqueo') || 
+                                str_contains($contextLower, 'bloquead') || 
+                                str_contains($contextLower, 'denegad') || 
+                                str_contains($contextLower, 'inactiv') ||
+                                str_contains($contextLower, 'desactiv')
+                            ));
+
+                            $isBackupDeleted = ($evento->accion === 'backup' && (
+                                str_contains($contextLower, 'eliminad') || 
+                                str_contains($contextLower, 'borrad') ||
+                                str_contains($contextLower, 'removid')
+                            ));
+
+                            $isBackupFailed = ($evento->accion === 'backup' && (
+                                str_contains($contextLower, 'fallo') || 
+                                str_contains($contextLower, 'falló') || 
+                                str_contains($contextLower, 'error') || 
+                                str_contains($contextLower, 'excepción') ||
+                                str_contains($contextLower, 'incomplet') ||
+                                str_contains($contextLower, 'mal generad')
+                            ));
+
                             switch($evento->accion) {
                                 case 'creado': 
                                     $badgeClass = 'badge-evento-creado';
@@ -106,16 +141,31 @@
                                     $icon = '🚫'; 
                                     break;
                                 case 'login': 
-                                    $badgeClass = 'badge-evento-login';
-                                    $icon = '🔑'; 
+                                    if ($isLoginAlert) {
+                                        $badgeClass = 'badge-evento-login-warning';
+                                        $icon = '⚠️🔑'; 
+                                        $textoAccion = 'login';
+                                    } else {
+                                        $badgeClass = 'badge-evento-login';
+                                        $icon = '🔑'; 
+                                        $textoAccion = 'login';
+                                    }
                                     break;
                                 case 'logout': 
                                     $badgeClass = 'badge-evento-logout';
                                     $icon = '🚪'; 
+                                    $textoAccion = 'logout';
                                     break;
                                 case 'backup': 
-                                    $badgeClass = 'badge-evento-backup';
-                                    $icon = '💾'; 
+                                    if ($isBackupDeleted || $isBackupFailed) {
+                                        $badgeClass = 'badge-evento-backup-warning';
+                                        $icon = '⚠️💾'; 
+                                        $textoAccion = 'backup';
+                                    } else {
+                                        $badgeClass = 'badge-evento-backup';
+                                        $icon = '💾'; 
+                                        $textoAccion = 'backup';
+                                    }
                                     break;
                             }
                         @endphp
@@ -126,7 +176,7 @@
                             <td data-label="Acción:" class="text-center">
                                 <span class="badge-evento {{ $badgeClass }}">
                                     <span class="text-base mb-0.5">{{ $icon }}</span>
-                                    <span>{{ $evento->accion }}</span>
+                                    <span>{{ $textoAccion }}</span>
                                 </span>
                             </td>
                             <td data-label="Descripción:" class="font-medium text-sm">
@@ -533,42 +583,128 @@
         const modelId = modelEl?.getAttribute('data-model-id') || '';
         const modelDesc = modelEl?.getAttribute('data-desc') || '';
 
+        const dataAnt = document.getElementById('data-ant-' + id)?.innerText || '';
+        const dataNue = document.getElementById('data-nue-' + id)?.innerText || '';
+        const combinedContent = (modelDesc + ' ' + dataAnt + ' ' + dataNue).toLowerCase();
+
+        const isBackupDeleted = (accion === 'backup' && (
+            combinedContent.includes('eliminad') || 
+            combinedContent.includes('borrad') || 
+            combinedContent.includes('removid')
+        ));
+
+        const isBackupFailed = (accion === 'backup' && (
+            combinedContent.includes('fallo') || 
+            combinedContent.includes('falló') || 
+            combinedContent.includes('error') || 
+            combinedContent.includes('excepción') || 
+            combinedContent.includes('incomplet') || 
+            combinedContent.includes('mal generad')
+        ));
+
+        const isLoginAlert = (accion === 'login' && (
+            combinedContent.includes('fallid') || 
+            combinedContent.includes('intentos') || 
+            combinedContent.includes('incorrect') || 
+            combinedContent.includes('errad') || 
+            combinedContent.includes('alerta') || 
+            combinedContent.includes('bloqueo') || 
+            combinedContent.includes('bloquead') || 
+            combinedContent.includes('denegad') || 
+            combinedContent.includes('inactiv') || 
+            combinedContent.includes('desactiv')
+        ));
+
         if (accion === 'backup') {
-            if (iconEl) iconEl.textContent = '💾';
-            if (iconWrap) {
-                iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-500/15 dark:bg-cyan-400/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
-                iconWrap.style.border = 'none';
-                iconWrap.style.outline = 'none';
-                iconWrap.style.boxShadow = 'none';
+            if (isBackupDeleted) {
+                if (iconEl) iconEl.textContent = '🗑️';
+                if (iconWrap) {
+                    iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-rose-500/15 dark:bg-rose-400/20 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
+                    iconWrap.style.border = 'none';
+                    iconWrap.style.outline = 'none';
+                    iconWrap.style.boxShadow = 'none';
+                }
+                if (titleEl) titleEl.textContent = 'Trazabilidad de Respaldo Eliminado';
+                if (subtitleEl) subtitleEl.textContent = 'Registro de archivo de copia de seguridad removido del almacenamiento';
+                
+                if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">📦</span><span>Archivo Afectado</span>';
+                if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">🗑️</span><span>Resultado de Eliminación</span>';
+                
+                if (colAntCard) colAntCard.className = 'event-col-card event-col-rose';
+                if (colNueCard) colNueCard.className = 'event-col-card event-col-rose';
+            } else if (isBackupFailed) {
+                if (iconEl) iconEl.textContent = '❌';
+                if (iconWrap) {
+                    iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-500/15 dark:bg-red-400/20 text-red-600 dark:text-red-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
+                    iconWrap.style.border = 'none';
+                    iconWrap.style.outline = 'none';
+                    iconWrap.style.boxShadow = 'none';
+                }
+                if (titleEl) titleEl.textContent = 'Fallo en Generación de Respaldo';
+                if (subtitleEl) subtitleEl.textContent = 'Se produjo un error o interrupción al intentar crear la copia de seguridad';
+                
+                if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">⚠️</span><span>Detalles del Error</span>';
+                if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">❌</span><span>Resultado de la Operación</span>';
+                
+                if (colAntCard) colAntCard.className = 'event-col-card event-col-rose';
+                if (colNueCard) colNueCard.className = 'event-col-card event-col-rose';
+            } else {
+                if (iconEl) iconEl.textContent = '💾';
+                if (iconWrap) {
+                    iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-500/15 dark:bg-cyan-400/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
+                    iconWrap.style.border = 'none';
+                    iconWrap.style.outline = 'none';
+                    iconWrap.style.boxShadow = 'none';
+                }
+                if (titleEl) titleEl.textContent = 'Trazabilidad de Respaldo / Copia de Seguridad';
+                if (subtitleEl) subtitleEl.textContent = 'Detalle de la copia de seguridad generada con éxito y retención';
+                
+                if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">📦</span><span>Archivos y Almacenamiento</span>';
+                if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">✅</span><span>Estado y Parámetros</span>';
+                
+                if (colAntCard) colAntCard.className = 'event-col-card event-col-cyan';
+                if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
             }
-            if (titleEl) titleEl.textContent = 'Trazabilidad de Respaldo / Copia de Seguridad';
-            if (subtitleEl) subtitleEl.textContent = 'Detalle de la copia de seguridad, archivos generados y retención';
-            
-            if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">📦</span><span>Archivos y Almacenamiento</span>';
-            if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">✅</span><span>Estado y Parámetros</span>';
-            
-            if (colAntCard) colAntCard.className = 'event-col-card event-col-cyan';
-            if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
         } else if (accion === 'login') {
-            if (iconEl) iconEl.textContent = '🔐';
-            if (iconWrap) {
-                iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500/15 dark:bg-amber-400/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
-                iconWrap.style.border = 'none';
-                iconWrap.style.outline = 'none';
-                iconWrap.style.boxShadow = 'none';
+            if (isLoginAlert) {
+                if (iconEl) iconEl.textContent = '⚠️';
+                if (iconWrap) {
+                    iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-rose-500/15 dark:bg-rose-400/20 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
+                    iconWrap.style.border = 'none';
+                    iconWrap.style.outline = 'none';
+                    iconWrap.style.boxShadow = 'none';
+                }
+                if (titleEl) titleEl.textContent = 'Trazabilidad de Acceso con Advertencia de Seguridad';
+                if (subtitleEl) subtitleEl.textContent = 'El intento de acceso registró advertencias, intentos previos o medidas de seguridad';
+                
+                if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">🚨</span><span>Historial de Intentos Fallidos</span>';
+                if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">⚠️</span><span>Estado de Conexión / Alerta</span>';
+                
+                if (colAntCard) colAntCard.className = 'event-col-card event-col-rose';
+                if (colNueCard) colNueCard.className = 'event-col-card event-col-rose';
+            } else {
+                if (iconEl) iconEl.textContent = '🔐';
+                if (iconWrap) {
+                    iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500/15 dark:bg-amber-400/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
+                    iconWrap.style.border = 'none';
+                    iconWrap.style.outline = 'none';
+                    iconWrap.style.boxShadow = 'none';
+                }
+                if (titleEl) titleEl.textContent = 'Trazabilidad de Acceso / Inicio de Sesión';
+                if (subtitleEl) subtitleEl.textContent = 'Historial de verificación de seguridad y conexión limpia';
+                
+                if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">🛡️</span><span>Verificación Previa</span>';
+                if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">✅</span><span>Acceso Concedido</span>';
+                
+                if (colAntCard) colAntCard.className = 'event-col-card event-col-amber';
+                if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
             }
-            if (titleEl) titleEl.textContent = 'Trazabilidad de Acceso / Intentos de Login';
-            if (subtitleEl) subtitleEl.textContent = 'Historial de verificación de seguridad e intentos registrados';
-            
-            if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">⚠️</span><span>Historial de Intentos Previos</span>';
-            if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">✅</span><span>Acceso Logrado / Exitoso</span>';
-            
-            if (colAntCard) colAntCard.className = 'event-col-card event-col-amber';
-            if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
         } else {
-            if (iconEl) iconEl.textContent = '📋';
+            const isEliminadoOAnulado = (accion === 'eliminado' || accion === 'anulado');
+            if (iconEl) iconEl.textContent = isEliminadoOAnulado ? (accion === 'anulado' ? '🚫' : '🗑️') : '📋';
             if (iconWrap) {
-                iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-indigo-500/15 dark:bg-indigo-400/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
+                const colorClass = isEliminadoOAnulado ? 'bg-rose-500/15 dark:bg-rose-400/20 text-rose-600 dark:text-rose-400' : 'bg-indigo-500/15 dark:bg-indigo-400/20 text-indigo-600 dark:text-indigo-400';
+                iconWrap.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl ${colorClass} flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none`;
                 iconWrap.style.border = 'none';
                 iconWrap.style.outline = 'none';
                 iconWrap.style.boxShadow = 'none';
@@ -583,15 +719,12 @@
             }
             
             if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">➖</span><span>Valores Anteriores</span>';
-            if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">➕</span><span>Valores Nuevos</span>';
+            if (colNueTitle) colNueTitle.innerHTML = isEliminadoOAnulado ? '<span class="event-col-emoji">🗑️</span><span>Estado Final</span>' : '<span class="event-col-emoji">➕</span><span>Valores Nuevos</span>';
             
             if (colAntCard) colAntCard.className = 'event-col-card event-col-rose';
-            if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
+            if (colNueCard) colNueCard.className = isEliminadoOAnulado ? 'event-col-card event-col-rose' : 'event-col-card event-col-emerald';
         }
 
-        const dataAnt = document.getElementById('data-ant-' + id)?.innerText || '';
-        const dataNue = document.getElementById('data-nue-' + id)?.innerText || '';
-        
         document.getElementById('body-ant').innerHTML = renderEventDataHtml(dataAnt, 'ant', accion);
         document.getElementById('body-nue').innerHTML = renderEventDataHtml(dataNue, 'nue', accion);
         
