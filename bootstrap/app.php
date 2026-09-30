@@ -14,6 +14,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Confiar solo en proxies de la maquina local (ngrok).
+        // Necesario para que Laravel use X-Forwarded-Host y X-Forwarded-Proto,
+        // de modo que las URLs y redirecciones se generen con el dominio
+        // publico del tunel y no con el dominio local.
+        $middleware->trustProxies(at: ['127.0.0.1', '::1'], headers:
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_AWS_ELB
+        );
+
         // Headers de seguridad en TODAS las respuestas HTTP
         $middleware->append(SecurityHeaders::class);
 

@@ -860,23 +860,26 @@
     <!-- Modal de Notificaciones Pendientes (siempre disponible, abierto desde campana o al iniciar sesión) -->
     @if(isset($totalPendientes) && $totalPendientes > 0)
     <div id="ts-notif-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
-        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px;">
+        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-4 sm:p-6 flex flex-col transition-all duration-300 w-full mx-3 sm:mx-4" style="max-width: 550px;">
 
             {{-- Header --}}
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center shrink-0">
                     <span class="text-2xl">🔔</span>
                 </div>
-                <div>
+                <div class="flex-1 min-w-0">
                     <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">¡Tienes tareas pendientes!</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalPendientes }} elemento(s) requieren atención</p>
                 </div>
+                <button onclick="closeNotifModal()" type="button" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors shrink-0 text-base" title="Cerrar">
+                    ✕
+                </button>
             </div>
 
             {{-- Contenedor Central para alinear filtros e información al mismo ancho --}}
-            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1 pb-4">
+            <div class="w-full max-w-[480px] mx-auto flex flex-col flex-1 pb-2 sm:pb-4">
                 {{-- Filtros / Tabs --}}
-                <div class="flex flex-nowrap justify-center gap-1.5 mb-4 w-full">
+                <div class="flex flex-wrap sm:flex-nowrap justify-center gap-1.5 mb-4 w-full">
                 <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60">Todos</button>
                 @if($mantPendientes > 0)
                 <button onclick="filterNotifs('mant')" id="btn-notif-mant" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60">Mantenimiento</button>
@@ -893,7 +896,7 @@
                 </div>
 
             {{-- Scrollable list of all pending items --}}
-            <div class="w-full max-h-[50vh] overflow-y-auto space-y-2 pr-1 mb-5 content-scroll">
+            <div class="w-full max-h-[55vh] sm:max-h-[50vh] overflow-y-auto space-y-2 pr-1 mb-4 sm:mb-5 content-scroll">
 
                 {{-- Mantenimientos --}}
                 @foreach($mantList as $m)
@@ -905,17 +908,17 @@
                     $mUrl = data_get($m, 'url', route('mantenimientos.show', $mId ?? 0));
                 @endphp
                 <a href="{{ $mUrl }}" onclick="closeNotifModal()" data-notif-type="mant"
-                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors group relative overflow-hidden">
+                   class="notif-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-blue-500 rounded-l-xl"></div>
-                    <div class="pl-3 min-w-0">
-                        <div class="flex items-center gap-2 mb-0.5">
+                    <div class="pl-2 sm:pl-3 min-w-0 flex-1">
+                        <div class="flex items-center justify-between sm:justify-start gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Mantenimiento</span>
                             <span class="text-[10px] font-bold text-blue-500 dark:text-blue-300">{{ $mOrden }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $mEquipo }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $mCliente }}</p>
                     </div>
-                    <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex items-center justify-end sm:justify-center gap-2 shrink-0 pl-2 sm:pl-0">
                         <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: #2563eb;">🛠️ Gestionar Orden</span>
                     </div>
                 </a>
@@ -931,17 +934,17 @@
                     $eUrl = data_get($e, 'url', route('electronicas.show', $eId ?? 0));
                 @endphp
                 <a href="{{ $eUrl }}" onclick="closeNotifModal()" data-notif-type="elec"
-                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors group relative overflow-hidden">
+                   class="notif-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-purple-500 rounded-l-xl"></div>
-                    <div class="pl-3 min-w-0">
-                        <div class="flex items-center gap-2 mb-0.5">
+                    <div class="pl-2 sm:pl-3 min-w-0 flex-1">
+                        <div class="flex items-center justify-between sm:justify-start gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Electrónica</span>
                             <span class="text-[10px] font-bold text-purple-500 dark:text-purple-300">{{ $eOrden }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $eEquipo }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $eCliente }}</p>
                     </div>
-                    <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex items-center justify-end sm:justify-center gap-2 shrink-0 pl-2 sm:pl-0">
                         <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: #9333ea;">🔬 Gestionar Orden</span>
                     </div>
                 </a>
@@ -957,17 +960,17 @@
                     $cUrl = data_get($c, 'url', route('cotizaciones.show', $cId ?? 0));
                 @endphp
                 <a href="{{ $cUrl }}" onclick="closeNotifModal()" data-notif-type="cot"
-                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors group relative overflow-hidden">
+                   class="notif-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl"></div>
-                    <div class="pl-3 min-w-0">
-                        <div class="flex items-center gap-2 mb-0.5">
+                    <div class="pl-2 sm:pl-3 min-w-0 flex-1">
+                        <div class="flex items-center justify-between sm:justify-start gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Cotización</span>
                             <span class="text-[10px] font-bold text-indigo-500 dark:text-indigo-300">{{ $cCodigo }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $cCliente }}</p>
                         <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold truncate">Total: ${{ number_format($cTotal, 0, ',', '.') }}</p>
                     </div>
-                    <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex items-center justify-end sm:justify-center gap-2 shrink-0 pl-2 sm:pl-0">
                         <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: #4f46e5;">📋 Ver Más Detalles</span>
                     </div>
                 </a>
@@ -984,10 +987,10 @@
                     $fUrl = data_get($f, 'url', ($fMovId ? route('caja.edit', $fMovId) : route('inventario.facturas.show', $fId)));
                 @endphp
                 <a href="{{ $fUrl }}" onclick="closeNotifModal()" data-notif-type="caja"
-                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
+                   class="notif-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full bg-orange-500 rounded-l-xl"></div>
-                    <div class="pl-3 min-w-0">
-                        <div class="flex items-center gap-2 mb-0.5">
+                    <div class="pl-2 sm:pl-3 min-w-0 flex-1">
+                        <div class="flex items-center justify-between sm:justify-start gap-2 mb-0.5">
                             <span class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">Saldo Factura</span>
                             <span class="text-[10px] font-bold text-orange-500 dark:text-orange-300">{{ $fNumero }}</span>
                         </div>
@@ -996,7 +999,7 @@
                             Saldo: ${{ number_format($fSaldo, 0, ',', '.') }}
                         </p>
                     </div>
-                    <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex items-center justify-end sm:justify-center gap-2 shrink-0 pl-2 sm:pl-0">
                         <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: #f97316;">💵 Registrar Abono</span>
                     </div>
                 </a>
@@ -1021,10 +1024,10 @@
                     $displayName = (!empty($movPersona) && $movPersona !== '—') ? "{$movConcepto} - {$movPersona}" : $movConcepto;
                 @endphp
                 <a href="{{ $movUrl }}" onclick="closeNotifModal()" data-notif-type="caja"
-                   class="notif-item flex items-center justify-between gap-3 p-3 rounded-xl border {{ $bgClass }} transition-colors group relative overflow-hidden">
+                   class="notif-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-3 rounded-xl border {{ $bgClass }} transition-colors group relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-1 h-full {{ $barClass }} rounded-l-xl"></div>
-                    <div class="pl-3 min-w-0">
-                        <div class="flex items-center gap-2 mb-0.5">
+                    <div class="pl-2 sm:pl-3 min-w-0 flex-1">
+                        <div class="flex items-center justify-between sm:justify-start gap-2 mb-0.5">
                             <span class="text-[10px] font-black {{ $titleClass }} uppercase tracking-wider">Saldo {{ ucfirst($movTipo) }}</span>
                             <span class="text-[10px] font-bold {{ $idClass }}">#{{ $movId }}</span>
                         </div>
@@ -1033,7 +1036,7 @@
                             Falta pagar: ${{ number_format($movSaldo, 0, ',', '.') }}
                         </p>
                     </div>
-                    <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex items-center justify-end sm:justify-center gap-2 shrink-0 pl-2 sm:pl-0">
                         <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: {{ $btnColor }};">💵 Registrar Abono</span>
                     </div>
                 </a>
