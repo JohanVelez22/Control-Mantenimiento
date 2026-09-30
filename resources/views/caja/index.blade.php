@@ -47,10 +47,10 @@
   @if(!auth()->user()->isInvitado())
   <div class="flex gap-3">
   <a href="{{ route('conceptos.index') }}" class="btn-concepts" style="padding: 9px 18px; font-size: 13px;">
-  🏷️ <span class="hidden sm:inline">Gestionar Conceptos</span>
+  🏷️ <span>Gestionar Conceptos</span>
   </a>
   <a href="{{ route('caja.create') }}" class="btn-primary flex items-center gap-2 shadow-lg shadow-indigo-500/30" style="padding: 9px 18px; font-size: 13px;">
-  <span>➕</span> <span class="hidden sm:inline">Nuevo Movimiento</span>
+  <span>➕</span> <span>Nuevo Movimiento</span>
   </a>
   </div>
   @endif

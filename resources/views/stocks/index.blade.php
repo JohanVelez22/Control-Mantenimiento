@@ -14,12 +14,12 @@
   <input type="text" id="search-stocks" placeholder="Buscar producto, cod..." class="glass-input pl-9 w-48 sm:w-64">
   </div>
  @if(!auth()->user()->isInvitado())
- <div class="flex gap-3 ml-2">
+ <div class="flex flex-wrap gap-2.5 sm:gap-3">
  <a href="{{ route('stocks.categorias.index') }}" class="btn-concepts flex items-center gap-2" style="padding: 9px 18px; font-size: 13px;">
- 🏷️ <span class="hidden sm:inline">Gestionar Categorías</span>
+ 🏷️ <span>Gestionar Categorías</span>
  </a>
  <a href="{{ route('stocks.create') }}" class="btn-primary flex items-center gap-2 shadow-lg shadow-indigo-500/30" style="padding: 9px 18px; font-size: 13px;">
- <span>➕</span> <span class="hidden sm:inline">Nuevo Producto</span>
+ <span>➕</span> <span>Nuevo Producto</span>
  </a>
  </div>
  @endif
