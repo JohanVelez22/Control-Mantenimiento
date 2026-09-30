@@ -32,7 +32,7 @@
  <th>Serie</th>
  <th>Propietario</th>
  <th>Observación</th>
- <th>Registrado por</th>
+ <th class="whitespace-nowrap">Registrado Por</th>
  <th class="text-center">Estado</th>
  <th class="text-center w-28">Acciones</th>
  </tr>

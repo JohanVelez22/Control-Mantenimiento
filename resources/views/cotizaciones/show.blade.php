@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 items-stretch gap-6 mb-8 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 items-stretch gap-6 mb-4 relative z-10">
             <div class="bg-slate-50/50 dark:bg-slate-800/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between min-w-0 h-full">
                 <div>
                     <h3 class="text-xs font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">
@@ -95,7 +95,7 @@
             <span>🛍️</span> Detalle Cotizado
         </h3>
         
-        <div class="overflow-x-auto pb-2 relative z-10 mb-6">
+        <div class="overflow-x-auto pb-2 relative z-10" style="margin-bottom: 24px !important;">
             <table class="ts-table w-full">
                 <thead>
                     <tr>
@@ -132,7 +132,7 @@
         </div>
 
         @if($cotizacion->notas)
-        <div class="bg-yellow-50/50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-700/50 rounded-lg p-4 relative z-10">
+        <div class="bg-yellow-50/50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-700/50 rounded-xl p-4 sm:p-5 relative z-10" style="margin-top: 24px;">
             <h4 class="text-xs font-bold uppercase text-yellow-700 dark:text-yellow-500 mb-1">Notas</h4>
             <p class="text-sm text-yellow-800 dark:text-yellow-600">{{ $cotizacion->notas }}</p>
         </div>
