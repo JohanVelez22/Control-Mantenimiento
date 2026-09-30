@@ -3048,28 +3048,31 @@ html.dark .field-label {
 }
 
 
-/* --- TABLA DE DATOS -------------------------------------------------- */
-.ts-table {
+/* --- TABLA DE DATOS ULTRA-PREMIUM (Liquid Glass) ------------------------- */
+.ts-table,
+.glass-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
   background: rgba(255, 255, 255, 0.50);
   backdrop-filter: blur(24px) saturate(200%);
   -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border-radius: 16px;
+  border-radius: 16px !important;
   overflow: hidden;
-  box-shadow: 0 4px 24px rgba(37, 99, 235, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
   border: 1px solid rgba(255, 255, 255, 0.55);
   transition: none !important;
 }
 
-html.dark .ts-table {
+html.dark .ts-table,
+html.dark .glass-table {
   background: rgba(15, 23, 42, 0.65);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
   border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.ts-table thead th {
+.ts-table thead th,
+.glass-table thead th {
   padding: 16px;
   text-align: center;
   font-size: 12px;
@@ -3084,31 +3087,37 @@ html.dark .ts-table {
   transition: none !important;
 }
 
-html.dark .ts-table thead th {
+html.dark .ts-table thead th,
+html.dark .glass-table thead th {
   color: #F8FAFC;
   background: rgba(15, 23, 42, 0.85);
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
-.ts-table thead th:first-child {
-  border-radius: 12px 0 0 0;
+.ts-table thead th:first-child,
+.glass-table thead th:first-child {
+  border-top-left-radius: 16px !important;
 }
 
-.ts-table thead th:last-child {
-  border-radius: 0 12px 0 0;
+.ts-table thead th:last-child,
+.glass-table thead th:last-child {
+  border-top-right-radius: 16px !important;
 }
 
-.ts-table tbody tr {
+.ts-table tbody tr,
+.glass-table tbody tr {
   transition: transform 0.1s ease;
 }
 
 /* Hover effect for tables */
-.ts-table tbody tr:hover {
+.ts-table tbody tr:hover,
+.glass-table tbody tr:hover {
   background: rgba(37, 99, 235, 0.12) !important;
   box-shadow: inset 3px 0 0 #2563EB;
 }
 
-html.dark .ts-table tbody tr:hover {
+html.dark .ts-table tbody tr:hover,
+html.dark .glass-table tbody tr:hover {
   background: rgba(37, 99, 235, 0.15) !important;
   box-shadow: inset 3px 0 0 #60A5FA;
 }
@@ -3124,29 +3133,8 @@ html.dark .ts-table.table-electronica tbody tr:hover {
   box-shadow: inset 3px 0 0 #C084FC;
 }
 
-/*
-html.dark .ts-table tbody tr:hover {
-  background: rgba(37, 99, 235, 0.15) !important;
-  box-shadow: inset 3px 0 0 #60A5FA;
-}
-*/
-
-/* Hover variante purpura para tablas de electronica */
-/*
-.ts-table.table-electronica tbody tr:hover {
-  background: rgba(168, 85, 247, 0.12) !important;
-  box-shadow: inset 3px 0 0 #9333EA;
-}
-*/
-
-/*
-html.dark .ts-table.table-electronica tbody tr:hover {
-  background: rgba(168, 85, 247, 0.15) !important;
-  box-shadow: inset 3px 0 0 #C084FC;
-}
-*/
-
-.ts-table tbody td {
+.ts-table tbody td,
+.glass-table tbody td {
   padding: 16px;
   font-size: 13px;
   text-align: center;
@@ -3157,19 +3145,79 @@ html.dark .ts-table.table-electronica tbody tr:hover {
   transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
-.ts-table tbody tr:last-child td {
+.ts-table tbody tr:last-child td,
+.glass-table tbody tr:last-child td {
   border-bottom: none;
+}
+
+/* Esquinas inferiores perfectamente ovaladas/redondeadas en la última fila del cuerpo y pie de tabla */
+.ts-table tbody tr:last-child,
+.ts-table tfoot tr:last-child,
+.glass-table tbody tr:last-child,
+.glass-table tfoot tr:last-child {
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+.ts-table tbody tr:last-child td:first-child,
+.ts-table tfoot tr:last-child td:first-child,
+.glass-table tbody tr:last-child td:first-child,
+.glass-table tfoot tr:last-child td:first-child {
+  border-bottom-left-radius: 16px !important;
+}
+
+.ts-table tbody tr:last-child td:last-child,
+.ts-table tfoot tr:last-child td:last-child,
+.glass-table tbody tr:last-child td:last-child,
+.glass-table tfoot tr:last-child td:last-child {
+  border-bottom-right-radius: 16px !important;
+}
+
+/* Para filas con celda única (ej. @empty con colspan) */
+.ts-table tbody tr:last-child td[colspan],
+.glass-table tbody tr:last-child td[colspan] {
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+/* Preservar bordes redondeados al hacer hover sobre la última fila */
+.ts-table tbody tr:last-child:hover,
+.glass-table tbody tr:last-child:hover {
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+.ts-table tbody tr:last-child:hover td:first-child,
+.glass-table tbody tr:last-child:hover td:first-child {
+  border-bottom-left-radius: 16px !important;
+}
+
+.ts-table tbody tr:last-child:hover td:last-child,
+.glass-table tbody tr:last-child:hover td:last-child {
+  border-bottom-right-radius: 16px !important;
 }
 
 /* Margen inferior en tarjetas contenedoras de tablas */
 .glass-card:has(.ts-table),
+.glass-card:has(.glass-table),
 .glass-card:has(table) {
   padding-bottom: 24px !important;
 }
 
-.glass-card .overflow-x-auto {
-  padding-bottom: 4px !important;
+/* Contenedor responsivo redondeado para tablas (elimina sombras cuadradas / cortes en punta) */
+.overflow-x-auto:has(.ts-table),
+.overflow-x-auto:has(.glass-table),
+.overflow-x-auto:has(table),
+.glass-card .overflow-x-auto,
+.card-operacion-header .overflow-x-auto,
+.card-operacion-pago .overflow-x-auto,
+[class*="card"] .overflow-x-auto,
+.table-wrapper {
+  border-radius: 16px !important;
+  padding-bottom: 0 !important;
   margin-bottom: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
 }
 
 /* Espacio vertical simétrico e idéntico para paginadores y botones de pie de tabla */
@@ -3750,10 +3798,11 @@ html.dark .ts-modal-card {
   overscroll-behavior-x: contain !important;
 }
 
-/* Tablas base del sistema: preservar estructura tabular limpia */
+/* Tablas base del sistema: preservar estructura tabular limpia y esquinas redondeadas */
 .ts-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
 }
 
 /* Ancho mínimo de seguridad para tablas en pantallas compactas / zoom alto (evita aplastamiento de celdas) */
@@ -4696,13 +4745,14 @@ select.glass-input.no-tomselect {
   }
 }
 
-/* Pie de tabla con fondo gris tenue y sin líneas blancas para Total Documento */
 #items-table tfoot tr,
 #factura-items-table tfoot tr,
 .table-factura-edit tfoot tr {
   border: none !important;
   border-top: none !important;
   background-color: rgba(31, 41, 55, 0.45) !important;
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
 }
 
 html:not(.dark) #items-table tfoot tr,
@@ -4717,6 +4767,18 @@ html:not(.dark) .table-factura-edit tfoot tr {
   border: none !important;
   border-top: none !important;
   background-color: transparent !important;
+}
+
+#items-table tfoot tr td:first-child,
+#factura-items-table tfoot tr td:first-child,
+.table-factura-edit tfoot tr td:first-child {
+  border-bottom-left-radius: 16px !important;
+}
+
+#items-table tfoot tr td:last-child,
+#factura-items-table tfoot tr td:last-child,
+.table-factura-edit tfoot tr td:last-child {
+  border-bottom-right-radius: 16px !important;
 }
 
 /* Badge de alerta 'Menor al costo' posicionado abajo sin aumentar la altura de la fila */
