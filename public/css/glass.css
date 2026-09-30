@@ -2478,13 +2478,18 @@ html.dark .btn-ghost:hover {
 
 /* ---- Botón Volver universal del sistema (⬅️) ---- */
 .btn-ghost.px-3.py-2.text-xl {
-  font-size: 1.40rem !important;
-  /* Calibrado: nítido y fácil de visualizar, sin verse tosco */
+  font-size: 1.35rem !important;
   line-height: 1 !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 8px 12px !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 12px !important;
 }
 
 /* ---- Sobrescrituras botones ghost colores específicos ---- */
@@ -4658,6 +4663,7 @@ select.glass-input.no-tomselect {
 }
 
 @media (max-width: 768px) {
+
   .col-factura-header,
   .col-fecha-header {
     width: 100% !important;
@@ -4665,6 +4671,7 @@ select.glass-input.no-tomselect {
     max-width: 100% !important;
     flex: 1 1 100% !important;
   }
+
   .col-factura-header input,
   .col-fecha-header input {
     width: 100% !important;
