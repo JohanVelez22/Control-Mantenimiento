@@ -32,7 +32,7 @@
  <th>Serie</th>
  <th>Propietario</th>
  <th>Observación</th>
- <th>Registrado por</th>
+  <th class="whitespace-nowrap">Registrado por</th>
  <th class="text-center">Estado</th>
  <th class="text-center w-28">Acciones</th>
  </tr>
@@ -75,7 +75,7 @@
   @endif
   </td>
  <td class="{{ $dim }}"><p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2" title="{{ $equipo->observacion }}">{{ $equipo->observacion ?? '-' }}</p></td>
- <td class="{{ $dim }}"><span class="font-medium text-slate-700 dark:text-slate-300">{{ $equipo->user->name ?? '-' }}</span></td>
+  <td class="whitespace-nowrap {{ $dim }}"><span class="font-medium text-slate-700 dark:text-slate-300">{{ $equipo->user->name ?? '-' }}</span></td>
   <td class="text-center">
    @if($equipo->estado === 'dado_de_baja')
    @php
