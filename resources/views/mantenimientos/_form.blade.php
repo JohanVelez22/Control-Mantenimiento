@@ -66,11 +66,11 @@
     <div>
         <label class="field-label">Tipo de Mantenimiento *</label>
         <div class="flex gap-3 mt-1">
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}" id="lbl_prev">
+            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_prev">
                 <input type="radio" name="tipo" value="preventivo" {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
                 <span class="font-bold {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">Preventivo</span>
             </label>
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}" id="lbl_corr">
+            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_corr">
                 <input type="radio" name="tipo" value="correctivo" {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'checked' : '' }} class="accent-orange-500 w-4 h-4">
                 <span class="font-bold {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'text-orange-700 dark:text-orange-400' : 'text-slate-600 dark:text-slate-400' }}">Correctivo</span>
             </label>
@@ -81,11 +81,11 @@
     <div>
         <label class="field-label">Tipo de Reparación *</label>
         <div class="flex gap-3 mt-1">
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}" id="lbl_soft">
+            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_soft">
                 <input type="radio" name="reparacion" value="software" {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'checked' : '' }} class="accent-indigo-500 w-4 h-4">
                 <span class="font-bold {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400' }}">Software</span>
             </label>
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}" id="lbl_hard">
+            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_hard">
                 <input type="radio" name="reparacion" value="hardware" {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'checked' : '' }} class="accent-rose-500 w-4 h-4">
                 <span class="font-bold {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'text-rose-700 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400' }}">Hardware</span>
             </label>
@@ -133,7 +133,7 @@
                 if(!lblPrev || !lblCorr) return;
                 
                 [lblPrev, lblCorr].forEach(lbl => {
-                    lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md';
+                    lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md';
                     lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';
                 });
                 if (this.value === 'preventivo') {
@@ -154,7 +154,7 @@
                 if(!lblSoft || !lblHard) return;
 
                 [lblSoft, lblHard].forEach(lbl => {
-                    lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md';
+                    lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md';
                     lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';
                 });
                 if (this.value === 'software') {

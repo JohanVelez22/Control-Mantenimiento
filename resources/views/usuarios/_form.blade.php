@@ -100,7 +100,7 @@
 </div>
 
 @if($isEdit)
-    <hr class="my-6 border-gray-200 dark:border-gray-700">
+    <hr class="my-6 border-gray-200/50 dark:border-white/10">
     @if(auth()->id() === $user->id)
     <div class="mb-4">
         <label class="block text-sm font-medium mb-2 text-gray-500">Contraseña Actual *</label>

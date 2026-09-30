@@ -225,8 +225,8 @@ html.dark .glass-card {
 }
 
 html.dark .glass-card .glass-card {
-  background: rgba(30, 41, 59, 0.45) !important;
-  border-color: rgba(255, 255, 255, 0.10) !important;
+  background: rgba(15, 23, 42, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 /* --- GLASS CARD HOVER EFFECTS (Liquid Glass style) ----------------------------------- */
@@ -1525,6 +1525,7 @@ html.dark .backup-files-wrapper {
   font-weight: 800 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.06em !important;
+  text-align: center !important;
   color: #64748B !important;
   background: rgba(241, 245, 249, 0.6) !important;
   border-bottom: 1px solid rgba(226, 232, 240, 0.7) !important;
@@ -2192,7 +2193,7 @@ input[type="number"].no-spinners,
   transform: translateY(0);
 }
 
-/* ---- Botón venta (verde) ---- */
+/* ---- Botón venta (verde esmeralda vibrante) ---- */
 .btn-venta {
   display: inline-flex;
   align-items: center;
@@ -2202,13 +2203,13 @@ input[type="number"].no-spinners,
   font-weight: 700;
   font-size: 13.5px;
   color: white !important;
-  background: linear-gradient(135deg, #34D399 0%, #16A34A 100%) !important;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
   border-radius: 14px;
   border: none !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.28);
   transition: all 0.25s ease;
   text-decoration: none;
 }
@@ -2227,7 +2228,8 @@ input[type="number"].no-spinners,
 
 .btn-venta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  color: white !important;
 }
 
 /* ---- Botón compra (naranja) ---- */
@@ -2240,13 +2242,13 @@ input[type="number"].no-spinners,
   font-weight: 700;
   font-size: 13.5px;
   color: white !important;
-  background: linear-gradient(135deg, #FB923C 0%, #D97706 100%) !important;
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%) !important;
   border-radius: 14px;
   border: none !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.28);
   transition: all 0.25s ease;
   text-decoration: none;
 }
@@ -2265,10 +2267,24 @@ input[type="number"].no-spinners,
 
 .btn-compra:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  color: white !important;
 }
 
-.btn-cancel:active {
+/* Cuando btn-venta o btn-compra actúan como botón de acción de formulario final (igual que btn-cancel y btn-save) */
+form button.btn-venta[type="submit"],
+form button.btn-compra[type="submit"],
+button.btn-venta[type="submit"],
+button.btn-compra[type="submit"] {
+  padding: 13px 32px !important;
+  font-weight: 800 !important;
+  font-size: 15px !important;
+  gap: 8px !important;
+}
+
+.btn-cancel:active,
+.btn-venta:active,
+.btn-compra:active {
   transform: translateY(0);
 }
 

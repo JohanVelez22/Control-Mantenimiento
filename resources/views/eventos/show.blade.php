@@ -180,7 +180,7 @@
                                 @elseif($resolvedName)
                                     <div class="event-prop-val flex items-center gap-2 flex-wrap">
                                         <span class="font-bold text-slate-800 dark:text-white">{{ $resolvedName }}</span>
-                                        <span class="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">ID #{{ $v }}</span>
+                                        <span class="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-white/40 dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-slate-400">ID #{{ $v }}</span>
                                     </div>
                                 @elseif($isPath)
                                     <div class="event-prop-path">
@@ -283,7 +283,7 @@
                                 @elseif($resolvedName)
                                     <div class="event-prop-val flex items-center gap-2 flex-wrap">
                                         <span class="font-bold text-slate-800 dark:text-white">{{ $resolvedName }}</span>
-                                        <span class="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">ID #{{ $v }}</span>
+                                        <span class="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-white/40 dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-slate-400">ID #{{ $v }}</span>
                                     </div>
                                 @elseif($isPath)
                                     <div class="event-prop-path">

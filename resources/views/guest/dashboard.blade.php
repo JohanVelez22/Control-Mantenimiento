@@ -8,7 +8,7 @@
     {{-- Botones superiores: Tema y Cerrar Sesión (estilo Topbar Web) --}}
     <div class="absolute top-5 right-5 z-50 flex items-center gap-2">
         <button id="theme-toggle-guest"
-            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg"
+            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/40 border border-white/60 hover:bg-white/60 dark:bg-slate-900/50 dark:border-white/10 dark:hover:bg-slate-800/50 backdrop-blur-md shadow-sm transition-colors group text-lg"
             title="Cambiar tema" aria-label="Cambiar tema">
             <span class="dark:hidden">☀️</span>
             <span class="hidden dark:inline">🌙</span>
@@ -64,7 +64,7 @@
             
             @if($cliente || isset($searched))
                 @if($mantenimientos->isEmpty() && $electronicas->isEmpty())
-                    <div class="text-center py-12 bg-gray-50/50 dark:bg-slate-800/30 rounded-2xl border border-gray-200 dark:border-slate-700/50">
+                    <div class="text-center py-12 bg-white/10 dark:bg-slate-900/20 rounded-2xl border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
                         @if(isset($searched))
                             <p class="text-slate-600 dark:text-slate-400 font-medium">No se encontró ningun resultado relacionado con tu búsqueda, revisa si ya fue entregado.</p>
                         @else
@@ -74,7 +74,7 @@
                 @else
                     <div class="space-y-4">
                         @foreach($mantenimientos as $m)
-                            <div class="group relative overflow-hidden bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                            <div class="group relative overflow-hidden bg-white/20 dark:bg-slate-900/35 hover:bg-white/35 dark:hover:bg-slate-900/50 backdrop-blur-md transition-all duration-300 border border-white/40 dark:border-white/5 rounded-2xl p-6 shadow-sm">
                                 <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
                                 <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                                     <div class="flex-1">
@@ -99,7 +99,7 @@
                                 </div>
                                 
                                 <!-- Detalles Extendidos (Ancho Completo) -->
-                                <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300 bg-gray-50 dark:bg-slate-900/40 p-4 rounded-xl border border-gray-100 dark:border-slate-700/50">
+                                <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300 bg-white/10 dark:bg-slate-900/25 p-4 rounded-xl border border-white/30 dark:border-white/5 backdrop-blur-sm">
                                     <div><span class="font-bold text-slate-700 dark:text-slate-200">Marca:</span> {{ $m->equipo->marca ?? 'N/D' }}</div>
                                     <div class="sm:text-right"><span class="font-bold text-slate-700 dark:text-slate-200">Serial:</span> {{ $m->equipo->serie ?? 'N/D' }}</div>
                                     <div class="sm:col-span-2"><span class="font-bold text-slate-700 dark:text-slate-200">Descripción:</span> {{ $m->descripcion ?? 'Sin detalles' }}</div>
@@ -110,11 +110,11 @@
                                     @endphp
 
                                     @if($m->stocks && $m->stocks->isNotEmpty())
-                                    <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200 dark:border-slate-700">
+                                    <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200/60 dark:border-white/10">
                                         <span class="font-bold text-slate-700 dark:text-slate-200 block mb-2">📦 Repuestos / Insumos:</span>
                                         <div class="space-y-2 pl-1">
                                             @foreach($m->stocks as $repuesto)
-                                                <div class="flex items-center justify-between text-xs sm:text-sm bg-white/40 dark:bg-slate-800/40 px-3 py-2 rounded-lg border border-gray-200/50 dark:border-slate-700/50">
+                                                <div class="flex items-center justify-between text-xs sm:text-sm bg-white/20 dark:bg-slate-900/30 px-3 py-2 rounded-lg border border-white/40 dark:border-white/5">
                                                     <span class="text-slate-700 dark:text-slate-300 font-medium">
                                                         {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
                                                     </span>
@@ -124,7 +124,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="sm:col-span-2 mt-1 flex items-center justify-between text-xs sm:text-sm bg-white/40 dark:bg-slate-800/40 px-3 py-2 rounded-lg border border-gray-200/50 dark:border-slate-700/50">
+                                    <div class="sm:col-span-2 mt-1 flex items-center justify-between text-xs sm:text-sm bg-white/20 dark:bg-slate-900/30 px-3 py-2 rounded-lg border border-white/40 dark:border-white/5">
                                         <span class="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
                                             <span>🛠️</span> Servicio / Mano de Obra:
                                         </span>
@@ -132,7 +132,7 @@
                                     </div>
                                     @endif
 
-                                    <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200 dark:border-slate-700 flex justify-between items-center">
+                                    <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200/60 dark:border-white/10 flex justify-between items-center">
                                         <span class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">Costo Total:</span>
                                         <span class="text-lg font-black text-blue-600 dark:text-blue-400">${{ number_format($m->costo, 0, ',', '.') }}</span>
                                     </div>
@@ -141,7 +141,7 @@
                         @endforeach
 
                         @foreach($electronicas as $e)
-                            <div class="group relative overflow-hidden bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                            <div class="group relative overflow-hidden bg-white/20 dark:bg-slate-900/35 hover:bg-white/35 dark:hover:bg-slate-900/50 backdrop-blur-md transition-all duration-300 border border-white/40 dark:border-white/5 rounded-2xl p-6 shadow-sm">
                                 <div class="absolute left-0 top-0 bottom-0 w-1 bg-purple-500"></div>
                                 <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                                     <div class="flex-1">
@@ -166,7 +166,7 @@
                                 </div>
                                 
                                 <!-- Detalles Extendidos (Ancho Completo) -->
-                                <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300 bg-gray-50 dark:bg-slate-900/40 p-4 rounded-xl border border-gray-100 dark:border-slate-700/50">
+                                <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300 bg-white/10 dark:bg-slate-900/25 p-4 rounded-xl border border-white/30 dark:border-white/5 backdrop-blur-sm">
                                     <div><span class="font-bold text-slate-700 dark:text-slate-200">Marca:</span> {{ $e->equipo->marca ?? 'N/D' }}</div>
                                     <div class="sm:text-right"><span class="font-bold text-slate-700 dark:text-slate-200">Serial:</span> {{ $e->equipo->serie ?? 'N/D' }}</div>
                                     <div class="sm:col-span-2"><span class="font-bold text-slate-700 dark:text-slate-200">Descripción:</span> {{ $e->descripcion_problema ?? 'Sin detalles' }}</div>
@@ -177,11 +177,11 @@
                                     @endphp
 
                                     @if($e->stocks && $e->stocks->isNotEmpty())
-                                    <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200 dark:border-slate-700">
+                                    <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200/60 dark:border-white/10">
                                         <span class="font-bold text-slate-700 dark:text-slate-200 block mb-2">📦 Repuestos / Insumos:</span>
                                         <div class="space-y-2 pl-1">
                                             @foreach($e->stocks as $repuesto)
-                                                <div class="flex items-center justify-between text-xs sm:text-sm bg-white/40 dark:bg-slate-800/40 px-3 py-2 rounded-lg border border-gray-200/50 dark:border-slate-700/50">
+                                                <div class="flex items-center justify-between text-xs sm:text-sm bg-white/20 dark:bg-slate-900/30 px-3 py-2 rounded-lg border border-white/40 dark:border-white/5">
                                                     <span class="text-slate-700 dark:text-slate-300 font-medium">
                                                         {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
                                                     </span>
@@ -191,7 +191,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="sm:col-span-2 mt-1 flex items-center justify-between text-xs sm:text-sm bg-white/40 dark:bg-slate-800/40 px-3 py-2 rounded-lg border border-gray-200/50 dark:border-slate-700/50">
+                                    <div class="sm:col-span-2 mt-1 flex items-center justify-between text-xs sm:text-sm bg-white/20 dark:bg-slate-900/30 px-3 py-2 rounded-lg border border-white/40 dark:border-white/5">
                                         <span class="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
                                             <span>🛠️</span> Servicio / Mano de Obra:
                                         </span>
@@ -199,7 +199,7 @@
                                     </div>
                                     @endif
 
-                                    <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200 dark:border-slate-700 flex justify-between items-center">
+                                    <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200/60 dark:border-white/10 flex justify-between items-center">
                                         <span class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">Costo Total:</span>
                                         <span class="text-lg font-black text-purple-600 dark:text-purple-400">${{ number_format($e->costo, 0, ',', '.') }}</span>
                                     </div>
@@ -219,7 +219,7 @@
             @else
                 <!-- Formulario de Búsqueda si no hay cliente asociado -->
                 <form method="GET" action="{{ route('guest.search') }}" class="max-w-xl mx-auto">
-                    <div class="flex bg-white dark:bg-slate-800/50 p-1 rounded-xl mb-6 sm:mb-8 border border-gray-200 dark:border-slate-700/50 shadow-sm">
+                    <div class="flex bg-white/40 dark:bg-slate-900/40 p-1 rounded-xl mb-6 sm:mb-8 border border-white/50 dark:border-white/10 shadow-sm backdrop-blur-md">
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="tipo" value="mantenimiento" class="peer sr-only" checked onchange="updateGuestTheme('mantenimiento')">
                             <div class="text-center py-2.5 rounded-lg text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-blue-500 peer-checked:text-white transition-all peer-checked:shadow-md">

@@ -26,7 +26,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{-- Encabezado: Factura, Cliente/Proveedor y Fecha en una sola fila --}}
             <div class="md:col-span-2">
-                <div class="flex flex-col md:flex-row gap-5 p-5 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl">
+                <div class="flex flex-col md:flex-row gap-5 p-5 glass-card">
                     <div class="col-factura-header">
                         <label class="field-label whitespace-nowrap">N° Factura</label>
                         <input type="text" value="{{ $factura->numero_factura }}" readonly class="glass-input font-mono font-bold bg-white/40 dark:bg-black/20 {{ $nroFacturaText }} text-left pl-3 cursor-not-allowed w-full" style="width: 7rem !important;">
@@ -286,7 +286,7 @@
             </div>
 
             {{-- Total Pagado --}}
-            <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
+            <div class="md:col-span-2 p-4 glass-card">
                 <label class="field-label text-center block text-sm">Total Pagado ($) *</label>
                 <input type="text" name="total_pagado" id="total_pagado" required value="{{ old('total_pagado', number_format($factura->total_pagado, 0, ',', '.')) }}" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()" class="glass-input font-black text-2xl text-emerald-600 text-center py-3">
                 <p class="text-[11px] text-gray-400 mt-2 text-center" id="total_pagado_help">El monto total del documento es ${{ number_format($factura->total_documento, 0, ',', '.') }}. Modificar el pago ajustará el saldo y el estado automáticamente.</p>

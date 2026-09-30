@@ -10,7 +10,7 @@
  <a href="{{ route('stocks.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
 </div>
 
-<div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-4">
+<div class="mb-6 pb-4 border-b border-gray-200/50 dark:border-white/10 flex flex-col gap-4">
  <div>
  <h1 class="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-2">
  📊 Informes y Reportes
@@ -88,7 +88,7 @@
    </div>
    </div>
   
-  <div class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="mt-4 border-t border-gray-200/50 dark:border-white/10 pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
    <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
    <div class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">📦</span> Valorización Inventario (Costo)</div>
    <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($acumulado['inventario_costo'], 0, ',', '.') }}</div>
@@ -179,7 +179,7 @@
     <div class="text-lg no-print-emoji">💵</span> Efectivo Global</div>
     <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($operaciones['efectivo'], 0, ',', '.') }}</div>
    </div>
-   <div class="space-y-3 pt-3 border-t border-gray-200/50 dark:border-gray-700/50 text-sm">
+   <div class="space-y-3 pt-3 border-t border-gray-200/50 dark:border-white/10 text-sm">
     <div class="flex justify-between items-center px-2">
      <span class="text-gray-600 dark:text-gray-400 font-semibold">Ingresos</span>
      <span class="font-bold text-emerald-600 dark:text-emerald-400">+${{ number_format($operaciones['ingresos_efectivo'], 0, ',', '.') }}</span>
@@ -198,7 +198,7 @@
     <div class="text-lg no-print-emoji">🏦</span> Consignación Global</div>
     <div class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($operaciones['consignacion'], 0, ',', '.') }}</div>
    </div>
-   <div class="space-y-3 pt-3 border-t border-gray-200/50 dark:border-gray-700/50 text-sm">
+   <div class="space-y-3 pt-3 border-t border-gray-200/50 dark:border-white/10 text-sm">
     <div class="flex justify-between items-center px-2">
      <span class="text-gray-600 dark:text-gray-400 font-semibold">Ingresos</span>
      <span class="font-bold text-blue-600 dark:text-blue-400">+${{ number_format($operaciones['ingresos_consignacion'], 0, ',', '.') }}</span>

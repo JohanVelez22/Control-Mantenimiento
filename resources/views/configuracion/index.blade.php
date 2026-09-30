@@ -1038,10 +1038,10 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
         <table class="backup-table">
             <thead>
                 <tr>
-                    <th class="pl-4">Archivo</th>
-                    <th>Fecha y Hora</th>
-                    <th>Tamaño</th>
-                    <th class="pr-4 text-right">Acciones</th>
+                    <th class="text-center">Archivo</th>
+                    <th class="text-center">Fecha y Hora</th>
+                    <th class="text-center">Tamaño</th>
+                    <th class="text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -1058,15 +1058,15 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
                         <span class="backup-file-name truncate" title="${f.name}">${f.name}</span>
                     </div>
                 </td>
-                <td>
+                <td class="text-center">
                     <div class="backup-file-date">${f.fecha}</div>
                     <div class="backup-file-rel">${f.fecha_relativa}</div>
                 </td>
-                <td class="backup-file-size whitespace-nowrap">
+                <td class="backup-file-size whitespace-nowrap text-center">
                     ${f.size_formatted}
                 </td>
-                <td class="pr-4 text-right whitespace-nowrap">
-                    <div class="flex items-center justify-end gap-1.5">
+                <td class="text-center whitespace-nowrap">
+                    <div class="flex items-center justify-center gap-1.5">
                         <a href="${downloadUrl}" class="btn-backup-download" title="Descargar al equipo">
                             <span>⬇️</span> Descargar
                         </a>

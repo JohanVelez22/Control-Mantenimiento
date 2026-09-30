@@ -9,7 +9,7 @@
  <a href="{{ route('stocks.reportes') }}" class="px-4 py-2 rounded-xl font-bold shadow-sm transition-all bg-orange-500/10 text-orange-700 dark:text-orange-300 hover:bg-orange-500/20 whitespace-nowrap">📦 Informe Inventario</a>
 </div>
 
-<div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex flex-col gap-4 no-print">
+<div class="mb-6 pb-4 border-b border-gray-200/50 dark:border-white/10 flex flex-col gap-4 no-print">
  <div>
  <h1 class="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-2">
  📊 Informes y Reportes

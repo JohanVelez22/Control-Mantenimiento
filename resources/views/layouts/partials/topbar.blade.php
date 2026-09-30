@@ -112,7 +112,7 @@
                                 </div>
                                 <!-- Footer CTA -->
                                 <button id="notif-footer" onclick="openNotifModal('all'); document.getElementById('notif-dropdown').classList.add('hidden');"
-                                        class="w-full py-2.5 text-xs font-bold text-center tracking-wide transition-colors hover:bg-blue-50 dark:hover:bg-slate-800/50"
+                                        class="w-full py-2.5 text-xs font-bold text-center tracking-wide transition-colors hover:bg-blue-50 dark:hover:bg-slate-900/40"
                                         style="border-top:1px solid rgba(37,99,235,0.15); background:rgba(37,99,235,0.10); color:#1d4ed8;">
                                     Ver todos →
                                 </button>

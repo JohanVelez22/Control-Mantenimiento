@@ -51,7 +51,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 items-stretch gap-6 mb-4 relative z-10">
-            <div class="bg-slate-50/50 dark:bg-slate-800/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between min-w-0 h-full">
+            <div class="p-5 glass-card flex flex-col justify-between min-w-0 h-full">
                 <div>
                     <h3 class="text-xs font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">
                         {{ $cotizacion->destinatario_tipo === 'proveedor' ? '🏢 Datos del Proveedor' : '👤 Datos del Cliente' }}
@@ -64,7 +64,7 @@
                     @endif
                 </div>
             </div>
-            <div class="bg-slate-50/50 dark:bg-slate-800/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between min-w-0 h-full">
+            <div class="p-5 glass-card flex flex-col justify-between min-w-0 h-full">
                 <div>
                     <h3 class="text-xs font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">Resumen de Cotización</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400"><span class="font-semibold">Válida por:</span> {{ $cotizacion->validez_dias }} días</p>
@@ -83,7 +83,7 @@
                         @endif
                     </p>
                 </div>
-                <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                <div class="mt-4 pt-4 border-t border-gray-200/50 dark:border-white/10">
                     <p class="text-2xl font-black bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent text-right">
                         Total: ${{ number_format($cotizacion->total, 0, ',', '.') }}
                     </p>

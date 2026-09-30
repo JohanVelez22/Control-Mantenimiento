@@ -107,7 +107,7 @@
                 
                 <ul class="space-y-3">
                     @forelse($categorias as $c)
-                    <li class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-gray-200/50 dark:border-white/5 gap-2">
+                    <li class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-white/20 dark:bg-slate-900/25 rounded-xl border border-white/40 dark:border-white/5 backdrop-blur-md shadow-sm gap-2">
                         <form action="{{ route('stocks.categorias.update', $c->id) }}" method="POST" class="flex-1 w-full flex flex-wrap sm:flex-nowrap gap-2 items-center">
                             @csrf @method('PUT')
                             <select name="tipo" class="glass-input py-1.5 px-2 text-xs w-auto font-bold {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">

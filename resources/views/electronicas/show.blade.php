@@ -130,7 +130,7 @@
                     <label class="field-label">Cantidad *</label>
                     <div class="flex gap-4">
                         <input type="number" name="cantidad" required min="1" value="1" class="glass-input cantidad-input w-24">
-                        <button type="submit" class="btn-clean flex-1 justify-center whitespace-nowrap">
+                        <button type="submit" class="btn-add flex-1 justify-center whitespace-nowrap">
                             ➕ Añadir
                         </button>
                     </div>
@@ -145,14 +145,14 @@
 
         {{-- Listado de repuestos --}}
         @if($electronica->stocks->isEmpty())
-        <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
+        <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-white/10 dark:bg-slate-900/20 backdrop-blur-sm">
             <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">📦</span>
             <p class="text-gray-500 font-medium">No hay repuestos registrados en este registro.</p>
         </div>
         @else
         <div class="space-y-3">
             @foreach($electronica->stocks as $repuesto)
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center p-4 bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 rounded-xl hover:bg-white/60 dark:hover:bg-slate-700/40 transition-colors gap-3">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center p-4 bg-white/20 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 rounded-xl backdrop-blur-md hover:bg-white/35 dark:hover:bg-slate-900/50 transition-all shadow-sm gap-3">
                 <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xl shrink-0">
                         ⚙️
@@ -228,14 +228,14 @@
 
         {{-- Listado de abonos --}}
         @if($electronica->abonos->isEmpty())
-        <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
+        <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-white/10 dark:bg-slate-900/20 backdrop-blur-sm">
             <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">💳</span>
             <p class="text-gray-500 font-medium">Sin abonos registrados aún.</p>
         </div>
         @else
         <div class="space-y-3">
             @foreach($electronica->abonos->sortByDesc('fecha') as $abono)
-            <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 rounded-xl hover:bg-white/60 dark:hover:bg-slate-700/40 transition-colors">
+            <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-white/20 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 rounded-xl backdrop-blur-md hover:bg-white/35 dark:hover:bg-slate-900/50 transition-all shadow-sm">
                 <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-lg {{ $abono->tipo_pago === 'efectivo' ? 'bg-blue-500/10 text-blue-500' : 'bg-purple-500/10 text-purple-500' }} flex items-center justify-center text-xl shrink-0">
                         {{ $abono->tipo_pago === 'efectivo' ? '💵' : '🏦' }}

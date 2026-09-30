@@ -72,7 +72,7 @@
  </div>
 
  {{-- Entidad (cliente o proveedor) --}}
- <div class="mb-4 p-5 rounded-2xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md flex items-start gap-4 shadow-sm min-w-0">
+ <div class="mb-4 p-5 glass-card flex items-start gap-4 min-w-0">
  <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center text-white text-xl shadow-lg shrink-0">
  {{ $factura->tipo_movimiento === 'compra' ? '🏭' : '👤' }}
  </div>
@@ -128,7 +128,7 @@
  {{-- Notas --}}
  <div class="w-full md:w-1/2">
  @if($factura->observaciones)
-  <div class="p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
+  <div class="p-5 glass-card">
  <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Observaciones</p>
  <p class="text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-pre-line">{{ $factura->observaciones }}</p>
  </div>
@@ -136,7 +136,7 @@
  </div>
  
  {{-- Resumen --}}
- <div class="w-full md:w-1/2 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl p-5 shadow-sm">
+ <div class="w-full md:w-1/2 glass-card p-5">
  <div class="flex justify-between items-center mb-3">
  <span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Total Documento</span>
  <span class="text-2xl font-black text-slate-800 dark:text-white">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>

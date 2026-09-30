@@ -35,7 +35,7 @@ function getStockOptions() {
 function agregarFila(itemData = null) {
     const tbody = document.getElementById('items-body');
     const tr = document.createElement('tr');
-    tr.className = 'item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-slate-700/50 hover:bg-white/50 dark:hover:bg-slate-800/30 transition-colors';
+    tr.className = 'item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-white/10 hover:bg-white/50 dark:hover:bg-slate-900/30 transition-colors';
     
     let isStock = itemData ? itemData.tipo === 'stock' : false;
     let cant = itemData ? itemData.cantidad : 1;

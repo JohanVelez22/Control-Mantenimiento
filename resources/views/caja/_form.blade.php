@@ -102,11 +102,11 @@
  <div>
  <label class="field-label">Tipo de Movimiento *</label>
  <div class="flex gap-3 mt-1">
- <label id="label_ingreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <label id="label_ingreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
  <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ $tipoMov === 'ingreso' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
  <span id="text_ingreso" class="font-bold {{ $tipoMov === 'ingreso' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">📈 Ingreso</span>
  </label>
- <label id="label_egreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <label id="label_egreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
  <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso" {{ $tipoMov === 'egreso' ? 'checked' : '' }} class="accent-red-500 w-4 h-4">
  <span id="text_egreso" class="font-bold {{ $tipoMov === 'egreso' ? 'text-red-700 dark:text-red-400' : 'text-slate-600 dark:text-slate-400' }}">📉 Egreso</span>
  </label>
@@ -118,11 +118,11 @@
  <div>
  <label class="field-label">Tipo de Pago *</label>
  <div class="flex gap-3 mt-1">
- <label id="label_efectivo" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'efectivo' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <label id="label_efectivo" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'efectivo' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
  <input type="radio" name="tipo_pago" value="efectivo" required id="tipo_efectivo" {{ $tipoPago === 'efectivo' ? 'checked' : '' }} class="accent-blue-500 w-4 h-4">
  <span id="text_efectivo" class="font-bold {{ $tipoPago === 'efectivo' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400' }}">💵 Efectivo</span>
  </label>
- <label id="label_banco" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'consignacion' ? 'border-purple-500 bg-purple-50/50 dark:bg-purple-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md' }}">
+ <label id="label_banco" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'consignacion' ? 'border-purple-500 bg-purple-50/50 dark:bg-purple-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
  <input type="radio" name="tipo_pago" value="consignacion" id="tipo_banco" {{ $tipoPago === 'consignacion' ? 'checked' : '' }} class="accent-purple-500 w-4 h-4">
  <span id="text_banco" class="font-bold {{ $tipoPago === 'consignacion' ? 'text-purple-700 dark:text-purple-400' : 'text-slate-600 dark:text-slate-400' }}">🏦 Banco</span>
  </label>
@@ -246,10 +246,10 @@
  const textIngreso = document.getElementById('text_ingreso');
  const textEgreso = document.getElementById('text_egreso');
  
- labelIngreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md";
+ labelIngreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md";
  textIngreso.className = "font-bold text-slate-600 dark:text-slate-400";
  
- labelEgreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md";
+ labelEgreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md";
  textEgreso.className = "font-bold text-slate-600 dark:text-slate-400";
  
  if (isIngreso) {
@@ -269,10 +269,10 @@
  const textBanco = document.getElementById('text_banco');
  
  if(labelEfectivo && labelBanco) {
-     labelEfectivo.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md";
+     labelEfectivo.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md";
      textEfectivo.className = "font-bold text-slate-600 dark:text-slate-400";
      
-     labelBanco.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/30 dark:bg-slate-800/30 backdrop-blur-md";
+     labelBanco.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md";
      textBanco.className = "font-bold text-slate-600 dark:text-slate-400";
      
      if (isEfectivo) {

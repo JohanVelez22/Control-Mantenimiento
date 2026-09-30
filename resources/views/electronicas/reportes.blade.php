@@ -233,7 +233,7 @@
   </tr>
   @empty
   <tr>
-      <td colspan="10" class="p-12 text-center bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm">
+      <td colspan="10" class="p-12 text-center bg-white/10 dark:bg-slate-900/20 backdrop-blur-sm">
           <div class="flex flex-col items-center justify-center space-y-3">
               <div class="text-5xl opacity-80">📭</div>
               <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">No se encontraron registros</h3>
