@@ -214,6 +214,7 @@
                 } else {
                     localStorage.setItem('color-theme', 'light');
                 }
+                themeToggleBtn.blur();
             });
         }
 

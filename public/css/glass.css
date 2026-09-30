@@ -2508,6 +2508,188 @@ html.dark .btn-ghost:hover {
   border-radius: 12px !important;
 }
 
+/* ================================================================
+   Botones de Acción Superior (TopBar & Header: Notif, Tema, Logout)
+   ================================================================ */
+.topbar-btn,
+.theme-toggle-btn,
+.notif-toggle-btn,
+.logout-toggle-btn {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+  font-size: 1.125rem !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease !important;
+}
+
+.topbar-btn:active,
+.theme-toggle-btn:active,
+.notif-toggle-btn:active,
+.logout-toggle-btn:active {
+  transform: scale(0.96) !important;
+}
+
+.topbar-btn:focus,
+.topbar-btn:focus-visible,
+.theme-toggle-btn:focus,
+.theme-toggle-btn:focus-visible,
+.notif-toggle-btn:focus,
+.notif-toggle-btn:focus-visible,
+.logout-toggle-btn:focus,
+.logout-toggle-btn:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* --- Botón de Tema (☀️ / 🌙) --- */
+.theme-toggle-btn {
+  background: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.10) !important;
+  color: #334155 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .theme-toggle-btn:hover {
+    background: rgba(37, 99, 235, 0.10) !important;
+    border-color: rgba(37, 99, 235, 0.30) !important;
+  }
+}
+
+.theme-toggle-btn:focus,
+.theme-toggle-btn:focus-visible,
+.theme-toggle-btn:active {
+  background: transparent !important;
+  border-color: rgba(0, 0, 0, 0.10) !important;
+}
+
+.dark .theme-toggle-btn,
+html.dark .theme-toggle-btn {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #F1F5F9 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dark .theme-toggle-btn:hover,
+  html.dark .theme-toggle-btn:hover {
+    background: rgba(59, 130, 246, 0.16) !important;
+    border-color: rgba(96, 165, 250, 0.40) !important;
+  }
+}
+
+.dark .theme-toggle-btn:focus,
+.dark .theme-toggle-btn:focus-visible,
+.dark .theme-toggle-btn:active,
+html.dark .theme-toggle-btn:focus,
+html.dark .theme-toggle-btn:focus-visible,
+html.dark .theme-toggle-btn:active {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* --- Botón de Notificaciones (🔔) --- */
+.notif-toggle-btn {
+  background: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.10) !important;
+  color: #334155 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .notif-toggle-btn:hover {
+    background: rgba(245, 158, 11, 0.12) !important;
+    border-color: rgba(245, 158, 11, 0.35) !important;
+  }
+}
+
+.notif-toggle-btn:focus,
+.notif-toggle-btn:focus-visible,
+.notif-toggle-btn:active {
+  background: transparent !important;
+  border-color: rgba(0, 0, 0, 0.10) !important;
+}
+
+.dark .notif-toggle-btn,
+html.dark .notif-toggle-btn {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #F1F5F9 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dark .notif-toggle-btn:hover,
+  html.dark .notif-toggle-btn:hover {
+    background: rgba(245, 158, 11, 0.16) !important;
+    border-color: rgba(245, 158, 11, 0.40) !important;
+  }
+}
+
+.dark .notif-toggle-btn:focus,
+.dark .notif-toggle-btn:focus-visible,
+.dark .notif-toggle-btn:active,
+html.dark .notif-toggle-btn:focus,
+html.dark .notif-toggle-btn:focus-visible,
+html.dark .notif-toggle-btn:active {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* --- Botón de Cerrar Sesión (🚪) --- */
+.logout-toggle-btn {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border: 1px solid rgba(239, 68, 68, 0.20) !important;
+  color: #ef4444 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .logout-toggle-btn:hover {
+    background: rgba(239, 68, 68, 0.20) !important;
+    border-color: rgba(239, 68, 68, 0.40) !important;
+  }
+}
+
+.logout-toggle-btn:focus,
+.logout-toggle-btn:focus-visible,
+.logout-toggle-btn:active {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.20) !important;
+}
+
+.dark .logout-toggle-btn,
+html.dark .logout-toggle-btn {
+  background: rgba(239, 68, 68, 0.10) !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+  color: #f87171 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dark .logout-toggle-btn:hover,
+  html.dark .logout-toggle-btn:hover {
+    background: rgba(239, 68, 68, 0.22) !important;
+    border-color: rgba(239, 68, 68, 0.45) !important;
+  }
+}
+
+.dark .logout-toggle-btn:focus,
+.dark .logout-toggle-btn:focus-visible,
+.dark .logout-toggle-btn:active,
+html.dark .logout-toggle-btn:focus,
+html.dark .logout-toggle-btn:focus-visible,
+html.dark .logout-toggle-btn:active {
+  background: rgba(239, 68, 68, 0.10) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+}
+
 /* ---- Sobrescrituras botones ghost colores específicos ---- */
 .btn-ghost.text-yellow-600:hover {
   color: #D97706 !important;

@@ -8,17 +8,17 @@
     {{-- Botones superiores: Tema y Cerrar Sesión (estilo Topbar Web) --}}
     <div class="absolute top-5 right-5 z-50 flex items-center gap-2">
         <button id="theme-toggle-guest"
-            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/40 border border-white/60 hover:bg-white/60 dark:bg-slate-900/50 dark:border-white/10 dark:hover:bg-slate-800/50 backdrop-blur-md shadow-sm transition-colors group text-lg"
+            class="theme-toggle-btn group"
             title="Cambiar tema" aria-label="Cambiar tema">
-            <span class="dark:hidden">☀️</span>
-            <span class="hidden dark:inline">🌙</span>
+            <span class="dark:hidden inline-block transition-transform duration-200 group-hover:scale-110">☀️</span>
+            <span class="hidden dark:inline inline-block transition-transform duration-200 group-hover:scale-110">🌙</span>
         </button>
 
         @if(Auth::check())
         <form action="{{ route('logout') }}" method="POST" class="m-0">
             @csrf
-            <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all group text-lg shadow-sm" title="Cerrar Sesión">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform">
+            <button type="submit" class="logout-toggle-btn group text-lg" title="Cerrar Sesión" aria-label="Cerrar Sesión">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:scale-110 transition-transform">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                 </svg>
             </button>
@@ -285,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 html.classList.add('dark');
                 localStorage.setItem('color-theme', 'dark');
             }
+            this.blur();
         });
     }
 });

@@ -5,10 +5,10 @@
 {{-- Botón modo oscuro --}}
 <div class="absolute top-5 right-5 z-10">
  <button id="theme-toggle-login" type="button"
- class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gray-200 hover:bg-gray-100 dark:bg-[#1e293b]/50 dark:border-gray-600/40 dark:hover:bg-gray-700/60 shadow-sm transition-colors group text-lg"
+ class="theme-toggle-btn group"
  title="Cambiar tema" aria-label="Cambiar tema">
-    <span class="dark:hidden">☀️</span>
-    <span class="hidden dark:inline">🌙</span>
+    <span class="dark:hidden inline-block transition-transform duration-200 group-hover:scale-110">☀️</span>
+    <span class="hidden dark:inline inline-block transition-transform duration-200 group-hover:scale-110">🌙</span>
  </button>
 </div>
 
@@ -138,6 +138,7 @@
  document.documentElement.classList.add('dark');
  localStorage.setItem('color-theme', 'dark');
  }
+ btn.blur();
  });
  }
 
