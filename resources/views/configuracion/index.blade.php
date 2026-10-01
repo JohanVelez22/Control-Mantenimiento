@@ -585,7 +585,7 @@ async function submitConfiguracion(event) {
                 </div>
 
                 {{-- Botón Ejecutar --}}
-                <div class="flex justify-end">
+                <div class="flex justify-end" style="margin-top: 1.5rem !important;">
                     <button type="button" onclick="executeManualBackup()" id="btn-execute-backup" class="btn-backup btn-backup-db px-6 py-2.5 text-sm font-bold shadow-lg shadow-teal-500/25 flex items-center gap-2">
                         <span id="btn-execute-backup-icon">⚡</span>
                         <span id="btn-execute-backup-text">Iniciar Respaldo Ahora</span>
@@ -647,15 +647,74 @@ async function submitConfiguracion(event) {
                             </div>
                         </div>
 
-                        {{-- Columna Derecha: Hora y Presets Rápidos --}}
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Hora de Ejecución:</label>
-                            <input type="time" id="sched-hora" value="02:00" class="glass-input w-full text-sm font-mono font-bold">
-                            <div class="flex flex-wrap gap-1.5 mt-2">
-                                <button type="button" onclick="setSchedTime('02:00')" class="btn-preset-time">02:00 AM (Madrugada)</button>
-                                <button type="button" onclick="setSchedTime('06:00')" class="btn-preset-time">06:00 AM (Apertura)</button>
-                                <button type="button" onclick="setSchedTime('18:00')" class="btn-preset-time">18:00 (6 PM / Cierre)</button>
-                                <button type="button" onclick="setSchedTime('22:00')" class="btn-preset-time">22:00 (10 PM)</button>
+                        {{-- Columna Derecha: Hora Manual y Presets Rápidos --}}
+                        <div class="space-y-3.5">
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                                        Hora de Ejecución:
+                                    </label>
+                                    <span class="text-[11px] font-semibold text-teal-600 dark:text-teal-400 font-mono" id="time-picker-24h-badge">
+                                        24h: 02:00
+                                    </span>
+                                </div>
+                                
+                                {{-- Input base oculto para backend y tests (HH:mm) --}}
+                                <input type="hidden" id="sched-hora" value="02:00">
+
+                                {{-- Contenedor del Input Manual + Tag Esmeralda + AM/PM --}}
+                                <div id="sched-hora-container" 
+                                     class="glass-input time-picker-custom-input cursor-text"
+                                     onclick="if (event.target.closest('#tp-btn-am, #tp-btn-pm') === null) { document.getElementById('sched-hora-manual')?.focus(); }">
+                                    <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                                        {{-- Input manual de hora y minuto --}}
+                                        <input type="text" 
+                                               id="sched-hora-manual" 
+                                               value="02:00" 
+                                               maxlength="5" 
+                                               placeholder="02:00"
+                                               autocomplete="off"
+                                               spellcheck="false"
+                                               class="bg-transparent font-mono text-sm font-bold text-slate-800 dark:text-white w-14 tracking-wider placeholder:text-slate-400 select-all border-0 p-0 m-0 outline-none"
+                                               style="border: none !important; outline: none !important; box-shadow: none !important;"
+                                               onfocus="this.select()"
+                                               oninput="handleManualTimeInput(this)"
+                                               onkeydown="handleManualTimeKeydown(event, this)"
+                                               onblur="handleManualTimeBlur(this)">
+                                        
+                                        {{-- Aviso / Tag de franja horaria con borde esmeralda no ovalado --}}
+                                        <span id="sched-hora-tag" class="text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/40 shrink-0">
+                                            Madrugada
+                                        </span>
+                                    </div>
+
+                                    {{-- Selector AM / PM --}}
+                                    <div class="flex items-center gap-0.5 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-white/10 shrink-0">
+                                        <button type="button" 
+                                                id="tp-btn-am" 
+                                                onclick="setTimeAmPm('AM')" 
+                                                class="tp-ampm-btn is-active">
+                                            AM
+                                        </button>
+                                        <button type="button" 
+                                                id="tp-btn-pm" 
+                                                onclick="setTimeAmPm('PM')" 
+                                                class="tp-ampm-btn">
+                                            PM
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Horarios Sugeridos (Presets Rápidos) --}}
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5 block">Horarios Sugeridos:</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <button type="button" onclick="setSchedTime('02:00')" id="preset-time-0200" class="btn-preset-time is-active">02:00 AM (Madrugada)</button>
+                                    <button type="button" onclick="setSchedTime('06:00')" id="preset-time-0600" class="btn-preset-time">06:00 AM (Apertura)</button>
+                                    <button type="button" onclick="setSchedTime('18:00')" id="preset-time-1800" class="btn-preset-time">18:00 (6 PM / Cierre)</button>
+                                    <button type="button" onclick="setSchedTime('22:00')" id="preset-time-2200" class="btn-preset-time">22:00 (10 PM)</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -814,6 +873,7 @@ function openBackupModal() {
     });
 
     initBackupTomSelects();
+    setSchedTime(document.getElementById('sched-hora')?.value || '02:00');
     loadBackupData();
 }
 
@@ -940,9 +1000,174 @@ function toggleScheduleFields() {
     }
 }
 
+let _currentAmPm = 'AM';
+
+function getTagForHour24(h24) {
+    if (h24 >= 0 && h24 < 6) return 'Madrugada';
+    if (h24 >= 6 && h24 < 12) return 'Mañana (Apertura)';
+    if (h24 >= 12 && h24 < 18) return 'Tarde';
+    if (h24 >= 18 && h24 < 22) return 'Cierre / Tarde';
+    return 'Noche';
+}
+
+function handleManualTimeKeydown(e, input) {
+    input._isBackspace = (e.key === 'Backspace' || e.key === 'Delete');
+}
+
+function handleManualTimeInput(input) {
+    let val = input.value.replace(/[^0-9:]/g, '');
+
+    // Si el usuario escribe números sin dos puntos
+    if (!val.includes(':') && !input._isBackspace) {
+        if (val.length === 2) {
+            const d1 = parseInt(val[0], 10);
+            const d2 = parseInt(val[1], 10);
+            if (d1 >= 3 || (d1 === 2 && d2 >= 4)) {
+                // E.g. '83' -> '08:3' o '25' -> '02:5'
+                val = '0' + val[0] + ':' + val[1];
+            } else {
+                // E.g. '02' -> '02:', '11' -> '11:'
+                val = val + ':';
+            }
+        }
+    }
+
+    // Limitar longitud de minutos a 2 dígitos
+    const parts = val.split(':');
+    if (parts.length > 1 && parts[1].length > 2) {
+        parts[1] = parts[1].slice(0, 2);
+        val = parts[0] + ':' + parts[1];
+    }
+
+    input.value = val;
+
+    let h12 = parseInt(parts[0], 10);
+    let m = parts.length > 1 && parts[1] !== '' ? parseInt(parts[1], 10) : 0;
+
+    if (isNaN(h12)) return;
+
+    // Si el usuario escribe una hora en formato 24h directamente (ej: 18 o 22)
+    if (h12 >= 13 && h12 <= 23) {
+        _currentAmPm = 'PM';
+        h12 = h12 - 12;
+    } else if (h12 === 0) {
+        h12 = 12;
+        _currentAmPm = 'AM';
+    } else if (h12 > 23) {
+        h12 = 12;
+    }
+
+    if (m > 59) m = 59;
+
+    syncTimeState(h12, m, _currentAmPm, false);
+}
+
+function handleManualTimeBlur(input) {
+    let val = input.value.trim().replace(/[^0-9:]/g, '');
+    if (!val) {
+        setSchedTime('02:00');
+        return;
+    }
+    const parts = val.split(':');
+    let h = parseInt(parts[0] || '2', 10);
+    let m = parseInt(parts[1] || '0', 10);
+
+    if (isNaN(h)) h = 2;
+    if (isNaN(m)) m = 0;
+
+    if (h >= 13 && h <= 23) {
+        _currentAmPm = 'PM';
+        h = h - 12;
+    } else if (h === 0) {
+        h = 12;
+    } else if (h > 12) {
+        h = 12;
+    }
+    if (m > 59) m = 59;
+
+    syncTimeState(h, m, _currentAmPm, true);
+}
+
+function setTimeAmPm(ampm) {
+    _currentAmPm = ampm;
+    const input = document.getElementById('sched-hora-manual');
+    const val = input ? input.value : '02:00';
+    const parts = val.split(':');
+    let h = parseInt(parts[0] || '2', 10);
+    let m = parseInt(parts[1] || '0', 10);
+    if (isNaN(h) || h < 1 || h > 12) h = 2;
+    if (isNaN(m) || m < 0 || m > 59) m = 0;
+
+    syncTimeState(h, m, ampm, true);
+}
+
+function syncTimeState(h12, m, ampm, updateInput = true) {
+    _currentAmPm = ampm;
+
+    // Calcular h24
+    let h24 = h12;
+    if (ampm === 'PM') {
+        if (h12 < 12) h24 = h12 + 12;
+    } else {
+        if (h12 === 12) h24 = 0;
+    }
+
+    const h24Str = String(h24).padStart(2, '0');
+    const mStr = String(m).padStart(2, '0');
+    const t24 = `${h24Str}:${mStr}`;
+
+    const h12Str = String(h12).padStart(2, '0');
+
+    // Sincronizar input oculto para backend y tests
+    const hiddenInput = document.getElementById('sched-hora');
+    if (hiddenInput) hiddenInput.value = t24;
+
+    // Sincronizar input manual visible si es requerido
+    if (updateInput) {
+        const manualInput = document.getElementById('sched-hora-manual');
+        if (manualInput) manualInput.value = `${h12Str}:${mStr}`;
+    }
+
+    // Actualizar botones AM/PM
+    const btnAm = document.getElementById('tp-btn-am');
+    const btnPm = document.getElementById('tp-btn-pm');
+    if (btnAm) btnAm.classList.toggle('is-active', ampm === 'AM');
+    if (btnPm) btnPm.classList.toggle('is-active', ampm === 'PM');
+
+    // Actualizar badge 24h
+    const badge24 = document.getElementById('time-picker-24h-badge');
+    if (badge24) badge24.textContent = `24h: ${t24}`;
+
+    // Actualizar tag descriptivo con borde esmeralda
+    const tagEl = document.getElementById('sched-hora-tag');
+    if (tagEl) tagEl.textContent = getTagForHour24(h24);
+
+    // Actualizar presets sugeridos
+    const presets = [
+        { id: 'preset-time-0200', t: '02:00' },
+        { id: 'preset-time-0600', t: '06:00' },
+        { id: 'preset-time-1800', t: '18:00' },
+        { id: 'preset-time-2200', t: '22:00' }
+    ];
+    presets.forEach(p => {
+        const pBtn = document.getElementById(p.id);
+        if (pBtn) pBtn.classList.toggle('is-active', t24 === p.t);
+    });
+}
+
 function setSchedTime(timeStr) {
-    const input = document.getElementById('sched-hora');
-    if (input) input.value = timeStr;
+    if (!timeStr || typeof timeStr !== 'string') timeStr = '02:00';
+    const parts = timeStr.trim().split(':');
+    let h24 = parseInt(parts[0], 10);
+    let m = parseInt(parts[1], 10);
+    if (isNaN(h24) || h24 < 0 || h24 > 23) h24 = 2;
+    if (isNaN(m) || m < 0 || m > 59) m = 0;
+
+    let ampm = h24 >= 12 ? 'PM' : 'AM';
+    let h12 = h24 % 12;
+    if (h12 === 0) h12 = 12;
+
+    syncTimeState(h12, m, ampm, true);
 }
 
 function adjustMaxCopies(delta) {
@@ -973,8 +1198,7 @@ async function loadBackupData() {
 
         setBackupSelectVal('sched-frecuencia', data.config.backup_frecuencia || 'daily');
 
-        const horaInput = document.getElementById('sched-hora');
-        if (horaInput) horaInput.value = data.config.backup_hora || '02:00';
+        setSchedTime(data.config.backup_hora || '02:00');
 
         let diaSemVal = (data.config.backup_dia_semana || 'lmv').toLowerCase();
         if (diaSemVal !== 'lmv' && diaSemVal !== 'mjs') {
