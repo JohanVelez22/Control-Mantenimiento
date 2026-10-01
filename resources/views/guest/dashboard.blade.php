@@ -58,7 +58,7 @@
                     @endphp
                     <p class="text-slate-600 dark:text-slate-400 text-lg">Resultados para la orden <span class="{{ $isElectronicaSearch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400' }} font-black">{{ strtoupper($id_orden ?? '') }}</span> (Doc: {{ $identificacion ?? '' }})</p>
                 @else
-                    <p class="text-slate-600 dark:text-slate-400 text-lg">Ingresa tu número de identificación y número de orden para hacer el seguimiento de tu equipo con total privacidad.</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-lg">Ingresa tu número de identificación y número de orden para hacer el seguimiento de tu equipo.</p>
                 @endif
             </div>
             
@@ -218,17 +218,20 @@
                 @endif
             @else
                 <!-- Formulario de Búsqueda si no hay cliente asociado -->
-                <form method="GET" action="{{ route('guest.search') }}" class="max-w-xl mx-auto space-y-4">
-                    <div class="flex bg-white/40 dark:bg-slate-900/40 p-1 rounded-xl mb-6 border border-white/50 dark:border-white/10 shadow-sm backdrop-blur-md">
+                @php
+                    $isElec = ($tipo ?? '') === 'electronica';
+                @endphp
+                <form id="guestSearchForm" method="GET" action="{{ route('guest.search') }}" class="max-w-xl mx-auto space-y-4">
+                    <div class="flex bg-white/40 dark:bg-slate-900/40 p-1.5 rounded-xl mb-6 border border-white/50 dark:border-white/10 shadow-sm backdrop-blur-md">
                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="tipo" value="mantenimiento" class="peer sr-only" {{ ($tipo ?? 'mantenimiento') === 'mantenimiento' ? 'checked' : '' }} onchange="updateGuestTheme('mantenimiento')">
-                            <div class="text-center py-2.5 rounded-lg text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-blue-500 peer-checked:text-white transition-all peer-checked:shadow-md flex items-center justify-center gap-1.5">
+                            <input type="radio" name="tipo" id="tipo-mantenimiento" value="mantenimiento" class="guest-type-radio sr-only" {{ !$isElec ? 'checked' : '' }} onchange="updateGuestTheme('mantenimiento')">
+                            <div id="tab-label-mantenimiento" class="text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 {{ !$isElec ? 'guest-tab-active-mant' : 'guest-tab-inactive' }}">
                                 <span>🛠️</span> Mantenimientos
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="tipo" value="electronica" class="peer sr-only" {{ ($tipo ?? '') === 'electronica' ? 'checked' : '' }} onchange="updateGuestTheme('electronica')">
-                            <div class="text-center py-2.5 rounded-lg text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-purple-500 peer-checked:text-white transition-all peer-checked:shadow-md flex items-center justify-center gap-1.5">
+                            <input type="radio" name="tipo" id="tipo-electronica" value="electronica" class="guest-type-radio sr-only" {{ $isElec ? 'checked' : '' }} onchange="updateGuestTheme('electronica')">
+                            <div id="tab-label-electronica" class="text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 {{ $isElec ? 'guest-tab-active-elec' : 'guest-tab-inactive' }}">
                                 <span>⚡</span> Electrónica
                             </div>
                         </label>
@@ -236,44 +239,38 @@
 
                     {{-- Campo Cédula / NIT --}}
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 ml-1">
+                        <label for="guestIdentificacionInput" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 ml-1">
                             🪪 Cédula o NIT del Cliente <span class="text-red-500 font-bold">*</span>
                         </label>
-                        <div class="relative">
-                            <input type="text" name="identificacion" id="guestIdentificacionInput" 
-                                   value="{{ old('identificacion', $identificacion ?? '') }}" 
-                                   class="glass-input w-full pl-11 pr-4 py-3.5 text-base sm:text-lg font-semibold focus:ring-2 focus:ring-blue-500" 
-                                   placeholder="Ej: 123456789 o 900123456" required minlength="3" maxlength="30">
-                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none select-none">🪪</span>
-                        </div>
-                        @error('identificacion')
-                            <p class="text-xs text-red-500 font-medium mt-1 ml-1">{{ $message }}</p>
-                        @enderror
+                        <input type="text" name="identificacion" id="guestIdentificacionInput" 
+                               value="{{ old('identificacion', $identificacion ?? '') }}" 
+                               class="glass-input w-full px-4 py-3.5 text-base sm:text-lg font-semibold focus:ring-2 focus:ring-blue-500 @error('identificacion') border-red-500 @enderror" 
+                               placeholder="Ej: 123456789 o 900123456" required minlength="3" maxlength="30" autocomplete="off"
+                               oninvalid="this.setCustomValidity('Debes digitar cédula / NIT')"
+                               oninput="this.setCustomValidity('')">
+                        <p id="error-identificacion" class="text-xs text-red-500 font-semibold mt-1.5 ml-1 @error('identificacion') @else hidden @enderror">
+                            @error('identificacion') {{ $message }} @else Debes digitar cédula / NIT @enderror
+                        </p>
                     </div>
 
                     {{-- Campo Número de Orden --}}
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 ml-1">
+                        <label for="guestOrdenInput" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 ml-1">
                             📋 Número de Orden <span class="text-red-500 font-bold">*</span>
                         </label>
-                        <div class="relative">
-                            <input type="text" name="id_orden" id="guestOrdenInput" 
-                                   value="{{ old('id_orden', $id_orden ?? '') }}" 
-                                   class="glass-input w-full pl-11 pr-4 py-3.5 text-base sm:text-lg font-semibold focus:ring-2 focus:ring-blue-500" 
-                                   placeholder="Ej: ORD-001 o 1" required minlength="1" maxlength="30">
-                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none select-none">📋</span>
-                        </div>
-                        @error('id_orden')
-                            <p class="text-xs text-red-500 font-medium mt-1 ml-1">{{ $message }}</p>
-                        @enderror
+                        <input type="text" name="id_orden" id="guestOrdenInput" 
+                               value="{{ old('id_orden', $id_orden ?? '') }}" 
+                               class="glass-input w-full px-4 py-3.5 text-base sm:text-lg font-semibold focus:ring-2 focus:ring-blue-500 @error('id_orden') border-red-500 @enderror" 
+                               placeholder="{{ $isElec ? 'Ej: ELC-001 o 1' : 'Ej: ORD-001 o 1' }}" required minlength="1" maxlength="30" autocomplete="off"
+                               oninvalid="this.setCustomValidity('Debes digitar la orden')"
+                               oninput="this.setCustomValidity('')">
+                        <p id="error-id_orden" class="text-xs text-red-500 font-semibold mt-1.5 ml-1 @error('id_orden') @else hidden @enderror">
+                            @error('id_orden') {{ $message }} @else Debes digitar la orden @enderror
+                        </p>
                     </div>
 
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 px-1 pt-1">
-                        🔒 Consulta protegida: se requiere tanto la identificación del titular como el código de orden de su comprobante.
-                    </p>
-
-                    <button type="submit" id="guestSubmitBtn" class="w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg">
-                        🔍 Consultar Estado de la Orden
+                    <button type="submit" id="guestSubmitBtn" class="w-full mt-6 {{ $isElec ? 'guest-btn-elec' : 'guest-btn-mant' }} font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg flex items-center justify-center gap-2">
+                        <span id="guestSubmitBtnText">{{ $isElec ? '⚡ Consultar Estado de la Orden' : '🔍 Consultar Estado de la Orden' }}</span>
                     </button>
                 </form>
             @endif
@@ -301,10 +298,71 @@
     margin-top: 3.5rem !important;
   }
 }
+
+/* Ocultar placeholder al hacer focus */
+.glass-input:focus::placeholder,
+.glass-input:focus::-webkit-input-placeholder,
+.glass-input:focus::-moz-placeholder,
+.glass-input:focus:-ms-input-placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+
+/* Estilos de pestañas (Mantenimientos vs Electrónica) */
+.guest-tab-inactive {
+  color: #64748b;
+  background: transparent;
+}
+html.dark .guest-tab-inactive {
+  color: #94a3b8;
+}
+.guest-tab-inactive:hover {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.25);
+}
+html.dark .guest-tab-inactive:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.guest-tab-active-mant {
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+}
+
+.guest-tab-active-elec {
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.40) !important;
+}
+
+/* Botón Mantenimientos (Azul / Cyan) */
+.guest-btn-mant {
+  background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%) !important;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35) !important;
+  color: #ffffff !important;
+}
+.guest-btn-mant:hover {
+  background: linear-gradient(135deg, #1D4ED8 0%, #0891B2 100%) !important;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.50) !important;
+}
+
+/* Botón Electrónica (Violeta / Púrpura) */
+.guest-btn-elec {
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%) !important;
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.40) !important;
+  color: #ffffff !important;
+}
+.guest-btn-elec:hover {
+  background: linear-gradient(135deg, #6D28D9 0%, #9333EA 100%) !important;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.55) !important;
+}
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Alternador de tema claro/oscuro
     const themeBtn = document.getElementById('theme-toggle-guest');
     if(themeBtn) {
         themeBtn.addEventListener('click', function() {
@@ -319,20 +377,144 @@ document.addEventListener('DOMContentLoaded', function() {
             this.blur();
         });
     }
+
+    // Ocultar placeholder al hacer clic / focus
+    document.querySelectorAll('.glass-input').forEach(function(input) {
+        var originalPlaceholder = input.getAttribute('placeholder') || '';
+        input.addEventListener('focus', function() {
+            this.dataset.tempPlaceholder = this.getAttribute('placeholder') || '';
+            this.setAttribute('placeholder', '');
+        });
+        input.addEventListener('blur', function() {
+            this.setAttribute('placeholder', this.dataset.tempPlaceholder || originalPlaceholder);
+        });
+    });
+
+    // Validación interactiva con avisos en rojo debajo de cada campo
+    const form = document.getElementById('guestSearchForm');
+    const idInput = document.getElementById('guestIdentificacionInput');
+    const ordenInput = document.getElementById('guestOrdenInput');
+    const errId = document.getElementById('error-identificacion');
+    const errOrden = document.getElementById('error-id_orden');
+
+    if (idInput) {
+        idInput.addEventListener('input', function() {
+            this.setCustomValidity('');
+            if (this.value.trim().length > 0) {
+                this.classList.remove('border-red-500');
+                if (errId) errId.classList.add('hidden');
+            }
+        });
+    }
+
+    if (ordenInput) {
+        ordenInput.addEventListener('input', function() {
+            this.setCustomValidity('');
+            if (this.value.trim().length > 0) {
+                this.classList.remove('border-red-500');
+                if (errOrden) errOrden.classList.add('hidden');
+            }
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            let hasError = false;
+            const idVal = idInput ? idInput.value.trim() : '';
+            const ordenVal = ordenInput ? ordenInput.value.trim() : '';
+
+            if (!idVal) {
+                hasError = true;
+                if (idInput) {
+                    idInput.classList.add('border-red-500');
+                    idInput.setCustomValidity('Debes digitar cédula / NIT');
+                }
+                if (errId) {
+                    errId.textContent = 'Debes digitar cédula / NIT';
+                    errId.classList.remove('hidden');
+                }
+            } else {
+                if (idInput) {
+                    idInput.classList.remove('border-red-500');
+                    idInput.setCustomValidity('');
+                }
+                if (errId) errId.classList.add('hidden');
+            }
+
+            if (!ordenVal) {
+                hasError = true;
+                if (ordenInput) {
+                    ordenInput.classList.add('border-red-500');
+                    ordenInput.setCustomValidity('Debes digitar la orden');
+                }
+                if (errOrden) {
+                    errOrden.textContent = 'Debes digitar la orden';
+                    errOrden.classList.remove('hidden');
+                }
+            } else {
+                if (ordenInput) {
+                    ordenInput.classList.remove('border-red-500');
+                    ordenInput.setCustomValidity('');
+                }
+                if (errOrden) errOrden.classList.add('hidden');
+            }
+
+            if (hasError) {
+                e.preventDefault();
+                if (!idVal && idInput) {
+                    idInput.reportValidity();
+                    idInput.focus();
+                } else if (!ordenVal && ordenInput) {
+                    ordenInput.reportValidity();
+                    ordenInput.focus();
+                }
+            }
+        });
+    }
 });
 
 function updateGuestTheme(tipo) {
     const ordenInput = document.getElementById('guestOrdenInput');
     const submitBtn = document.getElementById('guestSubmitBtn');
+    const submitText = document.getElementById('guestSubmitBtnText');
+    const tabMant = document.getElementById('tab-label-mantenimiento');
+    const tabElec = document.getElementById('tab-label-electronica');
+
     if (tipo === 'electronica') {
-        if (ordenInput) ordenInput.placeholder = 'Ej: ELC-001 o 1';
+        const ph = 'Ej: ELC-001 o 1';
+        if (ordenInput) {
+            ordenInput.dataset.tempPlaceholder = ph;
+            ordenInput.placeholder = ph;
+        }
+        if (tabMant) {
+            tabMant.className = 'text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 guest-tab-inactive';
+        }
+        if (tabElec) {
+            tabElec.className = 'text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 guest-tab-active-elec';
+        }
         if (submitBtn) {
-            submitBtn.className = 'w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-500/25 transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg';
+            submitBtn.className = 'w-full mt-6 guest-btn-elec font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg flex items-center justify-center gap-2';
+        }
+        if (submitText) {
+            submitText.textContent = '⚡ Consultar Estado de la Orden';
         }
     } else {
-        if (ordenInput) ordenInput.placeholder = 'Ej: ORD-001 o 1';
+        const ph = 'Ej: ORD-001 o 1';
+        if (ordenInput) {
+            ordenInput.dataset.tempPlaceholder = ph;
+            ordenInput.placeholder = ph;
+        }
+        if (tabElec) {
+            tabElec.className = 'text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 guest-tab-inactive';
+        }
+        if (tabMant) {
+            tabMant.className = 'text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 guest-tab-active-mant';
+        }
         if (submitBtn) {
-            submitBtn.className = 'w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg';
+            submitBtn.className = 'w-full mt-6 guest-btn-mant font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg flex items-center justify-center gap-2';
+        }
+        if (submitText) {
+            submitText.textContent = '🔍 Consultar Estado de la Orden';
         }
     }
 }

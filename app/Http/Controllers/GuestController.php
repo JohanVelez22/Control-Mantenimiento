@@ -59,9 +59,9 @@ class GuestController extends Controller
             'identificacion' => 'required|string|min:3|max:30',
             'id_orden' => 'required|string|min:1|max:30',
         ], [
-            'identificacion.required' => 'La identificación (cédula o NIT) es obligatoria.',
+            'identificacion.required' => 'Debes digitar Cédula / NIT',
             'identificacion.min' => 'La identificación debe tener al menos 3 caracteres.',
-            'id_orden.required' => 'El número de orden es obligatorio.',
+            'id_orden.required' => 'Debes digitar la orden',
             'tipo.required' => 'El tipo de consulta es obligatorio.',
         ]);
 
