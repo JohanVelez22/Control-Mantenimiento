@@ -1589,7 +1589,9 @@ html.dark .backup-path-code {
 }
 
 /* Contenedor y tabla de archivos integrados con Liquid Glass */
-.backup-files-wrapper {
+.backup-files-wrapper,
+.glass-card.backup-files-wrapper,
+.glass-card:has(.backup-table) {
   border-radius: 20px !important;
   overflow: hidden !important;
   background: rgba(255, 255, 255, 0.45) !important;
@@ -1597,6 +1599,9 @@ html.dark .backup-path-code {
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
   box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  padding: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .dark .backup-files-wrapper,
@@ -1606,11 +1611,42 @@ html.dark .backup-files-wrapper {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
 }
 
+#backup-files-container {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#backup-files-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+#backup-files-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#backup-files-container::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+
+.dark #backup-files-container::-webkit-scrollbar-thumb,
+html.dark #backup-files-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.dark #backup-files-container::-webkit-scrollbar-thumb:hover,
+html.dark #backup-files-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
 .backup-table {
   width: 100% !important;
   border-collapse: collapse !important;
   text-align: left !important;
   font-size: 12px !important;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .backup-table th {
@@ -1642,6 +1678,10 @@ html.dark .backup-table th {
   transition: background 0.15s ease !important;
 }
 
+.backup-file-row:last-child {
+  border-bottom: none !important;
+}
+
 .backup-file-row:hover {
   background: rgba(13, 148, 136, 0.04) !important;
 }
@@ -1649,6 +1689,11 @@ html.dark .backup-table th {
 .dark .backup-file-row,
 html.dark .backup-file-row {
   border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.dark .backup-file-row:last-child,
+html.dark .backup-file-row:last-child {
+  border-bottom: none !important;
 }
 
 .dark .backup-file-row:hover,
@@ -3574,7 +3619,7 @@ html.dark .ts-table.table-electronica tbody tr:hover {
 /* Margen inferior en tarjetas contenedoras de tablas */
 .glass-card:has(.ts-table),
 .glass-card:has(.glass-table),
-.glass-card:has(table) {
+.glass-card:has(table):not(.backup-files-wrapper):not(:has(.backup-table)) {
   padding-bottom: 24px !important;
 }
 
@@ -3652,6 +3697,29 @@ html.dark .logo-upload-container {
   background: rgba(59, 130, 246, 0.04) !important;
   box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15) !important;
   transform: translateY(-1px) !important;
+}
+
+.logo-camera-badge {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.20) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+
+.logo-camera-emoji {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+  transform: translateY(-3px) !important;
 }
 
 html.dark .ts-table tbody td {

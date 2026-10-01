@@ -44,8 +44,8 @@
                     
                     {{-- Overlay animado al hacer hover --}}
                     <div class="absolute inset-0 bg-slate-900/65 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1.5 transition-opacity duration-200 backdrop-blur-[2px] z-20 pointer-events-none">
-                        <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-base text-white shadow-sm">
-                            📷
+                        <div class="logo-camera-badge shrink-0">
+                            <span class="logo-camera-emoji select-none">📷</span>
                         </div>
                         <span class="text-white text-[11px] font-black uppercase tracking-wider">Cambiar Logo</span>
                     </div>
@@ -794,8 +794,8 @@ async function submitConfiguracion(event) {
                 </div>
 
                 {{-- Lista de Archivos con Scroll --}}
-                <div class="glass-card backup-files-wrapper">
-                    <div class="max-h-64 overflow-y-auto" id="backup-files-container">
+                <div class="glass-card backup-files-wrapper p-0">
+                    <div class="max-h-64 overflow-y-auto p-0 m-0" id="backup-files-container">
                         <div class="p-8 text-center text-slate-400 text-xs">
                             Cargando archivos de respaldo...
                         </div>
