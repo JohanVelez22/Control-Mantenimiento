@@ -6,7 +6,7 @@
         <div class="text-center mb-8">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 text-3xl mb-4">⚡</div>
             <h1 class="text-2xl font-black text-slate-800 dark:text-white">Consulta de Electrónicas</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Busque por cédula, teléfono o número de orden (ej: ELC-001)</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingrese la cédula del cliente y el número de orden (ej: ELC-001)</p>
         </div>
 
         @if(session('error'))
@@ -15,19 +15,30 @@
             </div>
         @endif
 
-        <form method="GET" action="{{ route('consulta.electronicas') }}" class="mb-8">
-            <div class="flex gap-3">
-                <input type="text" name="q" value="{{ $query ?? '' }}" placeholder="Cédula, teléfono o número de orden (ej: 123456789, 3001234567, ELC-001)" 
-                       class="flex-1 glass-input py-3 text-lg" required minlength="5" maxlength="30"
-                       pattern="[\d\s\-\.#]{5,30}" title="Solo números, espacios, guiones, puntos o #">
-                <button type="submit" class="btn-purple px-6 py-3 whitespace-nowrap">Buscar</button>
+        <form method="GET" action="{{ route('consulta.electronicas') }}" class="mb-8 space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+                        🪪 Cédula o NIT del Cliente *
+                    </label>
+                    <input type="text" name="identificacion" value="{{ $identificacion ?? '' }}" placeholder="Ej: 123456789" 
+                           class="w-full glass-input py-3 text-base" required minlength="3" maxlength="30">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+                        📋 Número de Orden *
+                    </label>
+                    <input type="text" name="id_orden" value="{{ $idOrden ?? '' }}" placeholder="Ej: ELC-001 o 1" 
+                           class="w-full glass-input py-3 text-base" required minlength="1" maxlength="30">
+                </div>
             </div>
+            <button type="submit" class="btn-purple w-full py-3.5 justify-center text-center font-bold text-base shadow-md">🔍 Consultar Orden</button>
         </form>
 
-        @if($query && $electronicas->isEmpty())
+        @if(($identificacion ?? false) && ($idOrden ?? false) && $electronicas->isEmpty())
             <div class="text-center py-12 text-gray-500 dark:text-gray-400">
                 <div class="text-4xl mb-3">📭</div>
-                <p class="font-medium">No se encontraron electrónicas para "<strong>{{ $query }}</strong>"</p>
+                <p class="font-medium">No se encontró ninguna orden de electrónica asociada a la cédula <strong>{{ $identificacion }}</strong> y orden <strong>{{ $idOrden }}</strong></p>
             </div>
         @elseif($electronicas->isNotEmpty())
             <div class="space-y-3">

@@ -151,9 +151,15 @@
 let filaIndex = 1;
 const stocksData = @json($stocksJson);
 
+const escapeHtml = window.escapeHtml || function(text) {
+    if (text === null || text === undefined) return '';
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
+};
+
 function stockSelectOptions() {
     return stocksData.map(s =>
-      `<option value="${s.id}" data-precio="${s.precio}">${s.nombre} (Stock: ${s.cantidad}) — P.Compra: $${window.formatNumber(s.precio)}</option>`
+      `<option value="${s.id}" data-precio="${s.precio}">${escapeHtml(s.nombre)} (Stock: ${s.cantidad}) — P.Compra: $${window.formatNumber(s.precio)}</option>`
     ).join('');
 }
 

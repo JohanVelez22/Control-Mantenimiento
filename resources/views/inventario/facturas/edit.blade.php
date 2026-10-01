@@ -337,6 +337,12 @@
 const stocksData = @json($stocks);
 let filaIndex = 999;
 
+const escapeHtml = window.escapeHtml || function(text) {
+    if (text === null || text === undefined) return '';
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
+};
+
 function agregarFila() {
     filaIndex++;
     let optionsHtml = '<option value="">Seleccionar producto...</option>';
@@ -350,7 +356,7 @@ function agregarFila() {
         @else
             defaultPrice = (esTecnico && s.precio_tecnico > 0) ? s.precio_tecnico : (s.precio_venta || 0);
         @endif
-        optionsHtml += `<option value="${s.id}" data-precio="${defaultPrice}">${s.producto} (Stock: ${s.cantidad})</option>`;
+        optionsHtml += `<option value="${s.id}" data-precio="${defaultPrice}">${escapeHtml(s.producto)} (Stock: ${s.cantidad})</option>`;
     });
 
     const tr = document.createElement('tr');

@@ -56,9 +56,9 @@
                     @php
                         $isElectronicaSearch = ($tipo ?? '') === 'electronica' || ($electronicas->isNotEmpty() && $mantenimientos->isEmpty());
                     @endphp
-                    <p class="text-slate-600 dark:text-slate-400 text-lg">Resultados de la orden o identificación: <span class="{{ $isElectronicaSearch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400' }} font-black">{{ strtoupper($query) }}</span></p>
+                    <p class="text-slate-600 dark:text-slate-400 text-lg">Resultados para la orden <span class="{{ $isElectronicaSearch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400' }} font-black">{{ strtoupper($id_orden ?? '') }}</span> (Doc: {{ $identificacion ?? '' }})</p>
                 @else
-                    <p class="text-slate-600 dark:text-slate-400 text-lg">Hola. Ingresa tu número de orden o identificación para hacer el seguimiento de tu equipo.</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-lg">Ingresa tu número de identificación y número de orden para hacer el seguimiento de tu equipo con total privacidad.</p>
                 @endif
             </div>
             
@@ -218,31 +218,62 @@
                 @endif
             @else
                 <!-- Formulario de Búsqueda si no hay cliente asociado -->
-                <form method="GET" action="{{ route('guest.search') }}" class="max-w-xl mx-auto">
-                    <div class="flex bg-white/40 dark:bg-slate-900/40 p-1 rounded-xl mb-6 sm:mb-8 border border-white/50 dark:border-white/10 shadow-sm backdrop-blur-md">
+                <form method="GET" action="{{ route('guest.search') }}" class="max-w-xl mx-auto space-y-4">
+                    <div class="flex bg-white/40 dark:bg-slate-900/40 p-1 rounded-xl mb-6 border border-white/50 dark:border-white/10 shadow-sm backdrop-blur-md">
                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="tipo" value="mantenimiento" class="peer sr-only" checked onchange="updateGuestTheme('mantenimiento')">
-                            <div class="text-center py-2.5 rounded-lg text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-blue-500 peer-checked:text-white transition-all peer-checked:shadow-md">
-                                Mantenimientos
+                            <input type="radio" name="tipo" value="mantenimiento" class="peer sr-only" {{ ($tipo ?? 'mantenimiento') === 'mantenimiento' ? 'checked' : '' }} onchange="updateGuestTheme('mantenimiento')">
+                            <div class="text-center py-2.5 rounded-lg text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-blue-500 peer-checked:text-white transition-all peer-checked:shadow-md flex items-center justify-center gap-1.5">
+                                <span>🛠️</span> Mantenimientos
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="tipo" value="electronica" class="peer sr-only" onchange="updateGuestTheme('electronica')">
-                            <div class="text-center py-2.5 rounded-lg text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-purple-500 peer-checked:text-white transition-all peer-checked:shadow-md">
-                                Electrónica
+                            <input type="radio" name="tipo" value="electronica" class="peer sr-only" {{ ($tipo ?? '') === 'electronica' ? 'checked' : '' }} onchange="updateGuestTheme('electronica')">
+                            <div class="text-center py-2.5 rounded-lg text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-purple-500 peer-checked:text-white transition-all peer-checked:shadow-md flex items-center justify-center gap-1.5">
+                                <span>⚡</span> Electrónica
                             </div>
                         </label>
                     </div>
 
-                    <div class="relative">
-                        <input type="text" name="query" id="guestSearchInput" class="glass-input w-full pl-12 pr-4 py-4 text-lg focus:placeholder-transparent" placeholder="Ej: ORD-001 o 123456789" onfocus="this.dataset.placeholder = this.placeholder; this.placeholder = '';" onblur="if(!this.value) this.placeholder = this.dataset.placeholder || getSearchPlaceholder();" required>
-                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
+                    {{-- Campo Cédula / NIT --}}
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 ml-1">
+                            🪪 Cédula o NIT del Cliente <span class="text-red-500 font-bold">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="text" name="identificacion" id="guestIdentificacionInput" 
+                                   value="{{ old('identificacion', $identificacion ?? '') }}" 
+                                   class="glass-input w-full pl-11 pr-4 py-3.5 text-base sm:text-lg font-semibold focus:ring-2 focus:ring-blue-500" 
+                                   placeholder="Ej: 123456789 o 900123456" required minlength="3" maxlength="30">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none select-none">🪪</span>
+                        </div>
+                        @error('identificacion')
+                            <p class="text-xs text-red-500 font-medium mt-1 ml-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <button type="submit" id="guestSubmitBtn" class="w-full mt-6 sm:mt-8 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02] cursor-pointer">
-                        Consultar Estado
+                    {{-- Campo Número de Orden --}}
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 ml-1">
+                            📋 Número de Orden <span class="text-red-500 font-bold">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="text" name="id_orden" id="guestOrdenInput" 
+                                   value="{{ old('id_orden', $id_orden ?? '') }}" 
+                                   class="glass-input w-full pl-11 pr-4 py-3.5 text-base sm:text-lg font-semibold focus:ring-2 focus:ring-blue-500" 
+                                   placeholder="Ej: ORD-001 o 1" required minlength="1" maxlength="30">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none select-none">📋</span>
+                        </div>
+                        @error('id_orden')
+                            <p class="text-xs text-red-500 font-medium mt-1 ml-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 px-1 pt-1">
+                        🔒 Consulta protegida: se requiere tanto la identificación del titular como el código de orden de su comprobante.
+                    </p>
+
+                    <button type="submit" id="guestSubmitBtn" class="w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg">
+                        🔍 Consultar Estado de la Orden
                     </button>
                 </form>
             @endif
@@ -290,18 +321,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function getSearchPlaceholder() {
-    const isElec = document.querySelector('input[name=tipo]:checked')?.value === 'electronica';
-    return isElec ? 'Ej: ELC-001 o 123456789' : 'Ej: ORD-001 o 123456789';
-}
-
 function updateGuestTheme(tipo) {
-    const input = document.getElementById('guestSearchInput');
-    if (input) {
-        const ph = (tipo === 'electronica') ? 'Ej: ELC-001 o 123456789' : 'Ej: ORD-001 o 123456789';
-        input.dataset.placeholder = ph;
-        if (document.activeElement !== input || input.value) {
-            input.placeholder = ph;
+    const ordenInput = document.getElementById('guestOrdenInput');
+    const submitBtn = document.getElementById('guestSubmitBtn');
+    if (tipo === 'electronica') {
+        if (ordenInput) ordenInput.placeholder = 'Ej: ELC-001 o 1';
+        if (submitBtn) {
+            submitBtn.className = 'w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-500/25 transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg';
+        }
+    } else {
+        if (ordenInput) ordenInput.placeholder = 'Ej: ORD-001 o 1';
+        if (submitBtn) {
+            submitBtn.className = 'w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg';
         }
     }
 }

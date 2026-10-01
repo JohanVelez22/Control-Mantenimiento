@@ -29,6 +29,8 @@ class MantenimientoController extends Controller
      */
     public function index(Request $request)
     {
+        Gate::authorize('viewAny', Mantenimiento::class);
+
         if ($request->has('locate')) {
             $id = $request->locate;
             // Calcular la página asumiendo orden descendente por ID
@@ -45,6 +47,8 @@ class MantenimientoController extends Controller
 
     public function show(Mantenimiento $mantenimiento)
     {
+        Gate::authorize('view', $mantenimiento);
+
         $mantenimiento->load(['equipo.cliente', 'tecnico', 'user', 'abonos.user', 'abonos.movimientoCaja', 'stocks']);
         $stocks_disponibles = Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
 
@@ -360,40 +364,50 @@ class MantenimientoController extends Controller
     }
 
     /**
-     * Consulta blindada para invitado: busca por cédula o teléfono del cliente.
-     * No muestra lista completa. Requiere parámetro ?q= o muestra formulario vacío.
+     * Consulta con doble factor para invitado: requiere cédula del cliente Y número de orden.
+     * Protege la privacidad evitando enumeración o consulta cruzada entre clientes.
      */
     public function consulta(Request $request)
     {
-        $query = $request->get('q');
+        $identificacion = $request->get('identificacion') ?? $request->get('cedula');
+        $idOrden = $request->get('id_orden') ?? $request->get('orden');
         $mantenimientos = collect();
 
-        if ($query) {
-            // Validación estricta: alfanumérico, espacios, guiones, puntos, # (para órdenes como ORD-123)
-            if (! preg_match('/^[\w\s\-\.#]{5,30}$/u', $query)) {
-                return back()->with('error', 'Formato inválido. Use letras, números, espacios, guiones, puntos o # (ej: 123456789, 3001234567, ORD-001, AB123).');
+        if ($identificacion && $idOrden) {
+            $cleanId = preg_replace('/[\s\-\.]/', '', $identificacion);
+            $cleanOrden = strtoupper(preg_replace('/[\s\-\.]/', '', $idOrden));
+            $esNumero = is_numeric($idOrden) ? (int) $idOrden : null;
+            if (! $esNumero && str_starts_with($cleanOrden, 'ORD')) {
+                $esNumero = (int) preg_replace('/[^0-9]/', '', $idOrden);
             }
 
-            // Normalizar: quitar espacios/guiones/puntos para búsqueda y a mayúsculas
-            $clean = strtoupper(preg_replace('/[\s\-\.]/', '', $query));
-
             $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico'])
-                ->where(function ($q) use ($clean) {
-                    // 1. Por cédula/teléfono del cliente
-                    $q->whereHas('equipo.cliente', function ($sub) use ($clean) {
-                        $sub->where('identificacion', 'like', "%{$clean}%")
-                            ->orWhere('telefono', 'like', "%{$clean}%")
-                            ->orWhere('movil', 'like', "%{$clean}%");
-                    })
-                    // 2. Por número de orden (id_orden)
-                        ->orWhere('id_orden', 'like', "%{$clean}%");
-                })
                 ->where('anulado', false)
+                ->whereHas('equipo.cliente', function ($sub) use ($identificacion, $cleanId) {
+                    $sub->where('identificacion', $identificacion)
+                        ->orWhere('telefono', $identificacion)
+                        ->orWhere('movil', $identificacion)
+                        ->orWhereRaw("REPLACE(REPLACE(REPLACE(identificacion, ' ', ''), '-', ''), '.', '') = ?", [$cleanId]);
+                })
+                ->where(function ($q) use ($idOrden, $cleanOrden, $esNumero) {
+                    $q->where('id_orden', $idOrden)
+                        ->orWhereRaw("UPPER(REPLACE(REPLACE(REPLACE(id_orden, ' ', ''), '-', ''), '.', '')) = ?", [$cleanOrden]);
+                    if ($esNumero) {
+                        $q->orWhere('id', $esNumero);
+                    }
+                })
                 ->latest()
-                ->limit(50)
+                ->limit(10)
                 ->get();
+
+            if ($mantenimientos->isNotEmpty()) {
+                $existentes = session('consultas_autorizadas', []);
+                session(['consultas_autorizadas' => array_values(array_unique(array_merge($existentes, $mantenimientos->pluck('id')->all())))]);
+            }
+        } elseif ($request->has('identificacion') || $request->has('id_orden') || $request->has('q')) {
+            return back()->with('error', 'Por motivos de seguridad y privacidad, debe ingresar tanto la cédula del cliente como el número de orden.');
         }
 
-        return view('consulta.mantenimientos', compact('mantenimientos', 'query'));
+        return view('consulta.mantenimientos', compact('mantenimientos', 'identificacion', 'idOrden'));
     }
 }

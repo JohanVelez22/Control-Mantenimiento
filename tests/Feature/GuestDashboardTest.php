@@ -122,7 +122,7 @@ class GuestDashboardTest extends TestCase
             'anulado' => false,
         ]);
 
-        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&query='.$cliente->identificacion);
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&identificacion='.$cliente->identificacion.'&id_orden='.$mantenimiento->id_orden);
 
         $response->assertOk();
         $response->assertSessionHasNoErrors();
@@ -155,7 +155,7 @@ class GuestDashboardTest extends TestCase
             'anulado' => false,
         ]);
 
-        $response = $this->actingAs($guest)->get('/guest/search?tipo=electronica&query='.$cliente->identificacion);
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=electronica&identificacion='.$cliente->identificacion.'&id_orden='.$electronica->id_orden);
 
         $response->assertOk();
         $response->assertSessionHasNoErrors();
@@ -213,10 +213,11 @@ class GuestDashboardTest extends TestCase
 
         $response = $this->actingAs($guest)->get('/guest/search', [
             'tipo' => 'mantenimiento',
-            'query' => 'abc', // Too short
+            'identificacion' => 'ab', // Too short (min: 3)
+            'id_orden' => 'ORD-1',
         ]);
 
-        $response->assertSessionHasErrors('query');
+        $response->assertSessionHasErrors('identificacion');
     }
 
     public function test_guest_search_requires_tipo(): void
@@ -224,10 +225,58 @@ class GuestDashboardTest extends TestCase
         $guest = $this->createGuestUser();
 
         $response = $this->actingAs($guest)->get('/guest/search', [
-            'query' => '123456789',
+            'identificacion' => '123456789',
+            'id_orden' => 'ORD-001',
         ]);
 
         $response->assertSessionHasErrors('tipo');
+    }
+
+    public function test_guest_search_requires_both_fields(): void
+    {
+        $guest = $this->createGuestUser();
+
+        $response = $this->actingAs($guest)->get('/guest/search', [
+            'tipo' => 'mantenimiento',
+            'identificacion' => '123456789',
+        ]);
+
+        $response->assertSessionHasErrors('id_orden');
+    }
+
+    public function test_guest_cannot_view_order_with_mismatched_cedula(): void
+    {
+        $guest = $this->createGuestUser();
+        [$cliente, $equipo] = $this->createClienteWithEquipo($guest->id);
+
+        $tecnico = Tecnico::create([
+            'nombre' => 'Tecnico Test Privacy',
+            'identificacion' => 'TEC-PRIV',
+            'especialidad' => 'General',
+            'telefono' => '3009876599',
+            'movil' => '3009876599',
+            'email' => 'tecnicopriv@test.com',
+        ]);
+
+        $mantenimiento = Mantenimiento::create([
+            'equipo_id' => $equipo->id,
+            'id_orden' => 'ORD-PRIV-1',
+            'fecha_entrada' => now(),
+            'tipo' => 'preventivo',
+            'reparacion' => 'software',
+            'descripcion' => 'Confidencial',
+            'costo' => 500,
+            'estado' => 'pendiente',
+            'tecnico_id' => $tecnico->id,
+            'user_id' => $guest->id,
+            'anulado' => false,
+        ]);
+
+        // Cédula diferente no debe ver la orden de otro cliente
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&identificacion=999999999&id_orden='.$mantenimiento->id_orden);
+        $response->assertOk();
+        $response->assertDontSee('Confidencial');
+        $response->assertSee('No se encontró ningun resultado');
     }
 
     public function test_guest_dashboard_shows_repuestos_breakdown(): void
@@ -274,7 +323,7 @@ class GuestDashboardTest extends TestCase
             'precio_unitario' => 150000,
         ]);
 
-        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&query='.$cliente->identificacion);
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&identificacion='.$cliente->identificacion.'&id_orden='.$mantenimiento->id_orden);
 
         $response->assertOk();
         $response->assertSee('Disco SSD 1TB');
@@ -324,5 +373,29 @@ class GuestDashboardTest extends TestCase
         $response->assertOk();
         $response->assertSee('⏳ PENDIENTE');
         $response->assertSee('✅ TERMINADO');
+    }
+
+    public function test_tecnico_cannot_access_usuarios_index(): void
+    {
+        $tecnico = $this->createTecnicoUser();
+
+        $response = $this->actingAs($tecnico)->get('/usuarios');
+        $response->assertForbidden();
+    }
+
+    public function test_guest_cannot_access_mantenimientos_index(): void
+    {
+        $guest = $this->createGuestUser();
+
+        $response = $this->actingAs($guest)->get('/mantenimientos');
+        $response->assertRedirect(route('dashboard'));
+    }
+
+    public function test_guest_cannot_access_electronicas_index(): void
+    {
+        $guest = $this->createGuestUser();
+
+        $response = $this->actingAs($guest)->get('/electronicas');
+        $response->assertRedirect(route('dashboard'));
     }
 }

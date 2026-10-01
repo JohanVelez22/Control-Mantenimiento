@@ -13,6 +13,10 @@ class UserController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Acceso denegado. Solo administradores pueden gestionar la lista de usuarios.');
+        }
+
         $users = User::orderBy('id', 'desc')->paginate(10);
 
         return view('usuarios.index', compact('users'));
@@ -126,6 +130,10 @@ class UserController extends Controller
         $usuario->email = $request->email;
 
         $usuario->save();
+
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('success', 'Perfil actualizado correctamente.');
+        }
 
         return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado correctamente.');
     }

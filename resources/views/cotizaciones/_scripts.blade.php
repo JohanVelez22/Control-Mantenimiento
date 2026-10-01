@@ -2,6 +2,12 @@
 let filaIndex = 0;
 const stocksData = @json($stocksJson);
 
+const escapeHtml = window.escapeHtml || function(text) {
+    if (text === null || text === undefined) return '';
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
+};
+
 function formatNum(val) {
     if (typeof window.formatNumber === 'function') {
         return window.formatNumber(val);
@@ -28,7 +34,7 @@ function getStockOptions() {
            stocksData.map(s => {
                const p = esTec ? (s.precio_tecnico > 0 ? s.precio_tecnico : s.precio_venta) : s.precio_venta;
                const labelTag = esTec ? '🔧 P.Técnico' : 'P.Venta';
-               return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-nombre="${s.nombre}" data-cantidad="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — ${labelTag}: $${formatNum(p)}</option>`;
+               return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-nombre="${escapeHtml(s.nombre)}" data-cantidad="${s.cantidad}">${escapeHtml(s.nombre)} (Disp: ${s.cantidad}) — ${labelTag}: $${formatNum(p)}</option>`;
            }).join('');
 }
 
@@ -231,7 +237,7 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
         }
     } else {
         let defaultDesc = itemData ? (itemData.descripcion || '') : '';
-        tdDesc.innerHTML = `<input type="text" name="items[${idx}][descripcion]" value="${defaultDesc}" class="desc-input glass-input py-1.5 focus:ring-blue-500 w-full min-w-0" placeholder="Descripción de mano de obra o servicio..." required>`;
+        tdDesc.innerHTML = `<input type="text" name="items[${idx}][descripcion]" value="${escapeHtml(defaultDesc)}" class="desc-input glass-input py-1.5 focus:ring-blue-500 w-full min-w-0" placeholder="Descripción de mano de obra o servicio..." required>`;
     }
 };
 

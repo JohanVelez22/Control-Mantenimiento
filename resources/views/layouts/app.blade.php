@@ -1490,8 +1490,13 @@
                     str = str.replace(/\./g, '');
                 }
                 let n = parseFloat(str);
-                if (isNaN(n)) return '0';
                 return n.toLocaleString('es-CO');
+            };
+
+            window.escapeHtml = function(text) {
+                if (text === null || text === undefined) return '';
+                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+                return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
             };
 
             // Formatear inputs monetarios al cargar la página
