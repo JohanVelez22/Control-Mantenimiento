@@ -56,6 +56,18 @@ trait HandlesAbono
         try {
             DB::beginTransaction();
 
+            // Bloqueo pesimista del modelo para evitar condiciones de carrera por abonos simultáneos
+            $lockedModel = get_class($model)::where('id', $model->id)->lockForUpdate()->first();
+            $saldoPendiente = $lockedModel ? $lockedModel->saldo_pendiente : $model->saldo_pendiente;
+
+            if ($validated['monto'] > $saldoPendiente + \App\Models\Factura::EPSILON) {
+                DB::rollBack();
+
+                return back()->with('error',
+                    'El abono ($'.number_format($validated['monto'], 0, ',', '.').
+                    ') no puede superar el saldo pendiente ($'.number_format($saldoPendiente, 0, ',', '.').').')->withInput();
+            }
+
             if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
                 DB::rollBack();
 

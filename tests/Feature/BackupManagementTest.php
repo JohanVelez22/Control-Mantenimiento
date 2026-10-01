@@ -256,4 +256,17 @@ class BackupManagementTest extends TestCase
         $this->assertTrue($response->json('success'));
         $this->assertEquals($this->backupDir, $response->json('path'));
     }
+
+    protected function tearDown(): void
+    {
+        if (File::exists($this->backupDir)) {
+            foreach (File::files($this->backupDir) as $file) {
+                if (str_contains($file->getFilename(), 'test') || str_contains($file->getFilename(), 'memory')) {
+                    File::delete($file->getPathname());
+                }
+            }
+        }
+
+        parent::tearDown();
+    }
 }

@@ -459,6 +459,16 @@ class MovimientoCajaController extends Controller
         try {
             DB::beginTransaction();
 
+            // Bloqueo pesimista del movimiento para evitar sobre-abono concurrente
+            $lockedMov = MovimientoCaja::where('id', $movimiento->id)->lockForUpdate()->first();
+            $saldoActual = $lockedMov ? $lockedMov->saldo_pendiente : $movimiento->saldo_pendiente;
+
+            if ($validated['monto_abono'] > $saldoActual + Factura::EPSILON) {
+                DB::rollBack();
+
+                return back()->with('error', 'El abono supera el saldo pendiente de $'.number_format($saldoActual, 0, ',', '.').'.');
+            }
+
             if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
                 DB::rollBack();
 
@@ -484,7 +494,7 @@ class MovimientoCajaController extends Controller
                 $numFactura = $matches[1];
             }
 
-            $esPagoCompleto = ($validated['monto_abono'] >= $movimiento->saldo_pendiente - Factura::EPSILON);
+            $esPagoCompleto = ($validated['monto_abono'] >= $saldoActual - Factura::EPSILON);
 
             $descAbono = $validated['descripcion'];
             if (! $descAbono) {

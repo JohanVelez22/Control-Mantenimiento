@@ -6,6 +6,7 @@ use App\Models\Evento;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 class BackupEventTest extends TestCase
@@ -97,5 +98,19 @@ class BackupEventTest extends TestCase
         $resEmpresa = $this->actingAs($admin)->get(route('configuracion.index'));
         $resEmpresa->assertStatus(200);
         $resEmpresa->assertSee('Generar Respaldo');
+    }
+
+    protected function tearDown(): void
+    {
+        $backupDir = storage_path('app/backups');
+        if (File::exists($backupDir)) {
+            foreach (File::files($backupDir) as $file) {
+                if (str_contains($file->getFilename(), 'test') || str_contains($file->getFilename(), 'memory')) {
+                    File::delete($file->getPathname());
+                }
+            }
+        }
+
+        parent::tearDown();
     }
 }
