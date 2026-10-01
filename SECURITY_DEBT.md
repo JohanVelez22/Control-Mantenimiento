@@ -7,15 +7,16 @@ Este documento registra de manera formal y transparente los elementos de segurid
 ## 🛡️ Estado Actual de Seguridad
 
 ### ✅ Mitigaciones Ya Completadas (100% Listas)
-1. **Localización de Dependencias Frontend**:
-   - `Chart.js`, `Flatpickr` (con localización español) y `TomSelect` fueron instalados vía `npm` y compilados localmente en `public/build/` con **Vite**.
-   - Cero solicitudes a CDNs externos (`cdn.jsdelivr.net`, `npmcdn.com` eliminados).
-2. **Endurecimiento de CSP**:
-   - `Content-Security-Policy` no permite ningún dominio externo para scripts (`script-src 'self'`).
-3. **Protección de Sesiones y Cookies**:
+1. **Seguridad y Cierre de Backdoors**:
+   - Autenticación estrictamente contra hashes en base de datos; eliminación de bypass de contraseñas por defecto y de creación dinámica de cuentas en login.
+   - Exclusión estricta de archivos `.env` y credenciales de los respaldos ZIP descargables.
+   - Autorización sensible (`AnulacionService`) para la eliminación de abonos financieros y transacciones.
+2. **Protección de Sesiones y Cookies**:
    - Encriptación y directiva `Secure` configuradas con auto-activación en producción (`APP_ENV === 'production'`).
-4. **Integridad de Datos y Finanzas**:
-   - 55 tests automáticos y 28 pruebas transaccionales aprobadas al 100%.
+   - Serialización segura en formato JSON para prevenir ataques de deserialización.
+3. **Integridad de Datos y Finanzas**:
+   - Transacciones atómicas (`DB::beginTransaction`), bloqueos pesimistas (`lockForUpdate`) en inventario.
+   - 122 tests automáticos con casi 500 aserciones aprobadas al 100%.
 
 ---
 
@@ -29,3 +30,8 @@ Este documento registra de manera formal y transparente los elementos de segurid
   - Migrar progresivamente las funciones de `app.blade.php` y `dashboard.blade.php` a archivos independientes dentro de `resources/js/modules/`.
   - Reemplazar el paso de rutas y variables PHP directas por atributos `data-*` en elementos del DOM o metadatos JSON.
   - Una vez completado, retirar `'unsafe-inline'` y `'unsafe-eval'` de `SecurityHeaders.php`.
+
+### 2. Migración de Librerías CDN al Bundle Local de Vite
+* **Ubicación**: [`resources/views/layouts/app.blade.php`](file:///c:/ServBay/www/tecni-systemas/resources/views/layouts/app.blade.php)
+* **Motivo actual**: Flatpickr y TomSelect se cargan desde `cdn.jsdelivr.net` y se encuentran permitidos en la CSP.
+* **Plan de Acción**: Empaquetar completamente estas librerías en el pipeline de Vite para prescindir de orígenes externos y permitir una CSP estricta `script-src 'self'`.

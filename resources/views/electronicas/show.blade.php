@@ -258,7 +258,7 @@
                     </a>
                     @endif
 
-                    @if(!auth()->user()->isInvitado())
+                    @if(auth()->user()->isAdmin())
                     <form action="{{ route('electronicas.abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de ${{ number_format($abono->monto, 0, ',', '.') }}?">
                         @csrf @method('DELETE')
                         <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Eliminar abono">

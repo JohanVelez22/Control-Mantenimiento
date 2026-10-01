@@ -66,26 +66,7 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
-        // 1. Usuarios base iniciales del sistema (definidos en .env para arranque inicial si no existen en BD)
-        $baseUsers = [
-            'administrador@tecnisystemas.com' => [
-                'name' => 'Administrador',
-                'role' => 'admin',
-                'pass' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
-            ],
-            'tecnico@tecnisystemas.com' => [
-                'name' => 'Técnico',
-                'role' => 'tecnico',
-                'pass' => env('TECNICO_DEFAULT_PASSWORD', 'Tecni123*'),
-            ],
-            'invitado@tecnisystemas.com' => [
-                'name' => 'Invitado',
-                'role' => 'invitado',
-                'pass' => env('INVITADO_DEFAULT_PASSWORD', 'Invit123*'),
-            ],
-        ];
-
-        // Mapeo rápido de nombres comunes / roles base a su correo base
+        // 1. Mapeo rápido de nombres comunes / roles base a su correo canónico
         $baseAliases = [
             'admin' => 'administrador@tecnisystemas.com',
             'administrador' => 'administrador@tecnisystemas.com',
@@ -127,10 +108,8 @@ class AuthController extends Controller
         }
 
         if ($user) {
-            $userEmail = strtolower($user->email);
-            // Validar si la contraseña coincide (contra su hash en BD o contra la clave base de .env)
-            $passwordValid = Hash::check($inputPassword, $user->password)
-                || (isset($baseUsers[$userEmail]['pass']) && $inputPassword === $baseUsers[$userEmail]['pass']);
+            // Validar si la contraseña coincide estrictamente contra su hash en BD
+            $passwordValid = Hash::check($inputPassword, $user->password);
 
             if ($passwordValid) {
                 // Si el usuario fue desactivado por el administrador, denegar acceso y NO reactivar
@@ -139,29 +118,6 @@ class AuthController extends Controller
                         'email' => 'Tu cuenta ha sido desactivada por el administrador.',
                     ])->onlyInput('email');
                 }
-
-                // Guardar historial de intentos fallidos para trazabilidad en auditoría
-                $history = Cache::get($historyKey, []);
-                session()->put('login_attempts_history', $history);
-                Cache::forget($historyKey);
-
-                Auth::login($user, $request->filled('remember'));
-                goto authenticated_user;
-            }
-        }
-
-        // 3. Si el usuario NO existe en la base de datos pero es uno de los usuarios base iniciales, crearlo por primera vez
-        $fallbackBaseEmail = $resolvedEmail ?? (isset($baseUsers[$inputLower]) ? $inputLower : null);
-        if (! $user && $fallbackBaseEmail && isset($baseUsers[$fallbackBaseEmail])) {
-            $config = $baseUsers[$fallbackBaseEmail];
-            if (! empty($config['pass']) && $inputPassword === $config['pass']) {
-                $user = User::create([
-                    'email' => $fallbackBaseEmail,
-                    'name' => $config['name'],
-                    'role' => $config['role'],
-                    'password' => Hash::make($config['pass']),
-                    'active' => true,
-                ]);
 
                 // Guardar historial de intentos fallidos para trazabilidad en auditoría
                 $history = Cache::get($historyKey, []);

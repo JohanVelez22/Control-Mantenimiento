@@ -6,6 +6,7 @@ use App\Models\Abono;
 use App\Models\ConceptoCaja;
 use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
+use App\Services\CierreCajaGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,14 @@ trait HandlesAbono
                 ') no puede superar el saldo pendiente ($'.number_format($saldoPendiente, 0, ',', '.').').')->withInput();
         }
 
+        // Bloqueo de período: el abono genera un movimiento de caja, así que la fecha
+        // no puede pertenecer a un día ya cerrado.
+        if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+            return back()->withErrors([
+                'fecha' => 'No se pueden registrar abonos con fecha '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+            ])->withInput();
+        }
+
         // El ID del campo FK depende del modelo
         $fkField = $model instanceof Mantenimiento ? 'mantenimiento_id' : 'electronica_id';
         $validated[$fkField] = $model->id;
@@ -41,6 +50,14 @@ trait HandlesAbono
 
         try {
             DB::beginTransaction();
+
+            if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+                DB::rollBack();
+
+                return back()->withErrors([
+                    'fecha' => 'No se pueden registrar abonos con fecha '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+                ])->withInput();
+            }
 
             $abono = Abono::create($validated);
 
@@ -96,14 +113,32 @@ trait HandlesAbono
      */
     protected function destroyAbono(Abono $abono, string $successMsg): RedirectResponse
     {
+        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible(request())) {
+            return back()->with('error', $error);
+        }
+
+        $fechaAbono = $abono->fecha ? \Carbon\Carbon::parse($abono->fecha)->toDateString() : null;
+        if (CierreCajaGuard::fechaEstaCerrada($fechaAbono)) {
+            return back()->with('error', 'No se puede eliminar este abono: la fecha '.$fechaAbono.' ya tiene un cierre de caja registrado. Para modificarlo, elimine primero el cierre de ese día.');
+        }
+
         try {
             DB::beginTransaction();
 
-            // Anular lógicamente el MovimientoCaja asociado para preservar la trazabilidad contable de auditoría
-            MovimientoCaja::where('abono_id', $abono->id)->update([
-                'anulado' => true,
-                'estado' => 'anulado',
-            ]);
+            if (CierreCajaGuard::fechaEstaCerrada($fechaAbono)) {
+                DB::rollBack();
+
+                return back()->with('error', 'No se puede eliminar este abono: la fecha '.$fechaAbono.' ya tiene un cierre de caja registrado.');
+            }
+
+            // Anular lógicamente el MovimientoCaja asociado vía modelo para preservar la trazabilidad contable y auditoría
+            $mov = MovimientoCaja::where('abono_id', $abono->id)->first();
+            if ($mov) {
+                $mov->update([
+                    'anulado' => true,
+                    'estado' => 'anulado',
+                ]);
+            }
 
             $abono->delete();
 

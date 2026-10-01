@@ -963,6 +963,7 @@ html.dark #ts-topbar {
   background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
   box-shadow: 0 4px 14px rgba(13, 148, 136, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
 }
+
 .btn-backup.btn-backup-db:hover {
   background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%) !important;
   box-shadow: 0 6px 20px rgba(13, 148, 136, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
@@ -972,6 +973,7 @@ html.dark #ts-topbar {
   background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
   box-shadow: 0 4px 14px rgba(99, 102, 241, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
 }
+
 .btn-backup.btn-backup-files:hover {
   background: linear-gradient(135deg, #818CF8 0%, #6366F1 100%) !important;
   box-shadow: 0 6px 20px rgba(99, 102, 241, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
@@ -981,6 +983,7 @@ html.dark #ts-topbar {
   background: linear-gradient(135deg, #A855F7 0%, #9333EA 100%) !important;
   box-shadow: 0 4px 14px rgba(168, 85, 247, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
 }
+
 .btn-backup.btn-backup-all:hover {
   background: linear-gradient(135deg, #C084FC 0%, #A855F7 100%) !important;
   box-shadow: 0 6px 20px rgba(168, 85, 247, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
@@ -1844,6 +1847,7 @@ html.dark .btn-preset-time:hover {
   color: #FFFFFF !important;
   border-color: #0F766E !important;
 }
+
 html.dark .btn-preset-time.is-active {
   background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
   color: #FFFFFF !important;
@@ -1900,13 +1904,16 @@ html.dark .time-picker-custom-input:focus-within {
   color: #64748B !important;
   background: transparent !important;
 }
+
 .tp-ampm-btn.is-active {
   background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
   color: #FFFFFF !important;
 }
+
 html.dark .tp-ampm-btn {
   color: #94A3B8 !important;
 }
+
 html.dark .tp-ampm-btn.is-active {
   background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
   color: #FFFFFF !important;
@@ -3321,7 +3328,7 @@ input[type="password"]::-ms-clear {
   box-sizing: border-box !important;
 }
 
-.ts-password-wrapper > input {
+.ts-password-wrapper>input {
   margin: 0 !important;
   width: 100% !important;
 }
@@ -3411,7 +3418,7 @@ html.dark .ts-password-toggle:active {
   pointer-events: none !important;
 }
 
-.ts-password-wrapper > input:disabled ~ .ts-password-toggle {
+.ts-password-wrapper>input:disabled~.ts-password-toggle {
   opacity: 0.4 !important;
   cursor: not-allowed !important;
   pointer-events: none !important;
@@ -3829,13 +3836,13 @@ html.dark .logo-upload-container {
   -webkit-backdrop-filter: blur(4px) !important;
 }
 
-.logo-camera-emoji {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 16px !important;
-  line-height: 1 !important;
-  transform: translateY(-3px) !important;
+.logo-camera-badge svg {
+  width: 18px !important;
+  height: 18px !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #FFFFFF !important;
 }
 
 html.dark .ts-table tbody td {

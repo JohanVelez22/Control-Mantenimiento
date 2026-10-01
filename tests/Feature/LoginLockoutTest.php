@@ -15,6 +15,7 @@ class LoginLockoutTest extends TestCase
     {
         parent::setUp();
         Cache::flush();
+        (new \Database\Seeders\AdminUserSeeder)->run();
     }
 
     public function test_intentos_fallidos_muestran_contador_de_intentos_restantes(): void

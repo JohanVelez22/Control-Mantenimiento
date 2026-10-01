@@ -11,6 +11,7 @@ use App\Models\MovimientoCaja;
 use App\Models\Proveedor;
 use App\Models\Stock;
 use App\Services\AnulacionService;
+use App\Services\CierreCajaGuard;
 use App\Services\OrdenService;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -401,8 +402,26 @@ class MovimientoInventarioController extends Controller
             return redirect()->back()->with('error', $error)->withInput();
         }
 
+        // Bloqueo de período: no se puede anular o reactivar una factura con movimientos en fechas cerradas
+        $movsCaja = MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")->get();
+        foreach ($movsCaja as $m) {
+            $fechaM = $m->fecha ? $m->fecha->toDateString() : null;
+            if (CierreCajaGuard::fechaEstaCerrada($fechaM)) {
+                return redirect()->back()->with('error', "No se puede cambiar el estado de la factura #{$factura->numero_factura}: tiene movimientos en caja el {$fechaM}, día que ya tiene cierre de caja registrado. Para modificarla, elimine primero el cierre de ese día.");
+            }
+        }
+
         try {
             DB::beginTransaction();
+
+            foreach ($movsCaja as $m) {
+                $fechaM = $m->fecha ? $m->fecha->toDateString() : null;
+                if (CierreCajaGuard::fechaEstaCerrada($fechaM)) {
+                    DB::rollBack();
+
+                    return redirect()->back()->with('error', "No se puede cambiar el estado de la factura #{$factura->numero_factura}: tiene movimientos en caja con fecha {$fechaM} que ya tiene cierre de caja.");
+                }
+            }
 
             if ($factura->estado === 'anulada') {
                 // REACTIVAR LA FACTURA
@@ -558,6 +577,17 @@ class MovimientoInventarioController extends Controller
             'new_items.*.precio_unitario' => 'required|numeric|min:0',
         ]);
 
+        // Bloqueo de período: no permitir editar facturas de días cerrados ni mover a días cerrados
+        $fechaOriginal = $factura->fecha ? $factura->fecha->toDateString() : null;
+        $fechaDestino = $request->fecha;
+
+        if (CierreCajaGuard::fechaEstaCerrada($fechaOriginal)) {
+            return back()->withErrors(['fecha' => "No se puede editar esta factura: su fecha original ({$fechaOriginal}) ya tiene un cierre de caja registrado."])->withInput();
+        }
+        if (CierreCajaGuard::fechaEstaCerrada($fechaDestino)) {
+            return back()->withErrors(['fecha' => "No se puede mover o registrar una factura en el {$fechaDestino} porque ese día ya tiene cierre de caja registrado."])->withInput();
+        }
+
         [$type, $id] = explode(':', $request->facturable_global);
         if ($type === 'Proveedor') {
             $entity = Proveedor::findOrFail($id);
@@ -574,6 +604,12 @@ class MovimientoInventarioController extends Controller
 
         try {
             DB::beginTransaction();
+
+            if (CierreCajaGuard::fechaEstaCerrada($fechaOriginal) || CierreCajaGuard::fechaEstaCerrada($fechaDestino)) {
+                DB::rollBack();
+
+                return back()->withErrors(['fecha' => 'No se puede actualizar una factura en fechas con cierre de caja registrado.'])->withInput();
+            }
 
             // 1.5. Eliminar ítems removidos de la factura y ajustar su inventario
             if (! $shouldBeAnulada) {
@@ -874,6 +910,9 @@ class MovimientoInventarioController extends Controller
         string $fecha,
         ?float $montoTotal = null
     ): MovimientoCaja {
+        // Bloqueo de período: no se admiten movimientos sobre un día ya cerrado.
+        CierreCajaGuard::asegurarAbierta($fecha, "movimiento de inventario ({$tipo})");
+
         $concepto = ConceptoCaja::firstOrCreate(
             ['nombre' => $tipo === 'egreso' ? 'Compra de Inventario' : 'Venta de Inventario']
         );

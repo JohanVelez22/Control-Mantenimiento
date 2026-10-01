@@ -82,7 +82,7 @@ class ElectronicaController extends Controller
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
             'costo' => 'required|numeric|min:0',
-            'estado' => 'required|in:pendiente,terminado,anulado',
+            'estado' => 'required|in:pendiente,terminado',
             'fecha_entrada' => 'required|date',
             'fecha_salida' => 'nullable|date|after_or_equal:fecha_entrada',
             'tecnico_id' => 'required|exists:tecnicos,id',
@@ -144,7 +144,7 @@ class ElectronicaController extends Controller
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
             'costo' => 'required|numeric|min:0',
-            'estado' => 'required|in:pendiente,terminado,anulado',
+            'estado' => 'required|in:pendiente,terminado',
             'fecha_entrada' => 'required|date',
             'fecha_salida' => 'nullable|date|after_or_equal:fecha_entrada',
             'tecnico_id' => 'required|exists:tecnicos,id',
@@ -204,7 +204,9 @@ class ElectronicaController extends Controller
             DB::rollBack();
             Log::error('Error anulando/reactivando electrónica: '.$e->getMessage());
 
-            return redirect()->back()->with('error', 'Error al cambiar estado.');
+            $errMsg = $e instanceof \DomainException ? $e->getMessage() : 'Error al cambiar estado.';
+
+            return redirect()->back()->with('error', $errMsg);
         }
     }
 

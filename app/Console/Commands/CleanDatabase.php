@@ -27,10 +27,16 @@ class CleanDatabase extends Command
      */
     public function handle()
     {
+        if (app()->environment('production')) {
+            $this->error('Este comando destructivo está estrictamente deshabilitado en entornos de producción.');
+
+            return 1;
+        }
+
         if (! $this->confirm('¿Estás seguro de que deseas vaciar las tablas de datos? Se perderá toda la información transaccional y de catálogos.')) {
             $this->info('Operación cancelada.');
 
-            return;
+            return 0;
         }
 
         $this->info('Desactivando claves foráneas...');

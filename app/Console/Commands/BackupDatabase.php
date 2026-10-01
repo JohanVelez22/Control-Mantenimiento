@@ -390,6 +390,11 @@ class BackupDatabase extends Command
                 continue;
             }
 
+            // Omitir archivos de entorno con credenciales (.env, .env.production, etc.), conservando únicamente .env.example
+            if ($filename === '.env' || (str_starts_with($filename, '.env') && $filename !== '.env.example')) {
+                continue;
+            }
+
             $relativePath = ltrim(str_replace([$base, '\\'], ['', '/'], $realPath), '/');
             $zipEntryPath = $prefix.$relativePath;
 

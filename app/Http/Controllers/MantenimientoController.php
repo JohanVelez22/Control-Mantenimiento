@@ -353,7 +353,9 @@ class MantenimientoController extends Controller
             DB::rollBack();
             Log::error('Error anulando mantenimiento: '.$e->getMessage());
 
-            return redirect()->back()->with('error', 'Error al anular el mantenimiento.');
+            $errMsg = $e instanceof \DomainException ? $e->getMessage() : 'Error al anular el mantenimiento.';
+
+            return redirect()->back()->with('error', $errMsg);
         }
     }
 

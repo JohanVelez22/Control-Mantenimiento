@@ -13,6 +13,7 @@ use App\Models\MovimientoCaja;
 use App\Models\Proveedor;
 use App\Models\Stock;
 use App\Services\AnulacionService;
+use App\Services\CierreCajaGuard;
 use App\Services\OrdenService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -381,6 +382,10 @@ class CotizacionController extends Controller
 
             // 4. Registrar movimiento raíz en Caja para seguimiento de saldos
             $conceptoVenta = ConceptoCaja::firstOrCreate(['nombre' => 'Venta de Inventario']);
+
+            // Bloqueo de período: la conversión genera un movimiento con fecha de hoy.
+            CierreCajaGuard::asegurarAbierta(now()->toDateString(), 'conversión de cotización a venta');
+
             MovimientoCaja::create([
                 'tipo_movimiento' => 'ingreso',
                 'tipo_pago' => 'efectivo',

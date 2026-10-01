@@ -9,6 +9,7 @@ use App\Models\Factura;
 use App\Models\MovimientoCaja;
 use App\Models\Proveedor;
 use App\Services\AnulacionService;
+use App\Services\CierreCajaGuard;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -208,8 +209,26 @@ class MovimientoCajaController extends Controller
             return back()->withErrors(['persona' => 'No puede ingresar "Persona" y "Empresa" al mismo tiempo. Elija solo uno.'])->withInput();
         }
 
+        // Bloqueo de período: no se admiten movimientos sobre un día ya cerrado.
+        if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+            return back()->withErrors([
+                'fecha' => 'No se pueden registrar movimientos en el '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+            ])->withInput();
+        }
+
         try {
             DB::beginTransaction();
+
+            // Re-verificar dentro de la transacción para cerrar la ventana de carrera
+            // entre la comprobación inicial y la inserción.
+            if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+                DB::rollBack();
+
+                return back()->withErrors([
+                    'fecha' => 'No se pueden registrar movimientos en el '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+                ])->withInput();
+            }
+
             // Si ingresaron un nuevo concepto, crearlo o encontrar el existente
             if (! empty($validated['nuevo_concepto'])) {
                 $concepto = ConceptoCaja::firstOrCreate(['nombre' => trim($validated['nuevo_concepto'])]);
@@ -239,6 +258,11 @@ class MovimientoCajaController extends Controller
 
     public function edit(MovimientoCaja $movimiento)
     {
+        $fechaOrig = $movimiento->fecha ? $movimiento->fecha->toDateString() : null;
+        if (CierreCajaGuard::fechaEstaCerrada($fechaOrig)) {
+            return redirect()->route('caja.index')->with('error', 'No se puede editar el movimiento: el día '.$fechaOrig.' ya está cerrado y bloqueado por arqueo.');
+        }
+
         $movimiento->load('childPayments.user');
         $conceptos = ConceptoCaja::orderBy('nombre')->get();
 
@@ -284,8 +308,31 @@ class MovimientoCajaController extends Controller
             return back()->withErrors(['persona' => 'No puede ingresar "Persona" y "Empresa" al mismo tiempo. Elija solo uno.'])->withInput();
         }
 
+        // Bloqueo de período: ni la fecha original ni la nueva pueden pertenecer a un día cerrado
+        $fechaOriginal = $movimiento->fecha ? $movimiento->fecha->toDateString() : null;
+        if (CierreCajaGuard::fechaEstaCerrada($fechaOriginal)) {
+            return back()->withErrors([
+                'fecha' => 'No se puede modificar este movimiento porque su fecha original ('.$fechaOriginal.') ya tiene un cierre de caja registrado.',
+            ])->withInput();
+        }
+
+        if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+            return back()->withErrors([
+                'fecha' => 'No se pueden registrar o mover movimientos al '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+            ])->withInput();
+        }
+
         try {
             DB::beginTransaction();
+
+            if (CierreCajaGuard::fechaEstaCerrada($fechaOriginal) || CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+                DB::rollBack();
+
+                return back()->withErrors([
+                    'fecha' => 'No se puede modificar movimientos en fechas con cierre de caja registrado.',
+                ])->withInput();
+            }
+
             if (! empty($validated['nuevo_concepto'])) {
                 $concepto = ConceptoCaja::firstOrCreate(['nombre' => trim($validated['nuevo_concepto'])]);
                 $validated['concepto_id'] = $concepto->id;
@@ -349,8 +396,13 @@ class MovimientoCajaController extends Controller
     /** Duplicar un movimiento de caja (copia con fecha hoy) */
     public function duplicate(MovimientoCaja $movimiento)
     {
+        $hoy = now()->toDateString();
+        if (CierreCajaGuard::fechaEstaCerrada($hoy)) {
+            return back()->with('error', 'No se puede duplicar el movimiento: el día de hoy ya tiene un cierre de caja registrado.');
+        }
+
         $nuevo = $movimiento->replicate();
-        $nuevo->fecha = now()->toDateString();
+        $nuevo->fecha = $hoy;
         $nuevo->user_id = auth()->id();
         $nuevo->parent_id = null;  // Nunca heredar vínculo padre (evita abonos huérfanos)
         $nuevo->anulado = false; // Siempre crear como activo
@@ -375,8 +427,23 @@ class MovimientoCajaController extends Controller
             return back()->with('error', 'El abono supera el saldo pendiente de $'.number_format($movimiento->saldo_pendiente, 0, ',', '.').'.');
         }
 
+        // Bloqueo de período: el abono genera un movimiento de caja.
+        if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+            return back()->withErrors([
+                'fecha' => 'No se pueden registrar abonos con fecha '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+            ])->withInput();
+        }
+
         try {
             DB::beginTransaction();
+
+            if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+                DB::rollBack();
+
+                return back()->withErrors([
+                    'fecha' => 'No se pueden registrar abonos con fecha '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+                ])->withInput();
+            }
 
             $numFactura = null;
             if (preg_match('/#([A-Za-z0-9-]+)/', $movimiento->descripcion, $matches)) {
@@ -435,8 +502,20 @@ class MovimientoCajaController extends Controller
             return redirect()->back()->with('error', $error)->withInput();
         }
 
+        $fechaMov = $movimiento->fecha ? $movimiento->fecha->toDateString() : null;
+        if (CierreCajaGuard::fechaEstaCerrada($fechaMov)) {
+            return redirect()->back()->with('error', 'No se puede anular o reactivar este movimiento: el día '.$fechaMov.' ya tiene un cierre de caja registrado. Para modificarlo, elimine primero el cierre de ese día.');
+        }
+
         try {
             DB::beginTransaction();
+
+            if (CierreCajaGuard::fechaEstaCerrada($fechaMov)) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', 'No se puede anular o reactivar este movimiento: el día '.$fechaMov.' ya tiene un cierre de caja registrado.');
+            }
+
             $esAnulacion = ! $movimiento->anulado;
 
             // Anular movimiento principal

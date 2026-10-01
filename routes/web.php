@@ -180,7 +180,6 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
         // Usuarios (admin y técnico pueden gestionar; anular es solo admin)
         Route::resource('usuarios', UserController::class)->except(['destroy']);
-        Route::post('usuarios/{usuario}/change-password', [UserController::class, 'changePassword'])->middleware('throttle:10,1')->name('usuarios.change-password');
     });
 
     // ─── INVITADO: solo ver detalle y factura (desde búsqueda) ──────

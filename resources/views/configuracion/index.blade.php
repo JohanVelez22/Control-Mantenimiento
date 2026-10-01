@@ -45,7 +45,10 @@
                     {{-- Overlay animado al hacer hover --}}
                     <div class="absolute inset-0 bg-slate-900/65 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1.5 transition-opacity duration-200 backdrop-blur-[2px] z-20 pointer-events-none">
                         <div class="logo-camera-badge shrink-0">
-                            <span class="logo-camera-emoji select-none">📷</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
                         </div>
                         <span class="text-white text-[11px] font-black uppercase tracking-wider">Cambiar Logo</span>
                     </div>
@@ -62,8 +65,8 @@
                     <span>Quitar logo</span>
                 </button>
 
-                <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center max-w-[240px] leading-snug">
-                    <span>Formatos: <strong class="text-slate-700 dark:text-slate-300">SVG, PNG, JPG, WEBP</strong> • Máx. 5 MB</span>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 text-center max-w-[320px] w-full leading-relaxed">
+                    <span>Formatos: <strong class="text-slate-700 dark:text-slate-300">SVG, PNG, JPG, WEBP</strong> <span class="whitespace-nowrap">• Máx. 5 MB</span></span>
                     <span class="block text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">(Fondo transparente sugerido)</span>
                 </p>
             </div>
