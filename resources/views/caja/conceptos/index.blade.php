@@ -100,7 +100,7 @@
                 
                 <ul class="space-y-3">
                     @forelse($conceptos as $c)
-                    <li class="flex items-center justify-between p-3 bg-white/50 dark:bg-slate-800/50 rounded-xl border border-gray-200/50 dark:border-white/5">
+                    <li class="flex items-center justify-between p-3 bg-white/20 dark:bg-slate-900/25 rounded-xl border border-white/40 dark:border-white/5 backdrop-blur-md shadow-sm">
                         <form action="{{ route('conceptos.update', $c->id) }}" method="POST" class="flex-1 flex gap-2 mr-4">
                             @csrf @method('PUT')
                             <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-1.5 px-3 text-sm">

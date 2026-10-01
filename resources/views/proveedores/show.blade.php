@@ -98,10 +98,10 @@
         </h3>
         
         @if($proveedor->stocks->isEmpty())
- <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
- <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">📦</span>
- <p class="text-gray-500 font-medium">No hay artículos de inventario asociados a este proveedor.</p>
- </div>
+        <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-white/10 dark:bg-slate-900/20 backdrop-blur-sm">
+            <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">📦</span>
+            <p class="text-gray-500 font-medium">No hay artículos de inventario asociados a este proveedor.</p>
+        </div>
  @else
  <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-2">
  <table class="ts-table mb-0">
@@ -139,14 +139,14 @@
         </h3>
         
         @if($proveedor->facturas->isEmpty())
- <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
- <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">🧾</span>
- <p class="text-gray-500 font-medium">No hay compras registradas con este proveedor.</p>
- </div>
+        <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-white/10 dark:bg-slate-900/20 backdrop-blur-sm">
+            <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">🧾</span>
+            <p class="text-gray-500 font-medium">No hay compras registradas con este proveedor.</p>
+        </div>
  @else
  <div class="space-y-3 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
  @foreach($proveedor->facturas->sortByDesc('fecha') as $f)
- <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-4 bg-white/40 dark:bg-slate-800/40 border border-gray-200/50 dark:border-white/5 rounded-xl hover:bg-white/60 dark:hover:bg-slate-700/40 transition-colors">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-4 bg-white/20 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 rounded-xl backdrop-blur-md hover:bg-white/35 dark:hover:bg-slate-900/50 transition-all shadow-sm">
  <div class="flex items-start gap-4">
  <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xl shrink-0">
  📦

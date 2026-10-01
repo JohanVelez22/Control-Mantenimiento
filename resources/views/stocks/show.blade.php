@@ -25,7 +25,7 @@
                          class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl object-cover cursor-pointer border border-white/40 shadow-sm shrink-0 hover:scale-105 transition-transform"
                          title="Ver foto del producto">
                 @else
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-white/20 flex items-center justify-center text-2xl shadow-inner shrink-0">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/40 dark:bg-slate-900/50 border border-white/40 dark:border-white/10 flex items-center justify-center text-2xl shadow-sm shrink-0 backdrop-blur-sm">
                         📦
                     </div>
                 @endif

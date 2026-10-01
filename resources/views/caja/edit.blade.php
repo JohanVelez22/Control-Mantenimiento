@@ -128,7 +128,7 @@
                     @if($movimiento->childPayments->count() > 0)
                         <div class="space-y-3 max-h-60 overflow-y-auto pr-1">
                             @foreach($movimiento->childPayments as $child)
-                                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-gray-100 dark:border-white/5 relative {{ $child->anulado ? 'opacity-50 grayscale' : '' }}">
+                                <div class="p-3 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm relative {{ $child->anulado ? 'opacity-50 grayscale' : '' }}">
                                     <div class="flex justify-between items-start mb-1">
                                         <span class="text-xs font-bold text-slate-500">{{ $child->fecha->format('d/m/Y') }}</span>
                                         <span class="font-black text-sm text-blue-600 dark:text-blue-400">${{ number_format($child->monto, 0, ',', '.') }}</span>

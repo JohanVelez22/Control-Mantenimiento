@@ -13,7 +13,7 @@
  <form action="{{ route('inventario.venta.store') }}" method="POST" id="venta-form" class="space-y-5">
  @csrf
 
- <div class="flex flex-col md:flex-row gap-5 p-5 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl">
+ <div class="flex flex-col md:flex-row gap-5 p-5 glass-card">
  <div class="col-factura-header">
  <label class="field-label whitespace-nowrap">N° Factura</label>
  <input type="text" value="{{ $nextFactura ?? 'VT-...' }}" readonly class="glass-input font-mono font-bold bg-white/40 dark:bg-black/20 text-emerald-600 dark:text-emerald-400 text-left pl-3 cursor-not-allowed w-full" style="width: 7rem !important;">
@@ -112,7 +112,7 @@
  </div>
 
  {{-- Pago y observaciones --}}
- <div class="flex flex-col md:flex-row justify-center gap-5 p-5 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
+ <div class="flex flex-col md:flex-row justify-center gap-5 p-5 glass-card">
 <div class="text-center w-full md:w-1/2">
   <label class="field-label text-center block">Total Recibido Ahora ($) *</label>
   <input type="text" name="total_pagado" id="total_pagado_real" value="0" required class="hidden">
@@ -156,7 +156,7 @@
  <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
  <a href="{{ route('inventario.facturas') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">✕<space>Cancelar</a>
  <button type="submit" class="btn-venta w-full sm:w-auto justify-center">
- 🛒 Procesar Venta y Afectar Inventario
+ 🛒 Procesar Venta
  </button>
  </div>
  </form>
@@ -201,7 +201,7 @@ function stockSelectOptions() {
 function agregarFila() {
   const tbody = document.getElementById('items-body');
   const tr = document.createElement('tr');
-  tr.className = 'item-row bg-transparent border-t border-gray-200 dark:border-gray-700/50';
+  tr.className = 'item-row bg-transparent border-t border-gray-200/50 dark:border-white/10';
   tr.innerHTML = `
   <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
    <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">

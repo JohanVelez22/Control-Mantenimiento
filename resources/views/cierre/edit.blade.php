@@ -22,19 +22,19 @@
         <div class="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200/60 dark:border-blue-500/20 mb-6">
             <h4 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-3">🔒 Valores Contables Consolidados (Lectura Única)</h4>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                <div class="p-2 rounded-xl bg-white/50 dark:bg-slate-800/50">
+                <div class="p-2.5 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
                     <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">Ingresos</p>
                     <p class="font-bold text-slate-800 dark:text-white">${{ number_format($cierre->total_ingresos, 0, ',', '.') }}</p>
                 </div>
-                <div class="p-2 rounded-xl bg-white/50 dark:bg-slate-800/50">
+                <div class="p-2.5 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
                     <p class="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase">Egresos</p>
                     <p class="font-bold text-slate-800 dark:text-white">${{ number_format($cierre->total_egresos, 0, ',', '.') }}</p>
                 </div>
-                <div class="p-2 rounded-xl bg-white/50 dark:bg-slate-800/50">
+                <div class="p-2.5 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
                     <p class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase">Efectivo</p>
                     <p class="font-bold text-slate-800 dark:text-white">${{ number_format($cierre->efectivo, 0, ',', '.') }}</p>
                 </div>
-                <div class="p-2 rounded-xl bg-white/50 dark:bg-slate-800/50">
+                <div class="p-2.5 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
                     <p class="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase">Saldo Final</p>
                     <p class="font-bold text-slate-800 dark:text-white">${{ number_format($cierre->saldo_final, 0, ',', '.') }}</p>
                 </div>

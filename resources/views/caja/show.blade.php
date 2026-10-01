@@ -137,7 +137,7 @@
         {{-- Descripción --}}
         @if($movimiento->descripcion)
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Descripción / Observaciones</h3>
-        <div class="p-4 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 mb-8">
+        <div class="p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl mb-8 shadow-sm">
             <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">{{ $movimiento->descripcion }}</p>
         </div>
         @endif

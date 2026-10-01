@@ -13,7 +13,7 @@
         <form action="{{ route('cotizaciones.store') }}" method="POST" id="cotizacion-form" class="space-y-5">
             @csrf
 
-            <div class="cotizacion-header-grid p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
+            <div class="cotizacion-header-grid p-5 glass-card">
                 <div>
                     <label class="field-label">Cliente / Proveedor *</label>
                     <select name="facturable_global" required class="glass-input focus:ring-blue-500" data-placeholder="Buscar cliente o proveedor...">
@@ -71,7 +71,7 @@
                         </thead>
                         <tbody id="items-body">
                             {{-- Fila base renderizada directamente desde el servidor (sin flash/salto visual) --}}
-                            <tr class="item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-slate-700/50 hover:bg-white/50 dark:hover:bg-slate-800/30 transition-colors">
+                            <tr class="item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-white/10 hover:bg-white/50 dark:hover:bg-slate-900/30 transition-colors">
                                 <td class="col-tipo align-middle">
                                     <select name="items[0][tipo]" class="tipo-select glass-input py-1.5 px-2 font-bold w-full whitespace-nowrap">
                                         <option value="libre" selected>🛠️ Servicio / Libre</option>

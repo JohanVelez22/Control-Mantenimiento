@@ -132,7 +132,7 @@
         {{-- Observaciones del Cierre --}}
         @if($cierre->observaciones)
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Observaciones / Notas de Arqueo</h3>
-        <div class="p-4 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 mb-8 print:bg-white print:border-slate-300 print:shadow-none">
+        <div class="p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl mb-8 shadow-sm print:bg-white print:border-slate-300 print:shadow-none">
             <p class="text-sm font-medium text-slate-700 dark:text-slate-300 print:text-black leading-relaxed whitespace-pre-line">{{ $cierre->observaciones }}</p>
         </div>
         @endif
@@ -189,7 +189,7 @@
                     @endforelse
                 </tbody>
                 <tfoot>
-                    <tr class="font-black border-t-2 border-slate-300 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40">
+                    <tr class="font-black border-t-2 border-slate-200 dark:border-white/10 bg-gray-50/50 dark:bg-gray-800/50">
                         <td colspan="5" class="text-right text-xs uppercase tracking-wider font-bold text-slate-800 dark:text-white print:text-black py-3 pr-3">TOTAL:</td>
                         <td class="text-right font-black text-base {{ $cierre->saldo_final >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} print:text-black py-3 pr-4">
                             ${{ number_format($cierre->saldo_final, 0, ',', '.') }}

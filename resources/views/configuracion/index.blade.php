@@ -531,14 +531,14 @@ async function submitConfiguracion(event) {
                         <div class="z-10">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-2xl">🗄️</span>
-                                <span class="pill pill-done text-[10px] py-0.5 px-2">Recomendado</span>
+                                <span class="pill pill-done text-[11px] py-0.5 px-2.5 font-bold">Recomendado</span>
                             </div>
-                            <span class="text-xs font-black text-slate-800 dark:text-white block">Solo Base de Datos</span>
-                            <span class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 block leading-relaxed">
+                            <span class="text-[13.5px] font-black text-slate-800 dark:text-white block">Solo Base de Datos</span>
+                            <span class="text-[12px] text-slate-500 dark:text-slate-400 mt-1 block leading-relaxed font-medium">
                                 Archivo .sql completo con tablas, usuarios, ventas y transacciones.
                             </span>
                         </div>
-                        <span class="text-[10px] text-teal-600 dark:text-teal-400 font-bold mt-3 block z-10">Ultrarrápido y ligero</span>
+                        <span class="text-[11px] text-teal-600 dark:text-teal-400 font-bold mt-3 block z-10">Ultrarrápido y ligero</span>
                     </label>
 
                     <label class="glass-card hover-glow glass-card-indigo backup-option-card card-type-files flex flex-col justify-between" id="card-opt-files" onclick="selectManualType('files')">
@@ -546,14 +546,14 @@ async function submitConfiguracion(event) {
                         <div class="z-10">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-2xl">🖼️</span>
-                                <span class="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold">Base + Archivos</span>
+                                <span class="text-[11px] text-indigo-500 dark:text-indigo-400 font-bold">Base + Archivos</span>
                             </div>
-                            <span class="text-xs font-black text-slate-800 dark:text-white block">BD + Multimedia</span>
-                            <span class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 block leading-relaxed">
+                            <span class="text-[13.5px] font-black text-slate-800 dark:text-white block">BD + Multimedia</span>
+                            <span class="text-[12px] text-slate-500 dark:text-slate-400 mt-1 block leading-relaxed font-medium">
                                 Base de datos y carpeta de archivos públicos (logos, comprobantes y fotos).
                             </span>
                         </div>
-                        <span class="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold mt-3 block z-10">Genera archivo ZIP</span>
+                        <span class="text-[11px] text-indigo-500 dark:text-indigo-400 font-bold mt-3 block z-10">Genera archivo ZIP</span>
                     </label>
 
                     <label class="glass-card hover-glow glass-card-purple backup-option-card card-type-all flex flex-col justify-between" id="card-opt-all" onclick="selectManualType('all')">
@@ -561,14 +561,14 @@ async function submitConfiguracion(event) {
                         <div class="z-10">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-2xl">📦</span>
-                                <span class="text-[10px] text-purple-500 dark:text-purple-400 font-bold">Snapshot Total</span>
+                                <span class="text-[11px] text-purple-500 dark:text-purple-400 font-bold">Snapshot Total</span>
                             </div>
-                            <span class="text-xs font-black text-slate-800 dark:text-white block">Respaldo Integral</span>
-                            <span class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 block leading-relaxed">
+                            <span class="text-[13.5px] font-black text-slate-800 dark:text-white block">Respaldo Integral</span>
+                            <span class="text-[12px] text-slate-500 dark:text-slate-400 mt-1 block leading-relaxed font-medium">
                                 Base de datos, multimedia y snapshot empaquetado del código fuente.
                             </span>
                         </div>
-                        <span class="text-[10px] text-purple-600 dark:text-purple-400 font-bold mt-3 block z-10">Para migraciones</span>
+                        <span class="text-[11px] text-purple-600 dark:text-purple-400 font-bold mt-3 block z-10">Para migraciones</span>
                     </label>
                 </div>
 
@@ -1038,10 +1038,10 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
         <table class="backup-table">
             <thead>
                 <tr>
-                    <th class="pl-4">Archivo</th>
-                    <th>Fecha y Hora</th>
-                    <th>Tamaño</th>
-                    <th class="pr-4 text-right">Acciones</th>
+                    <th class="text-center">Archivo</th>
+                    <th class="text-center">Fecha y Hora</th>
+                    <th class="text-center">Tamaño</th>
+                    <th class="text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -1058,15 +1058,15 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
                         <span class="backup-file-name truncate" title="${f.name}">${f.name}</span>
                     </div>
                 </td>
-                <td>
+                <td class="text-center">
                     <div class="backup-file-date">${f.fecha}</div>
                     <div class="backup-file-rel">${f.fecha_relativa}</div>
                 </td>
-                <td class="backup-file-size whitespace-nowrap">
+                <td class="backup-file-size whitespace-nowrap text-center">
                     ${f.size_formatted}
                 </td>
-                <td class="pr-4 text-right whitespace-nowrap">
-                    <div class="flex items-center justify-end gap-1.5">
+                <td class="text-center whitespace-nowrap">
+                    <div class="flex items-center justify-center gap-1.5">
                         <a href="${downloadUrl}" class="btn-backup-download" title="Descargar al equipo">
                             <span>⬇️</span> Descargar
                         </a>
