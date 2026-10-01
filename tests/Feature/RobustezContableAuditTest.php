@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Abono;
+use App\Models\CierreCaja;
 use App\Models\Cliente;
 use App\Models\ConceptoCaja;
 use App\Models\Cotizacion;
@@ -439,5 +440,168 @@ class RobustezContableAuditTest extends TestCase
         $existingAdmin->refresh();
         $this->assertTrue(Hash::check('MiClavePersonalizada123*', $existingAdmin->password));
         $this->assertEquals('Super Administrador', $existingAdmin->name);
+    }
+
+    /**
+     * P0-E1: La anulación en cascada omite los abonos hijos que pertenezcan a días cerrados.
+     */
+    public function test_p0_e1_anular_movimiento_omite_hijos_en_dias_cerrados(): void
+    {
+        // 1. Movimiento raíz en día abierto (hace 10 días)
+        $fechaPadre = now()->subDays(10)->toDateString();
+        $padre = MovimientoCaja::create([
+            'persona' => 'Carlos Mendoza',
+            'fecha' => $fechaPadre,
+            'concepto_id' => $this->concepto->id,
+            'tipo_movimiento' => 'ingreso',
+            'tipo_pago' => 'efectivo',
+            'monto' => 100000,
+            'monto_total' => 300000,
+            'descripcion' => 'Venta servicio general',
+            'estado' => 'activo',
+            'anulado' => false,
+            'user_id' => $this->admin->id,
+        ]);
+
+        // 2. Abono hijo 1 en fecha cerrada (hace 5 días)
+        $fechaCerrada = now()->subDays(5)->toDateString();
+        $hijoCerrado = MovimientoCaja::create([
+            'persona' => 'Carlos Mendoza',
+            'fecha' => $fechaCerrada,
+            'concepto_id' => $this->concepto->id,
+            'tipo_movimiento' => 'ingreso',
+            'tipo_pago' => 'efectivo',
+            'monto' => 50000,
+            'monto_total' => 0,
+            'descripcion' => 'Abono 1 en día cerrado',
+            'estado' => 'activo',
+            'anulado' => false,
+            'parent_id' => $padre->id,
+            'user_id' => $this->admin->id,
+        ]);
+
+        // Registrar cierre de caja para el día del hijo 1
+        CierreCaja::create([
+            'fecha' => $fechaCerrada,
+            'total_ingresos' => 50000,
+            'total_egresos' => 0,
+            'efectivo' => 50000,
+            'efectivo_real_contado' => 50000,
+            'diferencia' => 0,
+            'consignacion' => 0,
+            'saldo_final' => 50000,
+            'num_movimientos' => 1,
+            'bloqueado' => true,
+            'user_id' => $this->admin->id,
+        ]);
+
+        // 3. Abono hijo 2 en fecha abierta (hoy)
+        $fechaAbierta = now()->toDateString();
+        $hijoAbierto = MovimientoCaja::create([
+            'persona' => 'Carlos Mendoza',
+            'fecha' => $fechaAbierta,
+            'concepto_id' => $this->concepto->id,
+            'tipo_movimiento' => 'ingreso',
+            'tipo_pago' => 'efectivo',
+            'monto' => 30000,
+            'monto_total' => 0,
+            'descripcion' => 'Abono 2 en día abierto',
+            'estado' => 'activo',
+            'anulado' => false,
+            'parent_id' => $padre->id,
+            'user_id' => $this->admin->id,
+        ]);
+
+        // 4. Anular movimiento padre como admin con clave de confirmación
+        $response = $this->actingAs($this->admin)->post(route('caja.anular', $padre), [
+            'admin_password' => 'Admin123*',
+        ]);
+
+        $response->assertSessionHas('success');
+
+        // El padre queda anulado
+        $padre->refresh();
+        $this->assertTrue((bool) $padre->anulado);
+        $this->assertEquals('anulado', $padre->estado);
+
+        // El hijo en día abierto se anuló en cascada
+        $hijoAbierto->refresh();
+        $this->assertTrue((bool) $hijoAbierto->anulado);
+        $this->assertEquals('anulado', $hijoAbierto->estado);
+
+        // Mitigación P0-E1: El hijo del día cerrado fue OMITIDO de la cascada y permanece intacto
+        $hijoCerrado->refresh();
+        $this->assertFalse((bool) $hijoCerrado->anulado);
+        $this->assertEquals('activo', $hijoCerrado->estado);
+    }
+
+    /**
+     * P0-E2: storeAbono rechaza abonos sobre movimientos/facturas cuyo período ya está cerrado.
+     */
+    public function test_p0_e2_store_abono_rechaza_abono_si_factura_o_padre_pertenece_a_dia_cerrado(): void
+    {
+        $fechaCerrada = now()->subDays(3)->toDateString();
+
+        // Crear factura y movimiento raíz en un día cerrado
+        $factura = Factura::create([
+            'numero_factura' => 'VT-DIA-CERRADO',
+            'tipo_movimiento' => 'venta',
+            'estado' => 'pendiente_pago',
+            'facturable_id' => $this->cliente->id,
+            'facturable_type' => Cliente::class,
+            'total_documento' => 200000,
+            'total_pagado' => 100000,
+            'fecha' => $fechaCerrada,
+            'user_id' => $this->admin->id,
+        ]);
+
+        $padre = MovimientoCaja::create([
+            'persona' => 'Carlos Mendoza',
+            'fecha' => $fechaCerrada,
+            'concepto_id' => $this->concepto->id,
+            'tipo_movimiento' => 'ingreso',
+            'tipo_pago' => 'efectivo',
+            'monto' => 100000,
+            'monto_total' => 200000,
+            'descripcion' => 'Cobro venta #VT-DIA-CERRADO',
+            'estado' => 'activo',
+            'anulado' => false,
+            'user_id' => $this->admin->id,
+            'factura_id' => $factura->id,
+        ]);
+
+        // Cerrar el día de la factura/movimiento
+        CierreCaja::create([
+            'fecha' => $fechaCerrada,
+            'total_ingresos' => 100000,
+            'total_egresos' => 0,
+            'efectivo' => 100000,
+            'efectivo_real_contado' => 100000,
+            'diferencia' => 0,
+            'consignacion' => 0,
+            'saldo_final' => 100000,
+            'num_movimientos' => 1,
+            'bloqueado' => true,
+            'user_id' => $this->admin->id,
+        ]);
+
+        // Intentar registrar abono hoy (día abierto) sobre la factura de día cerrado
+        $response = $this->actingAs($this->admin)->post(route('caja.abonos.store', $padre), [
+            'monto_abono' => 50000,
+            'fecha' => now()->toDateString(), // Fecha del abono está abierta
+            'tipo_pago' => 'efectivo',
+            'descripcion' => 'Abono tardío a factura cerrada',
+        ]);
+
+        // Debe ser rechazado porque la factura vinculada pertenece a un día cerrado
+        $response->assertSessionHas('error');
+        $this->assertDatabaseMissing('movimiento_cajas', [
+            'parent_id' => $padre->id,
+            'monto' => 50000,
+        ]);
+
+        // El total pagado de la factura no debe haberse modificado
+        $factura->refresh();
+        $this->assertEquals(100000, (float) $factura->total_pagado);
     }
 }

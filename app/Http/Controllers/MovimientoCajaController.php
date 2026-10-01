@@ -12,6 +12,7 @@ use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -442,6 +443,19 @@ class MovimientoCajaController extends Controller
             ])->withInput();
         }
 
+        // Mitigación P0-E2: Validar también la fecha de la factura vinculada y del movimiento raíz
+        $fechaFactura = ($movimiento->factura && $movimiento->factura->fecha)
+            ? Carbon::parse($movimiento->factura->fecha)->toDateString()
+            : null;
+        if ($fechaFactura && CierreCajaGuard::fechaEstaCerrada($fechaFactura)) {
+            return back()->with('error', 'No se pueden registrar abonos a una factura del día '.$fechaFactura.' porque ese día ya tiene cierre de caja registrado.')->withInput();
+        }
+
+        $fechaMovPadre = $movimiento->fecha ? Carbon::parse($movimiento->fecha)->toDateString() : null;
+        if ($fechaMovPadre && CierreCajaGuard::fechaEstaCerrada($fechaMovPadre)) {
+            return back()->with('error', 'No se pueden registrar abonos a un movimiento del día '.$fechaMovPadre.' porque ese día ya tiene cierre de caja registrado.')->withInput();
+        }
+
         try {
             DB::beginTransaction();
 
@@ -451,6 +465,18 @@ class MovimientoCajaController extends Controller
                 return back()->withErrors([
                     'fecha' => 'No se pueden registrar abonos con fecha '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
                 ])->withInput();
+            }
+
+            if ($fechaFactura && CierreCajaGuard::fechaEstaCerrada($fechaFactura)) {
+                DB::rollBack();
+
+                return back()->with('error', 'No se pueden registrar abonos a una factura del día '.$fechaFactura.' porque ese día ya tiene cierre de caja registrado.')->withInput();
+            }
+
+            if ($fechaMovPadre && CierreCajaGuard::fechaEstaCerrada($fechaMovPadre)) {
+                DB::rollBack();
+
+                return back()->with('error', 'No se pueden registrar abonos a un movimiento del día '.$fechaMovPadre.' porque ese día ya tiene cierre de caja registrado.')->withInput();
             }
 
             $numFactura = null;
@@ -530,6 +556,12 @@ class MovimientoCajaController extends Controller
             // Anular o restaurar todos los abonos asociados en cascada
             $childMovs = $movimiento->childPayments()->get();
             foreach ($childMovs as $child) {
+                // Mitigación P0-E1: Omitir hijos que pertenezcan a días cerrados para no corromper arqueos históricos
+                $fechaHijo = $child->fecha ? $child->fecha->toDateString() : null;
+                if ($fechaHijo && CierreCajaGuard::fechaEstaCerrada($fechaHijo)) {
+                    continue;
+                }
+
                 $child->update([
                     'anulado' => $esAnulacion,
                     'estado' => $esAnulacion ? 'anulado' : 'activo',

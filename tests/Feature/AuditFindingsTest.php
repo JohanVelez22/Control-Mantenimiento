@@ -9,9 +9,11 @@ use App\Models\Cotizacion;
 use App\Models\CotizacionItem;
 use App\Models\Factura;
 use App\Models\FacturaItem;
+use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
 use App\Models\Proveedor;
 use App\Models\Stock;
+use App\Models\Tecnico;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
@@ -1330,5 +1332,89 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals('pendiente_pago', $factura->estado);
         $this->assertStringContainsString('⚠️ SALDO PENDIENTE: $45.000', $factura->observaciones);
         $this->assertEquals(50000, $item2->fresh()->precio_unitario);
+    }
+
+    /**
+     * Un técnico no debe poder desvincular repuestos de una orden: la operación
+     * devuelve existencias al inventario y altera el costo, por lo que exige la
+     * misma autorización que la eliminación de abonos.
+     */
+    public function test_tecnico_no_puede_quitar_repuestos_sin_contrasena_de_admin(): void
+    {
+        $tecnicoUser = User::create([
+            'name' => 'Tecnico Test',
+            'email' => 'tecnico_stock_'.time().'@test.com',
+            'password' => Hash::make('password'),
+            'role' => 'tecnico',
+            'active' => true,
+        ]);
+
+        $tecnico = Tecnico::create([
+            'nombre' => 'Tecnico Repuestos',
+            'identificacion' => 'CC-'.time(),
+            'telefono' => '3000000002',
+            'movil' => '3000000002',
+            'email' => 'tec_repuestos_'.time().'@test.com',
+            'especialidad' => 'Hardware',
+            'activo' => true,
+            'user_id' => $tecnicoUser->id,
+        ]);
+
+        $equipo = $this->cliente->equipos()->create([
+            'nombre' => 'Equipo Test',
+            'marca' => 'Marca',
+            'modelo' => 'Modelo',
+            'serie' => 'SN-'.time(),
+            'user_id' => $this->admin->id,
+        ]);
+
+        $stock = Stock::create([
+            'codigo' => 'STK-'.time(),
+            'producto' => 'Repuesto Test',
+            'cantidad' => 20,
+            'stock_minimo' => 1,
+            'precio_compra' => 10000,
+            'precio_venta' => 20000,
+            'activo' => true,
+        ]);
+
+        $mantenimiento = Mantenimiento::create([
+            'id_orden' => 'MNT-'.time(),
+            'fecha_entrada' => now()->toDateString(),
+            'tipo' => 'correctivo',
+            'reparacion' => 'Repuesto de prueba',
+            'descripcion' => 'Orden de prueba',
+            'estado' => 'pendiente',
+            'costo' => 20000,
+            'equipo_id' => $equipo->id,
+            'tecnico_id' => $tecnico->id,
+            'user_id' => $this->admin->id,
+        ]);
+
+        $mantenimiento->stocks()->attach($stock->id, [
+            'cantidad' => 2,
+            'precio_unitario' => 20000,
+        ]);
+
+        $this->actingAs($tecnicoUser)
+            ->delete(route('mantenimientos.stocks.destroy', [$mantenimiento->id, $stock->id]))
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('mantenimiento_stock', [
+            'mantenimiento_id' => $mantenimiento->id,
+            'stock_id' => $stock->id,
+        ]);
+        $this->assertEquals(20, $stock->fresh()->cantidad);
+
+        // El administrador sí opera sin comprobación adicional.
+        $this->actingAs($this->admin)
+            ->delete(route('mantenimientos.stocks.destroy', [$mantenimiento->id, $stock->id]))
+            ->assertRedirect();
+
+        $this->assertDatabaseMissing('mantenimiento_stock', [
+            'mantenimiento_id' => $mantenimiento->id,
+            'stock_id' => $stock->id,
+        ]);
+        $this->assertEquals(22, $stock->fresh()->cantidad);
     }
 }
