@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Factura extends Model
 {
@@ -120,6 +121,10 @@ class Factura extends Model
      */
     public function recalcularPagos(): void
     {
+        if (DB::transactionLevel() > 0 && $this->exists) {
+            static::where('id', $this->id)->lockForUpdate()->first();
+        }
+
         $expectedTipo = $this->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso';
 
         $directMovIds = MovimientoCaja::where('estado', 'activo')

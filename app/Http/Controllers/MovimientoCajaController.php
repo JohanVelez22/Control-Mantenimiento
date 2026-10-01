@@ -432,7 +432,7 @@ class MovimientoCajaController extends Controller
             'descripcion' => 'nullable|string|max:500',
         ]);
 
-        if ($validated['monto_abono'] > $movimiento->saldo_pendiente) {
+        if ($validated['monto_abono'] > $movimiento->saldo_pendiente + Factura::EPSILON) {
             return back()->with('error', 'El abono supera el saldo pendiente de $'.number_format($movimiento->saldo_pendiente, 0, ',', '.').'.');
         }
 
@@ -484,7 +484,7 @@ class MovimientoCajaController extends Controller
                 $numFactura = $matches[1];
             }
 
-            $esPagoCompleto = ($validated['monto_abono'] >= $movimiento->saldo_pendiente);
+            $esPagoCompleto = ($validated['monto_abono'] >= $movimiento->saldo_pendiente - Factura::EPSILON);
 
             $descAbono = $validated['descripcion'];
             if (! $descAbono) {
