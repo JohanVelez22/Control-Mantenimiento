@@ -111,12 +111,12 @@
 
                                     @if($m->stocks && $m->stocks->isNotEmpty())
                                     <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200/60 dark:border-white/10">
-                                        <span class="font-bold text-slate-700 dark:text-slate-200 block mb-2">📦 Repuestos / Insumos:</span>
+                                        <span class="font-bold text-slate-700 dark:text-slate-200 block mb-2">🛍️ Repuestos / Insumos y Mano de Obra:</span>
                                         <div class="space-y-2 pl-1">
                                             @foreach($m->stocks as $repuesto)
                                                 <div class="flex items-center justify-between text-xs sm:text-sm bg-white/20 dark:bg-slate-900/30 px-3 py-2 rounded-lg border border-white/40 dark:border-white/5">
-                                                    <span class="text-slate-700 dark:text-slate-300 font-medium">
-                                                        {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
+                                                    <span class="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
+                                                        <span>📦</span> {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
                                                     </span>
                                                     <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</span>
                                                 </div>
@@ -178,12 +178,12 @@
 
                                     @if($e->stocks && $e->stocks->isNotEmpty())
                                     <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200/60 dark:border-white/10">
-                                        <span class="font-bold text-slate-700 dark:text-slate-200 block mb-2">📦 Repuestos / Insumos:</span>
+                                        <span class="font-bold text-slate-700 dark:text-slate-200 block mb-2">🛍️ Repuestos / Insumos y Mano de Obra:</span>
                                         <div class="space-y-2 pl-1">
                                             @foreach($e->stocks as $repuesto)
                                                 <div class="flex items-center justify-between text-xs sm:text-sm bg-white/20 dark:bg-slate-900/30 px-3 py-2 rounded-lg border border-white/40 dark:border-white/5">
-                                                    <span class="text-slate-700 dark:text-slate-300 font-medium">
-                                                        {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
+                                                    <span class="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
+                                                        <span>📦</span> {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
                                                     </span>
                                                     <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</span>
                                                 </div>
@@ -211,8 +211,8 @@
                 
                 @if(isset($searched) && !$cliente)
                 <div class="mt-6 sm:mt-8 text-center">
-                    <a href="{{ route('guest.dashboard') }}" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl transition-all hover:-translate-y-1 inline-flex items-center gap-2">
-                        <span>🔍</span> Buscar Otra Orden
+                    <a href="{{ route('guest.dashboard') }}" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
+                        <span>🔍</span> Buscar Otra Consulta
                     </a>
                 </div>
                 @endif
