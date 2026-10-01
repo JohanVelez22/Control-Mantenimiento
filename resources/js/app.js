@@ -88,6 +88,11 @@ export function initPasswordToggles(root) {
                     var len = input.value.length;
                     input.setSelectionRange(len, len);
                 } catch (err) {}
+            } else {
+                // Des-enfocar el botón para que no se quede iluminado tras el clic
+                try {
+                    btn.blur();
+                } catch (err) {}
             }
         }
 

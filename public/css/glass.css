@@ -3360,10 +3360,25 @@ input[type="password"]::-ms-clear {
   user-select: none !important;
 }
 
-.ts-password-toggle:hover,
-.ts-password-toggle:focus,
-.ts-password-toggle:focus-visible {
+/* Solo se ilumina estrictamente al pasar el mouse por encima (:hover) */
+.ts-password-toggle:hover {
   color: #475569 !important;
+}
+
+html.dark .ts-password-toggle {
+  color: #94A3B8 !important;
+}
+
+html.dark .ts-password-toggle:hover {
+  color: #FFFFFF !important;
+}
+
+/* Al hacer clic o tener foco, no se queda activo: mantiene su color original */
+.ts-password-toggle:focus,
+.ts-password-toggle:focus-visible,
+.ts-password-toggle:focus:not(:hover),
+.ts-password-toggle:focus-visible:not(:hover) {
+  color: #94A3B8 !important;
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -3371,14 +3386,11 @@ input[type="password"]::-ms-clear {
   box-shadow: none !important;
 }
 
-html.dark .ts-password-toggle {
-  color: #94A3B8 !important;
-}
-
-html.dark .ts-password-toggle:hover,
 html.dark .ts-password-toggle:focus,
-html.dark .ts-password-toggle:focus-visible {
-  color: #FFFFFF !important;
+html.dark .ts-password-toggle:focus-visible,
+html.dark .ts-password-toggle:focus:not(:hover),
+html.dark .ts-password-toggle:focus-visible:not(:hover) {
+  color: #94A3B8 !important;
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
