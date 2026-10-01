@@ -114,7 +114,7 @@
             </div>
 
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💵</span> Efectivo</p>
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💵</span> Efectivo Sistema</p>
                 <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->efectivo, 0, ',', '.') }}</p>
             </div>
 
@@ -124,14 +124,78 @@
             </div>
 
             <div class="glass-card hover-glow {{ $cierre->saldo_final >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0 col-span-2 lg:col-span-1">
-                <p class="text-xs font-bold {{ $cierre->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Final</p>
+                <p class="text-xs font-bold {{ $cierre->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Teórico</p>
                 <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->saldo_final, 0, ',', '.') }}</p>
             </div>
         </div>
 
+        {{-- Conciliación Física / Arqueo en Mano --}}
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+            <span>💵</span> Arqueo y Conciliación Física
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200/50 dark:border-blue-500/20 text-center">
+                <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">
+                    💻 Efectivo Teórico (Sistema)
+                </span>
+                <p class="text-2xl font-black text-slate-800 dark:text-white">
+                    ${{ number_format($cierre->efectivo, 0, ',', '.') }}
+                </p>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium">Calculado por ingresos y egresos</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 text-center">
+                <span class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">
+                    🖐️ Efectivo Real Contado
+                </span>
+                <p class="text-2xl font-black text-slate-800 dark:text-white">
+                    ${{ number_format($cierre->efectivo_real_contado ?? $cierre->efectivo, 0, ',', '.') }}
+                </p>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium">Billetes y monedas físicos en caja</p>
+            </div>
+
+            <div class="p-5 rounded-2xl text-center border {{ $cierre->estado_diferencia === 'cuadrado' ? 'bg-emerald-500/10 border-emerald-500/30' : ($cierre->estado_diferencia === 'faltante' ? 'bg-red-500/10 border-red-500/30' : 'bg-blue-500/10 border-blue-500/30') }}">
+                <span class="text-xs font-bold uppercase tracking-widest block mb-1 text-slate-800 dark:text-white">
+                    ⚖️ Resultado del Arqueo
+                </span>
+                <p class="text-2xl font-black {{ $cierre->estado_diferencia === 'cuadrado' ? 'text-emerald-600 dark:text-emerald-400' : ($cierre->estado_diferencia === 'faltante' ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400') }}">
+                    {{ ($cierre->diferencia > 0 ? '+' : ($cierre->diferencia < 0 ? '-' : '')) . '$' . number_format(abs($cierre->diferencia), 0, ',', '.') }}
+                </p>
+                <div class="mt-1">
+                    @if($cierre->estado_diferencia === 'cuadrado')
+                        <span class="pill pill-done text-xs font-bold py-0.5 px-3">
+                            🟢 Cuadre Exacto
+                        </span>
+                    @elseif($cierre->estado_diferencia === 'faltante')
+                        <span class="pill pill-anulado text-xs font-bold py-0.5 px-3">
+                            🔴 Faltante en Caja
+                        </span>
+                    @elseif($cierre->estado_diferencia === 'sobrante')
+                        <span class="pill pill-efectivo text-xs font-bold py-0.5 px-3">
+                            🔵 Sobrante en Caja
+                        </span>
+                    @else
+                        <span class="text-xs text-gray-400">Sin conciliar</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- Motivo de la diferencia si existe --}}
+        @if($cierre->motivo_diferencia)
+        <div class="mb-8 p-5 rounded-2xl {{ $cierre->diferencia < 0 ? 'bg-red-500/10 border border-red-500/20' : 'bg-blue-500/10 border border-blue-500/20' }}">
+            <h4 class="font-bold text-sm {{ $cierre->diferencia < 0 ? 'text-red-700 dark:text-red-400' : 'text-blue-700 dark:text-blue-400' }} uppercase tracking-wider mb-1 flex items-center gap-2">
+                <span>📝</span> Motivo / Justificación de la Diferencia
+            </h4>
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">
+                {{ $cierre->motivo_diferencia }}
+            </p>
+        </div>
+        @endif
+
         {{-- Observaciones del Cierre --}}
         @if($cierre->observaciones)
-        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Observaciones / Notas de Arqueo</h3>
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Observaciones / Notas de Jornada</h3>
         <div class="p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl mb-8 shadow-sm print:bg-white print:border-slate-300 print:shadow-none">
             <p class="text-sm font-medium text-slate-700 dark:text-slate-300 print:text-black leading-relaxed whitespace-pre-line">{{ $cierre->observaciones }}</p>
         </div>
@@ -139,11 +203,11 @@
 
         {{-- Desglose de Movimientos del Día --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
-            <span>📄</span> Detalle de Transacciones Registraras ({{ $movimientos->count() }})
+            <span>📄</span> Detalle de Transacciones Registradas ({{ $movimientos->count() }})
         </h3>
         
         <div class="overflow-x-auto overflow-y-auto max-h-[450px] relative mb-8">
-            <table class="ts-table mb-0">
+            <table class="ts-table responsive-table w-full mb-0">
                 <thead>
                     <tr>
                         <th class="w-16 text-left">Código</th>

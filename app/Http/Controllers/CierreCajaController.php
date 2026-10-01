@@ -27,11 +27,30 @@ class CierreCajaController extends Controller
         return view('cierre.index', compact('cierres', 'preview', 'hoy', 'yaExiste'));
     }
 
-    /** Realiza el cierre del día indicado */
+    /** Realiza el cierre del día indicado con opción de conciliación física */
     public function store(Request $request)
     {
         $fecha = Carbon::parse($request->fecha)->toDateString();
         $request->merge(['fecha' => $fecha]);
+
+        // Sanitizar efectivo_real_contado si viene con formato monetario
+        if ($request->filled('efectivo_real_contado')) {
+            $rawContado = $request->efectivo_real_contado;
+            if (is_string($rawContado)) {
+                $rawContado = str_replace(['$', ' '], '', $rawContado);
+                if (str_contains($rawContado, '.') && str_contains($rawContado, ',')) {
+                    $rawContado = str_replace('.', '', $rawContado);
+                    $rawContado = str_replace(',', '.', $rawContado);
+                } elseif (str_contains($rawContado, '.') && !str_contains($rawContado, ',')) {
+                    if (preg_match('/^\d{1,3}(\.\d{3})+$/', $rawContado)) {
+                        $rawContado = str_replace('.', '', $rawContado);
+                    }
+                } elseif (str_contains($rawContado, ',')) {
+                    $rawContado = str_replace(',', '.', $rawContado);
+                }
+            }
+            $request->merge(['efectivo_real_contado' => $rawContado]);
+        }
 
         $request->validate([
             'fecha' => [
@@ -43,6 +62,8 @@ class CierreCajaController extends Controller
                     }
                 },
             ],
+            'efectivo_real_contado' => 'nullable|numeric|min:0',
+            'motivo_diferencia' => 'nullable|string|max:1000',
             'observaciones' => 'nullable|string|max:1000',
         ]);
 
@@ -55,16 +76,28 @@ class CierreCajaController extends Controller
 
             $datos = $this->calcularDia($fecha);
 
+            $efectivoSistema = (float) $datos['efectivo'];
+            if ($request->filled('efectivo_real_contado')) {
+                $efectivoReal = round((float) $request->efectivo_real_contado, 2);
+                $diferencia = round($efectivoReal - $efectivoSistema, 2);
+            } else {
+                $efectivoReal = $efectivoSistema;
+                $diferencia = 0.0;
+            }
+
             CierreCaja::create([
                 'fecha' => $fecha,
                 'total_ingresos' => $datos['total_ingresos'],
                 'total_egresos' => $datos['total_egresos'],
                 'efectivo' => $datos['efectivo'],
+                'efectivo_real_contado' => $efectivoReal,
+                'diferencia' => $diferencia,
                 'consignacion' => $datos['consignacion'],
                 'saldo_final' => $datos['saldo_final'],
                 'num_movimientos' => $datos['num_movimientos'],
                 'bloqueado' => true,
                 'observaciones' => $request->observaciones,
+                'motivo_diferencia' => $request->motivo_diferencia,
                 'user_id' => auth()->id(),
             ]);
 
@@ -105,15 +138,17 @@ class CierreCajaController extends Controller
         return view('cierre.edit', compact('cierre'));
     }
 
-    /** Actualizar observaciones del cierre */
+    /** Actualizar observaciones y motivo de diferencia del cierre */
     public function update(Request $request, CierreCaja $cierre)
     {
         $request->validate([
             'observaciones' => 'nullable|string|max:1000',
+            'motivo_diferencia' => 'nullable|string|max:1000',
         ]);
 
         $cierre->update([
             'observaciones' => $request->observaciones,
+            'motivo_diferencia' => $request->motivo_diferencia,
         ]);
 
         return redirect()->route('cierre.show', $cierre->id)
