@@ -108,9 +108,9 @@
     function closeCalc(apply = false) {
         if (apply) {
             const visual = document.getElementById('efectivo_real_visual');
-            const real = document.getElementById('efectivo_real_real');
-            if (visual && real) {
-                real.value = calcTotalValue;
+            if (visual) {
+                // El input es único y ya lleva el name del formulario; el
+                // servidor sanea el formato monetario en CierreCajaController.
                 visual.value = new Intl.NumberFormat('es-CO').format(calcTotalValue);
                 if (typeof actualizarDiferencia === 'function') {
                     actualizarDiferencia();
@@ -207,8 +207,8 @@
                 <input type="hidden" id="efectivo_sistema_val" value="{{ $preview['efectivo'] }}">
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
-                    {{-- Tarjeta Efectivo Sistema --}}
-                    <div class="p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200/50 dark:border-blue-500/20 flex flex-col justify-between">
+                    {{-- Tarjeta Efectivo Teórico (Sistema) --}}
+                    <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                         <div>
                             <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">
                                 💻 Efectivo Teórico (Sistema)
@@ -223,40 +223,40 @@
                     </div>
 
                     {{-- Input Efectivo Real Contado --}}
-                    <div class="p-5 rounded-2xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 flex flex-col justify-between">
-                        <div>
-                            <label class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider block mb-2" for="efectivo_real_visual">
-                                🖐️ Dinero Contado en Mano ($) *
+                    <div class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                        <div class="w-full">
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-2" for="efectivo_real_visual">
+                                🖐️ Dinero Contado en Mano
                             </label>
-                            <div class="relative">
-                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-slate-400 text-lg select-none">$</span>
-                                <input type="text" 
-                                       id="efectivo_real_visual" 
-                                       value="{{ number_format($preview['efectivo'], 0, ',', '.') }}" 
-                                       placeholder="{{ number_format($preview['efectivo'], 0, ',', '.') }}" 
-                                       class="glass-input pl-8 font-black text-xl text-slate-800 dark:text-white"
-                                       autocomplete="off">
-                                <input type="hidden" name="efectivo_real_contado" id="efectivo_real_real" value="{{ $preview['efectivo'] }}">
+                            <div class="relative max-w-[16rem] mx-auto">
+                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-slate-400 text-lg select-none pointer-events-none">$</span>
+                                <input type="text"
+                                       id="efectivo_real_visual"
+                                       name="efectivo_real_contado"
+                                       value=""
+                                       placeholder="Sin contar"
+                                       autocomplete="off"
+                                       class="glass-input pl-8 pr-3 font-black text-xl text-slate-800 dark:text-white">
                             </div>
                         </div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-2">
-                            Ingresa el valor total contado en el cajón físico.
+                            Déjalo vacío si no realizaste el conteo físico.
                         </p>
                     </div>
 
                     {{-- Indicador Reactivo de Diferencia --}}
-                    <div id="card-diferencia" class="p-5 rounded-2xl transition-all duration-300 border bg-emerald-500/10 border-emerald-500/30 flex flex-col justify-between">
+                    <div id="card-diferencia" class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                         <div>
-                            <span class="text-xs font-bold uppercase tracking-wider block mb-1 text-slate-800 dark:text-white" id="label-diferencia">
+                            <span class="text-xs font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-300" id="label-diferencia">
                                 ⚖️ Resultado del Arqueo
                             </span>
-                            <p class="text-2xl md:text-3xl font-black transition-colors text-emerald-600 dark:text-emerald-400" id="valor-diferencia">
-                                $0
+                            <p class="text-2xl md:text-3xl font-black transition-colors text-slate-500 dark:text-slate-400" id="valor-diferencia">
+                                —
                             </p>
                         </div>
                         <div class="mt-2 flex items-center">
                             <span id="badge-diferencia" class="pill pill-done text-xs font-bold py-1 px-3">
-                                🟢 Cuadre Exacto
+                                ⚪ Sin conciliar
                             </span>
                         </div>
                     </div>
@@ -356,19 +356,21 @@
                         </td>
                         <td data-label="Diferencia:" class="text-center">
                             @if($c->estado_diferencia === 'cuadrado')
-                                <span class="pill pill-done text-[11px] font-bold py-0.5 px-2">
-                                    🟢 Cuadrado ($0)
+                                <span class="pill pill-done text-[11px] font-bold py-0.5 px-2" title="El efectivo contado coincide con el teórico">
+                                    🟢 Cuadrado
                                 </span>
                             @elseif($c->estado_diferencia === 'faltante')
                                 <span class="pill pill-anulado text-[11px] font-bold py-0.5 px-2" title="{{ $c->motivo_diferencia ?: 'Faltante de caja' }}">
-                                    🔴 -${{ number_format(abs($c->diferencia), 0, ',', '.') }}
+                                    🔴 Faltante ${{ number_format(abs($c->diferencia), 0, ',', '.') }}
                                 </span>
                             @elseif($c->estado_diferencia === 'sobrante')
                                 <span class="pill pill-efectivo text-[11px] font-bold py-0.5 px-2" title="{{ $c->motivo_diferencia ?: 'Sobrante de caja' }}">
-                                    🔵 +${{ number_format($c->diferencia, 0, ',', '.') }}
+                                    🔵 Sobrante ${{ number_format($c->diferencia, 0, ',', '.') }}
                                 </span>
                             @else
-                                <span class="text-xs text-gray-400">—</span>
+                                <span class="pill pill-done text-[11px] font-bold py-0.5 px-2 opacity-60" title="No se registró conteo físico del efectivo">
+                                    ⚪ Sin conciliar
+                                </span>
                             @endif
                         </td>
                         <td data-label="Consignación:" class="text-right text-purple-600 dark:text-purple-400 font-semibold">${{ number_format($c->consignacion, 0, ',', '.') }}</td>
@@ -411,64 +413,85 @@
 </div>
 
 <script>
+    const CARD_BASE = 'glass-card hover-glow p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0';
+    const TEXTO_BASE = 'text-2xl md:text-3xl font-black transition-colors';
+
+    function leerConteo(visualInput) {
+        if (!visualInput) return null;
+        const crudo = visualInput.value.replace(/\D/g, '');
+        if (crudo === '') return null;
+        return parseFloat(crudo);
+    }
+
+    function formatearPesos(n) {
+        return '$' + new Intl.NumberFormat('es-CO').format(Math.round(n));
+    }
+
     function actualizarDiferencia() {
         const sist = parseFloat(document.getElementById('efectivo_sistema_val')?.value || 0);
-        const realInput = document.getElementById('efectivo_real_real');
         const visualInput = document.getElementById('efectivo_real_visual');
-        if (!realInput || !visualInput) return;
-
-        let realVal = realInput.value !== "" ? parseFloat(realInput.value) : sist;
-        let diff = realVal - sist;
 
         const valorDiffEl = document.getElementById('valor-diferencia');
         const badgeDiffEl = document.getElementById('badge-diferencia');
         const cardDiffEl = document.getElementById('card-diferencia');
+        const labelDiffEl = document.getElementById('label-diferencia');
         const badgeAvisoEl = document.getElementById('badge-aviso-diferencia');
 
         if (!valorDiffEl || !badgeDiffEl || !cardDiffEl) return;
 
-        const sign = diff > 0 ? '+' : (diff < 0 ? '-' : '');
-        const formattedDiff = sign + '$' + new Intl.NumberFormat('es-CO').format(Math.abs(diff));
-        valorDiffEl.innerText = formattedDiff;
+        const realVal = leerConteo(visualInput);
 
-        if (Math.abs(diff) < 0.01) {
-            valorDiffEl.className = 'text-2xl md:text-3xl font-black transition-colors text-emerald-600 dark:text-emerald-400';
+        // Sin conteo registrado: el arqueo queda honestamente pendiente.
+        if (realVal === null) {
+            valorDiffEl.className = TEXTO_BASE + ' text-slate-500 dark:text-slate-400';
+            valorDiffEl.innerText = '—';
+            badgeDiffEl.className = 'pill pill-done text-xs font-bold py-1 px-3';
+            badgeDiffEl.innerHTML = '⚪ Sin conciliar';
+            cardDiffEl.className = CARD_BASE + ' glass-card-gray';
+            if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-300';
+            if (badgeAvisoEl) badgeAvisoEl.classList.add('hidden');
+            return;
+        }
+
+        const diff = realVal - sist;
+        const signo = diff > 0 ? '+' : (diff < 0 ? '-' : '');
+        valorDiffEl.innerText = signo + formatearPesos(Math.abs(diff));
+
+        if (Math.abs(diff) < 1) {
+            valorDiffEl.className = TEXTO_BASE + ' text-emerald-600 dark:text-emerald-400';
             badgeDiffEl.className = 'pill pill-done text-xs font-bold py-1 px-3';
             badgeDiffEl.innerHTML = '🟢 Cuadre Exacto';
-            cardDiffEl.className = 'p-5 rounded-2xl transition-all duration-300 border bg-emerald-500/10 border-emerald-500/30 flex flex-col justify-between';
+            cardDiffEl.className = CARD_BASE + ' glass-card-emerald';
+            if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400';
             if (badgeAvisoEl) badgeAvisoEl.classList.add('hidden');
         } else if (diff < 0) {
-            valorDiffEl.className = 'text-2xl md:text-3xl font-black transition-colors text-red-600 dark:text-red-400';
+            valorDiffEl.className = TEXTO_BASE + ' text-red-600 dark:text-red-400';
             badgeDiffEl.className = 'pill pill-anulado text-xs font-bold py-1 px-3';
             badgeDiffEl.innerHTML = '🔴 Faltante en Caja';
-            cardDiffEl.className = 'p-5 rounded-2xl transition-all duration-300 border bg-red-500/10 border-red-500/30 flex flex-col justify-between';
+            cardDiffEl.className = CARD_BASE + ' glass-card-red';
+            if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-red-600 dark:text-red-400';
             if (badgeAvisoEl) badgeAvisoEl.classList.remove('hidden');
         } else {
-            valorDiffEl.className = 'text-2xl md:text-3xl font-black transition-colors text-blue-600 dark:text-blue-400';
+            valorDiffEl.className = TEXTO_BASE + ' text-blue-600 dark:text-blue-400';
             badgeDiffEl.className = 'pill pill-efectivo text-xs font-bold py-1 px-3';
             badgeDiffEl.innerHTML = '🔵 Sobrante en Caja';
-            cardDiffEl.className = 'p-5 rounded-2xl transition-all duration-300 border bg-blue-500/10 border-blue-500/30 flex flex-col justify-between';
+            cardDiffEl.className = CARD_BASE + ' glass-card-blue';
+            if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-blue-600 dark:text-blue-400';
             if (badgeAvisoEl) badgeAvisoEl.classList.remove('hidden');
         }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         const visual = document.getElementById('efectivo_real_visual');
-        const real = document.getElementById('efectivo_real_real');
-        if (visual && real) {
-            visual.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, "");
-                if (value.length > 12) {
-                    value = value.substring(0, 12);
-                }
-                if (value !== "") {
-                    real.value = value;
-                    e.target.value = new Intl.NumberFormat('es-CO').format(value);
-                } else {
-                    real.value = "";
-                }
+        if (visual) {
+            visual.addEventListener('input', function (e) {
+                let digitos = e.target.value.replace(/\D/g, '').slice(0, 12);
+                e.target.value = digitos === ''
+                    ? ''
+                    : new Intl.NumberFormat('es-CO').format(digitos);
                 actualizarDiferencia();
             });
+            visual.addEventListener('blur', actualizarDiferencia);
         }
         actualizarDiferencia();
     });

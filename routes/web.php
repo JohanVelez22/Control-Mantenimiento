@@ -104,7 +104,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
         // Cotizaciones
         Route::resource('cotizaciones', CotizacionController::class)->parameters(['cotizaciones' => 'cotizacion'])->except(['destroy']);
-        Route::post('cotizaciones/{cotizacion}/convertir', [CotizacionController::class, 'convertir'])->name('cotizaciones.convertir');
+        Route::post('cotizaciones/{cotizacion}/convertir', [CotizacionController::class, 'convertir'])->middleware('throttle:10,1')->name('cotizaciones.convertir');
         Route::post('cotizaciones/{cotizacion}/anular', [CotizacionController::class, 'anular'])->middleware('throttle:10,1')->name('cotizaciones.anular');
         Route::post('cotizaciones/{cotizacion}/rechazar', [CotizacionController::class, 'rechazar'])->middleware('throttle:10,1')->name('cotizaciones.rechazar');
         Route::post('cotizaciones/{cotizacion}/reactivar', [CotizacionController::class, 'reactivar'])->middleware('throttle:10,1')->name('cotizaciones.reactivar');

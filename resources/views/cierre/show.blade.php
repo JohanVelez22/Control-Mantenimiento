@@ -134,48 +134,54 @@
             <span>💵</span> Arqueo y Conciliación Física
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div class="p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200/50 dark:border-blue-500/20 text-center">
-                <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">
-                    💻 Efectivo Teórico (Sistema)
-                </span>
-                <p class="text-2xl font-black text-slate-800 dark:text-white">
-                    ${{ number_format($cierre->efectivo, 0, ',', '.') }}
-                </p>
-                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium">Calculado por ingresos y egresos</p>
+            <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💻</span> Efectivo Teórico</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->efectivo, 0, ',', '.') }}</p>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium z-10">Calculado por ingresos y egresos</p>
             </div>
 
-            <div class="p-5 rounded-2xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 text-center">
-                <span class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest block mb-1">
-                    🖐️ Efectivo Real Contado
-                </span>
-                <p class="text-2xl font-black text-slate-800 dark:text-white">
-                    ${{ number_format($cierre->efectivo_real_contado ?? $cierre->efectivo, 0, ',', '.') }}
-                </p>
-                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium">Billetes y monedas físicos en caja</p>
+            <div class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🖐️</span> Contado en Mano</p>
+                @if($cierre->efectivo_real_contado !== null)
+                    <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->efectivo_real_contado, 0, ',', '.') }}</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium z-10">Billetes y monedas físicos en caja</p>
+                @else
+                    <p class="text-2xl font-black text-slate-400 dark:text-slate-500 z-10">—</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium z-10">No se registró conteo físico</p>
+                @endif
             </div>
 
-            <div class="p-5 rounded-2xl text-center border {{ $cierre->estado_diferencia === 'cuadrado' ? 'bg-emerald-500/10 border-emerald-500/30' : ($cierre->estado_diferencia === 'faltante' ? 'bg-red-500/10 border-red-500/30' : 'bg-blue-500/10 border-blue-500/30') }}">
-                <span class="text-xs font-bold uppercase tracking-widest block mb-1 text-slate-800 dark:text-white">
-                    ⚖️ Resultado del Arqueo
-                </span>
-                <p class="text-2xl font-black {{ $cierre->estado_diferencia === 'cuadrado' ? 'text-emerald-600 dark:text-emerald-400' : ($cierre->estado_diferencia === 'faltante' ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400') }}">
-                    {{ ($cierre->diferencia > 0 ? '+' : ($cierre->diferencia < 0 ? '-' : '')) . '$' . number_format(abs($cierre->diferencia), 0, ',', '.') }}
+            <div class="glass-card hover-glow {{ $cierre->estado_diferencia_card }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center
+                          {{ match($cierre->estado_diferencia) {
+                              'cuadrado' => 'text-emerald-600 dark:text-emerald-400',
+                              'sobrante' => 'text-blue-600 dark:text-blue-400',
+                              'faltante' => 'text-red-600 dark:text-red-400',
+                              default    => 'text-slate-500 dark:text-slate-400',
+                          } }}">
+                    <span class="text-lg no-print-emoji">⚖️</span> Resultado del Arqueo
                 </p>
-                <div class="mt-1">
+                @if($cierre->estado_diferencia === 'sin_conciliar')
+                    <p class="text-2xl font-black text-slate-400 dark:text-slate-500 z-10">—</p>
+                @else
+                    <p class="text-2xl font-black z-10
+                              {{ match($cierre->estado_diferencia) {
+                                  'cuadrado' => 'text-emerald-600 dark:text-emerald-400',
+                                  'sobrante' => 'text-blue-600 dark:text-blue-400',
+                                  default    => 'text-red-600 dark:text-red-400',
+                              } }}">
+                        {{ $cierre->diferencia > 0 ? '+' : ($cierre->diferencia < 0 ? '-' : '') }}${{ number_format(abs($cierre->diferencia), 0, ',', '.') }}
+                    </p>
+                @endif
+                <div class="mt-1 z-10">
                     @if($cierre->estado_diferencia === 'cuadrado')
-                        <span class="pill pill-done text-xs font-bold py-0.5 px-3">
-                            🟢 Cuadre Exacto
-                        </span>
+                        <span class="pill pill-done text-xs font-bold py-0.5 px-3">🟢 Cuadre Exacto</span>
                     @elseif($cierre->estado_diferencia === 'faltante')
-                        <span class="pill pill-anulado text-xs font-bold py-0.5 px-3">
-                            🔴 Faltante en Caja
-                        </span>
+                        <span class="pill pill-anulado text-xs font-bold py-0.5 px-3">🔴 Faltante en Caja</span>
                     @elseif($cierre->estado_diferencia === 'sobrante')
-                        <span class="pill pill-efectivo text-xs font-bold py-0.5 px-3">
-                            🔵 Sobrante en Caja
-                        </span>
+                        <span class="pill pill-efectivo text-xs font-bold py-0.5 px-3">🔵 Sobrante en Caja</span>
                     @else
-                        <span class="text-xs text-gray-400">Sin conciliar</span>
+                        <span class="pill pill-done text-xs font-bold py-0.5 px-3 opacity-60">⚪ Sin conciliar</span>
                     @endif
                 </div>
             </div>
@@ -183,11 +189,12 @@
 
         {{-- Motivo de la diferencia si existe --}}
         @if($cierre->motivo_diferencia)
-        <div class="mb-8 p-5 rounded-2xl {{ $cierre->diferencia < 0 ? 'bg-red-500/10 border border-red-500/20' : 'bg-blue-500/10 border border-blue-500/20' }}">
-            <h4 class="font-bold text-sm {{ $cierre->diferencia < 0 ? 'text-red-700 dark:text-red-400' : 'text-blue-700 dark:text-blue-400' }} uppercase tracking-wider mb-1 flex items-center gap-2">
+        <div class="mb-8 glass-card hover-glow {{ $cierre->estado_diferencia === 'faltante' ? 'glass-card-red' : ($cierre->estado_diferencia === 'sobrante' ? 'glass-card-blue' : 'glass-card-gray') }} p-5">
+            <h4 class="font-bold text-sm uppercase tracking-wider mb-1 z-10 flex items-center gap-2
+                        {{ $cierre->estado_diferencia === 'faltante' ? 'text-red-700 dark:text-red-400' : ($cierre->estado_diferencia === 'sobrante' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300') }}">
                 <span>📝</span> Motivo / Justificación de la Diferencia
             </h4>
-            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed z-10">
                 {{ $cierre->motivo_diferencia }}
             </p>
         </div>

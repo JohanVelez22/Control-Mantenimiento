@@ -76,13 +76,20 @@ class CierreCajaController extends Controller
 
             $datos = $this->calcularDia($fecha);
 
+            // El conteo físico es opcional. Si el cajero no registra un valor,
+            // `efectivo_real_contado` queda NULL y el modelo lo reporta como
+            // 'sin_conciliar'. Nunca se infiere el contado desde el valor
+            // teórico del sistema: eso afirmaría un cuadre no verificado.
             $efectivoSistema = (float) $datos['efectivo'];
-            if ($request->filled('efectivo_real_contado')) {
+            $conteoRegistrado = $request->filled('efectivo_real_contado')
+                && is_numeric($request->efectivo_real_contado);
+
+            if ($conteoRegistrado) {
                 $efectivoReal = round((float) $request->efectivo_real_contado, 2);
                 $diferencia = round($efectivoReal - $efectivoSistema, 2);
             } else {
-                $efectivoReal = $efectivoSistema;
-                $diferencia = 0.0;
+                $efectivoReal = null;
+                $diferencia = 0;
             }
 
             CierreCaja::create([

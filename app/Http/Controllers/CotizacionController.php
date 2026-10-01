@@ -311,35 +311,45 @@ class CotizacionController extends Controller
 
     public function convertir($cotizacion)
     {
-        if (! $cotizacion instanceof Cotizacion || ! $cotizacion->exists) {
-            $cotizacion = Cotizacion::findOrFail($cotizacion);
-        }
+        $id = $cotizacion instanceof Cotizacion ? $cotizacion->id : (int) $cotizacion;
 
-        if ($cotizacion->anulado) {
-            return back()->with('error', 'No se puede convertir una cotización anulada.');
-        }
-
-        if ($cotizacion->estado !== 'pendiente') {
-            return back()->with('error', 'Esta cotización ya fue procesada o rechazada.');
-        }
-
-        $cotizacion->load('items');
-
-        // Validar stock disponible para todos los ítems de tipo 'stock'
-        foreach ($cotizacion->items as $item) {
-            if ($item->tipo === 'stock' && $item->item_id) {
-                $stock = Stock::find($item->item_id);
-                if (! $stock || ! $stock->tieneDisponible($item->cantidad)) {
-                    $prodNombre = $stock ? $stock->producto : $item->descripcion;
-                    $disp = $stock ? $stock->cantidad : 0;
-
-                    return back()->with('error', "Stock insuficiente para '{$prodNombre}'. Disponible: {$disp}, requerido: {$item->cantidad}.");
-                }
-            }
-        }
+        // Bloqueo de período: la conversión genera un movimiento con fecha de hoy.
+        $hoy = now()->toDateString();
+        CierreCajaGuard::asegurarAbierta($hoy, 'conversión de cotización a venta');
 
         try {
             DB::beginTransaction();
+
+            /** @var Cotizacion $cotizacion */
+            $cotizacion = Cotizacion::whereKey($id)->lockForUpdate()->firstOrFail();
+
+            if ($cotizacion->anulado) {
+                DB::rollBack();
+
+                return back()->with('error', 'No se puede convertir una cotización anulada.');
+            }
+
+            if ($cotizacion->estado !== 'pendiente') {
+                DB::rollBack();
+
+                return back()->with('error', 'Esta cotización ya fue procesada o rechazada.');
+            }
+
+            $cotizacion->load('items');
+
+            // Validar y bloquear stock disponible para todos los ítems de tipo 'stock'
+            foreach ($cotizacion->items as $item) {
+                if ($item->tipo === 'stock' && $item->item_id) {
+                    $stock = Stock::where('id', $item->item_id)->lockForUpdate()->first();
+                    if (! $stock || ! $stock->tieneDisponible((int) $item->cantidad)) {
+                        $prodNombre = $stock ? $stock->producto : $item->descripcion;
+                        $disp = $stock ? $stock->cantidad : 0;
+                        DB::rollBack();
+
+                        return back()->with('error', "Stock insuficiente para '{$prodNombre}'. Disponible: {$disp}, requerido: {$item->cantidad}.");
+                    }
+                }
+            }
 
             // 1. Marcar cotización como aprobada
             $cotizacion->update(['estado' => 'aprobada']);
@@ -358,7 +368,7 @@ class CotizacionController extends Controller
                 'total_documento' => $cotizacion->total,
                 'total_pagado' => 0,
                 'observaciones' => "Venta generada automáticamente desde Cotización #{$cotizacion->codigo}".($cotizacion->notas ? "\nNotas: {$cotizacion->notas}" : ''),
-                'fecha' => now()->toDateString(),
+                'fecha' => $hoy,
                 'user_id' => auth()->id(),
             ]);
 
@@ -383,9 +393,6 @@ class CotizacionController extends Controller
             // 4. Registrar movimiento raíz en Caja para seguimiento de saldos
             $conceptoVenta = ConceptoCaja::firstOrCreate(['nombre' => 'Venta de Inventario']);
 
-            // Bloqueo de período: la conversión genera un movimiento con fecha de hoy.
-            CierreCajaGuard::asegurarAbierta(now()->toDateString(), 'conversión de cotización a venta');
-
             MovimientoCaja::create([
                 'tipo_movimiento' => 'ingreso',
                 'tipo_pago' => 'efectivo',
@@ -394,9 +401,10 @@ class CotizacionController extends Controller
                 'persona' => $destinatarioNombre ?: 'Cliente / Proveedor',
                 'concepto_id' => $conceptoVenta->id,
                 'descripcion' => "Cobro venta #{$factura->numero_factura}",
-                'fecha' => now()->toDateString(),
+                'fecha' => $hoy,
                 'estado' => 'activo',
                 'user_id' => auth()->id(),
+                'factura_id' => $factura->id,
             ]);
 
             DB::commit();

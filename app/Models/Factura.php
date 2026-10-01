@@ -107,6 +107,17 @@ class Factura extends Model
      * Sincroniza y recalcula el total pagado a partir de los movimientos de caja activos
      * asociados a la factura, actualizando automáticamente el estado y los saldos.
      */
+    public const float EPSILON = 0.01;
+
+    public function movimientosCaja(): HasMany
+    {
+        return $this->hasMany(MovimientoCaja::class, 'factura_id');
+    }
+
+    /**
+     * Recalcula el total pagado sumando los movimientos de caja asociados.
+     * Actualiza el estado según el saldo pendiente.
+     */
     public function recalcularPagos(): void
     {
         $expectedTipo = $this->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso';
@@ -114,7 +125,13 @@ class Factura extends Model
         $directMovIds = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
             ->where('tipo_movimiento', $expectedTipo)
-            ->where('descripcion', 'like', "%#{$this->numero_factura}%")
+            ->where(function ($q) {
+                $q->where('factura_id', $this->id)
+                    ->orWhere(function ($legacy) {
+                        $legacy->whereNull('factura_id')
+                            ->where('descripcion', 'like', "%#{$this->numero_factura}%");
+                    });
+            })
             ->pluck('id');
 
         $pagosCaja = MovimientoCaja::where('estado', 'activo')
@@ -125,15 +142,15 @@ class Factura extends Model
                     $q->whereIn('id', $directMovIds)
                         ->orWhereIn('parent_id', $directMovIds);
                 }
-                $q->orWhere('descripcion', 'like', "%#{$this->numero_factura}%");
+                $q->orWhere('factura_id', $this->id);
             })
             ->sum('monto');
 
-        $this->total_pagado = (float) $pagosCaja;
+        $this->total_pagado = $this->estado === 'anulada' ? 0.0 : (float) $pagosCaja;
 
         if ($this->estado !== 'anulada') {
             $saldo = max(0, (float) $this->total_documento - $pagosCaja);
-            $this->estado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+            $this->estado = $saldo > self::EPSILON ? 'pendiente_pago' : 'emitida';
 
             // Limpiar etiqueta "⚠️ SALDO PENDIENTE" antigua y duplicados repetitivos de anulación/reactivación
             $lineas = array_filter(explode("\n", $this->observaciones ?? ''), fn ($l) => ! str_contains($l, 'SALDO PENDIENTE:'));
@@ -152,7 +169,7 @@ class Factura extends Model
             }
             $obsLimpia = trim(implode("\n", $contentLines));
 
-            if ($saldo > 0.01) {
+            if ($saldo > self::EPSILON) {
                 $obsLimpia .= ($obsLimpia ? "\n" : '').'⚠️ SALDO PENDIENTE: $'.number_format($saldo, 0, ',', '.');
             }
             $this->observaciones = $obsLimpia ?: null;

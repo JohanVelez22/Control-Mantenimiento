@@ -30,7 +30,11 @@ class CierreCajaConciliacionTest extends TestCase
         ]);
     }
 
-    public function test_cierre_sin_especificar_efectivo_asume_saldo_teorico_y_diferencia_cero(): void
+    /**
+ * Sin conteo físico el cierre NO puede afirmar que cuadró: queda 'sin_conciliar'.
+ * Regresión: antes el sistema precargaba el valor teórico y reportaba 'cuadrado'.
+ */
+public function test_cierre_sin_conteo_fisico_queda_sin_conciliar_y_no_afirma_cuadre(): void
     {
         $fecha = '2026-10-01';
 
@@ -47,17 +51,21 @@ class CierreCajaConciliacionTest extends TestCase
 
         $response = $this->actingAs($this->admin)->post(route('cierre.store'), [
             'fecha' => $fecha,
-            'observaciones' => 'Cierre automático sin arqueo detallado',
+            'observaciones' => 'Cierre sin arqueo detallado',
         ]);
 
         $response->assertRedirect(route('cierre.index'));
 
         $cierre = CierreCaja::whereDate('fecha', $fecha)->first();
         $this->assertNotNull($cierre);
+
+        // El efectivo teórico del sistema se conserva intacto.
         $this->assertEquals(350000, (float) $cierre->efectivo);
-        $this->assertEquals(350000, (float) $cierre->efectivo_real_contado);
-        $this->assertEquals(0, (float) $cierre->diferencia);
-        $this->assertEquals('cuadrado', $cierre->estado_diferencia);
+
+        // Pero no se inventa un conteo.
+        $this->assertNull($cierre->efectivo_real_contado);
+        $this->assertSame('sin_conciliar', $cierre->estado_diferencia);
+        $this->assertSame('Sin conciliar', $cierre->estado_diferencia_label);
     }
 
     public function test_cierre_con_efectivo_exacto_queda_cuadrado(): void

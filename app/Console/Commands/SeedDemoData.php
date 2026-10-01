@@ -126,11 +126,11 @@ class SeedDemoData extends Command
             // 3. TÉCNICOS (5 registros)
             $this->info('👨🏻‍🔧 3. Creando 5 Técnicos...');
             $tecnicosData = [
-                ['nombre' => 'Andrés Felipe Martínez', 'identificacion' => '102030101', 'especialidad' => 'Hardware y Laptops', 'movil' => '3001112233', 'active' => true],
-                ['nombre' => 'Roberto Sánchez', 'identificacion' => '102030102', 'especialidad' => 'Microelectrónica y Placas', 'movil' => '3102223344', 'active' => true],
-                ['nombre' => 'Luis Fernando Osorio', 'identificacion' => '102030103', 'especialidad' => 'Mantenimiento y Redes', 'movil' => '3153334455', 'active' => true],
-                ['nombre' => 'Miguel Ángel Rojas', 'identificacion' => '102030104', 'especialidad' => 'Software y Sistemas', 'movil' => '3204445566', 'active' => true],
-                ['nombre' => 'Héctor Fabio Castaño', 'identificacion' => '102030105', 'especialidad' => 'Impresoras y Periféricos', 'movil' => '3015556677', 'active' => true],
+                ['nombre' => 'Andrés Felipe Martínez', 'identificacion' => '102030101', 'especialidad' => 'Hardware y Laptops', 'movil' => '3001112233', 'email' => 'andres.martinez@tecnisystemas.com', 'active' => true],
+                ['nombre' => 'Roberto Sánchez', 'identificacion' => '102030102', 'especialidad' => 'Microelectrónica y Placas', 'movil' => '3102223344', 'email' => 'roberto.sanchez@tecnisystemas.com', 'active' => true],
+                ['nombre' => 'Luis Fernando Osorio', 'identificacion' => '102030103', 'especialidad' => 'Mantenimiento y Redes', 'movil' => '3153334455', 'email' => 'luis.osorio@tecnisystemas.com', 'active' => true],
+                ['nombre' => 'Miguel Ángel Rojas', 'identificacion' => '102030104', 'especialidad' => 'Software y Sistemas', 'movil' => '3204445566', 'email' => 'miguel.rojas@tecnisystemas.com', 'active' => true],
+                ['nombre' => 'Héctor Fabio Castaño', 'identificacion' => '102030105', 'especialidad' => 'Impresoras y Periféricos', 'movil' => '3015556677', 'email' => 'hector.castano@tecnisystemas.com', 'active' => true],
             ];
             $tecnicos = [];
             foreach ($tecnicosData as $t) {

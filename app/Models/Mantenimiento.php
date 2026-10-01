@@ -72,18 +72,17 @@ class Mantenimiento extends Model
 
     // ─── Computed Attributes ──────────────────────────────────────
 
-    /** Total abonado (usa withSum si está cargado, sino suma la relación) */
+    /** Total abonado excluyendo anulados */
     public function getTotalAbonadoAttribute(): float
     {
         if ($this->relationLoaded('abonos')) {
-            return (float) $this->abonos->sum('monto');
+            return (float) $this->abonos->where('anulado', false)->sum('monto');
         }
-        // Si viene de withSum('abonos as total_abonado', 'monto')
         if (isset($this->attributes['total_abonado'])) {
             return (float) $this->attributes['total_abonado'];
         }
 
-        return (float) $this->abonos()->sum('monto');
+        return (float) $this->abonos()->where('anulado', false)->sum('monto');
     }
 
     /** Saldo pendiente */

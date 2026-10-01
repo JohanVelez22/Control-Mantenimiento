@@ -126,13 +126,13 @@ class ReporteFinancieroController extends Controller
         // ════════════════════════════════════════════════════════════════════
         // CONSULTAS DIRECTAS A BASE DE DATOS PARA RIGOR CONTABLE (DINERO REAL)
         // ════════════════════════════════════════════════════════════════════
-        $efectivoIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto');
-        $efectivoEgresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto');
-        $consignacionIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto');
-        $consignacionEgresos = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto');
+        $efectivoIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto');
+        $efectivoEgresos = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto');
+        $consignacionIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto');
+        $consignacionEgresos = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto');
 
-        $ingresosCaja = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
-        $egresosCaja = MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
+        $ingresosCaja = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
+        $egresosCaja = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
         $facturadoMant = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
         $facturadoElec = Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
         $ventasInv = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->where('tipo_movimiento', 'venta')->sum('total_documento');

@@ -132,7 +132,8 @@ class MovimientoInventarioController extends Controller
                     persona: $entityName,
                     descripcion: "Pago compra #{$factura->numero_factura}",
                     fecha: $request->fecha,
-                    montoTotal: $totalDocumento
+                    montoTotal: $totalDocumento,
+                    facturaId: $factura->id
                 );
             }
 
@@ -275,7 +276,8 @@ class MovimientoInventarioController extends Controller
                     persona: $entityName,
                     descripcion: "Cobro venta #{$factura->numero_factura}",
                     fecha: $request->fecha,
-                    montoTotal: $totalDocumento
+                    montoTotal: $totalDocumento,
+                    facturaId: $factura->id
                 );
             }
 
@@ -349,7 +351,13 @@ class MovimientoInventarioController extends Controller
 
         $movimientoPadre = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
-            ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
+            ->where(function ($q) use ($factura) {
+                $q->where('factura_id', $factura->id)
+                    ->orWhere(function ($legacy) use ($factura) {
+                        $legacy->whereNull('factura_id')
+                            ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
+                    });
+            })
             ->whereNull('parent_id')
             ->with(['childPayments' => fn ($q) => $q->where('anulado', false)->with('user')])
             ->first();
@@ -365,7 +373,13 @@ class MovimientoInventarioController extends Controller
 
         $movimientoPadre = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
-            ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
+            ->where(function ($q) use ($factura) {
+                $q->where('factura_id', $factura->id)
+                    ->orWhere(function ($legacy) use ($factura) {
+                        $legacy->whereNull('factura_id')
+                            ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
+                    });
+            })
             ->whereNull('parent_id')
             ->with(['childPayments' => fn ($q) => $q->where('anulado', false)->with('user')])
             ->first();
@@ -455,8 +469,13 @@ class MovimientoInventarioController extends Controller
                 $saldo = $factura->total_documento - $factura->total_pagado;
                 $nuevoEstado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
 
-                MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
-                    ->update(['estado' => 'activo', 'anulado' => false]);
+                MovimientoCaja::where(function ($q) use ($factura) {
+                    $q->where('factura_id', $factura->id)
+                        ->orWhere(function ($legacy) use ($factura) {
+                            $legacy->whereNull('factura_id')
+                                ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
+                        });
+                })->update(['estado' => 'activo', 'anulado' => false]);
 
                 $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn ($l) => ! preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
                 $factura->observaciones = trim($cleanObs."\n[REACTIVADA el ".now()->format('d/m/Y H:i').' por '.Auth::user()->name.']');
@@ -481,8 +500,13 @@ class MovimientoInventarioController extends Controller
                     }
                 }
 
-                MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
-                    ->update(['estado' => 'anulado', 'anulado' => true]);
+                MovimientoCaja::where(function ($q) use ($factura) {
+                    $q->where('factura_id', $factura->id)
+                        ->orWhere(function ($legacy) use ($factura) {
+                            $legacy->whereNull('factura_id')
+                                ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
+                        });
+                })->update(['estado' => 'anulado', 'anulado' => true]);
 
                 $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn ($l) => ! preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
                 $factura->update([
@@ -758,42 +782,53 @@ class MovimientoInventarioController extends Controller
             $nuevaObservacion = $this->buildObservaciones($request->observaciones, $saldo, $historial ?: null);
 
             // Sincronizar movimiento de caja base
-            $baseCaja = MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
+            $baseCaja = MovimientoCaja::where('factura_id', $factura->id)
                 ->whereNull('parent_id')
-                ->first();
+                ->first()
+                ?? MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
+                    ->whereNull('parent_id')
+                    ->first();
 
             $entityName = $entity->nombre_razon_social ?? $entity->nombre;
 
-            if ($totalPagado > 0) {
-                if ($baseCaja) {
-                    $baseCaja->update([
-                        'monto' => $totalPagado,
-                        'monto_total' => $totalDocumento > $totalPagado ? $totalDocumento : null,
-                        'persona' => $entityName,
-                        'fecha' => $request->fecha,
-                        'estado' => $shouldBeAnulada ? 'anulado' : 'activo',
-                    ]);
-                } elseif (! $shouldBeAnulada) {
-                    $this->registrarMovimientoCaja(
-                        tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
-                        monto: $totalPagado,
-                        persona: $entityName,
-                        descripcion: ($factura->tipo_movimiento === 'venta' ? 'Cobro venta #' : 'Pago compra #').$factura->numero_factura,
-                        fecha: $request->fecha,
-                        montoTotal: $totalDocumento > $totalPagado ? $totalDocumento : null
-                    );
-                }
-            } elseif ($baseCaja) {
+            if ($baseCaja) {
+                $abonosExistentes = (float) $baseCaja->childPayments()
+                    ->where('anulado', false)
+                    ->where('estado', 'activo')
+                    ->sum('monto');
+
+                $montoBaseAjustado = max(0, $totalPagado - $abonosExistentes);
+
                 $baseCaja->update([
-                    'monto' => 0,
-                    'monto_total' => $totalDocumento,
-                    'estado' => 'activo',
+                    'factura_id' => $factura->id,
+                    'monto' => $montoBaseAjustado,
+                    'monto_total' => $totalDocumento > $totalPagado ? $totalDocumento : null,
+                    'persona' => $entityName,
+                    'fecha' => $request->fecha,
+                    'estado' => $shouldBeAnulada ? 'anulado' : 'activo',
+                    'anulado' => $shouldBeAnulada,
                 ]);
+
+                if ($shouldBeAnulada) {
+                    $baseCaja->childPayments()->update([
+                        'estado' => 'anulado',
+                        'anulado' => true,
+                    ]);
+                }
+            } elseif (! $shouldBeAnulada && ($totalPagado > 0 || $saldo > \App\Models\Factura::EPSILON)) {
+                $this->registrarMovimientoCaja(
+                    tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
+                    monto: $totalPagado,
+                    persona: $entityName,
+                    descripcion: ($factura->tipo_movimiento === 'venta' ? 'Cobro venta #' : 'Pago compra #').$factura->numero_factura,
+                    fecha: $request->fecha,
+                    montoTotal: $totalDocumento > $totalPagado ? $totalDocumento : null,
+                    facturaId: $factura->id
+                );
             }
 
             $factura->update([
                 'fecha' => $request->fecha,
-                'total_pagado' => $totalPagado,
                 'total_documento' => $totalDocumento,
                 'estado' => $estado,
                 'observaciones' => $nuevaObservacion,
@@ -801,9 +836,7 @@ class MovimientoInventarioController extends Controller
                 'facturable_type' => $facturableType,
             ]);
 
-            if (! $shouldBeAnulada) {
-                $factura->recalcularPagos();
-            }
+            $factura->recalcularPagos();
 
             DB::commit();
 
@@ -908,7 +941,8 @@ class MovimientoInventarioController extends Controller
         string $persona,
         string $descripcion,
         string $fecha,
-        ?float $montoTotal = null
+        ?float $montoTotal = null,
+        ?int $facturaId = null
     ): MovimientoCaja {
         // Bloqueo de período: no se admiten movimientos sobre un día ya cerrado.
         CierreCajaGuard::asegurarAbierta($fecha, "movimiento de inventario ({$tipo})");
@@ -928,6 +962,7 @@ class MovimientoInventarioController extends Controller
             'fecha' => $fecha,
             'estado' => 'activo',
             'user_id' => Auth::id(),
+            'factura_id' => $facturaId,
         ]);
     }
 }

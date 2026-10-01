@@ -416,6 +416,14 @@ class MovimientoCajaController extends Controller
     /** Registrar un abono/pago parcial a este movimiento */
     public function storeAbono(Request $request, MovimientoCaja $movimiento)
     {
+        if ($movimiento->anulado || $movimiento->estado !== 'activo') {
+            return back()->with('error', 'No se pueden registrar abonos a un movimiento anulado.')->withInput();
+        }
+
+        if ($movimiento->factura && ($movimiento->factura->estado === 'anulada' || $movimiento->factura->esta_anulada)) {
+            return back()->with('error', 'No se pueden registrar abonos a una factura anulada.')->withInput();
+        }
+
         $validated = $request->validate([
             'monto_abono' => 'required|numeric|min:0.01',
             'fecha' => 'required|date',
@@ -481,6 +489,7 @@ class MovimientoCajaController extends Controller
                 'anulado' => false,
                 'user_id' => auth()->id(),
                 'parent_id' => $movimiento->id,
+                'factura_id' => $movimiento->factura_id,
             ]);
 
             $this->sincronizarFacturaRelacionada($movimiento);
@@ -502,19 +511,8 @@ class MovimientoCajaController extends Controller
             return redirect()->back()->with('error', $error)->withInput();
         }
 
-        $fechaMov = $movimiento->fecha ? $movimiento->fecha->toDateString() : null;
-        if (CierreCajaGuard::fechaEstaCerrada($fechaMov)) {
-            return redirect()->back()->with('error', 'No se puede anular o reactivar este movimiento: el día '.$fechaMov.' ya tiene un cierre de caja registrado. Para modificarlo, elimine primero el cierre de ese día.');
-        }
-
         try {
             DB::beginTransaction();
-
-            if (CierreCajaGuard::fechaEstaCerrada($fechaMov)) {
-                DB::rollBack();
-
-                return redirect()->back()->with('error', 'No se puede anular o reactivar este movimiento: el día '.$fechaMov.' ya tiene un cierre de caja registrado.');
-            }
 
             $esAnulacion = ! $movimiento->anulado;
 
@@ -524,11 +522,22 @@ class MovimientoCajaController extends Controller
                 'estado' => $esAnulacion ? 'anulado' : 'activo',
             ]);
 
+            // Sincronizar Abono asociado si existe
+            if ($movimiento->abono_id) {
+                \App\Models\Abono::where('id', $movimiento->abono_id)->update(['anulado' => $esAnulacion]);
+            }
+
             // Anular o restaurar todos los abonos asociados en cascada
-            $movimiento->childPayments()->update([
-                'anulado' => $esAnulacion,
-                'estado' => $esAnulacion ? 'anulado' : 'activo',
-            ]);
+            $childMovs = $movimiento->childPayments()->get();
+            foreach ($childMovs as $child) {
+                $child->update([
+                    'anulado' => $esAnulacion,
+                    'estado' => $esAnulacion ? 'anulado' : 'activo',
+                ]);
+                if ($child->abono_id) {
+                    \App\Models\Abono::where('id', $child->abono_id)->update(['anulado' => $esAnulacion]);
+                }
+            }
 
             $this->sincronizarFacturaRelacionada($movimiento);
 
@@ -545,6 +554,18 @@ class MovimientoCajaController extends Controller
 
     private function sincronizarFacturaRelacionada(MovimientoCaja $movimiento): void
     {
+        if ($movimiento->factura_id && $movimiento->factura) {
+            $movimiento->factura->recalcularPagos();
+
+            return;
+        }
+
+        if ($movimiento->parent_id && $movimiento->parent?->factura_id && $movimiento->parent->factura) {
+            $movimiento->parent->factura->recalcularPagos();
+
+            return;
+        }
+
         $textToSearch = $movimiento->descripcion;
         if ($movimiento->parent_id && $movimiento->parent) {
             $textToSearch .= ' '.$movimiento->parent->descripcion;

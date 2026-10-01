@@ -27,9 +27,14 @@ trait HandlesAbono
             'descripcion' => 'nullable|string|max:500',
         ]);
 
+        // No permitir abonar a registros anulados
+        if ($model->anulado || ($model->estado ?? null) === 'anulado') {
+            return back()->with('error', 'No se pueden registrar abonos a un registro anulado.')->withInput();
+        }
+
         // No permitir abonar más de lo que se debe
         $saldoPendiente = $model->saldo_pendiente;
-        if ($validated['monto'] > $saldoPendiente + 0.001) {
+        if ($validated['monto'] > $saldoPendiente + \App\Models\Factura::EPSILON) {
             return back()->with('error',
                 'El abono ($'.number_format($validated['monto'], 0, ',', '.').
                 ') no puede superar el saldo pendiente ($'.number_format($saldoPendiente, 0, ',', '.').').')->withInput();
@@ -62,7 +67,7 @@ trait HandlesAbono
             $abono = Abono::create($validated);
 
             // Determinar si es un pago completo (total/final) o abono parcial
-            $esPagoCompleto = ($validated['monto'] >= $saldoPendiente - 0.001);
+            $esPagoCompleto = ($validated['monto'] >= $saldoPendiente - \App\Models\Factura::EPSILON);
             $totalAbonosCount = $model->abonos()->count();
 
             if ($esPagoCompleto && $totalAbonosCount === 1) {

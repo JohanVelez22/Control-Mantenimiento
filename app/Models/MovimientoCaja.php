@@ -24,6 +24,7 @@ class MovimientoCaja extends Model
         'user_id',
         'abono_id',   // FK opcional al Abono que generó este movimiento
         'parent_id',  // FK opcional al MovimientoCaja padre (para abonos de caja)
+        'factura_id', // FK opcional a la Factura comercial vinculada
     ];
 
     protected function casts(): array
@@ -32,6 +33,11 @@ class MovimientoCaja extends Model
             'fecha' => 'date',
             'anulado' => 'boolean',
         ];
+    }
+
+    public function factura()
+    {
+        return $this->belongsTo(Factura::class, 'factura_id');
     }
 
     public function parent()
