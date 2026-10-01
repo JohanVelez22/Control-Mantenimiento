@@ -1034,7 +1034,7 @@ html.dark .backup-modal-header {
 
 /* Barra de pestañas segmentadas */
 .backup-modal-tabs {
-  padding: 0.75rem 1.75rem 0.5rem 1.75rem !important;
+  padding: 0.75rem 1.75rem !important;
   border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
   display: flex !important;
   flex-wrap: wrap !important;
@@ -1095,7 +1095,7 @@ html.dark .backup-tab-manual.is-active {
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
   border-color: #D97706 !important;
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.38) !important;
+  box-shadow: none !important;
 }
 
 /* 2. Pestaña 2: Programación Automática (Púrpura / Violeta Cósmico) */
@@ -1131,7 +1131,7 @@ html.dark .backup-tab-schedule.is-active {
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
   border-color: #7C3AED !important;
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.38) !important;
+  box-shadow: none !important;
 }
 
 /* 3. Pestaña 3: Ubicación y Archivos (Teal / Cian Blindado) */
@@ -1167,7 +1167,7 @@ html.dark .backup-tab-files.is-active {
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
   border-color: #0F766E !important;
-  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.38) !important;
+  box-shadow: none !important;
 }
 
 /* Badge de contador en pestaña */
@@ -6507,9 +6507,6 @@ html.dark tr[id^="electronica-"].active-target {
   border-radius: 12px !important;
   z-index: 99999 !important;
   overflow: hidden !important;
-  min-width: 100% !important;
-  width: max-content !important;
-  max-width: min(92vw, 560px) !important;
   padding: 0 !important;
 }
 
@@ -6538,7 +6535,7 @@ html.dark tr[id^="electronica-"].active-target {
 .ts-dropdown-solid .option.active {
   background: rgba(37, 99, 235, 0.18) !important;
   color: #2563EB !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 
 .ts-dropdown-solid .option.selected {
