@@ -519,13 +519,13 @@ async function submitConfiguracion(event) {
         <div class="backup-modal-body">
             
             {{-- TAB 1: Respaldo Inmediato (Manual) --}}
-            <div id="tab-content-manual" class="space-y-4">
+            <div id="tab-content-manual" class="space-y-3.5">
                 <div>
                     <h4 class="text-sm font-bold text-slate-800 dark:text-white">Selecciona el alcance del respaldo:</h4>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Elige los componentes que deseas incluir en esta copia de seguridad.</p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                     <label class="glass-card hover-glow glass-card-teal backup-option-card card-type-db is-selected flex flex-col justify-between" id="card-opt-db" onclick="selectManualType('db')">
                         <input type="radio" name="manual_backup_type" value="db" checked class="sr-only">
                         <div class="z-10">
@@ -585,8 +585,8 @@ async function submitConfiguracion(event) {
                 </div>
 
                 {{-- Botón Ejecutar --}}
-                <div class="pt-2 flex justify-end">
-                    <button type="button" onclick="executeManualBackup()" id="btn-execute-backup" class="btn-backup px-6 py-2.5 text-sm font-bold shadow-lg shadow-teal-500/25 flex items-center gap-2">
+                <div class="flex justify-end">
+                    <button type="button" onclick="executeManualBackup()" id="btn-execute-backup" class="btn-backup btn-backup-db px-6 py-2.5 text-sm font-bold shadow-lg shadow-teal-500/25 flex items-center gap-2">
                         <span id="btn-execute-backup-icon">⚡</span>
                         <span id="btn-execute-backup-text">Iniciar Respaldo Ahora</span>
                     </button>
@@ -890,6 +890,23 @@ function selectManualType(type) {
             }
         }
     });
+
+    // Cambiar color del botón de ejecución según la opción elegida
+    const executeBtn = document.getElementById('btn-execute-backup');
+    if (executeBtn) {
+        executeBtn.classList.remove(
+            'btn-backup-db', 'btn-backup-files', 'btn-backup-all',
+            'shadow-teal-500/25', 'shadow-indigo-500/25', 'shadow-purple-500/25'
+        );
+        executeBtn.classList.add(`btn-backup-${type}`);
+        if (type === 'db') {
+            executeBtn.classList.add('shadow-teal-500/25');
+        } else if (type === 'files') {
+            executeBtn.classList.add('shadow-indigo-500/25');
+        } else if (type === 'all') {
+            executeBtn.classList.add('shadow-purple-500/25');
+        }
+    }
 }
 
 function handleFrequencyChange() {

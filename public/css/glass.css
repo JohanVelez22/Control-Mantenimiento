@@ -958,6 +958,34 @@ html.dark #ts-topbar {
   transform: translateY(0);
 }
 
+/* Variantes dinámicas de color para el botón de ejecución según la opción seleccionada */
+.btn-backup.btn-backup-db {
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+.btn-backup.btn-backup-db:hover {
+  background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%) !important;
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+}
+
+.btn-backup.btn-backup-files {
+  background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+.btn-backup.btn-backup-files:hover {
+  background: linear-gradient(135deg, #818CF8 0%, #6366F1 100%) !important;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+}
+
+.btn-backup.btn-backup-all {
+  background: linear-gradient(135deg, #A855F7 0%, #9333EA 100%) !important;
+  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+.btn-backup.btn-backup-all:hover {
+  background: linear-gradient(135deg, #C084FC 0%, #A855F7 100%) !important;
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+}
+
 /* ================================================================
    Modal de Respaldos y Copias de Seguridad (Liquid Glass Pro)
    ================================================================ */
@@ -1386,14 +1414,14 @@ html.dark .ts-switch-slider {
 }
 
 .ts-switch input:checked+.ts-switch-slider {
-  background-color: #0d9488 !important;
-  box-shadow: 0 0 12px rgba(13, 148, 136, 0.35) !important;
+  background-color: #7C3AED !important;
+  box-shadow: none !important;
 }
 
 .dark .ts-switch input:checked+.ts-switch-slider,
 html.dark .ts-switch input:checked+.ts-switch-slider {
-  background-color: #14b8a6 !important;
-  box-shadow: 0 0 16px rgba(20, 184, 166, 0.45) !important;
+  background-color: #8B5CF6 !important;
+  box-shadow: none !important;
 }
 
 .ts-switch input:checked+.ts-switch-slider:before {
@@ -4255,8 +4283,9 @@ html.dark .ts-control>input {
 }
 
 /* ---- Panel dropdown ---- */
+/* ---- Panel dropdown ---- */
 .ts-dropdown {
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
   border: 1px solid rgba(226, 232, 240, 0.80) !important;
@@ -4267,50 +4296,62 @@ html.dark .ts-control>input {
   overflow: hidden !important;
 }
 
-.ts-dropdown .option {
-  padding: 10px 14px !important;
-  font-size: 14px !important;
+.ts-dropdown .option,
+.ts-dropdown .ts-option-item {
+  padding: 9px 12px !important;
+  font-size: 13.5px !important;
   color: #1E293B !important;
   border-radius: 0 !important;
-  white-space: normal !important;
-  word-break: break-word !important;
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
   line-height: 1.35 !important;
-  transition: background 0.15s ease !important;
+  font-weight: 500 !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
 }
 
 .ts-dropdown .option:hover,
 .ts-dropdown .active {
   background: rgba(37, 99, 235, 0.20) !important;
   color: #2563EB !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 
 .ts-dropdown .option.selected {
   background: rgba(37, 99, 235, 0.25) !important;
   color: #1D4ED8 !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
 }
 
 /* ---- Dropdown modo oscuro ---- */
 html.dark .ts-dropdown {
-  background: rgba(15, 23, 42, 0.92) !important;
+  background: rgba(15, 23, 42, 0.95) !important;
   border-color: rgba(255, 255, 255, 0.10) !important;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
-html.dark .ts-dropdown .option {
+html.dark .ts-dropdown .option,
+html.dark .ts-dropdown .ts-option-item {
   color: #E2E8F0 !important;
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-weight: 500 !important;
 }
 
 html.dark .ts-dropdown .option:hover,
 html.dark .ts-dropdown .active {
   background: rgba(96, 165, 250, 0.12) !important;
   color: #60A5FA !important;
+  font-weight: 500 !important;
 }
 
 html.dark .ts-dropdown .option.selected {
   background: rgba(96, 165, 250, 0.18) !important;
   color: #93C5FD !important;
+  font-weight: 600 !important;
 }
 
 /* ---- Ocultar select original tras TomSelect ---- */
@@ -6466,6 +6507,9 @@ html.dark tr[id^="electronica-"].active-target {
   border-radius: 12px !important;
   z-index: 99999 !important;
   overflow: hidden !important;
+  min-width: 100% !important;
+  width: max-content !important;
+  max-width: min(92vw, 560px) !important;
   padding: 0 !important;
 }
 
