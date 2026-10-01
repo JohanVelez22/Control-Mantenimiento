@@ -196,7 +196,7 @@
             <h4 class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Registrar nuevo abono</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                    <label class="field-label">Monto ($) *</label>
+                    <label class="field-label">Monto del Abono <span class="text-red-500 font-bold">*</span></label>
                     <input type="text" id="abono_monto_visual" required placeholder="0" class="glass-input font-bold text-emerald-600 dark:text-emerald-400">
                     <input type="hidden" name="monto" id="abono_monto_real">
                 </div>

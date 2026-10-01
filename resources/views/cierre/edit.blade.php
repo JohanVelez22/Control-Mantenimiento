@@ -25,44 +25,93 @@
             </div>
         </div>
 
-        {{-- Resumen Informativo de Saldos y Arqueo (Solo lectura) --}}
-        <div class="p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200/60 dark:border-blue-500/20 mb-8">
-            <h4 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                <span>🔒</span> Valores Contables y Arqueo Consolidado (Auditoría Inmutable)
-            </h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center">
-                <div class="p-3 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
-                    <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">Ingresos</p>
-                    <p class="font-black text-slate-800 dark:text-white text-base">${{ number_format($cierre->total_ingresos, 0, ',', '.') }}</p>
-                </div>
-                <div class="p-3 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
-                    <p class="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase">Egresos</p>
-                    <p class="font-black text-slate-800 dark:text-white text-base">${{ number_format($cierre->total_egresos, 0, ',', '.') }}</p>
-                </div>
-                <div class="p-3 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
-                    <p class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase">Efectivo Sistema</p>
-                    <p class="font-black text-slate-800 dark:text-white text-base">${{ number_format($cierre->efectivo, 0, ',', '.') }}</p>
-                </div>
-                <div class="p-3 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
-                    <p class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase">Contado en Mano</p>
-                    <p class="font-black text-slate-800 dark:text-white text-base">${{ number_format($cierre->efectivo_real_contado ?? $cierre->efectivo, 0, ',', '.') }}</p>
-                </div>
-                <div class="p-3 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
-                    <p class="text-[10px] font-bold uppercase {{ $cierre->estado_diferencia === 'cuadrado' ? 'text-emerald-600 dark:text-emerald-400' : ($cierre->estado_diferencia === 'faltante' ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400') }}">
-                        Diferencia
+        {{-- Resumen Financiero del Día Homogéneo --}}
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+            <span>📊</span> Resumen Financiero del Día (Auditoría Inmutable)
+        </h3>
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-8">
+            <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->total_ingresos, 0, ',', '.') }}</p>
+            </div>
+
+            <div class="glass-card hover-glow glass-card-red p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->total_egresos, 0, ',', '.') }}</p>
+            </div>
+
+            <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💵</span> Efectivo Sistema</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->efectivo, 0, ',', '.') }}</p>
+            </div>
+
+            <div class="glass-card hover-glow glass-card-purple p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🏦</span> Consignación</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->consignacion, 0, ',', '.') }}</p>
+            </div>
+
+            <div class="glass-card hover-glow {{ $cierre->saldo_final >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0 col-span-2 lg:col-span-1">
+                <p class="text-xs font-bold {{ $cierre->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Teórico</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->saldo_final, 0, ',', '.') }}</p>
+            </div>
+        </div>
+
+        {{-- Conciliación Física / Arqueo en Mano Homogéneo --}}
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+            <span>💵</span> Arqueo y Conciliación Física
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💻</span> Efectivo Teórico</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->efectivo, 0, ',', '.') }}</p>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium z-10">Calculado por ingresos y egresos</p>
+            </div>
+
+            <div class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🖐️</span> Contado en Mano</p>
+                @if($cierre->efectivo_real_contado !== null)
+                    <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->efectivo_real_contado, 0, ',', '.') }}</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium z-10">Billetes y monedas físicos en caja</p>
+                @else
+                    <p class="text-2xl font-black text-slate-400 dark:text-slate-500 z-10">—</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium z-10">No se registró conteo físico</p>
+                @endif
+            </div>
+
+            <div class="glass-card hover-glow {{ $cierre->estado_diferencia_card }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center
+                          {{ match($cierre->estado_diferencia) {
+                              'cuadrado' => 'text-emerald-600 dark:text-emerald-400',
+                              'sobrante' => 'text-blue-600 dark:text-blue-400',
+                              'faltante' => 'text-red-600 dark:text-red-400',
+                              default    => 'text-slate-500 dark:text-slate-400',
+                          } }}">
+                    <span class="text-lg no-print-emoji">⚖️</span> Resultado del Arqueo
+                </p>
+                @if($cierre->estado_diferencia === 'sin_conciliar')
+                    <p class="text-2xl font-black text-slate-400 dark:text-slate-500 z-10">—</p>
+                @else
+                    <p class="text-2xl font-black z-10
+                              {{ match($cierre->estado_diferencia) {
+                                  'cuadrado' => 'text-emerald-600 dark:text-emerald-400',
+                                  'sobrante' => 'text-blue-600 dark:text-blue-400',
+                                  default    => 'text-red-600 dark:text-red-400',
+                              } }}">
+                        {{ $cierre->diferencia > 0 ? '+' : ($cierre->diferencia < 0 ? '-' : '') }}${{ number_format(abs($cierre->diferencia), 0, ',', '.') }}
                     </p>
-                    <p class="font-black text-base {{ $cierre->estado_diferencia === 'cuadrado' ? 'text-emerald-600 dark:text-emerald-400' : ($cierre->estado_diferencia === 'faltante' ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400') }}">
-                        {{ ($cierre->diferencia > 0 ? '+' : ($cierre->diferencia < 0 ? '-' : '')) . '$' . number_format(abs($cierre->diferencia), 0, ',', '.') }}
-                    </p>
-                </div>
-                <div class="p-3 rounded-xl bg-white/20 dark:bg-slate-900/30 border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
-                    <p class="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase">Saldo Final</p>
-                    <p class="font-black text-slate-800 dark:text-white text-base">${{ number_format($cierre->saldo_final, 0, ',', '.') }}</p>
+                @endif
+                <div class="mt-1 z-10">
+                    @if($cierre->estado_diferencia === 'cuadrado')
+                        <span class="pill pill-done text-xs font-bold py-0.5 px-3">🟢 Cuadre Exacto</span>
+                    @elseif($cierre->estado_diferencia === 'faltante')
+                        <span class="pill pill-anulado text-xs font-bold py-0.5 px-3">🔴 Faltante en Caja</span>
+                    @elseif($cierre->estado_diferencia === 'sobrante')
+                        <span class="pill pill-efectivo text-xs font-bold py-0.5 px-3">🔵 Sobrante en Caja</span>
+                    @else
+                        <span class="pill pill-done text-xs font-bold py-0.5 px-3 opacity-60">⚪ Sin conciliar</span>
+                    @endif
                 </div>
             </div>
-            <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-4 text-center">
-                ℹ️ Los valores financieros se preservan para garantizar la integridad contable. Si necesitas recalcular los valores de la jornada, debes eliminar el cierre ingresando la clave de administrador.
-            </p>
         </div>
 
         {{-- Formulario de Edición --}}

@@ -110,8 +110,9 @@
             </div>
         </div>
 
-        {{-- Resumen Financiero --}}
-        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Resumen Financiero</h3>
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+            <span>📊</span> Resumen Financiero
+        </h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💳</span> Monto Transacción</p>

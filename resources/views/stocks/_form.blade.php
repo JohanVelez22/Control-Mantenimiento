@@ -142,7 +142,7 @@
     <div class="pricing-panel p-5 bg-white/45 dark:bg-slate-900/60 border border-white/40 dark:border-white/10 rounded-2xl shadow-sm">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-                <label for="precio_compra_visual" class="field-label">P. Compra ($) *</label>
+                <label for="precio_compra_visual" class="field-label">Precio de Compra <span class="text-red-500 font-bold">*</span></label>
                 <input type="text" id="precio_compra_visual"
                        value="{{ old('precio_compra', isset($st) && $st->precio_compra ? number_format($st->precio_compra, 0, '', '') : '') }}"
                        required class="glass-input text-right font-bold text-slate-800 dark:text-white" placeholder="0">

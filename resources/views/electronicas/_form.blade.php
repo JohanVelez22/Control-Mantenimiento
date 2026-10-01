@@ -106,7 +106,7 @@
 
     {{-- Costo --}}
     <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm mt-2">
-        <label class="field-label text-center mb-2 block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Costo Estimado / Final ($) *</label>
+        <label class="field-label text-center mb-2 block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Costo Estimado / Final <span class="text-red-500 font-bold">*</span></label>
         <input type="text" name="costo_visual" id="costo_visual" value="{{ isset($electronica->costo) ? number_format(old('costo', $electronica->costo), 0, ',', '.') : '' }}" placeholder="0" required class="glass-input bg-white/50 dark:bg-slate-900/60 border-gray-200/50 dark:border-white/5 text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20">
         <input type="hidden" name="costo" id="costo_real" value="{{ old('costo', $electronica->costo ?? '') }}">
         @error('costo') <p class="text-red-500 text-xs font-bold mt-2 text-center">{{ $message }}</p> @enderror

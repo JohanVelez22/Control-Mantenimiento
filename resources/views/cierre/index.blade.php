@@ -223,20 +223,22 @@
                     </div>
 
                     {{-- Input Efectivo Real Contado --}}
-                    <div class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                    <div class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-between items-center relative overflow-hidden group text-center min-w-0">
                         <div class="w-full">
-                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-2" for="efectivo_real_visual">
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1" for="efectivo_real_visual">
                                 🖐️ Dinero Contado en Mano
                             </label>
-                            <div class="relative max-w-[16rem] mx-auto">
-                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-slate-400 text-lg select-none pointer-events-none">$</span>
-                                <input type="text"
-                                       id="efectivo_real_visual"
-                                       name="efectivo_real_contado"
-                                       value=""
-                                       placeholder="Sin contar"
-                                       autocomplete="off"
-                                       class="glass-input pl-8 pr-3 font-black text-xl text-slate-800 dark:text-white">
+                            <div class="relative max-w-[15rem] mx-auto w-full my-0.5">
+                                <div class="relative flex items-center justify-center">
+                                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-slate-400 dark:text-slate-500 text-xl md:text-2xl select-none pointer-events-none">$</span>
+                                    <input type="text"
+                                           id="efectivo_real_visual"
+                                           name="efectivo_real_contado"
+                                           value=""
+                                           placeholder="Sin contar"
+                                           autocomplete="off"
+                                           class="glass-input w-full pl-8 pr-3 text-center font-black text-2xl md:text-3xl text-slate-800 dark:text-white tracking-tight h-[46px] md:h-[50px] placeholder:text-slate-400 placeholder:text-base md:placeholder:text-lg placeholder:font-bold focus:ring-2 focus:ring-blue-500/40">
+                                </div>
                             </div>
                         </div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-2">

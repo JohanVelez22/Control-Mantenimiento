@@ -252,7 +252,7 @@
         <form action="{{ route('caja.abonos.store', $movimientoPadre->id) }}" method="POST" class="space-y-4">
             @csrf
             <div>
-                <label class="field-label">Monto del Abono ($) *</label>
+                <label class="field-label">Monto del Abono <span class="text-red-500 font-bold">*</span></label>
                 <input type="text" id="monto_abono_factura_visual" required placeholder="Ej: 50.000" class="glass-input font-bold text-right py-2.5">
                 <input type="hidden" name="monto_abono" id="monto_abono_factura_real">
             </div>
