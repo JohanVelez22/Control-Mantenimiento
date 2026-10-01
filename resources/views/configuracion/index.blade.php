@@ -601,9 +601,9 @@ async function submitConfiguracion(event) {
                         <span class="text-sm font-black text-slate-800 dark:text-white block">Respaldos Automáticos Programados</span>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">El sistema ejecutará las copias de seguridad de forma autónoma según tus criterios sin requerir intervención.</p>
                     </div>
-                    <label class="relative inline-flex items-center cursor-pointer shrink-0">
-                        <input type="checkbox" id="sched-auto-enabled" class="sr-only peer" onchange="toggleScheduleFields()">
-                        <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+                    <label class="ts-switch" title="Activar o desactivar respaldos automáticos">
+                        <input type="checkbox" id="sched-auto-enabled" onchange="toggleScheduleFields()">
+                        <span class="ts-switch-slider"></span>
                     </label>
                 </div>
 
