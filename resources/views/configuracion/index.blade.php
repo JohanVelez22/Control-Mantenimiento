@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 
-                <input type="file" name="logo" id="logo-input" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp" class="hidden" onchange="previewLogo(event)">
+                <input type="file" name="logo" id="logo-input" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="hidden" onchange="previewLogo(event)">
                 <input type="hidden" name="eliminar_logo" id="eliminar-logo-input" value="0">
 
                 <button type="button" 

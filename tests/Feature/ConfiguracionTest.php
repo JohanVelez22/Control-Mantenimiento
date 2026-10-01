@@ -21,7 +21,25 @@ class ConfiguracionTest extends TestCase
         $this->admin = User::factory()->create(['role' => 'admin']);
     }
 
-    public function test_admin_puede_subir_logo_svg_hasta_5mb(): void
+    public function test_admin_puede_subir_logo_png_hasta_5mb(): void
+    {
+        Storage::fake('public');
+
+        $file = UploadedFile::fake()->image('logo.png')->size(500);
+
+        $response = $this->actingAs($this->admin)->post(route('configuracion.update'), [
+            'nombre' => 'Tecni Systemas SAS',
+            'nit' => '900123456-1',
+            'logo' => $file,
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $configuracion = Configuracion::first();
+        $this->assertNotNull($configuracion->logo_path);
+        Storage::disk('public')->assertExists($configuracion->logo_path);
+    }
+
+    public function test_admin_no_puede_subir_logo_svg(): void
     {
         Storage::fake('public');
 
@@ -34,10 +52,13 @@ class ConfiguracionTest extends TestCase
             'logo' => $file,
         ]);
 
-        $response->assertSessionHasNoErrors();
-        $configuracion = Configuracion::first();
-        $this->assertNotNull($configuracion->logo_path);
-        Storage::disk('public')->assertExists($configuracion->logo_path);
+        $response->assertSessionHasErrors(['logo']);
+        $this->assertSame(
+            'El logo debe ser un archivo en formato PNG, JPG, JPEG o WEBP.',
+            session('errors')->first('logo')
+        );
+
+        $this->assertEmpty(Storage::disk('public')->files('configuracion'));
     }
 
     public function test_admin_puede_eliminar_logo_existente(): void

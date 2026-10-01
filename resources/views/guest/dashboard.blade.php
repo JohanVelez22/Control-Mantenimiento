@@ -30,35 +30,35 @@
     <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-    <div class="w-full max-w-2xl z-10 flex flex-col items-center pb-16">
+    <div class="w-full {{ ($cliente || isset($searched)) ? 'max-w-2xl' : 'max-w-md' }} z-10 flex flex-col items-center pb-8 transition-all">
         
         <!-- Logo TECNI SYSTEMAS (Fuera del recuadro) -->
-        <div class="text-center mt-0 mb-8 login-brand-title">
-            <div class="flex justify-center mb-3">
-                <div class="text-[24px] font-black tracking-widest font-logo flex items-center gap-2">
+        <div class="text-center mt-0 mb-4 login-brand-title">
+            <div class="flex justify-center mb-2">
+                <div class="text-[22px] font-black tracking-widest font-logo flex items-center gap-2">
                     <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
                     <span class="text-slate-800 dark:text-white">SYSTEMAS</span>
                 </div>
             </div>
             <div>
-                <span style="font-size: 80px;" class="drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] text-slate-800 dark:text-white leading-none">💼</span>
+                <span style="font-size: 54px;" class="drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_12px_rgba(255,255,255,0.1)] text-slate-800 dark:text-white leading-none">💼</span>
             </div>
         </div>
 
         <!-- Tarjeta Principal (Liquid Glass) -->
         <div class="glass-card guest-card w-full relative">
             <!-- Encabezado -->
-            <div class="text-center mb-6 sm:mb-8">
-                <h1 class="text-2xl font-bold text-slate-800 dark:text-white mb-2 tracking-tight">Consulta de Servicios</h1>
+            <div class="text-center mb-4">
+                <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white mb-1 tracking-tight">Consulta de Servicios</h1>
                 @if($cliente)
-                    <p class="text-slate-600 dark:text-slate-400 text-lg">Hola, <span class="text-blue-600 dark:text-blue-400 font-black">{{ $cliente->nombres }}</span>. Aquí tienes el estado actual de tus equipos.</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">Hola, <span class="text-blue-600 dark:text-blue-400 font-black">{{ $cliente->nombres }}</span>. Aquí tienes el estado actual de tus equipos.</p>
                 @elseif(isset($searched))
                     @php
                         $isElectronicaSearch = ($tipo ?? '') === 'electronica' || ($electronicas->isNotEmpty() && $mantenimientos->isEmpty());
                     @endphp
-                    <p class="text-slate-600 dark:text-slate-400 text-lg">Resultados para la orden <span class="{{ $isElectronicaSearch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400' }} font-black">{{ strtoupper($id_orden ?? '') }}</span> (Doc: {{ $identificacion ?? '' }})</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">Resultados para la orden <span class="{{ $isElectronicaSearch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400' }} font-black">{{ strtoupper($id_orden ?? '') }}</span> (Doc: {{ $identificacion ?? '' }})</p>
                 @else
-                    <p class="text-slate-600 dark:text-slate-400 text-lg">Ingresa tu número de identificación y número de orden para hacer el seguimiento de tu equipo.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Ingresa tu número de identificación y orden para consultar.</p>
                 @endif
             </div>
             
@@ -221,56 +221,58 @@
                 @php
                     $isElec = ($tipo ?? '') === 'electronica';
                 @endphp
-                <form id="guestSearchForm" method="GET" action="{{ route('guest.search') }}" class="max-w-xl mx-auto space-y-4">
-                    <div class="flex bg-white/40 dark:bg-slate-900/40 p-1.5 rounded-xl mb-6 border border-white/50 dark:border-white/10 shadow-sm backdrop-blur-md">
+                <form id="guestSearchForm" method="GET" action="{{ route('guest.search') }}" class="w-full space-y-3">
+                    {{-- Selector Mantenimiento / Electrónica (Estilo original limpio) --}}
+                    <div class="flex bg-white/50 dark:bg-slate-900/50 p-1 rounded-xl mb-3.5 border border-white/60 dark:border-white/10 shadow-sm backdrop-blur-md">
                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="tipo" id="tipo-mantenimiento" value="mantenimiento" class="guest-type-radio sr-only" {{ !$isElec ? 'checked' : '' }} onchange="updateGuestTheme('mantenimiento')">
-                            <div id="tab-label-mantenimiento" class="text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 {{ !$isElec ? 'guest-tab-active-mant' : 'guest-tab-inactive' }}">
-                                <span>🛠️</span> Mantenimientos
+                            <input type="radio" name="tipo" id="tipo-mantenimiento" value="mantenimiento" class="peer sr-only" {{ !$isElec ? 'checked' : '' }} onchange="updateGuestTheme('mantenimiento')">
+                            <div id="tab-label-mantenimiento" class="text-center py-2 rounded-lg text-sm font-semibold transition-all {{ !$isElec ? 'tab-mant-active' : 'tab-inactive' }}">
+                                Mantenimientos
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="tipo" id="tipo-electronica" value="electronica" class="guest-type-radio sr-only" {{ $isElec ? 'checked' : '' }} onchange="updateGuestTheme('electronica')">
-                            <div id="tab-label-electronica" class="text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 {{ $isElec ? 'guest-tab-active-elec' : 'guest-tab-inactive' }}">
-                                <span>⚡</span> Electrónica
+                            <input type="radio" name="tipo" id="tipo-electronica" value="electronica" class="peer sr-only" {{ $isElec ? 'checked' : '' }} onchange="updateGuestTheme('electronica')">
+                            <div id="tab-label-electronica" class="text-center py-2 rounded-lg text-sm font-semibold transition-all {{ $isElec ? 'tab-elec-active' : 'tab-inactive' }}">
+                                Electrónica
                             </div>
                         </label>
                     </div>
 
                     {{-- Campo Cédula / NIT --}}
                     <div>
-                        <label for="guestIdentificacionInput" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 ml-1">
-                            🪪 Cédula o NIT del Cliente <span class="text-red-500 font-bold">*</span>
+                        <label for="guestIdentificacionInput" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 ml-0.5">
+                            Cédula o NIT del Cliente <span class="text-red-500 font-bold">*</span>
                         </label>
                         <input type="text" name="identificacion" id="guestIdentificacionInput" 
                                value="{{ old('identificacion', $identificacion ?? '') }}" 
-                               class="glass-input w-full px-4 py-3.5 text-base sm:text-lg font-semibold focus:ring-2 focus:ring-blue-500 @error('identificacion') border-red-500 @enderror" 
+                               class="glass-input w-full px-3.5 py-2.5 text-sm font-semibold focus:ring-1 focus:ring-blue-500 @error('identificacion') border-red-500 @enderror" 
                                placeholder="Ej: 123456789 o 900123456" required minlength="3" maxlength="30" autocomplete="off"
                                oninvalid="this.setCustomValidity('Debes digitar cédula / NIT')"
                                oninput="this.setCustomValidity('')">
-                        <p id="error-identificacion" class="text-xs text-red-500 font-semibold mt-1.5 ml-1 @error('identificacion') @else hidden @enderror">
+                        <p id="error-identificacion" class="text-xs text-red-500 font-semibold mt-1 ml-0.5 @error('identificacion') @else hidden @enderror">
                             @error('identificacion') {{ $message }} @else Debes digitar cédula / NIT @enderror
                         </p>
                     </div>
 
                     {{-- Campo Número de Orden --}}
                     <div>
-                        <label for="guestOrdenInput" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 ml-1">
-                            📋 Número de Orden <span class="text-red-500 font-bold">*</span>
+                        <label for="guestOrdenInput" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 ml-0.5">
+                            Número de Orden <span class="text-red-500 font-bold">*</span>
                         </label>
                         <input type="text" name="id_orden" id="guestOrdenInput" 
                                value="{{ old('id_orden', $id_orden ?? '') }}" 
-                               class="glass-input w-full px-4 py-3.5 text-base sm:text-lg font-semibold focus:ring-2 focus:ring-blue-500 @error('id_orden') border-red-500 @enderror" 
+                               class="glass-input w-full px-3.5 py-2.5 text-sm font-semibold focus:ring-1 focus:ring-blue-500 @error('id_orden') border-red-500 @enderror" 
                                placeholder="{{ $isElec ? 'Ej: ELC-001 o 1' : 'Ej: ORD-001 o 1' }}" required minlength="1" maxlength="30" autocomplete="off"
                                oninvalid="this.setCustomValidity('Debes digitar la orden')"
                                oninput="this.setCustomValidity('')">
-                        <p id="error-id_orden" class="text-xs text-red-500 font-semibold mt-1.5 ml-1 @error('id_orden') @else hidden @enderror">
+                        <p id="error-id_orden" class="text-xs text-red-500 font-semibold mt-1 ml-0.5 @error('id_orden') @else hidden @enderror">
                             @error('id_orden') {{ $message }} @else Debes digitar la orden @enderror
                         </p>
                     </div>
 
-                    <button type="submit" id="guestSubmitBtn" class="w-full mt-6 {{ $isElec ? 'guest-btn-elec' : 'guest-btn-mant' }} font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg flex items-center justify-center gap-2">
-                        <span id="guestSubmitBtnText">{{ $isElec ? '⚡ Consultar Estado de la Orden' : '🔍 Consultar Estado de la Orden' }}</span>
+                    {{-- Botón de consulta sin neón, compacto y con clic físico responsivo --}}
+                    <button type="submit" id="guestSubmitBtn" class="w-full mt-3 {{ $isElec ? 'btn-guest-elec' : 'btn-guest-mant' }} text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2">
+                        <span id="guestSubmitBtnText">Consultar Estado</span>
                     </button>
                 </form>
             @endif
@@ -282,20 +284,20 @@
 
 <style>
 .guest-card {
-  padding: 1.5rem !important;
-  border-radius: 20px !important;
+  padding: 1.25rem 1.5rem !important;
+  border-radius: 18px !important;
 }
 
 @media (min-width: 640px) {
   .guest-card {
-    padding: 2rem !important;
-    border-radius: 24px !important;
+    padding: 1.5rem 1.75rem !important;
+    border-radius: 20px !important;
   }
 }
 
 @media (max-width: 639px) {
   .login-brand-title {
-    margin-top: 3.5rem !important;
+    margin-top: 2rem !important;
   }
 }
 
@@ -308,55 +310,60 @@
   opacity: 0 !important;
 }
 
-/* Estilos de pestañas (Mantenimientos vs Electrónica) */
-.guest-tab-inactive {
+/* Pestañas: estilo exacto previo sin emojis */
+.tab-inactive {
   color: #64748b;
   background: transparent;
 }
-html.dark .guest-tab-inactive {
+html.dark .tab-inactive {
   color: #94a3b8;
 }
-.guest-tab-inactive:hover {
+.tab-inactive:hover {
   color: #0f172a;
   background: rgba(255, 255, 255, 0.25);
 }
-html.dark .guest-tab-inactive:hover {
+html.dark .tab-inactive:hover {
   color: #f8fafc;
   background: rgba(255, 255, 255, 0.05);
 }
 
-.guest-tab-active-mant {
-  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%) !important;
+.tab-mant-active {
+  background: #3b82f6 !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-.guest-tab-active-elec {
-  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%) !important;
+.tab-elec-active {
+  background: #8b5cf6 !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.40) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Botón Mantenimientos (Azul / Cyan) */
-.guest-btn-mant {
-  background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%) !important;
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35) !important;
-  color: #ffffff !important;
+/* Botones: sin neón, degradado equilibrado y clic físico suave */
+.btn-guest-mant {
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25) !important;
+  border: none !important;
 }
-.guest-btn-mant:hover {
-  background: linear-gradient(135deg, #1D4ED8 0%, #0891B2 100%) !important;
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.50) !important;
+.btn-guest-mant:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
 }
 
-/* Botón Electrónica (Violeta / Púrpura) */
-.guest-btn-elec {
-  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%) !important;
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.40) !important;
-  color: #ffffff !important;
+.btn-guest-elec {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25) !important;
+  border: none !important;
 }
-.guest-btn-elec:hover {
-  background: linear-gradient(135deg, #6D28D9 0%, #9333EA 100%) !important;
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.55) !important;
+.btn-guest-elec:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3) !important;
+}
+
+.btn-guest-mant:active,
+.btn-guest-elec:active {
+  transform: translateY(1px) scale(0.98) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) !important;
 }
 </style>
 
@@ -476,7 +483,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function updateGuestTheme(tipo) {
     const ordenInput = document.getElementById('guestOrdenInput');
     const submitBtn = document.getElementById('guestSubmitBtn');
-    const submitText = document.getElementById('guestSubmitBtnText');
     const tabMant = document.getElementById('tab-label-mantenimiento');
     const tabElec = document.getElementById('tab-label-electronica');
 
@@ -487,16 +493,13 @@ function updateGuestTheme(tipo) {
             ordenInput.placeholder = ph;
         }
         if (tabMant) {
-            tabMant.className = 'text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 guest-tab-inactive';
+            tabMant.className = 'text-center py-2 rounded-lg text-sm font-semibold transition-all tab-inactive';
         }
         if (tabElec) {
-            tabElec.className = 'text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 guest-tab-active-elec';
+            tabElec.className = 'text-center py-2 rounded-lg text-sm font-semibold transition-all tab-elec-active';
         }
         if (submitBtn) {
-            submitBtn.className = 'w-full mt-6 guest-btn-elec font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg flex items-center justify-center gap-2';
-        }
-        if (submitText) {
-            submitText.textContent = '⚡ Consultar Estado de la Orden';
+            submitBtn.className = 'w-full mt-3 btn-guest-elec text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2';
         }
     } else {
         const ph = 'Ej: ORD-001 o 1';
@@ -505,16 +508,13 @@ function updateGuestTheme(tipo) {
             ordenInput.placeholder = ph;
         }
         if (tabElec) {
-            tabElec.className = 'text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 guest-tab-inactive';
+            tabElec.className = 'text-center py-2 rounded-lg text-sm font-semibold transition-all tab-inactive';
         }
         if (tabMant) {
-            tabMant.className = 'text-center py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 guest-tab-active-mant';
+            tabMant.className = 'text-center py-2 rounded-lg text-sm font-semibold transition-all tab-mant-active';
         }
         if (submitBtn) {
-            submitBtn.className = 'w-full mt-6 guest-btn-mant font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer text-base sm:text-lg flex items-center justify-center gap-2';
-        }
-        if (submitText) {
-            submitText.textContent = '🔍 Consultar Estado de la Orden';
+            submitBtn.className = 'w-full mt-3 btn-guest-mant text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2';
         }
     }
 }

@@ -88,7 +88,6 @@ class GuestController extends Controller
 
         $clienteFilter = function ($sub) use ($identificacion, $cleanId) {
             $sub->where('identificacion', $identificacion)
-                ->orWhere('telefono', $identificacion)
                 ->orWhere('movil', $identificacion)
                 ->orWhereRaw("REPLACE(REPLACE(REPLACE(identificacion, ' ', ''), '-', ''), '.', '') = ?", [$cleanId]);
         };
