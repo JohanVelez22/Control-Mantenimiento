@@ -226,7 +226,7 @@
                     <div class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-between items-center relative overflow-hidden group text-center min-w-0">
                         <div class="w-full">
                             <label class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1" for="efectivo_real_visual">
-                                🖐️ Dinero Contado en Mano
+                                🖐🏻 Dinero Contado en Mano
                             </label>
                             <div class="relative max-w-[15rem] mx-auto w-full my-0.5">
                                 <div class="relative flex items-center justify-center">

@@ -141,7 +141,7 @@
             </div>
 
             <div class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-                <p class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🖐️</span> Contado en Mano</p>
+                <p class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🖐🏻</span> Contado en Mano</p>
                 @if($cierre->efectivo_real_contado !== null)
                     <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($cierre->efectivo_real_contado, 0, ',', '.') }}</p>
                     <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium z-10">Billetes y monedas físicos en caja</p>
