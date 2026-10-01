@@ -9,8 +9,8 @@
                     </button>
                 </div>
 
-                <!-- Centro: Único Logo Centrado (visible en desktop/tablets, oculto en móvil para no colisionar) -->
-                <div class="topbar-logo-container hidden md:flex justify-center items-center">
+                <!-- Centro: Único Logo Centrado (visible en desktop, oculto en móvil/tablets para no colisionar) -->
+                <div class="topbar-logo-container hidden lg:flex justify-center items-center">
                     <a href="{{ route('dashboard') }}" class="text-[20px] font-black tracking-widest hover:scale-105 transition-transform duration-300 font-logo flex items-center gap-2">
                         <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
                         <span class="text-slate-800 dark:text-white">SYSTEMAS</span>

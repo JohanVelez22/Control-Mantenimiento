@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="glass-card p-6">
-    <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-6 relative z-10">
         <div>
             <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
                 <span class="text-3xl">📝</span> Cotizaciones
@@ -12,13 +12,13 @@
             </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-center gap-3">
             <div class="relative">
                 <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
                 <input type="text" id="search-cotizaciones" placeholder="Buscar cotización..." class="glass-input pl-9 w-48 sm:w-64">
             </div>
             @if(!auth()->user()->isInvitado())
-            <a href="{{ route('cotizaciones.create') }}" class="btn-primary">
+            <a href="{{ route('cotizaciones.create') }}" class="btn-primary whitespace-nowrap">
                 ➕ Nueva Cotización
             </a>
             @endif

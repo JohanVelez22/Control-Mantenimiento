@@ -3360,24 +3360,12 @@ input[type="password"]::-ms-clear {
   user-select: none !important;
 }
 
-/* Solo se ilumina estrictamente al pasar el mouse por encima (:hover) */
-.ts-password-toggle:hover {
-  color: #475569 !important;
-}
-
-html.dark .ts-password-toggle {
-  color: #94A3B8 !important;
-}
-
-html.dark .ts-password-toggle:hover {
-  color: #FFFFFF !important;
-}
-
-/* Al hacer clic o tener foco, no se queda activo: mantiene su color original */
+/* El icono del ojo permanece neutral, sin iluminarse ni cambiar de color */
+.ts-password-toggle,
+.ts-password-toggle:hover,
 .ts-password-toggle:focus,
 .ts-password-toggle:focus-visible,
-.ts-password-toggle:focus:not(:hover),
-.ts-password-toggle:focus-visible:not(:hover) {
+.ts-password-toggle:active {
   color: #94A3B8 !important;
   background: transparent !important;
   background-color: transparent !important;
@@ -3386,10 +3374,11 @@ html.dark .ts-password-toggle:hover {
   box-shadow: none !important;
 }
 
+html.dark .ts-password-toggle,
+html.dark .ts-password-toggle:hover,
 html.dark .ts-password-toggle:focus,
 html.dark .ts-password-toggle:focus-visible,
-html.dark .ts-password-toggle:focus:not(:hover),
-html.dark .ts-password-toggle:focus-visible:not(:hover) {
+html.dark .ts-password-toggle:active {
   color: #94A3B8 !important;
   background: transparent !important;
   background-color: transparent !important;
@@ -6023,9 +6012,12 @@ input.flatpickr-input.form-control {
   left: calc(50vw - var(--sidebar-expanded)) !important;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .topbar-logo-container {
-    left: 50% !important;
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 }
 
@@ -6042,12 +6034,6 @@ input.flatpickr-input.form-control {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
-}
-
-@media (max-width: 767px) {
-  .topbar-logo-container {
-    display: none !important;
-  }
 }
 
 /* ─── PRINT MEDIA QUERIES ─── */
