@@ -535,8 +535,8 @@ async function submitConfiguracion(event) {
                             </div>
                             <span class="text-[13.5px] font-black text-slate-800 dark:text-white block">Solo Base de Datos</span>
                             <span class="text-[12px] text-slate-500 dark:text-slate-400 mt-1 block leading-relaxed font-medium">
-                                Archivo .sql completo con tablas, usuarios, ventas y transacciones.
-                            </span>
+                                Archivo .sql completo con todas las tablas (usuarios, clientes, proveedores, ventas, compras, reparaciones, transacciones, etc).
+                            </span>     
                         </div>
                         <span class="text-[11px] text-teal-600 dark:text-teal-400 font-bold mt-3 block z-10">Ultrarrápido y ligero</span>
                     </label>
@@ -550,7 +550,7 @@ async function submitConfiguracion(event) {
                             </div>
                             <span class="text-[13.5px] font-black text-slate-800 dark:text-white block">BD + Multimedia</span>
                             <span class="text-[12px] text-slate-500 dark:text-slate-400 mt-1 block leading-relaxed font-medium">
-                                Base de datos y carpeta de archivos públicos (logos, comprobantes y fotos).
+                                Base de datos .sql completa y carpeta de archivos públicos del sistema (logos, comprobantes y fotos).
                             </span>
                         </div>
                         <span class="text-[11px] text-indigo-500 dark:text-indigo-400 font-bold mt-3 block z-10">Genera archivo ZIP</span>
@@ -565,7 +565,7 @@ async function submitConfiguracion(event) {
                             </div>
                             <span class="text-[13.5px] font-black text-slate-800 dark:text-white block">Respaldo Integral</span>
                             <span class="text-[12px] text-slate-500 dark:text-slate-400 mt-1 block leading-relaxed font-medium">
-                                Base de datos, multimedia y snapshot empaquetado del código fuente.
+                                Base de datos .sql completa, carpeta de archivos públicos del sistema, snapshot empaquetado del código fuente, etc.
                             </span>
                         </div>
                         <span class="text-[11px] text-purple-600 dark:text-purple-400 font-bold mt-3 block z-10">Para migraciones</span>
@@ -1048,7 +1048,12 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
     `;
 
     files.forEach(f => {
-        const icon = f.extension === 'sql' ? '📄' : '🗜️';
+        let icon = '📄';
+        if (f.name.startsWith('backup_integral')) {
+            icon = '📦';
+        } else if (f.name.startsWith('backup_bd_multimedia') || f.extension === 'zip') {
+            icon = '🗜️';
+        }
         const downloadUrl = '{{ url('/backups/download') }}/' + encodeURIComponent(f.name);
         html += `
             <tr class="backup-file-row">
