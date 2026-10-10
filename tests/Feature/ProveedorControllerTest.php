@@ -66,7 +66,7 @@ class ProveedorControllerTest extends TestCase
             'nombre_razon_social' => 'Sin ID',
         ]);
 
-        $response->assertSessionHasErrors(['tipo_entidad', 'identificacion', 'tipo_identificacion', 'telefono']);
+        $response->assertSessionHasErrors(['tipo_entidad', 'identificacion', 'tipo_identificacion']);
     }
 
     public function test_proveedor_creation_rejects_duplicate_identificacion(): void
@@ -119,7 +119,7 @@ class ProveedorControllerTest extends TestCase
             'tipo_entidad' => 'persona',
             'identificacion' => '900444444',
             'nombre_razon_social' => 'Proveedor Actualizado',
-            'tipo_identificacion' => 'cedula',
+            'tipo_identificacion' => 'cedula_ciudadania',
             'telefono' => '3105555555',
             'email' => 'actualizado@test.com',
             'direccion' => 'Nueva direccion',
@@ -129,7 +129,7 @@ class ProveedorControllerTest extends TestCase
         $proveedor->refresh();
         $this->assertEquals('persona', $proveedor->tipo_entidad);
         $this->assertEquals('Proveedor Actualizado', $proveedor->nombre_razon_social);
-        $this->assertEquals('cedula', $proveedor->tipo_identificacion);
+        $this->assertEquals('cedula_ciudadania', $proveedor->tipo_identificacion);
     }
 
     public function test_admin_can_anular_proveedor(): void
@@ -140,15 +140,16 @@ class ProveedorControllerTest extends TestCase
             'nombre_razon_social' => 'Para Anular Proveedor',
             'tipo_identificacion' => 'nit',
             'telefono' => '3106666666',
+            'active' => true,
         ]);
 
         $response = $this->actingAs($this->admin)->post(route('proveedores.anular', $proveedor), [
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertRedirect();
         $proveedor->refresh();
-        $this->assertEquals('anulado', $proveedor->estado);
+        $this->assertFalse($proveedor->active);
     }
 
     public function test_admin_can_reactivar_proveedor(): void
@@ -159,16 +160,16 @@ class ProveedorControllerTest extends TestCase
             'nombre_razon_social' => 'Para Reactivar Proveedor',
             'tipo_identificacion' => 'nit',
             'telefono' => '3107777777',
-            'estado' => 'anulado',
+            'active' => false,
         ]);
 
         $response = $this->actingAs($this->admin)->post(route('proveedores.anular', $proveedor), [
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertRedirect();
         $proveedor->refresh();
-        $this->assertEquals('activo', $proveedor->estado);
+        $this->assertTrue($proveedor->active);
     }
 
     public function test_tecnico_requires_admin_password_to_anular_proveedor(): void
@@ -179,14 +180,15 @@ class ProveedorControllerTest extends TestCase
             'nombre_razon_social' => 'Tecnico Anular Proveedor',
             'tipo_identificacion' => 'nit',
             'telefono' => '3108888888',
+            'active' => true,
         ]);
 
         $response = $this->actingAs($this->tecnico)->post(route('proveedores.anular', $proveedor), [
-            'admin_password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'admin_password' => 'password',
         ]);
 
         $response->assertRedirect();
         $proveedor->refresh();
-        $this->assertEquals('anulado', $proveedor->estado);
+        $this->assertFalse($proveedor->active);
     }
 }

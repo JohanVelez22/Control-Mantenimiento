@@ -318,7 +318,7 @@ class ElectronicaControllerTest extends TestCase
             'estado' => 'pendiente',
             'fecha_entrada' => now()->toDateString(),
             'tecnico_id' => $this->tecnicoM->id,
-            'admin_password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'admin_password' => 'password',
         ]);
 
         $response->assertRedirect(route('electronicas.index'));
@@ -377,16 +377,16 @@ class ElectronicaControllerTest extends TestCase
 
         $response->assertRedirect();
         $electronica->refresh();
-        $this->assertTrue($electronica->anulado);
+        $this->assertEquals(1, $electronica->anulado);
 
         // Reactivar
         $response = $this->actingAs($this->admin)->post(route('electronicas.anular', $electronica), [
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertRedirect();
         $electronica->refresh();
-        $this->assertFalse($electronica->anulado);
+        $this->assertEquals(0, $electronica->anulado);
     }
 
     public function test_electronica_anular_requires_admin_password_for_tecnico(): void
@@ -405,12 +405,12 @@ class ElectronicaControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->tecnico)->post(route('electronicas.anular', $electronica), [
-            'admin_password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'admin_password' => 'password',
         ]);
 
         $response->assertRedirect();
         $electronica->refresh();
-        $this->assertTrue($electronica->anulado);
+        $this->assertEquals(1, $electronica->anulado);
     }
 
     public function test_electronica_stock_association(): void
@@ -459,11 +459,15 @@ class ElectronicaControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
+        // Simulate proper stock attachment via service (decrements stock)
+        app(\App\Services\StockService::class)->salida($this->stock, 2);
         $electronica->stocks()->attach($this->stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
         $this->stock->refresh();
         $this->assertEquals(8, $this->stock->cantidad);
 
-        $response = $this->actingAs($this->admin)->delete(route('electronicas.stocks.destroy', [$electronica->id, $this->stock->id]));
+        $response = $this->actingAs($this->admin)->delete(route('electronicas.stocks.destroy', [$electronica->id, $this->stock->id]), [
+            'password_confirm' => 'password',
+        ]);
 
         $response->assertRedirect();
         $this->assertDatabaseMissing('electronica_stock', [
@@ -596,16 +600,18 @@ class ElectronicaControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
+        $invitado = User::factory()->create(['role' => 'invitado']);
+
         // Solo cédula
-        $response = $this->get(route('consulta.electronicas', ['identificacion' => $this->cliente->identificacion]));
+        $response = $this->actingAs($invitado)->get(route('consulta.electronicas', ['identificacion' => $this->cliente->identificacion]));
         $response->assertSessionHas('error');
 
         // Solo orden
-        $response = $this->get(route('consulta.electronicas', ['id_orden' => 'ELC-CONSULTA-1']));
+        $response = $this->actingAs($invitado)->get(route('consulta.electronicas', ['id_orden' => 'ELC-CONSULTA-1']));
         $response->assertSessionHas('error');
 
         // Ambos correctos
-        $response = $this->get(route('consulta.electronicas', [
+        $response = $this->actingAs($invitado)->get(route('consulta.electronicas', [
             'identificacion' => $this->cliente->identificacion,
             'id_orden' => 'ELC-CONSULTA-1',
         ]));
@@ -628,12 +634,14 @@ class ElectronicaControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $response = $this->get(route('consulta.electronicas', [
+        $invitado = User::factory()->create(['role' => 'invitado']);
+
+        $response = $this->actingAs($invitado)->get(route('consulta.electronicas', [
             'identificacion' => '999999999',
             'id_orden' => 'ELC-CONSULTA-2',
         ]));
         $response->assertStatus(200);
         $response->assertDontSee('Test consulta privacidad');
-        $response->assertSee('No se encontró ningun resultado');
+        $response->assertSee('No se encontró ninguna orden');
     }
 }

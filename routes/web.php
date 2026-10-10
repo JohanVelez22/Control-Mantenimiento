@@ -98,7 +98,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::resource('clientes', ClienteController::class)->except(['destroy']);
         Route::resource('equipos', EquipoController::class)->except(['destroy']);
         Route::resource('tecnicos', TecnicoController::class)->except(['destroy']);
-        Route::resource('stocks/categorias', CategoriaStockController::class)->names('stocks.categorias')->except(['create', 'show', 'edit']);
+        Route::resource('stocks/categorias', CategoriaStockController::class)->names('stocks.categorias')->except(['create', 'show']);
         Route::resource('stocks', StockController::class)->except(['destroy']);
         Route::get('stocks/{stock}/print', [StockController::class, 'print'])->name('stocks.print');
 

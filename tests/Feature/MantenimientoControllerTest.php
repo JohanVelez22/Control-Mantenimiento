@@ -323,7 +323,7 @@ class MantenimientoControllerTest extends TestCase
             'estado' => 'pendiente',
             'equipo_id' => $this->equipo->id,
             'tecnico_id' => $this->tecnicoM->id,
-            'admin_password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'admin_password' => 'password',
         ]);
 
         $response->assertRedirect(route('mantenimientos.index'));
@@ -404,21 +404,21 @@ class MantenimientoControllerTest extends TestCase
 
         // Anular
         $response = $this->actingAs($this->admin)->post(route('mantenimientos.anular', $mantenimiento), [
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertRedirect();
         $mantenimiento->refresh();
-        $this->assertTrue($mantenimiento->anulado);
+        $this->assertEquals(1, $mantenimiento->anulado);
 
         // Reactivar
         $response = $this->actingAs($this->admin)->post(route('mantenimientos.anular', $mantenimiento), [
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertRedirect();
         $mantenimiento->refresh();
-        $this->assertFalse($mantenimiento->anulado);
+        $this->assertEquals(0, $mantenimiento->anulado);
     }
 
     public function test_mantenimiento_anular_requires_admin_password_for_tecnico(): void
@@ -438,12 +438,12 @@ class MantenimientoControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->tecnico)->post(route('mantenimientos.anular', $mantenimiento), [
-            'admin_password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'admin_password' => 'password',
         ]);
 
         $response->assertRedirect();
         $mantenimiento->refresh();
-        $this->assertTrue($mantenimiento->anulado);
+        $this->assertEquals(1, $mantenimiento->anulado);
     }
 
     public function test_mantenimiento_stock_association(): void
@@ -494,11 +494,15 @@ class MantenimientoControllerTest extends TestCase
             'anulado' => false,
         ]);
 
+        // Simulate proper stock attachment via service (decrements stock)
+        app(\App\Services\StockService::class)->salida($this->stock, 2);
         $mantenimiento->stocks()->attach($this->stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
         $this->stock->refresh();
         $this->assertEquals(8, $this->stock->cantidad);
 
-        $response = $this->actingAs($this->admin)->delete(route('mantenimientos.stocks.destroy', [$mantenimiento->id, $this->stock->id]));
+        $response = $this->actingAs($this->admin)->delete(route('mantenimientos.stocks.destroy', [$mantenimiento->id, $this->stock->id]), [
+            'password_confirm' => 'password',
+        ]);
 
         $response->assertRedirect();
         $this->assertDatabaseMissing('mantenimiento_stock', [
@@ -526,6 +530,8 @@ class MantenimientoControllerTest extends TestCase
             'anulado' => false,
         ]);
 
+        // Simulate proper stock attachment via service (decrements stock)
+        app(\App\Services\StockService::class)->salida($this->stock, 2);
         $mantenimiento->stocks()->attach($this->stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
         $this->stock->refresh();
         $this->assertEquals(8, $this->stock->cantidad);
@@ -557,11 +563,15 @@ class MantenimientoControllerTest extends TestCase
             'anulado' => false,
         ]);
 
+        // Simulate proper stock attachment via service (decrements stock)
+        app(\App\Services\StockService::class)->salida($this->stock, 2);
         $mantenimiento->stocks()->attach($this->stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
         $this->stock->refresh();
         $this->assertEquals(8, $this->stock->cantidad);
 
-        $response = $this->actingAs($this->admin)->delete(route('mantenimientos.stocks.destroy', [$mantenimiento->id, $this->stock->id]));
+        $response = $this->actingAs($this->admin)->delete(route('mantenimientos.stocks.destroy', [$mantenimiento->id, $this->stock->id]), [
+            'password_confirm' => 'password',
+        ]);
 
         $response->assertRedirect();
         $this->assertDatabaseMissing('mantenimiento_stock', [
@@ -694,16 +704,18 @@ class MantenimientoControllerTest extends TestCase
             'anulado' => false,
         ]);
 
+        $invitado = User::factory()->create(['role' => 'invitado']);
+
         // Solo cédula
-        $response = $this->get(route('consulta.mantenimientos', ['identificacion' => $this->cliente->identificacion]));
+        $response = $this->actingAs($invitado)->get(route('consulta.mantenimientos', ['identificacion' => $this->cliente->identificacion]));
         $response->assertSessionHas('error');
 
         // Solo orden
-        $response = $this->get(route('consulta.mantenimientos', ['id_orden' => 'ORD-CONS-1']));
+        $response = $this->actingAs($invitado)->get(route('consulta.mantenimientos', ['id_orden' => 'ORD-CONS-1']));
         $response->assertSessionHas('error');
 
         // Ambos correctos
-        $response = $this->get(route('consulta.mantenimientos', [
+        $response = $this->actingAs($invitado)->get(route('consulta.mantenimientos', [
             'identificacion' => $this->cliente->identificacion,
             'id_orden' => 'ORD-CONS-1',
         ]));
@@ -727,12 +739,14 @@ class MantenimientoControllerTest extends TestCase
             'anulado' => false,
         ]);
 
-        $response = $this->get(route('consulta.mantenimientos', [
+        $invitado = User::factory()->create(['role' => 'invitado']);
+
+        $response = $this->actingAs($invitado)->get(route('consulta.mantenimientos', [
             'identificacion' => '999999999',
             'id_orden' => 'ORD-CONS-2',
         ]));
         $response->assertStatus(200);
         $response->assertDontSee('Test consulta privacidad');
-        $response->assertSee('No se encontró ningun resultado');
+        $response->assertSee('No se encontró ningún mantenimiento');
     }
 }

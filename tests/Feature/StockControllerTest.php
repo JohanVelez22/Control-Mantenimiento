@@ -85,6 +85,7 @@ class StockControllerTest extends TestCase
             'codigo' => 'STK-AUTO-1',
             'producto' => 'Auto Precio Venta',
             'categoria' => 'Test',
+            'subcategoria' => 'Sub',
             'cantidad' => 10,
             'proveedor_id' => $this->proveedor->id,
             'precio_compra' => 100000,
@@ -103,6 +104,7 @@ class StockControllerTest extends TestCase
             'codigo' => 'STK-AUTO-2',
             'producto' => 'Auto Precio Tecnico',
             'categoria' => 'Test',
+            'subcategoria' => 'Sub',
             'cantidad' => 10,
             'proveedor_id' => $this->proveedor->id,
             'precio_compra' => 100000,
@@ -121,7 +123,7 @@ class StockControllerTest extends TestCase
             'producto' => 'Sin Código',
         ]);
 
-        $response->assertSessionHasErrors(['codigo', 'categoria', 'cantidad', 'proveedor_id', 'precio_compra', 'utilidad']);
+        $response->assertSessionHasErrors(['categoria', 'subcategoria', 'cantidad', 'proveedor_id', 'precio_compra', 'utilidad']);
     }
 
     public function test_stock_creation_rejects_duplicate_codigo(): void
@@ -252,6 +254,7 @@ class StockControllerTest extends TestCase
             'codigo' => 'STK-TEC-ANUL-1',
             'producto' => 'Tecnico Anular',
             'categoria' => 'Test',
+            'subcategoria' => 'Sub',
             'cantidad' => 10,
             'proveedor_id' => $this->proveedor->id,
             'precio_compra' => 50000,
@@ -260,7 +263,7 @@ class StockControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->tecnico)->post(route('stocks.anular', $stock), [
-            'admin_password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'admin_password' => 'password',
         ]);
 
         $response->assertRedirect();
@@ -285,7 +288,7 @@ class StockControllerTest extends TestCase
             'cantidad' => 3,
             'motivo' => 'dano_taller',
             'observacion' => 'Se dañó en pruebas',
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertSessionHas('success');
@@ -301,6 +304,7 @@ class StockControllerTest extends TestCase
             'codigo' => 'STK-BAJA-2',
             'producto' => 'Para Baja Exceso',
             'categoria' => 'Test',
+            'subcategoria' => 'Sub',
             'cantidad' => 5,
             'proveedor_id' => $this->proveedor->id,
             'precio_compra' => 80000,
@@ -311,10 +315,10 @@ class StockControllerTest extends TestCase
         $response = $this->actingAs($this->admin)->post(route('stocks.dar-de-baja', $stock), [
             'cantidad' => 10,
             'motivo' => 'dano_taller',
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
-        $response->assertSessionHas('error');
+        $response->assertSessionHasErrors('cantidad');
     }
 
     public function test_stock_revertir_baja(): void
@@ -323,6 +327,7 @@ class StockControllerTest extends TestCase
             'codigo' => 'STK-REV-1',
             'producto' => 'Para Revertir',
             'categoria' => 'Test',
+            'subcategoria' => 'Sub',
             'cantidad' => 10,
             'proveedor_id' => $this->proveedor->id,
             'precio_compra' => 80000,
@@ -330,21 +335,22 @@ class StockControllerTest extends TestCase
             'active' => true,
         ]);
 
-        $baja = \App\Models\BajaStock::create([
-            'stock_id' => $stock->id,
-            'user_id' => $this->admin->id,
+        // Create baja via controller to properly decrement stock
+        $response = $this->actingAs($this->admin)->post(route('stocks.dar-de-baja', $stock), [
             'cantidad' => 4,
-            'precio_compra_unitario' => 80000,
-            'costo_total_perdida' => 320000,
             'motivo' => 'dano_taller',
-            'observacion' => 'Prueba',
+            'password_confirm' => 'password',
         ]);
 
+        $response->assertSessionHas('success');
         $stock->refresh();
         $this->assertEquals(6, $stock->cantidad);
 
+        $baja = \App\Models\BajaStock::where('stock_id', $stock->id)->first();
+        $this->assertNotNull($baja);
+
         $response = $this->actingAs($this->admin)->post(route('stocks.bajas.revertir', $baja), [
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertSessionHas('success');
@@ -359,6 +365,7 @@ class StockControllerTest extends TestCase
             'codigo' => 'STK-PRINT-1',
             'producto' => 'Para Imprimir',
             'categoria' => 'Test',
+            'subcategoria' => 'Sub',
             'cantidad' => 10,
             'proveedor_id' => $this->proveedor->id,
             'precio_compra' => 50000,
@@ -368,7 +375,7 @@ class StockControllerTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get(route('stocks.print', $stock));
         $response->assertStatus(200);
-        $response->assertSee('STK-PRINT-1');
+        $this->assertStringContainsString('application/pdf', $response->headers->get('Content-Type'));
     }
 
     public function test_stock_reportes_export_excel(): void

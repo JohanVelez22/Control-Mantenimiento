@@ -185,15 +185,16 @@ class EquipoControllerTest extends TestCase
             'serie' => 'SN-ANUL-001',
             'cliente_id' => $this->cliente->id,
             'user_id' => $this->admin->id,
+            'active' => true,
         ]);
 
         $response = $this->actingAs($this->admin)->post(route('equipos.anular', $equipo), [
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertRedirect();
         $equipo->refresh();
-        $this->assertEquals('anulado', $equipo->estado);
+        $this->assertFalse($equipo->active);
     }
 
     public function test_admin_can_reactivar_equipo(): void
@@ -205,16 +206,16 @@ class EquipoControllerTest extends TestCase
             'serie' => 'SN-REACT-001',
             'cliente_id' => $this->cliente->id,
             'user_id' => $this->admin->id,
-            'estado' => 'anulado',
+            'active' => false,
         ]);
 
         $response = $this->actingAs($this->admin)->post(route('equipos.anular', $equipo), [
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertRedirect();
         $equipo->refresh();
-        $this->assertEquals('operativo', $equipo->estado);
+        $this->assertTrue($equipo->active);
     }
 
     public function test_tecnico_requires_admin_password_to_anular_equipo(): void
@@ -226,15 +227,16 @@ class EquipoControllerTest extends TestCase
             'serie' => 'SN-TEC-001',
             'cliente_id' => $this->cliente->id,
             'user_id' => $this->admin->id,
+            'active' => true,
         ]);
 
         $response = $this->actingAs($this->tecnico)->post(route('equipos.anular', $equipo), [
-            'admin_password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'admin_password' => 'password',
         ]);
 
         $response->assertRedirect();
         $equipo->refresh();
-        $this->assertEquals('anulado', $equipo->estado);
+        $this->assertFalse($equipo->active);
     }
 
     public function test_admin_can_dar_de_baja_equipo(): void

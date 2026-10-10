@@ -142,7 +142,7 @@ class TecnicoControllerTest extends TestCase
 
         $response->assertRedirect();
         $tecnico->refresh();
-        $this->assertEquals('anulado', $tecnico->estado);
+        $this->assertFalse($tecnico->active);
     }
 
     public function test_admin_can_reactivar_tecnico(): void
@@ -152,7 +152,7 @@ class TecnicoControllerTest extends TestCase
             'identificacion' => '55555555',
             'especialidad' => 'General',
             'movil' => '3007777777',
-            'estado' => 'anulado',
+            'active' => false,
         ]);
 
         $response = $this->actingAs($this->admin)->post(route('tecnicos.anular', $tecnico), [
@@ -161,7 +161,7 @@ class TecnicoControllerTest extends TestCase
 
         $response->assertRedirect();
         $tecnico->refresh();
-        $this->assertEquals('activo', $tecnico->estado);
+        $this->assertTrue($tecnico->active);
     }
 
     public function test_tecnico_requires_admin_password_to_anular_tecnico(): void
@@ -174,12 +174,12 @@ class TecnicoControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->tecnicoUser)->post(route('tecnicos.anular', $tecnico), [
-            'admin_password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'admin_password' => 'password',
         ]);
 
         $response->assertRedirect();
         $tecnico->refresh();
-        $this->assertEquals('anulado', $tecnico->estado);
+        $this->assertFalse($tecnico->active);
     }
 
     public function test_tecnico_photo_upload_rejects_svg(): void

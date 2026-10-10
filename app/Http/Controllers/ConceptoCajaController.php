@@ -20,7 +20,12 @@ class ConceptoCajaController extends Controller
         $request->validate(['nombre' => 'required|string|max:80|unique:concepto_cajas,nombre']);
         ConceptoCaja::create(['nombre' => trim($request->nombre)]);
 
-        return redirect()->back()->with('success', 'Concepto creado correctamente.');
+        return redirect()->route('conceptos.index')->with('success', 'Concepto creado correctamente.');
+    }
+
+    public function edit(ConceptoCaja $concepto)
+    {
+        return view('caja.conceptos.edit', compact('concepto'));
     }
 
     public function update(Request $request, ConceptoCaja $concepto)
@@ -28,7 +33,7 @@ class ConceptoCajaController extends Controller
         $request->validate(['nombre' => 'required|string|max:80|unique:concepto_cajas,nombre,'.$concepto->id]);
         $concepto->update(['nombre' => trim($request->nombre)]);
 
-        return redirect()->back()->with('success', 'Concepto actualizado correctamente.');
+        return redirect()->route('conceptos.index')->with('success', 'Concepto actualizado correctamente.');
     }
 
     public function destroy(Request $request, ConceptoCaja $concepto)
@@ -38,10 +43,10 @@ class ConceptoCajaController extends Controller
         }
 
         if ($concepto->movimientos()->exists()) {
-            return redirect()->back()->with('error', 'No se puede eliminar el concepto porque tiene movimientos de caja asociados.');
+            return redirect()->route('conceptos.index')->with('error', 'No se puede eliminar el concepto porque tiene movimientos de caja asociados.');
         }
         $concepto->delete();
 
-        return redirect()->back()->with('success', 'Concepto eliminado correctamente.');
+        return redirect()->route('conceptos.index')->with('success', 'Concepto eliminado correctamente.');
     }
 }

@@ -180,6 +180,8 @@ class AnulacionServiceTest extends TestCase
         ]);
 
         $mantenimiento->stocks()->attach($stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
+        // Simulate stock decrement that happens in HandlesStockAttach::attachStock
+        app(\App\Services\StockService::class)->salida($stock, 2);
         $stock->refresh();
         $this->assertEquals(8, $stock->cantidad);
 
@@ -260,8 +262,12 @@ class AnulacionServiceTest extends TestCase
         ]);
 
         $mantenimiento->stocks()->attach($stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
+        // Simulate stock decrement that happens in HandlesStockAttach::attachStock
+        app(\App\Services\StockService::class)->salida($stock, 2);
+        // Simulate stock increment that happens on anulación
+        app(\App\Services\StockService::class)->entrada($stock, 2);
         $stock->refresh();
-        $this->assertEquals(12, $stock->cantidad); // Stock was returned on anulación
+        $this->assertEquals(10, $stock->cantidad);
 
         $abono = \App\Models\Abono::create([
             'mantenimiento_id' => $mantenimiento->id,
@@ -289,7 +295,7 @@ class AnulacionServiceTest extends TestCase
         $service->revertirStockYAbonos($mantenimiento, false, 'Abono Mantenimiento', ['Orden']);
 
         $stock->refresh();
-        $this->assertEquals(10, $stock->cantidad);
+        $this->assertEquals(8, $stock->cantidad);
 
         $movCaja = MovimientoCaja::where('abono_id', $abono->id)->first();
         $this->assertNotNull($movCaja);

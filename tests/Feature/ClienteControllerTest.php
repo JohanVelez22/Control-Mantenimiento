@@ -156,15 +156,16 @@ class ClienteControllerTest extends TestCase
             'genero' => 'masculino',
             'tipo_cliente' => 'cliente',
             'movil' => '3006666666',
+            'active' => true,
         ]);
 
         $response = $this->actingAs($this->admin)->post(route('clientes.anular', $cliente), [
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertRedirect();
         $cliente->refresh();
-        $this->assertEquals('anulado', $cliente->estado);
+        $this->assertFalse($cliente->active);
     }
 
     public function test_admin_can_reactivar_cliente(): void
@@ -177,16 +178,16 @@ class ClienteControllerTest extends TestCase
             'genero' => 'masculino',
             'tipo_cliente' => 'cliente',
             'movil' => '3007777777',
-            'estado' => 'anulado',
+            'active' => false,
         ]);
 
         $response = $this->actingAs($this->admin)->post(route('clientes.anular', $cliente), [
-            'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'password_confirm' => 'password',
         ]);
 
         $response->assertRedirect();
         $cliente->refresh();
-        $this->assertEquals('activo', $cliente->estado);
+        $this->assertTrue($cliente->active);
     }
 
     public function test_tecnico_requires_admin_password_to_anular_cliente(): void
@@ -199,15 +200,16 @@ class ClienteControllerTest extends TestCase
             'genero' => 'masculino',
             'tipo_cliente' => 'cliente',
             'movil' => '3008888888',
+            'active' => true,
         ]);
 
         $response = $this->actingAs($this->tecnico)->post(route('clientes.anular', $cliente), [
-            'admin_password' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
+            'admin_password' => 'password',
         ]);
 
         $response->assertRedirect();
         $cliente->refresh();
-        $this->assertEquals('anulado', $cliente->estado);
+        $this->assertFalse($cliente->active);
     }
 
     public function test_municipios_api_returns_municipios_for_departamento(): void

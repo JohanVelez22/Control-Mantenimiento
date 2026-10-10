@@ -22,13 +22,18 @@ class CategoriaStockController extends Controller
         }
 
         $validated = $request->validate([
-            'nombre' => 'required|string|max:50',
+            'nombre' => 'required|string|max:50|unique:categoria_stocks,nombre',
             'tipo' => 'required|in:categoria,subcategoria',
         ]);
 
         CategoriaStock::create($validated);
 
         return redirect()->route('stocks.categorias.index')->with('success', ucfirst($validated['tipo']).' creada exitosamente.');
+    }
+
+    public function edit(CategoriaStock $categoria)
+    {
+        return view('stocks.categorias.edit', compact('categoria'));
     }
 
     public function update(Request $request, CategoriaStock $categoria)

@@ -19,8 +19,20 @@ class UserControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->admin = User::factory()->create(['role' => 'admin']);
-        $this->tecnico = User::factory()->create(['role' => 'tecnico']);
+        $this->admin = User::create([
+            'name' => 'Admin Test',
+            'email' => 'admin@test.com',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'active' => true,
+        ]);
+        $this->tecnico = User::create([
+            'name' => 'Tecnico Test',
+            'email' => 'tecnico@test.com',
+            'password' => Hash::make('password'),
+            'role' => 'tecnico',
+            'active' => true,
+        ]);
     }
 
     public function test_admin_can_view_usuarios_index(): void
@@ -30,17 +42,17 @@ class UserControllerTest extends TestCase
         $response->assertSee('Usuarios');
     }
 
-    public function test_tecnico_can_view_usuarios_index(): void
+    public function test_tecnico_cannot_view_usuarios_index(): void
     {
         $response = $this->actingAs($this->tecnico)->get(route('usuarios.index'));
-        $response->assertStatus(200);
+        $response->assertStatus(403);
     }
 
-    public function test_guest_cannot_view_usuarios_index(): void
+    public function test_invitado_cannot_view_usuarios_index(): void
     {
-        $guest = User::factory()->create(['role' => 'invitado']);
-        $response = $this->actingAs($guest)->get(route('usuarios.index'));
-        $response->assertForbidden();
+        $invitado = User::factory()->create(['role' => 'invitado']);
+        $response = $this->actingAs($invitado)->get(route('usuarios.index'));
+        $response->assertRedirect(route('dashboard'));
     }
 
     public function test_admin_can_create_user(): void
@@ -194,7 +206,7 @@ class UserControllerTest extends TestCase
 
         $response->assertRedirect();
         $user->refresh();
-        $this->assertEquals('anulado', $user->estado);
+        $this->assertFalse($user->active);
     }
 
     public function test_admin_can_reactivar_user(): void
@@ -204,7 +216,7 @@ class UserControllerTest extends TestCase
             'email' => 'reactivar@test.com',
             'password' => Hash::make('Password123!'),
             'role' => 'tecnico',
-            'estado' => 'anulado',
+            'active' => false,
         ]);
 
         $response = $this->actingAs($this->admin)->post(route('usuarios.anular', $user), [
@@ -213,7 +225,7 @@ class UserControllerTest extends TestCase
 
         $response->assertRedirect();
         $user->refresh();
-        $this->assertEquals('activo', $user->estado);
+        $this->assertTrue($user->active);
     }
 
     public function test_user_photo_upload_rejects_svg(): void

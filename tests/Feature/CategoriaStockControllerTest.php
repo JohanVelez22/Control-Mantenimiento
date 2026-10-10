@@ -25,7 +25,7 @@ class CategoriaStockControllerTest extends TestCase
     {
         $response = $this->actingAs($this->admin)->get(route('stocks.categorias.index'));
         $response->assertStatus(200);
-        $response->assertSee('Categorías de Stock');
+        $response->assertSee('Categorías de Inventario');
     }
 
     public function test_tecnico_can_view_categorias_index(): void
