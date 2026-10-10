@@ -44,11 +44,11 @@
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-                <label class="field-label flex items-center gap-2"><span>🏢</span> Empresa (Opcional)</label>
+                <label class="field-label !flex items-center gap-1.5 font-bold"><span>🏢</span> Empresa <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
                 <input type="text" name="empresa" id="caja_empresa" value="{{ $valEmpresa }}" placeholder="Nombre de la empresa..." class="glass-input">
             </div>
             <div>
-                <label class="field-label flex items-center gap-2"><span>👤</span> Persona (Opcional)</label>
+                <label class="field-label !flex items-center gap-1.5 font-bold"><span>👤</span> Persona <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
                 <input type="text" name="persona" id="caja_persona" value="{{ $valPersona }}" placeholder="Nombre de quien paga/recibe..." class="glass-input">
                 @error('persona') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
@@ -329,33 +329,129 @@
 
     var inputEmpresa = document.getElementById('caja_empresa');
     var inputPersona = document.getElementById('caja_persona');
-    if (inputEmpresa) inputEmpresa.addEventListener('input', actualizarAvisoEntidad);
-    if (inputPersona) inputPersona.addEventListener('input', actualizarAvisoEntidad);
-    actualizarAvisoEntidad();
+    var avisoEntidad = document.getElementById('aviso_empresa_persona');
+    var selectEntidadCaja = document.getElementById('select_entidad_caja');
 
-// Sincronizar selección del desplegable con los campos Empresa y Persona
-    const selectEntidadCaja = document.getElementById('select_entidad_caja');
-    if (selectEntidadCaja) {
-        selectEntidadCaja.addEventListener('change', function() {
-            const opt = this.options[this.selectedIndex];
-            if (!opt || !this.value) return;
-            const tipo = opt.getAttribute('data-tipo');
-            const nombre = opt.getAttribute('data-nombre');
-            if (!nombre) return;
+    function bloquearCampo(el, placeholderTexto) {
+        if (!el) return;
+        el.readOnly = true;
+        el.classList.add('opacity-50', 'cursor-not-allowed', 'bg-slate-100/50', 'dark:bg-slate-800/40');
+        el.placeholder = placeholderTexto;
+    }
 
-            if (tipo === 'cliente') {
-                if (inputPersona) inputPersona.value = nombre;
-                if (inputEmpresa) inputEmpresa.value = '';
-            } else if (tipo === 'proveedor') {
-                if (inputEmpresa) inputEmpresa.value = nombre;
-                if (inputPersona) inputPersona.value = '';
+    function desbloquearCampo(el, placeholderTexto) {
+        if (!el) return;
+        el.readOnly = false;
+        el.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-slate-100/50', 'dark:bg-slate-800/40');
+        el.placeholder = placeholderTexto;
+    }
+
+    function actualizarAvisoEntidad() {
+        var emp = (inputEmpresa?.value || '').trim();
+        var per = (inputPersona?.value || '').trim();
+        if (avisoEntidad) {
+            if (emp || per) {
+                avisoEntidad.classList.add('hidden');
+            } else {
+                avisoEntidad.classList.remove('hidden');
             }
-            actualizaAvisoEntidad();
-        });
+        }
     }
+
+    function alEscribirEmpresa() {
+        if (inputEmpresa && inputEmpresa.value.trim().length > 0) {
+            if (inputPersona) {
+                inputPersona.value = '';
+                bloquearCampo(inputPersona, 'Bloqueado (Empresa ingresada)');
+            }
+        } else {
+            if (inputPersona) desbloquearCampo(inputPersona, 'Nombre de quien paga/recibe...');
+        }
+        actualizarAvisoEntidad();
+    }
+
+    function alEscribirPersona() {
+        if (inputPersona && inputPersona.value.trim().length > 0) {
+            if (inputEmpresa) {
+                inputEmpresa.value = '';
+                bloquearCampo(inputEmpresa, 'Bloqueado (Persona ingresada)');
+            }
+        } else {
+            if (inputEmpresa) desbloquearCampo(inputEmpresa, 'Nombre de la empresa...');
+        }
+        actualizarAvisoEntidad();
+    }
+
+    function sincronizarEntidadCaja() {
+        if (!selectEntidadCaja) return;
+        var val = selectEntidadCaja.value;
+        if (!val) {
+            if (inputPersona && inputPersona.readOnly) {
+                inputPersona.value = '';
+                desbloquearCampo(inputPersona, 'Nombre de quien paga/recibe...');
+            }
+            if (inputEmpresa && inputEmpresa.readOnly) {
+                inputEmpresa.value = '';
+                desbloquearCampo(inputEmpresa, 'Nombre de la empresa...');
+            }
             actualizarAvisoEntidad();
-        });
+            return;
+        }
+
+        var opt = selectEntidadCaja.querySelector('option[value="' + CSS.escape(val) + '"]')
+               || Array.from(selectEntidadCaja.options).find(function(o) { return o.value === val; });
+
+        if (!opt) return;
+
+        var tipo = opt.getAttribute('data-tipo');
+        var nombre = opt.getAttribute('data-nombre') || '';
+
+        if (tipo === 'cliente') {
+            if (inputPersona) {
+                desbloquearCampo(inputPersona, 'Nombre de quien paga/recibe...');
+                inputPersona.value = nombre;
+            }
+            if (inputEmpresa) {
+                inputEmpresa.value = '';
+                bloquearCampo(inputEmpresa, 'Bloqueado (Cliente seleccionado)');
+            }
+        } else if (tipo === 'proveedor') {
+            if (inputEmpresa) {
+                desbloquearCampo(inputEmpresa, 'Nombre de la empresa...');
+                inputEmpresa.value = nombre;
+            }
+            if (inputPersona) {
+                inputPersona.value = '';
+                bloquearCampo(inputPersona, 'Bloqueado (Proveedor seleccionado)');
+            }
+        }
+
+        actualizarAvisoEntidad();
     }
+
+    if (inputEmpresa) inputEmpresa.addEventListener('input', alEscribirEmpresa);
+    if (inputPersona) inputPersona.addEventListener('input', alEscribirPersona);
+
+    if (selectEntidadCaja) {
+        selectEntidadCaja.addEventListener('change', sincronizarEntidadCaja);
+        if (selectEntidadCaja.tomselect) {
+            selectEntidadCaja.tomselect.on('change', sincronizarEntidadCaja);
+        } else {
+            document.addEventListener('tomselect:ready', function() {
+                if (selectEntidadCaja.tomselect) {
+                    selectEntidadCaja.tomselect.on('change', sincronizarEntidadCaja);
+                }
+            });
+        }
+    }
+
+    // Inicializar estado de bloqueo según valores precargados
+    if (inputEmpresa && inputEmpresa.value.trim().length > 0) {
+        if (inputPersona) bloquearCampo(inputPersona, 'Bloqueado (Empresa ingresada)');
+    } else if (inputPersona && inputPersona.value.trim().length > 0) {
+        if (inputEmpresa) bloquearCampo(inputEmpresa, 'Bloqueado (Persona ingresada)');
+    }
+    actualizarAvisoEntidad();
 
  function cancelarNuevoConcepto() {
  document.getElementById('nuevo-concepto-box').classList.add('hidden');

@@ -187,10 +187,10 @@
 
         {{-- Tarjeta interactiva de Arqueo y Conciliación Física --}}
         <div class="glass-card p-6 md:p-8 border border-blue-500/20 shadow-xl">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-5 border-b border-gray-200/50 dark:border-white/10">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 md:mb-8">
                 <div>
                     <h2 class="text-xl md:text-2xl font-black text-slate-800 dark:text-white flex items-center gap-2">
-                        <span>💵</span> Cierre del Día & Conciliación Física — {{ \Carbon\Carbon::parse($hoy)->format('d/m/Y') }}
+                        <span>💵</span> Cierre del Día y Conciliación Física — {{ \Carbon\Carbon::parse($hoy)->format('d/m/Y') }}
                     </h2>
                     <p class="text-xs md:text-sm font-semibold text-gray-500 dark:text-gray-400 mt-1">
                         {{ $preview['num_movimientos'] }} movimiento(s) registrados hoy. Cuenta el efectivo real en caja para conciliar el arqueo.
@@ -235,7 +235,7 @@
                                        value=""
                                        placeholder="0"
                                        autocomplete="off"
-                                       class="glass-input w-full px-3 text-center font-black text-2xl md:text-3xl text-slate-800 dark:text-white tracking-tight h-[46px] md:h-[50px] placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/40">
+                                       class="glass-input w-full px-3 text-center font-black text-2xl md:text-3xl text-slate-800 dark:text-white tracking-tight h-[46px] md:h-[50px] placeholder:text-slate-400 placeholder:font-black placeholder:text-2xl placeholder:md:text-3xl focus:ring-2 focus:ring-blue-500/40">
                             </div>
                         </div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-2">
@@ -244,9 +244,9 @@
                     </div>
 
                     {{-- Indicador Reactivo de Diferencia --}}
-                    <div id="card-diferencia" class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                    <div id="card-diferencia" class="glass-card hover-glow glass-card-teal p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                         <div>
-                            <span class="text-xs font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-300" id="label-diferencia">
+                            <span class="text-xs font-bold uppercase tracking-wider block mb-1 text-teal-600 dark:text-teal-400" id="label-diferencia">
                                 ⚖️ Resultado del Arqueo
                             </span>
                             <p class="text-2xl md:text-3xl font-black transition-colors text-slate-500 dark:text-slate-400" id="valor-diferencia">
@@ -295,7 +295,7 @@
                 </div>
 
                 {{-- Botón de Cierre --}}
-                <div class="flex flex-col sm:flex-row justify-end items-center gap-3 pt-4 border-t border-gray-200/50 dark:border-white/10">
+                <div class="flex flex-col sm:flex-row justify-end items-center gap-3 mt-6 md:mt-8">
                     <button type="submit" id="btn-submit-cierre" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20" style="padding: 9px 18px; font-size: 13px;">
                         <span>🔒</span> Cerrar y bloquear dia
                     </button>
@@ -453,8 +453,8 @@
             valorDiffEl.innerText = '—';
             badgeDiffEl.className = 'pill pill-done text-xs font-bold py-1 px-3';
             badgeDiffEl.innerHTML = '⚪ Sin conciliar';
-            cardDiffEl.className = CARD_BASE + ' glass-card-gray';
-            if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-300';
+            cardDiffEl.className = CARD_BASE + ' glass-card-teal';
+            if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-teal-600 dark:text-teal-400';
             if (badgeAvisoEl) badgeAvisoEl.classList.add('hidden');
             if (asteriscoEl) asteriscoEl.classList.add('hidden');
             if (motivoInput) {

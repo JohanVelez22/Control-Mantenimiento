@@ -3283,6 +3283,24 @@ html.dark .ts-wrapper.glass-input.focus {
   color: #94A3B8;
 }
 
+#efectivo_real_visual::placeholder,
+#efectivo_real_visual::-webkit-input-placeholder,
+#efectivo_real_visual::-moz-placeholder,
+#efectivo_real_visual:-ms-input-placeholder {
+  font-size: 1.875rem !important;
+  font-weight: 900 !important;
+  color: #94A3B8 !important;
+}
+
+@media (max-width: 768px) {
+  #efectivo_real_visual::placeholder,
+  #efectivo_real_visual::-webkit-input-placeholder,
+  #efectivo_real_visual::-moz-placeholder,
+  #efectivo_real_visual:-ms-input-placeholder {
+    font-size: 1.5rem !important;
+  }
+}
+
 /* Ocultar placeholder inmediatamente al hacer clic / enfocar en cualquier input o textarea */
 input:focus::placeholder,
 textarea:focus::placeholder,
