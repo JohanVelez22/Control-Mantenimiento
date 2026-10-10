@@ -92,6 +92,13 @@ class CierreCajaController extends Controller
                 $diferencia = 0;
             }
 
+            if (abs($diferencia) >= 0.01 && empty(trim((string) $request->motivo_diferencia))) {
+                $tipoDescuadre = $diferencia > 0 ? 'sobrante' : 'faltante';
+                return back()
+                    ->with('error', "Existe un descuadre en caja ({$tipoDescuadre} de $" . number_format(abs($diferencia), 0, ',', '.') . "). Debes ingresar el motivo o justificación de la diferencia para poder cerrar y bloquear el día.")
+                    ->withInput();
+            }
+
             CierreCaja::create([
                 'fecha' => $fecha,
                 'total_ingresos' => $datos['total_ingresos'],

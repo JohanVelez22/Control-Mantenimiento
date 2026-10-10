@@ -212,7 +212,8 @@ public function test_cierre_sin_conteo_fisico_queda_sin_conciliar_y_no_afirma_cu
         $respCierreIndex->assertOk();
         $respCierreIndex->assertSee('Conciliación Física');
         $respCierreIndex->assertSee('Dinero Contado en Mano');
-        $respCierreIndex->assertSee('Abrir Desglose de Billetes');
+        $respCierreIndex->assertSee('Calcular dinero');
+        $respCierreIndex->assertSee('Cerrar y bloquear dia');
 
         // 3. Crear cierre con arqueo y probar cierre.show y cierre.edit
         $cierre = CierreCaja::create([
@@ -241,5 +242,54 @@ public function test_cierre_sin_conteo_fisico_queda_sin_conciliar_y_no_afirma_cu
         $respCierreEdit->assertSee('max-w-7xl');
         $respCierreEdit->assertSee('Motivo / Justificación del Descuadre');
         $respCierreEdit->assertSee('Ajuste de caja menor');
+    }
+
+    public function test_cierre_con_diferencia_requiere_justificacion_obligatoria(): void
+    {
+        $fecha = '2026-10-02';
+
+        MovimientoCaja::create([
+            'fecha' => $fecha,
+            'persona' => 'Cliente Z',
+            'concepto_id' => $this->concepto->id,
+            'tipo_movimiento' => 'ingreso',
+            'tipo_pago' => 'efectivo',
+            'monto' => 200000,
+            'estado' => 'activo',
+            'user_id' => $this->admin->id,
+        ]);
+
+        // Intento 1: Hay faltante ($180.000 vs $200.000) y motivo vacío -> debe rechazar
+        $responseFaltante = $this->actingAs($this->admin)->post(route('cierre.store'), [
+            'fecha' => $fecha,
+            'efectivo_real_contado' => 180000,
+            'motivo_diferencia' => '',
+        ]);
+
+        $responseFaltante->assertSessionHas('error');
+        $this->assertNull(CierreCaja::whereDate('fecha', $fecha)->first());
+
+        // Intento 2: Hay sobrante ($220.000 vs $200.000) y motivo vacío -> debe rechazar
+        $responseSobrante = $this->actingAs($this->admin)->post(route('cierre.store'), [
+            'fecha' => $fecha,
+            'efectivo_real_contado' => 220000,
+            'motivo_diferencia' => '   ',
+        ]);
+
+        $responseSobrante->assertSessionHas('error');
+        $this->assertNull(CierreCaja::whereDate('fecha', $fecha)->first());
+
+        // Intento 3: Conteo exacto ($200.000 vs $200.000) sin motivo -> debe permitirlo
+        $responseExacto = $this->actingAs($this->admin)->post(route('cierre.store'), [
+            'fecha' => $fecha,
+            'efectivo_real_contado' => 200000,
+            'motivo_diferencia' => '',
+        ]);
+
+        $responseExacto->assertRedirect(route('cierre.index'));
+        $cierre = CierreCaja::whereDate('fecha', $fecha)->first();
+        $this->assertNotNull($cierre);
+        $this->assertEquals(0, (float) $cierre->diferencia);
+        $this->assertSame('cuadrado', $cierre->estado_diferencia);
     }
 }

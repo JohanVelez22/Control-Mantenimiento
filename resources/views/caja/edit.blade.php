@@ -134,11 +134,11 @@
                             </div>
                         </div>
                         <div>
-                            <label class="field-label flex items-center justify-between">
+                            <label class="field-label !flex items-center gap-1.5 font-bold">
                                 <span class="flex items-center gap-1.5 font-bold">
-                                    <span>📝</span> Descripción / Observaciones del Abono
+                                    <span>📝</span> Descripción / Observaciones del Abono <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
                                 </span>
-                                <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider bg-white/20 dark:bg-slate-800/40 px-2 py-0.5 rounded-lg border border-gray-200/50 dark:border-white/5">Opcional</span>
+
                             </label>
                             <input type="text" name="descripcion" placeholder="Detalles u observaciones de este abono..." class="glass-input text-xs py-2.5">
                         </div>

@@ -196,8 +196,8 @@
                         {{ $preview['num_movimientos'] }} movimiento(s) registrados hoy. Cuenta el efectivo real en caja para conciliar el arqueo.
                     </p>
                 </div>
-                <button type="button" onclick="openCalc()" class="btn-clean text-xs px-4 py-2 font-bold flex items-center gap-2 self-stretch md:self-auto justify-center">
-                    <span>🧮</span> Abrir Desglose de Billetes
+                <button type="button" onclick="openCalc()" class="btn-clean flex items-center justify-center gap-2 self-stretch md:self-auto" style="padding: 9px 18px; font-size: 13px;">
+                    <span>🧮</span> Calcular dinero
                 </button>
             </div>
 
@@ -263,12 +263,13 @@
 
                 {{-- Campo para Justificación / Motivo de la Diferencia --}}
                 <div id="wrapper-motivo-diferencia" class="space-y-1.5">
-                    <label class="field-label flex items-center justify-between" for="motivo_diferencia">
+                    <label class="field-label !flex items-center justify-between" for="motivo_diferencia">
                         <span class="flex items-center gap-1.5 font-bold">
                             <span>📝</span> Motivo / Justificación de la Diferencia
+                            <span id="asterisco-obligatorio-diferencia" class="hidden text-red-500 font-bold">*</span>
                         </span>
-                        <span id="badge-aviso-diferencia" class="hidden text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                            Observación de Descuadre
+                        <span id="badge-aviso-diferencia" class="hidden text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
+                            Obligatorio por Descuadre
                         </span>
                     </label>
                     <input type="text" 
@@ -276,6 +277,9 @@
                            id="motivo_diferencia" 
                            placeholder="Opcional: Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)..." 
                            class="glass-input text-xs sm:text-sm">
+                    <p id="error-motivo-diferencia" class="hidden text-xs text-red-500 font-bold mt-1">
+                        ⚠️ Existe una diferencia en caja. Debes indicar la justificación o causa del descuadre para poder cerrar el día.
+                    </p>
                 </div>
 
                 {{-- Campo Observaciones Generales --}}
@@ -292,8 +296,8 @@
 
                 {{-- Botón de Cierre --}}
                 <div class="flex flex-col sm:flex-row justify-end items-center gap-3 pt-4 border-t border-gray-200/50 dark:border-white/10">
-                    <button type="submit" class="btn-primary w-full sm:w-auto text-sm px-6 py-2.5 font-bold shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2">
-                        <span>🔒</span> Finalizar Cierre y Bloquear Día
+                    <button type="submit" id="btn-submit-cierre" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20" style="padding: 9px 18px; font-size: 13px;">
+                        <span>🔒</span> Cerrar y bloquear dia
                     </button>
                 </div>
             </form>
@@ -435,6 +439,9 @@
         const cardDiffEl = document.getElementById('card-diferencia');
         const labelDiffEl = document.getElementById('label-diferencia');
         const badgeAvisoEl = document.getElementById('badge-aviso-diferencia');
+        const asteriscoEl = document.getElementById('asterisco-obligatorio-diferencia');
+        const motivoInput = document.getElementById('motivo_diferencia');
+        const errorMotivoEl = document.getElementById('error-motivo-diferencia');
 
         if (!valorDiffEl || !badgeDiffEl || !cardDiffEl) return;
 
@@ -449,6 +456,13 @@
             cardDiffEl.className = CARD_BASE + ' glass-card-gray';
             if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-300';
             if (badgeAvisoEl) badgeAvisoEl.classList.add('hidden');
+            if (asteriscoEl) asteriscoEl.classList.add('hidden');
+            if (motivoInput) {
+                motivoInput.removeAttribute('required');
+                motivoInput.placeholder = 'Opcional: Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)...';
+                motivoInput.classList.remove('!border-red-500', '!ring-2', '!ring-red-500/40');
+            }
+            if (errorMotivoEl) errorMotivoEl.classList.add('hidden');
             return;
         }
 
@@ -457,26 +471,54 @@
         valorDiffEl.innerText = signo + formatearPesos(Math.abs(diff));
 
         if (Math.abs(diff) < 1) {
+            // Cuadre Exacto: conteo igual al sistema (ej. 200 y 200) -> NO requiere justificación
             valorDiffEl.className = TEXTO_BASE + ' text-emerald-600 dark:text-emerald-400';
             badgeDiffEl.className = 'pill pill-done text-xs font-bold py-1 px-3';
             badgeDiffEl.innerHTML = '🟢 Cuadre Exacto';
             cardDiffEl.className = CARD_BASE + ' glass-card-emerald';
             if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400';
             if (badgeAvisoEl) badgeAvisoEl.classList.add('hidden');
+            if (asteriscoEl) asteriscoEl.classList.add('hidden');
+            if (motivoInput) {
+                motivoInput.removeAttribute('required');
+                motivoInput.placeholder = 'Cuadre exacto: no se requiere justificación obligatoria...';
+                motivoInput.classList.remove('!border-red-500', '!ring-2', '!ring-red-500/40');
+            }
+            if (errorMotivoEl) errorMotivoEl.classList.add('hidden');
         } else if (diff < 0) {
+            // Faltante en caja -> Justificación obligatoria
             valorDiffEl.className = TEXTO_BASE + ' text-red-600 dark:text-red-400';
             badgeDiffEl.className = 'pill pill-anulado text-xs font-bold py-1 px-3';
             badgeDiffEl.innerHTML = '🔴 Faltante en Caja';
             cardDiffEl.className = CARD_BASE + ' glass-card-red';
             if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-red-600 dark:text-red-400';
-            if (badgeAvisoEl) badgeAvisoEl.classList.remove('hidden');
+            if (badgeAvisoEl) {
+                badgeAvisoEl.innerText = 'Obligatorio por Faltante';
+                badgeAvisoEl.className = 'text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20';
+                badgeAvisoEl.classList.remove('hidden');
+            }
+            if (asteriscoEl) asteriscoEl.classList.remove('hidden');
+            if (motivoInput) {
+                motivoInput.setAttribute('required', 'required');
+                motivoInput.placeholder = 'Obligatorio: Describe la justificación del faltante de ' + formatearPesos(Math.abs(diff)) + '...';
+            }
         } else {
+            // Sobrante en caja -> Justificación obligatoria
             valorDiffEl.className = TEXTO_BASE + ' text-blue-600 dark:text-blue-400';
             badgeDiffEl.className = 'pill pill-efectivo text-xs font-bold py-1 px-3';
             badgeDiffEl.innerHTML = '🔵 Sobrante en Caja';
             cardDiffEl.className = CARD_BASE + ' glass-card-blue';
             if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-blue-600 dark:text-blue-400';
-            if (badgeAvisoEl) badgeAvisoEl.classList.remove('hidden');
+            if (badgeAvisoEl) {
+                badgeAvisoEl.innerText = 'Obligatorio por Sobrante';
+                badgeAvisoEl.className = 'text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20';
+                badgeAvisoEl.classList.remove('hidden');
+            }
+            if (asteriscoEl) asteriscoEl.classList.remove('hidden');
+            if (motivoInput) {
+                motivoInput.setAttribute('required', 'required');
+                motivoInput.placeholder = 'Obligatorio: Describe la justificación del sobrante de ' + formatearPesos(Math.abs(diff)) + '...';
+            }
         }
     }
 
@@ -492,6 +534,51 @@
             });
             visual.addEventListener('blur', actualizarDiferencia);
         }
+
+        const formCierre = document.getElementById('form-cierre-caja');
+        if (formCierre) {
+            formCierre.addEventListener('submit', function (e) {
+                const sistVal = parseFloat(document.getElementById('efectivo_sistema_val')?.value || 0);
+                const visualEl = document.getElementById('efectivo_real_visual');
+                const motivoEl = document.getElementById('motivo_diferencia');
+                const errorEl = document.getElementById('error-motivo-diferencia');
+                const realVal = leerConteo(visualEl);
+
+                if (realVal !== null) {
+                    const diferencia = realVal - sistVal;
+                    if (Math.abs(diferencia) >= 1) {
+                        const texto = (motivoEl?.value || '').trim();
+                        if (!texto) {
+                            e.preventDefault();
+                            if (motivoEl) {
+                                motivoEl.focus();
+                                motivoEl.classList.add('!border-red-500', '!ring-2', '!ring-red-500/40');
+                            }
+                            if (errorEl) {
+                                errorEl.classList.remove('hidden');
+                            }
+                            if (typeof window.showToast === 'function') {
+                                const tipo = diferencia > 0 ? 'sobrante' : 'faltante';
+                                window.showToast('Existe un descuadre en caja (' + tipo + '). Debes ingresar la justificación para poder cerrar y bloquear el día.', 'error');
+                            }
+                            return false;
+                        }
+                    }
+                }
+            });
+        }
+
+        const motivoInput = document.getElementById('motivo_diferencia');
+        if (motivoInput) {
+            motivoInput.addEventListener('input', function () {
+                if (this.value.trim().length > 0) {
+                    this.classList.remove('!border-red-500', '!ring-2', '!ring-red-500/40');
+                    const errorEl = document.getElementById('error-motivo-diferencia');
+                    if (errorEl) errorEl.classList.add('hidden');
+                }
+            });
+        }
+
         actualizarDiferencia();
     });
 

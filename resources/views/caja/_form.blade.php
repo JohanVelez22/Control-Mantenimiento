@@ -138,11 +138,11 @@
 
     {{-- Monto Total (Deuda Completa) --}}
     <div>
-        <label class="field-label flex items-center justify-between" for="monto_total_visual">
-            <span class="flex items-center gap-1.5 font-bold">
-                <span>💰</span> Monto Total
-            </span>
-            <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider bg-white/20 dark:bg-slate-800/40 px-2 py-0.5 rounded-lg border border-gray-200/50 dark:border-white/5">Opcional</span>
+        <label class="field-label !flex items-center gap-1.5 font-bold" for="monto_total_visual">
+
+            <span>💰</span> Monto Total <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
+
+
         </label>
         <div>
             <input type="text" id="monto_total_visual" value="{{ $valMontoTotal }}" placeholder="0" class="glass-input font-bold text-left py-2.5">
@@ -197,11 +197,11 @@
 
     {{-- Descripción --}}
     <div class="md:col-span-2">
-        <label class="field-label flex items-center justify-between">
+        <label class="field-label !flex items-center gap-1.5 font-bold">
             <span class="flex items-center gap-1.5 font-bold">
-                <span>📝</span> Descripción / Observaciones
+                <span>📝</span> Descripción / Observaciones <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
             </span>
-            <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider bg-white/20 dark:bg-slate-800/40 px-2 py-0.5 rounded-lg border border-gray-200/50 dark:border-white/5">Opcional</span>
+
         </label>
         <textarea name="descripcion" rows="2" placeholder="Detalles adicionales del movimiento..." class="glass-input resize-y">{{ old('descripcion', request('descripcion', $movimiento->descripcion ?? '')) }}</textarea>
     </div>
@@ -333,7 +333,7 @@
     if (inputPersona) inputPersona.addEventListener('input', actualizarAvisoEntidad);
     actualizarAvisoEntidad();
 
-    // Sincronizar selección del desplegable con los campos Empresa y Persona
+// Sincronizar selección del desplegable con los campos Empresa y Persona
     const selectEntidadCaja = document.getElementById('select_entidad_caja');
     if (selectEntidadCaja) {
         selectEntidadCaja.addEventListener('change', function() {
@@ -350,6 +350,9 @@
                 if (inputEmpresa) inputEmpresa.value = nombre;
                 if (inputPersona) inputPersona.value = '';
             }
+            actualizaAvisoEntidad();
+        });
+    }
             actualizarAvisoEntidad();
         });
     }
