@@ -3,6 +3,53 @@
 
 @section('content')
 
+<style>
+    #efectivo_real_visual {
+        font-size: 1.875rem !important;
+        font-weight: 900 !important;
+        line-height: 2.25rem !important;
+    }
+    #efectivo_real_visual::placeholder {
+        font-size: 1.875rem !important;
+        font-weight: 900 !important;
+        line-height: 2.25rem !important;
+        color: #94A3B8 !important;
+        opacity: 0.7 !important;
+    }
+    #efectivo_real_visual::-webkit-input-placeholder {
+        font-size: 1.875rem !important;
+        font-weight: 900 !important;
+        line-height: 2.25rem !important;
+        color: #94A3B8 !important;
+        opacity: 0.7 !important;
+    }
+    #efectivo_real_visual::-moz-placeholder {
+        font-size: 1.875rem !important;
+        font-weight: 900 !important;
+        line-height: 2.25rem !important;
+        color: #94A3B8 !important;
+        opacity: 0.7 !important;
+    }
+    @media (max-width: 768px) {
+        #efectivo_real_visual {
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+        }
+        #efectivo_real_visual::placeholder {
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+        }
+        #efectivo_real_visual::-webkit-input-placeholder {
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+        }
+        #efectivo_real_visual::-moz-placeholder {
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+        }
+    }
+</style>
+
 @push('modals')
 {{-- Modal de contraseña para eliminar cierre (Liquid Glass) --}}
 <div id="pwd-cierre-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
@@ -235,7 +282,7 @@
                                        value=""
                                        placeholder="0"
                                        autocomplete="off"
-                                       class="glass-input w-full px-3 text-center font-black text-2xl md:text-3xl text-slate-800 dark:text-white tracking-tight h-[46px] md:h-[50px] placeholder:text-slate-400 placeholder:font-black placeholder:text-2xl placeholder:md:text-3xl focus:ring-2 focus:ring-blue-500/40">
+                                       class="glass-input w-full px-3 text-center !font-black !text-2xl md:!text-3xl text-slate-800 dark:text-white tracking-tight h-[48px] md:h-[54px] focus:ring-2 focus:ring-blue-500/40">
                             </div>
                         </div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-2">

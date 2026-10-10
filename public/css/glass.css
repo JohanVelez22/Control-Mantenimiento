@@ -3283,21 +3283,49 @@ html.dark .ts-wrapper.glass-input.focus {
   color: #94A3B8;
 }
 
-#efectivo_real_visual::placeholder,
-#efectivo_real_visual::-webkit-input-placeholder,
-#efectivo_real_visual::-moz-placeholder,
-#efectivo_real_visual:-ms-input-placeholder {
+#efectivo_real_visual {
   font-size: 1.875rem !important;
   font-weight: 900 !important;
+  line-height: 2.25rem !important;
+}
+
+#efectivo_real_visual::placeholder {
+  font-size: 1.875rem !important;
+  font-weight: 900 !important;
+  line-height: 2.25rem !important;
+  color: #94A3B8 !important;
+}
+
+#efectivo_real_visual::-webkit-input-placeholder {
+  font-size: 1.875rem !important;
+  font-weight: 900 !important;
+  line-height: 2.25rem !important;
+  color: #94A3B8 !important;
+}
+
+#efectivo_real_visual::-moz-placeholder {
+  font-size: 1.875rem !important;
+  font-weight: 900 !important;
+  line-height: 2.25rem !important;
   color: #94A3B8 !important;
 }
 
 @media (max-width: 768px) {
-  #efectivo_real_visual::placeholder,
-  #efectivo_real_visual::-webkit-input-placeholder,
-  #efectivo_real_visual::-moz-placeholder,
-  #efectivo_real_visual:-ms-input-placeholder {
+  #efectivo_real_visual {
     font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+  #efectivo_real_visual::placeholder {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+  #efectivo_real_visual::-webkit-input-placeholder {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+  #efectivo_real_visual::-moz-placeholder {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
   }
 }
 
