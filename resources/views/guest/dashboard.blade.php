@@ -30,18 +30,18 @@
     <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-    <div class="w-full {{ ($cliente || isset($searched)) ? 'max-w-2xl' : 'max-w-md' }} z-10 flex flex-col items-center pb-8 transition-all">
+    <div class="w-full {{ ($cliente || (isset($searched) && ($mantenimientos->isNotEmpty() || $electronicas->isNotEmpty()))) ? 'max-w-2xl' : 'max-w-md' }} z-10 flex flex-col items-center pb-10 transition-all">
         
         <!-- Logo TECNI SYSTEMAS (Fuera del recuadro) -->
         <div class="text-center mt-0 mb-4 login-brand-title">
             <div class="flex justify-center mb-2">
-                <div class="text-[22px] font-black tracking-widest font-logo flex items-center gap-2">
+                <div class="text-[24px] font-black tracking-widest font-logo flex items-center gap-2">
                     <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
                     <span class="text-slate-800 dark:text-white">SYSTEMAS</span>
                 </div>
             </div>
             <div>
-                <span style="font-size: 54px;" class="drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_12px_rgba(255,255,255,0.1)] text-slate-800 dark:text-white leading-none">💼</span>
+                <span style="font-size: 80px;" class="drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] text-slate-800 dark:text-white leading-none">💼</span>
             </div>
         </div>
 
@@ -49,27 +49,23 @@
         <div class="glass-card guest-card w-full relative">
             <!-- Encabezado -->
             <div class="text-center mb-4">
-                <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white mb-1 tracking-tight">Consulta de Servicios</h1>
+                <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight">Consulta de Servicios</h1>
                 @if($cliente)
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">Hola, <span class="text-blue-600 dark:text-blue-400 font-black">{{ $cliente->nombres }}</span>. Aquí tienes el estado actual de tus equipos.</p>
-                @elseif(isset($searched))
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Hola, <span class="text-blue-600 dark:text-blue-400 font-bold">{{ $cliente->nombres }}</span>. Aquí tienes el estado actual de tus equipos.</p>
+                @elseif(isset($searched) && ($mantenimientos->isNotEmpty() || $electronicas->isNotEmpty()))
                     @php
                         $isElectronicaSearch = ($tipo ?? '') === 'electronica' || ($electronicas->isNotEmpty() && $mantenimientos->isEmpty());
                     @endphp
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">Resultados para la orden <span class="{{ $isElectronicaSearch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400' }} font-black">{{ strtoupper($id_orden ?? '') }}</span> (Doc: {{ $identificacion ?? '' }})</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Resultados para la orden <span class="{{ $isElectronicaSearch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400' }} font-bold">{{ strtoupper($id_orden ?? '') }}</span> (Doc: {{ $identificacion ?? '' }})</p>
                 @else
-                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Ingresa tu número de identificación y orden para consultar.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">Ingresa tu número de identificación y número de orden para hacer el seguimiento de tu equipo con total privacidad.</p>
                 @endif
             </div>
             
-            @if($cliente || isset($searched))
-                @if($mantenimientos->isEmpty() && $electronicas->isEmpty())
+            @if($cliente || (isset($searched) && ($mantenimientos->isNotEmpty() || $electronicas->isNotEmpty())))
+                @if($cliente && $mantenimientos->isEmpty() && $electronicas->isEmpty())
                     <div class="text-center py-12 bg-white/10 dark:bg-slate-900/20 rounded-2xl border border-white/40 dark:border-white/5 backdrop-blur-sm shadow-sm">
-                        @if(isset($searched))
-                            <p class="text-slate-600 dark:text-slate-400 font-medium">No se encontró ningun resultado relacionado con tu búsqueda, revisa si ya fue entregado.</p>
-                        @else
-                            <p class="text-slate-600 dark:text-slate-400 font-medium">No tienes órdenes activas en este momento.</p>
-                        @endif
+                        <p class="text-slate-600 dark:text-slate-400 font-medium">No tienes órdenes activas en este momento.</p>
                     </div>
                 @else
                     <div class="space-y-4">
@@ -209,7 +205,7 @@
                     </div>
                 @endif
                 
-                @if(isset($searched) && !$cliente)
+                @if(isset($searched) && ($mantenimientos->isNotEmpty() || $electronicas->isNotEmpty()) && !$cliente)
                 <div class="mt-6 sm:mt-8 text-center">
                     <a href="{{ route('guest.dashboard') }}" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
                         <span>🔍</span> Buscar Otra Consulta
@@ -217,62 +213,60 @@
                 </div>
                 @endif
             @else
-                <!-- Formulario de Búsqueda si no hay cliente asociado -->
+                <!-- Formulario de Búsqueda si no hay cliente o la consulta no arrojó resultados -->
                 @php
                     $isElec = ($tipo ?? '') === 'electronica';
+                    $hasNotFound = isset($searched) && $mantenimientos->isEmpty() && $electronicas->isEmpty();
                 @endphp
                 <form id="guestSearchForm" method="GET" action="{{ route('guest.search') }}" class="w-full space-y-3">
-                    {{-- Selector Mantenimiento / Electrónica (Estilo original limpio) --}}
-                    <div class="flex bg-white/50 dark:bg-slate-900/50 p-1 rounded-xl mb-3.5 border border-white/60 dark:border-white/10 shadow-sm backdrop-blur-md">
+                    {{-- Selector Mantenimiento / Electrónica (Estilo original con pills y emojis) --}}
+                    <div class="flex bg-white/40 dark:bg-slate-900/40 p-1 rounded-xl mb-3.5 border border-white/50 dark:border-white/10 shadow-sm backdrop-blur-md">
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="tipo" id="tipo-mantenimiento" value="mantenimiento" class="peer sr-only" {{ !$isElec ? 'checked' : '' }} onchange="updateGuestTheme('mantenimiento')">
-                            <div id="tab-label-mantenimiento" class="text-center py-2 rounded-lg text-sm font-semibold transition-all {{ !$isElec ? 'tab-mant-active' : 'tab-inactive' }}">
-                                Mantenimientos
+                            <div class="text-center py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-blue-600 peer-checked:text-white transition-all peer-checked:shadow-md flex items-center justify-center gap-1.5">
+                                <span>🛠️</span> Mantenimientos
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="tipo" id="tipo-electronica" value="electronica" class="peer sr-only" {{ $isElec ? 'checked' : '' }} onchange="updateGuestTheme('electronica')">
-                            <div id="tab-label-electronica" class="text-center py-2 rounded-lg text-sm font-semibold transition-all {{ $isElec ? 'tab-elec-active' : 'tab-inactive' }}">
-                                Electrónica
+                            <div class="text-center py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-purple-600 peer-checked:text-white transition-all peer-checked:shadow-md flex items-center justify-center gap-1.5">
+                                <span>⚡</span> Electrónica
                             </div>
                         </label>
                     </div>
 
                     {{-- Campo Cédula / NIT --}}
                     <div>
-                        <label for="guestIdentificacionInput" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 ml-0.5">
-                            Cédula o NIT del Cliente <span class="text-red-500 font-bold">*</span>
+                        <label for="guestIdentificacionInput" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 ml-0.5">
+                            🪪 Cédula o NIT del Cliente <span class="text-red-500 font-bold">*</span>
                         </label>
                         <input type="text" name="identificacion" id="guestIdentificacionInput" 
                                value="{{ old('identificacion', $identificacion ?? '') }}" 
-                               class="glass-input w-full px-3.5 py-2.5 text-sm font-semibold focus:ring-1 focus:ring-blue-500 @error('identificacion') border-red-500 @enderror" 
-                               placeholder="Ej: 123456789 o 900123456" required minlength="3" maxlength="30" autocomplete="off"
-                               oninvalid="this.setCustomValidity('Debes digitar cédula / NIT')"
-                               oninput="this.setCustomValidity('')">
-                        <p id="error-identificacion" class="text-xs text-red-500 font-semibold mt-1 ml-0.5 @error('identificacion') @else hidden @enderror">
-                            @error('identificacion') {{ $message }} @else Debes digitar cédula / NIT @enderror
+                               class="glass-input w-full px-3.5 py-2.5 text-sm sm:text-base font-semibold rounded-xl focus:placeholder-transparent {{ ($hasNotFound || $errors->has('identificacion')) ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'focus:ring-2 focus:ring-blue-500' }}" 
+                               placeholder="Ej: 123456789 o 900123456" minlength="3" maxlength="30" autocomplete="off">
+                        <p id="error-identificacion" class="text-xs text-red-500 font-semibold mt-1 ml-0.5 flex items-center gap-1 {{ ($hasNotFound || $errors->has('identificacion')) ? '' : 'hidden' }}">
+                            <span>⚠️</span> <span id="error-identificacion-text">{{ $errors->first('identificacion') ?: 'No es correcto: No se encontró ningun resultado para esta cédula o NIT' }}</span>
                         </p>
                     </div>
 
                     {{-- Campo Número de Orden --}}
                     <div>
-                        <label for="guestOrdenInput" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 ml-0.5">
-                            Número de Orden <span class="text-red-500 font-bold">*</span>
+                        <label for="guestOrdenInput" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 ml-0.5">
+                            📋 Número de Orden <span class="text-red-500 font-bold">*</span>
                         </label>
                         <input type="text" name="id_orden" id="guestOrdenInput" 
                                value="{{ old('id_orden', $id_orden ?? '') }}" 
-                               class="glass-input w-full px-3.5 py-2.5 text-sm font-semibold focus:ring-1 focus:ring-blue-500 @error('id_orden') border-red-500 @enderror" 
-                               placeholder="{{ $isElec ? 'Ej: ELC-001 o 1' : 'Ej: ORD-001 o 1' }}" required minlength="1" maxlength="30" autocomplete="off"
-                               oninvalid="this.setCustomValidity('Debes digitar la orden')"
-                               oninput="this.setCustomValidity('')">
-                        <p id="error-id_orden" class="text-xs text-red-500 font-semibold mt-1 ml-0.5 @error('id_orden') @else hidden @enderror">
-                            @error('id_orden') {{ $message }} @else Debes digitar la orden @enderror
+                               class="glass-input w-full px-3.5 py-2.5 text-sm sm:text-base font-semibold rounded-xl focus:placeholder-transparent {{ ($hasNotFound || $errors->has('id_orden')) ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'focus:ring-2 focus:ring-blue-500' }}" 
+                               placeholder="{{ $isElec ? 'Ej: ELC-001 o 1' : 'Ej: ORD-001 o 1' }}" minlength="1" maxlength="30" autocomplete="off">
+                        <p id="error-orden" class="text-xs text-red-500 font-semibold mt-1 ml-0.5 flex items-center gap-1 {{ ($hasNotFound || $errors->has('id_orden')) ? '' : 'hidden' }}">
+                            <span>⚠️</span> <span id="error-orden-text">{{ $errors->first('id_orden') ?: 'No es correcto: No se encontró ningun resultado para este número de orden' }}</span>
                         </p>
                     </div>
 
-                    {{-- Botón de consulta sin neón, compacto y con clic físico responsivo --}}
-                    <button type="submit" id="guestSubmitBtn" class="w-full mt-3 {{ $isElec ? 'btn-guest-elec' : 'btn-guest-mant' }} text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2">
-                        <span id="guestSubmitBtnText">Consultar Estado</span>
+                    {{-- Botón de consulta con lupa y efecto anterior (sin neón) --}}
+                    <button type="submit" id="guestSubmitBtn" class="w-full mt-3.5 {{ $isElec ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-purple-500/25' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-blue-500/25' }} text-white font-bold py-2.5 sm:py-3 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2">
+                        <span>🔍</span>
+                        <span id="guestSubmitBtnText">{{ $isElec ? 'Consultar Electrónica' : 'Consultar Estado de la Orden' }}</span>
                     </button>
                 </form>
             @endif
@@ -308,62 +302,6 @@
 .glass-input:focus:-ms-input-placeholder {
   color: transparent !important;
   opacity: 0 !important;
-}
-
-/* Pestañas: estilo exacto previo sin emojis */
-.tab-inactive {
-  color: #64748b;
-  background: transparent;
-}
-html.dark .tab-inactive {
-  color: #94a3b8;
-}
-.tab-inactive:hover {
-  color: #0f172a;
-  background: rgba(255, 255, 255, 0.25);
-}
-html.dark .tab-inactive:hover {
-  color: #f8fafc;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.tab-mant-active {
-  background: #3b82f6 !important;
-  color: #ffffff !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-}
-
-.tab-elec-active {
-  background: #8b5cf6 !important;
-  color: #ffffff !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Botones: sin neón, degradado equilibrado y clic físico suave */
-.btn-guest-mant {
-  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25) !important;
-  border: none !important;
-}
-.btn-guest-mant:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%) !important;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
-}
-
-.btn-guest-elec {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
-  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25) !important;
-  border: none !important;
-}
-.btn-guest-elec:hover {
-  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3) !important;
-}
-
-.btn-guest-mant:active,
-.btn-guest-elec:active {
-  transform: translateY(1px) scale(0.98) !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) !important;
 }
 </style>
 
@@ -402,11 +340,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const idInput = document.getElementById('guestIdentificacionInput');
     const ordenInput = document.getElementById('guestOrdenInput');
     const errId = document.getElementById('error-identificacion');
-    const errOrden = document.getElementById('error-id_orden');
+    const errIdText = document.getElementById('error-identificacion-text');
+    const errOrden = document.getElementById('error-orden');
+    const errOrdenText = document.getElementById('error-orden-text');
 
     if (idInput) {
         idInput.addEventListener('input', function() {
-            this.setCustomValidity('');
             if (this.value.trim().length > 0) {
                 this.classList.remove('border-red-500');
                 if (errId) errId.classList.add('hidden');
@@ -416,7 +355,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (ordenInput) {
         ordenInput.addEventListener('input', function() {
-            this.setCustomValidity('');
             if (this.value.trim().length > 0) {
                 this.classList.remove('border-red-500');
                 if (errOrden) errOrden.classList.add('hidden');
@@ -432,47 +370,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!idVal) {
                 hasError = true;
-                if (idInput) {
-                    idInput.classList.add('border-red-500');
-                    idInput.setCustomValidity('Debes digitar cédula / NIT');
-                }
-                if (errId) {
-                    errId.textContent = 'Debes digitar cédula / NIT';
-                    errId.classList.remove('hidden');
-                }
-            } else {
-                if (idInput) {
-                    idInput.classList.remove('border-red-500');
-                    idInput.setCustomValidity('');
-                }
-                if (errId) errId.classList.add('hidden');
+                if (idInput) idInput.classList.add('border-red-500');
+                if (errIdText) errIdText.textContent = 'No es correcto: debes digitar cédula / NIT';
+                if (errId) errId.classList.remove('hidden');
             }
 
             if (!ordenVal) {
                 hasError = true;
-                if (ordenInput) {
-                    ordenInput.classList.add('border-red-500');
-                    ordenInput.setCustomValidity('Debes digitar la orden');
-                }
-                if (errOrden) {
-                    errOrden.textContent = 'Debes digitar la orden';
-                    errOrden.classList.remove('hidden');
-                }
-            } else {
-                if (ordenInput) {
-                    ordenInput.classList.remove('border-red-500');
-                    ordenInput.setCustomValidity('');
-                }
-                if (errOrden) errOrden.classList.add('hidden');
+                if (ordenInput) ordenInput.classList.add('border-red-500');
+                if (errOrdenText) errOrdenText.textContent = 'No es correcto: debes digitar la orden';
+                if (errOrden) errOrden.classList.remove('hidden');
             }
 
             if (hasError) {
                 e.preventDefault();
                 if (!idVal && idInput) {
-                    idInput.reportValidity();
                     idInput.focus();
                 } else if (!ordenVal && ordenInput) {
-                    ordenInput.reportValidity();
                     ordenInput.focus();
                 }
             }
@@ -483,8 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function updateGuestTheme(tipo) {
     const ordenInput = document.getElementById('guestOrdenInput');
     const submitBtn = document.getElementById('guestSubmitBtn');
-    const tabMant = document.getElementById('tab-label-mantenimiento');
-    const tabElec = document.getElementById('tab-label-electronica');
+    const submitBtnText = document.getElementById('guestSubmitBtnText');
 
     if (tipo === 'electronica') {
         const ph = 'Ej: ELC-001 o 1';
@@ -492,14 +405,11 @@ function updateGuestTheme(tipo) {
             ordenInput.dataset.tempPlaceholder = ph;
             ordenInput.placeholder = ph;
         }
-        if (tabMant) {
-            tabMant.className = 'text-center py-2 rounded-lg text-sm font-semibold transition-all tab-inactive';
-        }
-        if (tabElec) {
-            tabElec.className = 'text-center py-2 rounded-lg text-sm font-semibold transition-all tab-elec-active';
-        }
         if (submitBtn) {
-            submitBtn.className = 'w-full mt-3 btn-guest-elec text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2';
+            submitBtn.className = 'w-full mt-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-purple-500/25 text-white font-bold py-2.5 sm:py-3 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2';
+        }
+        if (submitBtnText) {
+            submitBtnText.textContent = 'Consultar Electrónica';
         }
     } else {
         const ph = 'Ej: ORD-001 o 1';
@@ -507,14 +417,11 @@ function updateGuestTheme(tipo) {
             ordenInput.dataset.tempPlaceholder = ph;
             ordenInput.placeholder = ph;
         }
-        if (tabElec) {
-            tabElec.className = 'text-center py-2 rounded-lg text-sm font-semibold transition-all tab-inactive';
-        }
-        if (tabMant) {
-            tabMant.className = 'text-center py-2 rounded-lg text-sm font-semibold transition-all tab-mant-active';
-        }
         if (submitBtn) {
-            submitBtn.className = 'w-full mt-3 btn-guest-mant text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2';
+            submitBtn.className = 'w-full mt-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-blue-500/25 text-white font-bold py-2.5 sm:py-3 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2';
+        }
+        if (submitBtnText) {
+            submitBtnText.textContent = 'Consultar Estado de la Orden';
         }
     }
 }

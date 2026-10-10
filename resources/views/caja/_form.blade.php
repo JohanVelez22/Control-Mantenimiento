@@ -144,9 +144,8 @@
             </span>
             <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider bg-white/20 dark:bg-slate-800/40 px-2 py-0.5 rounded-lg border border-gray-200/50 dark:border-white/5">Opcional</span>
         </label>
-        <div class="relative">
-            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 dark:text-slate-500 select-none pointer-events-none">$</span>
-            <input type="text" id="monto_total_visual" value="{{ $valMontoTotal }}" placeholder="0" class="glass-input pl-8 font-bold text-left py-2.5">
+        <div>
+            <input type="text" id="monto_total_visual" value="{{ $valMontoTotal }}" placeholder="0" class="glass-input font-bold text-left py-2.5">
             <input type="hidden" name="monto_total" id="monto_total_real" value="{{ $cleanMontoTotal }}">
         </div>
         @error('monto_total') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
@@ -160,9 +159,8 @@
                 <span>💵</span> Monto Pagado Hoy <span class="text-red-500 font-bold">*</span>
             </span>
         </label>
-        <div class="relative">
-            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 dark:text-slate-500 select-none pointer-events-none">$</span>
-            <input type="text" id="monto_visual" required value="{{ $valMonto }}" placeholder="0" class="glass-input pl-8 font-bold text-left py-2.5">
+        <div>
+            <input type="text" id="monto_visual" required value="{{ $valMonto }}" placeholder="0" class="glass-input font-bold text-left py-2.5">
             <input type="hidden" name="monto" id="monto_real" value="{{ $cleanMonto }}">
         </div>
         @error('monto') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror

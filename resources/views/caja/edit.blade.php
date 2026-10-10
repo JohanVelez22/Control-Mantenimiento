@@ -112,9 +112,8 @@
                                 <label class="field-label flex items-center gap-1.5 font-bold" for="monto_abono_visual">
                                     <span>💵</span> Monto del Abono <span class="text-red-500 font-bold">*</span>
                                 </label>
-                                <div class="relative">
-                                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 select-none pointer-events-none">$</span>
-                                    <input type="text" id="monto_abono_visual" required placeholder="0" class="glass-input pl-8 font-bold text-left py-2.5">
+                                <div>
+                                    <input type="text" id="monto_abono_visual" required placeholder="0" class="glass-input font-bold text-left py-2.5">
                                     <input type="hidden" name="monto_abono" id="monto_abono_real">
                                 </div>
                             </div>

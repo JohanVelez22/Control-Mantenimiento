@@ -77,7 +77,7 @@
         </div>
 
         {{-- Datos Operativos del Cierre --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 text-sm p-6 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200/60 dark:border-blue-500/20 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 text-sm p-6 glass-card mb-8">
             <div class="min-w-0">
                 <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📅 Fecha de Arqueo</span>
                 <span class="text-sm font-medium text-slate-600 dark:text-slate-300 break-words">

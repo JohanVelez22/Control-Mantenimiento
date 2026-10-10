@@ -229,16 +229,13 @@
                                 🖐🏻 Dinero Contado en Mano
                             </label>
                             <div class="relative max-w-[15rem] mx-auto w-full my-0.5">
-                                <div class="relative flex items-center justify-center">
-                                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-slate-400 dark:text-slate-500 text-xl md:text-2xl select-none pointer-events-none">$</span>
-                                    <input type="text"
-                                           id="efectivo_real_visual"
-                                           name="efectivo_real_contado"
-                                           value=""
-                                           placeholder="Sin contar"
-                                           autocomplete="off"
-                                           class="glass-input w-full pl-8 pr-3 text-center font-black text-2xl md:text-3xl text-slate-800 dark:text-white tracking-tight h-[46px] md:h-[50px] placeholder:text-slate-400 placeholder:text-base md:placeholder:text-lg placeholder:font-bold focus:ring-2 focus:ring-blue-500/40">
-                                </div>
+                                <input type="text"
+                                       id="efectivo_real_visual"
+                                       name="efectivo_real_contado"
+                                       value=""
+                                       placeholder="0"
+                                       autocomplete="off"
+                                       class="glass-input w-full px-3 text-center font-black text-2xl md:text-3xl text-slate-800 dark:text-white tracking-tight h-[46px] md:h-[50px] placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/40">
                             </div>
                         </div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-2">

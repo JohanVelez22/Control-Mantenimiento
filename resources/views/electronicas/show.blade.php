@@ -46,8 +46,8 @@
             </div>
         </div>
 
-        {{-- Datos del mantenimiento --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 rounded-2xl bg-purple-50/50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-500/20">
+        {{-- Datos del servicio de electrónica --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 glass-card mb-6">
             <div class="min-w-0">
                 <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
                     {{ $electronica->equipo?->propietario_tipo === 'proveedor' ? '🏢 Proveedor' : '👤 Cliente' }}
@@ -75,7 +75,7 @@
                 <span class="font-medium text-base text-slate-800 dark:text-slate-200">{{ $electronica->fecha_salida?->format('d/m/Y') ?? '—' }}</span>
             </div>
             @if($electronica->descripcion_problema)
-            <div class="md:col-span-2 min-w-0 mt-2 p-3.5 glass-card !rounded-xl">
+            <div class="md:col-span-2 min-w-0 mt-2 p-3.5 bg-white/20 dark:bg-slate-900/30 rounded-xl border border-white/40 dark:border-white/5">
                 <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Descripción</span>
                 <span class="font-medium text-slate-800 dark:text-slate-200 break-words leading-relaxed">{{ $electronica->descripcion_problema }}</span>
             </div>

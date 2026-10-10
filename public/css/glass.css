@@ -2780,8 +2780,8 @@ html.dark .btn-ghost:hover {
 
 @media (hover: hover) and (pointer: fine) {
   .theme-toggle-btn:hover {
-    background: rgba(37, 99, 235, 0.10) !important;
-    border-color: rgba(37, 99, 235, 0.30) !important;
+    background: rgba(148, 163, 184, 0.16) !important;
+    border-color: rgba(148, 163, 184, 0.35) !important;
   }
 }
 
@@ -2803,8 +2803,8 @@ html.dark .theme-toggle-btn {
 
   .dark .theme-toggle-btn:hover,
   html.dark .theme-toggle-btn:hover {
-    background: rgba(59, 130, 246, 0.16) !important;
-    border-color: rgba(96, 165, 250, 0.40) !important;
+    background: rgba(226, 232, 240, 0.16) !important;
+    border-color: rgba(226, 232, 240, 0.35) !important;
   }
 }
 
