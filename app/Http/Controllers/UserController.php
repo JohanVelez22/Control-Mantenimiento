@@ -13,6 +13,10 @@ class UserController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Acceso denegado. Solo administradores pueden gestionar la lista de usuarios.');
+        }
+
         $users = User::orderBy('id', 'desc')->paginate(10);
 
         return view('usuarios.index', compact('users'));
@@ -43,9 +47,9 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers(), 'confirmed'],
             'role' => 'required|in:admin,tecnico,invitado',
-            'photo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg|max:5120',
+            'photo' => 'nullable|file|mimes:jpeg,png,jpg,webp|max:5120',
         ], [
-            'photo.mimes' => 'La foto debe ser un archivo en formato SVG, PNG, JPG, JPEG o WEBP.',
+            'photo.mimes' => 'La foto debe ser un archivo en formato PNG, JPG, JPEG o WEBP.',
             'photo.max' => 'La foto no debe superar los 5 MB de tamaño.',
         ]);
 
@@ -85,10 +89,10 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$usuario->id,
             'role' => 'required|in:admin,tecnico,invitado',
-            'photo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg|max:5120',
+            'photo' => 'nullable|file|mimes:jpeg,png,jpg,webp|max:5120',
             'remove_photo' => 'nullable|in:0,1,true,false',
         ], [
-            'photo.mimes' => 'La foto debe ser un archivo en formato SVG, PNG, JPG, JPEG o WEBP.',
+            'photo.mimes' => 'La foto debe ser un archivo en formato PNG, JPG, JPEG o WEBP.',
             'photo.max' => 'La foto no debe superar los 5 MB de tamaño.',
         ]);
 
@@ -126,6 +130,10 @@ class UserController extends Controller
         $usuario->email = $request->email;
 
         $usuario->save();
+
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('success', 'Perfil actualizado correctamente.');
+        }
 
         return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado correctamente.');
     }

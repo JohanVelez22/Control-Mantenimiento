@@ -111,7 +111,7 @@
  {{-- Pago y observaciones --}}
  <div class="flex flex-col md:flex-row justify-center gap-5 p-5 glass-card">
 <div class="text-center w-full md:w-1/2">
-  <label class="field-label text-center block">Total Pagado Ahora ($) *</label>
+  <label class="field-label text-center block">Total Pagado Ahora <span class="text-red-500 font-bold">*</span></label>
   <input type="text" name="total_pagado" id="total_pagado_real" value="0" required class="hidden">
   <input type="text" id="total_pagado_visual" value="0" oninput="window.formatCurrencyDual(this, 'total_pagado_real'); recalcular()" required 
   class="glass-input text-2xl font-black text-center focus:ring-orange-500 py-3 text-emerald-600 dark:text-emerald-400">
@@ -151,9 +151,15 @@
 let filaIndex = 1;
 const stocksData = @json($stocksJson);
 
+const escapeHtml = window.escapeHtml || function(text) {
+    if (text === null || text === undefined) return '';
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
+};
+
 function stockSelectOptions() {
     return stocksData.map(s =>
-      `<option value="${s.id}" data-precio="${s.precio}">${s.nombre} (Stock: ${s.cantidad}) — P.Compra: $${window.formatNumber(s.precio)}</option>`
+      `<option value="${s.id}" data-precio="${s.precio}">${escapeHtml(s.nombre)} (Stock: ${s.cantidad}) — P.Compra: $${window.formatNumber(s.precio)}</option>`
     ).join('');
 }
 

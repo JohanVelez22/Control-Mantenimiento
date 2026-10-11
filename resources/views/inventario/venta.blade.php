@@ -114,7 +114,7 @@
  {{-- Pago y observaciones --}}
  <div class="flex flex-col md:flex-row justify-center gap-5 p-5 glass-card">
 <div class="text-center w-full md:w-1/2">
-  <label class="field-label text-center block">Total Recibido Ahora ($) *</label>
+  <label class="field-label text-center block">Total Recibido Ahora <span class="text-red-500 font-bold">*</span></label>
   <input type="text" name="total_pagado" id="total_pagado_real" value="0" required class="hidden">
   <input type="text" id="total_pagado_visual" value="0" oninput="window.formatCurrencyDual(this, 'total_pagado_real'); recalcular()" required 
   class="glass-input text-2xl font-black text-center focus:ring-emerald-500 py-3 text-emerald-600 dark:text-emerald-400">
@@ -189,12 +189,18 @@ function getPrecioStock(stock) {
     return esTecnicoActual() ? stock.precio_tecnico : stock.precio_venta;
 }
 
+const escapeHtml = window.escapeHtml || function(text) {
+    if (text === null || text === undefined) return '';
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
+};
+
 function stockSelectOptions() {
     const esTec = esTecnicoActual();
     return stocksData.map(s => {
       const p = esTec ? s.precio_tecnico : s.precio_venta;
       const labelTag = esTec ? '🔧 P.Técnico' : 'P.Venta';
-      return `<option value="${s.id}" data-precio-compra="${s.precio_compra}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-stock="${s.cantidad}">${s.nombre} (Disp: ${s.cantidad}) — ${labelTag}: $${window.formatNumber(p)}</option>`;
+      return `<option value="${s.id}" data-precio-compra="${s.precio_compra}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-stock="${s.cantidad}">${escapeHtml(s.nombre)} (Disp: ${s.cantidad}) — ${labelTag}: $${window.formatNumber(p)}</option>`;
     }).join('');
 }
 

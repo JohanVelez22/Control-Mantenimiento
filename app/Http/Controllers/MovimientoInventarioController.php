@@ -11,6 +11,7 @@ use App\Models\MovimientoCaja;
 use App\Models\Proveedor;
 use App\Models\Stock;
 use App\Services\AnulacionService;
+use App\Services\CierreCajaGuard;
 use App\Services\OrdenService;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -81,14 +82,14 @@ class MovimientoInventarioController extends Controller
             $totalPagado = (float) $request->total_pagado;
 
             // No permitir pagar más de lo debido (evita saldos negativos)
-            if ($totalPagado > $totalDocumento + 0.001) {
+            if ($totalPagado > $totalDocumento + Factura::EPSILON) {
                 DB::rollBack();
 
                 return back()->with('error', 'El valor pagado no puede superar el total del documento.')->withInput();
             }
 
             $saldo = $totalDocumento - $totalPagado;
-            $estado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+            $estado = $saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida';
 
             // 1. Crear la factura
             $factura = Factura::create([
@@ -124,19 +125,20 @@ class MovimientoInventarioController extends Controller
             }
 
             // 3. Si hay pago o saldo pendiente, registrar egreso en Caja con seguimiento de saldos
-            if ($totalPagado > 0 || $saldo > 0.01) {
+            if ($totalPagado > 0 || $saldo > Factura::EPSILON) {
                 $this->registrarMovimientoCaja(
                     tipo: 'egreso',
                     monto: $totalPagado,
                     persona: $entityName,
                     descripcion: "Pago compra #{$factura->numero_factura}",
                     fecha: $request->fecha,
-                    montoTotal: $totalDocumento
+                    montoTotal: $totalDocumento,
+                    facturaId: $factura->id
                 );
             }
 
             // 4. Alerta interna si queda saldo pendiente
-            if ($saldo > 0.01) {
+            if ($saldo > Factura::EPSILON) {
                 session()->flash('alert_compra_pendiente', [
                     'factura' => $factura->numero_factura,
                     'saldo' => $saldo,
@@ -148,7 +150,7 @@ class MovimientoInventarioController extends Controller
 
             return redirect()->route('inventario.facturas.show', $factura->id)
                 ->with('success', "Compra #{$factura->numero_factura} registrada correctamente.".
-                    ($saldo > 0.01 ? ' ⚠️ Saldo pendiente con proveedor: $'.number_format($saldo, 2) : ''));
+                    ($saldo > Factura::EPSILON ? ' ⚠️ Saldo pendiente con proveedor: $'.number_format($saldo, 2) : ''));
         } catch (\DomainException $e) {
             DB::rollBack();
 
@@ -219,14 +221,14 @@ class MovimientoInventarioController extends Controller
             $totalPagado = (float) $request->total_pagado;
 
             // No permitir cobrar más de lo debido (evita saldos negativos)
-            if ($totalPagado > $totalDocumento + 0.001) {
+            if ($totalPagado > $totalDocumento + Factura::EPSILON) {
                 DB::rollBack();
 
                 return back()->with('error', 'El valor cobrado no puede superar el total del documento.')->withInput();
             }
 
             $saldo = $totalDocumento - $totalPagado;
-            $estado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+            $estado = $saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida';
 
             // 1. Pre-validar disponibilidad de TODOS los ítems antes de modificar BD
             foreach ($request->items as $item) {
@@ -267,19 +269,20 @@ class MovimientoInventarioController extends Controller
             }
 
             // 4. Si hay pago o saldo pendiente, registrar ingreso en Caja con seguimiento de saldos
-            if ($totalPagado > 0 || $saldo > 0.01) {
+            if ($totalPagado > 0 || $saldo > Factura::EPSILON) {
                 $this->registrarMovimientoCaja(
                     tipo: 'ingreso',
                     monto: $totalPagado,
                     persona: $entityName,
                     descripcion: "Cobro venta #{$factura->numero_factura}",
                     fecha: $request->fecha,
-                    montoTotal: $totalDocumento
+                    montoTotal: $totalDocumento,
+                    facturaId: $factura->id
                 );
             }
 
             // 5. Alerta interna si queda saldo por cobrar
-            if ($saldo > 0.01) {
+            if ($saldo > Factura::EPSILON) {
                 session()->flash('alert_venta_pendiente', [
                     'factura' => $factura->numero_factura,
                     'saldo' => $saldo,
@@ -291,7 +294,7 @@ class MovimientoInventarioController extends Controller
 
             return redirect()->route('inventario.facturas.show', $factura->id)
                 ->with('success', "Venta #{$factura->numero_factura} registrada correctamente.".
-                    ($saldo > 0.01 ? ' ⚠️ Saldo pendiente por cobrar: $'.number_format($saldo, 2) : ''));
+                    ($saldo > Factura::EPSILON ? ' ⚠️ Saldo pendiente por cobrar: $'.number_format($saldo, 2) : ''));
         } catch (\DomainException $e) {
             DB::rollBack();
 
@@ -348,7 +351,13 @@ class MovimientoInventarioController extends Controller
 
         $movimientoPadre = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
-            ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
+            ->where(function ($q) use ($factura) {
+                $q->where('factura_id', $factura->id)
+                    ->orWhere(function ($legacy) use ($factura) {
+                        $legacy->whereNull('factura_id')
+                            ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
+                    });
+            })
             ->whereNull('parent_id')
             ->with(['childPayments' => fn ($q) => $q->where('anulado', false)->with('user')])
             ->first();
@@ -364,7 +373,13 @@ class MovimientoInventarioController extends Controller
 
         $movimientoPadre = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
-            ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
+            ->where(function ($q) use ($factura) {
+                $q->where('factura_id', $factura->id)
+                    ->orWhere(function ($legacy) use ($factura) {
+                        $legacy->whereNull('factura_id')
+                            ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
+                    });
+            })
             ->whereNull('parent_id')
             ->with(['childPayments' => fn ($q) => $q->where('anulado', false)->with('user')])
             ->first();
@@ -401,8 +416,26 @@ class MovimientoInventarioController extends Controller
             return redirect()->back()->with('error', $error)->withInput();
         }
 
+        // Bloqueo de período: no se puede anular o reactivar una factura con movimientos en fechas cerradas
+        $movsCaja = MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")->get();
+        foreach ($movsCaja as $m) {
+            $fechaM = $m->fecha ? $m->fecha->toDateString() : null;
+            if (CierreCajaGuard::fechaEstaCerrada($fechaM)) {
+                return redirect()->back()->with('error', "No se puede cambiar el estado de la factura #{$factura->numero_factura}: tiene movimientos en caja el {$fechaM}, día que ya tiene cierre de caja registrado. Para modificarla, elimine primero el cierre de ese día.");
+            }
+        }
+
         try {
             DB::beginTransaction();
+
+            foreach ($movsCaja as $m) {
+                $fechaM = $m->fecha ? $m->fecha->toDateString() : null;
+                if (CierreCajaGuard::fechaEstaCerrada($fechaM)) {
+                    DB::rollBack();
+
+                    return redirect()->back()->with('error', "No se puede cambiar el estado de la factura #{$factura->numero_factura}: tiene movimientos en caja con fecha {$fechaM} que ya tiene cierre de caja.");
+                }
+            }
 
             if ($factura->estado === 'anulada') {
                 // REACTIVAR LA FACTURA
@@ -434,10 +467,15 @@ class MovimientoInventarioController extends Controller
                 }
 
                 $saldo = $factura->total_documento - $factura->total_pagado;
-                $nuevoEstado = $saldo > 0.01 ? 'pendiente_pago' : 'emitida';
+                $nuevoEstado = $saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida';
 
-                MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
-                    ->update(['estado' => 'activo', 'anulado' => false]);
+                MovimientoCaja::where(function ($q) use ($factura) {
+                    $q->where('factura_id', $factura->id)
+                        ->orWhere(function ($legacy) use ($factura) {
+                            $legacy->whereNull('factura_id')
+                                ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
+                        });
+                })->update(['estado' => 'activo', 'anulado' => false]);
 
                 $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn ($l) => ! preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
                 $factura->observaciones = trim($cleanObs."\n[REACTIVADA el ".now()->format('d/m/Y H:i').' por '.Auth::user()->name.']');
@@ -462,8 +500,13 @@ class MovimientoInventarioController extends Controller
                     }
                 }
 
-                MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
-                    ->update(['estado' => 'anulado', 'anulado' => true]);
+                MovimientoCaja::where(function ($q) use ($factura) {
+                    $q->where('factura_id', $factura->id)
+                        ->orWhere(function ($legacy) use ($factura) {
+                            $legacy->whereNull('factura_id')
+                                ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
+                        });
+                })->update(['estado' => 'anulado', 'anulado' => true]);
 
                 $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn ($l) => ! preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
                 $factura->update([
@@ -558,6 +601,17 @@ class MovimientoInventarioController extends Controller
             'new_items.*.precio_unitario' => 'required|numeric|min:0',
         ]);
 
+        // Bloqueo de período: no permitir editar facturas de días cerrados ni mover a días cerrados
+        $fechaOriginal = $factura->fecha ? $factura->fecha->toDateString() : null;
+        $fechaDestino = $request->fecha;
+
+        if (CierreCajaGuard::fechaEstaCerrada($fechaOriginal)) {
+            return back()->withErrors(['fecha' => "No se puede editar esta factura: su fecha original ({$fechaOriginal}) ya tiene un cierre de caja registrado."])->withInput();
+        }
+        if (CierreCajaGuard::fechaEstaCerrada($fechaDestino)) {
+            return back()->withErrors(['fecha' => "No se puede mover o registrar una factura en el {$fechaDestino} porque ese día ya tiene cierre de caja registrado."])->withInput();
+        }
+
         [$type, $id] = explode(':', $request->facturable_global);
         if ($type === 'Proveedor') {
             $entity = Proveedor::findOrFail($id);
@@ -574,6 +628,12 @@ class MovimientoInventarioController extends Controller
 
         try {
             DB::beginTransaction();
+
+            if (CierreCajaGuard::fechaEstaCerrada($fechaOriginal) || CierreCajaGuard::fechaEstaCerrada($fechaDestino)) {
+                DB::rollBack();
+
+                return back()->withErrors(['fecha' => 'No se puede actualizar una factura en fechas con cierre de caja registrado.'])->withInput();
+            }
 
             // 1.5. Eliminar ítems removidos de la factura y ajustar su inventario
             if (! $shouldBeAnulada) {
@@ -705,14 +765,14 @@ class MovimientoInventarioController extends Controller
             }
 
             // No permitir que el pagado supere el nuevo total del documento
-            if (! $shouldBeAnulada && $totalPagado > $totalDocumento + 0.001) {
+            if (! $shouldBeAnulada && $totalPagado > $totalDocumento + Factura::EPSILON) {
                 DB::rollBack();
 
                 return back()->with('error', 'El valor pagado no puede superar el total del documento.')->withInput();
             }
 
             $saldo = $totalDocumento - $totalPagado;
-            $estado = $shouldBeAnulada ? 'anulada' : ($saldo > 0.01 ? 'pendiente_pago' : 'emitida');
+            $estado = $shouldBeAnulada ? 'anulada' : ($saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida');
 
             // Extraer historial de anulaciones/reactivaciones de la observación actual
             $historial = collect(explode("\n", $factura->observaciones ?? ''))
@@ -722,42 +782,61 @@ class MovimientoInventarioController extends Controller
             $nuevaObservacion = $this->buildObservaciones($request->observaciones, $saldo, $historial ?: null);
 
             // Sincronizar movimiento de caja base
-            $baseCaja = MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")
+            $baseCaja = MovimientoCaja::where('factura_id', $factura->id)
                 ->whereNull('parent_id')
-                ->first();
+                ->first()
+                ?? MovimientoCaja::whereNull('factura_id')
+                    ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
+                    ->whereNull('parent_id')
+                    ->first();
 
             $entityName = $entity->nombre_razon_social ?? $entity->nombre;
 
-            if ($totalPagado > 0) {
-                if ($baseCaja) {
-                    $baseCaja->update([
-                        'monto' => $totalPagado,
-                        'monto_total' => $totalDocumento > $totalPagado ? $totalDocumento : null,
-                        'persona' => $entityName,
-                        'fecha' => $request->fecha,
-                        'estado' => $shouldBeAnulada ? 'anulado' : 'activo',
-                    ]);
-                } elseif (! $shouldBeAnulada) {
-                    $this->registrarMovimientoCaja(
-                        tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
-                        monto: $totalPagado,
-                        persona: $entityName,
-                        descripcion: ($factura->tipo_movimiento === 'venta' ? 'Cobro venta #' : 'Pago compra #').$factura->numero_factura,
-                        fecha: $request->fecha,
-                        montoTotal: $totalDocumento > $totalPagado ? $totalDocumento : null
-                    );
-                }
-            } elseif ($baseCaja) {
+            if ($baseCaja) {
+                $abonosExistentes = (float) $baseCaja->childPayments()
+                    ->where('anulado', false)
+                    ->where('estado', 'activo')
+                    ->sum('monto');
+
+                $montoBaseAjustado = max(0, $totalPagado - $abonosExistentes);
+
                 $baseCaja->update([
-                    'monto' => 0,
-                    'monto_total' => $totalDocumento,
-                    'estado' => 'activo',
+                    'factura_id' => $factura->id,
+                    'monto' => $montoBaseAjustado,
+                    'monto_total' => $totalDocumento > $totalPagado ? $totalDocumento : null,
+                    'persona' => $entityName,
+                    'fecha' => $request->fecha,
+                    'estado' => $shouldBeAnulada ? 'anulado' : 'activo',
+                    'anulado' => $shouldBeAnulada,
                 ]);
+
+                if ($shouldBeAnulada) {
+                    $childMovs = $baseCaja->childPayments()->get();
+                    foreach ($childMovs as $child) {
+                        $fechaHijo = $child->fecha ? $child->fecha->toDateString() : null;
+                        if ($fechaHijo && CierreCajaGuard::fechaEstaCerrada($fechaHijo)) {
+                            continue;
+                        }
+                        $child->update([
+                            'estado' => 'anulado',
+                            'anulado' => true,
+                        ]);
+                    }
+                }
+            } elseif (! $shouldBeAnulada && ($totalPagado > 0 || $saldo > Factura::EPSILON)) {
+                $this->registrarMovimientoCaja(
+                    tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
+                    monto: $totalPagado,
+                    persona: $entityName,
+                    descripcion: ($factura->tipo_movimiento === 'venta' ? 'Cobro venta #' : 'Pago compra #').$factura->numero_factura,
+                    fecha: $request->fecha,
+                    montoTotal: $totalDocumento > $totalPagado ? $totalDocumento : null,
+                    facturaId: $factura->id
+                );
             }
 
             $factura->update([
                 'fecha' => $request->fecha,
-                'total_pagado' => $totalPagado,
                 'total_documento' => $totalDocumento,
                 'estado' => $estado,
                 'observaciones' => $nuevaObservacion,
@@ -765,9 +844,7 @@ class MovimientoInventarioController extends Controller
                 'facturable_type' => $facturableType,
             ]);
 
-            if (! $shouldBeAnulada) {
-                $factura->recalcularPagos();
-            }
+            $factura->recalcularPagos();
 
             DB::commit();
 
@@ -856,7 +933,7 @@ class MovimientoInventarioController extends Controller
         $obsLimpia = implode("\n", $lineas);
 
         $parts = array_filter([$obsLimpia]);
-        if ($saldo > 0.01) {
+        if ($saldo > Factura::EPSILON) {
             $parts[] = '⚠️ SALDO PENDIENTE: $'.number_format($saldo, 0, ',', '.');
         }
         if ($historial) {
@@ -872,8 +949,12 @@ class MovimientoInventarioController extends Controller
         string $persona,
         string $descripcion,
         string $fecha,
-        ?float $montoTotal = null
+        ?float $montoTotal = null,
+        ?int $facturaId = null
     ): MovimientoCaja {
+        // Bloqueo de período: no se admiten movimientos sobre un día ya cerrado.
+        CierreCajaGuard::asegurarAbierta($fecha, "movimiento de inventario ({$tipo})");
+
         $concepto = ConceptoCaja::firstOrCreate(
             ['nombre' => $tipo === 'egreso' ? 'Compra de Inventario' : 'Venta de Inventario']
         );
@@ -889,6 +970,7 @@ class MovimientoInventarioController extends Controller
             'fecha' => $fecha,
             'estado' => 'activo',
             'user_id' => Auth::id(),
+            'factura_id' => $facturaId,
         ]);
     }
 }

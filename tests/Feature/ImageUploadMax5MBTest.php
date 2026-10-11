@@ -23,7 +23,7 @@ class ImageUploadMax5MBTest extends TestCase
         $this->admin = User::factory()->create(['role' => 'admin']);
     }
 
-    public function test_stock_admite_imagen_svg_hasta_5mb(): void
+    public function test_stock_rechaza_imagen_svg(): void
     {
         Storage::fake('public');
         $proveedor = Proveedor::create([
@@ -51,19 +51,20 @@ class ImageUploadMax5MBTest extends TestCase
             'photo' => $file,
         ]);
 
-        $response->assertSessionHasNoErrors();
-        $stock = Stock::where('codigo', 'PROD-SVG-1')->first();
-        $this->assertNotNull($stock);
-        $this->assertNotNull($stock->photo);
-        Storage::disk('public')->assertExists($stock->photo);
+        $response->assertSessionHasErrors(['photo']);
+        $this->assertSame(
+            'La imagen debe ser un archivo en formato PNG, JPG, JPEG o WEBP.',
+            session('errors')->first('photo')
+        );
+        $this->assertNull(Stock::where('codigo', 'PROD-SVG-1')->first());
+        $this->assertEmpty(Storage::disk('public')->files('stock'));
     }
 
     public function test_usuario_admite_foto_hasta_5mb(): void
     {
         Storage::fake('public');
 
-        $svgContent = '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100"/></svg>';
-        $file = UploadedFile::fake()->createWithContent('avatar.svg', $svgContent);
+        $file = UploadedFile::fake()->image('avatar.jpg')->size(4000); // 4 MB
 
         $response = $this->actingAs($this->admin)->post(route('usuarios.store'), [
             'name' => 'Carlos Usuario',
@@ -79,6 +80,30 @@ class ImageUploadMax5MBTest extends TestCase
         $this->assertNotNull($user);
         $this->assertNotNull($user->photo);
         Storage::disk('public')->assertExists($user->photo);
+    }
+
+    public function test_usuario_rechaza_foto_svg(): void
+    {
+        Storage::fake('public');
+
+        $svgContent = '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100"/></svg>';
+        $file = UploadedFile::fake()->createWithContent('avatar.svg', $svgContent);
+
+        $response = $this->actingAs($this->admin)->post(route('usuarios.store'), [
+            'name' => 'Carlos Usuario',
+            'email' => 'carlos@test.com',
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
+            'role' => 'tecnico',
+            'photo' => $file,
+        ]);
+
+        $response->assertSessionHasErrors(['photo']);
+        $this->assertSame(
+            'La foto debe ser un archivo en formato PNG, JPG, JPEG o WEBP.',
+            session('errors')->first('photo')
+        );
+        $this->assertNull(User::where('email', 'carlos@test.com')->first());
     }
 
     public function test_tecnico_admite_foto_hasta_5mb(): void

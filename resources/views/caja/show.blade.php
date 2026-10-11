@@ -64,7 +64,7 @@
         </div>
 
         {{-- Datos Operativos del Movimiento --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 text-sm p-6 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200/60 dark:border-blue-500/20 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 text-sm p-6 glass-card mb-8">
             <div class="min-w-0">
                 <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
                     {{ $movimiento->persona ? '👤 Cliente / Persona' : ($movimiento->empresa ? '🏢 Proveedor / Empresa' : '👤 Tercero') }}
@@ -110,8 +110,9 @@
             </div>
         </div>
 
-        {{-- Resumen Financiero --}}
-        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Resumen Financiero</h3>
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+            <span>📊</span> Resumen Financiero
+        </h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💳</span> Monto Transacción</p>

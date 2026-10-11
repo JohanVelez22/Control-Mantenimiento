@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Stock;
+use App\Services\AnulacionService;
 use App\Services\StockService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
@@ -63,9 +64,18 @@ trait HandlesStockAttach
 
     /**
      * Quitar stock de un modelo (Mantenimiento o Electronica)
+     *
+     * Exige autorización de operación sensible: el administrador actúa sin
+     * comprobación y el técnico debe validar la contraseña de un administrador.
+     * Esto iguala el criterio con la eliminación de abonos, que también altera
+     * existencias y costos.
      */
     protected function detachStock($model, int $stock_id, string $successMsg): RedirectResponse
     {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible(request())) {
+            return redirect()->back()->with('error', $error);
+        }
+
         if ($model->anulado) {
             return redirect()->back()->with('error', 'No se pueden eliminar repuestos de un registro anulado.');
         }

@@ -46,8 +46,8 @@
             </div>
         </div>
 
-        {{-- Datos del mantenimiento --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 rounded-2xl bg-purple-50/50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-500/20">
+        {{-- Datos del servicio de electrónica --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 glass-card mb-6">
             <div class="min-w-0">
                 <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
                     {{ $electronica->equipo?->propietario_tipo === 'proveedor' ? '🏢 Proveedor' : '👤 Cliente' }}
@@ -75,7 +75,7 @@
                 <span class="font-medium text-base text-slate-800 dark:text-slate-200">{{ $electronica->fecha_salida?->format('d/m/Y') ?? '—' }}</span>
             </div>
             @if($electronica->descripcion_problema)
-            <div class="md:col-span-2 min-w-0 mt-2 p-3.5 glass-card !rounded-xl">
+            <div class="md:col-span-2 min-w-0 mt-2 p-3.5 bg-white/20 dark:bg-slate-900/30 rounded-xl border border-white/40 dark:border-white/5">
                 <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Descripción</span>
                 <span class="font-medium text-slate-800 dark:text-slate-200 break-words leading-relaxed">{{ $electronica->descripcion_problema }}</span>
             </div>
@@ -196,7 +196,7 @@
             <h4 class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Registrar nuevo abono</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                    <label class="field-label">Monto ($) *</label>
+                    <label class="field-label">Monto del Abono <span class="text-red-500 font-bold">*</span></label>
                     <input type="text" id="abono_monto_visual" required placeholder="0" class="glass-input font-bold text-emerald-600 dark:text-emerald-400">
                     <input type="hidden" name="monto" id="abono_monto_real">
                 </div>
@@ -258,7 +258,7 @@
                     </a>
                     @endif
 
-                    @if(!auth()->user()->isInvitado())
+                    @if(auth()->user()->isAdmin())
                     <form action="{{ route('electronicas.abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de ${{ number_format($abono->monto, 0, ',', '.') }}?">
                         @csrf @method('DELETE')
                         <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Eliminar abono">

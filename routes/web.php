@@ -98,13 +98,13 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::resource('clientes', ClienteController::class)->except(['destroy']);
         Route::resource('equipos', EquipoController::class)->except(['destroy']);
         Route::resource('tecnicos', TecnicoController::class)->except(['destroy']);
-        Route::resource('stocks/categorias', CategoriaStockController::class)->names('stocks.categorias')->except(['create', 'show', 'edit']);
+        Route::resource('stocks/categorias', CategoriaStockController::class)->names('stocks.categorias')->except(['create', 'show']);
         Route::resource('stocks', StockController::class)->except(['destroy']);
         Route::get('stocks/{stock}/print', [StockController::class, 'print'])->name('stocks.print');
 
         // Cotizaciones
         Route::resource('cotizaciones', CotizacionController::class)->parameters(['cotizaciones' => 'cotizacion'])->except(['destroy']);
-        Route::post('cotizaciones/{cotizacion}/convertir', [CotizacionController::class, 'convertir'])->name('cotizaciones.convertir');
+        Route::post('cotizaciones/{cotizacion}/convertir', [CotizacionController::class, 'convertir'])->middleware('throttle:10,1')->name('cotizaciones.convertir');
         Route::post('cotizaciones/{cotizacion}/anular', [CotizacionController::class, 'anular'])->middleware('throttle:10,1')->name('cotizaciones.anular');
         Route::post('cotizaciones/{cotizacion}/rechazar', [CotizacionController::class, 'rechazar'])->middleware('throttle:10,1')->name('cotizaciones.rechazar');
         Route::post('cotizaciones/{cotizacion}/reactivar', [CotizacionController::class, 'reactivar'])->middleware('throttle:10,1')->name('cotizaciones.reactivar');
@@ -178,18 +178,19 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::delete('/backups/destroy/{filename}', [BackupController::class, 'destroy'])->where('filename', '.*')->name('backups.destroy');
         Route::post('/backups/open-folder', [BackupController::class, 'openFolder'])->name('backups.open-folder');
 
+        // Mantenimientos y Electrónicas: listados generales (solo admin y técnico)
+        Route::get('mantenimientos', [MantenimientoController::class, 'index'])->name('mantenimientos.index');
+        Route::get('electronicas', [ElectronicaController::class, 'index'])->name('electronicas.index');
+
         // Usuarios (admin y técnico pueden gestionar; anular es solo admin)
         Route::resource('usuarios', UserController::class)->except(['destroy']);
-        Route::post('usuarios/{usuario}/change-password', [UserController::class, 'changePassword'])->middleware('throttle:10,1')->name('usuarios.change-password');
     });
 
-    // ─── INVITADO: solo ver detalle y factura (desde búsqueda) ──────
+    // ─── INVITADO: solo ver detalle y factura (previa verificación de orden) ──────
     Route::middleware('role:admin,tecnico,invitado')->group(function () {
-        Route::get('mantenimientos', [MantenimientoController::class, 'index'])->name('mantenimientos.index');
         Route::get('mantenimientos/{mantenimiento}', [MantenimientoController::class, 'show'])->name('mantenimientos.show');
         Route::get('mantenimientos/{mantenimiento}/factura', [MantenimientoController::class, 'factura'])->name('mantenimientos.factura');
 
-        Route::get('electronicas', [ElectronicaController::class, 'index'])->name('electronicas.index');
         Route::get('electronicas/{electronica}', [ElectronicaController::class, 'show'])->name('electronicas.show');
         Route::get('electronicas/{electronica}/factura', [ElectronicaController::class, 'factura'])->name('electronicas.factura');
     });

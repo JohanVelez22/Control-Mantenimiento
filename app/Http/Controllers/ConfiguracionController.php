@@ -35,9 +35,9 @@ class ConfiguracionController extends Controller
             'correo' => 'nullable|email|max:255',
             'pie_pagina_factura' => 'nullable|string',
             'formato_factura' => 'nullable|in:estandar,pos',
-            'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg|max:5120',
+            'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp|max:5120',
         ], [
-            'logo.mimes' => 'El logo debe ser un archivo en formato SVG, PNG, JPG, JPEG o WEBP.',
+            'logo.mimes' => 'El logo debe ser un archivo en formato PNG, JPG, JPEG o WEBP.',
             'logo.max' => 'El logo no debe superar los 5 MB de tamaño.',
         ]);
 

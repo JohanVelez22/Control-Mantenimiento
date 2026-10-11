@@ -46,13 +46,13 @@ class Electronica extends Model
     public function getTotalAbonadoAttribute(): float
     {
         if ($this->relationLoaded('abonos')) {
-            return (float) $this->abonos->sum('monto');
+            return (float) $this->abonos->where('anulado', false)->sum('monto');
         }
         if (isset($this->attributes['total_abonado'])) {
             return (float) $this->attributes['total_abonado'];
         }
 
-        return (float) $this->abonos()->sum('monto');
+        return (float) $this->abonos()->where('anulado', false)->sum('monto');
     }
 
     public function getSaldoPendienteAttribute(): float

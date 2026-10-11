@@ -113,7 +113,7 @@
             </div>
 
             {{-- Selector de Archivo Estilizado y Anidado --}}
-            <input type="file" name="photo" id="stock_photo_input" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp" class="hidden">
+            <input type="file" name="photo" id="stock_photo_input" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="hidden">
             
             <div class="flex items-center gap-3 p-1 rounded-2xl border border-white/30 dark:border-white/10 bg-white/20 dark:bg-slate-900/40 backdrop-blur-md shadow-inner">
                 <label for="stock_photo_input" class="btn-blue inline-flex items-center gap-2 px-3.5 py-2 text-[13px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-600/10 hover:bg-blue-600/20 dark:bg-blue-500/15 dark:hover:bg-blue-500/25 border border-blue-500/30 dark:border-blue-400/30 rounded-[14px] cursor-pointer select-none transition-all duration-200 shrink-0 shadow-sm">
@@ -142,7 +142,7 @@
     <div class="pricing-panel p-5 bg-white/45 dark:bg-slate-900/60 border border-white/40 dark:border-white/10 rounded-2xl shadow-sm">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-                <label for="precio_compra_visual" class="field-label">P. Compra ($) *</label>
+                <label for="precio_compra_visual" class="field-label">Precio de Compra <span class="text-red-500 font-bold">*</span></label>
                 <input type="text" id="precio_compra_visual"
                        value="{{ old('precio_compra', isset($st) && $st->precio_compra ? number_format($st->precio_compra, 0, '', '') : '') }}"
                        required class="glass-input text-right font-bold text-slate-800 dark:text-white" placeholder="0">

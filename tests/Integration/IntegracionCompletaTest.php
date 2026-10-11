@@ -15,6 +15,7 @@ use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
 use App\Services\StockService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
@@ -23,6 +24,8 @@ use Tests\TestCase;
  */
 class IntegracionCompletaTest extends TestCase
 {
+    use RefreshDatabase;
+
     private $admin;
 
     private $tecnico;
@@ -38,6 +41,10 @@ class IntegracionCompletaTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        ConceptoCaja::firstOrCreate(['nombre' => 'General']);
+        ConceptoCaja::firstOrCreate(['nombre' => 'Abono Mantenimiento']);
+
         // Usar datos ya existentes en la BD (seed previa)
         $this->admin = User::where('role', 'admin')->first();
         $this->tecnico = User::where('role', 'tecnico')->first();

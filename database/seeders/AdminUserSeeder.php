@@ -16,12 +16,12 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminPass = env('ADMIN_DEFAULT_PASSWORD') ?: Str::random(16);
-        $tecnicoPass = env('TECNICO_DEFAULT_PASSWORD') ?: Str::random(16);
-        $invitadoPass = env('INVITADO_DEFAULT_PASSWORD') ?: Str::random(16);
+        $adminPass = env('ADMIN_DEFAULT_PASSWORD', 'Admin123*');
+        $tecnicoPass = env('TECNICO_DEFAULT_PASSWORD', 'Tecnico123*');
+        $invitadoPass = env('INVITADO_DEFAULT_PASSWORD', 'Invitado123*');
 
         // Admin principal
-        User::updateOrCreate(
+        User::firstOrCreate(
             ['email' => 'administrador@tecnisystemas.com'],
             [
                 'name' => 'Administrador',
@@ -32,7 +32,7 @@ class AdminUserSeeder extends Seeder
         );
 
         // Técnico
-        User::updateOrCreate(
+        User::firstOrCreate(
             ['email' => 'tecnico@tecnisystemas.com'],
             [
                 'name' => 'Técnico',
@@ -43,7 +43,7 @@ class AdminUserSeeder extends Seeder
         );
 
         // Invitado (solo consulta)
-        User::updateOrCreate(
+        User::firstOrCreate(
             ['email' => 'invitado@tecnisystemas.com'],
             [
                 'name' => 'Invitado',

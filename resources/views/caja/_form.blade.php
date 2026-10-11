@@ -44,23 +44,25 @@
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-                <label class="field-label flex items-center gap-2"><span>🏢</span> Empresa (Opcional)</label>
+                <label class="field-label !flex items-center gap-1.5 font-bold"><span>🏢</span> Empresa <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
                 <input type="text" name="empresa" id="caja_empresa" value="{{ $valEmpresa }}" placeholder="Nombre de la empresa..." class="glass-input">
             </div>
             <div>
-                <label class="field-label flex items-center gap-2"><span>👤</span> Persona (Opcional)</label>
+                <label class="field-label !flex items-center gap-1.5 font-bold"><span>👤</span> Persona <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
                 <input type="text" name="persona" id="caja_persona" value="{{ $valPersona }}" placeholder="Nombre de quien paga/recibe..." class="glass-input">
                 @error('persona') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
         </div>
     </div>
 
- {{-- Fecha --}}
- <div>
- <label class="field-label">Fecha *</label>
- <input type="date" name="fecha" required value="{{ old('fecha', isset($movimiento) ? $movimiento->fecha->format('Y-m-d') : date('Y-m-d')) }}" class="glass-input">
- @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
- </div>
+    {{-- Fecha --}}
+    <div>
+        <label class="field-label flex items-center gap-1.5 font-bold">
+            <span>📅</span> Fecha <span class="text-red-500 font-bold">*</span>
+        </label>
+        <input type="date" name="fecha" required value="{{ old('fecha', isset($movimiento) ? $movimiento->fecha->format('Y-m-d') : date('Y-m-d')) }}" class="glass-input">
+        @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+    </div>
 
  @php
      $tipoMov = old('tipo_movimiento', request('tipo_movimiento', $movimiento->tipo_movimiento ?? 'ingreso'));
@@ -98,90 +100,111 @@
      }
  @endphp
 
- {{-- Tipo de Movimiento --}}
- <div>
- <label class="field-label">Tipo de Movimiento *</label>
- <div class="flex gap-3 mt-1">
- <label id="label_ingreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
- <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ $tipoMov === 'ingreso' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
- <span id="text_ingreso" class="font-bold {{ $tipoMov === 'ingreso' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">📈 Ingreso</span>
- </label>
- <label id="label_egreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
- <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso" {{ $tipoMov === 'egreso' ? 'checked' : '' }} class="accent-red-500 w-4 h-4">
- <span id="text_egreso" class="font-bold {{ $tipoMov === 'egreso' ? 'text-red-700 dark:text-red-400' : 'text-slate-600 dark:text-slate-400' }}">📉 Egreso</span>
- </label>
- </div>
- @error('tipo_movimiento') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
- </div>
+    {{-- Tipo de Movimiento --}}
+    <div>
+        <label class="field-label flex items-center gap-1.5 font-bold">
+            <span>📊</span> Tipo de Movimiento <span class="text-red-500 font-bold">*</span>
+        </label>
+        <div class="flex gap-3 mt-1">
+            <label id="label_ingreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
+                <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ $tipoMov === 'ingreso' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
+                <span id="text_ingreso" class="font-bold {{ $tipoMov === 'ingreso' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">📈 Ingreso</span>
+            </label>
+            <label id="label_egreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
+                <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso" {{ $tipoMov === 'egreso' ? 'checked' : '' }} class="accent-red-500 w-4 h-4">
+                <span id="text_egreso" class="font-bold {{ $tipoMov === 'egreso' ? 'text-red-700 dark:text-red-400' : 'text-slate-600 dark:text-slate-400' }}">📉 Egreso</span>
+            </label>
+        </div>
+        @error('tipo_movimiento') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+    </div>
 
- {{-- Tipo de Pago --}}
- <div>
- <label class="field-label">Tipo de Pago *</label>
- <div class="flex gap-3 mt-1">
- <label id="label_efectivo" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'efectivo' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
- <input type="radio" name="tipo_pago" value="efectivo" required id="tipo_efectivo" {{ $tipoPago === 'efectivo' ? 'checked' : '' }} class="accent-blue-500 w-4 h-4">
- <span id="text_efectivo" class="font-bold {{ $tipoPago === 'efectivo' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400' }}">💵 Efectivo</span>
- </label>
- <label id="label_banco" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'consignacion' ? 'border-purple-500 bg-purple-50/50 dark:bg-purple-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
- <input type="radio" name="tipo_pago" value="consignacion" id="tipo_banco" {{ $tipoPago === 'consignacion' ? 'checked' : '' }} class="accent-purple-500 w-4 h-4">
- <span id="text_banco" class="font-bold {{ $tipoPago === 'consignacion' ? 'text-purple-700 dark:text-purple-400' : 'text-slate-600 dark:text-slate-400' }}">🏦 Banco</span>
- </label>
- </div>
- @error('tipo_pago') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
- </div>
+    {{-- Tipo de Pago --}}
+    <div>
+        <label class="field-label flex items-center gap-1.5 font-bold">
+            <span>💳</span> Tipo de Pago <span class="text-red-500 font-bold">*</span>
+        </label>
+        <div class="flex gap-3 mt-1">
+            <label id="label_efectivo" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'efectivo' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
+                <input type="radio" name="tipo_pago" value="efectivo" required id="tipo_efectivo" {{ $tipoPago === 'efectivo' ? 'checked' : '' }} class="accent-blue-500 w-4 h-4">
+                <span id="text_efectivo" class="font-bold {{ $tipoPago === 'efectivo' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400' }}">💵 Efectivo</span>
+            </label>
+            <label id="label_banco" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'consignacion' ? 'border-purple-500 bg-purple-50/50 dark:bg-purple-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
+                <input type="radio" name="tipo_pago" value="consignacion" id="tipo_banco" {{ $tipoPago === 'consignacion' ? 'checked' : '' }} class="accent-purple-500 w-4 h-4">
+                <span id="text_banco" class="font-bold {{ $tipoPago === 'consignacion' ? 'text-purple-700 dark:text-purple-400' : 'text-slate-600 dark:text-slate-400' }}">🏦 Banco</span>
+            </label>
+        </div>
+        @error('tipo_pago') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+    </div>
 
- {{-- Monto Total (Deuda Completa) --}}
- <div>
- <label class="field-label flex items-center justify-between">
- <span>Monto Total ($)</span>
- <span class="text-[10px] font-normal text-gray-400">(Opcional)</span>
- </label>
- <input type="text" id="monto_total_visual" value="{{ $valMontoTotal }}" placeholder="Monto total a pagar/cobrar..." class="glass-input font-bold text-left py-2">
- <input type="hidden" name="monto_total" id="monto_total_real" value="{{ $cleanMontoTotal }}">
- @error('monto_total') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
- <p class="text-[11px] font-medium text-gray-400 mt-1">Usa esto solo si el pago actual es parcial. El sistema calculará el saldo pendiente.</p>
- </div>
+    {{-- Monto Total (Deuda Completa) --}}
+    <div>
+        <label class="field-label !flex items-center gap-1.5 font-bold" for="monto_total_visual">
 
- {{-- Monto Pagado y Estado --}}
- <div>
- <label class="field-label">Monto Pagado Hoy ($) *</label>
- <input type="text" id="monto_visual" required value="{{ $valMonto }}" placeholder="Monto pagado..." class="glass-input font-bold text-left py-2">
- <input type="hidden" name="monto" id="monto_real" value="{{ $cleanMonto }}">
- @error('monto') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
- </div>
+            <span>💰</span> Monto Total <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
 
- {{-- Concepto --}}
- <div class="md:col-span-2">
- <label class="field-label">Concepto *</label>
- <div class="flex gap-2 min-w-0">
- <select name="concepto_id" id="concepto_select" class="glass-input flex-1">
- <option value="">Seleccionar concepto...</option>
- @foreach($conceptos as $c)
- <option value="{{ $c->id }}" {{ $requestedConcepto == $c->id ? 'selected' : '' }}>
- {{ $c->nombre }}
- </option>
- @endforeach
- <option value="__nuevo__" class="font-bold text-blue-600">✏️ Crear nuevo concepto...</option>
- </select>
- </div>
- {{-- Campo oculto para nuevo concepto --}}
- <div id="nuevo-concepto-box" class="mt-3 hidden p-4 rounded-xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md shadow-sm">
- <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 block">Crear Nuevo Concepto</label>
- <div class="flex gap-2 items-center">
- <input type="text" id="nuevo_concepto_input" name="nuevo_concepto" placeholder="Nombre del nuevo concepto..." class="glass-input flex-1 h-[42px]">
- <button type="button" onclick="crearConcepto()" class="btn-primary h-[42px] flex items-center justify-center">Agregar</button>
- <button type="button" onclick="cancelarNuevoConcepto()" class="btn-ghost px-3 h-[42px] flex items-center justify-center">✕</button>
- </div>
- <p id="concepto-status" class="text-xs mt-2 font-medium"></p>
- </div>
- @error('concepto_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
- </div>
 
- {{-- Descripción --}}
- <div class="md:col-span-2">
- <label class="field-label">Descripción (Opcional)</label>
- <textarea name="descripcion" rows="2" placeholder="Detalles adicionales del movimiento..." class="glass-input resize-y">{{ old('descripcion', request('descripcion', $movimiento->descripcion ?? '')) }}</textarea>
- </div>
+        </label>
+        <div>
+            <input type="text" id="monto_total_visual" value="{{ $valMontoTotal }}" placeholder="0" class="glass-input font-bold text-left py-2.5">
+            <input type="hidden" name="monto_total" id="monto_total_real" value="{{ $cleanMontoTotal }}">
+        </div>
+        @error('monto_total') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+        <p class="text-[11px] font-medium text-gray-400 mt-1">Usa esto solo si el pago actual es parcial. El sistema calculará el saldo pendiente.</p>
+    </div>
+
+    {{-- Monto Pagado y Estado --}}
+    <div>
+        <label class="field-label flex items-center justify-between" for="monto_visual">
+            <span class="flex items-center gap-1.5 font-bold">
+                <span>💵</span> Monto Pagado Hoy <span class="text-red-500 font-bold">*</span>
+            </span>
+        </label>
+        <div>
+            <input type="text" id="monto_visual" required value="{{ $valMonto }}" placeholder="0" class="glass-input font-bold text-left py-2.5">
+            <input type="hidden" name="monto" id="monto_real" value="{{ $cleanMonto }}">
+        </div>
+        @error('monto') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+    </div>
+
+    {{-- Concepto --}}
+    <div class="md:col-span-2">
+        <label class="field-label flex items-center gap-1.5 font-bold" for="concepto_select">
+            <span>🏷️</span> Concepto <span class="text-red-500 font-bold">*</span>
+        </label>
+        <div class="flex gap-2 min-w-0">
+            <select name="concepto_id" id="concepto_select" class="glass-input flex-1">
+                <option value="">Seleccionar concepto...</option>
+                @foreach($conceptos as $c)
+                <option value="{{ $c->id }}" {{ $requestedConcepto == $c->id ? 'selected' : '' }}>
+                    {{ $c->nombre }}
+                </option>
+                @endforeach
+                <option value="__nuevo__" class="font-bold text-blue-600">✏️ Crear nuevo concepto...</option>
+            </select>
+        </div>
+        {{-- Campo oculto para nuevo concepto --}}
+        <div id="nuevo-concepto-box" class="mt-3 hidden p-4 rounded-xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md shadow-sm">
+            <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 block">Crear Nuevo Concepto</label>
+            <div class="flex gap-2 items-center">
+                <input type="text" id="nuevo_concepto_input" name="nuevo_concepto" placeholder="Nombre del nuevo concepto..." class="glass-input flex-1 h-[42px]">
+                <button type="button" onclick="crearConcepto()" class="btn-primary h-[42px] flex items-center justify-center">Agregar</button>
+                <button type="button" onclick="cancelarNuevoConcepto()" class="btn-ghost px-3 h-[42px] flex items-center justify-center">✕</button>
+            </div>
+            <p id="concepto-status" class="text-xs mt-2 font-medium"></p>
+        </div>
+        @error('concepto_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+    </div>
+
+    {{-- Descripción --}}
+    <div class="md:col-span-2">
+        <label class="field-label !flex items-center gap-1.5 font-bold">
+            <span class="flex items-center gap-1.5 font-bold">
+                <span>📝</span> Descripción / Observaciones <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
+            </span>
+
+        </label>
+        <textarea name="descripcion" rows="2" placeholder="Detalles adicionales del movimiento..." class="glass-input resize-y">{{ old('descripcion', request('descripcion', $movimiento->descripcion ?? '')) }}</textarea>
+    </div>
 </div>
 
 <script>
@@ -306,30 +329,129 @@
 
     var inputEmpresa = document.getElementById('caja_empresa');
     var inputPersona = document.getElementById('caja_persona');
-    if (inputEmpresa) inputEmpresa.addEventListener('input', actualizarAvisoEntidad);
-    if (inputPersona) inputPersona.addEventListener('input', actualizarAvisoEntidad);
-    actualizarAvisoEntidad();
+    var avisoEntidad = document.getElementById('aviso_empresa_persona');
+    var selectEntidadCaja = document.getElementById('select_entidad_caja');
 
-    // Sincronizar selección del desplegable con los campos Empresa y Persona
-    const selectEntidadCaja = document.getElementById('select_entidad_caja');
-    if (selectEntidadCaja) {
-        selectEntidadCaja.addEventListener('change', function() {
-            const opt = this.options[this.selectedIndex];
-            if (!opt || !this.value) return;
-            const tipo = opt.getAttribute('data-tipo');
-            const nombre = opt.getAttribute('data-nombre');
-            if (!nombre) return;
+    function bloquearCampo(el, placeholderTexto) {
+        if (!el) return;
+        el.readOnly = true;
+        el.classList.add('opacity-50', 'cursor-not-allowed', 'bg-slate-100/50', 'dark:bg-slate-800/40');
+        el.placeholder = placeholderTexto;
+    }
 
-            if (tipo === 'cliente') {
-                if (inputPersona) inputPersona.value = nombre;
-                if (inputEmpresa) inputEmpresa.value = '';
-            } else if (tipo === 'proveedor') {
-                if (inputEmpresa) inputEmpresa.value = nombre;
-                if (inputPersona) inputPersona.value = '';
+    function desbloquearCampo(el, placeholderTexto) {
+        if (!el) return;
+        el.readOnly = false;
+        el.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-slate-100/50', 'dark:bg-slate-800/40');
+        el.placeholder = placeholderTexto;
+    }
+
+    function actualizarAvisoEntidad() {
+        var emp = (inputEmpresa?.value || '').trim();
+        var per = (inputPersona?.value || '').trim();
+        if (avisoEntidad) {
+            if (emp || per) {
+                avisoEntidad.classList.add('hidden');
+            } else {
+                avisoEntidad.classList.remove('hidden');
+            }
+        }
+    }
+
+    function alEscribirEmpresa() {
+        if (inputEmpresa && inputEmpresa.value.trim().length > 0) {
+            if (inputPersona) {
+                inputPersona.value = '';
+                bloquearCampo(inputPersona, 'Bloqueado (Empresa ingresada)');
+            }
+        } else {
+            if (inputPersona) desbloquearCampo(inputPersona, 'Nombre de quien paga/recibe...');
+        }
+        actualizarAvisoEntidad();
+    }
+
+    function alEscribirPersona() {
+        if (inputPersona && inputPersona.value.trim().length > 0) {
+            if (inputEmpresa) {
+                inputEmpresa.value = '';
+                bloquearCampo(inputEmpresa, 'Bloqueado (Persona ingresada)');
+            }
+        } else {
+            if (inputEmpresa) desbloquearCampo(inputEmpresa, 'Nombre de la empresa...');
+        }
+        actualizarAvisoEntidad();
+    }
+
+    function sincronizarEntidadCaja() {
+        if (!selectEntidadCaja) return;
+        var val = selectEntidadCaja.value;
+        if (!val) {
+            if (inputPersona && inputPersona.readOnly) {
+                inputPersona.value = '';
+                desbloquearCampo(inputPersona, 'Nombre de quien paga/recibe...');
+            }
+            if (inputEmpresa && inputEmpresa.readOnly) {
+                inputEmpresa.value = '';
+                desbloquearCampo(inputEmpresa, 'Nombre de la empresa...');
             }
             actualizarAvisoEntidad();
-        });
+            return;
+        }
+
+        var opt = selectEntidadCaja.querySelector('option[value="' + CSS.escape(val) + '"]')
+               || Array.from(selectEntidadCaja.options).find(function(o) { return o.value === val; });
+
+        if (!opt) return;
+
+        var tipo = opt.getAttribute('data-tipo');
+        var nombre = opt.getAttribute('data-nombre') || '';
+
+        if (tipo === 'cliente') {
+            if (inputPersona) {
+                desbloquearCampo(inputPersona, 'Nombre de quien paga/recibe...');
+                inputPersona.value = nombre;
+            }
+            if (inputEmpresa) {
+                inputEmpresa.value = '';
+                bloquearCampo(inputEmpresa, 'Bloqueado (Cliente seleccionado)');
+            }
+        } else if (tipo === 'proveedor') {
+            if (inputEmpresa) {
+                desbloquearCampo(inputEmpresa, 'Nombre de la empresa...');
+                inputEmpresa.value = nombre;
+            }
+            if (inputPersona) {
+                inputPersona.value = '';
+                bloquearCampo(inputPersona, 'Bloqueado (Proveedor seleccionado)');
+            }
+        }
+
+        actualizarAvisoEntidad();
     }
+
+    if (inputEmpresa) inputEmpresa.addEventListener('input', alEscribirEmpresa);
+    if (inputPersona) inputPersona.addEventListener('input', alEscribirPersona);
+
+    if (selectEntidadCaja) {
+        selectEntidadCaja.addEventListener('change', sincronizarEntidadCaja);
+        if (selectEntidadCaja.tomselect) {
+            selectEntidadCaja.tomselect.on('change', sincronizarEntidadCaja);
+        } else {
+            document.addEventListener('tomselect:ready', function() {
+                if (selectEntidadCaja.tomselect) {
+                    selectEntidadCaja.tomselect.on('change', sincronizarEntidadCaja);
+                }
+            });
+        }
+    }
+
+    // Inicializar estado de bloqueo según valores precargados
+    if (inputEmpresa && inputEmpresa.value.trim().length > 0) {
+        if (inputPersona) bloquearCampo(inputPersona, 'Bloqueado (Empresa ingresada)');
+    } else if (inputPersona && inputPersona.value.trim().length > 0) {
+        if (inputEmpresa) bloquearCampo(inputEmpresa, 'Bloqueado (Persona ingresada)');
+    }
+    actualizarAvisoEntidad();
 
  function cancelarNuevoConcepto() {
  document.getElementById('nuevo-concepto-box').classList.add('hidden');

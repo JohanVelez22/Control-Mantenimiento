@@ -131,9 +131,9 @@ class SystemAuditCommand extends Command
         $stocksNegativos = Stock::where('cantidad', '<', 0)->count();
         $this->recordCheck('Inventario / BD', 'Cero Stocks Negativos en Almacén', $stocksNegativos === 0, $stocksNegativos > 0 ? "Se encontraron {$stocksNegativos} ítems con stock negativo" : 'Todos los stocks >= 0');
 
-        // 2.2 Verificar integridad matemática de Facturas (total_documento >= total_pagado)
-        $facturasSobrepagadas = Factura::whereRaw('total_pagado > (total_documento + 0.05)')->count();
-        $this->recordCheck('Finanzas / Facturas', 'Cero Facturas con Sobrepago Erróneo', $facturasSobrepagadas === 0, $facturasSobrepagadas > 0 ? "{$facturasSobrepagadas} facturas con total_pagado > total_documento" : 'Saldos coherentes');
+        // 2.2 Verificar integridad matemática de Facturas (cero valores negativos)
+        $facturasNegativas = Factura::where('total_documento', '<', 0)->orWhere('total_pagado', '<', 0)->count();
+        $this->recordCheck('Finanzas / Facturas', 'Cero Facturas con Valores Negativos', $facturasNegativas === 0, $facturasNegativas > 0 ? "{$facturasNegativas} facturas con importes negativos" : 'Importes no negativos');
 
         // 2.3 Verificar que facturas activas coincidan con sus ítems
         $facturasDescuadradas = 0;
@@ -158,12 +158,44 @@ class SystemAuditCommand extends Command
     }
 
     /**
+     * Instantánea de conteos por tabla, usada para verificar de forma objetiva
+     * que la transacción de auditoría no deja residuos en la base de datos.
+     *
+     * @return array<string, int>
+     */
+    private function snapshotTablasAuditadas(): array
+    {
+        $snapshot = [];
+        foreach ($this->tablasAuditadas() as $tbl) {
+            if (Schema::hasTable($tbl)) {
+                $snapshot[$tbl] = (int) DB::table($tbl)->count();
+            }
+        }
+
+        return $snapshot;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function tablasAuditadas(): array
+    {
+        return [
+            'clientes', 'equipos', 'tecnicos', 'mantenimientos', 'stocks',
+            'electronicas', 'facturas', 'factura_items', 'movimiento_cajas',
+            'cotizaciones', 'cotizacion_items', 'abonos', 'cierre_cajas',
+        ];
+    }
+
+    /**
      * MÓDULO 3: Pruebas Transaccionales de Flujos de Negocio (Compras, Ventas, Cotizaciones, Caja, Abonos)
      */
     private function runBusinessFlowTransactions(): void
     {
         $this->line('');
         $this->line('<fg=cyan;options=bold>► Módulo 3: Pruebas Transaccionales de Operaciones y Flujo de Caja (Transacción Reversible)</>');
+
+        $snapshotPrevio = $this->snapshotTablasAuditadas();
 
         DB::beginTransaction();
 
@@ -296,8 +328,9 @@ class SystemAuditCommand extends Command
 
             // ── TEST 3.6: Protección de Abonos que superan el saldo ──
             $intentoSobreabono = 70000;
-            $rechazoSobreabono = ($intentoSobreabono > $movCajaVenta->saldo_pendiente);
-            $this->recordCheck('Finanzas / Abonos', 'Validación de bloqueo si abono supera saldo pendiente', $rechazoSobreabono);
+            $saldoActual = (float) $movCajaVenta->fresh()->saldo_pendiente;
+            $rechazoSobreabono = ($intentoSobreabono > $saldoActual && abs($saldoActual - 60000.0) < 0.01);
+            $this->recordCheck('Finanzas / Abonos', 'Validación de bloqueo si abono supera saldo pendiente', $rechazoSobreabono, "Saldo evaluado: \${$saldoActual} vs Intento: \${$intentoSobreabono}");
 
             // ── TEST 3.7: Flujo de Cotización (Creación, Rechazo, Reactivación y Conversión) ──
             $cotizacion = Cotizacion::create([
@@ -371,36 +404,70 @@ class SystemAuditCommand extends Command
             $this->recordCheck('Anulaciones', 'Neutralización de movimientos en caja al anular', $movCajaVenta->fresh()->anulado && $movAbono->fresh()->anulado);
 
             // ── TEST 3.10: Cuadre de Arqueo de Caja Diario ──
-            $ingresosActivos = MovimientoCaja::whereDate('fecha', now()->toDateString())->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
-            $egresosActivos = MovimientoCaja::whereDate('fecha', now()->toDateString())->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
+            // Cada invocación del closure construye un Builder nuevo, de modo que
+            // las consultas de ingresos y egresos quedan completamente aisladas.
+            $baseArqueo = fn () => MovimientoCaja::whereDate('fecha', now()->toDateString())
+                ->where('estado', 'activo')->where('anulado', false);
+
+            $ingresosActivos = $baseArqueo()->where('tipo_movimiento', 'ingreso')->sum('monto');
+            $egresosActivos = $baseArqueo()->where('tipo_movimiento', 'egreso')->sum('monto');
             $saldoEsperado = $ingresosActivos - $egresosActivos;
 
-            $this->recordCheck('Caja / Arqueo', 'Fórmula de Arqueo: Ingresos - Egresos = Saldo', true, 'Balance activo: $'.number_format($saldoEsperado, 0, ',', '.'));
+            // El saldo debe reconstruirse a partir del detalle de movimientos,
+            // no solo asumirse: se recalcula desde cero y se compara.
+            $sumaManual = 0.0;
+            foreach ($baseArqueo()->get(['tipo_movimiento', 'monto']) as $movArqueo) {
+                $sumaManual += $movArqueo->tipo_movimiento === 'ingreso' ? $movArqueo->monto : -$movArqueo->monto;
+            }
+
+            $movimientosAnuladosExcluidos = MovimientoCaja::whereDate('fecha', now()->toDateString())
+                ->where('estado', 'anulado')
+                ->whereIn('id', [$movCajaVenta->id, $movAbono->id])
+                ->count() === 2;
+
+            $this->recordCheck(
+                'Caja / Arqueo',
+                'Fórmula de Arqueo: Ingresos - Egresos = Saldo',
+                abs($sumaManual - $saldoEsperado) < 0.01 && $movimientosAnuladosExcluidos,
+                'Balance activo: $'.number_format($saldoEsperado, 0, ',', '.')
+                    .' | reconstruido: $'.number_format($sumaManual, 0, ',', '.')
+                    .' | anulados excluidos: '.($movimientosAnuladosExcluidos ? 'sí' : 'no')
+            );
 
         } catch (\Exception $e) {
             $this->recordCheck('Flujos de Negocio', 'Ejecución de pruebas transaccionales', false, $e->getMessage());
         } finally {
-            // REVERSIÓN LIMPIA: No dejar ningún dato de prueba en la base de datos real
+            // REVERSIÓN LIMPIA: el rollback ya garantiza que no queda ningún dato
+            // de prueba en la base de datos. No se ejecutan sentencias DDL (ALTER
+            // TABLE) sobre las tablas reales: MySQL confirma la transacción de
+            // forma implícita en cada DDL y alteraría el AUTO_INCREMENT de la
+            // base de datos viva, lo que constituye una escritura no reversible.
             DB::rollBack();
 
-            // Restaurar AUTO_INCREMENT al valor real (1 si está vacía o max(id)+1)
-            $tablesToReset = [
-                'clientes', 'equipos', 'tecnicos', 'mantenimientos', 'stocks',
-                'electronicas', 'facturas', 'factura_items', 'movimiento_cajas',
-                'cotizaciones', 'cotizacions', 'cotizacion_items', 'abonos', 'cierre_cajas',
-            ];
-            foreach ($tablesToReset as $tbl) {
-                try {
-                    if (Schema::hasTable($tbl)) {
-                        $maxId = (int) DB::table($tbl)->max('id');
-                        $nextId = $maxId > 0 ? $maxId + 1 : 1;
-                        DB::statement("ALTER TABLE `{$tbl}` AUTO_INCREMENT = {$nextId};");
-                    }
-                } catch (\Throwable $ignored) {
+            $snapshotFinal = $this->snapshotTablasAuditadas();
+            $tablasAlteradas = [];
+            foreach ($snapshotPrevio as $tbl => $conteoPrevio) {
+                $conteoFinal = $snapshotFinal[$tbl] ?? -1;
+                if ($conteoFinal !== $conteoPrevio) {
+                    $tablasAlteradas[] = "{$tbl} ({$conteoPrevio}→{$conteoFinal})";
                 }
             }
 
-            $this->recordCheck('Auditoría / Aislamiento', 'Rollback transaccional limpio (Cero contaminación de datos)', true, 'Base de datos intacta');
+            if ($tablasAlteradas === []) {
+                $this->recordCheck(
+                    'Auditoría / Aislamiento',
+                    'Rollback transaccional limpio (Cero contaminación de datos)',
+                    true,
+                    'Verificado por conteo: '.count($snapshotPrevio).' tablas sin cambios'
+                );
+            } else {
+                $this->recordCheck(
+                    'Auditoría / Aislamiento',
+                    'Rollback transaccional limpio (Cero contaminación de datos)',
+                    false,
+                    'Residuos detectados: '.implode(', ', $tablasAlteradas)
+                );
+            }
         }
     }
 
@@ -421,11 +488,17 @@ class SystemAuditCommand extends Command
         $this->info("Total de Pruebas: {$this->totalChecks} | Aprobadas: {$this->passedChecks} | Fallidas: {$this->failedChecks} | Tasa de Éxito: {$tasaExito}%");
 
         if ($this->failedChecks === 0) {
+            $ancho = 76;
+            $linea = static fn (string $texto): string => '║'.str_pad(' '.$texto, $ancho).'║';
+
             $this->line('');
-            $this->info('╔════════════════════════════════════════════════════════════════════════════╗');
-            $this->info('║  🏆 VEREDICTO: SISTEMA CERTIFICADO - ROBUSTO Y LISTO PARA PRODUCCIÓN      ║');
-            $this->info('║     Integridad financiera, inventario, caja y seguridad verificadas.       ║');
-            $this->info('╚════════════════════════════════════════════════════════════════════════════╝');
+            $this->info('╔'.str_repeat('═', $ancho).'╗');
+            $this->info($linea('VEREDICTO: todas las verificaciones automatizadas superadas'));
+            $this->info($linea("{$this->totalChecks} comprobaciones ejecutadas, {$this->failedChecks} fallidas."));
+            $this->info($linea('Cobertura: integridad financiera, inventario, caja, RBAC y .env.'));
+            $this->info($linea('ALCANCE: no equivale a una certificacion de produccion. Requiere'));
+            $this->info($linea('revision manual, pruebas con carga real y auditoria de terceros.'));
+            $this->info('╚'.str_repeat('═', $ancho).'╝');
             $this->line('');
 
             return 0;

@@ -9,8 +9,10 @@ use App\Models\Factura;
 use App\Models\MovimientoCaja;
 use App\Models\Proveedor;
 use App\Services\AnulacionService;
+use App\Services\CierreCajaGuard;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -208,8 +210,26 @@ class MovimientoCajaController extends Controller
             return back()->withErrors(['persona' => 'No puede ingresar "Persona" y "Empresa" al mismo tiempo. Elija solo uno.'])->withInput();
         }
 
+        // Bloqueo de período: no se admiten movimientos sobre un día ya cerrado.
+        if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+            return back()->withErrors([
+                'fecha' => 'No se pueden registrar movimientos en el '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+            ])->withInput();
+        }
+
         try {
             DB::beginTransaction();
+
+            // Re-verificar dentro de la transacción para cerrar la ventana de carrera
+            // entre la comprobación inicial y la inserción.
+            if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+                DB::rollBack();
+
+                return back()->withErrors([
+                    'fecha' => 'No se pueden registrar movimientos en el '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+                ])->withInput();
+            }
+
             // Si ingresaron un nuevo concepto, crearlo o encontrar el existente
             if (! empty($validated['nuevo_concepto'])) {
                 $concepto = ConceptoCaja::firstOrCreate(['nombre' => trim($validated['nuevo_concepto'])]);
@@ -239,6 +259,11 @@ class MovimientoCajaController extends Controller
 
     public function edit(MovimientoCaja $movimiento)
     {
+        $fechaOrig = $movimiento->fecha ? $movimiento->fecha->toDateString() : null;
+        if (CierreCajaGuard::fechaEstaCerrada($fechaOrig)) {
+            return redirect()->route('caja.index')->with('error', 'No se puede editar el movimiento: el día '.$fechaOrig.' ya está cerrado y bloqueado por arqueo.');
+        }
+
         $movimiento->load('childPayments.user');
         $conceptos = ConceptoCaja::orderBy('nombre')->get();
 
@@ -284,8 +309,31 @@ class MovimientoCajaController extends Controller
             return back()->withErrors(['persona' => 'No puede ingresar "Persona" y "Empresa" al mismo tiempo. Elija solo uno.'])->withInput();
         }
 
+        // Bloqueo de período: ni la fecha original ni la nueva pueden pertenecer a un día cerrado
+        $fechaOriginal = $movimiento->fecha ? $movimiento->fecha->toDateString() : null;
+        if (CierreCajaGuard::fechaEstaCerrada($fechaOriginal)) {
+            return back()->withErrors([
+                'fecha' => 'No se puede modificar este movimiento porque su fecha original ('.$fechaOriginal.') ya tiene un cierre de caja registrado.',
+            ])->withInput();
+        }
+
+        if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+            return back()->withErrors([
+                'fecha' => 'No se pueden registrar o mover movimientos al '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+            ])->withInput();
+        }
+
         try {
             DB::beginTransaction();
+
+            if (CierreCajaGuard::fechaEstaCerrada($fechaOriginal) || CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+                DB::rollBack();
+
+                return back()->withErrors([
+                    'fecha' => 'No se puede modificar movimientos en fechas con cierre de caja registrado.',
+                ])->withInput();
+            }
+
             if (! empty($validated['nuevo_concepto'])) {
                 $concepto = ConceptoCaja::firstOrCreate(['nombre' => trim($validated['nuevo_concepto'])]);
                 $validated['concepto_id'] = $concepto->id;
@@ -349,8 +397,13 @@ class MovimientoCajaController extends Controller
     /** Duplicar un movimiento de caja (copia con fecha hoy) */
     public function duplicate(MovimientoCaja $movimiento)
     {
+        $hoy = now()->toDateString();
+        if (CierreCajaGuard::fechaEstaCerrada($hoy)) {
+            return back()->with('error', 'No se puede duplicar el movimiento: el día de hoy ya tiene un cierre de caja registrado.');
+        }
+
         $nuevo = $movimiento->replicate();
-        $nuevo->fecha = now()->toDateString();
+        $nuevo->fecha = $hoy;
         $nuevo->user_id = auth()->id();
         $nuevo->parent_id = null;  // Nunca heredar vínculo padre (evita abonos huérfanos)
         $nuevo->anulado = false; // Siempre crear como activo
@@ -364,6 +417,14 @@ class MovimientoCajaController extends Controller
     /** Registrar un abono/pago parcial a este movimiento */
     public function storeAbono(Request $request, MovimientoCaja $movimiento)
     {
+        if ($movimiento->anulado || $movimiento->estado !== 'activo') {
+            return back()->with('error', 'No se pueden registrar abonos a un movimiento anulado.')->withInput();
+        }
+
+        if ($movimiento->factura && ($movimiento->factura->estado === 'anulada' || $movimiento->factura->esta_anulada)) {
+            return back()->with('error', 'No se pueden registrar abonos a una factura anulada.')->withInput();
+        }
+
         $validated = $request->validate([
             'monto_abono' => 'required|numeric|min:0.01',
             'fecha' => 'required|date',
@@ -371,19 +432,69 @@ class MovimientoCajaController extends Controller
             'descripcion' => 'nullable|string|max:500',
         ]);
 
-        if ($validated['monto_abono'] > $movimiento->saldo_pendiente) {
+        if ($validated['monto_abono'] > $movimiento->saldo_pendiente + Factura::EPSILON) {
             return back()->with('error', 'El abono supera el saldo pendiente de $'.number_format($movimiento->saldo_pendiente, 0, ',', '.').'.');
+        }
+
+        // Bloqueo de período: el abono genera un movimiento de caja.
+        if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+            return back()->withErrors([
+                'fecha' => 'No se pueden registrar abonos con fecha '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+            ])->withInput();
+        }
+
+        // Mitigación P0-E2: Validar también la fecha de la factura vinculada y del movimiento raíz
+        $fechaFactura = ($movimiento->factura && $movimiento->factura->fecha)
+            ? Carbon::parse($movimiento->factura->fecha)->toDateString()
+            : null;
+        if ($fechaFactura && CierreCajaGuard::fechaEstaCerrada($fechaFactura)) {
+            return back()->with('error', 'No se pueden registrar abonos a una factura del día '.$fechaFactura.' porque ese día ya tiene cierre de caja registrado.')->withInput();
+        }
+
+        $fechaMovPadre = $movimiento->fecha ? Carbon::parse($movimiento->fecha)->toDateString() : null;
+        if ($fechaMovPadre && CierreCajaGuard::fechaEstaCerrada($fechaMovPadre)) {
+            return back()->with('error', 'No se pueden registrar abonos a un movimiento del día '.$fechaMovPadre.' porque ese día ya tiene cierre de caja registrado.')->withInput();
         }
 
         try {
             DB::beginTransaction();
+
+            // Bloqueo pesimista del movimiento para evitar sobre-abono concurrente
+            $lockedMov = MovimientoCaja::where('id', $movimiento->id)->lockForUpdate()->first();
+            $saldoActual = $lockedMov ? $lockedMov->saldo_pendiente : $movimiento->saldo_pendiente;
+
+            if ($validated['monto_abono'] > $saldoActual + Factura::EPSILON) {
+                DB::rollBack();
+
+                return back()->with('error', 'El abono supera el saldo pendiente de $'.number_format($saldoActual, 0, ',', '.').'.');
+            }
+
+            if (CierreCajaGuard::fechaEstaCerrada($validated['fecha'])) {
+                DB::rollBack();
+
+                return back()->withErrors([
+                    'fecha' => 'No se pueden registrar abonos con fecha '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
+                ])->withInput();
+            }
+
+            if ($fechaFactura && CierreCajaGuard::fechaEstaCerrada($fechaFactura)) {
+                DB::rollBack();
+
+                return back()->with('error', 'No se pueden registrar abonos a una factura del día '.$fechaFactura.' porque ese día ya tiene cierre de caja registrado.')->withInput();
+            }
+
+            if ($fechaMovPadre && CierreCajaGuard::fechaEstaCerrada($fechaMovPadre)) {
+                DB::rollBack();
+
+                return back()->with('error', 'No se pueden registrar abonos a un movimiento del día '.$fechaMovPadre.' porque ese día ya tiene cierre de caja registrado.')->withInput();
+            }
 
             $numFactura = null;
             if (preg_match('/#([A-Za-z0-9-]+)/', $movimiento->descripcion, $matches)) {
                 $numFactura = $matches[1];
             }
 
-            $esPagoCompleto = ($validated['monto_abono'] >= $movimiento->saldo_pendiente);
+            $esPagoCompleto = ($validated['monto_abono'] >= $saldoActual - Factura::EPSILON);
 
             $descAbono = $validated['descripcion'];
             if (! $descAbono) {
@@ -414,6 +525,7 @@ class MovimientoCajaController extends Controller
                 'anulado' => false,
                 'user_id' => auth()->id(),
                 'parent_id' => $movimiento->id,
+                'factura_id' => $movimiento->factura_id,
             ]);
 
             $this->sincronizarFacturaRelacionada($movimiento);
@@ -437,6 +549,7 @@ class MovimientoCajaController extends Controller
 
         try {
             DB::beginTransaction();
+
             $esAnulacion = ! $movimiento->anulado;
 
             // Anular movimiento principal
@@ -445,11 +558,28 @@ class MovimientoCajaController extends Controller
                 'estado' => $esAnulacion ? 'anulado' : 'activo',
             ]);
 
+            // Sincronizar Abono asociado si existe
+            if ($movimiento->abono_id) {
+                \App\Models\Abono::where('id', $movimiento->abono_id)->update(['anulado' => $esAnulacion]);
+            }
+
             // Anular o restaurar todos los abonos asociados en cascada
-            $movimiento->childPayments()->update([
-                'anulado' => $esAnulacion,
-                'estado' => $esAnulacion ? 'anulado' : 'activo',
-            ]);
+            $childMovs = $movimiento->childPayments()->get();
+            foreach ($childMovs as $child) {
+                // Mitigación P0-E1: Omitir hijos que pertenezcan a días cerrados para no corromper arqueos históricos
+                $fechaHijo = $child->fecha ? $child->fecha->toDateString() : null;
+                if ($fechaHijo && CierreCajaGuard::fechaEstaCerrada($fechaHijo)) {
+                    continue;
+                }
+
+                $child->update([
+                    'anulado' => $esAnulacion,
+                    'estado' => $esAnulacion ? 'anulado' : 'activo',
+                ]);
+                if ($child->abono_id) {
+                    \App\Models\Abono::where('id', $child->abono_id)->update(['anulado' => $esAnulacion]);
+                }
+            }
 
             $this->sincronizarFacturaRelacionada($movimiento);
 
@@ -466,6 +596,18 @@ class MovimientoCajaController extends Controller
 
     private function sincronizarFacturaRelacionada(MovimientoCaja $movimiento): void
     {
+        if ($movimiento->factura_id && $movimiento->factura) {
+            $movimiento->factura->recalcularPagos();
+
+            return;
+        }
+
+        if ($movimiento->parent_id && $movimiento->parent?->factura_id && $movimiento->parent->factura) {
+            $movimiento->parent->factura->recalcularPagos();
+
+            return;
+        }
+
         $textToSearch = $movimiento->descripcion;
         if ($movimiento->parent_id && $movimiento->parent) {
             $textToSearch .= ' '.$movimiento->parent->descripcion;

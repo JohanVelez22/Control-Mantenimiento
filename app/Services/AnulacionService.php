@@ -127,10 +127,16 @@ class AnulacionService
             }
 
             // Revertir abonos registrados en Caja
-            $concepto = ConceptoCaja::where('nombre', $conceptoAbono)->first();
-            if ($concepto && $documento->abonos->count() > 0) {
+            if ($documento->abonos->count() > 0) {
+                $concepto = ConceptoCaja::where('nombre', $conceptoAbono)->first();
                 foreach ($documento->abonos as $abono) {
-                    $this->marcarMovimientosCaja($abono, $concepto, $documento->id_orden, $prefijosDescripcion, $esAnulacion);
+                    $fechaAbono = $abono->fecha ? \Carbon\Carbon::parse($abono->fecha)->toDateString() : null;
+                    if (CierreCajaGuard::fechaEstaCerrada($fechaAbono)) {
+                        throw new \DomainException('No se puede '.($esAnulacion ? 'anular' : 'reactivar')." la orden: tiene un abono registrado el {$fechaAbono}, fecha que ya tiene un cierre de caja registrado. Para modificarla, elimine primero el cierre de ese día.");
+                    }
+                    if ($concepto) {
+                        $this->marcarMovimientosCaja($abono, $concepto, $documento->id_orden, $prefijosDescripcion, $esAnulacion);
+                    }
                 }
             }
         });

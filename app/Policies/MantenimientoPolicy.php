@@ -8,16 +8,31 @@ use App\Models\User;
 class MantenimientoPolicy
 {
     /**
-     * Todos los usuarios autenticados pueden ver mantenimientos.
+     * Solo administradores y técnicos pueden listar mantenimientos completos.
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return ! $user->isInvitado();
     }
 
+    /**
+     * Ver detalle de mantenimiento.
+     */
     public function view(User $user, Mantenimiento $mantenimiento): bool
     {
-        return true;
+        if (! $user->isInvitado()) {
+            return true;
+        }
+
+        // Si el usuario invitado es el cliente dueño del equipo (mismo correo)
+        $cliente = \App\Models\Cliente::where('email', $user->email)->first();
+        if ($cliente) {
+            return $mantenimiento->equipo?->cliente_id === $cliente->id;
+        }
+
+        // Si es el invitado genérico, verificar si validó la orden en la sesión actual
+        $autorizadas = session('consultas_autorizadas', []);
+        return in_array($mantenimiento->id, $autorizadas);
     }
 
     /**

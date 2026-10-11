@@ -9,11 +9,14 @@ class Abono extends Model
 {
     use Auditable;
 
-    protected $fillable = ['mantenimiento_id', 'electronica_id', 'monto', 'fecha', 'tipo_pago', 'descripcion', 'user_id'];
+    protected $fillable = ['mantenimiento_id', 'electronica_id', 'monto', 'fecha', 'tipo_pago', 'descripcion', 'user_id', 'anulado'];
 
     protected function casts(): array
     {
-        return ['fecha' => 'date'];
+        return [
+            'fecha' => 'date',
+            'anulado' => 'boolean',
+        ];
     }
 
     public function mantenimiento()

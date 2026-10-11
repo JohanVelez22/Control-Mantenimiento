@@ -1,6 +1,54 @@
 @extends('layouts.app')
+@section('title', 'Cierres de Caja')
 
 @section('content')
+
+<style>
+    #efectivo_real_visual {
+        font-size: 1.875rem !important;
+        font-weight: 900 !important;
+        line-height: 2.25rem !important;
+    }
+    #efectivo_real_visual::placeholder {
+        font-size: 1.875rem !important;
+        font-weight: 900 !important;
+        line-height: 2.25rem !important;
+        color: #94A3B8 !important;
+        opacity: 0.7 !important;
+    }
+    #efectivo_real_visual::-webkit-input-placeholder {
+        font-size: 1.875rem !important;
+        font-weight: 900 !important;
+        line-height: 2.25rem !important;
+        color: #94A3B8 !important;
+        opacity: 0.7 !important;
+    }
+    #efectivo_real_visual::-moz-placeholder {
+        font-size: 1.875rem !important;
+        font-weight: 900 !important;
+        line-height: 2.25rem !important;
+        color: #94A3B8 !important;
+        opacity: 0.7 !important;
+    }
+    @media (max-width: 768px) {
+        #efectivo_real_visual {
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+        }
+        #efectivo_real_visual::placeholder {
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+        }
+        #efectivo_real_visual::-webkit-input-placeholder {
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+        }
+        #efectivo_real_visual::-moz-placeholder {
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+        }
+    }
+</style>
 
 @push('modals')
 {{-- Modal de contraseña para eliminar cierre (Liquid Glass) --}}
@@ -39,57 +87,60 @@
     <div class="ts-modal-card scale-95 opacity-0 max-w-md w-full" id="calc-card">
         <div class="p-6">
             <div class="mb-4">
-                <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🧮 Calculadora de Dinero</h3>
+                <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🧮 Calculadora de Dinero en Mano</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">Ingresa el conteo de billetes y monedas para sumar automáticamente.</p>
             </div>
             <div class="space-y-3">
                 <div class="grid grid-cols-2 gap-3 items-center">
                     <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 100.000 x</label>
-                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="100000" placeholder="Cantidad">
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="100000" placeholder="0">
                 </div>
                 <div class="grid grid-cols-2 gap-3 items-center">
                     <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 50.000 x</label>
-                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="50000" placeholder="Cantidad">
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="50000" placeholder="0">
                 </div>
                 <div class="grid grid-cols-2 gap-3 items-center">
                     <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 20.000 x</label>
-                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="20000" placeholder="Cantidad">
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="20000" placeholder="0">
                 </div>
                 <div class="grid grid-cols-2 gap-3 items-center">
                     <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 10.000 x</label>
-                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="10000" placeholder="Cantidad">
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="10000" placeholder="0">
                 </div>
                 <div class="grid grid-cols-2 gap-3 items-center">
                     <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 5.000 x</label>
-                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="5000" placeholder="Cantidad">
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="5000" placeholder="0">
                 </div>
                 <div class="grid grid-cols-2 gap-3 items-center">
                     <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 2.000 x</label>
-                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="2000" placeholder="Cantidad">
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="2000" placeholder="0">
                 </div>
                 <div class="grid grid-cols-2 gap-3 items-center">
                     <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Billetes de 1.000 x</label>
-                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="1000" placeholder="Cantidad">
+                    <input type="number" min="0" class="glass-input calc-input font-bold" data-val="1000" placeholder="0">
                 </div>
                 <hr class="border-gray-200/50 dark:border-white/10 my-2">
                 <div class="grid grid-cols-2 gap-3 items-center">
-                    <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Monedas (Valor Total)</label>
-                    <input type="number" min="0" class="glass-input calc-input-monedas font-bold" placeholder="Suma de monedas">
+                    <label class="font-bold text-right text-gray-700 dark:text-gray-300 text-sm">Monedas (Total $)</label>
+                    <input type="number" min="0" class="glass-input calc-input-monedas font-bold" placeholder="0">
                 </div>
             </div>
             
             <div class="mt-4 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700/30 text-center">
-                <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1">Total Contado</p>
+                <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1">Total Físico Contado</p>
                 <p class="text-3xl font-black text-slate-800 dark:text-white" id="calc-total">$0</p>
             </div>
             <div class="mt-4 flex gap-3">
                 <button type="button" onclick="resetCalc()" class="btn-cancel flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Limpiar</button>
-                <button type="button" onclick="closeCalc()" class="btn-primary flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Hecho</button>
+                <button type="button" onclick="closeCalc(true)" class="btn-primary flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Aplicar al Cierre</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    let calcTotalValue = 0;
+
     // Lógica Calculadora
     function openCalc() {
         const modal = document.getElementById('calc-modal');
@@ -101,7 +152,18 @@
         }, 10);
     }
 
-    function closeCalc() {
+    function closeCalc(apply = false) {
+        if (apply) {
+            const visual = document.getElementById('efectivo_real_visual');
+            if (visual) {
+                // El input es único y ya lleva el name del formulario; el
+                // servidor sanea el formato monetario en CierreCajaController.
+                visual.value = new Intl.NumberFormat('es-CO').format(calcTotalValue);
+                if (typeof actualizarDiferencia === 'function') {
+                    actualizarDiferencia();
+                }
+            }
+        }
         const modal = document.getElementById('calc-modal');
         const card = document.getElementById('calc-card');
         modal.classList.add('opacity-0');
@@ -124,6 +186,7 @@
             total += parseInt(monedas.value) || 0;
         }
 
+        calcTotalValue = total;
         document.getElementById('calc-total').innerText = '$' + new Intl.NumberFormat('es-CO').format(total);
     }
 
@@ -138,74 +201,176 @@
         });
     });
 </script>
-
 @endpush
 
-<div class="space-y-4">
+<div class="space-y-6">
 
-    {{-- Header del Cierre del Día actual --}}
+    {{-- Panel de Cierre del Día actual --}}
     @if(!$yaExiste && $preview)
-    <div class="glass-card p-5 mb-4">
-        <div class="flex flex-wrap justify-between items-center gap-4">
-            <div>
-                <h2 class="text-xl font-bold flex items-center gap-2"><span class="text-2xl">📅</span> Cierre del Día — {{ \Carbon\Carbon::parse($hoy)->format('d/m/Y') }}</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Vista previa — aún no cerrado</p>
+    <div class="space-y-4">
+        {{-- Tarjetas de resumen del Cierre del Día --}}
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_ingresos'], 0, ',', '.') }}</p>
             </div>
-            <form action="{{ route('cierre.store') }}" method="POST">
+            <div class="glass-card hover-glow glass-card-red p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_egresos'], 0, ',', '.') }}</p>
+            </div>
+            <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💵</span> Efectivo Sistema</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['efectivo'], 0, ',', '.') }}</p>
+            </div>
+            <div class="glass-card hover-glow glass-card-purple p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🏦</span> Consignación</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['consignacion'], 0, ',', '.') }}</p>
+            </div>
+            <div class="glass-card hover-glow {{ $preview['saldo_final'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0 col-span-2 lg:col-span-1">
+                <p class="text-xs font-bold {{ $preview['saldo_final'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Teórico</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['saldo_final'], 0, ',', '.') }}</p>
+            </div>
+        </div>
+
+        {{-- Tarjeta interactiva de Arqueo y Conciliación Física --}}
+        <div class="glass-card p-6 md:p-8 border border-blue-500/20 shadow-xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 md:mb-8">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-800 dark:text-white flex items-center gap-2">
+                        <span>💵</span> Cierre del Día y Conciliación Física — {{ \Carbon\Carbon::parse($hoy)->format('d/m/Y') }}
+                    </h2>
+                    <p class="text-xs md:text-sm font-semibold text-gray-500 dark:text-gray-400 mt-1">
+                        {{ $preview['num_movimientos'] }} movimiento(s) registrados hoy. Cuenta el efectivo real en caja para conciliar el arqueo.
+                    </p>
+                </div>
+                <button type="button" onclick="openCalc()" class="btn-clean flex items-center justify-center gap-2 self-stretch md:self-auto" style="padding: 9px 18px; font-size: 13px;">
+                    <span>🧮</span> Calcular dinero
+                </button>
+            </div>
+
+            <form action="{{ route('cierre.store') }}" method="POST" id="form-cierre-caja" class="space-y-6">
                 @csrf
                 <input type="hidden" name="fecha" value="{{ $hoy }}">
-                <div class="flex flex-wrap gap-2 items-center">
-                    <button type="button" onclick="openCalc()" class="btn-clean text-sm px-4 py-2 font-bold flex items-center gap-2">
-                        <span>🧮</span> Calcular Dinero
-                    </button>
-                    <button type="submit" class="btn-primary text-sm px-5 py-2 font-bold">
-                        🔒 Cerrar Día
+                <input type="hidden" id="efectivo_sistema_val" value="{{ $preview['efectivo'] }}">
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
+                    {{-- Tarjeta Efectivo Teórico (Sistema) --}}
+                    <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                        <div>
+                            <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">
+                                💻 Efectivo Teórico (Sistema)
+                            </span>
+                            <p class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white">
+                                ${{ number_format($preview['efectivo'], 0, ',', '.') }}
+                            </p>
+                        </div>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-2">
+                            Total calculado de entradas y salidas registradas en efectivo.
+                        </p>
+                    </div>
+
+                    {{-- Input Efectivo Real Contado --}}
+                    <div class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-between items-center relative overflow-hidden group text-center min-w-0">
+                        <div class="w-full">
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1" for="efectivo_real_visual">
+                                🖐🏻 Dinero Contado en Mano
+                            </label>
+                            <div class="relative max-w-[15rem] mx-auto w-full my-0.5">
+                                <input type="text"
+                                       id="efectivo_real_visual"
+                                       name="efectivo_real_contado"
+                                       value=""
+                                       placeholder="0"
+                                       autocomplete="off"
+                                       class="glass-input w-full px-3 text-center !font-black !text-2xl md:!text-3xl text-slate-800 dark:text-white tracking-tight h-[48px] md:h-[54px] focus:ring-2 focus:ring-blue-500/40">
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-2">
+                            Déjalo vacío si no realizaste el conteo físico.
+                        </p>
+                    </div>
+
+                    {{-- Indicador Reactivo de Diferencia --}}
+                    <div id="card-diferencia" class="glass-card hover-glow glass-card-teal p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider block mb-1 text-teal-600 dark:text-teal-400" id="label-diferencia">
+                                ⚖️ Resultado del Arqueo
+                            </span>
+                            <p class="text-2xl md:text-3xl font-black transition-colors text-slate-500 dark:text-slate-400" id="valor-diferencia">
+                                —
+                            </p>
+                        </div>
+                        <div class="mt-2 flex items-center">
+                            <span id="badge-diferencia" class="pill pill-done text-xs font-bold py-1 px-3">
+                                ⚪ Sin conciliar
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Campo para Justificación / Motivo de la Diferencia --}}
+                <div id="wrapper-motivo-diferencia" class="space-y-1.5">
+                    <label class="field-label !flex items-center justify-between" for="motivo_diferencia">
+                        <span class="flex items-center gap-1.5 font-bold">
+                            <span>📝</span> Motivo / Justificación de la Diferencia
+                            <span id="asterisco-obligatorio-diferencia" class="hidden text-red-500 font-bold">*</span>
+                        </span>
+                        <span id="badge-aviso-diferencia" class="hidden text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
+                            Obligatorio por Descuadre
+                        </span>
+                    </label>
+                    <input type="text" 
+                           name="motivo_diferencia" 
+                           id="motivo_diferencia" 
+                           placeholder="Opcional: Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)..." 
+                           class="glass-input text-xs sm:text-sm">
+                    <p id="error-motivo-diferencia" class="hidden text-xs text-red-500 font-bold mt-1">
+                        ⚠️ Existe una diferencia en caja. Debes indicar la justificación o causa del descuadre para poder cerrar el día.
+                    </p>
+                </div>
+
+                {{-- Campo Observaciones Generales --}}
+                <div class="space-y-1.5">
+                    <label class="field-label flex items-center gap-1.5 font-bold" for="cierre_observaciones">
+                        <span>📋</span> Observaciones Generales de la Jornada (Opcional)
+                    </label>
+                    <textarea name="observaciones" 
+                              id="cierre_observaciones" 
+                              rows="2" 
+                              placeholder="Notas generales sobre la jornada laboral o novedades..." 
+                              class="glass-input text-xs"></textarea>
+                </div>
+
+                {{-- Botón de Cierre --}}
+                <div class="flex flex-col sm:flex-row justify-end items-center gap-3 mt-6 md:mt-8">
+                    <button type="submit" id="btn-submit-cierre" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20" style="padding: 9px 18px; font-size: 13px;">
+                        <span>🔒</span> Cerrar y bloquear dia
                     </button>
                 </div>
             </form>
         </div>
     </div>
-        
-    {{-- Tarjetas de resumen del Cierre del Día (Mismo nivel y luminosidad que Dashboard e Informes) --}}
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-2">
-        <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-            <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
-            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_ingresos'], 0, ',', '.') }}</p>
-        </div>
-        <div class="glass-card hover-glow glass-card-red p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-            <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
-            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_egresos'], 0, ',', '.') }}</p>
-        </div>
-        <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-            <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💵</span> Efectivo</p>
-            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['efectivo'], 0, ',', '.') }}</p>
-        </div>
-        <div class="glass-card hover-glow glass-card-purple p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
-            <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🏦</span> Consignación</p>
-            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['consignacion'], 0, ',', '.') }}</p>
-        </div>
-        <div class="glass-card hover-glow {{ $preview['saldo_final'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0 col-span-2 lg:col-span-1">
-            <p class="text-xs font-bold {{ $preview['saldo_final'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Final</p>
-            <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['saldo_final'], 0, ',', '.') }}</p>
-        </div>
-    </div>
-    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-4 text-right pr-1">{{ $preview['num_movimientos'] }} movimiento(s) registrados hoy</div>
     @elseif($yaExiste)
-    <div class="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-600 text-2xl">✅</div>
+    <div class="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-600 text-2xl shrink-0">✅</div>
         <div>
-            <p class="font-bold text-emerald-700 dark:text-emerald-400">Día de hoy ya cerrado y bloqueado.</p>
-            <p class="text-sm text-emerald-600/80 dark:text-emerald-400/80 font-medium">Para desbloquearlo, elimina el cierre de hoy usando la contraseña.</p>
+            <p class="font-bold text-emerald-700 dark:text-emerald-400">El día de hoy ya se encuentra cerrado y bloqueado.</p>
+            <p class="text-sm text-emerald-600/80 dark:text-emerald-400/80 font-medium">Todas las transacciones de esta jornada están protegidas contablemente. Para desbloquearlo, elimina el cierre usando la clave de administración.</p>
         </div>
     </div>
     @endif
 
     {{-- Historial de cierres --}}
-    <div class="glass-card p-6">
-        <div class="mb-6">
-            <h2 class="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-2">
-                <span class="text-3xl">📊</span> Historial de Cierres de Caja
-            </h2>
+    <div class="glass-card p-6 md:p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-2">
+                    <span class="text-3xl">📊</span> Historial de Cierres de Caja
+                </h2>
+                <p class="text-sm font-semibold text-gray-500 dark:text-gray-400 mt-1">
+                    Registro de actas de cierre y arqueos de conciliación física
+                </p>
+            </div>
         </div>
 
         <div class="overflow-x-auto pb-2">
@@ -215,9 +380,11 @@
                         <th class="text-center">Fecha</th>
                         <th class="text-right">Ingresos</th>
                         <th class="text-right">Egresos</th>
-                        <th class="text-right">Efectivo</th>
+                        <th class="text-right">Efectivo Sistema</th>
+                        <th class="text-right">Contado en Mano</th>
+                        <th class="text-center">Diferencia</th>
                         <th class="text-right">Consignación</th>
-                        <th class="text-right">Saldo</th>
+                        <th class="text-right">Saldo Final</th>
                         <th class="text-center">Mov.</th>
                         <th>Registró</th>
                         <th class="text-center">Acciones</th>
@@ -229,9 +396,35 @@
                         <td data-label="Fecha:" class="text-center font-bold">{{ $c->fecha->format('d/m/Y') }}</td>
                         <td data-label="Ingresos:" class="text-right text-emerald-600 dark:text-emerald-400 font-bold">${{ number_format($c->total_ingresos, 0, ',', '.') }}</td>
                         <td data-label="Egresos:" class="text-right text-red-600 dark:text-red-400 font-bold">${{ number_format($c->total_egresos, 0, ',', '.') }}</td>
-                        <td data-label="Efectivo:" class="text-right text-blue-600 dark:text-blue-400 font-semibold">${{ number_format($c->efectivo, 0, ',', '.') }}</td>
+                        <td data-label="Efectivo Sist.:" class="text-right text-blue-600 dark:text-blue-400 font-semibold">${{ number_format($c->efectivo, 0, ',', '.') }}</td>
+                        <td data-label="Contado en Mano:" class="text-right font-black text-slate-800 dark:text-white">
+                            @if($c->efectivo_real_contado !== null)
+                                ${{ number_format($c->efectivo_real_contado, 0, ',', '.') }}
+                            @else
+                                <span class="text-gray-400 font-normal">—</span>
+                            @endif
+                        </td>
+                        <td data-label="Diferencia:" class="text-center">
+                            @if($c->estado_diferencia === 'cuadrado')
+                                <span class="pill pill-done text-[11px] font-bold py-0.5 px-2" title="El efectivo contado coincide con el teórico">
+                                    🟢 Cuadrado
+                                </span>
+                            @elseif($c->estado_diferencia === 'faltante')
+                                <span class="pill pill-anulado text-[11px] font-bold py-0.5 px-2" title="{{ $c->motivo_diferencia ?: 'Faltante de caja' }}">
+                                    🔴 Faltante ${{ number_format(abs($c->diferencia), 0, ',', '.') }}
+                                </span>
+                            @elseif($c->estado_diferencia === 'sobrante')
+                                <span class="pill pill-efectivo text-[11px] font-bold py-0.5 px-2" title="{{ $c->motivo_diferencia ?: 'Sobrante de caja' }}">
+                                    🔵 Sobrante ${{ number_format($c->diferencia, 0, ',', '.') }}
+                                </span>
+                            @else
+                                <span class="pill pill-done text-[11px] font-bold py-0.5 px-2 opacity-60" title="No se registró conteo físico del efectivo">
+                                    ⚪ Sin conciliar
+                                </span>
+                            @endif
+                        </td>
                         <td data-label="Consignación:" class="text-right text-purple-600 dark:text-purple-400 font-semibold">${{ number_format($c->consignacion, 0, ',', '.') }}</td>
-                        <td data-label="Saldo:" class="text-right font-black {{ $c->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }}">${{ number_format($c->saldo_final, 0, ',', '.') }}</td>
+                        <td data-label="Saldo Final:" class="text-right font-black {{ $c->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }}">${{ number_format($c->saldo_final, 0, ',', '.') }}</td>
                         <td data-label="Mov.:" class="text-center text-sm font-semibold text-gray-500">{{ $c->num_movimientos }}</td>
                         <td data-label="Registró:" class="text-xs text-gray-500 font-medium">{{ $c->user->name }}</td>
                         <td data-label="Acciones:" class="text-center w-28">
@@ -248,11 +441,11 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="9" class="text-center py-12">
+                        <td colspan="11" class="text-center py-12">
                             <div class="flex flex-col items-center gap-3">
                                 <span class="text-5xl">📊</span>
                                 <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">Sin cierres registrados</h3>
-                                <p class="text-gray-500 text-sm font-medium">Realiza el primer cierre del día usando el panel de arriba.</p>
+                                <p class="text-gray-500 text-sm font-medium">Realiza el primer cierre del día usando el panel superior de arqueo.</p>
                             </div>
                         </td>
                     </tr>
@@ -270,6 +463,172 @@
 </div>
 
 <script>
+    const CARD_BASE = 'glass-card hover-glow p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0';
+    const TEXTO_BASE = 'text-2xl md:text-3xl font-black transition-colors';
+
+    function leerConteo(visualInput) {
+        if (!visualInput) return null;
+        const crudo = visualInput.value.replace(/\D/g, '');
+        if (crudo === '') return null;
+        return parseFloat(crudo);
+    }
+
+    function formatearPesos(n) {
+        return '$' + new Intl.NumberFormat('es-CO').format(Math.round(n));
+    }
+
+    function actualizarDiferencia() {
+        const sist = parseFloat(document.getElementById('efectivo_sistema_val')?.value || 0);
+        const visualInput = document.getElementById('efectivo_real_visual');
+
+        const valorDiffEl = document.getElementById('valor-diferencia');
+        const badgeDiffEl = document.getElementById('badge-diferencia');
+        const cardDiffEl = document.getElementById('card-diferencia');
+        const labelDiffEl = document.getElementById('label-diferencia');
+        const badgeAvisoEl = document.getElementById('badge-aviso-diferencia');
+        const asteriscoEl = document.getElementById('asterisco-obligatorio-diferencia');
+        const motivoInput = document.getElementById('motivo_diferencia');
+        const errorMotivoEl = document.getElementById('error-motivo-diferencia');
+
+        if (!valorDiffEl || !badgeDiffEl || !cardDiffEl) return;
+
+        const realVal = leerConteo(visualInput);
+
+        // Sin conteo registrado: el arqueo queda honestamente pendiente.
+        if (realVal === null) {
+            valorDiffEl.className = TEXTO_BASE + ' text-slate-500 dark:text-slate-400';
+            valorDiffEl.innerText = '—';
+            badgeDiffEl.className = 'pill pill-done text-xs font-bold py-1 px-3';
+            badgeDiffEl.innerHTML = '⚪ Sin conciliar';
+            cardDiffEl.className = CARD_BASE + ' glass-card-teal';
+            if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-teal-600 dark:text-teal-400';
+            if (badgeAvisoEl) badgeAvisoEl.classList.add('hidden');
+            if (asteriscoEl) asteriscoEl.classList.add('hidden');
+            if (motivoInput) {
+                motivoInput.removeAttribute('required');
+                motivoInput.placeholder = 'Opcional: Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)...';
+                motivoInput.classList.remove('!border-red-500', '!ring-2', '!ring-red-500/40');
+            }
+            if (errorMotivoEl) errorMotivoEl.classList.add('hidden');
+            return;
+        }
+
+        const diff = realVal - sist;
+        const signo = diff > 0 ? '+' : (diff < 0 ? '-' : '');
+        valorDiffEl.innerText = signo + formatearPesos(Math.abs(diff));
+
+        if (Math.abs(diff) < 1) {
+            // Cuadre Exacto: conteo igual al sistema (ej. 200 y 200) -> NO requiere justificación
+            valorDiffEl.className = TEXTO_BASE + ' text-emerald-600 dark:text-emerald-400';
+            badgeDiffEl.className = 'pill pill-done text-xs font-bold py-1 px-3';
+            badgeDiffEl.innerHTML = '🟢 Cuadre Exacto';
+            cardDiffEl.className = CARD_BASE + ' glass-card-emerald';
+            if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400';
+            if (badgeAvisoEl) badgeAvisoEl.classList.add('hidden');
+            if (asteriscoEl) asteriscoEl.classList.add('hidden');
+            if (motivoInput) {
+                motivoInput.removeAttribute('required');
+                motivoInput.placeholder = 'Cuadre exacto: no se requiere justificación obligatoria...';
+                motivoInput.classList.remove('!border-red-500', '!ring-2', '!ring-red-500/40');
+            }
+            if (errorMotivoEl) errorMotivoEl.classList.add('hidden');
+        } else if (diff < 0) {
+            // Faltante en caja -> Justificación obligatoria
+            valorDiffEl.className = TEXTO_BASE + ' text-red-600 dark:text-red-400';
+            badgeDiffEl.className = 'pill pill-anulado text-xs font-bold py-1 px-3';
+            badgeDiffEl.innerHTML = '🔴 Faltante en Caja';
+            cardDiffEl.className = CARD_BASE + ' glass-card-red';
+            if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-red-600 dark:text-red-400';
+            if (badgeAvisoEl) {
+                badgeAvisoEl.innerText = 'Obligatorio por Faltante';
+                badgeAvisoEl.className = 'text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20';
+                badgeAvisoEl.classList.remove('hidden');
+            }
+            if (asteriscoEl) asteriscoEl.classList.remove('hidden');
+            if (motivoInput) {
+                motivoInput.setAttribute('required', 'required');
+                motivoInput.placeholder = 'Obligatorio: Describe la justificación del faltante de ' + formatearPesos(Math.abs(diff)) + '...';
+            }
+        } else {
+            // Sobrante en caja -> Justificación obligatoria
+            valorDiffEl.className = TEXTO_BASE + ' text-blue-600 dark:text-blue-400';
+            badgeDiffEl.className = 'pill pill-efectivo text-xs font-bold py-1 px-3';
+            badgeDiffEl.innerHTML = '🔵 Sobrante en Caja';
+            cardDiffEl.className = CARD_BASE + ' glass-card-blue';
+            if (labelDiffEl) labelDiffEl.className = 'text-xs font-bold uppercase tracking-wider block mb-1 text-blue-600 dark:text-blue-400';
+            if (badgeAvisoEl) {
+                badgeAvisoEl.innerText = 'Obligatorio por Sobrante';
+                badgeAvisoEl.className = 'text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20';
+                badgeAvisoEl.classList.remove('hidden');
+            }
+            if (asteriscoEl) asteriscoEl.classList.remove('hidden');
+            if (motivoInput) {
+                motivoInput.setAttribute('required', 'required');
+                motivoInput.placeholder = 'Obligatorio: Describe la justificación del sobrante de ' + formatearPesos(Math.abs(diff)) + '...';
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const visual = document.getElementById('efectivo_real_visual');
+        if (visual) {
+            visual.addEventListener('input', function (e) {
+                let digitos = e.target.value.replace(/\D/g, '').slice(0, 12);
+                e.target.value = digitos === ''
+                    ? ''
+                    : new Intl.NumberFormat('es-CO').format(digitos);
+                actualizarDiferencia();
+            });
+            visual.addEventListener('blur', actualizarDiferencia);
+        }
+
+        const formCierre = document.getElementById('form-cierre-caja');
+        if (formCierre) {
+            formCierre.addEventListener('submit', function (e) {
+                const sistVal = parseFloat(document.getElementById('efectivo_sistema_val')?.value || 0);
+                const visualEl = document.getElementById('efectivo_real_visual');
+                const motivoEl = document.getElementById('motivo_diferencia');
+                const errorEl = document.getElementById('error-motivo-diferencia');
+                const realVal = leerConteo(visualEl);
+
+                if (realVal !== null) {
+                    const diferencia = realVal - sistVal;
+                    if (Math.abs(diferencia) >= 1) {
+                        const texto = (motivoEl?.value || '').trim();
+                        if (!texto) {
+                            e.preventDefault();
+                            if (motivoEl) {
+                                motivoEl.focus();
+                                motivoEl.classList.add('!border-red-500', '!ring-2', '!ring-red-500/40');
+                            }
+                            if (errorEl) {
+                                errorEl.classList.remove('hidden');
+                            }
+                            if (typeof window.showToast === 'function') {
+                                const tipo = diferencia > 0 ? 'sobrante' : 'faltante';
+                                window.showToast('Existe un descuadre en caja (' + tipo + '). Debes ingresar la justificación para poder cerrar y bloquear el día.', 'error');
+                            }
+                            return false;
+                        }
+                    }
+                }
+            });
+        }
+
+        const motivoInput = document.getElementById('motivo_diferencia');
+        if (motivoInput) {
+            motivoInput.addEventListener('input', function () {
+                if (this.value.trim().length > 0) {
+                    this.classList.remove('!border-red-500', '!ring-2', '!ring-red-500/40');
+                    const errorEl = document.getElementById('error-motivo-diferencia');
+                    if (errorEl) errorEl.classList.add('hidden');
+                }
+            });
+        }
+
+        actualizarDiferencia();
+    });
+
     function openCierrePwd(url) {
         const modal = document.getElementById('pwd-cierre-modal');
         const card = document.getElementById('pwd-cierre-card');
@@ -299,9 +658,5 @@
             closeCalc();
         }
     });
-
 </script>
 @endsection
-
-
-

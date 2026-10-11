@@ -151,6 +151,43 @@ class BackupManagementTest extends TestCase
         $response->assertStatus(200);
         $this->assertTrue($response->json('success'));
         $this->assertNotNull($response->json('latest'));
+        $this->assertEquals('sql', $response->json('latest.extension'));
+    }
+
+    public function test_admin_can_trigger_manual_backup_files_zip()
+    {
+        Configuracion::create([
+            'nombre' => 'Tecni Test',
+            'backup_max_copias' => 5,
+        ]);
+
+        $response = $this->actingAs($this->admin)->postJson(route('backups.manual'), [
+            'tipo' => 'files',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertTrue($response->json('success'));
+        $this->assertNotNull($response->json('latest'));
+        $this->assertEquals('zip', $response->json('latest.extension'));
+        $this->assertStringStartsWith('backup_bd_multimedia_', $response->json('latest.name'));
+    }
+
+    public function test_admin_can_trigger_manual_backup_integral_zip()
+    {
+        Configuracion::create([
+            'nombre' => 'Tecni Test',
+            'backup_max_copias' => 5,
+        ]);
+
+        $response = $this->actingAs($this->admin)->postJson(route('backups.manual'), [
+            'tipo' => 'all',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertTrue($response->json('success'));
+        $this->assertNotNull($response->json('latest'));
+        $this->assertEquals('zip', $response->json('latest.extension'));
+        $this->assertStringStartsWith('backup_integral_', $response->json('latest.name'));
     }
 
     public function test_admin_can_download_existing_backup_file()
@@ -218,5 +255,18 @@ class BackupManagementTest extends TestCase
         $response->assertStatus(200);
         $this->assertTrue($response->json('success'));
         $this->assertEquals($this->backupDir, $response->json('path'));
+    }
+
+    protected function tearDown(): void
+    {
+        if (File::exists($this->backupDir)) {
+            foreach (File::files($this->backupDir) as $file) {
+                if (str_contains($file->getFilename(), 'test') || str_contains($file->getFilename(), 'memory')) {
+                    File::delete($file->getPathname());
+                }
+            }
+        }
+
+        parent::tearDown();
     }
 }
