@@ -33,22 +33,22 @@
     <div class="w-full {{ ($cliente || (isset($searched) && ($mantenimientos->isNotEmpty() || $electronicas->isNotEmpty()))) ? 'max-w-2xl' : 'max-w-md' }} z-10 flex flex-col items-center pb-10 transition-all">
         
         <!-- Logo TECNI SYSTEMAS (Fuera del recuadro) -->
-        <div class="text-center mt-0 mb-4 login-brand-title">
-            <div class="flex justify-center mb-2">
+        <div class="text-center mt-0 login-brand-title flex flex-col items-center">
+            <div class="flex justify-center">
                 <div class="text-[24px] font-black tracking-widest font-logo flex items-center gap-2">
                     <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
                     <span class="text-slate-800 dark:text-white">SYSTEMAS</span>
                 </div>
             </div>
-            <div>
-                <span style="font-size: 80px;" class="drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] text-slate-800 dark:text-white leading-none">💼</span>
+            <div class="flex items-center justify-center leading-none mt-2.5 mb-4">
+                <span style="font-size: 80px;" class="drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] text-slate-800 dark:text-white leading-none inline-block">💼</span>
             </div>
         </div>
 
         <!-- Tarjeta Principal (Liquid Glass) -->
         <div class="glass-card guest-card w-full relative">
             <!-- Encabezado -->
-            <div class="text-center mb-4">
+            <div class="text-center mb-3.5">
                 <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight">Consulta de Servicios</h1>
                 @if($cliente)
                     <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Hola, <span class="text-blue-600 dark:text-blue-400 font-bold">{{ $cliente->nombres }}</span>. Aquí tienes el estado actual de tus equipos.</p>
@@ -58,7 +58,7 @@
                     @endphp
                     <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Resultados para la orden <span class="{{ $isElectronicaSearch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400' }} font-bold">{{ strtoupper($id_orden ?? '') }}</span> (Doc: {{ $identificacion ?? '' }})</p>
                 @else
-                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">Ingresa tu número de identificación y número de orden para hacer el seguimiento de tu equipo con total privacidad.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">Ingresa tu número de identificación y número de orden para hacer el seguimiento de tu equipo.</p>
                 @endif
             </div>
             
@@ -206,7 +206,7 @@
                 @endif
                 
                 @if(isset($searched) && ($mantenimientos->isNotEmpty() || $electronicas->isNotEmpty()) && !$cliente)
-                <div class="mt-6 sm:mt-8 text-center">
+                <div class="guest-search-another-wrapper mt-5 sm:mt-6 mb-0 text-center">
                     <a href="{{ route('guest.dashboard') }}" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 transition-all transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
                         <span>🔍</span> Buscar Otra Consulta
                     </a>
@@ -215,56 +215,58 @@
             @else
                 <!-- Formulario de Búsqueda si no hay cliente o la consulta no arrojó resultados -->
                 @php
-                    $isElec = ($tipo ?? '') === 'electronica';
+                    $isElec = old('tipo', $tipo ?? '') === 'electronica';
                     $hasNotFound = isset($searched) && $mantenimientos->isEmpty() && $electronicas->isEmpty();
                 @endphp
-                <form id="guestSearchForm" method="GET" action="{{ route('guest.search') }}" class="w-full space-y-3">
-                    {{-- Selector Mantenimiento / Electrónica (Estilo original con pills y emojis) --}}
+                <form id="guestSearchForm" method="GET" action="{{ route('guest.search') }}" class="w-full flex flex-col {{ $isElec ? 'theme-electronica-inputs' : 'theme-mantenimiento-inputs' }}">
+                    {{-- Selector Mantenimiento / Electrónica (Diseño y estilo original restaurado con color dinámico) --}}
                     <div class="flex bg-white/40 dark:bg-slate-900/40 p-1 rounded-xl mb-3.5 border border-white/50 dark:border-white/10 shadow-sm backdrop-blur-md">
-                        <label class="flex-1 cursor-pointer">
+                        <label class="flex-1 cursor-pointer select-none m-0" for="tipo-mantenimiento" onclick="updateGuestTheme('mantenimiento')">
                             <input type="radio" name="tipo" id="tipo-mantenimiento" value="mantenimiento" class="peer sr-only" {{ !$isElec ? 'checked' : '' }} onchange="updateGuestTheme('mantenimiento')">
-                            <div class="text-center py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-blue-600 peer-checked:text-white transition-all peer-checked:shadow-md flex items-center justify-center gap-1.5">
+                            <div id="tab-btn-mantenimiento" class="text-center py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all select-none {{ !$isElec ? 'guest-tab-active-mant' : 'guest-tab-inactive' }}">
                                 <span>🛠️</span> Mantenimientos
                             </div>
                         </label>
-                        <label class="flex-1 cursor-pointer">
+                        <label class="flex-1 cursor-pointer select-none m-0" for="tipo-electronica" onclick="updateGuestTheme('electronica')">
                             <input type="radio" name="tipo" id="tipo-electronica" value="electronica" class="peer sr-only" {{ $isElec ? 'checked' : '' }} onchange="updateGuestTheme('electronica')">
-                            <div class="text-center py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 peer-checked:bg-purple-600 peer-checked:text-white transition-all peer-checked:shadow-md flex items-center justify-center gap-1.5">
+                            <div id="tab-btn-electronica" class="text-center py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all select-none {{ $isElec ? 'guest-tab-active-elec' : 'guest-tab-inactive' }}">
                                 <span>⚡</span> Electrónica
                             </div>
                         </label>
                     </div>
 
                     {{-- Campo Cédula / NIT --}}
-                    <div>
+                    <div class="mb-3.5">
                         <label for="guestIdentificacionInput" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 ml-0.5">
                             🪪 Cédula o NIT del Cliente <span class="text-red-500 font-bold">*</span>
                         </label>
                         <input type="text" name="identificacion" id="guestIdentificacionInput" 
                                value="{{ old('identificacion', $identificacion ?? '') }}" 
-                               class="glass-input w-full px-3.5 py-2.5 text-sm sm:text-base font-semibold rounded-xl focus:placeholder-transparent {{ ($hasNotFound || $errors->has('identificacion')) ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'focus:ring-2 focus:ring-blue-500' }}" 
+                               class="glass-input w-full px-3.5 py-2.5 text-sm sm:text-base font-semibold rounded-xl focus:placeholder-transparent" 
                                placeholder="Ej: 123456789 o 900123456" minlength="3" maxlength="30" autocomplete="off">
-                        <p id="error-identificacion" class="text-xs text-red-500 font-semibold mt-1 ml-0.5 flex items-center gap-1 {{ ($hasNotFound || $errors->has('identificacion')) ? '' : 'hidden' }}">
-                            <span>⚠️</span> <span id="error-identificacion-text">{{ $errors->first('identificacion') ?: 'No es correcto: No se encontró ningun resultado para esta cédula o NIT' }}</span>
+                        <p id="error-identificacion" class="text-xs text-red-500 font-semibold mt-1.5 ml-0.5 flex items-start gap-1.5 leading-[18px] {{ ($hasNotFound || $errors->has('identificacion')) ? '' : 'hidden' }}">
+                            <span class="shrink-0 inline-flex items-center justify-center h-[18px] text-xs select-none">⚠️</span>
+                            <span id="error-identificacion-text" class="leading-[18px]">{{ $errors->first('identificacion') ?: 'No es correcto: No se encontró ningun resultado para esta cédula o NIT' }}</span>
                         </p>
                     </div>
 
                     {{-- Campo Número de Orden --}}
-                    <div>
+                    <div class="mb-3.5">
                         <label for="guestOrdenInput" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 ml-0.5">
                             📋 Número de Orden <span class="text-red-500 font-bold">*</span>
                         </label>
                         <input type="text" name="id_orden" id="guestOrdenInput" 
                                value="{{ old('id_orden', $id_orden ?? '') }}" 
-                               class="glass-input w-full px-3.5 py-2.5 text-sm sm:text-base font-semibold rounded-xl focus:placeholder-transparent {{ ($hasNotFound || $errors->has('id_orden')) ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'focus:ring-2 focus:ring-blue-500' }}" 
+                               class="glass-input w-full px-3.5 py-2.5 text-sm sm:text-base font-semibold rounded-xl focus:placeholder-transparent" 
                                placeholder="{{ $isElec ? 'Ej: ELC-001 o 1' : 'Ej: ORD-001 o 1' }}" minlength="1" maxlength="30" autocomplete="off">
-                        <p id="error-orden" class="text-xs text-red-500 font-semibold mt-1 ml-0.5 flex items-center gap-1 {{ ($hasNotFound || $errors->has('id_orden')) ? '' : 'hidden' }}">
-                            <span>⚠️</span> <span id="error-orden-text">{{ $errors->first('id_orden') ?: 'No es correcto: No se encontró ningun resultado para este número de orden' }}</span>
+                        <p id="error-orden" class="text-xs text-red-500 font-semibold mt-1.5 ml-0.5 flex items-start gap-1.5 leading-[18px] {{ ($hasNotFound || $errors->has('id_orden')) ? '' : 'hidden' }}">
+                            <span class="shrink-0 inline-flex items-center justify-center h-[18px] text-xs select-none">⚠️</span>
+                            <span id="error-orden-text" class="leading-[18px]">{{ $errors->first('id_orden') ?: 'No es correcto: No se encontró ningun resultado para este número de orden' }}</span>
                         </p>
                     </div>
 
-                    {{-- Botón de consulta con lupa y efecto anterior (sin neón) --}}
-                    <button type="submit" id="guestSubmitBtn" class="w-full mt-3.5 {{ $isElec ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-purple-500/25' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-blue-500/25' }} text-white font-bold py-2.5 sm:py-3 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2">
+                    {{-- Botón de consulta con lupa y color dinámico (Azul para Mantenimiento / Violeta para Electrónica) --}}
+                    <button type="submit" id="guestSubmitBtn" class="guest-submit-btn {{ $isElec ? 'btn-theme-electronica' : 'btn-theme-mantenimiento' }}">
                         <span>🔍</span>
                         <span id="guestSubmitBtnText">{{ $isElec ? 'Consultar Electrónica' : 'Consultar Estado de la Orden' }}</span>
                     </button>
@@ -303,6 +305,53 @@
   color: transparent !important;
   opacity: 0 !important;
 }
+
+/* Selector Mantenimientos / Electrónica: colores garantizados en ambos temas */
+.guest-tab-inactive {
+  color: #64748b !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html.dark .guest-tab-inactive {
+  color: #94a3b8 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.guest-tab-inactive:hover {
+  color: #0f172a !important;
+  background: rgba(255, 255, 255, 0.35) !important;
+}
+
+html.dark .guest-tab-inactive:hover {
+  color: #f8fafc !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.guest-tab-active-mant {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+}
+
+html.dark .guest-tab-active-mant {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45) !important;
+}
+
+.guest-tab-active-elec {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4) !important;
+}
+
+html.dark .guest-tab-active-elec {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45) !important;
+}
 </style>
 
 <script>
@@ -323,6 +372,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Inicializar estado del tema de consulta (mantenimiento o electronica)
+    const initialTipo = document.querySelector('input[name="tipo"]:checked')?.value || 'mantenimiento';
+    updateGuestTheme(initialTipo);
+
+    @if(isset($hasNotFound) && $hasNotFound)
+    // Limpiar los parámetros de la URL cuando los datos están errados para que al recargar (F5) la página vuelva limpia a su estado normal
+    if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', '{{ route("guest.dashboard") }}');
+    }
+    @endif
+
     // Ocultar placeholder al hacer clic / focus
     document.querySelectorAll('.glass-input').forEach(function(input) {
         var originalPlaceholder = input.getAttribute('placeholder') || '';
@@ -335,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Validación interactiva con avisos en rojo debajo de cada campo
+    // Validación interactiva con avisos en rojo debajo de cada campo (sin borde rojo en los inputs)
     const form = document.getElementById('guestSearchForm');
     const idInput = document.getElementById('guestIdentificacionInput');
     const ordenInput = document.getElementById('guestOrdenInput');
@@ -347,7 +407,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (idInput) {
         idInput.addEventListener('input', function() {
             if (this.value.trim().length > 0) {
-                this.classList.remove('border-red-500');
                 if (errId) errId.classList.add('hidden');
             }
         });
@@ -356,7 +415,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (ordenInput) {
         ordenInput.addEventListener('input', function() {
             if (this.value.trim().length > 0) {
-                this.classList.remove('border-red-500');
                 if (errOrden) errOrden.classList.add('hidden');
             }
         });
@@ -370,14 +428,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!idVal) {
                 hasError = true;
-                if (idInput) idInput.classList.add('border-red-500');
                 if (errIdText) errIdText.textContent = 'No es correcto: debes digitar cédula / NIT';
                 if (errId) errId.classList.remove('hidden');
             }
 
             if (!ordenVal) {
                 hasError = true;
-                if (ordenInput) ordenInput.classList.add('border-red-500');
                 if (errOrdenText) errOrdenText.textContent = 'No es correcto: debes digitar la orden';
                 if (errOrden) errOrden.classList.remove('hidden');
             }
@@ -395,30 +451,65 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updateGuestTheme(tipo) {
+    const tabMant = document.getElementById('tab-btn-mantenimiento');
+    const tabElec = document.getElementById('tab-btn-electronica');
+    const radioMant = document.getElementById('tipo-mantenimiento');
+    const radioElec = document.getElementById('tipo-electronica');
+    const form = document.getElementById('guestSearchForm');
     const ordenInput = document.getElementById('guestOrdenInput');
     const submitBtn = document.getElementById('guestSubmitBtn');
     const submitBtnText = document.getElementById('guestSubmitBtnText');
 
     if (tipo === 'electronica') {
+        if (radioElec) radioElec.checked = true;
+        if (radioMant) radioMant.checked = false;
+        if (tabMant) {
+            tabMant.classList.remove('guest-tab-active-mant');
+            tabMant.classList.add('guest-tab-inactive');
+        }
+        if (tabElec) {
+            tabElec.classList.remove('guest-tab-inactive');
+            tabElec.classList.add('guest-tab-active-elec');
+        }
+        if (form) {
+            form.classList.remove('theme-mantenimiento-inputs');
+            form.classList.add('theme-electronica-inputs');
+        }
         const ph = 'Ej: ELC-001 o 1';
         if (ordenInput) {
             ordenInput.dataset.tempPlaceholder = ph;
             ordenInput.placeholder = ph;
         }
         if (submitBtn) {
-            submitBtn.className = 'w-full mt-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-purple-500/25 text-white font-bold py-2.5 sm:py-3 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2';
+            submitBtn.classList.remove('btn-theme-mantenimiento');
+            submitBtn.classList.add('btn-theme-electronica');
         }
         if (submitBtnText) {
-            submitBtnText.textContent = 'Consultar Electrónica';
+            submitBtnText.textContent = 'Consultar Estado de la Orden';
         }
     } else {
+        if (radioMant) radioMant.checked = true;
+        if (radioElec) radioElec.checked = false;
+        if (tabElec) {
+            tabElec.classList.remove('guest-tab-active-elec');
+            tabElec.classList.add('guest-tab-inactive');
+        }
+        if (tabMant) {
+            tabMant.classList.remove('guest-tab-inactive');
+            tabMant.classList.add('guest-tab-active-mant');
+        }
+        if (form) {
+            form.classList.remove('theme-electronica-inputs');
+            form.classList.add('theme-mantenimiento-inputs');
+        }
         const ph = 'Ej: ORD-001 o 1';
         if (ordenInput) {
             ordenInput.dataset.tempPlaceholder = ph;
             ordenInput.placeholder = ph;
         }
         if (submitBtn) {
-            submitBtn.className = 'w-full mt-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-blue-500/25 text-white font-bold py-2.5 sm:py-3 rounded-xl shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.98] active:translate-y-[1px] cursor-pointer text-sm sm:text-base flex items-center justify-center gap-2';
+            submitBtn.classList.remove('btn-theme-electronica');
+            submitBtn.classList.add('btn-theme-mantenimiento');
         }
         if (submitBtnText) {
             submitBtnText.textContent = 'Consultar Estado de la Orden';
