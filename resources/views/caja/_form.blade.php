@@ -107,7 +107,7 @@
         </label>
         <div class="flex gap-3 mt-1">
             <label id="label_ingreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
-                <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ $tipoMov === 'ingreso' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
+                <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ $tipoMov === 'ingreso' ? 'checked' : '' }} class="accent-emerald-600 w-4 h-4">
                 <span id="text_ingreso" class="font-bold {{ $tipoMov === 'ingreso' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">📈 Ingreso</span>
             </label>
             <label id="label_egreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">

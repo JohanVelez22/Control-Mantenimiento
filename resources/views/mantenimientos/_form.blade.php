@@ -67,7 +67,7 @@
         <label class="field-label">Tipo de Mantenimiento *</label>
         <div class="flex gap-3 mt-1">
             <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_prev">
-                <input type="radio" name="tipo" value="preventivo" {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
+                <input type="radio" name="tipo" value="preventivo" {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'checked' : '' }} class="accent-emerald-600 w-4 h-4">
                 <span class="font-bold {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">Preventivo</span>
             </label>
             <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_corr">

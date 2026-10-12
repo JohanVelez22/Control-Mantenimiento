@@ -7882,3 +7882,10 @@ html.dark .event-empty-desc {
   border-color: #8b5cf6 !important;
   box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.35) !important;
 }
+
+/* Radio Accent Color Utilities */
+.accent-emerald-600,
+#tipo_ingreso,
+input[type="radio"].accent-emerald-600 {
+  accent-color: #059669 !important;
+}
