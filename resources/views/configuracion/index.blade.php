@@ -349,6 +349,7 @@ async function ejecutarEliminacionLogo() {
 
 let _pendingBackupDeleteFilename = null;
 let _pendingBackupRestoreFilename = null;
+let _pendingGitUpdate = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ts-modal-confirm')?.addEventListener('click', async () => {
@@ -366,6 +367,10 @@ document.addEventListener('DOMContentLoaded', () => {
             _pendingBackupRestoreFilename = null;
             if (typeof closeTsModal === 'function') closeTsModal();
             await ejecutarRestauracionBackup(fname);
+        } else if (_pendingGitUpdate) {
+            _pendingGitUpdate = false;
+            if (typeof closeTsModal === 'function') closeTsModal();
+            await ejecutarActualizacionGit();
         }
     });
 });
@@ -1325,9 +1330,15 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
                         <a href="${downloadUrl}" class="btn-backup-download" title="Descargar copia de seguridad">
                             <span>⬇️</span>
                         </a>
-                        <button type="button" onclick="restoreBackupFile('${f.name}')" class="btn-backup-restore" title="Restaurar copia de seguridad">
-                            <span>🔄</span>
-                        </button>
+                        ${f.name.startsWith('backup_integral') ? `
+                            <button type="button" onclick="updateSystemFromGit('${f.name}')" class="btn-backup-update" title="Actualizar sistema desde GitHub">
+                                <span>🚀</span>
+                            </button>
+                        ` : `
+                            <button type="button" onclick="restoreBackupFile('${f.name}')" class="btn-backup-restore" title="Restaurar copia de seguridad">
+                                <span>🔄</span>
+                            </button>
+                        `}
                         <button type="button" onclick="deleteBackupFile('${f.name}')" class="btn-backup-delete" title="Eliminar respaldo">
                             <span>🗑️</span>
                         </button>
@@ -1513,16 +1524,13 @@ async function ejecutarEliminacionBackup(filename) {
 function restoreBackupFile(filename) {
     _pendingBackupDeleteFilename = null;
     _pendingBackupRestoreFilename = filename;
+    _pendingGitUpdate = false;
     
     let tipoTexto = 'Base de Datos (.sql)';
     let detalleTexto = 'Se restaurarán todas las tablas y datos del sistema. La trazabilidad y eventos de auditoría se conservarán intactos.';
     let iconEmoji = '🔄';
 
-    if (filename.startsWith('backup_integral')) {
-        tipoTexto = 'Respaldo Integral (BD + Archivos Multimedia)';
-        detalleTexto = 'Se restaurará la base de datos completa y todos los archivos multimedia (fotos de equipos, recibos, comprobantes). El código fuente permanecerá intacto en el ZIP para mantener estable el servidor en ejecución, y todos los eventos de auditoría se conservarán.';
-        iconEmoji = '📦';
-    } else if (filename.startsWith('backup_bd_multimedia') || filename.endsWith('.zip')) {
+    if (filename.startsWith('backup_bd_multimedia') || filename.endsWith('.zip')) {
         tipoTexto = 'Base de Datos + Archivos Multimedia (.zip)';
         detalleTexto = 'Se restaurarán todas las tablas de la base de datos y los archivos/fotos públicas (storage/app/public). Todos los eventos de auditoría se conservarán intactos.';
         iconEmoji = '🗜️';
@@ -1541,30 +1549,34 @@ function restoreBackupFile(filename) {
     if (msgEl) {
         msgEl.innerHTML = `
             <div class="text-left space-y-3.5 my-3 text-xs sm:text-sm">
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60">
-                    <span class="text-2xl shrink-0">${iconEmoji}</span>
-                    <div class="min-w-0">
-                        <div class="text-[10px] uppercase tracking-wider font-extrabold text-slate-400 dark:text-slate-400">Tipo de Respaldo</div>
-                        <div class="font-bold text-sm text-slate-800 dark:text-slate-100 truncate">${tipoTexto}</div>
+                <!-- Tipo de Respaldo: Sin bordes blancos, sin bloque gris -->
+                <div class="flex items-center gap-3 py-1 px-1">
+                    <span class="text-2xl shrink-0 p-2.5 rounded-2xl bg-blue-500/15 text-blue-400">${iconEmoji}</span>
+                    <div class="min-w-0 text-left">
+                        <div class="text-[10px] uppercase tracking-wider font-extrabold text-blue-500 dark:text-blue-400">Tipo de Respaldo</div>
+                        <div class="font-bold text-sm text-slate-900 dark:text-white truncate">${tipoTexto}</div>
                     </div>
                 </div>
 
-                <div class="p-3 rounded-xl bg-blue-50/70 dark:bg-blue-900/25 border border-blue-200 dark:border-blue-700/40 text-blue-800 dark:text-blue-300 font-mono text-[11px] sm:text-xs break-all select-all flex items-center gap-2">
+                <!-- Nombre del archivo: ÚNICO campo con borde -->
+                <div class="p-3 rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-blue-500/30 text-blue-700 dark:text-blue-300 font-mono text-[11px] sm:text-xs break-all select-all flex items-center gap-2.5 shadow-sm">
                     <span class="text-sm shrink-0">📄</span>
-                    <span class="font-semibold">${filename}</span>
+                    <span class="font-semibold text-slate-800 dark:text-slate-100">${filename}</span>
                 </div>
 
-                <div class="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/50">
+                <!-- Descripción: Sin borde -->
+                <div class="px-1 text-left">
                     <p class="text-xs sm:text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
                         ${detalleTexto}
                     </p>
                 </div>
 
-                <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5 leading-relaxed">
+                <!-- Advertencia: Sin borde, fondo ámbar suave -->
+                <div class="p-3.5 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5 leading-relaxed text-left">
                     <span class="shrink-0 text-base mt-0.5">⚠️</span>
                     <div>
-                        <span class="font-bold">Advertencia de seguridad:</span>
-                        <span> Esta operación sobrescribirá los datos del sistema con el contenido del respaldo seleccionado. La trazabilidad histórica de auditoría será preservada de forma automática.</span>
+                        <span class="font-bold text-amber-700 dark:text-amber-400">Advertencia de seguridad:</span>
+                        <span class="text-slate-600 dark:text-slate-300"> Esta operación sobrescribirá los datos del sistema con el contenido del respaldo seleccionado. La trazabilidad histórica de auditoría será preservada de forma automática.</span>
                     </div>
                 </div>
             </div>
@@ -1574,11 +1586,11 @@ function restoreBackupFile(filename) {
     if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl mx-auto mb-4';
     if (confirmBtn) {
         confirmBtn.className = 'flex-1 btn-ghost-emerald justify-center font-bold';
-        confirmBtn.innerHTML = '<span>Restaurar Ahora</span>';
+        confirmBtn.textContent = 'Restaurar Ahora';
     }
     if (cancelBtn) {
         cancelBtn.className = 'flex-1 btn-ghost-red justify-center font-bold';
-        cancelBtn.innerHTML = '<span>Cancelar</span>';
+        cancelBtn.textContent = 'Cancelar';
     }
 
     if (modal) {
@@ -1587,6 +1599,111 @@ function restoreBackupFile(filename) {
             modal.classList.remove('opacity-0');
             if (card) card.classList.remove('scale-95', 'opacity-0');
         }, 10);
+    }
+}
+
+function updateSystemFromGit(filename) {
+    _pendingBackupDeleteFilename = null;
+    _pendingBackupRestoreFilename = null;
+    _pendingGitUpdate = true;
+
+    const modal = document.getElementById('ts-modal');
+    const card = document.getElementById('ts-modal-card');
+    const titleEl = document.getElementById('ts-modal-title');
+    const msgEl = document.getElementById('ts-modal-msg');
+    const confirmBtn = document.getElementById('ts-modal-confirm');
+    const cancelBtn = document.getElementById('ts-modal-cancel');
+    const iconBox = document.getElementById('ts-modal-icon-box');
+    const icon = document.getElementById('ts-modal-icon');
+
+    if (titleEl) titleEl.innerText = '¿Actualizar sistema desde GitHub?';
+    if (msgEl) {
+        msgEl.innerHTML = `
+            <div class="text-left space-y-3.5 my-3 text-xs sm:text-sm">
+                <!-- Tipo de Acción: Sin bordes blancos, sin grisaseo -->
+                <div class="flex items-center gap-3 py-1 px-1">
+                    <span class="text-2xl shrink-0 p-2.5 rounded-2xl bg-emerald-500/15 text-emerald-400">🚀</span>
+                    <div class="min-w-0 text-left">
+                        <div class="text-[10.5px] uppercase tracking-wider font-extrabold text-emerald-500 dark:text-emerald-400">Acción Integral</div>
+                        <div class="font-bold text-sm text-slate-900 dark:text-white truncate">Actualizar Código Fuente (Git Pull)</div>
+                    </div>
+                </div>
+
+                <!-- Nombre de la copia de respaldo: ÚNICO campo con borde -->
+                <div class="p-3 rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-mono text-[11px] sm:text-xs break-all select-all flex items-center gap-2.5 shadow-sm">
+                    <span class="text-sm shrink-0">📦</span>
+                    <span class="font-semibold text-slate-800 dark:text-slate-100">${filename}</span>
+                </div>
+
+                <!-- Descripción: Sin borde -->
+                <div class="px-1 text-left">
+                    <p class="text-xs sm:text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                        Se sincronizarán los cambios desde el repositorio de GitHub (<span class="font-mono text-emerald-500 dark:text-emerald-400 font-semibold">origin/main</span>), se ejecutarán las migraciones pendientes de base de datos y se optimizará la caché.
+                    </p>
+                </div>
+
+                <!-- Aviso informativo: Sin borde -->
+                <div class="p-3.5 rounded-xl bg-blue-500/10 text-blue-700 dark:text-blue-300 text-xs flex items-start gap-2.5 leading-relaxed text-left">
+                    <span class="shrink-0 text-base mt-0.5">ℹ️</span>
+                    <div>
+                        <span class="font-bold text-blue-600 dark:text-blue-400">Sincronización segura:</span>
+                        <span class="text-slate-600 dark:text-slate-300"> El sistema validará la conexión con GitHub antes de proceder. Si ya está al día o no hay acceso, se te notificará en pantalla.</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    if (icon) icon.innerText = '🚀';
+    if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-3xl mx-auto mb-4';
+    if (confirmBtn) {
+        confirmBtn.className = 'flex-1 btn-ghost-emerald justify-center font-bold';
+        confirmBtn.textContent = 'Actualizar Ahora';
+    }
+    if (cancelBtn) {
+        cancelBtn.className = 'flex-1 btn-ghost-red justify-center font-bold';
+        cancelBtn.textContent = 'Cancelar';
+    }
+
+    if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            if (card) card.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+    }
+}
+
+async function ejecutarActualizacionGit() {
+    try {
+        const res = await fetch('{{ route('backups.git-update') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': BACKUP_CSRF,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        const data = await res.json();
+        if (data.status === 'updated') {
+            if (typeof showToast === 'function') {
+                showToast(data.message || 'Se actualizó correctamente.', 'success');
+            }
+        } else if (data.status === 'up_to_date') {
+            if (typeof showToast === 'function') {
+                showToast(data.message || 'Nada por hacer.', 'success');
+            }
+        } else {
+            if (typeof showToast === 'function') {
+                showToast(data.message || 'No se pudo establecer conexión con GitHub.', 'error');
+            }
+        }
+    } catch (err) {
+        console.error('Error al actualizar desde GitHub:', err);
+        if (typeof showToast === 'function') {
+            showToast('No se pudo establecer conexión con GitHub.', 'error');
+        }
     }
 }
 

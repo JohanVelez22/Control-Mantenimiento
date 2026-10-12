@@ -1810,6 +1810,37 @@ html.dark .btn-backup-restore:hover {
   background: rgba(96, 165, 250, 0.25) !important;
 }
 
+.btn-backup-update {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  padding: 5px 8px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #059669 !important;
+}
+
+.btn-backup-update:hover {
+  background: rgba(16, 185, 129, 0.22) !important;
+  transform: translateY(-1px);
+}
+
+.dark .btn-backup-update,
+html.dark .btn-backup-update {
+  background: rgba(52, 211, 153, 0.15) !important;
+  color: #34D399 !important;
+  border-color: rgba(52, 211, 153, 0.3) !important;
+}
+
+.dark .btn-backup-update:hover,
+html.dark .btn-backup-update:hover {
+  background: rgba(52, 211, 153, 0.25) !important;
+}
+
 .btn-backup-delete {
   display: inline-flex !important;
   align-items: center !important;

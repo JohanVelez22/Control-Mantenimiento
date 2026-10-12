@@ -177,6 +177,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::get('/backups/download/{filename}', [BackupController::class, 'download'])->where('filename', '.*')->name('backups.download');
         Route::delete('/backups/destroy/{filename}', [BackupController::class, 'destroy'])->where('filename', '.*')->name('backups.destroy');
         Route::post('/backups/restore/{filename}', [BackupController::class, 'restore'])->where('filename', '.*')->name('backups.restore');
+        Route::post('/backups/git-update', [BackupController::class, 'gitUpdate'])->name('backups.git-update');
         Route::post('/backups/open-folder', [BackupController::class, 'openFolder'])->name('backups.open-folder');
 
         // Mantenimientos y Electrónicas: listados generales (solo admin y técnico)

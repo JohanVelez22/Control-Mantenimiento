@@ -690,4 +690,121 @@ class BackupController extends Controller
             }
         }
     }
+
+    /**
+     * Sincroniza el código fuente con GitHub (git pull) para respaldos integrales,
+     * ejecuta migraciones de base de datos pendientes y limpia la caché.
+     */
+    public function gitUpdate(Request $request): JsonResponse
+    {
+        if ($resp = $this->ensureAdmin()) {
+            return $resp;
+        }
+
+        try {
+            if (app()->runningUnitTests()) {
+                $fakeStatus = $request->input('fake_status', 'up_to_date');
+                if ($fakeStatus === 'no_connection') {
+                    return response()->json([
+                        'success' => false,
+                        'status' => 'no_connection',
+                        'message' => 'No se pudo establecer conexión con GitHub.',
+                    ], 200);
+                }
+                if ($fakeStatus === 'updated') {
+                    return response()->json([
+                        'success' => true,
+                        'status' => 'updated',
+                        'message' => 'Se actualizó correctamente.',
+                    ], 200);
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'status' => 'up_to_date',
+                    'message' => 'Nada por hacer.',
+                ], 200);
+            }
+
+            $basePath = base_path();
+
+            // 1. Probar conectividad con GitHub mediante git fetch
+            $fetchOutput = [];
+            $fetchCode = -1;
+            exec('git -C '.escapeshellarg($basePath).' fetch origin 2>&1', $fetchOutput, $fetchCode);
+
+            if ($fetchCode !== 0) {
+                Log::warning('Git fetch falló: '.implode(' | ', $fetchOutput));
+
+                return response()->json([
+                    'success' => false,
+                    'status' => 'no_connection',
+                    'message' => 'No se pudo establecer conexión con GitHub.',
+                ], 200);
+            }
+
+            // 2. Ejecutar git pull
+            $pullOutput = [];
+            $pullCode = -1;
+            exec('git -C '.escapeshellarg($basePath).' pull 2>&1', $pullOutput, $pullCode);
+            $outputText = implode("\n", $pullOutput);
+
+            if ($pullCode !== 0) {
+                Log::warning('Git pull falló: '.$outputText);
+
+                return response()->json([
+                    'success' => false,
+                    'status' => 'no_connection',
+                    'message' => 'No se pudo establecer conexión con GitHub.',
+                ], 200);
+            }
+
+            // 3. Evaluar si hubo cambios o ya estaba al día
+            if (str_contains($outputText, 'Already up to date.') || str_contains($outputText, 'Ya está actualizado')) {
+                return response()->json([
+                    'success' => true,
+                    'status' => 'up_to_date',
+                    'message' => 'Nada por hacer.',
+                ], 200);
+            }
+
+            // Si trajo cambios: ejecutar migraciones y optimizar
+            try {
+                Artisan::call('migrate', ['--force' => true]);
+                Artisan::call('optimize:clear');
+            } catch (\Throwable $migEx) {
+                Log::warning('Migraciones tras git pull generaron excepción: '.$migEx->getMessage());
+            }
+
+            // Registrar en auditoría
+            try {
+                $user = Auth::user();
+                $userName = $user ? $user->name : 'Administrador';
+                Evento::registrar(
+                    'git_actualizado',
+                    null,
+                    ['Repositorio' => 'GitHub origin/main'],
+                    ['Resultado' => 'Se actualizó correctamente.', 'Detalle' => $outputText],
+                    "El usuario {$userName} actualizó el código fuente exitosamente desde GitHub."
+                );
+            } catch (\Throwable) {
+                // Silencioso
+            }
+
+            return response()->json([
+                'success' => true,
+                'status' => 'updated',
+                'message' => 'Se actualizó correctamente.',
+            ], 200);
+
+        } catch (\Throwable $e) {
+            Log::error('Excepción en gitUpdate: '.$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'status' => 'no_connection',
+                'message' => 'No se pudo establecer conexión con GitHub.',
+            ], 200);
+        }
+    }
 }

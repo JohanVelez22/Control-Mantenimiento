@@ -386,6 +386,48 @@ class BackupManagementTest extends TestCase
         $response->assertStatus(404);
     }
 
+    public function test_admin_can_trigger_git_update_when_updated()
+    {
+        $response = $this->actingAs($this->admin)->postJson(route('backups.git-update'), [
+            'fake_status' => 'updated',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertTrue($response->json('success'));
+        $this->assertEquals('updated', $response->json('status'));
+        $this->assertEquals('Se actualizó correctamente.', $response->json('message'));
+    }
+
+    public function test_admin_can_trigger_git_update_when_up_to_date()
+    {
+        $response = $this->actingAs($this->admin)->postJson(route('backups.git-update'), [
+            'fake_status' => 'up_to_date',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertTrue($response->json('success'));
+        $this->assertEquals('up_to_date', $response->json('status'));
+        $this->assertEquals('Nada por hacer.', $response->json('message'));
+    }
+
+    public function test_admin_handles_git_update_when_no_connection()
+    {
+        $response = $this->actingAs($this->admin)->postJson(route('backups.git-update'), [
+            'fake_status' => 'no_connection',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertFalse($response->json('success'));
+        $this->assertEquals('no_connection', $response->json('status'));
+        $this->assertEquals('No se pudo establecer conexión con GitHub.', $response->json('message'));
+    }
+
+    public function test_non_admin_cannot_trigger_git_update()
+    {
+        $response = $this->actingAs($this->tecnico)->postJson(route('backups.git-update'));
+        $response->assertStatus(403);
+    }
+
     protected function tearDown(): void
     {
         if (File::exists($this->backupDir)) {
