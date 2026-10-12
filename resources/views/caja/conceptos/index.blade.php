@@ -87,9 +87,11 @@
                 <div class="space-y-4">
                     <div>
                         <label class="field-label">Nombre del Concepto</label>
-                        <input type="text" name="nombre" required class="glass-input" placeholder="Ej: Pago de Internet">
+                        <input type="text" name="nombre" required class="glass-input mt-1" placeholder="Ej: Pago de Internet">
                     </div>
-                    <button type="submit" class="btn-save w-full justify-center">Crear Concepto</button>
+                    <button type="submit" class="btn-primary w-full justify-center py-2.5 font-bold shadow-md shadow-indigo-500/20">
+                        ➕ Crear Concepto
+                    </button>
                 </div>
             </form>
         </div>
@@ -98,18 +100,18 @@
             <div class="glass-card p-6">
                 <h3 class="font-bold text-slate-800 dark:text-white mb-4">Conceptos Existentes</h3>
                 
-                <ul class="space-y-3">
+                <ul class="space-y-3.5">
                     @forelse($conceptos as $c)
-                    <li class="flex items-center justify-between p-3 bg-white/20 dark:bg-slate-900/25 rounded-xl border border-white/40 dark:border-white/5 backdrop-blur-md shadow-sm">
-                        <form action="{{ route('conceptos.update', $c->id) }}" method="POST" class="flex-1 flex gap-2 mr-4">
+                    <li class="flex items-center justify-between gap-3">
+                        <form action="{{ route('conceptos.update', $c->id) }}" method="POST" class="flex-1 flex items-center gap-2">
                             @csrf @method('PUT')
-                            <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-1.5 px-3 text-sm">
-                            <button type="submit" class="btn-ghost px-3 py-1.5 text-xs text-blue-600">💾 Guardar</button>
+                            <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-2 px-3 text-sm">
+                            <button type="submit" class="btn-ghost px-3 py-2 text-xs text-blue-600 dark:text-blue-400 font-bold shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/30">💾 Guardar</button>
                         </form>
-                        <button type="button" onclick="openDeletePwd('{{ route('conceptos.destroy', $c->id) }}')" class="btn-danger px-3 py-1.5 text-xs">🗑️</button>
+                        <button type="button" onclick="openDeletePwd('{{ route('conceptos.destroy', $c->id) }}')" class="btn-danger px-2.5 py-2 text-xs shrink-0" title="Eliminar concepto">🗑️</button>
                     </li>
                     @empty
-                    <li class="p-4 text-center text-gray-500">No hay conceptos registrados.</li>
+                    <li class="py-6 text-center text-gray-500 font-medium text-sm">No hay conceptos registrados.</li>
                     @endforelse
                 </ul>
             </div>

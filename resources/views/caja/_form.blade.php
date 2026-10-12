@@ -45,11 +45,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
                 <label class="field-label !flex items-center gap-1.5 font-bold"><span>🏢</span> Empresa <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
-                <input type="text" name="empresa" id="caja_empresa" value="{{ $valEmpresa }}" placeholder="Nombre de la empresa..." class="glass-input">
+                <input type="text" name="empresa" id="caja_empresa" value="{{ $valEmpresa }}" placeholder="Nombre de la empresa..." class="glass-input mt-1">
             </div>
             <div>
                 <label class="field-label !flex items-center gap-1.5 font-bold"><span>👤</span> Persona <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
-                <input type="text" name="persona" id="caja_persona" value="{{ $valPersona }}" placeholder="Nombre de quien paga/recibe..." class="glass-input">
+                <input type="text" name="persona" id="caja_persona" value="{{ $valPersona }}" placeholder="Nombre de quien paga/recibe..." class="glass-input mt-1">
                 @error('persona') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
         </div>

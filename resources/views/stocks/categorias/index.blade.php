@@ -96,7 +96,9 @@
                         <label class="field-label">Nombre</label>
                         <input type="text" name="nombre" required class="glass-input" placeholder="Ej: Pantallas, Accesorios...">
                     </div>
-                    <button type="submit" class="btn-primary w-full justify-center">Crear Clasificación</button>
+                    <button type="submit" class="btn-primary w-full justify-center py-2.5 font-bold shadow-md shadow-indigo-500/20">
+                        ➕ Crear Clasificación
+                    </button>
                 </div>
             </form>
         </div>
@@ -105,24 +107,24 @@
             <div class="glass-card p-6">
                 <h3 class="font-bold text-slate-800 dark:text-white mb-4">Clasificaciones Existentes</h3>
                 
-                <ul class="space-y-3">
+                <ul class="space-y-3.5">
                     @forelse($categorias as $c)
-                    <li class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-white/20 dark:bg-slate-900/25 rounded-xl border border-white/40 dark:border-white/5 backdrop-blur-md shadow-sm gap-2">
+                    <li class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
                         <form action="{{ route('stocks.categorias.update', $c->id) }}" method="POST" class="flex-1 w-full flex flex-wrap sm:flex-nowrap gap-2 items-center">
                             @csrf @method('PUT')
-                            <select name="tipo" class="glass-input py-1.5 px-2 text-xs w-auto font-bold {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
+                            <select name="tipo" class="glass-input py-2 px-2 text-xs w-auto font-bold {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
                                 <option value="categoria" {{ $c->tipo == 'categoria' ? 'selected' : '' }}>🗂️ Categoría</option>
                                 <option value="subcategoria" {{ $c->tipo == 'subcategoria' ? 'selected' : '' }}>📂 Subcat</option>
                             </select>
-                            <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-1.5 px-3 text-sm min-w-[120px]">
-                            <button type="submit" class="btn-ghost px-3 py-1.5 text-xs text-blue-600">💾</button>
+                            <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-2 px-3 text-sm min-w-[120px]">
+                            <button type="submit" class="btn-ghost px-3 py-2 text-xs text-blue-600 dark:text-blue-400 font-bold shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/30">💾 Guardar</button>
                         </form>
-                        <div class="ml-auto sm:ml-0 grid grid-cols-2 gap-1">
-                            <button type="button" onclick="openDeletePwd('{{ route('stocks.categorias.destroy', $c->id) }}')" class="btn-danger px-3 py-1.5 text-xs">🗑️</button>
+                        <div class="ml-auto sm:ml-0 flex items-center gap-1">
+                            <button type="button" onclick="openDeletePwd('{{ route('stocks.categorias.destroy', $c->id) }}')" class="btn-danger px-2.5 py-2 text-xs shrink-0" title="Eliminar clasificación">🗑️</button>
                         </div>
                     </li>
                     @empty
-                    <li class="p-4 text-center text-gray-500">No hay clasificaciones registradas.</li>
+                    <li class="py-6 text-center text-gray-500 font-medium text-sm">No hay clasificaciones registradas.</li>
                     @endforelse
                 </ul>
             </div>
