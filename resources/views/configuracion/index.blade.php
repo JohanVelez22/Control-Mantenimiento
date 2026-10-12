@@ -348,6 +348,7 @@ async function ejecutarEliminacionLogo() {
 }
 
 let _pendingBackupDeleteFilename = null;
+let _pendingBackupRestoreFilename = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ts-modal-confirm')?.addEventListener('click', async () => {
@@ -360,6 +361,11 @@ document.addEventListener('DOMContentLoaded', () => {
             _pendingBackupDeleteFilename = null;
             if (typeof closeTsModal === 'function') closeTsModal();
             await ejecutarEliminacionBackup(fname);
+        } else if (_pendingBackupRestoreFilename) {
+            const fname = _pendingBackupRestoreFilename;
+            _pendingBackupRestoreFilename = null;
+            if (typeof closeTsModal === 'function') closeTsModal();
+            await ejecutarRestauracionBackup(fname);
         }
     });
 });
@@ -1316,9 +1322,12 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
                 </td>
                 <td class="text-center whitespace-nowrap">
                     <div class="flex items-center justify-center gap-1.5">
-                        <a href="${downloadUrl}" class="btn-backup-download" title="Descargar al equipo">
-                            <span>⬇️</span> Descargar
+                        <a href="${downloadUrl}" class="btn-backup-download" title="Descargar copia de seguridad">
+                            <span>⬇️</span>
                         </a>
+                        <button type="button" onclick="restoreBackupFile('${f.name}')" class="btn-backup-restore" title="Restaurar copia de seguridad">
+                            <span>🔄</span>
+                        </button>
                         <button type="button" onclick="deleteBackupFile('${f.name}')" class="btn-backup-delete" title="Eliminar respaldo">
                             <span>🗑️</span>
                         </button>
@@ -1439,6 +1448,7 @@ async function saveBackupSchedule() {
 
 function deleteBackupFile(filename) {
     _pendingBackupDeleteFilename = filename;
+    _pendingBackupRestoreFilename = null;
     const modal = document.getElementById('ts-modal');
     const card = document.getElementById('ts-modal-card');
     const titleEl = document.getElementById('ts-modal-title');
@@ -1496,6 +1506,122 @@ async function ejecutarEliminacionBackup(filename) {
         console.error('Error al eliminar respaldo:', err);
         if (typeof showToast === 'function') {
             showToast('Error de conexión al eliminar el archivo.', 'error');
+        }
+    }
+}
+
+function restoreBackupFile(filename) {
+    _pendingBackupDeleteFilename = null;
+    _pendingBackupRestoreFilename = filename;
+    
+    let tipoTexto = 'Base de Datos (.sql)';
+    let detalleTexto = 'Se restaurarán todas las tablas y datos del sistema. La trazabilidad y eventos de auditoría se conservarán intactos.';
+    let iconEmoji = '🔄';
+
+    if (filename.startsWith('backup_integral')) {
+        tipoTexto = 'Respaldo Integral (BD + Archivos Multimedia)';
+        detalleTexto = 'Se restaurará la base de datos completa y todos los archivos multimedia (fotos de equipos, recibos, comprobantes). El código fuente permanecerá intacto en el ZIP para mantener estable el servidor en ejecución, y todos los eventos de auditoría se conservarán.';
+        iconEmoji = '📦';
+    } else if (filename.startsWith('backup_bd_multimedia') || filename.endsWith('.zip')) {
+        tipoTexto = 'Base de Datos + Archivos Multimedia (.zip)';
+        detalleTexto = 'Se restaurarán todas las tablas de la base de datos y los archivos/fotos públicas (storage/app/public). Todos los eventos de auditoría se conservarán intactos.';
+        iconEmoji = '🗜️';
+    }
+
+    const modal = document.getElementById('ts-modal');
+    const card = document.getElementById('ts-modal-card');
+    const titleEl = document.getElementById('ts-modal-title');
+    const msgEl = document.getElementById('ts-modal-msg');
+    const confirmBtn = document.getElementById('ts-modal-confirm');
+    const cancelBtn = document.getElementById('ts-modal-cancel');
+    const iconBox = document.getElementById('ts-modal-icon-box');
+    const icon = document.getElementById('ts-modal-icon');
+
+    if (titleEl) titleEl.innerText = '¿Restaurar copia de seguridad?';
+    if (msgEl) {
+        msgEl.innerHTML = `
+            <div class="text-left space-y-3.5 my-3 text-xs sm:text-sm">
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60">
+                    <span class="text-2xl shrink-0">${iconEmoji}</span>
+                    <div class="min-w-0">
+                        <div class="text-[10px] uppercase tracking-wider font-extrabold text-slate-400 dark:text-slate-400">Tipo de Respaldo</div>
+                        <div class="font-bold text-sm text-slate-800 dark:text-slate-100 truncate">${tipoTexto}</div>
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-xl bg-blue-50/70 dark:bg-blue-900/25 border border-blue-200 dark:border-blue-700/40 text-blue-800 dark:text-blue-300 font-mono text-[11px] sm:text-xs break-all select-all flex items-center gap-2">
+                    <span class="text-sm shrink-0">📄</span>
+                    <span class="font-semibold">${filename}</span>
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/50">
+                    <p class="text-xs sm:text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                        ${detalleTexto}
+                    </p>
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5 leading-relaxed">
+                    <span class="shrink-0 text-base mt-0.5">⚠️</span>
+                    <div>
+                        <span class="font-bold">Advertencia de seguridad:</span>
+                        <span> Esta operación sobrescribirá los datos del sistema con el contenido del respaldo seleccionado. La trazabilidad histórica de auditoría será preservada de forma automática.</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    if (icon) icon.innerText = '🔄';
+    if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl mx-auto mb-4';
+    if (confirmBtn) {
+        confirmBtn.className = 'flex-1 btn-ghost-emerald justify-center font-bold';
+        confirmBtn.innerHTML = '<span>Restaurar Ahora</span>';
+    }
+    if (cancelBtn) {
+        cancelBtn.className = 'flex-1 btn-ghost-red justify-center font-bold';
+        cancelBtn.innerHTML = '<span>Cancelar</span>';
+    }
+
+    if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            if (card) card.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+    }
+}
+
+async function ejecutarRestauracionBackup(filename) {
+    if (typeof showToast === 'function') {
+        showToast('Iniciando restauración de la copia de seguridad, por favor espera...', 'info');
+    }
+
+    try {
+        const res = await fetch('{{ url('/backups/restore') }}/' + encodeURIComponent(filename), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': BACKUP_CSRF,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            if (typeof showToast === 'function') {
+                showToast(data.message || 'Copia de seguridad restaurada exitosamente.', 'success');
+            }
+            if (data.files) {
+                renderBackupFiles(data.files || [], data.total_files || 0, data.total_size || '0 KB', document.getElementById('sched-max-copias')?.value || 10, data.files?.[0]);
+            }
+        } else {
+            if (typeof showToast === 'function') {
+                showToast(data.message || 'Error al restaurar la copia de seguridad.', 'error');
+            }
+        }
+    } catch (err) {
+        console.error('Error al restaurar respaldo:', err);
+        if (typeof showToast === 'function') {
+            showToast('Error de conexión o tiempo de espera al restaurar.', 'error');
         }
     }
 }

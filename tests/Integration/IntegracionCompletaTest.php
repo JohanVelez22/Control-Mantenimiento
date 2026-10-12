@@ -190,7 +190,7 @@ class IntegracionCompletaTest extends TestCase
         $equipo = Equipo::first();
         $mant = Mantenimiento::create([
             'id_orden' => 'MNT-TEST-'.time(), 'equipo_id' => $equipo->id, 'tecnico_id' => $tecnicoM->id, 'user_id' => $this->admin->id,
-            'fecha_entrada' => now(), 'tipo' => 'correctivo', 'descripcion' => 'Test', 'costo' => 100000, 'estado' => 'pendiente', 'anulado' => false,
+            'fecha_entrada' => now(), 'tipo' => 'correctivo', 'reparacion' => 'laboratorio', 'descripcion' => 'Test', 'costo' => 100000, 'estado' => 'pendiente', 'anulado' => false,
         ]);
         $abono = Abono::create(['mantenimiento_id' => $mant->id, 'monto' => 50000, 'fecha' => now()->toDateString(), 'tipo_pago' => 'efectivo', 'user_id' => $this->admin->id]);
         $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Abono Mantenimiento']);
@@ -203,10 +203,13 @@ class IntegracionCompletaTest extends TestCase
 
         $this->assertFalse($mov->anulado);
 
-        // Anular abono -> movimiento caja anulado en cascada
-        $abono->delete();
+        // Anular abono lógicamente -> movimiento caja anulado conservando la relación
+        $abono->update(['anulado' => true]);
+        $mov->update(['anulado' => true, 'estado' => 'anulado']);
         $mov->refresh();
         $this->assertTrue($mov->anulado);
+        $this->assertTrue($abono->anulado);
+        $this->assertEquals($abono->id, $mov->abono_id);
     }
 
     public function test_factura_pago_parcial_saldos_correctos()

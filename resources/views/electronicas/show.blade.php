@@ -248,7 +248,7 @@
 
             {{-- Listado de abonos --}}
             <h4 class="font-bold text-base text-slate-800 dark:text-white mb-3 flex items-center gap-2">
-                <span>📜</span> Historial de Abonos Registrados ({{ $electronica->abonos->count() }})
+                <span>📜</span> Historial de Abonos Registrados ({{ $electronica->abonos->where('anulado', false)->count() }})
             </h4>
             @if($electronica->abonos->isEmpty())
         <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-white/10 dark:bg-slate-900/20 backdrop-blur-sm">
@@ -258,13 +258,20 @@
         @else
         <div class="space-y-3">
             @foreach($electronica->abonos->sortByDesc('fecha') as $abono)
-            <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-white/20 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 rounded-xl backdrop-blur-md hover:bg-white/35 dark:hover:bg-slate-900/50 transition-all shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-4 p-4 {{ $abono->anulado ? 'bg-red-50/20 dark:bg-red-950/15 border-red-200/40 dark:border-red-900/20 opacity-70' : 'bg-white/20 dark:bg-slate-900/25 border-white/40 dark:border-white/5' }} border rounded-xl backdrop-blur-md hover:bg-white/35 dark:hover:bg-slate-900/50 transition-all shadow-sm">
                 <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-lg {{ $abono->tipo_pago === 'efectivo' ? 'bg-blue-500/10 text-blue-500' : 'bg-purple-500/10 text-purple-500' }} flex items-center justify-center text-xl shrink-0">
-                        {{ $abono->tipo_pago === 'efectivo' ? '💵' : '🏦' }}
+                    <div class="w-10 h-10 rounded-lg {{ $abono->anulado ? 'bg-red-500/10 text-red-500' : ($abono->tipo_pago === 'efectivo' ? 'bg-blue-500/10 text-blue-500' : 'bg-purple-500/10 text-purple-500') }} flex items-center justify-center text-xl shrink-0">
+                        {{ $abono->anulado ? '🚫' : ($abono->tipo_pago === 'efectivo' ? '💵' : '🏦') }}
                     </div>
                     <div>
-                        <p class="font-black text-lg text-emerald-600 dark:text-emerald-400 leading-tight">${{ number_format($abono->monto, 0, ',', '.') }}</p>
+                        <div class="flex items-center gap-2">
+                            <p class="font-black text-lg {{ $abono->anulado ? 'text-red-500/80 dark:text-red-400 line-through' : 'text-emerald-600 dark:text-emerald-400' }} leading-tight">
+                                ${{ number_format($abono->monto, 0, ',', '.') }}
+                            </p>
+                            @if($abono->anulado)
+                                <span class="pill pill-anulado text-[10px] py-0.5 px-2 font-bold uppercase tracking-wider">🚫 Anulado</span>
+                            @endif
+                        </div>
                         <p class="text-[11px] font-semibold text-gray-500 mt-0.5">
                             {{ $abono->fecha->format('d/m/Y') }} <span class="text-gray-300 dark:text-gray-600 mx-1">•</span> {{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Consignación' }} <span class="text-gray-300 dark:text-gray-600 mx-1">•</span> Reg: {{ $abono->user->name }}
                         </p>
@@ -281,10 +288,10 @@
                     </a>
                     @endif
 
-                    @if(auth()->user()->isAdmin())
+                    @if(!$abono->anulado && auth()->user()->isAdmin())
                     <form action="{{ route('electronicas.abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de ${{ number_format($abono->monto, 0, ',', '.') }}?">
                         @csrf @method('DELETE')
-                        <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Eliminar abono">
+                        <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Anular abono">
                             🗑️
                         </button>
                     </form>

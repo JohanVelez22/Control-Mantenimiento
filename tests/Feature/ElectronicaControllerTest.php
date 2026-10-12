@@ -539,7 +539,7 @@ class ElectronicaControllerTest extends TestCase
         $response = $this->actingAs($this->admin)->delete(route('electronicas.abonos.destroy', $abono));
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing('abonos', ['id' => $abono->id]);
+        $this->assertDatabaseHas('abonos', ['id' => $abono->id, 'anulado' => true]);
 
         $electronica->refresh();
         $this->assertEquals(0, $electronica->total_abonado);

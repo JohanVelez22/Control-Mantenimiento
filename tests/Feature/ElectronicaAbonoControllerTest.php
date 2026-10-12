@@ -132,7 +132,8 @@ class ElectronicaAbonoControllerTest extends TestCase
         ]);
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing('abonos', ['id' => $abono->id]);
+        $this->assertDatabaseHas('abonos', ['id' => $abono->id, 'anulado' => true]);
+        $this->assertDatabaseHas('movimiento_cajas', ['abono_id' => $abono->id, 'anulado' => true]);
     }
 
     public function test_tecnico_requires_admin_password_to_destroy_abono(): void
@@ -163,7 +164,8 @@ class ElectronicaAbonoControllerTest extends TestCase
         ]);
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing('abonos', ['id' => $abono->id]);
+        $this->assertDatabaseHas('abonos', ['id' => $abono->id, 'anulado' => true]);
+        $this->assertDatabaseHas('movimiento_cajas', ['abono_id' => $abono->id, 'anulado' => true]);
     }
 
     public function test_destroy_abono_requires_admin_password(): void

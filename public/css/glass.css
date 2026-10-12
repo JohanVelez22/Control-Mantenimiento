@@ -1751,10 +1751,9 @@ html.dark .backup-file-size {
 .btn-backup-download {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 5px !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  padding: 5px 11px !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  padding: 5px 8px !important;
   border-radius: 8px !important;
   transition: all 0.2s ease !important;
   text-decoration: none !important;
@@ -1765,6 +1764,7 @@ html.dark .backup-file-size {
 
 .btn-backup-download:hover {
   background: rgba(13, 148, 136, 0.22) !important;
+  transform: translateY(-1px);
 }
 
 .dark .btn-backup-download,
@@ -1777,6 +1777,37 @@ html.dark .btn-backup-download {
 .dark .btn-backup-download:hover,
 html.dark .btn-backup-download:hover {
   background: rgba(45, 212, 191, 0.25) !important;
+}
+
+.btn-backup-restore {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  padding: 5px 8px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: rgba(59, 130, 246, 0.12) !important;
+  color: #2563EB !important;
+}
+
+.btn-backup-restore:hover {
+  background: rgba(59, 130, 246, 0.22) !important;
+  transform: translateY(-1px);
+}
+
+.dark .btn-backup-restore,
+html.dark .btn-backup-restore {
+  background: rgba(96, 165, 250, 0.15) !important;
+  color: #60A5FA !important;
+  border-color: rgba(96, 165, 250, 0.3) !important;
+}
+
+.dark .btn-backup-restore:hover,
+html.dark .btn-backup-restore:hover {
+  background: rgba(96, 165, 250, 0.25) !important;
 }
 
 .btn-backup-delete {
@@ -1795,6 +1826,7 @@ html.dark .btn-backup-download:hover {
 
 .btn-backup-delete:hover {
   background: rgba(239, 68, 68, 0.2) !important;
+  transform: translateY(-1px);
 }
 
 .dark .btn-backup-delete,
@@ -3085,12 +3117,14 @@ html.dark .btn-ghost-amber:hover {
   color: #B91C1C !important;
 }
 
+.dark .btn-ghost-red,
 html.dark .btn-ghost-red {
   color: #F87171 !important;
   background: rgba(239, 68, 68, 0.12) !important;
   border-color: rgba(248, 113, 113, 0.35) !important;
 }
 
+.dark .btn-ghost-red:hover,
 html.dark .btn-ghost-red:hover {
   background: rgba(239, 68, 68, 0.22) !important;
   border-color: rgba(248, 113, 113, 0.60) !important;
@@ -3120,12 +3154,14 @@ html.dark .btn-ghost-red:hover {
   color: #047857 !important;
 }
 
+.dark .btn-ghost-emerald,
 html.dark .btn-ghost-emerald {
   color: #34D399 !important;
   background: rgba(16, 185, 129, 0.14) !important;
   border-color: rgba(52, 211, 153, 0.35) !important;
 }
 
+.dark .btn-ghost-emerald:hover,
 html.dark .btn-ghost-emerald:hover {
   background: rgba(16, 185, 129, 0.25) !important;
   border-color: rgba(52, 211, 153, 0.60) !important;

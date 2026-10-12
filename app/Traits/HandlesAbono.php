@@ -139,6 +139,10 @@ trait HandlesAbono
             return back()->with('error', 'No se puede eliminar este abono: la fecha '.$fechaAbono.' ya tiene un cierre de caja registrado. Para modificarlo, elimine primero el cierre de ese día.');
         }
 
+        if ($abono->anulado) {
+            return back()->with('error', 'Este abono ya se encuentra anulado.');
+        }
+
         try {
             DB::beginTransaction();
 
@@ -157,7 +161,10 @@ trait HandlesAbono
                 ]);
             }
 
-            $abono->delete();
+            // Anular lógicamente el Abono (preservando el registro en la BD, la auditoría y la clave foránea)
+            $abono->update([
+                'anulado' => true,
+            ]);
 
             DB::commit();
 

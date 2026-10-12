@@ -39,6 +39,11 @@ class Abono extends Model
         return $this->hasOne(MovimientoCaja::class, 'abono_id');
     }
 
+    public function scopeActivos($query)
+    {
+        return $query->where('anulado', false);
+    }
+
     protected static function booted()
     {
         static::deleting(function ($abono) {
