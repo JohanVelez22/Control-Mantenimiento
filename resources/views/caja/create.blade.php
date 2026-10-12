@@ -13,7 +13,7 @@
  @csrf
  @include('caja._form')
  
- <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+    <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
  <a href="{{ route('caja.index') }}" class="btn-cancel">✕ Cancelar</a>
  <button type="submit" name="print_after" value="1" class="btn-save-print">
  🖨️ Guardar e Imprimir

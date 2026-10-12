@@ -106,11 +106,11 @@
             <span>📊</span> Tipo de Movimiento <span class="text-red-500 font-bold">*</span>
         </label>
         <div class="flex gap-3 mt-1">
-            <label id="label_ingreso" class="flex-1 ts-select-card {{ $tipoMov === 'ingreso' ? 'active-emerald' : '' }}">
+            <label id="label_ingreso" class="flex-1 ts-select-card hover-emerald {{ $tipoMov === 'ingreso' ? 'active-emerald' : '' }}">
                 <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ $tipoMov === 'ingreso' ? 'checked' : '' }} class="ts-radio-dot">
                 <span id="text_ingreso">📈 Ingreso</span>
             </label>
-            <label id="label_egreso" class="flex-1 ts-select-card {{ $tipoMov === 'egreso' ? 'active-red' : '' }}">
+            <label id="label_egreso" class="flex-1 ts-select-card hover-red {{ $tipoMov === 'egreso' ? 'active-red' : '' }}">
                 <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso" {{ $tipoMov === 'egreso' ? 'checked' : '' }} class="ts-radio-dot">
                 <span id="text_egreso">📉 Egreso</span>
             </label>
@@ -124,11 +124,11 @@
             <span>💳</span> Tipo de Pago <span class="text-red-500 font-bold">*</span>
         </label>
         <div class="flex gap-3 mt-1">
-            <label id="label_efectivo" class="flex-1 ts-select-card {{ $tipoPago === 'efectivo' ? 'active-blue' : '' }}">
+            <label id="label_efectivo" class="flex-1 ts-select-card hover-blue {{ $tipoPago === 'efectivo' ? 'active-blue' : '' }}">
                 <input type="radio" name="tipo_pago" value="efectivo" required id="tipo_efectivo" {{ $tipoPago === 'efectivo' ? 'checked' : '' }} class="ts-radio-dot">
                 <span id="text_efectivo">💵 Efectivo</span>
             </label>
-            <label id="label_banco" class="flex-1 ts-select-card {{ $tipoPago === 'consignacion' ? 'active-purple' : '' }}">
+            <label id="label_banco" class="flex-1 ts-select-card hover-purple {{ $tipoPago === 'consignacion' ? 'active-purple' : '' }}">
                 <input type="radio" name="tipo_pago" value="consignacion" id="tipo_banco" {{ $tipoPago === 'consignacion' ? 'checked' : '' }} class="ts-radio-dot">
                 <span id="text_banco">🏦 Banco</span>
             </label>

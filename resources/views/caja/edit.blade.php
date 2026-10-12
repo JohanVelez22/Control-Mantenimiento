@@ -83,16 +83,9 @@
             <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                 <span>✏️</span> Modificar Registro de Caja
             </h3>
-            <form action="{{ route('caja.update', $movimiento->id) }}" method="POST">
+            <form id="cajaEditForm" action="{{ route('caja.update', $movimiento->id) }}" method="POST">
                 @csrf @method('PUT')
                 @include('caja._form', ['movimiento' => $movimiento])
-                
-                <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-                    <a href="{{ route('caja.index') }}" class="btn-cancel">✕ Cancelar</a>
-                    <button type="submit" class="btn-save">
-                        🔄 Actualizar Movimiento
-                    </button>
-                </div>
             </form>
         </div>
 
@@ -101,9 +94,9 @@
             <div class="mt-6 pt-6 border-t border-gray-200/50 dark:border-white/10 space-y-6">
                 {{-- Registrar Nuevo Abono si hay saldo pendiente --}}
                 @if($movimiento->saldo_pendiente > 0)
-                <div class="p-6 rounded-2xl bg-blue-50/40 dark:bg-blue-900/10 border border-blue-200/50 dark:border-blue-500/20">
+                <div class="p-6 rounded-2xl bg-emerald-50/40 dark:bg-emerald-900/10 border border-emerald-200/50 dark:border-emerald-500/20">
                     <h4 class="font-bold text-base text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                        <span>💵</span> Registrar Pago / Abono a este Movimiento
+                        <span>💳</span> Registrar Nuevo Abono
                     </h4>
                     <form action="{{ route('caja.abonos.store', $movimiento->id) }}" method="POST" class="space-y-4">
                         @csrf
@@ -113,7 +106,7 @@
                                     <span>💵</span> Monto del Abono <span class="text-red-500 font-bold">*</span>
                                 </label>
                                 <div>
-                                    <input type="text" id="monto_abono_visual" required placeholder="0" class="glass-input font-bold text-left py-2.5">
+                                    <input type="text" id="monto_abono_visual" required placeholder="0" class="glass-input font-bold text-left py-2.5 text-emerald-600 dark:text-emerald-400">
                                     <input type="hidden" name="monto_abono" id="monto_abono_real">
                                 </div>
                             </div>
@@ -143,8 +136,8 @@
                             <input type="text" name="descripcion" placeholder="Detalles u observaciones de este abono..." class="glass-input text-xs py-2.5">
                         </div>
                         <div class="flex justify-end pt-2">
-                            <button type="submit" class="btn-primary py-2.5 px-6 flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 font-bold">
-                                ➕ Guardar Abono
+                            <button type="submit" class="btn-primary py-2.5 px-6 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 font-bold">
+                                ➕ Registrar Abono
                             </button>
                         </div>
                     </form>
@@ -224,6 +217,14 @@
                 </a>
             </div>
         @endif
+
+        {{-- Botones de Acción al Final (Centrados verticalmente) --}}
+        <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+            <a href="{{ route('caja.index') }}" class="btn-cancel">✕ Cancelar</a>
+            <button type="submit" form="cajaEditForm" class="btn-save">
+                🔄 Actualizar Movimiento
+            </button>
+        </div>
 
     </div>
 </div>

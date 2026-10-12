@@ -66,11 +66,11 @@
     <div>
         <label class="field-label">Tipo de Mantenimiento *</label>
         <div class="flex gap-3 mt-1">
-            <label class="flex-1 ts-select-card {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'active-emerald' : '' }}" id="lbl_prev">
+            <label class="flex-1 ts-select-card hover-emerald {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'active-emerald' : '' }}" id="lbl_prev">
                 <input type="radio" name="tipo" value="preventivo" {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'checked' : '' }} class="ts-radio-dot">
                 <span>🛡️ Preventivo</span>
             </label>
-            <label class="flex-1 ts-select-card {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'active-orange' : '' }}" id="lbl_corr">
+            <label class="flex-1 ts-select-card hover-orange {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'active-orange' : '' }}" id="lbl_corr">
                 <input type="radio" name="tipo" value="correctivo" {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'checked' : '' }} class="ts-radio-dot">
                 <span>🛠️ Correctivo</span>
             </label>
@@ -81,11 +81,11 @@
     <div>
         <label class="field-label">Tipo de Reparación *</label>
         <div class="flex gap-3 mt-1">
-            <label class="flex-1 ts-select-card {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'active-indigo' : '' }}" id="lbl_soft">
+            <label class="flex-1 ts-select-card hover-indigo {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'active-indigo' : '' }}" id="lbl_soft">
                 <input type="radio" name="reparacion" value="software" {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'checked' : '' }} class="ts-radio-dot">
                 <span>💻 Software</span>
             </label>
-            <label class="flex-1 ts-select-card {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'active-rose' : '' }}" id="lbl_hard">
+            <label class="flex-1 ts-select-card hover-rose {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'active-rose' : '' }}" id="lbl_hard">
                 <input type="radio" name="reparacion" value="hardware" {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'checked' : '' }} class="ts-radio-dot">
                 <span>🔩 Hardware</span>
             </label>
@@ -114,7 +114,7 @@
     </div>
     @endif
 
-    <div class="md:col-span-2 flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
         <a href="{{ route('mantenimientos.index') }}" class="btn-cancel">✕<space>Cancelar</a>
         <button type="submit" class="btn-save">
             {{ isset($mantenimiento) ? '🔄 Actualizar Mantenimiento' : '💾 Guardar Mantenimiento' }}
