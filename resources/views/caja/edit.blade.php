@@ -11,7 +11,7 @@
 @endphp
 
 <div class="max-w-7xl mx-auto">
-    <div class="glass-card p-6 md:p-8">
+    <div class="glass-card p-6 md:p-8 !pb-6">
         
         {{-- Encabezado unificado dentro de la tarjeta, tal como caja.show --}}
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
@@ -87,7 +87,7 @@
                 @csrf @method('PUT')
                 @include('caja._form', ['movimiento' => $movimiento])
                 
-                <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+                <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
                     <a href="{{ route('caja.index') }}" class="btn-cancel">✕ Cancelar</a>
                     <button type="submit" class="btn-save">
                         🔄 Actualizar Movimiento
@@ -98,7 +98,7 @@
 
         {{-- Sección de Saldos y Abonos si aplica --}}
         @if(!$movimiento->parent_id && ($movimiento->effective_monto_total > 0 || $movimiento->childPayments->isNotEmpty()))
-            <div class="mt-10 pt-8 border-t border-gray-200/50 dark:border-white/10 space-y-6">
+            <div class="mt-6 pt-6 border-t border-gray-200/50 dark:border-white/10 space-y-6">
                 {{-- Registrar Nuevo Abono si hay saldo pendiente --}}
                 @if($movimiento->saldo_pendiente > 0)
                 <div class="p-6 rounded-2xl bg-blue-50/40 dark:bg-blue-900/10 border border-blue-200/50 dark:border-blue-500/20">
@@ -211,7 +211,7 @@
                 </div>
             </div>
         @elseif($movimiento->parent_id)
-            <div class="mt-8 p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="mt-6 p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <span class="text-3xl">🔗</span>
                     <div>

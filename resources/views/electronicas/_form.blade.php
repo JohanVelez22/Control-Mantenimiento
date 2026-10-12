@@ -71,13 +71,13 @@
     <div>
         <label class="field-label">Tipo de Trabajo *</label>
         <div class="flex gap-3 mt-1">
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo', $electronica->tipo ?? 'preventivo') === 'preventivo' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_prev_elec">
-                <input type="radio" name="tipo" value="preventivo" {{ old('tipo', $electronica->tipo ?? 'preventivo') === 'preventivo' ? 'checked' : '' }} class="accent-emerald-600 w-4 h-4">
-                <span class="font-bold {{ old('tipo', $electronica->tipo ?? 'preventivo') === 'preventivo' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">Preventivo</span>
+            <label class="flex-1 ts-select-card {{ old('tipo', $electronica->tipo ?? 'preventivo') === 'preventivo' ? 'active-emerald' : '' }}" id="lbl_prev_elec">
+                <input type="radio" name="tipo" value="preventivo" {{ old('tipo', $electronica->tipo ?? 'preventivo') === 'preventivo' ? 'checked' : '' }} class="ts-radio-dot">
+                <span>🛡️ Preventivo</span>
             </label>
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo', $electronica->tipo ?? '') === 'correctivo' ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_corr_elec">
-                <input type="radio" name="tipo" value="correctivo" {{ old('tipo', $electronica->tipo ?? '') === 'correctivo' ? 'checked' : '' }} class="accent-orange-500 w-4 h-4">
-                <span class="font-bold {{ old('tipo', $electronica->tipo ?? '') === 'correctivo' ? 'text-orange-700 dark:text-orange-400' : 'text-slate-600 dark:text-slate-400' }}">Correctivo</span>
+            <label class="flex-1 ts-select-card {{ old('tipo', $electronica->tipo ?? '') === 'correctivo' ? 'active-orange' : '' }}" id="lbl_corr_elec">
+                <input type="radio" name="tipo" value="correctivo" {{ old('tipo', $electronica->tipo ?? '') === 'correctivo' ? 'checked' : '' }} class="ts-radio-dot">
+                <span>🛠️ Correctivo</span>
             </label>
         </div>
     </div>
@@ -86,13 +86,13 @@
     <div>
         <label class="field-label">Tipo de Reparación *</label>
         <div class="flex gap-3 mt-1">
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('reparacion', $electronica->reparacion ?? 'software') === 'software' ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_soft_elec">
-                <input type="radio" name="reparacion" value="software" {{ old('reparacion', $electronica->reparacion ?? 'software') === 'software' ? 'checked' : '' }} class="accent-indigo-500 w-4 h-4">
-                <span class="font-bold {{ old('reparacion', $electronica->reparacion ?? 'software') === 'software' ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400' }}">Software</span>
+            <label class="flex-1 ts-select-card {{ old('reparacion', $electronica->reparacion ?? 'software') === 'software' ? 'active-indigo' : '' }}" id="lbl_soft_elec">
+                <input type="radio" name="reparacion" value="software" {{ old('reparacion', $electronica->reparacion ?? 'software') === 'software' ? 'checked' : '' }} class="ts-radio-dot">
+                <span>💻 Software</span>
             </label>
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('reparacion', $electronica->reparacion ?? '') === 'hardware' ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_hard_elec">
-                <input type="radio" name="reparacion" value="hardware" {{ old('reparacion', $electronica->reparacion ?? '') === 'hardware' ? 'checked' : '' }} class="accent-rose-500 w-4 h-4">
-                <span class="font-bold {{ old('reparacion', $electronica->reparacion ?? '') === 'hardware' ? 'text-rose-700 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400' }}">Hardware</span>
+            <label class="flex-1 ts-select-card {{ old('reparacion', $electronica->reparacion ?? '') === 'hardware' ? 'active-rose' : '' }}" id="lbl_hard_elec">
+                <input type="radio" name="reparacion" value="hardware" {{ old('reparacion', $electronica->reparacion ?? '') === 'hardware' ? 'checked' : '' }} class="ts-radio-dot">
+                <span>🔩 Hardware</span>
             </label>
         </div>
     </div>
@@ -121,7 +121,7 @@
     @endif
 
     <div class="md:col-span-2 flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-        <a href="{{ route('electronicas.index') }}" class="btn-cancel">✕<space>Cancelar</a>
+        <a href="{{ route('electronicas.index') }}" class="btn-cancel">✕ Cancelar</a>
         <button type="submit" class="btn-save">
             {{ isset($electronica) ? '🔄 Actualizar Registro' : '💾 Guardar Registro' }}
         </button>
@@ -168,17 +168,13 @@
                 const lblPrev = document.getElementById('lbl_prev_elec');
                 if(!lblCorr || !lblPrev) return;
                 
-                [lblCorr, lblPrev].forEach(lbl => {
-                    lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md';
-                    lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';
-                });
+                lblCorr.classList.remove('active-orange');
+                lblPrev.classList.remove('active-emerald');
                 
                 if (this.value === 'correctivo') {
-                    lblCorr.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-orange-500 bg-orange-50/50 dark:bg-orange-900/20';
-                    lblCorr.querySelector('span').className = 'font-bold text-orange-700 dark:text-orange-400';
+                    lblCorr.classList.add('active-orange');
                 } else {
-                    lblPrev.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20';
-                    lblPrev.querySelector('span').className = 'font-bold text-emerald-700 dark:text-emerald-400';
+                    lblPrev.classList.add('active-emerald');
                 }
             });
         });
@@ -190,17 +186,13 @@
                 const lblSoft = document.getElementById('lbl_soft_elec');
                 if (!lblHard || !lblSoft) return;
 
-                [lblHard, lblSoft].forEach(lbl => {
-                    lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md';
-                    lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';
-                });
+                lblHard.classList.remove('active-rose');
+                lblSoft.classList.remove('active-indigo');
                 
                 if (this.value === 'hardware') {
-                    lblHard.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-rose-500 bg-rose-50/50 dark:bg-rose-900/20';
-                    lblHard.querySelector('span').className = 'font-bold text-rose-700 dark:text-rose-400';
+                    lblHard.classList.add('active-rose');
                 } else {
-                    lblSoft.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20';
-                    lblSoft.querySelector('span').className = 'font-bold text-indigo-700 dark:text-indigo-400';
+                    lblSoft.classList.add('active-indigo');
                 }
             });
         });
