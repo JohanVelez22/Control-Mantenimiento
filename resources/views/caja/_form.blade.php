@@ -7,11 +7,11 @@
     @endphp
 
     {{-- Buscar cliente o proveedor con desplegable interactivo --}}
-    <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
-        <label class="field-label flex items-center justify-between mb-1.5" for="select_entidad_caja">
-            <span class="flex items-center gap-2"><span>🔍</span> Buscar Cliente / Proveedor</span>
+    <div class="md:col-span-2">
+        <label class="field-label flex items-center justify-between" for="select_entidad_caja">
+            <span class="flex items-center gap-1.5 font-bold"><span>🔍</span> Buscar Cliente / Proveedor</span>
         </label>
-        <select id="select_entidad_caja" class="glass-input w-full" data-placeholder="Buscar cliente o proveedor...">
+        <select id="select_entidad_caja" class="glass-input w-full mt-1" data-placeholder="Buscar cliente o proveedor...">
             <option value="">Buscar cliente o proveedor...</option>
             @if(isset($todasEntidades))
                 @foreach($todasEntidades as $ent)
@@ -34,7 +34,7 @@
                 @endforeach
             @endif
         </select>
-        <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2">Escribe para filtrar o despliega la lista. Al seleccionar uno se completan automáticamente los campos de abajo.</p>
+        <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-1.5">Escribe para filtrar o despliega la lista. Al seleccionar uno se completan automáticamente los campos de abajo.</p>
     </div>
 
     {{-- Empresa o Persona (uno de los dos) --}}
@@ -183,8 +183,8 @@
             </select>
         </div>
         {{-- Campo oculto para nuevo concepto --}}
-        <div id="nuevo-concepto-box" class="mt-3 hidden p-4 rounded-xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md shadow-sm">
-            <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 block">Crear Nuevo Concepto</label>
+        <div id="nuevo-concepto-box" class="mt-3 hidden">
+            <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 block">Crear Nuevo Concepto</label>
             <div class="flex gap-2 items-center">
                 <input type="text" id="nuevo_concepto_input" name="nuevo_concepto" placeholder="Nombre del nuevo concepto..." class="glass-input flex-1 h-[42px]">
                 <button type="button" onclick="crearConcepto()" class="btn-primary h-[42px] flex items-center justify-center">Agregar</button>

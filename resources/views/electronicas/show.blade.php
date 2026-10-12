@@ -106,12 +106,13 @@
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 mt-8 flex items-center gap-2 border-t border-gray-200/50 dark:border-white/10 pt-6">📦 Repuestos / Insumos Utilizados</h3>
 
         @if(!auth()->user()->isInvitado() && !$electronica->anulado)
-        <form action="{{ route('electronicas.stocks.store', $electronica) }}" method="POST" class="p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl mb-6">
+        <form action="{{ route('electronicas.stocks.store', $electronica) }}" method="POST" class="mb-6">
             @csrf
-            <h4 class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Añadir repuesto al registro</h4>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div class="md:col-span-2">
-                    <label class="field-label">Buscar repuesto en stock *</label>
+                    <label class="field-label flex items-center gap-1.5 font-bold mb-1.5">
+                        Buscar repuesto en stock <span class="text-red-500 font-bold">*</span>
+                    </label>
                     <select name="stock_id" required class="glass-input" data-placeholder="Seleccione un repuesto...">
                         <option value="">Seleccione un repuesto...</option>
                         @php
@@ -127,9 +128,11 @@
                     </select>
                 </div>
                 <div>
-                    <label class="field-label">Cantidad *</label>
-                    <div class="flex gap-4">
-                        <input type="number" name="cantidad" required min="1" value="1" class="glass-input cantidad-input w-24">
+                    <label class="field-label flex items-center gap-1.5 font-bold mb-1.5">
+                        Cantidad <span class="text-red-500 font-bold">*</span>
+                    </label>
+                    <div class="flex gap-3">
+                        <input type="number" name="cantidad" required min="1" value="1" class="glass-input cantidad-input w-24 text-center font-bold">
                         <button type="submit" class="btn-add flex-1 justify-center whitespace-nowrap">
                             ➕ Añadir
                         </button>

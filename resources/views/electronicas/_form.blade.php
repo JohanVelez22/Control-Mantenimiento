@@ -13,8 +13,8 @@
     </div>
 
     {{-- Equipo --}}
-    <div class="md:col-span-2 min-w-0 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
-        <label class="field-label flex items-center gap-2"><span>💻</span> Seleccionar Dispositivo / Equipo *</label>
+    <div class="md:col-span-2 min-w-0">
+        <label class="field-label flex items-center gap-1.5 font-bold"><span>💻</span> Seleccionar Dispositivo / Equipo <span class="text-red-500 font-bold">*</span></label>
         <select name="equipo_id" required class="glass-input text-sm font-bold mt-1" data-placeholder="Buscar equipo o cliente...">
             <option value="">Buscar equipo o cliente...</option>
             @foreach($equipos as $equipo)
@@ -105,9 +105,9 @@
     </div>
 
     {{-- Costo --}}
-    <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm mt-2">
+    <div class="md:col-span-2 mt-2">
         <label class="field-label text-center mb-2 block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Costo Estimado / Final <span class="text-red-500 font-bold">*</span></label>
-        <input type="text" name="costo_visual" id="costo_visual" value="{{ isset($electronica->costo) ? number_format(old('costo', $electronica->costo), 0, ',', '.') : '' }}" placeholder="0" required class="glass-input bg-white/50 dark:bg-slate-900/60 border-gray-200/50 dark:border-white/5 text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20">
+        <input type="text" name="costo_visual" id="costo_visual" value="{{ isset($electronica->costo) ? number_format(old('costo', $electronica->costo), 0, ',', '.') : '' }}" placeholder="0" required class="glass-input text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20">
         <input type="hidden" name="costo" id="costo_real" value="{{ old('costo', $electronica->costo ?? '') }}">
         @error('costo') <p class="text-red-500 text-xs font-bold mt-2 text-center">{{ $message }}</p> @enderror
     </div>
