@@ -599,9 +599,9 @@ async function submitConfiguracion(event) {
                 </div>
 
                 {{-- Botón Ejecutar --}}
-                <div class="flex justify-end" style="margin-top: 1.5rem !important;">
-                    <button type="button" onclick="executeManualBackup()" id="btn-execute-backup" class="btn-backup btn-backup-db px-6 py-2.5 text-sm font-bold shadow-lg shadow-teal-500/25 flex items-center gap-2">
-                        <span id="btn-execute-backup-icon">⚡</span>
+                <div class="flex justify-end pt-1" style="margin-top: 1.25rem !important;">
+                    <button type="button" onclick="executeManualBackup()" id="btn-execute-backup" class="btn-backup btn-backup-db flex items-center gap-2">
+                        <span id="btn-execute-backup-icon" class="shrink-0 flex items-center">⚡</span>
                         <span id="btn-execute-backup-text">Iniciar Respaldo Ahora</span>
                     </button>
                 </div>
@@ -755,9 +755,9 @@ async function submitConfiguracion(event) {
                         </p>
                     </div>
 
-                    <div class="pt-2 flex justify-end">
-                        <button type="button" onclick="saveBackupSchedule()" id="btn-save-schedule" class="btn-primary px-6 py-2.5 text-sm font-bold shadow-md flex items-center gap-2">
-                            <span>💾</span> Guardar Programación
+                    <div class="flex justify-end pt-1">
+                        <button type="button" onclick="saveBackupSchedule()" id="btn-save-schedule" class="btn-primary flex items-center gap-2">
+                            <span class="shrink-0 flex items-center">💾</span> Guardar Programación
                         </button>
                     </div>
                 </div>
