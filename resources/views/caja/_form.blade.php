@@ -103,7 +103,7 @@
     {{-- Tipo de Movimiento --}}
     <div>
         <label class="field-label flex items-center gap-1.5 font-bold">
-            <span>Tipo de Movimiento <span class="text-red-500 font-bold">*</span>
+            Tipo de Movimiento <span class="text-red-500 font-bold">*</span>
         </label>
         <div class="flex gap-3 mt-1">
             <label id="label_ingreso" class="flex-1 ts-select-card hover-emerald {{ $tipoMov === 'ingreso' ? 'active-emerald' : '' }}">

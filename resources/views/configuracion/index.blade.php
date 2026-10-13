@@ -74,7 +74,7 @@
             {{-- Columna Derecha: Datos --}}
             <div class="w-full md:w-2/3 space-y-4">
                 <div>
-                    <label class="field-label">Nombre de la Empresa o Negocio *</label>
+                    <label class="field-label">Nombre de la Empresa o Negocio <span class="text-red-500 font-bold">*</span></label>
                     <input type="text" name="nombre" value="{{ old('nombre', $configuracion->nombre) }}" required class="glass-input font-bold">
                 </div>
 

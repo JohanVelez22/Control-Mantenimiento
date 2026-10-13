@@ -86,14 +86,14 @@
                 <h3 class="font-bold text-slate-800 dark:text-white mb-4">Nueva Clasificación</h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="field-label">Tipo de Clasificación</label>
+                        <label class="field-label">Tipo de Clasificación <span class="text-red-500 font-bold">*</span></label>
                         <select name="tipo" class="glass-input font-bold" required>
                             <option value="categoria">🗂️ Categoría Principal</option>
                             <option value="subcategoria">📂 Subcategoría</option>
                         </select>
                     </div>
                     <div>
-                        <label class="field-label">Nombre</label>
+                        <label class="field-label">Nombre <span class="text-red-500 font-bold">*</span></label>
                         <input type="text" name="nombre" required class="glass-input" placeholder="Ej: Pantallas, Accesorios...">
                     </div>
                     <button type="submit" class="btn-primary w-full justify-center py-2.5 font-bold shadow-md shadow-indigo-500/20">

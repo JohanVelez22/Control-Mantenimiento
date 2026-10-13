@@ -21,14 +21,14 @@
             @method('PUT')
             <div class="space-y-4">
                 <div>
-                    <label class="field-label">Tipo de Clasificación</label>
+                    <label class="field-label">Tipo de Clasificación <span class="text-red-500 font-bold">*</span></label>
                     <select name="tipo" class="glass-input font-bold" required>
                         <option value="categoria" {{ $categoria->tipo == 'categoria' ? 'selected' : '' }}>🗂️ Categoría Principal</option>
                         <option value="subcategoria" {{ $categoria->tipo == 'subcategoria' ? 'selected' : '' }}>📂 Subcategoría</option>
                     </select>
                 </div>
                 <div>
-                    <label class="field-label">Nombre</label>
+                    <label class="field-label">Nombre <span class="text-red-500 font-bold">*</span></label>
                     <input type="text" name="nombre" value="{{ $categoria->nombre }}" required class="glass-input" placeholder="Ej: Pantallas, Accesorios...">
                 </div>
                 <div class="flex gap-3 pt-2">

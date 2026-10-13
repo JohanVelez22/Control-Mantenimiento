@@ -19,14 +19,14 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                        🪪 Cédula o NIT del Cliente *
+                        🪪 Cédula o NIT del Cliente <span class="text-red-500 font-bold">*</span>
                     </label>
                     <input type="text" name="identificacion" value="{{ $identificacion ?? '' }}" placeholder="Ej: 123456789" 
                            class="w-full glass-input py-3 text-base" required minlength="3" maxlength="30">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                        📋 Número de Orden *
+                        📋 Número de Orden <span class="text-red-500 font-bold">*</span>
                     </label>
                     <input type="text" name="id_orden" value="{{ $idOrden ?? '' }}" placeholder="Ej: ELC-001 o 1" 
                            class="w-full glass-input py-3 text-base" required minlength="1" maxlength="30">
