@@ -766,7 +766,7 @@ async function submitConfiguracion(event) {
             {{-- TAB 3: Ubicación y Archivos --}}
             <div id="tab-content-files" class="space-y-4 hidden">
                 {{-- Banner de Ubicación física en Servidor / PC --}}
-                <div class="glass-card backup-info-card space-y-2">
+                <div class="glass-card backup-info-card backup-storage-banner">
                     <div class="flex items-center justify-between gap-3">
                         <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 leading-none">
                             <span class="text-sm shrink-0 flex items-center">📁</span> Ubicación Física de Almacenamiento:
