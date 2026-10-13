@@ -6,7 +6,7 @@
     <div class="glass-card p-6 md:p-8">
         
         {{-- Encabezado --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6">
             <div class="flex items-center gap-4">
                 <a href="{{ route('cierre.show', $cierre->id) }}" class="btn-ghost px-3 py-2 text-xl" title="Volver al detalle del cierre">⬅️</a>
                 <div>
@@ -142,7 +142,7 @@
                           class="glass-input w-full p-3 font-medium text-slate-800 dark:text-slate-200">{{ old('observaciones', $cierre->observaciones) }}</textarea>
             </div>
 
-            <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+            <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-200/50 dark:border-white/10 mt-2">
                 <a href="{{ route('cierre.show', $cierre->id) }}" class="btn-cancel">✕ Cancelar</a>
                 <button type="submit" class="btn-save">
                     💾 Guardar Cambios

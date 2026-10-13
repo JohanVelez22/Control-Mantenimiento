@@ -2,7 +2,7 @@
 @section('content')
 <div class="max-w-7xl mx-auto">
     <div class="glass-card p-6 md:p-8">
-        <div class="flex items-center gap-3 mb-8">
+        <div class="flex items-center gap-3 mb-6">
             <a href="{{ route('proveedores.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
             <div>
                 <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">🏭 Nuevo Proveedor</h2>
@@ -10,7 +10,7 @@
             </div>
         </div>
 
-        <form action="{{ route('proveedores.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('proveedores.store') }}" method="POST">
             @csrf
             @include('proveedores._form')
         </form>

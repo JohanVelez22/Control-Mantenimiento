@@ -196,10 +196,10 @@
                         <select name="motivo_baja" id="baja-equipo-motivo" required class="glass-input text-sm w-full" data-placeholder="Seleccione el motivo de la baja...">
                             <option value="">Seleccione el motivo de la baja...</option>
                             <option value="irreparable" selected>❌ Daño irreparable / Falla crítica en placa</option>
-                            <option value="desguace_repuestos">⚙️ Desguace / Canibalización para repuestos</option>
+                            <option value="desguace_repuestos">⚙️ Desguace / Recuperación de repuestos</option>
                             <option value="chatarrizacion">🗑️ Chatarrización / Desecho definitivo</option>
                             <option value="siniestro">💥 Siniestro / Pérdida total</option>
-                            <option value="abandonado">📦 Equipo abandonado por cliente/propietario</option>
+                            <option value="abandonado">📦 Equipo abandonado por el cliente/propietario</option>
                             <option value="otro">📝 Otro motivo técnico</option>
                         </select>
                     </div>

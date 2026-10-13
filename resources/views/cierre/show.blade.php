@@ -39,7 +39,7 @@
         @endpush
 
         {{-- Encabezado --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 no-print">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 no-print">
             <div class="flex items-center gap-4">
                 <a href="{{ route('cierre.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a la lista de cierres">⬅️</a>
                 <div>

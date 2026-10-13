@@ -9,14 +9,14 @@
     $selTipoCli = old('tipo_cliente', $c?->tipo_cliente ?? 'cliente');
 @endphp
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
     {{-- ── Tipo de Cliente ─────────────────────────────────────────── --}}
-    <div class="md:col-span-2">
-        <label class="field-label flex items-center gap-1.5 font-bold mb-1">
+    <div>
+        <label class="field-label flex items-center gap-1.5 font-bold">
             Tipo de Persona <span class="text-red-500 font-bold">*</span>
         </label>
-        <div class="flex gap-3 mt-1">
+        <div class="flex gap-2.5 mt-1">
             <label id="label_cliente" class="flex-1 ts-select-card hover-blue {{ $selTipoCli === 'cliente' ? 'active-blue' : '' }}">
                 <input type="radio" name="tipo_cliente" value="cliente" required id="tipo_cliente_normal" {{ $selTipoCli === 'cliente' ? 'checked' : '' }} class="ts-radio-dot">
                 <span id="text_cliente">👤 Cliente Normal</span>
@@ -27,6 +27,16 @@
             </label>
         </div>
         @error('tipo_cliente') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+    </div>
+
+    {{-- ── Género ──────────────────────────────────────────────────── --}}
+    <div>
+        <label class="field-label">Género *</label>
+        <select name="genero" required class="glass-input">
+            <option value="masculino"  {{ $selGenero === 'masculino'  ? 'selected' : '' }}>♂ Masculino</option>
+            <option value="femenino"   {{ $selGenero === 'femenino'   ? 'selected' : '' }}>♀ Femenino</option>    
+        </select>
+        @error('genero') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
 
     {{-- ── Nombre y Apellidos ──────────────────────────────────────── --}}
@@ -50,16 +60,6 @@
                placeholder="Ej: García López"
                class="glass-input @error('apellidos') border-red-500 @enderror">
         @error('apellidos') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
-    </div>
-
-    {{-- ── Género ──────────────────────────────────────────────────── --}}
-    <div>
-        <label class="field-label">Género *</label>
-        <select name="genero" required class="glass-input">
-            <option value="masculino"  {{ $selGenero === 'masculino'  ? 'selected' : '' }}>♂ Masculino</option>
-            <option value="femenino"   {{ $selGenero === 'femenino'   ? 'selected' : '' }}>♀ Femenino</option>    
-        </select>
-        @error('genero') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
 
     {{-- ── Tipo de Identificación ──────────────────────────────────── --}}
@@ -144,8 +144,8 @@
         @error('direccion') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
 
-    <div class="md:col-span-2 flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-        <a href="{{ route('clientes.index') }}" class="btn-cancel">✕<space>Cancelar</a>
+    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-200/50 dark:border-white/10 mt-2">
+        <a href="{{ route('clientes.index') }}" class="btn-cancel">✕ Cancelar</a>
         <button type="submit" class="btn-save">{{ $c ? '🔄 Actualizar Cliente' : '💾 Guardar Cliente' }}</button>
     </div>
 

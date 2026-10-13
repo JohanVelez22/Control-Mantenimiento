@@ -6,7 +6,7 @@
 
     {{-- N° Orden (Consecutivo automático / ID readonly) --}}
     <div class="md:col-span-2">
-        <label class="field-label flex items-center gap-2"><span>🔖</span> N° Orden</label>
+        <label class="field-label flex items-center gap-2">N° Orden</label>
         <input type="text" name="id_orden" value="{{ old('id_orden', $mantenimiento->id_orden ?? ($nextOrden ?? '')) }}" readonly
             class="glass-input mt-1 bg-gray-200/50 dark:bg-gray-800/50 cursor-not-allowed text-gray-500 dark:text-gray-400 font-bold font-mono"
             title="El consecutivo se genera automáticamente">
@@ -14,7 +14,7 @@
 
     {{-- Equipo --}}
     <div class="md:col-span-2 min-w-0">
-        <label class="field-label flex items-center gap-1.5 font-bold"><span>💻</span> Seleccionar Equipo <span class="text-red-500 font-bold">*</span></label>
+        <label class="field-label flex items-center gap-1.5 font-bold">Seleccionar Equipo <span class="text-red-500 font-bold">*</span></label>
         <select name="equipo_id" required class="glass-input text-sm font-bold mt-1" data-placeholder="Buscar equipo o cliente...">
             <option value="">Buscar equipo o cliente...</option>
             @foreach($equipos as $equipo)
@@ -27,7 +27,7 @@
 
     {{-- Técnico --}}
     <div class="min-w-0">
-        <label class="field-label flex items-center gap-2"><span>👨🏻‍🔧</span> Técnico Asignado *</label>
+        <label class="field-label flex items-center gap-2">Técnico Asignado *</label>
         <select name="tecnico_id" required class="glass-input mt-1" data-placeholder="Seleccione un técnico...">
             <option value="">Seleccione un técnico...</option>
             @foreach($tecnicos as $tecnico)
@@ -40,7 +40,7 @@
 
     {{-- Estado --}}
     <div>
-        <label class="field-label flex items-center gap-2"><span>🏷️</span> Estado Inicial *</label>
+        <label class="field-label flex items-center gap-2">Estado Inicial *</label>
         <select name="estado" required class="glass-input mt-1 font-bold {{ old('estado', $mantenimiento->estado ?? 'pendiente') === 'terminado' ? 'text-emerald-600 dark:text-emerald-400' : 'text-yellow-600 dark:text-yellow-400' }}">
             <option value="pendiente" {{ old('estado', $mantenimiento->estado ?? 'pendiente') == 'pendiente' ? 'selected' : '' }} class="text-yellow-600">⏳ Pendiente</option>
             <option value="terminado" {{ old('estado', $mantenimiento->estado ?? '') == 'terminado' ? 'selected' : '' }} class="text-emerald-600">✅ Terminado</option>
@@ -114,7 +114,7 @@
     </div>
     @endif
 
-    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-200/50 dark:border-white/10 mt-2">
         <a href="{{ route('mantenimientos.index') }}" class="btn-cancel">✕<space>Cancelar</a>
         <button type="submit" class="btn-save">
             {{ isset($mantenimiento) ? '🔄 Actualizar Mantenimiento' : '💾 Guardar Mantenimiento' }}

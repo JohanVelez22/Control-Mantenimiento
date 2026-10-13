@@ -2,7 +2,7 @@
 @section('content')
 <div class="max-w-7xl mx-auto">
     <div class="glass-card p-6 md:p-8">
-        <div class="flex items-center gap-3 mb-8">
+        <div class="flex items-center gap-3 mb-6">
             <a href="{{ route('cotizaciones.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
             <div>
                 <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">📝 Crear Nueva Cotización</h2>
@@ -117,7 +117,7 @@
                 <textarea name="notas" rows="3" class="glass-input resize-y focus:ring-blue-500" placeholder="Ej: Precios sujetos a cambio sin previo aviso. Tiempo estimado de entrega: 3 días hábiles."></textarea>
             </div>
 
-            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+            <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-200/50 dark:border-white/10 mt-2">
                 <a href="{{ route('cotizaciones.index') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">✕<space>Cancelar</a>
                 <button type="submit" class="btn-save w-full sm:w-auto justify-center">
                     💾 Guardar Cotización

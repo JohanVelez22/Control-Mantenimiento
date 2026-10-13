@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="glass-card p-6">
- <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+ <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
  <div>
  <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
  <span class="text-3xl">📦</span> Inventario (Stock)

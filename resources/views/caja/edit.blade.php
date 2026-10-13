@@ -14,7 +14,7 @@
     <div class="glass-card p-6 md:p-8 !pb-6">
         
         {{-- Encabezado unificado dentro de la tarjeta, tal como caja.show --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 relative z-20">
             <div class="flex items-center gap-4">
                 <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a la lista de caja">⬅️</a>
                 <div>
@@ -219,7 +219,7 @@
         @endif
 
         {{-- Botones de Acción al Final (Centrados verticalmente) --}}
-        <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+        <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-200/50 dark:border-white/10 mt-2">
             <a href="{{ route('caja.index') }}" class="btn-cancel">✕ Cancelar</a>
             <button type="submit" form="cajaEditForm" class="btn-save">
                 🔄 Actualizar Movimiento

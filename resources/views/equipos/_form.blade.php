@@ -13,7 +13,7 @@
 <div class="space-y-6">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div class="md:col-span-2">
-            <label class="field-label flex items-center gap-2"><span>👤 / 🏢</span> Propietario (Cliente / Proveedor) *</label>
+            <label class="field-label flex items-center gap-2">Propietario *</label>
             <select name="propietario_global" required class="glass-input mt-1 text-sm font-bold" data-placeholder="Buscar cliente o proveedor...">
                 <option value="">Buscar cliente o proveedor...</option>
                 @foreach($clientes as $cliente)
@@ -60,11 +60,11 @@
     </div>
 
     <div>
-        <label class="field-label flex items-center gap-2"><span>📝</span> Observaciones / Detalles</label>
+        <label class="field-label flex items-center gap-2">Observaciones / Detalles</label>
         <textarea name="observacion" rows="3" class="glass-input mt-1 resize-y" placeholder="Cargador original, rayón en la tapa, etc...">{{ old('observacion', $eq?->observacion) }}</textarea>
     </div>
 
-    <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
+    <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-200/50 dark:border-white/10 mt-2">
         <a href="{{ route('equipos.index') }}" class="btn-cancel">✕<space>Cancelar</a>
         <button type="submit" class="btn-save">
             {{ $eq ? '🔄 Actualizar Equipo' : '💾 Guardar Equipo' }}

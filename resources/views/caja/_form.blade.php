@@ -9,7 +9,7 @@
     {{-- Buscar cliente o proveedor con desplegable interactivo --}}
     <div class="md:col-span-2">
         <label class="field-label flex items-center justify-between" for="select_entidad_caja">
-            <span class="flex items-center gap-1.5 font-bold"><span>🔍</span> Buscar Cliente / Proveedor</span>
+            <span class="flex items-center gap-1.5 font-bold">Cliente / Proveedor</span>
         </label>
         <select id="select_entidad_caja" class="glass-input w-full mt-1" data-placeholder="Buscar cliente o proveedor...">
             <option value="">Buscar cliente o proveedor...</option>
@@ -44,11 +44,11 @@
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-                <label class="field-label !flex items-center gap-1.5 font-bold"><span>🏢</span> Empresa <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
+                <label class="field-label !flex items-center gap-1.5 font-bold">Empresa <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
                 <input type="text" name="empresa" id="caja_empresa" value="{{ $valEmpresa }}" placeholder="Nombre de la empresa..." class="glass-input mt-1">
             </div>
             <div>
-                <label class="field-label !flex items-center gap-1.5 font-bold"><span>👤</span> Persona <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
+                <label class="field-label !flex items-center gap-1.5 font-bold">Persona <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
                 <input type="text" name="persona" id="caja_persona" value="{{ $valPersona }}" placeholder="Nombre de quien paga/recibe..." class="glass-input mt-1">
                 @error('persona') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
@@ -58,7 +58,7 @@
     {{-- Fecha --}}
     <div>
         <label class="field-label flex items-center gap-1.5 font-bold">
-            <span>📅</span> Fecha <span class="text-red-500 font-bold">*</span>
+           Fecha <span class="text-red-500 font-bold">*</span>
         </label>
         <input type="date" name="fecha" required value="{{ old('fecha', isset($movimiento) ? $movimiento->fecha->format('Y-m-d') : date('Y-m-d')) }}" class="glass-input">
         @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
@@ -103,7 +103,7 @@
     {{-- Tipo de Movimiento --}}
     <div>
         <label class="field-label flex items-center gap-1.5 font-bold">
-            <span>📊</span> Tipo de Movimiento <span class="text-red-500 font-bold">*</span>
+            <span>Tipo de Movimiento <span class="text-red-500 font-bold">*</span>
         </label>
         <div class="flex gap-3 mt-1">
             <label id="label_ingreso" class="flex-1 ts-select-card hover-emerald {{ $tipoMov === 'ingreso' ? 'active-emerald' : '' }}">
@@ -121,7 +121,7 @@
     {{-- Tipo de Pago --}}
     <div>
         <label class="field-label flex items-center gap-1.5 font-bold">
-            <span>💳</span> Tipo de Pago <span class="text-red-500 font-bold">*</span>
+            Tipo de Pago <span class="text-red-500 font-bold">*</span>
         </label>
         <div class="flex gap-3 mt-1">
             <label id="label_efectivo" class="flex-1 ts-select-card hover-blue {{ $tipoPago === 'efectivo' ? 'active-blue' : '' }}">
@@ -140,7 +140,7 @@
     <div>
         <label class="field-label !flex items-center gap-1.5 font-bold" for="monto_total_visual">
 
-            <span>💰</span> Monto Total <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
+            Monto Total <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
 
 
         </label>
@@ -156,7 +156,7 @@
     <div>
         <label class="field-label flex items-center justify-between" for="monto_visual">
             <span class="flex items-center gap-1.5 font-bold">
-                <span>💵</span> Monto Pagado Hoy <span class="text-red-500 font-bold">*</span>
+                Monto Pagado Hoy <span class="text-red-500 font-bold">*</span>
             </span>
         </label>
         <div>
@@ -169,7 +169,7 @@
     {{-- Concepto --}}
     <div class="md:col-span-2">
         <label class="field-label flex items-center gap-1.5 font-bold" for="concepto_select">
-            <span>🏷️</span> Concepto <span class="text-red-500 font-bold">*</span>
+            Concepto <span class="text-red-500 font-bold">*</span>
         </label>
         <div class="flex gap-2 min-w-0">
             <select name="concepto_id" id="concepto_select" class="glass-input flex-1">
@@ -199,7 +199,7 @@
     <div class="md:col-span-2">
         <label class="field-label !flex items-center gap-1.5 font-bold">
             <span class="flex items-center gap-1.5 font-bold">
-                <span>📝</span> Descripción / Observaciones <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
+                Descripción / Observaciones <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
             </span>
 
         </label>
