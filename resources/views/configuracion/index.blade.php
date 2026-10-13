@@ -767,16 +767,16 @@ async function submitConfiguracion(event) {
             <div id="tab-content-files" class="space-y-4 hidden">
                 {{-- Banner de Ubicación física en Servidor / PC --}}
                 <div class="glass-card backup-info-card space-y-2">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                            <span>📁</span> Ubicación Física de Almacenamiento:
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 leading-none">
+                            <span class="text-sm shrink-0 flex items-center">📁</span> Ubicación Física de Almacenamiento:
                         </span>
-                        <div class="flex items-center gap-1.5 self-start sm:self-auto">
+                        <div class="flex items-center gap-2 shrink-0">
                             <button type="button" onclick="copyBackupPath()" class="btn-copy-path">
-                                <span>📋</span> Copiar Ruta
+                                <span class="shrink-0 flex items-center">📋</span> Copiar Ruta
                             </button>
                             <button type="button" onclick="openBackupFolder()" class="btn-open-folder">
-                                <span>📂</span> Abrir Carpeta
+                                <span class="shrink-0 flex items-center">📂</span> Abrir Carpeta
                             </button>
                         </div>
                     </div>
@@ -821,8 +821,8 @@ async function submitConfiguracion(event) {
 
         {{-- Pie del Modal --}}
         <div class="backup-modal-footer">
-            <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                🛡️ Sistema de Auditoría y Respaldo Tecni-Systemas
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-1.5 leading-none">
+                <span class="text-sm shrink-0 flex items-center">🛡️</span> Sistema de Auditoría y Respaldo Tecni-Systemas
             </span>
             <button type="button" onclick="closeBackupModal()" class="btn-close-modal">
                 Cerrar

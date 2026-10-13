@@ -1513,16 +1513,23 @@ html.dark .backup-metric-val.val-teal {
 .btn-copy-path {
   display: inline-flex !important;
   align-items: center !important;
+  justify-content: center !important;
   gap: 6px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  line-height: 1 !important;
   font-size: 12px !important;
   font-weight: 700 !important;
-  padding: 6px 14px !important;
+  padding: 0 14px !important;
+  margin: 0 !important;
   border-radius: 10px !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
   background: rgba(79, 70, 229, 0.1) !important;
   border: 1px solid rgba(79, 70, 229, 0.3) !important;
   color: #4338CA !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
 }
 
 .btn-copy-path:hover {
@@ -1550,10 +1557,15 @@ html.dark .btn-copy-path:hover {
 .btn-open-folder {
   display: inline-flex !important;
   align-items: center !important;
+  justify-content: center !important;
   gap: 6px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  line-height: 1 !important;
   font-size: 12px !important;
   font-weight: 700 !important;
-  padding: 6px 14px !important;
+  padding: 0 14px !important;
+  margin: 0 !important;
   border-radius: 10px !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
@@ -1561,6 +1573,8 @@ html.dark .btn-copy-path:hover {
   border: 1px solid rgba(13, 148, 136, 0.3) !important;
   color: #0F766E !important;
   box-shadow: none !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
 }
 
 .btn-open-folder:hover {
@@ -1586,6 +1600,16 @@ html.dark .btn-open-folder:hover {
   color: #FFFFFF !important;
   transform: translateY(-1px) !important;
   box-shadow: none !important;
+}
+
+.btn-copy-path span,
+.btn-open-folder span {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  font-size: 13px !important;
+  vertical-align: middle !important;
 }
 
 /* Código de ruta física */
@@ -2417,9 +2441,13 @@ input[type="number"].no-spinners,
   align-items: center !important;
   justify-content: center !important;
   gap: 8px !important;
-  padding: 10px 24px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  line-height: 1 !important;
+  padding: 0 24px !important;
+  margin: 0 !important;
   font-weight: 800 !important;
-  font-size: 14px !important;
+  font-size: 13.5px !important;
   color: white !important;
   background: linear-gradient(135deg, #E05263 0%, #B82C40 100%) !important;
   border-radius: 12px !important;
@@ -2430,6 +2458,8 @@ input[type="number"].no-spinners,
   box-shadow: 0 4px 18px rgba(184, 44, 64, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
   transition: all 0.25s ease !important;
   text-decoration: none !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
 }
 
 .btn-close-modal::before {
