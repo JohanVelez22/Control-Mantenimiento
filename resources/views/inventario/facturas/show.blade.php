@@ -258,12 +258,12 @@
             </div>
 
             <div>
-                <label class="field-label">Fecha del Pago *</label>
+                <label class="field-label">Fecha del Pago <span class="text-red-500 font-bold">*</span></label>
                 <input type="date" name="fecha" required value="{{ date('Y-m-d') }}" class="glass-input">
             </div>
 
             <div>
-                <label class="field-label">Tipo de Pago *</label>
+                <label class="field-label">Tipo de Pago <span class="text-red-500 font-bold">*</span></label>
                 <select name="tipo_pago" required class="glass-input">
                     <option value="efectivo">💵 Efectivo</option>
                     <option value="consignacion">🏦 Banco / Transferencia</option>

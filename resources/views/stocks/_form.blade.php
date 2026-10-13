@@ -18,14 +18,14 @@
         </div>
 
         <div>
-            <label for="producto" class="field-label">Nombre del Producto *</label>
+            <label for="producto" class="field-label">Nombre del Producto <span class="text-red-500 font-bold">*</span></label>
             <input type="text" name="producto" id="producto" value="{{ old('producto', $st?->producto) }}"
                    required class="glass-input" placeholder="Ej: Disco Duro SSD 1TB">
             @error('producto') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label for="categoria" class="field-label">Categoría *</label>
+            <label for="categoria" class="field-label">Categoría <span class="text-red-500 font-bold">*</span></label>
             <select name="categoria" id="categoria" required class="glass-input">
                 <option value="">Seleccione una categoría...</option>
                 @foreach($categorias as $cat)
@@ -36,7 +36,7 @@
         </div>
 
         <div>
-            <label for="subcategoria" class="field-label">Subcategoría *</label>
+            <label for="subcategoria" class="field-label">Subcategoría <span class="text-red-500 font-bold">*</span></label>
             <select name="subcategoria" id="subcategoria" required class="glass-input">
                 <option value="">Seleccione una subcategoría...</option>
                 @foreach($subcategorias as $subcat)
@@ -47,7 +47,7 @@
         </div>
 
         <div>
-            <label for="cantidad" class="field-label">{{ $st ? 'Cantidad Actual *' : 'Cantidad Inicial *' }}</label>
+            <label for="cantidad" class="field-label">{{ $st ? 'Cantidad Actual' : 'Cantidad Inicial' }} <span class="text-red-500 font-bold">*</span></label>
             <input type="number" name="cantidad" id="cantidad"
                    value="{{ old('cantidad', $st?->cantidad ?? 0) }}"
                    required min="0" class="glass-input font-bold dark:[color-scheme:dark]">
@@ -55,7 +55,7 @@
         </div>
 
         <div>
-            <label for="proveedor_id" class="field-label">Proveedor *</label>
+            <label for="proveedor_id" class="field-label">Proveedor <span class="text-red-500 font-bold">*</span></label>
             <select name="proveedor_id" id="proveedor_id" required class="glass-input" data-placeholder="Buscar proveedor...">
                 <option value="">Buscar proveedor...</option>
                 @foreach($proveedores as $proveedor)
@@ -152,7 +152,7 @@
             </div>
 
             <div>
-                <label for="utilidad" class="field-label">Utilidad (%) *</label>
+                <label for="utilidad" class="field-label">Utilidad (%) <span class="text-red-500 font-bold">*</span></label>
                 <div class="glass-input flex items-center justify-end pr-3">
                     <input type="number" step="1" name="utilidad" id="utilidad"
                            value="{{ old('utilidad', isset($st) && $st->utilidad !== null ? (int)$st->utilidad : 30) }}" required min="0"

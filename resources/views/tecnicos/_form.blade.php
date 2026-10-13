@@ -6,19 +6,19 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
-        <label class="field-label">Nombre Completo *</label>
+        <label class="field-label">Nombre Completo <span class="text-red-500 font-bold">*</span></label>
         <input type="text" name="nombre" value="{{ old('nombre', $t?->nombre) }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input @error('nombre') border-red-500 @enderror">
         @error('nombre') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
 
     <div>
-        <label class="field-label">Identificación (DNI/NIT) *</label>
+        <label class="field-label">Identificación (DNI/NIT) <span class="text-red-500 font-bold">*</span></label>
         <input type="text" name="identificacion" value="{{ old('identificacion', $t?->identificacion) }}" required oninput="this.value = this.value.replace(/[^0-9-]/g, '')" class="glass-input @error('identificacion') border-red-500 @enderror">
         @error('identificacion') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
 
     <div>
-        <label class="field-label">Especialidad *</label>
+        <label class="field-label">Especialidad <span class="text-red-500 font-bold">*</span></label>
         <select name="especialidad" required class="glass-input text-sm font-bold">
             <option value="">— Seleccionar especialidad —</option>
             <option value="Hardware" {{ $selEsp == 'Hardware' ? 'selected' : '' }}>Hardware</option>
@@ -31,7 +31,7 @@
     </div>
 
     <div>
-        <label class="field-label">Teléfono Móvil *</label>
+        <label class="field-label">Teléfono Móvil <span class="text-red-500 font-bold">*</span></label>
         <input type="tel" name="movil" value="{{ old('movil', $t?->movil) }}" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="glass-input @error('movil') border-red-500 @enderror">
         @error('movil') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>

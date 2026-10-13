@@ -15,7 +15,7 @@
 
             <div class="cotizacion-header-grid p-5 glass-card">
                 <div>
-                    <label class="field-label">Cliente / Proveedor *</label>
+                    <label class="field-label">Cliente / Proveedor <span class="text-red-500 font-bold">*</span></label>
                     <select name="facturable_global" required class="glass-input focus:ring-blue-500" data-placeholder="Buscar cliente o proveedor...">
                         <option value="">Buscar cliente o proveedor...</option>
                         @foreach($clientes as $c)
@@ -35,12 +35,12 @@
                     @error('cliente_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="field-label">Fecha *</label>
+                    <label class="field-label">Fecha <span class="text-red-500 font-bold">*</span></label>
                     <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}" class="glass-input reportes-date-input focus:ring-blue-500" style="width: 8.5rem !important;">
                     @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="field-label">Validez (Días) *</label>
+                    <label class="field-label">Validez (Días) <span class="text-red-500 font-bold">*</span></label>
                     <input type="number" name="validez_dias" required min="1" value="{{ old('validez_dias', 15) }}" class="glass-input focus:ring-blue-500 text-center">
                     @error('validez_dias') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>

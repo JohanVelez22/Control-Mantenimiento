@@ -20,7 +20,7 @@
  <input type="text" value="{{ $nextFactura ?? 'CP-...' }}" readonly class="glass-input font-mono font-bold bg-white/40 dark:bg-black/20 text-orange-600 dark:text-orange-400 text-left pl-3 cursor-not-allowed w-full" style="width: 7rem !important;">
  </div>
  <div class="w-full flex-1 min-w-0">
- <label class="field-label">Proveedor / Cliente *</label>
+ <label class="field-label">Proveedor / Cliente <span class="text-red-500 font-bold">*</span></label>
  <select name="facturable_global" required class="glass-input focus:ring-orange-500" data-placeholder="Buscar proveedor o cliente...">
  <option value="">Buscar proveedor o cliente...</option>
  @foreach($proveedores as $prov)
@@ -37,7 +37,7 @@
  @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
  <div class="col-fecha-header">
- <label class="field-label">Fecha *</label>
+ <label class="field-label">Fecha <span class="text-red-500 font-bold">*</span></label>
  <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}" class="glass-input reportes-date-input focus:ring-orange-500" style="width: 8.5rem !important;">
  @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>

@@ -5,14 +5,14 @@
 
 {{-- Nombre --}}
 <div class="mb-4">
-    <label class="field-label">Nombre {{ $isEdit ? 'Completo' : '' }} *</label>
+    <label class="field-label">Nombre {{ $isEdit ? 'Completo' : '' }} <span class="text-red-500 font-bold">*</span></label>
     <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input mt-1 @error('name') border-red-500 @enderror">
     @error('name') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
 </div>
 
 {{-- Email --}}
 <div class="mb-4">
-    <label class="field-label">Correo Electrónico *</label>
+    <label class="field-label">Correo Electrónico <span class="text-red-500 font-bold">*</span></label>
     <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}" required class="glass-input mt-1 @error('email') border-red-500 @enderror">
     @error('email') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
 </div>
@@ -20,7 +20,7 @@
 {{-- Rol --}}
 @if(!$isEdit || auth()->user()->isAdmin())
 <div class="mb-4">
-    <label class="field-label">Rol {{ $isEdit ? 'del Sistema' : '*' }}</label>
+    <label class="field-label">Rol {{ $isEdit ? 'del Sistema' : '' }} @if(!$isEdit)<span class="text-red-500 font-bold">*</span>@endif</label>
     <select name="role" required class="glass-input mt-1">
         <option value="tecnico" {{ old('role', $user->role ?? '') == 'tecnico' ? 'selected' : '' }}>Técnico</option>
         <option value="admin" {{ old('role', $user->role ?? '') == 'admin' ? 'selected' : '' }}>Administrador</option>
@@ -103,7 +103,7 @@
     <hr class="my-6 border-gray-200/50 dark:border-white/10">
     @if(auth()->id() === $user->id)
     <div class="mb-4">
-        <label class="block text-sm font-medium mb-2 text-gray-500">Contraseña Actual *</label>
+        <label class="block text-sm font-medium mb-2 text-gray-500">Contraseña Actual <span class="text-red-500 font-bold">*</span></label>
         <input type="password" id="current_password" name="current_password" placeholder="Requerida para cambiar tu contraseña" class="glass-input @error('current_password') border-red-500 @enderror">
         @error('current_password') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
     </div>
@@ -112,7 +112,7 @@
 
 {{-- Password --}}
 <div class="mb-4">
-    <label class="block text-sm font-medium mb-2 text-gray-500">{{ $isEdit ? 'Cambiar Contraseña del Usuario (opcional)' : 'Contraseña del Nuevo Usuario *' }}</label>
+    <label class="block text-sm font-medium mb-2 text-gray-500">{!! $isEdit ? 'Cambiar Contraseña del Usuario (opcional)' : 'Contraseña del Nuevo Usuario <span class="text-red-500 font-bold">*</span>' !!}</label>
     <input type="password" id="password" name="password" {{ $isEdit ? '' : 'required' }} placeholder="{{ $isEdit ? 'Dejar en blanco para no cambiar' : '' }}" class="glass-input mt-1 @error('password') border-red-500 @enderror">
     @error('password') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
     <ul id="password-requirements" class="mt-2 text-xs space-y-1.5 hidden transition-all duration-300">
@@ -130,7 +130,7 @@
 
 {{-- Confirmar Contraseña --}}
 <div class="mb-4">
-    <label class="block text-sm font-medium mb-2 text-gray-500">{{ $isEdit ? 'Confirmar Nueva Contraseña' : 'Confirmar Contraseña *' }}</label>
+    <label class="block text-sm font-medium mb-2 text-gray-500">{!! $isEdit ? 'Confirmar Nueva Contraseña' : 'Confirmar Contraseña <span class="text-red-500 font-bold">*</span>' !!}</label>
     <input type="password" id="password_confirmation" name="password_confirmation" {{ $isEdit ? '' : 'required' }} class="glass-input">
     <p id="req-match" class="mt-1 text-sm text-red-500 hidden">Las contraseñas no coinciden</p>
 </div>

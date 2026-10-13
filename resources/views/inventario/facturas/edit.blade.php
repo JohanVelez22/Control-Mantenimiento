@@ -32,7 +32,7 @@
                         <input type="text" value="{{ $factura->numero_factura }}" readonly class="glass-input font-mono font-bold bg-white/40 dark:bg-black/20 {{ $nroFacturaText }} text-left pl-3 cursor-not-allowed w-full" style="width: 7rem !important;">
                     </div>
                     <div class="w-full flex-1 min-w-0">
-                        <label class="field-label">Cliente / Proveedor *</label>
+                        <label class="field-label">Cliente / Proveedor <span class="text-red-500 font-bold">*</span></label>
                         <select name="facturable_global" required class="glass-input font-bold {{ $ringColor }}" data-placeholder="Buscar cliente o proveedor...">
                             <option value="">Buscar cliente o proveedor...</option>
                             @foreach($proveedores as $p)
@@ -49,7 +49,7 @@
                         @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                     </div>
                     <div class="col-fecha-header">
-                        <label class="field-label whitespace-nowrap">Fecha Factura *</label>
+                        <label class="field-label whitespace-nowrap">Fecha Factura <span class="text-red-500 font-bold">*</span></label>
                         <input type="date" name="fecha" required value="{{ old('fecha', $factura->fecha->format('Y-m-d')) }}" class="glass-input reportes-date-input {{ $ringColor }}" style="width: 8.5rem !important;">
                         @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                     </div>

@@ -31,7 +31,7 @@
 
     {{-- ── Género ──────────────────────────────────────────────────── --}}
     <div>
-        <label class="field-label">Género *</label>
+        <label class="field-label">Género <span class="text-red-500 font-bold">*</span></label>
         <select name="genero" required class="glass-input">
             <option value="masculino"  {{ $selGenero === 'masculino'  ? 'selected' : '' }}>♂ Masculino</option>
             <option value="femenino"   {{ $selGenero === 'femenino'   ? 'selected' : '' }}>♀ Femenino</option>    
@@ -41,7 +41,7 @@
 
     {{-- ── Nombre y Apellidos ──────────────────────────────────────── --}}
     <div>
-        <label class="field-label">Nombres *</label>
+        <label class="field-label">Nombres <span class="text-red-500 font-bold">*</span></label>
         <input type="text" name="nombres"
                value="{{ old('nombres', $c?->nombres) }}"
                required maxlength="60"
@@ -52,7 +52,7 @@
     </div>
 
     <div>
-        <label class="field-label">Apellidos *</label>
+        <label class="field-label">Apellidos <span class="text-red-500 font-bold">*</span></label>
         <input type="text" name="apellidos"
                value="{{ old('apellidos', $c?->apellidos) }}"
                required maxlength="80"
@@ -64,7 +64,7 @@
 
     {{-- ── Tipo de Identificación ──────────────────────────────────── --}}
     <div>
-        <label class="field-label">Tipo de Identificación *</label>
+        <label class="field-label">Tipo de Identificación <span class="text-red-500 font-bold">*</span></label>
         <select name="tipo_identificacion" required class="glass-input">
             @foreach($tiposId as $val => $label)
                 <option value="{{ $val }}" {{ $selTipoId === $val ? 'selected' : '' }}>{{ $label }}</option>
@@ -75,7 +75,7 @@
 
     {{-- ── Número de Identificación ────────────────────────────────── --}}
     <div>
-        <label class="field-label">Número de Identificación *</label>
+        <label class="field-label">Número de Identificación <span class="text-red-500 font-bold">*</span></label>
         <input type="text" name="identificacion"
                value="{{ old('identificacion', $c?->identificacion) }}"
                required maxlength="30"
@@ -87,7 +87,7 @@
 
     {{-- ── Teléfono Móvil ──────────────────────────────────────────── --}}
     <div>
-        <label class="field-label">Teléfono Móvil *</label>
+        <label class="field-label">Teléfono Móvil <span class="text-red-500 font-bold">*</span></label>
         <input type="tel" name="movil"
                value="{{ old('movil', $c?->movil) }}"
                required maxlength="30"

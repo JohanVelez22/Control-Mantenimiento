@@ -11,7 +11,7 @@
 
     {{-- ── Tipo de Entidad ──────────────────────────────────────── --}}
     <div>
-        <label class="field-label">Tipo de Entidad *</label>
+        <label class="field-label">Tipo de Entidad <span class="text-red-500 font-bold">*</span></label>
         <select name="tipo_entidad" required class="glass-input w-full">
             <option value="persona"  {{ $selEnt === 'persona'  ? 'selected' : '' }}>👤 Persona Natural</option>
             <option value="empresa"  {{ $selEnt === 'empresa'  ? 'selected' : '' }}>🏢 Empresa / Sociedad</option>
@@ -21,7 +21,7 @@
 
     {{-- ── Tipo de Identificación ────────────────────────────────── --}}
     <div>
-        <label class="field-label">Tipo de Identificación *</label>
+        <label class="field-label">Tipo de Identificación <span class="text-red-500 font-bold">*</span></label>
         <select name="tipo_identificacion" required class="glass-input w-full">
             @foreach($tiposId as $val => $label)
                 <option value="{{ $val }}" {{ $selTipoId === $val ? 'selected' : '' }}>{{ $label }}</option>
@@ -32,7 +32,7 @@
 
     {{-- ── Identificación ────────────────────────────────────────── --}}
     <div>
-        <label class="field-label">Número de Identificación (NIT / Cédula) *</label>
+        <label class="field-label">Número de Identificación (NIT / Cédula) <span class="text-red-500 font-bold">*</span></label>
         <input type="text" name="identificacion" required
             value="{{ old('identificacion', $p?->identificacion ?? '') }}"
             oninput="this.value = this.value.replace(/[^0-9\-]/g, '')"
@@ -43,7 +43,7 @@
 
     {{-- ── Nombre / Razón Social ─────────────────────────────────── --}}
     <div>
-        <label class="field-label">Nombre / Razón Social *</label>
+        <label class="field-label">Nombre / Razón Social <span class="text-red-500 font-bold">*</span></label>
         <input type="text" name="nombre_razon_social" required
             value="{{ old('nombre_razon_social', $p?->nombre_razon_social ?? '') }}"
             placeholder="Ej: Distribuciones ABC S.A.S."

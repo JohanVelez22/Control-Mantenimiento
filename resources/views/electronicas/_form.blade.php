@@ -28,7 +28,7 @@
 
     {{-- Técnico --}}
     <div class="min-w-0">
-        <label class="field-label flex items-center gap-2">Técnico Asignado *</label>
+        <label class="field-label flex items-center gap-2">Técnico Asignado <span class="text-red-500 font-bold">*</span></label>
         <select name="tecnico_id" required class="glass-input mt-1" data-placeholder="Seleccione un técnico...">
             <option value="">Seleccione un técnico...</option>
             @foreach($tecnicos as $t)
@@ -42,7 +42,7 @@
 
     {{-- Estado --}}
     <div>
-        <label class="field-label flex items-center gap-2">Estado Inicial *</label>
+        <label class="field-label flex items-center gap-2">Estado Inicial <span class="text-red-500 font-bold">*</span></label>
         <select name="estado" required class="glass-input mt-1 font-bold {{ old('estado', $electronica->estado ?? 'pendiente') === 'terminado' ? 'text-emerald-600 dark:text-emerald-400' : 'text-yellow-600 dark:text-yellow-400' }}">
             <option value="pendiente" {{ old('estado', $electronica->estado ?? 'pendiente') === 'pendiente' ? 'selected' : '' }} class="text-yellow-600">⏳ Pendiente</option>
             <option value="terminado" {{ old('estado', $electronica->estado ?? '') === 'terminado' ? 'selected' : '' }} class="text-emerald-600">✅ Terminado</option>
@@ -52,7 +52,7 @@
     {{-- Fechas --}}
     <div class="grid grid-cols-2 gap-3 md:col-span-2">
         <div>
-            <label class="field-label">Fecha de Entrada *</label>
+            <label class="field-label">Fecha de Entrada <span class="text-red-500 font-bold">*</span></label>
             <input type="date" name="fecha_entrada" required value="{{ old('fecha_entrada', isset($electronica->fecha_entrada) ? \Carbon\Carbon::parse($electronica->fecha_entrada)->format('Y-m-d') : date('Y-m-d')) }}" class="glass-input mt-1">
             @error('fecha_entrada') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
         </div>
@@ -69,7 +69,7 @@
 
     {{-- Tipo Trabajo --}}
     <div>
-        <label class="field-label">Tipo de Trabajo *</label>
+        <label class="field-label">Tipo de Trabajo <span class="text-red-500 font-bold">*</span></label>
         <div class="flex gap-3 mt-1">
             <label class="flex-1 ts-select-card hover-emerald {{ old('tipo', $electronica->tipo ?? 'preventivo') === 'preventivo' ? 'active-emerald' : '' }}" id="lbl_prev_elec">
                 <input type="radio" name="tipo" value="preventivo" {{ old('tipo', $electronica->tipo ?? 'preventivo') === 'preventivo' ? 'checked' : '' }} class="ts-radio-dot">
@@ -84,7 +84,7 @@
 
     {{-- Tipo Reparación --}}
     <div>
-        <label class="field-label">Tipo de Reparación *</label>
+        <label class="field-label">Tipo de Reparación <span class="text-red-500 font-bold">*</span></label>
         <div class="flex gap-3 mt-1">
             <label class="flex-1 ts-select-card hover-indigo {{ old('reparacion', $electronica->reparacion ?? 'software') === 'software' ? 'active-indigo' : '' }}" id="lbl_soft_elec">
                 <input type="radio" name="reparacion" value="software" {{ old('reparacion', $electronica->reparacion ?? 'software') === 'software' ? 'checked' : '' }} class="ts-radio-dot">
@@ -99,7 +99,7 @@
 
     {{-- Descripción --}}
     <div class="md:col-span-2">
-        <label class="field-label">Descripción del problema / trabajo *</label>
+        <label class="field-label">Descripción del problema / trabajo <span class="text-red-500 font-bold">*</span></label>
         <textarea name="descripcion_problema" required rows="3" placeholder="Detalla los síntomas o las tareas a realizar..." class="glass-input mt-1 resize-y @error('descripcion_problema') border-red-500 @enderror">{{ old('descripcion_problema', $electronica->descripcion_problema ?? '') }}</textarea>
         @error('descripcion_problema') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
@@ -114,7 +114,7 @@
 
     @if(isset($electronica) && auth()->user()->isTecnico())
     <div class="md:col-span-2 mt-4">
-        <label class="field-label flex items-center gap-2"><span>🔐</span> Contraseña de Administrador *</label>
+        <label class="field-label flex items-center gap-2"><span>🔐</span> Contraseña de Administrador <span class="text-red-500 font-bold">*</span></label>
         <input type="password" name="admin_password" class="glass-input mt-1" placeholder="Requerida para guardar cambios" autocomplete="off">
         <p class="text-xs text-gray-400 mt-1">Como técnico, debes confirmar con la contraseña de un administrador para editar.</p>
     </div>
