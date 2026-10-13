@@ -111,8 +111,8 @@
         </div>
 
         {{-- Sección: Formato de Impresión Predeterminado --}}
-        <div class="mt-6 pt-4 md:pt-5 border-t border-gray-200/50 dark:border-white/10">
-            <div class="mb-4">
+        <div class="mt-4">
+            <div class="mb-3">
                 <h3 class="text-base font-black text-slate-800 dark:text-white flex items-center gap-2">
                     <span>🖨️</span> Formato de Salida para Facturas y Recibos
                 </h3>
@@ -174,7 +174,7 @@
         </div>
 
         {{-- Botón Guardar --}}
-        <div class="table-footer-btn border-t border-gray-200/50 dark:border-white/10 flex justify-end">
+        <div class="flex justify-end items-center mt-5">
             <button type="submit" class="btn-save flex items-center gap-2">
                 <span>💾</span>
                 <span>Guardar Configuración</span>

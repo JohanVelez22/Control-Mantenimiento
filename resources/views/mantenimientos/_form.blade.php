@@ -114,7 +114,7 @@
     </div>
     @endif
 
-    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 pt-3 mt-1">
+    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
         <a href="{{ route('mantenimientos.index') }}" class="btn-cancel">✕ Cancelar</a>
         <button type="submit" class="btn-save">{{ isset($mantenimiento) ? '🔄 Actualizar Mantenimiento' : '💾 Guardar Mantenimiento' }}</button>
     </div>

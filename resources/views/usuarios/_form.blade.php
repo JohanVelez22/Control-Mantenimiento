@@ -142,7 +142,7 @@
 </div>
 @endif
 
-<div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-3 mt-1">
+<div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
     <a href="{{ auth()->check() && auth()->user()->isAdmin() ? route('usuarios.index') : route('dashboard') }}" class="btn-cancel">✕ Cancelar</a>
     <button type="submit" class="btn-save">{{ $isEdit ? '🔄 Actualizar Usuario' : '💾 Guardar Usuario' }}</button>
 </div>

@@ -185,7 +185,7 @@
         <p class="text-[10px] text-gray-500 mt-3 font-medium">Si dejas P. Venta y P. Técnico vacíos, se calculan automáticamente: Venta = Compra × (1 + Utilidad%), Técnico = Compra × (1 + Utilidad%/2).</p>
     </div>
 
-    <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-3 mt-1">
+    <div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
         <a href="{{ route('stocks.index') }}" class="btn-cancel">✕ Cancelar</a>
         <button type="submit" class="btn-save">{{ $st ? '🔄 Actualizar Producto' : '💾 Guardar Producto' }}</button>
     </div>

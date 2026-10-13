@@ -233,7 +233,7 @@
         </div>
 
         {{-- Tarjeta interactiva de Arqueo y Conciliación Física --}}
-        <div class="glass-card p-6 md:p-8 border border-blue-500/20 shadow-xl">
+        <div class="glass-card p-6 border border-blue-500/20 shadow-xl">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 md:mb-8">
                 <div>
                     <h2 class="text-xl md:text-2xl font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -361,7 +361,7 @@
     @endif
 
     {{-- Historial de cierres --}}
-    <div class="glass-card p-6 md:p-8">
+    <div class="glass-card p-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
                 <h2 class="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-2">

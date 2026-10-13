@@ -61,7 +61,7 @@
         <textarea name="observacion" rows="2" class="glass-input resize-y" placeholder="Cargador original, rayón en la tapa, etc...">{{ old('observacion', $eq?->observacion) }}</textarea>
     </div>
 
-    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 pt-3 mt-1">
+    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
         <a href="{{ route('equipos.index') }}" class="btn-cancel">✕ Cancelar</a>
         <button type="submit" class="btn-save">{{ $eq ? '🔄 Actualizar Equipo' : '💾 Guardar Equipo' }}</button>
     </div>

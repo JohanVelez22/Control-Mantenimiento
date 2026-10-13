@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <div class="glass-card p-6 md:p-8">
+    <div class="glass-card p-6 md:p-6">
         <div class="flex items-center gap-3 mb-6">
             <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
             <div>
@@ -325,7 +325,7 @@
             </div>
         @endif
 
-        <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-3 mt-1">
+        <div class="flex flex-col sm:flex-row items-center justify-end gap-3 mt-0 pt-0">
             <a href="{{ route('inventario.facturas') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">✕ Cancelar</a>
             <button type="submit" class="btn-save w-full sm:w-auto justify-center">💾 Guardar Cambios</button>
         </div>

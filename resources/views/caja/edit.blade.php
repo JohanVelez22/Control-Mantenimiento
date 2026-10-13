@@ -11,7 +11,7 @@
 @endphp
 
 <div class="max-w-7xl mx-auto">
-    <div class="glass-card p-6 md:p-8 !pb-6">
+    <div class="glass-card p-6 md:p-6 !pb-6">
         
         {{-- Encabezado unificado dentro de la tarjeta, tal como caja.show --}}
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 relative z-20">
@@ -219,7 +219,7 @@
         @endif
 
         {{-- Botones de Acción al Final (Centrados verticalmente) --}}
-        <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-3 mt-1">
+        <div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
             <a href="{{ route('caja.index') }}" class="btn-cancel">✕ Cancelar</a>
             <button type="submit" form="cajaEditForm" class="btn-save">🔄 Actualizar Movimiento</button>
         </div>

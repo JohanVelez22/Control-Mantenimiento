@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <div class="glass-card p-6 md:p-8">
+    <div class="glass-card p-6 md:p-6">
         <div class="flex items-center gap-3 mb-6">
             <a href="{{ route('cotizaciones.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
             <div>
@@ -175,7 +175,7 @@
                 <textarea name="notas" rows="3" class="glass-input resize-y focus:ring-blue-500" placeholder="Ej: Precios sujetos a cambio sin previo aviso. Tiempo estimado de entrega: 3 días hábiles.">{{ old('notas', $cotizacion->notas) }}</textarea>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-3 mt-1">
+            <div class="flex flex-col sm:flex-row items-center justify-end gap-3 mt-0 pt-0">
                 <a href="{{ route('cotizaciones.index') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">✕ Cancelar</a>
                 <button type="submit" class="btn-save w-full sm:w-auto justify-center">💾 Actualizar Cotización</button>
             </div>

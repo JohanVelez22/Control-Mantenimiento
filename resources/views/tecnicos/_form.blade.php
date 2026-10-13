@@ -114,7 +114,7 @@
         @error('photo') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
 
-    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 pt-3 mt-1">
+    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
         <a href="{{ route('tecnicos.index') }}" class="btn-cancel">✕ Cancelar</a>
         <button type="submit" class="btn-save">{{ $t ? '🔄 Actualizar Técnico' : '💾 Guardar Técnico' }}</button>
     </div>

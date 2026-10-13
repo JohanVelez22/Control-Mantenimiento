@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="max-w-7xl mx-auto">
- <div class="glass-card p-6 md:p-8">
+ <div class="glass-card p-6 md:p-6">
  <div class="flex items-center gap-3 mb-8">
  <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
  <div>
@@ -129,7 +129,7 @@
  <textarea name="observaciones" rows="2" class="glass-input resize-y focus:ring-orange-500" placeholder="Notas sobre la compra..."></textarea>
  </div>
 
-        <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-3 mt-1">
+        <div class="flex flex-col sm:flex-row items-center justify-end gap-3 mt-0 pt-0">
             <a href="{{ route('inventario.facturas') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">✕ Cancelar</a>
             <button type="submit" class="btn-compra w-full sm:w-auto justify-center">📦 Procesar Compra</button>
         </div>
