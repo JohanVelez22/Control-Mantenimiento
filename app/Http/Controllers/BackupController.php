@@ -368,7 +368,7 @@ class BackupController extends Controller
                 $opened = true;
             } catch (\Throwable $e) {
                 try {
-                    pclose(popen('explorer.exe /separate,' . escapeshellarg($backupDir), 'r'));
+                    pclose(popen('explorer.exe /separate,'.escapeshellarg($backupDir), 'r'));
                     $opened = true;
                 } catch (\Throwable $e2) {
                     $opened = false;

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\CierreCaja;
 use App\Models\Cliente;
 use App\Models\ConceptoCaja;
 use App\Models\Factura;
@@ -19,10 +20,15 @@ class MovimientoInventarioControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected Stock $stock;
+
     protected Proveedor $proveedor;
+
     protected Cliente $cliente;
+
     protected ConceptoCaja $concepto;
 
     protected function setUp(): void
@@ -97,7 +103,7 @@ class MovimientoInventarioControllerTest extends TestCase
         $this->assertDatabaseHas('facturas', [
             'tipo_movimiento' => 'compra',
             'facturable_id' => $this->proveedor->id,
-            'facturable_type' => \App\Models\Proveedor::class,
+            'facturable_type' => Proveedor::class,
         ]);
         $this->stock->refresh();
         $this->assertEquals(15, $this->stock->cantidad);
@@ -210,7 +216,7 @@ class MovimientoInventarioControllerTest extends TestCase
         $this->assertDatabaseHas('facturas', [
             'tipo_movimiento' => 'venta',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
         ]);
         $this->stock->refresh();
         $this->assertEquals(8, $this->stock->cantidad);
@@ -324,7 +330,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'compra',
             'estado' => 'emitida',
             'facturable_id' => $this->proveedor->id,
-            'facturable_type' => \App\Models\Proveedor::class,
+            'facturable_type' => Proveedor::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -335,7 +341,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'compra',
             'estado' => 'emitida',
             'facturable_id' => $this->proveedor->id,
-            'facturable_type' => \App\Models\Proveedor::class,
+            'facturable_type' => Proveedor::class,
             'total_documento' => 200000,
             'total_pagado' => 200000,
             'fecha' => Carbon::today(),
@@ -346,7 +352,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'compra',
             'estado' => 'emitida',
             'facturable_id' => $this->proveedor->id,
-            'facturable_type' => \App\Models\Proveedor::class,
+            'facturable_type' => Proveedor::class,
             'total_documento' => 300000,
             'total_pagado' => 300000,
             'fecha' => Carbon::today(),
@@ -357,7 +363,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -368,7 +374,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 200000,
             'total_pagado' => 200000,
             'fecha' => Carbon::today(),
@@ -386,7 +392,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'compra',
             'estado' => 'emitida',
             'facturable_id' => $this->proveedor->id,
-            'facturable_type' => \App\Models\Proveedor::class,
+            'facturable_type' => Proveedor::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -397,7 +403,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -415,7 +421,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -426,7 +432,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'anulada',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 200000,
             'total_pagado' => 0,
             'fecha' => Carbon::today(),
@@ -444,7 +450,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today()->subDays(10),
@@ -455,7 +461,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -478,7 +484,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -496,7 +502,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 50000,
             'fecha' => Carbon::today(),
@@ -536,7 +542,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -563,7 +569,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'compra',
             'estado' => 'emitida',
             'facturable_id' => $this->proveedor->id,
-            'facturable_type' => \App\Models\Proveedor::class,
+            'facturable_type' => Proveedor::class,
             'total_documento' => 150000,
             'total_pagado' => 150000,
             'fecha' => Carbon::today(),
@@ -600,7 +606,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -631,7 +637,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'compra',
             'estado' => 'anulada',
             'facturable_id' => $this->proveedor->id,
-            'facturable_type' => \App\Models\Proveedor::class,
+            'facturable_type' => Proveedor::class,
             'total_documento' => 150000,
             'total_pagado' => 0,
             'fecha' => Carbon::today(),
@@ -662,7 +668,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -679,7 +685,7 @@ class MovimientoInventarioControllerTest extends TestCase
     public function test_cannot_anular_factura_in_closed_caja(): void
     {
         $fechaCerrada = Carbon::today()->subDays(2)->toDateString();
-        \App\Models\CierreCaja::create([
+        CierreCaja::create([
             'fecha' => $fechaCerrada,
             'total_ingresos' => 100000,
             'total_egresos' => 0,
@@ -696,7 +702,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => $fechaCerrada,
@@ -735,7 +741,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -753,7 +759,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'pendiente_pago',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 50000,
             'fecha' => Carbon::today(),
@@ -795,7 +801,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),
@@ -813,7 +819,7 @@ class MovimientoInventarioControllerTest extends TestCase
     public function test_update_factura_rejects_closed_date(): void
     {
         $fechaCerrada = Carbon::today()->subDays(2)->toDateString();
-        \App\Models\CierreCaja::create([
+        CierreCaja::create([
             'fecha' => $fechaCerrada,
             'total_ingresos' => 100000,
             'total_egresos' => 0,
@@ -830,7 +836,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'tipo_movimiento' => 'venta',
             'estado' => 'emitida',
             'facturable_id' => $this->cliente->id,
-            'facturable_type' => \App\Models\Cliente::class,
+            'facturable_type' => Cliente::class,
             'total_documento' => 100000,
             'total_pagado' => 100000,
             'fecha' => Carbon::today(),

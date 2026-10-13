@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\BajaStock;
 use App\Models\Proveedor;
 use App\Models\Stock;
 use App\Models\User;
@@ -13,6 +14,7 @@ class StockModelTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected Proveedor $proveedor;
 
     protected function setUp(): void
@@ -103,7 +105,7 @@ class StockModelTest extends TestCase
             'utilidad' => 50,
         ]);
 
-        \App\Models\BajaStock::create([
+        BajaStock::create([
             'stock_id' => $stock->id,
             'user_id' => $this->admin->id,
             'cantidad' => 3,
@@ -112,7 +114,7 @@ class StockModelTest extends TestCase
             'motivo' => 'dano_taller',
         ]);
 
-        \App\Models\BajaStock::create([
+        BajaStock::create([
             'stock_id' => $stock->id,
             'user_id' => $this->admin->id,
             'cantidad' => 2,
@@ -136,7 +138,7 @@ class StockModelTest extends TestCase
             'utilidad' => 50,
         ]);
 
-        \App\Models\BajaStock::create([
+        BajaStock::create([
             'stock_id' => $stock->id,
             'user_id' => $this->admin->id,
             'cantidad' => 3,
@@ -145,7 +147,7 @@ class StockModelTest extends TestCase
             'motivo' => 'dano_taller',
         ]);
 
-        \App\Models\BajaStock::create([
+        BajaStock::create([
             'stock_id' => $stock->id,
             'user_id' => $this->admin->id,
             'cantidad' => 2,

@@ -6,6 +6,7 @@ use App\Models\ConceptoCaja;
 use App\Models\MovimientoCaja;
 use App\Models\Stock;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -130,7 +131,7 @@ class AnulacionService
             if ($documento->abonos->count() > 0) {
                 $concepto = ConceptoCaja::where('nombre', $conceptoAbono)->first();
                 foreach ($documento->abonos as $abono) {
-                    $fechaAbono = $abono->fecha ? \Carbon\Carbon::parse($abono->fecha)->toDateString() : null;
+                    $fechaAbono = $abono->fecha ? Carbon::parse($abono->fecha)->toDateString() : null;
                     if (CierreCajaGuard::fechaEstaCerrada($fechaAbono)) {
                         throw new \DomainException('No se puede '.($esAnulacion ? 'anular' : 'reactivar')." la orden: tiene un abono registrado el {$fechaAbono}, fecha que ya tiene un cierre de caja registrado. Para modificarla, elimine primero el cierre de ese día.");
                     }

@@ -14,6 +14,7 @@ class CierreCajaConciliacionTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private ConceptoCaja $concepto;
 
     protected function setUp(): void
@@ -31,10 +32,10 @@ class CierreCajaConciliacionTest extends TestCase
     }
 
     /**
- * Sin conteo físico el cierre NO puede afirmar que cuadró: queda 'sin_conciliar'.
- * Regresión: antes el sistema precargaba el valor teórico y reportaba 'cuadrado'.
- */
-public function test_cierre_sin_conteo_fisico_queda_sin_conciliar_y_no_afirma_cuadre(): void
+     * Sin conteo físico el cierre NO puede afirmar que cuadró: queda 'sin_conciliar'.
+     * Regresión: antes el sistema precargaba el valor teórico y reportaba 'cuadrado'.
+     */
+    public function test_cierre_sin_conteo_fisico_queda_sin_conciliar_y_no_afirma_cuadre(): void
     {
         $fecha = '2026-10-01';
 

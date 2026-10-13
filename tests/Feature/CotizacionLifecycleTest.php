@@ -15,8 +15,11 @@ class CotizacionLifecycleTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected Cliente $cliente;
+
     protected Stock $stock;
 
     protected function setUp(): void

@@ -1553,20 +1553,39 @@ html.dark .btn-copy-path:hover {
   gap: 6px !important;
   font-size: 12px !important;
   font-weight: 700 !important;
-  padding: 6px 13px !important;
+  padding: 6px 14px !important;
   border-radius: 10px !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
-  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
-  border: none !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35) !important;
+  background: rgba(13, 148, 136, 0.1) !important;
+  border: 1px solid rgba(13, 148, 136, 0.3) !important;
+  color: #0F766E !important;
+  box-shadow: none !important;
 }
 
 .btn-open-folder:hover {
-  background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%) !important;
+  background: rgba(13, 148, 136, 0.2) !important;
+  border-color: rgba(13, 148, 136, 0.45) !important;
+  color: #0D9488 !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.45) !important;
+  box-shadow: none !important;
+}
+
+.dark .btn-open-folder,
+html.dark .btn-open-folder {
+  background: rgba(45, 212, 191, 0.16) !important;
+  border: 1px solid rgba(45, 212, 191, 0.35) !important;
+  color: #5EEAD4 !important;
+  box-shadow: none !important;
+}
+
+.dark .btn-open-folder:hover,
+html.dark .btn-open-folder:hover {
+  background: rgba(45, 212, 191, 0.26) !important;
+  border-color: rgba(45, 212, 191, 0.6) !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px) !important;
+  box-shadow: none !important;
 }
 
 /* Código de ruta física */
@@ -1817,28 +1836,29 @@ html.dark .btn-backup-restore:hover {
   font-size: 12px !important;
   padding: 5px 8px !important;
   border-radius: 8px !important;
-  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
-  background: rgba(16, 185, 129, 0.12) !important;
-  color: #059669 !important;
+  background: rgba(59, 130, 246, 0.12) !important;
+  color: #2563EB !important;
 }
 
 .btn-backup-update:hover {
-  background: rgba(16, 185, 129, 0.22) !important;
+  background: rgba(59, 130, 246, 0.22) !important;
+  border-color: rgba(59, 130, 246, 0.45) !important;
   transform: translateY(-1px);
 }
 
 .dark .btn-backup-update,
 html.dark .btn-backup-update {
-  background: rgba(52, 211, 153, 0.15) !important;
-  color: #34D399 !important;
-  border-color: rgba(52, 211, 153, 0.3) !important;
+  background: rgba(96, 165, 250, 0.15) !important;
+  color: #60A5FA !important;
+  border-color: rgba(96, 165, 250, 0.3) !important;
 }
 
 .dark .btn-backup-update:hover,
 html.dark .btn-backup-update:hover {
-  background: rgba(52, 211, 153, 0.25) !important;
+  background: rgba(96, 165, 250, 0.25) !important;
 }
 
 .btn-backup-delete {
@@ -1870,6 +1890,51 @@ html.dark .btn-backup-delete {
 .dark .btn-backup-delete:hover,
 html.dark .btn-backup-delete:hover {
   background: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Campo de nombre de archivo de respaldo: sin barra horizontal, misma dimensión, desplazamiento natural como campo de descripción */
+.backup-filename-input {
+  width: 100% !important;
+  min-width: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  color: inherit !important;
+  cursor: text !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.backup-filename-input::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.backup-filename-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.backup-filename-scroll {
+  overflow-x: auto !important;
+  white-space: nowrap !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.backup-filename-scroll::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Preset buttons en scheduler */
@@ -3197,6 +3262,43 @@ html.dark .btn-ghost-emerald:hover {
   background: rgba(16, 185, 129, 0.25) !important;
   border-color: rgba(52, 211, 153, 0.60) !important;
   color: #A7F3D0 !important;
+}
+
+.btn-ghost-purple {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 10px 16px !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  color: #7E22CE !important;
+  background: rgba(147, 51, 234, 0.10) !important;
+  border: 1px solid rgba(147, 51, 234, 0.35) !important;
+  transition: all 0.22s ease !important;
+}
+
+.btn-ghost-purple:hover {
+  background: rgba(147, 51, 234, 0.20) !important;
+  border-color: rgba(147, 51, 234, 0.55) !important;
+  color: #6B21A8 !important;
+}
+
+.dark .btn-ghost-purple,
+html.dark .btn-ghost-purple {
+  color: #C084FC !important;
+  background: rgba(168, 85, 247, 0.16) !important;
+  border-color: rgba(192, 132, 252, 0.40) !important;
+}
+
+.dark .btn-ghost-purple:hover,
+html.dark .btn-ghost-purple:hover {
+  background: rgba(168, 85, 247, 0.28) !important;
+  border-color: rgba(192, 132, 252, 0.65) !important;
+  color: #F3E8FF !important;
 }
 
 .modal-divider {
@@ -8453,4 +8555,18 @@ input[type="radio"][value="correctivo"] {
   border-color: #f43f5e !important;
   background-color: #f43f5e !important;
   box-shadow: inset 0 0 0 3px #0f172a !important;
+}
+
+/* Posicionamiento del contenedor de Toasts hacia el borde derecho horizontal */
+#toast-container {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  pointer-events: none !important;
+  width: 100% !important;
+  max-width: min(380px, calc(100vw - 24px)) !important;
+  z-index: 100000 !important;
 }

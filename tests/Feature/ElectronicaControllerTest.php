@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Models\Abono;
 use App\Models\Cliente;
 use App\Models\Electronica;
 use App\Models\Equipo;
 use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
+use App\Services\StockService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,10 +18,15 @@ class ElectronicaControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected Cliente $cliente;
+
     protected Equipo $equipo;
+
     protected Tecnico $tecnicoM;
+
     protected Stock $stock;
 
     protected function setUp(): void
@@ -460,7 +467,7 @@ class ElectronicaControllerTest extends TestCase
         ]);
 
         // Simulate proper stock attachment via service (decrements stock)
-        app(\App\Services\StockService::class)->salida($this->stock, 2);
+        app(StockService::class)->salida($this->stock, 2);
         $electronica->stocks()->attach($this->stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
         $this->stock->refresh();
         $this->assertEquals(8, $this->stock->cantidad);
@@ -527,7 +534,7 @@ class ElectronicaControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $abono = \App\Models\Abono::create([
+        $abono = Abono::create([
             'electronica_id' => $electronica->id,
             'monto' => 50000,
             'fecha' => now()->toDateString(),

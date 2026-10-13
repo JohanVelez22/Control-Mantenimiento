@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Abono;
 use App\Models\Cliente;
 use App\Models\ConceptoCaja;
 use App\Models\Configuracion;
@@ -560,7 +561,7 @@ class MovimientoCajaController extends Controller
 
             // Sincronizar Abono asociado si existe
             if ($movimiento->abono_id) {
-                \App\Models\Abono::where('id', $movimiento->abono_id)->update(['anulado' => $esAnulacion]);
+                Abono::where('id', $movimiento->abono_id)->update(['anulado' => $esAnulacion]);
             }
 
             // Anular o restaurar todos los abonos asociados en cascada
@@ -577,7 +578,7 @@ class MovimientoCajaController extends Controller
                     'estado' => $esAnulacion ? 'anulado' : 'activo',
                 ]);
                 if ($child->abono_id) {
-                    \App\Models\Abono::where('id', $child->abono_id)->update(['anulado' => $esAnulacion]);
+                    Abono::where('id', $child->abono_id)->update(['anulado' => $esAnulacion]);
                 }
             }
 

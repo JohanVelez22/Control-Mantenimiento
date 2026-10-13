@@ -19,7 +19,9 @@ class AbonoControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected Mantenimiento $mantenimiento;
 
     protected function setUp(): void

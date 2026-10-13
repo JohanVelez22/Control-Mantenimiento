@@ -12,6 +12,7 @@ use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 
 class EventoController extends Controller
@@ -94,7 +95,7 @@ class EventoController extends Controller
         }
 
         try {
-            \Illuminate\Support\Facades\Artisan::call('app:backup-db');
+            Artisan::call('app:backup-db');
 
             return redirect()->route('eventos.index')->with('success', 'Copia de seguridad del sistema generada exitosamente.');
         } catch (\Throwable $e) {

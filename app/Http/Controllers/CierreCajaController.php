@@ -41,7 +41,7 @@ class CierreCajaController extends Controller
                 if (str_contains($rawContado, '.') && str_contains($rawContado, ',')) {
                     $rawContado = str_replace('.', '', $rawContado);
                     $rawContado = str_replace(',', '.', $rawContado);
-                } elseif (str_contains($rawContado, '.') && !str_contains($rawContado, ',')) {
+                } elseif (str_contains($rawContado, '.') && ! str_contains($rawContado, ',')) {
                     if (preg_match('/^\d{1,3}(\.\d{3})+$/', $rawContado)) {
                         $rawContado = str_replace('.', '', $rawContado);
                     }
@@ -94,8 +94,9 @@ class CierreCajaController extends Controller
 
             if (abs($diferencia) >= 0.01 && empty(trim((string) $request->motivo_diferencia))) {
                 $tipoDescuadre = $diferencia > 0 ? 'sobrante' : 'faltante';
+
                 return back()
-                    ->with('error', "Existe un descuadre en caja ({$tipoDescuadre} de $" . number_format(abs($diferencia), 0, ',', '.') . "). Debes ingresar el motivo o justificación de la diferencia para poder cerrar y bloquear el día.")
+                    ->with('error', "Existe un descuadre en caja ({$tipoDescuadre} de $".number_format(abs($diferencia), 0, ',', '.').'). Debes ingresar el motivo o justificación de la diferencia para poder cerrar y bloquear el día.')
                     ->withInput();
             }
 

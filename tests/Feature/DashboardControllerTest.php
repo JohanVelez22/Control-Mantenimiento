@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Cliente;
+use App\Models\ConceptoCaja;
 use App\Models\Cotizacion;
 use App\Models\Electronica;
 use App\Models\Equipo;
@@ -20,7 +21,9 @@ class DashboardControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected User $invitado;
 
     protected function setUp(): void
@@ -107,7 +110,7 @@ class DashboardControllerTest extends TestCase
 
     public function test_dashboard_shows_caja_saldos(): void
     {
-        $concepto = \App\Models\ConceptoCaja::create(['nombre' => 'Test']);
+        $concepto = ConceptoCaja::create(['nombre' => 'Test']);
         MovimientoCaja::create([
             'tipo_movimiento' => 'ingreso',
             'tipo_pago' => 'efectivo',

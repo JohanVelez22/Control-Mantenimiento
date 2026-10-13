@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Cliente;
 use App\Models\Mantenimiento;
 use App\Models\User;
 
@@ -25,13 +26,14 @@ class MantenimientoPolicy
         }
 
         // Si el usuario invitado es el cliente dueño del equipo (mismo correo)
-        $cliente = \App\Models\Cliente::where('email', $user->email)->first();
+        $cliente = Cliente::where('email', $user->email)->first();
         if ($cliente) {
             return $mantenimiento->equipo?->cliente_id === $cliente->id;
         }
 
         // Si es el invitado genérico, verificar si validó la orden en la sesión actual
         $autorizadas = session('consultas_autorizadas', []);
+
         return in_array($mantenimiento->id, $autorizadas);
     }
 

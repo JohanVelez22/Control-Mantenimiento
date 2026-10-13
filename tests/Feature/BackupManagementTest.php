@@ -15,7 +15,9 @@ class BackupManagementTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected string $backupDir;
 
     protected function setUp(): void

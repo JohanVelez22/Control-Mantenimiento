@@ -14,8 +14,11 @@ class EquipoControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected Cliente $cliente;
+
     protected Proveedor $proveedor;
 
     protected function setUp(): void
@@ -69,7 +72,7 @@ class EquipoControllerTest extends TestCase
             'marca' => 'Dell',
             'modelo' => 'Inspiron',
             'serie' => 'SN-DELL-001',
-            'propietario_global' => 'Cliente:' . $this->cliente->id,
+            'propietario_global' => 'Cliente:'.$this->cliente->id,
             'observacion' => 'Equipo de cliente',
         ]);
 
@@ -88,7 +91,7 @@ class EquipoControllerTest extends TestCase
             'marca' => 'HP',
             'modelo' => 'ProLiant',
             'serie' => 'SN-HP-001',
-            'propietario_global' => 'Proveedor:' . $this->proveedor->id,
+            'propietario_global' => 'Proveedor:'.$this->proveedor->id,
             'observacion' => 'Equipo de proveedor',
         ]);
 
@@ -128,7 +131,7 @@ class EquipoControllerTest extends TestCase
             'marca' => 'Marca',
             'modelo' => 'Modelo',
             'serie' => 'SN-DUP-001',
-            'propietario_global' => 'Cliente:' . $this->cliente->id,
+            'propietario_global' => 'Cliente:'.$this->cliente->id,
         ]);
 
         $response->assertSessionHasErrors(['serie']);
@@ -166,7 +169,7 @@ class EquipoControllerTest extends TestCase
             'marca' => 'Nueva Marca',
             'modelo' => 'Nuevo Modelo',
             'serie' => 'SN-UPD-001',
-            'propietario_global' => 'Cliente:' . $this->cliente->id,
+            'propietario_global' => 'Cliente:'.$this->cliente->id,
             'observacion' => 'Actualizado',
         ]);
 

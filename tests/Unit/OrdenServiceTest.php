@@ -15,7 +15,9 @@ class OrdenServiceTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected Equipo $equipo;
+
     protected Tecnico $tecnico;
 
     protected function setUp(): void

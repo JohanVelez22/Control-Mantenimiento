@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Configuracion;
 use App\Models\Evento;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,7 +12,9 @@ class ConfiguracionEmpresaYAuditoriaTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected User $invitado;
 
     protected function setUp(): void

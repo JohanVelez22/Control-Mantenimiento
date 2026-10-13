@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\CierreCaja;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Guardián de periods de caja cerrados.

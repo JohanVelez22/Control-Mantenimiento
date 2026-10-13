@@ -3,13 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\Abono;
-use App\Models\Electronica;
-use App\Models\Equipo;
-use App\Models\Tecnico;
-use App\Models\User;
 use App\Models\Cliente;
 use App\Models\ConceptoCaja;
+use App\Models\Electronica;
+use App\Models\Equipo;
 use App\Models\MovimientoCaja;
+use App\Models\Tecnico;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -19,7 +19,9 @@ class ElectronicaAbonoControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected Electronica $electronica;
 
     protected function setUp(): void

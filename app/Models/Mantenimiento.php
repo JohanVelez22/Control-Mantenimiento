@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Mantenimiento extends Model
 {
-    use \App\Traits\Auditable, HasFactory;
+    use Auditable, HasFactory;
 
     protected $fillable = [
         'id_orden',

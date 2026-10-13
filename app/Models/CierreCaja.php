@@ -41,6 +41,7 @@ class CierreCaja extends Model
         if (abs($dif) < 0.01) {
             return 'cuadrado';
         }
+
         return $dif > 0 ? 'sobrante' : 'faltante';
     }
 

@@ -279,8 +279,8 @@ class BackupDatabase extends Command
             $this->info('  📦 Volcando base de datos SQLite...');
             File::put($targetSqlPath, "-- Backup SQLite de prueba\n-- Base de datos: {$safeDatabase}\n-- Generado: {$date}\n");
             $sizeKb = round(File::size($targetSqlPath) / 1024, 2);
-            $this->info("  ✅ Base de datos respaldada: ".basename($targetSqlPath)." ({$sizeKb} KB)");
-            Log::info("Backup SQLite exitoso: ".basename($targetSqlPath)." ({$sizeKb} KB)");
+            $this->info('  ✅ Base de datos respaldada: '.basename($targetSqlPath)." ({$sizeKb} KB)");
+            Log::info('Backup SQLite exitoso: '.basename($targetSqlPath)." ({$sizeKb} KB)");
 
             return $sizeKb;
         }
@@ -319,8 +319,8 @@ class BackupDatabase extends Command
 
         if ($resultCode === 0 && File::exists($targetSqlPath) && File::size($targetSqlPath) > 0) {
             $sizeKb = round(File::size($targetSqlPath) / 1024, 2);
-            $this->info("  ✅ Base de datos respaldada: ".basename($targetSqlPath)." ({$sizeKb} KB)");
-            Log::info("Backup de base de datos exitoso: ".basename($targetSqlPath)." ({$sizeKb} KB)");
+            $this->info('  ✅ Base de datos respaldada: '.basename($targetSqlPath)." ({$sizeKb} KB)");
+            Log::info('Backup de base de datos exitoso: '.basename($targetSqlPath)." ({$sizeKb} KB)");
 
             return $sizeKb;
         }

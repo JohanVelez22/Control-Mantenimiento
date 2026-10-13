@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\AdminUserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +16,7 @@ class LoginFlexibilityTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        (new \Database\Seeders\AdminUserSeeder)->run();
+        (new AdminUserSeeder)->run();
     }
 
     public function test_login_con_nombre_administrador_sin_correo(): void

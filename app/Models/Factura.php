@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\OrdenService;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class Factura extends Model
 {
-    use \App\Traits\Auditable, SoftDeletes;
+    use Auditable, SoftDeletes;
 
     protected $fillable = [
         'numero_factura',

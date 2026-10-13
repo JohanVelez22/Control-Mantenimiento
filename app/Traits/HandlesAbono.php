@@ -4,9 +4,12 @@ namespace App\Traits;
 
 use App\Models\Abono;
 use App\Models\ConceptoCaja;
+use App\Models\Factura;
 use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
+use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +37,7 @@ trait HandlesAbono
 
         // No permitir abonar más de lo que se debe
         $saldoPendiente = $model->saldo_pendiente;
-        if ($validated['monto'] > $saldoPendiente + \App\Models\Factura::EPSILON) {
+        if ($validated['monto'] > $saldoPendiente + Factura::EPSILON) {
             return back()->with('error',
                 'El abono ($'.number_format($validated['monto'], 0, ',', '.').
                 ') no puede superar el saldo pendiente ($'.number_format($saldoPendiente, 0, ',', '.').').')->withInput();
@@ -60,7 +63,7 @@ trait HandlesAbono
             $lockedModel = get_class($model)::where('id', $model->id)->lockForUpdate()->first();
             $saldoPendiente = $lockedModel ? $lockedModel->saldo_pendiente : $model->saldo_pendiente;
 
-            if ($validated['monto'] > $saldoPendiente + \App\Models\Factura::EPSILON) {
+            if ($validated['monto'] > $saldoPendiente + Factura::EPSILON) {
                 DB::rollBack();
 
                 return back()->with('error',
@@ -79,7 +82,7 @@ trait HandlesAbono
             $abono = Abono::create($validated);
 
             // Determinar si es un pago completo (total/final) o abono parcial
-            $esPagoCompleto = ($validated['monto'] >= $saldoPendiente - \App\Models\Factura::EPSILON);
+            $esPagoCompleto = ($validated['monto'] >= $saldoPendiente - Factura::EPSILON);
             $totalAbonosCount = $model->abonos()->count();
 
             if ($esPagoCompleto && $totalAbonosCount === 1) {
@@ -130,11 +133,11 @@ trait HandlesAbono
      */
     protected function destroyAbono(Abono $abono, string $successMsg): RedirectResponse
     {
-        if ($error = app(\App\Services\AnulacionService::class)->autorizarOperacionSensible(request())) {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible(request())) {
             return back()->with('error', $error);
         }
 
-        $fechaAbono = $abono->fecha ? \Carbon\Carbon::parse($abono->fecha)->toDateString() : null;
+        $fechaAbono = $abono->fecha ? Carbon::parse($abono->fecha)->toDateString() : null;
         if (CierreCajaGuard::fechaEstaCerrada($fechaAbono)) {
             return back()->with('error', 'No se puede eliminar este abono: la fecha '.$fechaAbono.' ya tiene un cierre de caja registrado. Para modificarlo, elimine primero el cierre de ese día.');
         }

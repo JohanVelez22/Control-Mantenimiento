@@ -3,11 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\ConceptoCaja;
-use App\Models\Factura;
-use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,7 +13,9 @@ class ReporteFinancieroControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected User $invitado;
 
     protected function setUp(): void

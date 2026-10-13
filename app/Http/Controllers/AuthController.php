@@ -176,7 +176,7 @@ class AuthController extends Controller
                 default => '30 minutos',
             };
 
-            if (!empty($history)) {
+            if (! empty($history)) {
                 $history[count($history) - 1]['motivo'] = "Credenciales incorrectas (Provocó bloqueo de {$minutosTexto})";
                 Cache::put($historyKey, $history, now()->addHours(2));
             }

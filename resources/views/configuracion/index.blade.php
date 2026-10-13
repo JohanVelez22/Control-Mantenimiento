@@ -1460,6 +1460,19 @@ async function saveBackupSchedule() {
 function deleteBackupFile(filename) {
     _pendingBackupDeleteFilename = filename;
     _pendingBackupRestoreFilename = null;
+    _pendingGitUpdate = false;
+
+    let tipoTexto = 'Base de Datos (.sql)';
+    let iconEmoji = '💾';
+
+    if (filename.startsWith('backup_integral')) {
+        tipoTexto = 'Respaldo Integral del Sistema (.zip)';
+        iconEmoji = '📦';
+    } else if (filename.startsWith('backup_bd_multimedia') || filename.endsWith('.zip')) {
+        tipoTexto = 'Base de Datos + Archivos Multimedia (.zip)';
+        iconEmoji = '🗜️';
+    }
+
     const modal = document.getElementById('ts-modal');
     const card = document.getElementById('ts-modal-card');
     const titleEl = document.getElementById('ts-modal-title');
@@ -1469,16 +1482,51 @@ function deleteBackupFile(filename) {
     const iconBox = document.getElementById('ts-modal-icon-box');
     const icon = document.getElementById('ts-modal-icon');
 
-    if (titleEl) titleEl.innerText = '¿Eliminar archivo de respaldo?';
-    if (msgEl) msgEl.innerText = `Esta acción eliminará permanentemente la copia de seguridad "${filename}". No se puede deshacer.`;
+    if (titleEl) titleEl.innerText = '¿Eliminar copia de seguridad?';
+    if (msgEl) {
+        msgEl.innerHTML = `
+            <div class="text-left space-y-3.5 my-3 text-xs sm:text-sm">
+                <!-- Tipo de Respaldo: Sin bordes blancos, sin fondo gris -->
+                <div class="flex items-center gap-3 py-1 px-1">
+                    <span class="text-2xl shrink-0 p-2.5 rounded-2xl bg-red-500/15 text-red-400">${iconEmoji}</span>
+                    <div class="min-w-0 text-left">
+                        <div class="text-[10px] uppercase tracking-wider font-extrabold text-red-500 dark:text-red-400">Tipo de Respaldo</div>
+                        <div class="font-bold text-sm text-slate-900 dark:text-white truncate">${tipoTexto}</div>
+                    </div>
+                </div>
+
+                <!-- Nombre del archivo: ÚNICO campo con borde, sin barra horizontal y desplazamiento natural como campo de descripción -->
+                <div class="p-2.5 sm:p-3 rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-red-500/30 text-red-700 dark:text-red-300 font-mono text-[11px] sm:text-xs flex items-center gap-2.5 shadow-sm min-w-0 cursor-text" onclick="this.querySelector('input')?.focus()">
+                    <span class="text-sm shrink-0 select-none">📄</span>
+                    <input type="text" readonly value="${filename}" class="backup-filename-input text-slate-800 dark:text-slate-100 font-semibold" title="${filename}">
+                </div>
+
+                <!-- Descripción: Desplazada un poco más a la derecha horizontalmente -->
+                <div class="pl-2.5 sm:pl-3.5 pr-1 text-left">
+                    <p class="text-xs sm:text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                        Esta acción eliminará de forma permanente el archivo físico de respaldo del servidor. Esta operación no se puede deshacer y el archivo no podrá ser recuperado.
+                    </p>
+                </div>
+
+                <!-- Advertencia de seguridad y descargo de trazabilidad: Desplazada a la derecha horizontalmente -->
+                <div class="ml-1 sm:ml-2 p-3.5 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-3.5 leading-relaxed text-left">
+                    <span class="shrink-0 text-base mt-0.5">⚠️</span>
+                    <div class="min-w-0">
+                        <span class="font-bold text-amber-700 dark:text-amber-400">Descargo y trazabilidad de auditoría:</span>
+                        <span class="text-slate-600 dark:text-slate-300"> Esta eliminación física quedará registrada de forma permanente en el historial de eventos del sistema, conservando quién la ejecutó, la fecha, hora e IP para máxima trazabilidad y seguridad contable.</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
     if (icon) icon.innerText = '🗑️';
     if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4';
     if (confirmBtn) {
         confirmBtn.className = 'flex-1 btn-danger justify-center font-bold';
-        confirmBtn.textContent = 'Eliminar';
+        confirmBtn.textContent = 'Eliminar Ahora';
     }
     if (cancelBtn) {
-        cancelBtn.className = 'flex-1 btn-ghost-amber';
+        cancelBtn.className = 'flex-1 btn-ghost-amber justify-center font-bold';
         cancelBtn.textContent = 'Cancelar';
     }
 
@@ -1558,23 +1606,23 @@ function restoreBackupFile(filename) {
                     </div>
                 </div>
 
-                <!-- Nombre del archivo: ÚNICO campo con borde -->
-                <div class="p-3 rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-blue-500/30 text-blue-700 dark:text-blue-300 font-mono text-[11px] sm:text-xs break-all select-all flex items-center gap-2.5 shadow-sm">
-                    <span class="text-sm shrink-0">📄</span>
-                    <span class="font-semibold text-slate-800 dark:text-slate-100">${filename}</span>
+                <!-- Nombre del archivo: ÚNICO campo con borde, sin barra horizontal y desplazamiento natural como campo de descripción -->
+                <div class="p-2.5 sm:p-3 rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-blue-500/30 text-blue-700 dark:text-blue-300 font-mono text-[11px] sm:text-xs flex items-center gap-2.5 shadow-sm min-w-0 cursor-text" onclick="this.querySelector('input')?.focus()">
+                    <span class="text-sm shrink-0 select-none">📄</span>
+                    <input type="text" readonly value="${filename}" class="backup-filename-input text-slate-800 dark:text-slate-100 font-semibold" title="${filename}">
                 </div>
 
-                <!-- Descripción: Sin borde -->
-                <div class="px-1 text-left">
+                <!-- Descripción: Desplazada un poco más a la derecha horizontalmente -->
+                <div class="pl-2.5 sm:pl-3.5 pr-1 text-left">
                     <p class="text-xs sm:text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
                         ${detalleTexto}
                     </p>
                 </div>
 
-                <!-- Advertencia: Sin borde, fondo ámbar suave -->
-                <div class="p-3.5 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5 leading-relaxed text-left">
+                <!-- Advertencia: Desplazada a la derecha horizontalmente -->
+                <div class="ml-1 sm:ml-2 p-3.5 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-3.5 leading-relaxed text-left">
                     <span class="shrink-0 text-base mt-0.5">⚠️</span>
-                    <div>
+                    <div class="min-w-0">
                         <span class="font-bold text-amber-700 dark:text-amber-400">Advertencia de seguridad:</span>
                         <span class="text-slate-600 dark:text-slate-300"> Esta operación sobrescribirá los datos del sistema con el contenido del respaldo seleccionado. La trazabilidad histórica de auditoría será preservada de forma automática.</span>
                     </div>
@@ -1622,30 +1670,30 @@ function updateSystemFromGit(filename) {
             <div class="text-left space-y-3.5 my-3 text-xs sm:text-sm">
                 <!-- Tipo de Acción: Sin bordes blancos, sin grisaseo -->
                 <div class="flex items-center gap-3 py-1 px-1">
-                    <span class="text-2xl shrink-0 p-2.5 rounded-2xl bg-emerald-500/15 text-emerald-400">🚀</span>
+                    <span class="text-2xl shrink-0 p-2.5 rounded-2xl bg-blue-500/15 text-blue-400">🚀</span>
                     <div class="min-w-0 text-left">
-                        <div class="text-[10.5px] uppercase tracking-wider font-extrabold text-emerald-500 dark:text-emerald-400">Acción Integral</div>
+                        <div class="text-[10.5px] uppercase tracking-wider font-extrabold text-blue-500 dark:text-blue-400">Acción Integral</div>
                         <div class="font-bold text-sm text-slate-900 dark:text-white truncate">Actualizar Código Fuente (Git Pull)</div>
                     </div>
                 </div>
 
-                <!-- Nombre de la copia de respaldo: ÚNICO campo con borde -->
-                <div class="p-3 rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-mono text-[11px] sm:text-xs break-all select-all flex items-center gap-2.5 shadow-sm">
-                    <span class="text-sm shrink-0">📦</span>
-                    <span class="font-semibold text-slate-800 dark:text-slate-100">${filename}</span>
+                <!-- Nombre de la copia de respaldo: ÚNICO campo con borde, sin barra horizontal y desplazamiento natural como campo de descripción -->
+                <div class="p-2.5 sm:p-3 rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-blue-500/30 text-blue-700 dark:text-blue-300 font-mono text-[11px] sm:text-xs flex items-center gap-2.5 shadow-sm min-w-0 cursor-text" onclick="this.querySelector('input')?.focus()">
+                    <span class="text-sm shrink-0 select-none">📦</span>
+                    <input type="text" readonly value="${filename}" class="backup-filename-input text-slate-800 dark:text-slate-100 font-semibold" title="${filename}">
                 </div>
 
-                <!-- Descripción: Sin borde -->
-                <div class="px-1 text-left">
+                <!-- Descripción: Desplazada un poco más a la derecha horizontalmente -->
+                <div class="pl-2.5 sm:pl-3.5 pr-1 text-left">
                     <p class="text-xs sm:text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
                         Se sincronizarán los cambios desde el repositorio de GitHub (<span class="font-mono text-emerald-500 dark:text-emerald-400 font-semibold">origin/main</span>), se ejecutarán las migraciones pendientes de base de datos y se optimizará la caché.
                     </p>
                 </div>
 
-                <!-- Aviso informativo: Sin borde -->
-                <div class="p-3.5 rounded-xl bg-blue-500/10 text-blue-700 dark:text-blue-300 text-xs flex items-start gap-2.5 leading-relaxed text-left">
+                <!-- Aviso informativo: Desplazado a la derecha horizontalmente -->
+                <div class="ml-1 sm:ml-2 p-3.5 rounded-xl bg-blue-500/10 text-blue-700 dark:text-blue-300 text-xs flex items-start gap-3.5 leading-relaxed text-left">
                     <span class="shrink-0 text-base mt-0.5">ℹ️</span>
-                    <div>
+                    <div class="min-w-0">
                         <span class="font-bold text-blue-600 dark:text-blue-400">Sincronización segura:</span>
                         <span class="text-slate-600 dark:text-slate-300"> El sistema validará la conexión con GitHub antes de proceder. Si ya está al día o no hay acceso, se te notificará en pantalla.</span>
                     </div>
@@ -1654,7 +1702,7 @@ function updateSystemFromGit(filename) {
         `;
     }
     if (icon) icon.innerText = '🚀';
-    if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-3xl mx-auto mb-4';
+    if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl mx-auto mb-4';
     if (confirmBtn) {
         confirmBtn.className = 'flex-1 btn-ghost-emerald justify-center font-bold';
         confirmBtn.textContent = 'Actualizar Ahora';

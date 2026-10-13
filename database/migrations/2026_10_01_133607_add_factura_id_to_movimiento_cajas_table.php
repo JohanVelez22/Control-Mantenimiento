@@ -26,14 +26,14 @@ return new class extends Migration
                     ->whereNull('factura_id')
                     ->where(function ($q) use ($num) {
                         $q->where('descripcion', 'like', "%#{$num}")
-                          ->orWhere('descripcion', 'like', "%#{$num} %")
-                          ->orWhere('descripcion', 'like', "%#{$num},%")
-                          ->orWhere('descripcion', 'like', "%#{$num}.%")
-                          ->orWhere('descripcion', 'like', "%#{$num}\n%");
+                            ->orWhere('descripcion', 'like', "%#{$num} %")
+                            ->orWhere('descripcion', 'like', "%#{$num},%")
+                            ->orWhere('descripcion', 'like', "%#{$num}.%")
+                            ->orWhere('descripcion', 'like', "%#{$num}\n%");
                     })
                     ->update(['factura_id' => $f->id]);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Continuar si está ejecutándose en contexto de test aislado
         }
     }

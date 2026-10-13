@@ -14,6 +14,7 @@ class StockServiceTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected Stock $stock;
 
     protected function setUp(): void

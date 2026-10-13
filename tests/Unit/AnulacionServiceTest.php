@@ -2,13 +2,18 @@
 
 namespace Tests\Unit;
 
+use App\Models\Abono;
+use App\Models\CierreCaja;
+use App\Models\Cliente;
 use App\Models\ConceptoCaja;
+use App\Models\Equipo;
 use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
 use App\Models\Stock;
+use App\Models\Tecnico;
 use App\Models\User;
 use App\Services\AnulacionService;
-use App\Services\CierreCajaGuard;
+use App\Services\StockService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +24,9 @@ class AnulacionServiceTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected ConceptoCaja $concepto;
 
     protected function setUp(): void
@@ -74,7 +81,7 @@ class AnulacionServiceTest extends TestCase
     public function test_autorizar_operacion_sensible_allows_admin_without_password(): void
     {
         Auth::login($this->admin);
-        $request = new Request();
+        $request = new Request;
         $service = new AnulacionService;
 
         $result = $service->autorizarOperacionSensible($request);
@@ -91,7 +98,7 @@ class AnulacionServiceTest extends TestCase
             'active' => true,
         ]);
         Auth::login($invitado);
-        $request = new Request();
+        $request = new Request;
         $service = new AnulacionService;
 
         $result = $service->autorizarOperacionSensible($request);
@@ -101,7 +108,7 @@ class AnulacionServiceTest extends TestCase
     public function test_autorizar_operacion_sensible_requires_admin_password_for_tecnico(): void
     {
         Auth::login($this->tecnico);
-        $request = new Request();
+        $request = new Request;
         $service = new AnulacionService;
 
         $result = $service->autorizarOperacionSensible($request);
@@ -150,17 +157,17 @@ class AnulacionServiceTest extends TestCase
             'active' => true,
         ]);
 
-        $cliente = \App\Models\Cliente::create([
+        $cliente = Cliente::create([
             'nombres' => 'Juan', 'apellidos' => 'Pérez',
             'identificacion' => '12345678', 'movil' => '3001234567',
         ]);
 
-        $equipo = \App\Models\Equipo::create([
+        $equipo = Equipo::create([
             'nombre' => 'Laptop', 'marca' => 'HP', 'modelo' => 'Pavilion',
             'serie' => 'SN-ANUL-1', 'cliente_id' => $cliente->id, 'user_id' => $this->admin->id,
         ]);
 
-        $tecnicoM = \App\Models\Tecnico::create([
+        $tecnicoM = Tecnico::create([
             'nombre' => 'Tecnico', 'identificacion' => '11111111',
             'especialidad' => 'General', 'movil' => '3001111111',
         ]);
@@ -181,11 +188,11 @@ class AnulacionServiceTest extends TestCase
 
         $mantenimiento->stocks()->attach($stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
         // Simulate stock decrement that happens in HandlesStockAttach::attachStock
-        app(\App\Services\StockService::class)->salida($stock, 2);
+        app(StockService::class)->salida($stock, 2);
         $stock->refresh();
         $this->assertEquals(8, $stock->cantidad);
 
-        $abono = \App\Models\Abono::create([
+        $abono = Abono::create([
             'mantenimiento_id' => $mantenimiento->id,
             'monto' => 50000,
             'fecha' => now()->toDateString(),
@@ -232,17 +239,17 @@ class AnulacionServiceTest extends TestCase
             'active' => true,
         ]);
 
-        $cliente = \App\Models\Cliente::create([
+        $cliente = Cliente::create([
             'nombres' => 'Juan', 'apellidos' => 'Pérez',
             'identificacion' => '12345679', 'movil' => '3001234568',
         ]);
 
-        $equipo = \App\Models\Equipo::create([
+        $equipo = Equipo::create([
             'nombre' => 'Laptop', 'marca' => 'HP', 'modelo' => 'Pavilion',
             'serie' => 'SN-REACT-1', 'cliente_id' => $cliente->id, 'user_id' => $this->admin->id,
         ]);
 
-        $tecnicoM = \App\Models\Tecnico::create([
+        $tecnicoM = Tecnico::create([
             'nombre' => 'Tecnico', 'identificacion' => '22222222',
             'especialidad' => 'General', 'movil' => '3002222222',
         ]);
@@ -263,13 +270,13 @@ class AnulacionServiceTest extends TestCase
 
         $mantenimiento->stocks()->attach($stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
         // Simulate stock decrement that happens in HandlesStockAttach::attachStock
-        app(\App\Services\StockService::class)->salida($stock, 2);
+        app(StockService::class)->salida($stock, 2);
         // Simulate stock increment that happens on anulación
-        app(\App\Services\StockService::class)->entrada($stock, 2);
+        app(StockService::class)->entrada($stock, 2);
         $stock->refresh();
         $this->assertEquals(10, $stock->cantidad);
 
-        $abono = \App\Models\Abono::create([
+        $abono = Abono::create([
             'mantenimiento_id' => $mantenimiento->id,
             'monto' => 50000,
             'fecha' => now()->toDateString(),
@@ -310,7 +317,7 @@ class AnulacionServiceTest extends TestCase
         $this->expectException(\DomainException::class);
 
         $fechaCerrada = now()->subDays(2)->toDateString();
-        \App\Models\CierreCaja::create([
+        CierreCaja::create([
             'fecha' => $fechaCerrada,
             'total_ingresos' => 100000, 'total_egresos' => 0,
             'efectivo' => 100000, 'consignacion' => 0,
@@ -324,17 +331,17 @@ class AnulacionServiceTest extends TestCase
             'precio_compra' => 80000, 'utilidad' => 50, 'active' => true,
         ]);
 
-        $cliente = \App\Models\Cliente::create([
+        $cliente = Cliente::create([
             'nombres' => 'Juan', 'apellidos' => 'Pérez',
             'identificacion' => '12345680', 'movil' => '3001234569',
         ]);
 
-        $equipo = \App\Models\Equipo::create([
+        $equipo = Equipo::create([
             'nombre' => 'Laptop', 'marca' => 'HP', 'modelo' => 'Pavilion',
             'serie' => 'SN-CLOSED-1', 'cliente_id' => $cliente->id, 'user_id' => $this->admin->id,
         ]);
 
-        $tecnicoM = \App\Models\Tecnico::create([
+        $tecnicoM = Tecnico::create([
             'nombre' => 'Tecnico', 'identificacion' => '33333333',
             'especialidad' => 'General', 'movil' => '3003333333',
         ]);
@@ -352,7 +359,7 @@ class AnulacionServiceTest extends TestCase
 
         $mantenimiento->stocks()->attach($stock->id, ['cantidad' => 1, 'precio_unitario' => 120000]);
 
-        $abono = \App\Models\Abono::create([
+        $abono = Abono::create([
             'mantenimiento_id' => $mantenimiento->id,
             'monto' => 50000,
             'fecha' => $fechaCerrada,

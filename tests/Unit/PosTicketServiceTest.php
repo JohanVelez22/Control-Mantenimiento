@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\View;
 use Tests\TestCase;
 
@@ -13,13 +14,13 @@ class PosTicketServiceTest extends TestCase
     {
         // Create a simple test view
         View::shouldReceive('exists')->andReturn(true);
-        
+
         $mockPdf = \Mockery::mock(\Barryvdh\DomPDF\PDF::class);
         $mockPdf->shouldReceive('setPaper')->andReturnSelf();
         $mockPdf->shouldReceive('setCallbacks')->andReturnSelf();
         $mockPdf->shouldReceive('render')->andReturnNull();
         $mockPdf->shouldReceive('stream')->andReturn(
-            new \Illuminate\Http\Response('PDF content', 200, ['Content-Type' => 'application/pdf'])
+            new Response('PDF content', 200, ['Content-Type' => 'application/pdf'])
         );
 
         // Since we can't easily mock the static Pdf facade in this context,

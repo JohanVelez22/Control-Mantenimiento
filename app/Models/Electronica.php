@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Electronica extends Model
 {
-    use \App\Traits\Auditable, HasFactory;
+    use Auditable, HasFactory;
 
     protected $fillable = [
         'id_orden',

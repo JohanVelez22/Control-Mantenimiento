@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\Mantenimiento;
+use App\Models\Cliente;
 use App\Models\Equipo;
+use App\Models\Mantenimiento;
 use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
-use App\Models\Cliente;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,8 +16,11 @@ class MantenimientoStockControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected Mantenimiento $mantenimiento;
+
     protected Stock $stock;
 
     protected function setUp(): void

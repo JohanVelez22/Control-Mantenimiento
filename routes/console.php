@@ -64,7 +64,6 @@ try {
     } else {
         Schedule::command('app:backup-db')->dailyAt('02:00')->withoutOverlapping();
     }
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     Schedule::command('app:backup-db')->dailyAt('02:00')->withoutOverlapping();
 }
-
