@@ -3463,6 +3463,229 @@ html.dark .btn-ghost-purple:hover {
   color: #F3E8FF !important;
 }
 
+.btn-ghost-violet {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 10px 16px !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  color: #7E22CE !important;
+  background: rgba(147, 51, 234, 0.10) !important;
+  border: 1px solid rgba(147, 51, 234, 0.35) !important;
+  transition: all 0.22s ease !important;
+}
+
+.btn-ghost-violet:hover {
+  background: rgba(147, 51, 234, 0.20) !important;
+  border-color: rgba(147, 51, 234, 0.55) !important;
+  color: #6B21A8 !important;
+}
+
+.dark .btn-ghost-violet,
+html.dark .btn-ghost-violet {
+  color: #C084FC !important;
+  background: rgba(168, 85, 247, 0.16) !important;
+  border-color: rgba(192, 132, 252, 0.40) !important;
+}
+
+.dark .btn-ghost-violet:hover,
+html.dark .btn-ghost-violet:hover {
+  background: rgba(168, 85, 247, 0.28) !important;
+  border-color: rgba(192, 132, 252, 0.65) !important;
+  color: #F3E8FF !important;
+}
+
+.btn-ghost-blue {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 10px 16px !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  color: #2563EB !important;
+  background: rgba(37, 99, 235, 0.10) !important;
+  border: 1px solid rgba(37, 99, 235, 0.30) !important;
+  transition: all 0.22s ease !important;
+}
+
+.btn-ghost-blue:hover {
+  background: rgba(37, 99, 235, 0.20) !important;
+  border-color: rgba(37, 99, 235, 0.55) !important;
+  color: #1D4ED8 !important;
+}
+
+.dark .btn-ghost-blue,
+html.dark .btn-ghost-blue {
+  color: #60A5FA !important;
+  background: rgba(59, 130, 246, 0.14) !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+}
+
+.dark .btn-ghost-blue:hover,
+html.dark .btn-ghost-blue:hover {
+  background: rgba(59, 130, 246, 0.25) !important;
+  border-color: rgba(96, 165, 250, 0.60) !important;
+  color: #BFDBFE !important;
+}
+
+/* ---- Soporte automático para botones .btn-ghost coloreados en modales ---- */
+.ts-modal-card .btn-ghost[class*="text-red"],
+.ts-modal-card .btn-ghost[class*="border-red"],
+.ts-modal-overlay .btn-ghost[class*="text-red"],
+.ts-modal-overlay .btn-ghost[class*="border-red"] {
+  color: #DC2626 !important;
+  background: rgba(220, 38, 38, 0.08) !important;
+  border-color: rgba(220, 38, 38, 0.25) !important;
+}
+.ts-modal-card .btn-ghost[class*="text-red"]:hover,
+.ts-modal-card .btn-ghost[class*="border-red"]:hover,
+.ts-modal-overlay .btn-ghost[class*="text-red"]:hover,
+.ts-modal-overlay .btn-ghost[class*="border-red"]:hover {
+  background: rgba(220, 38, 38, 0.18) !important;
+  border-color: rgba(220, 38, 38, 0.50) !important;
+  color: #B91C1C !important;
+}
+html.dark .ts-modal-card .btn-ghost[class*="text-red"],
+html.dark .ts-modal-card .btn-ghost[class*="border-red"],
+html.dark .ts-modal-overlay .btn-ghost[class*="text-red"],
+html.dark .ts-modal-overlay .btn-ghost[class*="border-red"] {
+  color: #F87171 !important;
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(248, 113, 113, 0.35) !important;
+}
+html.dark .ts-modal-card .btn-ghost[class*="text-red"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-red"]:hover,
+html.dark .ts-modal-overlay .btn-ghost[class*="text-red"]:hover,
+html.dark .ts-modal-overlay .btn-ghost[class*="border-red"]:hover {
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(248, 113, 113, 0.60) !important;
+  color: #FECACA !important;
+}
+
+.ts-modal-card .btn-ghost[class*="text-violet"],
+.ts-modal-card .btn-ghost[class*="text-purple"],
+.ts-modal-card .btn-ghost[class*="border-violet"],
+.ts-modal-card .btn-ghost[class*="border-purple"],
+.ts-modal-overlay .btn-ghost[class*="text-violet"],
+.ts-modal-overlay .btn-ghost[class*="text-purple"],
+.ts-modal-overlay .btn-ghost[class*="border-violet"],
+.ts-modal-overlay .btn-ghost[class*="border-purple"] {
+  color: #7E22CE !important;
+  background: rgba(147, 51, 234, 0.10) !important;
+  border-color: rgba(147, 51, 234, 0.35) !important;
+}
+.ts-modal-card .btn-ghost[class*="text-violet"]:hover,
+.ts-modal-card .btn-ghost[class*="text-purple"]:hover,
+.ts-modal-card .btn-ghost[class*="border-violet"]:hover,
+.ts-modal-card .btn-ghost[class*="border-purple"]:hover,
+.ts-modal-overlay .btn-ghost[class*="text-violet"]:hover,
+.ts-modal-overlay .btn-ghost[class*="text-purple"]:hover,
+.ts-modal-overlay .btn-ghost[class*="border-violet"]:hover,
+.ts-modal-overlay .btn-ghost[class*="border-purple"]:hover {
+  background: rgba(147, 51, 234, 0.20) !important;
+  border-color: rgba(147, 51, 234, 0.55) !important;
+  color: #6B21A8 !important;
+}
+html.dark .ts-modal-card .btn-ghost[class*="text-violet"],
+html.dark .ts-modal-card .btn-ghost[class*="text-purple"],
+html.dark .ts-modal-card .btn-ghost[class*="border-violet"],
+html.dark .ts-modal-card .btn-ghost[class*="border-purple"],
+html.dark .ts-modal-overlay .btn-ghost[class*="text-violet"],
+html.dark .ts-modal-overlay .btn-ghost[class*="text-purple"],
+html.dark .ts-modal-overlay .btn-ghost[class*="border-violet"],
+html.dark .ts-modal-overlay .btn-ghost[class*="border-purple"] {
+  color: #C084FC !important;
+  background: rgba(168, 85, 247, 0.16) !important;
+  border-color: rgba(192, 132, 252, 0.40) !important;
+}
+html.dark .ts-modal-card .btn-ghost[class*="text-violet"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-purple"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-violet"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-purple"]:hover,
+html.dark .ts-modal-overlay .btn-ghost[class*="text-violet"]:hover,
+html.dark .ts-modal-overlay .btn-ghost[class*="text-purple"]:hover,
+html.dark .ts-modal-overlay .btn-ghost[class*="border-violet"]:hover,
+html.dark .ts-modal-overlay .btn-ghost[class*="border-purple"]:hover {
+  background: rgba(168, 85, 247, 0.28) !important;
+  border-color: rgba(192, 132, 252, 0.65) !important;
+  color: #F3E8FF !important;
+}
+
+.ts-modal-card .btn-ghost[class*="text-emerald"],
+.ts-modal-card .btn-ghost[class*="border-emerald"],
+.ts-modal-overlay .btn-ghost[class*="text-emerald"],
+.ts-modal-overlay .btn-ghost[class*="border-emerald"] {
+  color: #059669 !important;
+  background: rgba(16, 185, 129, 0.10) !important;
+  border-color: rgba(16, 185, 129, 0.30) !important;
+}
+.ts-modal-card .btn-ghost[class*="text-emerald"]:hover,
+.ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
+.ts-modal-overlay .btn-ghost[class*="text-emerald"]:hover,
+.ts-modal-overlay .btn-ghost[class*="border-emerald"]:hover {
+  background: rgba(16, 185, 129, 0.20) !important;
+  border-color: rgba(16, 185, 129, 0.55) !important;
+  color: #047857 !important;
+}
+html.dark .ts-modal-card .btn-ghost[class*="text-emerald"],
+html.dark .ts-modal-card .btn-ghost[class*="border-emerald"],
+html.dark .ts-modal-overlay .btn-ghost[class*="text-emerald"],
+html.dark .ts-modal-overlay .btn-ghost[class*="border-emerald"] {
+  color: #34D399 !important;
+  background: rgba(16, 185, 129, 0.14) !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+}
+html.dark .ts-modal-card .btn-ghost[class*="text-emerald"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
+html.dark .ts-modal-overlay .btn-ghost[class*="text-emerald"]:hover,
+html.dark .ts-modal-overlay .btn-ghost[class*="border-emerald"]:hover {
+  background: rgba(16, 185, 129, 0.25) !important;
+  border-color: rgba(52, 211, 153, 0.60) !important;
+  color: #A7F3D0 !important;
+}
+
+.ts-modal-card .btn-ghost[class*="text-blue"],
+.ts-modal-card .btn-ghost[class*="border-blue"],
+.ts-modal-overlay .btn-ghost[class*="text-blue"],
+.ts-modal-overlay .btn-ghost[class*="border-blue"] {
+  color: #2563EB !important;
+  background: rgba(37, 99, 235, 0.10) !important;
+  border-color: rgba(37, 99, 235, 0.30) !important;
+}
+.ts-modal-card .btn-ghost[class*="text-blue"]:hover,
+.ts-modal-card .btn-ghost[class*="border-blue"]:hover,
+.ts-modal-overlay .btn-ghost[class*="text-blue"]:hover,
+.ts-modal-overlay .btn-ghost[class*="border-blue"]:hover {
+  background: rgba(37, 99, 235, 0.20) !important;
+  border-color: rgba(37, 99, 235, 0.55) !important;
+  color: #1D4ED8 !important;
+}
+html.dark .ts-modal-card .btn-ghost[class*="text-blue"],
+html.dark .ts-modal-card .btn-ghost[class*="border-blue"],
+html.dark .ts-modal-overlay .btn-ghost[class*="text-blue"],
+html.dark .ts-modal-overlay .btn-ghost[class*="border-blue"] {
+  color: #60A5FA !important;
+  background: rgba(59, 130, 246, 0.14) !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+}
+html.dark .ts-modal-card .btn-ghost[class*="text-blue"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-blue"]:hover,
+html.dark .ts-modal-overlay .btn-ghost[class*="text-blue"]:hover,
+html.dark .ts-modal-overlay .btn-ghost[class*="border-blue"]:hover {
+  background: rgba(59, 130, 246, 0.25) !important;
+  border-color: rgba(96, 165, 250, 0.60) !important;
+  color: #BFDBFE !important;
+}
+
 .modal-divider {
   border-color: rgba(0, 0, 0, 0.08) !important;
 }

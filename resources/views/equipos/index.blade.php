@@ -221,10 +221,10 @@
             </div>
 
             <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 w-full modal-divider">
-                <button type="button" onclick="closeBajaEquipoModal()" class="flex-1 btn-ghost border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                <button type="button" onclick="closeBajaEquipoModal()" class="flex-1 btn-ghost-red justify-center py-2.5 rounded-xl font-bold text-sm">
                     Cancelar
                 </button>
-                <button type="submit" class="flex-1 btn-ghost border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                <button type="submit" class="flex-1 btn-ghost-blue justify-center py-2.5 rounded-xl font-bold text-sm">
                     Confirmar Baja
                 </button>
             </div>
@@ -292,7 +292,7 @@
         </div>
 
         <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 w-full modal-divider">
-            <button type="button" onclick="closeDetalleBajaModal()" class="w-full btn-ghost border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 justify-center py-2.5 rounded-xl font-bold text-sm transition">
+            <button type="button" onclick="closeDetalleBajaModal()" class="w-full btn-ghost-red justify-center py-2.5 rounded-xl font-bold text-sm transition">
                 Cerrar
             </button>
         </div>

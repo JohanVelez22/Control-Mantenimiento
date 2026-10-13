@@ -73,12 +73,17 @@
     
     // Mapear colores de botón
     $btnClasses = [
-        'ghost'    => 'btn-ghost',
-        'danger'   => 'btn-danger',
-        'primary'  => 'btn-primary',
-        'secondary'=> 'btn-secondary',
+        'ghost'        => 'btn-ghost-amber',
+        'ghost-amber'  => 'btn-ghost-amber',
+        'ghost-red'    => 'btn-ghost-red',
+        'ghost-emerald'=> 'btn-ghost-emerald',
+        'ghost-purple' => 'btn-ghost-purple',
+        'ghost-blue'   => 'btn-ghost-blue',
+        'danger'       => 'btn-danger',
+        'primary'      => 'btn-primary',
+        'secondary'    => 'btn-secondary',
     ];
-    $closeBtnClass = $btnClasses[$closeColor] ?? 'btn-ghost';
+    $closeBtnClass = $btnClasses[$closeColor] ?? 'btn-ghost-amber';
 @endphp
 
 <div id="{{ $id }}" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 {{ $showOverlay ? '' : 'bg-transparent' }} {{ $extraClass }}" data-xmodal {{ $showOverlay ? '' : 'style="background: transparent;"' }}>

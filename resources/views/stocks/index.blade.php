@@ -213,10 +213,10 @@
             </div>
 
             <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 w-full modal-divider">
-                <button type="button" onclick="closeBajaStockModal()" class="flex-1 btn-ghost border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                <button type="button" onclick="closeBajaStockModal()" class="flex-1 btn-ghost-red justify-center py-2.5 rounded-xl font-bold text-sm">
                     Cancelar
                 </button>
-                <button type="submit" class="flex-1 btn-ghost border-violet-500/30 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                <button type="submit" class="flex-1 btn-ghost-blue justify-center py-2.5 rounded-xl font-bold text-sm">
                     Confirmar Baja
                 </button>
             </div>
