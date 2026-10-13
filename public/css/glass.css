@@ -1712,7 +1712,7 @@ html.dark .btn-open-folder:hover {
   gap: 14px !important;
 }
 
-.backup-storage-banner > * {
+.backup-storage-banner>* {
   margin: 0 !important;
 }
 
@@ -7451,6 +7451,23 @@ html.dark .badge-evento-backup {
   border-color: rgba(34, 211, 238, 0.45) !important;
 }
 
+/* Backup Restaurado (🔄) - Teal / Esmeralda Tecnológico */
+.badge-evento-backup-restaurado,
+.badge-evento-backup_restaurado {
+  background: rgba(20, 184, 166, 0.12) !important;
+  color: #0f766e !important;
+  border-color: rgba(20, 184, 166, 0.35) !important;
+}
+
+.dark .badge-evento-backup-restaurado,
+.dark .badge-evento-backup_restaurado,
+html.dark .badge-evento-backup-restaurado,
+html.dark .badge-evento-backup_restaurado {
+  background: rgba(13, 148, 136, 0.25) !important;
+  color: #2dd4bf !important;
+  border-color: rgba(45, 212, 191, 0.45) !important;
+}
+
 /* Creado (✨) - Esmeralda */
 .badge-evento-creado {
   background: rgba(16, 185, 129, 0.12) !important;
@@ -8220,7 +8237,7 @@ input[type="radio"][value="correctivo"] {
   font-weight: 700;
   letter-spacing: -0.01em;
   color: #475569;
-  
+
   /* Clean, crisp surface and border - zero neon */
   background: rgba(255, 255, 255, 0.65);
   border: 1.5px solid #cbd5e1;
@@ -8294,11 +8311,13 @@ input[type="radio"][value="correctivo"] {
   background: rgba(16, 185, 129, 0.05) !important;
   color: #065f46 !important;
 }
+
 .ts-select-card.hover-emerald:not(.active-emerald):hover .ts-radio-dot,
 .ts-select-card:has(input[value="ingreso"]:not(:checked)):hover .ts-radio-dot,
 .ts-select-card:has(input[value="preventivo"]:not(:checked)):hover .ts-radio-dot {
   border-color: #10b981 !important;
 }
+
 .dark .ts-select-card.hover-emerald:not(.active-emerald):hover,
 .dark .ts-select-card:has(input[value="ingreso"]:not(:checked)):hover,
 .dark .ts-select-card:has(input[value="preventivo"]:not(:checked)):hover {
@@ -8306,31 +8325,39 @@ input[type="radio"][value="correctivo"] {
   background: rgba(16, 185, 129, 0.08) !important;
   color: #34d399 !important;
 }
+
 .dark .ts-select-card.hover-emerald:not(.active-emerald):hover .ts-radio-dot,
 .dark .ts-select-card:has(input[value="ingreso"]:not(:checked)):hover .ts-radio-dot,
 .dark .ts-select-card:has(input[value="preventivo"]:not(:checked)):hover .ts-radio-dot {
   border-color: #34d399 !important;
 }
 
-/* --- ORANGE HOVER (Correctivo) --- */
+/* --- ORANGE HOVER (Correctivo / Técnico) --- */
 .ts-select-card.hover-orange:not(.active-orange):hover,
-.ts-select-card:has(input[value="correctivo"]:not(:checked)):hover {
+.ts-select-card:has(input[value="correctivo"]:not(:checked)):hover,
+.ts-select-card:has(input[value="tecnico"]:not(:checked)):hover {
   border-color: #fb923c !important;
   background: rgba(249, 115, 22, 0.05) !important;
   color: #9a3412 !important;
 }
+
 .ts-select-card.hover-orange:not(.active-orange):hover .ts-radio-dot,
-.ts-select-card:has(input[value="correctivo"]:not(:checked)):hover .ts-radio-dot {
+.ts-select-card:has(input[value="correctivo"]:not(:checked)):hover .ts-radio-dot,
+.ts-select-card:has(input[value="tecnico"]:not(:checked)):hover .ts-radio-dot {
   border-color: #f97316 !important;
 }
+
 .dark .ts-select-card.hover-orange:not(.active-orange):hover,
-.dark .ts-select-card:has(input[value="correctivo"]:not(:checked)):hover {
+.dark .ts-select-card:has(input[value="correctivo"]:not(:checked)):hover,
+.dark .ts-select-card:has(input[value="tecnico"]:not(:checked)):hover {
   border-color: rgba(249, 115, 22, 0.5) !important;
   background: rgba(249, 115, 22, 0.08) !important;
   color: #fb923c !important;
 }
+
 .dark .ts-select-card.hover-orange:not(.active-orange):hover .ts-radio-dot,
-.dark .ts-select-card:has(input[value="correctivo"]:not(:checked)):hover .ts-radio-dot {
+.dark .ts-select-card:has(input[value="correctivo"]:not(:checked)):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="tecnico"]:not(:checked)):hover .ts-radio-dot {
   border-color: #fb923c !important;
 }
 
@@ -8341,10 +8368,12 @@ input[type="radio"][value="correctivo"] {
   background: rgba(239, 68, 68, 0.05) !important;
   color: #991b1b !important;
 }
+
 .ts-select-card.hover-red:not(.active-red):hover .ts-radio-dot,
 .ts-select-card:has(input[value="egreso"]:not(:checked)):hover .ts-radio-dot {
   border-color: #ef4444 !important;
 }
+
 .dark .ts-select-card.hover-red:not(.active-red):hover,
 .dark .ts-select-card:has(input[value="egreso"]:checked):hover,
 .dark .ts-select-card:has(input[value="egreso"]:not(:checked)):hover {
@@ -8352,30 +8381,38 @@ input[type="radio"][value="correctivo"] {
   background: rgba(239, 68, 68, 0.08) !important;
   color: #f87171 !important;
 }
+
 .dark .ts-select-card.hover-red:not(.active-red):hover .ts-radio-dot,
 .dark .ts-select-card:has(input[value="egreso"]:not(:checked)):hover .ts-radio-dot {
   border-color: #f87171 !important;
 }
 
-/* --- BLUE HOVER (Efectivo) --- */
+/* --- BLUE HOVER (Efectivo / Cliente) --- */
 .ts-select-card.hover-blue:not(.active-blue):hover,
-.ts-select-card:has(input[value="efectivo"]:not(:checked)):hover {
+.ts-select-card:has(input[value="efectivo"]:not(:checked)):hover,
+.ts-select-card:has(input[value="cliente"]:not(:checked)):hover {
   border-color: #60a5fa !important;
   background: rgba(59, 130, 246, 0.05) !important;
   color: #1e40af !important;
 }
+
 .ts-select-card.hover-blue:not(.active-blue):hover .ts-radio-dot,
-.ts-select-card:has(input[value="efectivo"]:not(:checked)):hover .ts-radio-dot {
+.ts-select-card:has(input[value="efectivo"]:not(:checked)):hover .ts-radio-dot,
+.ts-select-card:has(input[value="cliente"]:not(:checked)):hover .ts-radio-dot {
   border-color: #3b82f6 !important;
 }
+
 .dark .ts-select-card.hover-blue:not(.active-blue):hover,
-.dark .ts-select-card:has(input[value="efectivo"]:not(:checked)):hover {
+.dark .ts-select-card:has(input[value="efectivo"]:not(:checked)):hover,
+.dark .ts-select-card:has(input[value="cliente"]:not(:checked)):hover {
   border-color: rgba(59, 130, 246, 0.5) !important;
   background: rgba(59, 130, 246, 0.08) !important;
   color: #60a5fa !important;
 }
+
 .dark .ts-select-card.hover-blue:not(.active-blue):hover .ts-radio-dot,
-.dark .ts-select-card:has(input[value="efectivo"]:not(:checked)):hover .ts-radio-dot {
+.dark .ts-select-card:has(input[value="efectivo"]:not(:checked)):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="cliente"]:not(:checked)):hover .ts-radio-dot {
   border-color: #60a5fa !important;
 }
 
@@ -8387,11 +8424,13 @@ input[type="radio"][value="correctivo"] {
   background: rgba(168, 85, 247, 0.05) !important;
   color: #6b21a8 !important;
 }
+
 .ts-select-card.hover-purple:not(.active-purple):hover .ts-radio-dot,
 .ts-select-card:has(input[value="consignacion"]:not(:checked)):hover .ts-radio-dot,
 .ts-select-card:has(input[value="banco"]:not(:checked)):hover .ts-radio-dot {
   border-color: #a855f7 !important;
 }
+
 .dark .ts-select-card.hover-purple:not(.active-purple):hover,
 .dark .ts-select-card:has(input[value="consignacion"]:not(:checked)):hover,
 .dark .ts-select-card:has(input[value="banco"]:not(:checked)):hover {
@@ -8399,6 +8438,7 @@ input[type="radio"][value="correctivo"] {
   background: rgba(168, 85, 247, 0.08) !important;
   color: #c084fc !important;
 }
+
 .dark .ts-select-card.hover-purple:not(.active-purple):hover .ts-radio-dot,
 .dark .ts-select-card:has(input[value="consignacion"]:not(:checked)):hover .ts-radio-dot,
 .dark .ts-select-card:has(input[value="banco"]:not(:checked)):hover .ts-radio-dot {
@@ -8412,16 +8452,19 @@ input[type="radio"][value="correctivo"] {
   background: rgba(99, 102, 241, 0.05) !important;
   color: #3730a3 !important;
 }
+
 .ts-select-card.hover-indigo:not(.active-indigo):hover .ts-radio-dot,
 .ts-select-card:has(input[value="software"]:not(:checked)):hover .ts-radio-dot {
   border-color: #6366f1 !important;
 }
+
 .dark .ts-select-card.hover-indigo:not(.active-indigo):hover,
 .dark .ts-select-card:has(input[value="software"]:not(:checked)):hover {
   border-color: rgba(99, 102, 241, 0.5) !important;
   background: rgba(99, 102, 241, 0.08) !important;
   color: #818cf8 !important;
 }
+
 .dark .ts-select-card.hover-indigo:not(.active-indigo):hover .ts-radio-dot,
 .dark .ts-select-card:has(input[value="software"]:not(:checked)):hover .ts-radio-dot {
   border-color: #818cf8 !important;
@@ -8434,16 +8477,19 @@ input[type="radio"][value="correctivo"] {
   background: rgba(244, 63, 94, 0.05) !important;
   color: #9f1239 !important;
 }
+
 .ts-select-card.hover-rose:not(.active-rose):hover .ts-radio-dot,
 .ts-select-card:has(input[value="hardware"]:not(:checked)):hover .ts-radio-dot {
   border-color: #f43f5e !important;
 }
+
 .dark .ts-select-card.hover-rose:not(.active-rose):hover,
 .dark .ts-select-card:has(input[value="hardware"]:not(:checked)):hover {
   border-color: rgba(244, 63, 94, 0.5) !important;
   background: rgba(244, 63, 94, 0.08) !important;
   color: #fb7185 !important;
 }
+
 .dark .ts-select-card.hover-rose:not(.active-rose):hover .ts-radio-dot,
 .dark .ts-select-card:has(input[value="hardware"]:not(:checked)):hover .ts-radio-dot {
   border-color: #fb7185 !important;
@@ -8488,9 +8534,10 @@ input[type="radio"][value="correctivo"] {
   box-shadow: inset 0 0 0 3px #0f172a !important;
 }
 
-/* --- ORANGE: Correctivo (Sin efecto neón) --- */
+/* --- ORANGE: Correctivo / Técnico (Sin efecto neón) --- */
 .ts-select-card.active-orange,
-.ts-select-card:has(input[value="correctivo"]:checked) {
+.ts-select-card:has(input[value="correctivo"]:checked),
+.ts-select-card:has(input[value="tecnico"]:checked) {
   border: 2px solid #ea580c !important;
   background: rgba(249, 115, 22, 0.08) !important;
   color: #9a3412 !important;
@@ -8498,7 +8545,8 @@ input[type="radio"][value="correctivo"] {
 }
 
 .dark .ts-select-card.active-orange,
-.dark .ts-select-card:has(input[value="correctivo"]:checked) {
+.dark .ts-select-card:has(input[value="correctivo"]:checked),
+.dark .ts-select-card:has(input[value="tecnico"]:checked) {
   border-color: #f97316 !important;
   background: rgba(249, 115, 22, 0.14) !important;
   color: #fb923c !important;
@@ -8507,7 +8555,9 @@ input[type="radio"][value="correctivo"] {
 
 .ts-select-card.active-orange .ts-radio-dot,
 .ts-select-card:has(input[value="correctivo"]:checked) .ts-radio-dot,
-.ts-radio-dot[value="correctivo"]:checked {
+.ts-select-card:has(input[value="tecnico"]:checked) .ts-radio-dot,
+.ts-radio-dot[value="correctivo"]:checked,
+.ts-radio-dot[value="tecnico"]:checked {
   border: 2px solid #ea580c !important;
   background-color: #ea580c !important;
   box-shadow: inset 0 0 0 3px #ffffff !important;
@@ -8515,7 +8565,9 @@ input[type="radio"][value="correctivo"] {
 
 .dark .ts-select-card.active-orange .ts-radio-dot,
 .dark .ts-select-card:has(input[value="correctivo"]:checked) .ts-radio-dot,
-.dark .ts-radio-dot[value="correctivo"]:checked {
+.dark .ts-select-card:has(input[value="tecnico"]:checked) .ts-radio-dot,
+.dark .ts-radio-dot[value="correctivo"]:checked,
+.dark .ts-radio-dot[value="tecnico"]:checked {
   border-color: #f97316 !important;
   background-color: #f97316 !important;
   box-shadow: inset 0 0 0 3px #0f172a !important;
@@ -8554,9 +8606,10 @@ input[type="radio"][value="correctivo"] {
   box-shadow: inset 0 0 0 3px #0f172a !important;
 }
 
-/* --- BLUE: Efectivo (Sin efecto neón) --- */
+/* --- BLUE: Efectivo / Cliente (Sin efecto neón) --- */
 .ts-select-card.active-blue,
-.ts-select-card:has(input[value="efectivo"]:checked) {
+.ts-select-card:has(input[value="efectivo"]:checked),
+.ts-select-card:has(input[value="cliente"]:checked) {
   border: 2px solid #2563eb !important;
   background: rgba(59, 130, 246, 0.08) !important;
   color: #1e40af !important;
@@ -8564,7 +8617,8 @@ input[type="radio"][value="correctivo"] {
 }
 
 .dark .ts-select-card.active-blue,
-.dark .ts-select-card:has(input[value="efectivo"]:checked) {
+.dark .ts-select-card:has(input[value="efectivo"]:checked),
+.dark .ts-select-card:has(input[value="cliente"]:checked) {
   border-color: #3b82f6 !important;
   background: rgba(59, 130, 246, 0.14) !important;
   color: #60a5fa !important;
@@ -8573,7 +8627,9 @@ input[type="radio"][value="correctivo"] {
 
 .ts-select-card.active-blue .ts-radio-dot,
 .ts-select-card:has(input[value="efectivo"]:checked) .ts-radio-dot,
-.ts-radio-dot[value="efectivo"]:checked {
+.ts-select-card:has(input[value="cliente"]:checked) .ts-radio-dot,
+.ts-radio-dot[value="efectivo"]:checked,
+.ts-radio-dot[value="cliente"]:checked {
   border: 2px solid #2563eb !important;
   background-color: #2563eb !important;
   box-shadow: inset 0 0 0 3px #ffffff !important;
@@ -8581,7 +8637,9 @@ input[type="radio"][value="correctivo"] {
 
 .dark .ts-select-card.active-blue .ts-radio-dot,
 .dark .ts-select-card:has(input[value="efectivo"]:checked) .ts-radio-dot,
-.dark .ts-radio-dot[value="efectivo"]:checked {
+.dark .ts-select-card:has(input[value="cliente"]:checked) .ts-radio-dot,
+.dark .ts-radio-dot[value="efectivo"]:checked,
+.dark .ts-radio-dot[value="cliente"]:checked {
   border-color: #3b82f6 !important;
   background-color: #3b82f6 !important;
   box-shadow: inset 0 0 0 3px #0f172a !important;

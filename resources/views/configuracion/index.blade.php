@@ -1327,7 +1327,7 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
                 </td>
                 <td class="text-center whitespace-nowrap">
                     <div class="flex items-center justify-center gap-1.5">
-                        <a href="${downloadUrl}" class="btn-backup-download" title="Descargar copia de seguridad">
+                        <a href="${downloadUrl}" onclick="notifyDownload('${f.name}')" class="btn-backup-download" title="Descargar copia de seguridad">
                             <span>⬇️</span>
                         </a>
                         ${f.name.startsWith('backup_integral') ? `
@@ -1454,6 +1454,12 @@ async function saveBackupSchedule() {
             btn.disabled = false;
             btn.innerHTML = origHtml;
         }
+    }
+}
+
+function notifyDownload(filename) {
+    if (typeof showToast === 'function') {
+        showToast(`Iniciando descarga de '${filename}'...`, 'success');
     }
 }
 

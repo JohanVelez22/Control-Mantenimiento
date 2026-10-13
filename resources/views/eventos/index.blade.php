@@ -167,6 +167,11 @@
                                         $textoAccion = 'backup';
                                     }
                                     break;
+                                case 'backup_restaurado':
+                                    $badgeClass = 'badge-evento-backup-restaurado';
+                                    $icon = '🔄';
+                                    $textoAccion = 'backup_restaurado';
+                                    break;
                             }
                         @endphp
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors">
@@ -176,7 +181,14 @@
                             <td data-label="Acción:" class="text-center">
                                 <span class="badge-evento {{ $badgeClass }}">
                                     <span class="text-base mb-0.5">{{ $icon }}</span>
-                                    <span>{{ $textoAccion }}</span>
+                                    @if($evento->accion === 'backup_restaurado')
+                                        <span class="inline-flex flex-col items-center leading-tight">
+                                            <span>BACKUP</span>
+                                            <span>RESTAURADO</span>
+                                        </span>
+                                    @else
+                                        <span>{{ $textoAccion }}</span>
+                                    @endif
                                 </span>
                             </td>
                             <td data-label="Descripción:" class="font-medium text-sm">
@@ -665,6 +677,22 @@
                 if (colAntCard) colAntCard.className = 'event-col-card event-col-cyan';
                 if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
             }
+        } else if (accion === 'backup_restaurado') {
+            if (iconEl) iconEl.textContent = '🔄';
+            if (iconWrap) {
+                iconWrap.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-teal-500/15 dark:bg-teal-400/20 text-teal-600 dark:text-teal-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 !border-0 !border-none !outline-none !shadow-none';
+                iconWrap.style.border = 'none';
+                iconWrap.style.outline = 'none';
+                iconWrap.style.boxShadow = 'none';
+            }
+            if (titleEl) titleEl.textContent = 'Trazabilidad de Respaldo Restaurado';
+            if (subtitleEl) subtitleEl.textContent = 'Detalle de la restauración del sistema realizada a partir de una copia de seguridad';
+            
+            if (colAntTitle) colAntTitle.innerHTML = '<span class="event-col-emoji">📦</span><span>Copia de Respaldo de Origen</span>';
+            if (colNueTitle) colNueTitle.innerHTML = '<span class="event-col-emoji">✅</span><span>Resultado de la Restauración</span>';
+            
+            if (colAntCard) colAntCard.className = 'event-col-card event-col-cyan';
+            if (colNueCard) colNueCard.className = 'event-col-card event-col-emerald';
         } else if (accion === 'login') {
             if (isLoginAlert) {
                 if (iconEl) iconEl.textContent = '⚠️';

@@ -27,7 +27,11 @@ class EventoController extends Controller
 
         // Filtros
         if ($request->filled('accion') && $request->accion !== 'todas') {
-            $query->where('accion', $request->accion);
+            if ($request->accion === 'backup') {
+                $query->whereIn('accion', ['backup', 'backup_restaurado']);
+            } else {
+                $query->where('accion', $request->accion);
+            }
         }
 
         if ($request->filled('user_id') && $request->user_id !== 'todos') {
@@ -41,8 +45,10 @@ class EventoController extends Controller
         $query->whereDate('created_at', '<=', $fechaHasta);
 
         if ($request->filled('search')) {
-            $query->where('descripcion', 'LIKE', '%'.$request->search.'%')
-                ->orWhere('modelo_tipo', 'LIKE', '%'.$request->search.'%');
+            $query->where(function ($q) use ($request) {
+                $q->where('descripcion', 'LIKE', '%'.$request->search.'%')
+                    ->orWhere('modelo_tipo', 'LIKE', '%'.$request->search.'%');
+            });
         }
 
         $eventos = $query->paginate(30)->withQueryString();

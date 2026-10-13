@@ -31,12 +31,20 @@
                     'login' => '🔑',
                     'logout' => '🚪',
                     'backup' => '💾',
+                    'backup_restaurado' => '🔄',
                     default => '📌',
                 };
             @endphp
             <span class="badge-evento {{ $badgeClass }}">
                 <span class="badge-evento-icon">{{ $icon }}</span>
-                <span>{{ $evento->accion }}</span>
+                @if($evento->accion === 'backup_restaurado')
+                    <span class="inline-flex flex-col items-center leading-tight">
+                        <span>BACKUP</span>
+                        <span>RESTAURADO</span>
+                    </span>
+                @else
+                    <span>{{ $evento->accion }}</span>
+                @endif
             </span>
         </div>
     </div>
@@ -97,14 +105,14 @@
 
         {{-- Grid Comparativo de Valores (Simétrico a Modal) --}}
         @php
-            $isBackup = $evento->accion === 'backup';
+            $isBackup = in_array($evento->accion, ['backup', 'backup_restaurado']);
             $isLogin = $evento->accion === 'login';
             
             $colAntEmoji = $isBackup ? '📦' : ($isLogin ? '⚠️' : '➖');
-            $colAntText = $isBackup ? 'Archivos y Almacenamiento' : ($isLogin ? 'Historial de Intentos Previos' : 'Valores Anteriores');
+            $colAntText = $evento->accion === 'backup_restaurado' ? 'Copia de Respaldo de Origen' : ($isBackup ? 'Archivos y Almacenamiento' : ($isLogin ? 'Historial de Intentos Previos' : 'Valores Anteriores'));
 
             $colNueEmoji = $isBackup ? '✅' : ($isLogin ? '✅' : '➕');
-            $colNueText = $isBackup ? 'Estado y Parámetros' : ($isLogin ? 'Acceso Logrado / Exitoso' : 'Valores Nuevos');
+            $colNueText = $evento->accion === 'backup_restaurado' ? 'Resultado de la Restauración' : ($isBackup ? 'Estado y Parámetros' : ($isLogin ? 'Acceso Logrado / Exitoso' : 'Valores Nuevos'));
 
             $colAntClass = $isBackup ? 'event-col-cyan' : ($isLogin ? 'event-col-amber' : 'event-col-rose');
             $colNueClass = 'event-col-emerald';

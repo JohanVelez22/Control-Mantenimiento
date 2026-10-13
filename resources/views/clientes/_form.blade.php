@@ -9,130 +9,21 @@
     $selTipoCli = old('tipo_cliente', $c?->tipo_cliente ?? 'cliente');
 @endphp
 
-<style>
-/* Segmented Radio Cards para Tipo de Persona (Liquid Glass Premium - Estático sin saltos) */
-.radio-persona-card {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    gap: 0.65rem;
-    padding: 0.85rem 1rem;
-    border-radius: 1rem;
-    border: 2px solid rgba(0, 0, 0, 0.08);
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-}
-
-.radio-persona-card:hover {
-    background: rgba(255, 255, 255, 0.55);
-    border-color: rgba(0, 0, 0, 0.15);
-}
-
-.dark .radio-persona-card {
-    border-color: rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.dark .radio-persona-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.18);
-}
-
-/* Estado ACTIVO: Cliente Normal (Sobrio, Limpio, Estático) */
-.radio-persona-card.active-cliente {
-    border-color: #3b82f6 !important;
-    background: rgba(59, 130, 246, 0.08) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
-}
-
-.dark .radio-persona-card.active-cliente {
-    border-color: #3b82f6 !important;
-    background: rgba(59, 130, 246, 0.12) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.20) !important;
-}
-
-/* Estado ACTIVO: Técnico (Sobrio, Limpio, Estático) */
-.radio-persona-card.active-tecnico {
-    border-color: #f97316 !important;
-    background: rgba(249, 115, 22, 0.08) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
-}
-
-.dark .radio-persona-card.active-tecnico {
-    border-color: #f97316 !important;
-    background: rgba(249, 115, 22, 0.12) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.20) !important;
-}
-
-/* Indicador Radio Glass (hollow sutil cuando inactivo, dot vibrante cuando activo) */
-.ts-radio-persona {
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-    width: 18px !important;
-    height: 18px !important;
-    border-radius: 9999px !important;
-    border: 2px solid rgba(148, 163, 184, 0.6) !important;
-    background: transparent !important;
-    outline: none !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
-    flex-shrink: 0 !important;
-    margin: 0 !important;
-}
-
-.dark .ts-radio-persona {
-    border-color: rgba(255, 255, 255, 0.25) !important;
-    background: transparent !important;
-}
-
-.ts-radio-persona[value="cliente"]:checked {
-    border: 2px solid #3b82f6 !important;
-    background-color: #3b82f6 !important;
-    box-shadow: inset 0 0 0 3px #ffffff !important;
-}
-
-.dark .ts-radio-persona[value="cliente"]:checked {
-    border-color: #3b82f6 !important;
-    background-color: #3b82f6 !important;
-    box-shadow: inset 0 0 0 3px #0f172a !important;
-}
-
-.ts-radio-persona[value="tecnico"]:checked {
-    border: 2px solid #f97316 !important;
-    background-color: #f97316 !important;
-    box-shadow: inset 0 0 0 3px #ffffff !important;
-}
-
-.dark .ts-radio-persona[value="tecnico"]:checked {
-    border-color: #f97316 !important;
-    background-color: #f97316 !important;
-    box-shadow: inset 0 0 0 3px #0f172a !important;
-}
-</style>
-
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
     {{-- ── Tipo de Cliente ─────────────────────────────────────────── --}}
     <div class="md:col-span-2">
-        <label class="field-label mb-2 block">Tipo de Persona *</label>
-        <div class="flex gap-3">
-            <label class="radio-persona-card {{ $selTipoCli === 'cliente' ? 'active-cliente' : '' }}">
-                <input type="radio" name="tipo_cliente" value="cliente" {{ $selTipoCli === 'cliente' ? 'checked' : '' }}
-                       class="ts-radio-persona" required>
-                <span class="radio-persona-text font-semibold {{ $selTipoCli === 'cliente' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-300' }}">👤 Cliente Normal</span>
+        <label class="field-label flex items-center gap-1.5 font-bold mb-1">
+            Tipo de Persona <span class="text-red-500 font-bold">*</span>
+        </label>
+        <div class="flex gap-3 mt-1">
+            <label id="label_cliente" class="flex-1 ts-select-card hover-blue {{ $selTipoCli === 'cliente' ? 'active-blue' : '' }}">
+                <input type="radio" name="tipo_cliente" value="cliente" required id="tipo_cliente_normal" {{ $selTipoCli === 'cliente' ? 'checked' : '' }} class="ts-radio-dot">
+                <span id="text_cliente">👤 Cliente Normal</span>
             </label>
-            <label class="radio-persona-card {{ $selTipoCli === 'tecnico' ? 'active-tecnico' : '' }}">
-                <input type="radio" name="tipo_cliente" value="tecnico" {{ $selTipoCli === 'tecnico' ? 'checked' : '' }}
-                       class="ts-radio-persona">
-                <span class="radio-persona-text font-semibold {{ $selTipoCli === 'tecnico' ? 'text-orange-700 dark:text-orange-400' : 'text-slate-600 dark:text-slate-300' }}">🛠️ Técnico</span>
+            <label id="label_tecnico" class="flex-1 ts-select-card hover-orange {{ $selTipoCli === 'tecnico' ? 'active-orange' : '' }}">
+                <input type="radio" name="tipo_cliente" value="tecnico" id="tipo_cliente_tecnico" {{ $selTipoCli === 'tecnico' ? 'checked' : '' }} class="ts-radio-dot">
+                <span id="text_tecnico">🛠️ Técnico</span>
             </label>
         </div>
         @error('tipo_cliente') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
@@ -336,28 +227,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Estilo dinámico para botones de radio
     const radios = document.querySelectorAll('input[name="tipo_cliente"]');
-    if (radios.length > 0) {
+    const labelCliente = document.getElementById('label_cliente');
+    const labelTecnico = document.getElementById('label_tecnico');
+    if (radios.length > 0 && labelCliente && labelTecnico) {
         radios.forEach(radio => {
             radio.addEventListener('change', function() {
-                const clienteCard = document.querySelector('input[value="cliente"]').closest('.radio-persona-card');
-                const tecnicoCard = document.querySelector('input[value="tecnico"]').closest('.radio-persona-card');
-                const clienteText = clienteCard.querySelector('.radio-persona-text');
-                const tecnicoText = tecnicoCard.querySelector('.radio-persona-text');
-                
                 if (this.value === 'cliente') {
-                    clienteCard.classList.add('active-cliente');
-                    clienteCard.classList.remove('active-tecnico');
-                    clienteText.className = "radio-persona-text font-semibold text-blue-700 dark:text-blue-400";
-                    
-                    tecnicoCard.classList.remove('active-tecnico', 'active-cliente');
-                    tecnicoText.className = "radio-persona-text font-semibold text-slate-600 dark:text-slate-300";
+                    labelCliente.classList.add('active-blue');
+                    labelTecnico.classList.remove('active-orange');
                 } else {
-                    tecnicoCard.classList.add('active-tecnico');
-                    tecnicoCard.classList.remove('active-cliente');
-                    tecnicoText.className = "radio-persona-text font-semibold text-orange-700 dark:text-orange-400";
-                    
-                    clienteCard.classList.remove('active-cliente', 'active-tecnico');
-                    clienteText.className = "radio-persona-text font-semibold text-slate-600 dark:text-slate-300";
+                    labelTecnico.classList.add('active-orange');
+                    labelCliente.classList.remove('active-blue');
                 }
             });
         });
