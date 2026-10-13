@@ -114,11 +114,9 @@
     </div>
     @endif
 
-    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-200/50 dark:border-white/10 mt-2">
-        <a href="{{ route('mantenimientos.index') }}" class="btn-cancel">✕<space>Cancelar</a>
-        <button type="submit" class="btn-save">
-            {{ isset($mantenimiento) ? '🔄 Actualizar Mantenimiento' : '💾 Guardar Mantenimiento' }}
-        </button>
+    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 pt-3 mt-1">
+        <a href="{{ route('mantenimientos.index') }}" class="btn-cancel">✕ Cancelar</a>
+        <button type="submit" class="btn-save">{{ isset($mantenimiento) ? '🔄 Actualizar Mantenimiento' : '💾 Guardar Mantenimiento' }}</button>
     </div>
 
 </div>

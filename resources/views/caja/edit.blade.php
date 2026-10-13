@@ -219,11 +219,9 @@
         @endif
 
         {{-- Botones de Acción al Final (Centrados verticalmente) --}}
-        <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-200/50 dark:border-white/10 mt-2">
+        <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-3 mt-1">
             <a href="{{ route('caja.index') }}" class="btn-cancel">✕ Cancelar</a>
-            <button type="submit" form="cajaEditForm" class="btn-save">
-                🔄 Actualizar Movimiento
-            </button>
+            <button type="submit" form="cajaEditForm" class="btn-save">🔄 Actualizar Movimiento</button>
         </div>
 
     </div>

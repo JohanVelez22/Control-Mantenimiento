@@ -88,7 +88,7 @@
         <div class="p-6">
             <div class="mb-4">
                 <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🧮 Calculadora de Dinero en Mano</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">Ingresa el conteo de billetes y monedas para sumar automáticamente.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">Ingresa el valor de billetes y monedas correspondiente.</p>
             </div>
             <div class="space-y-3">
                 <div class="grid grid-cols-2 gap-3 items-center">

@@ -8,8 +8,8 @@
     $selProv = old('proveedor_id', $st?->proveedor_id ?? '');
 @endphp
 
-<div class="space-y-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
             <label for="codigo" class="field-label">Código (Opcional)</label>
             <input type="text" name="codigo" id="codigo" value="{{ old('codigo', $st?->codigo) }}"
@@ -185,11 +185,9 @@
         <p class="text-[10px] text-gray-500 mt-3 font-medium">Si dejas P. Venta y P. Técnico vacíos, se calculan automáticamente: Venta = Compra × (1 + Utilidad%), Técnico = Compra × (1 + Utilidad%/2).</p>
     </div>
 
-    <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-200/50 dark:border-white/10 mt-2">
-        <a href="{{ route('stocks.index') }}" class="btn-cancel">✕<space>Cancelar</a>
-        <button type="submit" class="btn-save">
-            {{ $st ? '🔄 Actualizar Producto' : '💾 Guardar Producto' }}
-        </button>
+    <div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-3 mt-1">
+        <a href="{{ route('stocks.index') }}" class="btn-cancel">✕ Cancelar</a>
+        <button type="submit" class="btn-save">{{ $st ? '🔄 Actualizar Producto' : '💾 Guardar Producto' }}</button>
     </div>
 </div>
 

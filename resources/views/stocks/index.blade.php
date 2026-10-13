@@ -49,12 +49,12 @@
 <td data-label="Código:" class="text-sm font-bold text-slate-500 dark:text-slate-400 {{ $dim }}">
   {{ $stock->codigo ?? '-' }}
   </td>
-  <td data-label="Foto:" class="text-center {{ $dim }}">
+  <td data-label="Foto:" class="text-center py-2 {{ $dim }}">
   @if($stock->photo)
   <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
        onclick="openImageLightbox('{{ asset('storage/' . $stock->photo) }}', '{{ addslashes($stock->producto) }}', this)"
        onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
-       class="w-11 h-11 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm mx-auto hover:opacity-80 transition">
+       class="w-8 h-8 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm mx-auto hover:opacity-80 transition">
   <span class="hidden text-[10px] text-gray-400 dark:text-gray-500">—</span>
   @else
   <span class="text-[10px] text-gray-400 dark:text-gray-500">—</span>

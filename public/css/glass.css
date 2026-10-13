@@ -2776,10 +2776,19 @@ form button.btn-venta[type="submit"],
 form button.btn-compra[type="submit"],
 button.btn-venta[type="submit"],
 button.btn-compra[type="submit"] {
-  padding: 13px 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  line-height: 1 !important;
+  padding: 0 32px !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
   font-weight: 800 !important;
   font-size: 15px !important;
-  gap: 8px !important;
 }
 
 .btn-cancel:active,

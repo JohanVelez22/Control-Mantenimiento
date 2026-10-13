@@ -4,14 +4,14 @@
 @endphp
 
 {{-- Nombre --}}
-<div class="mb-5">
+<div class="mb-4">
     <label class="field-label">Nombre {{ $isEdit ? 'Completo' : '' }} *</label>
     <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input mt-1 @error('name') border-red-500 @enderror">
     @error('name') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
 </div>
 
 {{-- Email --}}
-<div class="mb-5">
+<div class="mb-4">
     <label class="field-label">Correo Electrónico *</label>
     <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}" required class="glass-input mt-1 @error('email') border-red-500 @enderror">
     @error('email') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
@@ -19,7 +19,7 @@
 
 {{-- Rol --}}
 @if(!$isEdit || auth()->user()->isAdmin())
-<div class="mb-5">
+<div class="mb-4">
     <label class="field-label">Rol {{ $isEdit ? 'del Sistema' : '*' }}</label>
     <select name="role" required class="glass-input mt-1">
         <option value="tecnico" {{ old('role', $user->role ?? '') == 'tecnico' ? 'selected' : '' }}>Técnico</option>
@@ -32,7 +32,7 @@
 @endif
 
 {{-- Foto de Perfil --}}
-<div class="mb-5">
+<div class="mb-4">
     <label class="field-label mb-2 block">Foto de Perfil {{ $isEdit ? '' : '(Opcional)' }}</label>
     <input type="hidden" name="remove_photo" id="remove_user_photo" value="0">
 
@@ -129,7 +129,7 @@
 </div>
 
 {{-- Confirmar Contraseña --}}
-<div class="mb-5">
+<div class="mb-4">
     <label class="block text-sm font-medium mb-2 text-gray-500">{{ $isEdit ? 'Confirmar Nueva Contraseña' : 'Confirmar Contraseña *' }}</label>
     <input type="password" id="password_confirmation" name="password_confirmation" {{ $isEdit ? '' : 'required' }} class="glass-input">
     <p id="req-match" class="mt-1 text-sm text-red-500 hidden">Las contraseñas no coinciden</p>
@@ -142,11 +142,9 @@
 </div>
 @endif
 
-<div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-200/50 dark:border-white/10 mt-2">
-    <a href="{{ auth()->check() && auth()->user()->isAdmin() ? route('usuarios.index') : route('dashboard') }}" class="btn-cancel">✕<space>Cancelar</a>
-    <button type="submit" class="btn-save">
-        {{ $isEdit ? '🔄 Actualizar Usuario' : '💾 Guardar Usuario' }}
-    </button>
+<div class="flex flex-col md:flex-row items-center justify-end gap-3 pt-3 mt-1">
+    <a href="{{ auth()->check() && auth()->user()->isAdmin() ? route('usuarios.index') : route('dashboard') }}" class="btn-cancel">✕ Cancelar</a>
+    <button type="submit" class="btn-save">{{ $isEdit ? '🔄 Actualizar Usuario' : '💾 Guardar Usuario' }}</button>
 </div>
 
 <script>
