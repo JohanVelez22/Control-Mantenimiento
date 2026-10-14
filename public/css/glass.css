@@ -108,16 +108,15 @@ html.dark .content-scroll::-webkit-scrollbar-thumb:hover {
   }
 
   /* ---- Tokens: Modo Claro (Glass Light) ---- */
-  --glass-bg: rgba(255, 255, 255, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.50);
-  --glass-shadow: 0 8px 32px rgba(37, 99, 235, 0.10),
-  0 2px 8px rgba(0, 0, 0, 0.06);
-  --glass-blur: 20px;
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.90);
+  --glass-blur: 28px;
 
   /* ---- Tokens: Modo Oscuro (Glass Dark) ---- */
-  --glass-dark-bg: rgba(15, 23, 42, 0.60);
-  --glass-dark-border: rgba(255, 255, 255, 0.08);
-  --glass-dark-shadow: 0 8px 32px rgba(0, 0, 0, 0.40);
+  --glass-dark-bg: rgba(13, 21, 41, 0.75);
+  --glass-dark-border: rgba(255, 255, 255, 0.12);
+  --glass-dark-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 
   /* ---- Tokens: Sidebar ---- */
   --sidebar-w: 72px;
@@ -201,39 +200,42 @@ html.dark .glass {
 
 /* --- TARJETA VIDRIO (REDONDEADA) -------------------------------------------------- */
 .glass-card {
-  background: rgba(255, 255, 255, 0.50);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  box-shadow: 0 4px 24px rgba(37, 99, 235, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.90);
+  border-radius: 22px;
   overflow: visible;
   /* Permite que el calendario Flatpickr se muestre fuera del card */
   transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
 }
 
 html.dark .glass-card {
-  background: rgba(15, 23, 42, 0.65);
-  border-color: rgba(255, 255, 255, 0.07);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(10, 18, 36, 0.82) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 
 /* Tarjetas de vidrio anidadas dentro de tarjetas principales: evitar acumulación excesiva y mantener luminosidad homogénea */
 .glass-card .glass-card {
-  background: rgba(255, 255, 255, 0.40);
-  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.50);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.80), 0 4px 12px rgba(0, 0, 0, 0.03);
+  border-radius: 16px;
 }
 
 html.dark .glass-card .glass-card {
-  background: rgba(15, 23, 42, 0.35) !important;
-  border-color: rgba(255, 255, 255, 0.06) !important;
+  background: rgba(15, 23, 42, 0.50) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+  border-radius: 16px;
 }
 
 /* --- GLASS CARD HOVER EFFECTS (Liquid Glass style) ----------------------------------- */
 /* Subtle gradient enhancement on hover - no zoom/scale for professional look */
 .glass-card {
   position: relative;
-  overflow: hidden;
 }
 
 .hover-glow::before {
@@ -3806,10 +3808,10 @@ html.dark .btn-blue:hover {
 }
 
 html.dark .glass-input {
-  color: #E2E8F0;
-  background: rgba(15, 23, 42, 0.60);
-  border-color: rgba(255, 255, 255, 0.10) !important;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.20);
+  color: #F1F5F9;
+  background: rgba(15, 23, 42, 0.72);
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   color-scheme: dark;
 }
 
@@ -4181,15 +4183,16 @@ html.dark input[type="datetime-local"].glass-input::-webkit-calendar-picker-indi
 /* --- ETIQUETA VIDRIO -------------------------------------------------- */
 .field-label {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.3px;
-  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
   margin-bottom: 5px;
 }
 
 html.dark .field-label {
-  color: #CBD5E1;
+  color: #94A3B8;
 }
 
 
@@ -4199,21 +4202,21 @@ html.dark .field-label {
   width: 100%;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  background: rgba(255, 255, 255, 0.50);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border-radius: 18px !important;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.75);
   transition: none !important;
 }
 
 html.dark .ts-table,
 html.dark .glass-table {
-  background: rgba(15, 23, 42, 0.65);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(10, 18, 36, 0.82) 100%);
+  box-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 .ts-table thead th,
