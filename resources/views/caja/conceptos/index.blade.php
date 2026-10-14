@@ -89,9 +89,11 @@
                         <label class="field-label">Nombre del Concepto</label>
                         <input type="text" name="nombre" required class="glass-input mt-1" placeholder="Ej: Pago de Internet">
                     </div>
-                    <button type="submit" class="btn-primary w-full justify-center py-2.5 font-bold shadow-md shadow-indigo-500/20">
-                        ➕ Crear Concepto
-                    </button>
+                    <div class="pt-2">
+                        <button type="submit" class="btn-primary w-full justify-center py-2.5 font-bold shadow-md shadow-indigo-500/20">
+                            ➕ Crear Concepto
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -106,7 +108,7 @@
                         <form action="{{ route('conceptos.update', $c->id) }}" method="POST" class="flex-1 flex items-center gap-2">
                             @csrf @method('PUT')
                             <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-2 px-3 text-sm">
-                            <button type="submit" class="btn-ghost px-3 py-2 text-xs text-blue-600 dark:text-blue-400 font-bold shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/30">💾 Guardar</button>
+                            <button type="submit" class="btn-ghost px-2.5 py-2 text-xs text-blue-600 dark:text-blue-400 font-bold shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Guardar concepto">💾</button>
                         </form>
                         <button type="button" onclick="openDeletePwd('{{ route('conceptos.destroy', $c->id) }}')" class="btn-danger px-2.5 py-2 text-xs shrink-0" title="Eliminar concepto">🗑️</button>
                     </li>
