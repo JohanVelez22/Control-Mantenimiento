@@ -874,7 +874,7 @@
             </div>
 
             {{-- Contenedor Central para alinear filtros e información al mismo ancho --}}
-            <div class="w-full max-w-[480px] mx-auto flex flex-col flex-1 pb-2 sm:pb-4">
+            <div class="w-full max-w-[480px] mx-auto flex flex-col flex-1">
                 {{-- Filtros / Tabs --}}
                 <div class="flex flex-wrap sm:flex-nowrap justify-center gap-1.5 mb-4 w-full">
                 <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60">Todos</button>
@@ -893,7 +893,7 @@
                 </div>
 
             {{-- Scrollable list of all pending items --}}
-            <div class="w-full max-h-[55vh] sm:max-h-[50vh] overflow-y-auto space-y-2 pr-1 mb-4 sm:mb-5 content-scroll">
+            <div class="w-full max-h-[55vh] sm:max-h-[50vh] overflow-y-auto space-y-2 px-1.5 pt-1 pb-1 sm:pb-1.5 content-scroll">
 
                 {{-- Mantenimientos --}}
                 @foreach($mantList as $m)
@@ -1038,11 +1038,10 @@
                     </div>
                 </a>
                 @endforeach
-
             </div>
             </div>
 
-            <button onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-base">
+            <button onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-base mt-5 sm:mt-6">
                 Cerrar
             </button>
         </div>
