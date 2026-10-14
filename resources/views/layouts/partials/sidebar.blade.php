@@ -66,6 +66,7 @@
                     <span class="nav-icon">📈</span>
                     <span class="nav-label">Info Operativos</span>
                 </a>
+                @if(auth()->check() && auth()->user()->isAdmin())
                 <a href="{{ route('configuracion.index') }}" class="nav-item {{ request()->routeIs('configuracion.*') ? 'active' : '' }}" title="Empresa">
                     <span class="nav-icon">🏢</span>
                     <span class="nav-label">Empresa</span>
@@ -74,6 +75,7 @@
                     <span class="nav-icon">🕵🏻</span>
                     <span class="nav-label">Eventos</span>
                 </a>
+                @endif
             </nav>
             
             </aside>

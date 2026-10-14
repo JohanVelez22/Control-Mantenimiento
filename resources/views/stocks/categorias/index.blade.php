@@ -85,17 +85,17 @@
                 @csrf
                 <h3 class="font-bold text-slate-800 dark:text-white mb-4">Nueva Clasificación</h3>
                 <div class="space-y-4">
-                    <div>
-                        <label class="field-label">Tipo de Clasificación <span class="text-red-500 font-bold">*</span></label>
-                        <select name="tipo" class="glass-input font-bold" required>
-                            <option value="categoria">🗂️ Categoría</option>
-                            <option value="subcategoria">📂 Subcategoría</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="field-label">Nombre <span class="text-red-500 font-bold">*</span></label>
-                        <input type="text" name="nombre" required class="glass-input" placeholder="Ej: Pantallas, Accesorios...">
-                    </div>
+                        <div>
+                            <label class="field-label">Tipo de Clasificación <span class="text-red-500 font-bold">*</span></label>
+                            <select name="tipo" class="glass-input font-bold" required>
+                                <option value="categoria">🗂️ Categoría</option>
+                                <option value="subcategoria">📂 Subcategoría</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="field-label">Nombre <span class="text-red-500 font-bold">*</span></label>
+                            <input type="text" name="nombre" required class="glass-input" placeholder="Ej: Pantallas, Accesorios...">
+                        </div>
                     <div class="pt-2">
                     <button type="submit" class="btn-primary w-full justify-center py-2.5 font-bold shadow-md shadow-indigo-500/20">
                         ➕ Crear Clasificación
@@ -114,7 +114,7 @@
                     <li class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
                         <form action="{{ route('stocks.categorias.update', $c->id) }}" method="POST" class="flex-1 w-full flex flex-wrap sm:flex-nowrap gap-2 items-center">
                             @csrf @method('PUT')
-                            <select name="tipo" class="glass-input py-2 px-2 text-xs w-auto font-bold {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
+                            <select name="tipo" class="glass-input py-2 px-2 text-xs w-auto font-bold min-w-[120px] {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
                                 <option value="categoria" {{ $c->tipo == 'categoria' ? 'selected' : '' }}>🗂️ Categoría</option>
                                 <option value="subcategoria" {{ $c->tipo == 'subcategoria' ? 'selected' : '' }}>📂 Subcategoría</option>
                             </select>

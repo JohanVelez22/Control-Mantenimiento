@@ -62,6 +62,19 @@ class ConfiguracionEmpresaYAuditoriaTest extends TestCase
         $this->assertDatabaseMissing('configuraciones', ['nombre' => 'Intento Hacker']);
     }
 
+    public function test_sidebar_hides_empresa_and_eventos_for_tecnico(): void
+    {
+        $responseAdmin = $this->actingAs($this->admin)->get(route('dashboard'));
+        $responseAdmin->assertStatus(200);
+        $responseAdmin->assertSee(route('configuracion.index'));
+        $responseAdmin->assertSee(route('eventos.index'));
+
+        $responseTecnico = $this->actingAs($this->tecnico)->get(route('dashboard'));
+        $responseTecnico->assertStatus(200);
+        $responseTecnico->assertDontSee(route('configuracion.index'));
+        $responseTecnico->assertDontSee(route('eventos.index'));
+    }
+
     public function test_auditoria_eventos_registra_creacion_y_actualizacion(): void
     {
         // Al crear un usuario (usa Auditable), debe registrarse evento 'creado'
