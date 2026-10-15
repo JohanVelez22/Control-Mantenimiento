@@ -14,7 +14,7 @@
  @csrf
 
  {{-- Datos de la compra --}}
- <div class="flex flex-col md:flex-row gap-5 p-5 glass-card">
+ <div class="flex flex-col md:flex-row gap-5">
  <div class="col-factura-header">
  <label class="field-label whitespace-nowrap">N° Factura</label>
  <input type="text" value="{{ $nextFactura ?? 'CP-...' }}" readonly class="glass-input font-mono font-bold bg-white/40 dark:bg-black/20 text-orange-600 dark:text-orange-400 text-left pl-3 cursor-not-allowed w-full" style="width: 7rem !important;">
@@ -109,7 +109,7 @@
  </div>
 
  {{-- Pago y observaciones --}}
- <div class="flex flex-col md:flex-row justify-center gap-5 p-5 glass-card">
+ <div class="flex flex-col md:flex-row justify-center gap-5">
 <div class="text-center w-full md:w-1/2">
   <label class="field-label text-center block">Total Pagado Ahora <span class="text-red-500 font-bold">*</span></label>
   <input type="text" name="total_pagado" id="total_pagado_real" value="0" required class="hidden">

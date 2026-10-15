@@ -139,7 +139,7 @@
     </div>
 
     {{-- Panel de Precios --}}
-    <div class="pricing-panel p-5 bg-white/45 dark:bg-slate-900/60 border border-white/40 dark:border-white/10 rounded-2xl shadow-sm">
+    <div class="pricing-panel">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
                 <label for="precio_compra_visual" class="field-label">Precio de Compra <span class="text-red-500 font-bold">*</span></label>
@@ -182,10 +182,10 @@
                 @error('precio_tecnico') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
         </div>
-        <p class="text-[10px] text-gray-500 mt-3 font-medium">Si dejas P. Venta y P. Técnico vacíos, se calculan automáticamente: Venta = Compra × (1 + Utilidad%), Técnico = Compra × (1 + Utilidad%/2).</p>
+        <p class="text-[10px] text-gray-500 mt-2 font-medium">Si dejas P. Venta y P. Técnico vacíos, se calculan automáticamente: Venta = Compra × (1 + Utilidad%), Técnico = Compra × (1 + Utilidad%/2).</p>
     </div>
 
-    <div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
+    <div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-4 pt-0">
         <a href="{{ route('stocks.index') }}" class="btn-cancel"><span>✕</span><span>Cancelar</span></a>
         <button type="submit" class="btn-save">{{ $st ? '🔄 Actualizar Producto' : '💾 Guardar Producto' }}</button>
     </div>

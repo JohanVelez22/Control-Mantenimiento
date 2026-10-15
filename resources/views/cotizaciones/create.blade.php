@@ -13,7 +13,7 @@
         <form action="{{ route('cotizaciones.store') }}" method="POST" id="cotizacion-form" class="space-y-5">
             @csrf
 
-            <div class="cotizacion-header-grid p-5 glass-card">
+            <div class="cotizacion-header-grid">
                 <div>
                     <label class="field-label">Cliente / Proveedor <span class="text-red-500 font-bold">*</span></label>
                     <select name="facturable_global" required class="glass-input focus:ring-blue-500" data-placeholder="Buscar cliente o proveedor...">

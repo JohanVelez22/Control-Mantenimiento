@@ -193,7 +193,7 @@
         <div class="border-t border-gray-200/50 dark:border-white/10 pt-6 mt-8">
             {{-- Registrar Nuevo Abono --}}
             @if(!auth()->user()->isInvitado() && !$electronica->anulado)
-            <div class="p-6 rounded-2xl bg-emerald-50/40 dark:bg-emerald-900/10 border border-emerald-200/50 dark:border-emerald-500/20 mb-6">
+            <div class="mb-6">
                 <h4 class="font-bold text-base text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                     <span>💳</span> Abonos / Pagos Parciales
                 </h4>

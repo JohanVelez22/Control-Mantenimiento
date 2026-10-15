@@ -4335,11 +4335,11 @@ html.dark .ts-table.table-electronica tbody tr:hover {
   border-bottom-right-radius: 16px !important;
 }
 
-/* Margen inferior en tarjetas contenedoras de tablas */
-.glass-card:has(.ts-table),
-.glass-card:has(.glass-table),
-.glass-card:has(table):not(.backup-files-wrapper):not(:has(.backup-table)) {
-  padding-bottom: 24px !important;
+/* Margen inferior en tarjetas contenedoras de tablas (simétrico y homogéneo al espacio superior del título) */
+.glass-card:has(.ts-table):not(:has(.table-footer-btn)):not(:has(nav[role="navigation"])):not(:has(.table-pagination-wrapper)),
+.glass-card:has(.glass-table):not(:has(.table-footer-btn)):not(:has(nav[role="navigation"])):not(:has(.table-pagination-wrapper)),
+.glass-card:has(table):not(.backup-files-wrapper):not(:has(.backup-table)):not(:has(.table-footer-btn)):not(:has(nav[role="navigation"])):not(:has(.table-pagination-wrapper)) {
+  padding-bottom: 32px !important;
 }
 
 /* Contenedor responsivo redondeado para tablas (elimina sombras cuadradas / cortes en punta) */
@@ -4358,17 +4358,19 @@ html.dark .ts-table.table-electronica tbody tr:hover {
   overflow-y: hidden !important;
 }
 
-/* Espacio vertical simétrico e idéntico para paginadores y botones de pie de tabla */
-.glass-card:has(nav[role="navigation"]),
+/* Espacio vertical simétrico y perfectamente centrado para botones de pie de tabla y paginadores */
 .glass-card:has(.table-footer-btn),
+.glass-card:has(div.table-footer-btn),
+.glass-card:has(table):has(.table-footer-btn),
+.glass-card:has(nav[role="navigation"]),
 .glass-card:has(.table-pagination-wrapper) {
-  padding-bottom: 14px !important;
+  padding-bottom: 20px !important;
 }
 
 .glass-card .table-footer-btn,
 .glass-card div:has(> nav[role="navigation"]),
 .glass-card .table-pagination-wrapper {
-  margin-top: 10px !important;
+  margin-top: 20px !important;
   margin-bottom: 0 !important;
 }
 

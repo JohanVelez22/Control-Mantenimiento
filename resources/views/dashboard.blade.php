@@ -157,21 +157,21 @@
 
 <div class="glass-card p-6 md:px-8">
 
- {{-- Tabs --}}
- <div class="flex items-center gap-1 mb-5 border-b border-gray-200 dark:border-gray-600">
- <button type="button" onclick="switchDashTab('mant')" id="tabBtnMant"
- class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] border-blue-600 text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20">
- 🔧 Mantenimientos
- </button>
- <button type="button" onclick="switchDashTab('elec')" id="tabBtnElec"
- class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] border-transparent text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10">
- ⚡ Electrónica
- </button>
- </div>
+  {{-- Tabs --}}
+   <div class="flex items-center gap-1 mb-5">
+  <button type="button" onclick="switchDashTab('mant')" id="tabBtnMant"
+  class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all border-b-[3px] border-blue-600 text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20">
+  🔧 Mantenimientos
+  </button>
+  <button type="button" onclick="switchDashTab('elec')" id="tabBtnElec"
+  class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all border-b-[3px] border-transparent text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10">
+  ⚡ Electrónica
+  </button>
+  </div>
 
  {{-- ═══════════════ TAB: Mantenimientos ═══════════════ --}}
- <div id="tabPanelMant">
- <div class="overflow-x-auto pb-2">
+  <div id="tabPanelMant">
+  <div class="overflow-x-auto pb-2">
  <table class="ts-table responsive-table">
  <thead>
  <tr>
@@ -257,16 +257,16 @@
  </tbody>
  </table>
  </div>
-    <div class="table-footer-btn flex justify-end">
-        <a href="{{ route('mantenimientos.reportes') }}" class="btn-primary">
-            📈 Ver reporte detallado →
-        </a>
-    </div>
+     <div class="table-footer-btn flex justify-end">
+         <a href="{{ route('mantenimientos.reportes') }}" class="btn-primary">
+             📈 Ver reporte detallado →
+         </a>
+     </div>
  </div>
 
  {{-- ═══════════════ TAB: Electrónica ═══════════════ --}}
- <div id="tabPanelElec" class="hidden">
- <div class="overflow-x-auto pb-2">
+  <div id="tabPanelElec" class="hidden">
+  <div class="overflow-x-auto pb-2">
  <table class="ts-table table-electronica responsive-table">
  <thead>
  <tr>
@@ -346,11 +346,11 @@
  </tbody>
  </table>
  </div>
-    <div class="table-footer-btn flex justify-end">
-        <a href="{{ route('electronicas.reportes') }}" class="btn-purple">
-            📈 Ver reporte detallado →
-        </a>
-    </div>
+     <div class="table-footer-btn flex justify-end">
+         <a href="{{ route('electronicas.reportes') }}" class="btn-purple">
+             📈 Ver reporte detallado →
+         </a>
+     </div>
  </div>
 
 </div>
@@ -358,23 +358,23 @@
 {{-- Script para cambio de tabs --}}
 <script>
 function switchDashTab(tab) {
- // Paneles
- document.getElementById('tabPanelMant').classList.toggle('hidden', tab !== 'mant');
- document.getElementById('tabPanelElec').classList.toggle('hidden', tab !== 'elec');
- // Botones
- const btnMant = document.getElementById('tabBtnMant');
- const btnElec = document.getElementById('tabBtnElec');
- const activeClasses = 'border-b-[3px] text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 border-blue-600';
- const activeClassesPurple = 'border-b-[3px] text-purple-700 dark:text-purple-300 bg-purple-50/60 dark:bg-purple-900/20 border-purple-600';
- const inactiveClasses = 'border-b-[3px] border-transparent text-gray-500 dark:text-gray-400';
+  // Paneles
+  document.getElementById('tabPanelMant').classList.toggle('hidden', tab !== 'mant');
+  document.getElementById('tabPanelElec').classList.toggle('hidden', tab !== 'elec');
+  // Botones
+  const btnMant = document.getElementById('tabBtnMant');
+  const btnElec = document.getElementById('tabBtnElec');
+   const activeClasses = 'border-b-[3px] text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 border-blue-600';
+   const activeClassesPurple = 'border-b-[3px] text-purple-700 dark:text-purple-300 bg-purple-50/60 dark:bg-purple-900/20 border-purple-600';
+   const inactiveClasses = 'border-b-[3px] border-transparent text-gray-500 dark:text-gray-400';
 
- if (tab === 'mant') {
- btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + activeClasses;
- btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + inactiveClasses + ' hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10';
- } else {
- btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + activeClassesPurple;
- btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + inactiveClasses + ' hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50/40 dark:hover:bg-blue-900/10';
- }
+  if (tab === 'mant') {
+  btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all ' + activeClasses;
+  btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all ' + inactiveClasses + ' hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10';
+  } else {
+  btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all ' + activeClassesPurple;
+  btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all ' + inactiveClasses + ' hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50/40 dark:hover:bg-blue-900/10';
+  }
 }
 </script>
 

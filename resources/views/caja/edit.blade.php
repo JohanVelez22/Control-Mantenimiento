@@ -94,7 +94,7 @@
             <div class="mt-6 pt-6 border-t border-gray-200/50 dark:border-white/10 space-y-6">
                 {{-- Registrar Nuevo Abono si hay saldo pendiente --}}
                 @if($movimiento->saldo_pendiente > 0)
-                <div class="p-6 rounded-2xl bg-emerald-50/40 dark:bg-emerald-900/10 border border-emerald-200/50 dark:border-emerald-500/20">
+                <div>
                     <h4 class="font-bold text-base text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                         <span>💳</span> Registrar Nuevo Abono
                     </h4>
