@@ -321,30 +321,94 @@ html.dark .glass-card.hover-glow:hover {
 }
 
 /* Color definitions for glass-card */
-.glass-card-blue    { --card-accent: 37, 99, 235; }
-.glass-card-emerald { --card-accent: 16, 185, 129; }
-.glass-card-amber   { --card-accent: 245, 158, 11; }
-.glass-card-purple  { --card-accent: 168, 85, 247; }
-.glass-card-red     { --card-accent: 239, 68, 68; }
-.glass-card-cyan    { --card-accent: 6, 182, 212; }
-.glass-card-indigo  { --card-accent: 99, 102, 241; }
-.glass-card-orange  { --card-accent: 249, 115, 22; }
-.glass-card-teal    { --card-accent: 20, 184, 166; }
-.glass-card-rose    { --card-accent: 244, 63, 94; }
-.glass-card-gray    { --card-accent: 100, 116, 139; }
+.glass-card-blue {
+  --card-accent: 37, 99, 235;
+}
+
+.glass-card-emerald {
+  --card-accent: 16, 185, 129;
+}
+
+.glass-card-amber {
+  --card-accent: 245, 158, 11;
+}
+
+.glass-card-purple {
+  --card-accent: 168, 85, 247;
+}
+
+.glass-card-red {
+  --card-accent: 239, 68, 68;
+}
+
+.glass-card-cyan {
+  --card-accent: 6, 182, 212;
+}
+
+.glass-card-indigo {
+  --card-accent: 99, 102, 241;
+}
+
+.glass-card-orange {
+  --card-accent: 249, 115, 22;
+}
+
+.glass-card-teal {
+  --card-accent: 20, 184, 166;
+}
+
+.glass-card-rose {
+  --card-accent: 244, 63, 94;
+}
+
+.glass-card-gray {
+  --card-accent: 100, 116, 139;
+}
 
 /* Dark mode accent adjustments (elegantes, templados y sin sobresaturación) */
-html.dark .glass-card-blue    { --card-accent: 59, 130, 246; }
-html.dark .glass-card-emerald { --card-accent: 16, 185, 129; }
-html.dark .glass-card-amber   { --card-accent: 245, 158, 11; }
-html.dark .glass-card-purple  { --card-accent: 168, 85, 247; }
-html.dark .glass-card-red     { --card-accent: 239, 68, 68; }
-html.dark .glass-card-cyan    { --card-accent: 6, 182, 212; }
-html.dark .glass-card-indigo  { --card-accent: 99, 102, 241; }
-html.dark .glass-card-orange  { --card-accent: 249, 115, 22; }
-html.dark .glass-card-teal    { --card-accent: 20, 184, 166; }
-html.dark .glass-card-rose    { --card-accent: 244, 63, 94; }
-html.dark .glass-card-gray    { --card-accent: 100, 116, 139; }
+html.dark .glass-card-blue {
+  --card-accent: 59, 130, 246;
+}
+
+html.dark .glass-card-emerald {
+  --card-accent: 16, 185, 129;
+}
+
+html.dark .glass-card-amber {
+  --card-accent: 245, 158, 11;
+}
+
+html.dark .glass-card-purple {
+  --card-accent: 168, 85, 247;
+}
+
+html.dark .glass-card-red {
+  --card-accent: 239, 68, 68;
+}
+
+html.dark .glass-card-cyan {
+  --card-accent: 6, 182, 212;
+}
+
+html.dark .glass-card-indigo {
+  --card-accent: 99, 102, 241;
+}
+
+html.dark .glass-card-orange {
+  --card-accent: 249, 115, 22;
+}
+
+html.dark .glass-card-teal {
+  --card-accent: 20, 184, 166;
+}
+
+html.dark .glass-card-rose {
+  --card-accent: 244, 63, 94;
+}
+
+html.dark .glass-card-gray {
+  --card-accent: 100, 116, 139;
+}
 
 /* --- SIDEBAR VIDRIO LIQUIDO -------------------------------------------------- */
 #ts-sidebar {
@@ -750,6 +814,7 @@ html.dark #ts-topbar {
 /* --- LEVE BRILLO ELEGANTE EN BOTONES SÓLIDOS (Reflejo especular sutil Liquid Glass) --- */
 .btn-primary::before,
 .btn-today::before,
+.btn-clean::before,
 .btn-print::before,
 .btn-excel::before,
 .btn-pdf::before,
@@ -778,6 +843,7 @@ html.dark #ts-topbar {
 
 .btn-primary:hover::before,
 .btn-today:hover::before,
+.btn-clean:hover::before,
 .btn-print:hover::before,
 .btn-excel:hover::before,
 .btn-pdf:hover::before,
@@ -813,8 +879,7 @@ label.btn-blue::before,
   color: white !important;
 }
 
-.btn-primary:active {
-}
+.btn-primary:active {}
 
 /* Calibración milimétrica para Guardar Programación */
 #btn-save-schedule {
@@ -848,8 +913,7 @@ label.btn-blue::before,
   color: white !important;
 }
 
-#btn-save-schedule:active {
-}
+#btn-save-schedule:active {}
 
 #btn-save-schedule span {
   display: inline-flex !important;
@@ -886,11 +950,9 @@ label.btn-blue::before,
   margin: 0 !important;
 }
 
-#btn-execute-backup:hover {
-}
+#btn-execute-backup:hover {}
 
-#btn-execute-backup:active {
-}
+#btn-execute-backup:active {}
 
 #btn-execute-backup span {
   display: inline-flex !important;
@@ -902,68 +964,104 @@ label.btn-blue::before,
   margin: 0 !important;
 }
 
-/* ---- Botón Limpiar / Reset (Liquid Glass Violeta Orquídea / Alto Contraste para 🧹) ---- */
+/* ---- Botón Limpiar / Reset (Liquid Glass Violeta Orquídea / Idéntico a btn-purple / Ver Reporte Electrónica) ---- */
 .btn-clean {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.42);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-
+html.dark .btn-clean {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+}
 
 .btn-clean:hover {
-  background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%) !important;
-  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: #FFFFFF !important;
+  transform: none !important;
+}
+
+html.dark .btn-clean:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
 }
 
 .btn-clean:active {
+  transform: none !important;
 }
 
 /* ---- Botón Agregar Línea / Artículo (Liquid Glass Esmeralda Constructivo) ---- */
 .btn-add {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-
+html.dark .btn-add {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+}
 
 .btn-add:hover {
-  background: linear-gradient(135deg, #34D399 0%, #10B981 100%) !important;
-  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: #FFFFFF !important;
+  transform: none !important;
+}
+
+html.dark .btn-add:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
 }
 
 .btn-add:active {
+  transform: none !important;
 }
 
 /* ---- Botón Hoy (Sólido Cian / Idéntico comportamiento a Ver Día) ---- */
@@ -994,7 +1092,6 @@ label.btn-blue::before,
 }
 
 .btn-today:hover {
-  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%) !important;
   box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: #FFFFFF !important;
   transform: none !important;
@@ -1006,34 +1103,39 @@ label.btn-blue::before,
 
 /* ---- Botón Respaldos / Seguridad (Liquid Glass Teal Tecnológico / Petróleo Blindado) ---- */
 .btn-backup {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.42);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.42) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-
-
 .btn-backup:hover {
-  background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%) !important;
-  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: #FFFFFF !important;
+  transform: none !important;
 }
 
 .btn-backup:active {
+  transform: none !important;
 }
 
 /* Variantes dinámicas de color para el botón de ejecución según la opción seleccionada */
@@ -1043,8 +1145,9 @@ label.btn-blue::before,
 }
 
 .btn-backup.btn-backup-db:hover {
-  background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%) !important;
-  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
 }
 
 .btn-backup.btn-backup-files {
@@ -1053,8 +1156,9 @@ label.btn-blue::before,
 }
 
 .btn-backup.btn-backup-files:hover {
-  background: linear-gradient(135deg, #818CF8 0%, #6366F1 100%) !important;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
 }
 
 .btn-backup.btn-backup-all {
@@ -1063,8 +1167,9 @@ label.btn-blue::before,
 }
 
 .btn-backup.btn-backup-all:hover {
-  background: linear-gradient(135deg, #C084FC 0%, #A855F7 100%) !important;
-  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
 }
 
 /* ================================================================
@@ -2468,8 +2573,7 @@ input[type="number"].no-spinners,
   color: white !important;
 }
 
-.btn-save:active {
-}
+.btn-save:active {}
 
 /* ---- Botón cancelar formularios (Opción 3: Coral Ahumado / Rosa Viejo elegante) ---- */
 .btn-cancel {
@@ -2505,8 +2609,7 @@ input[type="number"].no-spinners,
   color: white !important;
 }
 
-.btn-cancel:active {
-}
+.btn-cancel:active {}
 
 /* ---- Botón Cerrar en modales (Mismo color y acabado que Cancelar: Rojo Opaco / Coral Ahumado) ---- */
 .btn-close-modal {
@@ -2542,8 +2645,7 @@ input[type="number"].no-spinners,
   color: white !important;
 }
 
-.btn-close-modal:active {
-}
+.btn-close-modal:active {}
 
 /* ---- Botón guardar e imprimir ---- */
 .btn-save-print {
@@ -2579,8 +2681,7 @@ input[type="number"].no-spinners,
   color: white !important;
 }
 
-.btn-save-print:active {
-}
+.btn-save-print:active {}
 
 /* ---- Botón conceptos ---- */
 .btn-concepts {
@@ -2610,8 +2711,7 @@ input[type="number"].no-spinners,
   color: white !important;
 }
 
-.btn-concepts:active {
-}
+.btn-concepts:active {}
 
 /* ---- Botón venta (verde esmeralda vibrante) ---- */
 .btn-venta {
@@ -2691,8 +2791,7 @@ button.btn-compra[type="submit"] {
 
 .btn-cancel:active,
 .btn-venta:active,
-.btn-compra:active {
-}
+.btn-compra:active {}
 
 /* ---- Botón púrpura/violeta (Sólido Liquid Glass Violeta / Idéntico a btn-primary) ---- */
 .btn-purple {
@@ -2729,14 +2828,12 @@ html.dark .btn-purple {
 }
 
 .btn-purple:hover {
-  background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%) !important;
   box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: #FFFFFF !important;
   transform: none !important;
 }
 
 html.dark .btn-purple:hover {
-  background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%) !important;
   box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: #FFFFFF !important;
   transform: none !important;
@@ -2773,8 +2870,7 @@ html.dark .btn-purple:hover {
   color: white !important;
 }
 
-.btn-print:active {
-}
+.btn-print:active {}
 
 /* ---- Botón Excel (verde) ---- */
 .btn-excel {
@@ -2803,8 +2899,7 @@ html.dark .btn-purple:hover {
   color: white !important;
 }
 
-.btn-excel:active {
-}
+.btn-excel:active {}
 
 /* ---- Botón Liquid Glass Universal (redondeado suave 13px, no ovalado) ---- */
 .btn-glass {
@@ -2848,8 +2943,7 @@ html.dark .btn-glass:hover {
   color: #93C5FD;
 }
 
-.btn-glass:active {
-}
+.btn-glass:active {}
 
 /* ---- Botón Excel Liquid Glass (opción cristalina redondeada) ---- */
 .btn-excel-glass,
@@ -2898,8 +2992,7 @@ html.dark .btn-glass-excel:hover {
 }
 
 .btn-excel-glass:active,
-.btn-glass-excel:active {
-}
+.btn-glass-excel:active {}
 
 /* ---- Botón PDF (rojo) ---- */
 .btn-pdf {
@@ -2928,8 +3021,7 @@ html.dark .btn-glass-excel:hover {
   color: white !important;
 }
 
-.btn-pdf:active {
-}
+.btn-pdf:active {}
 
 /* --- BOTONES SECUNDARIOS / GHOST -------------------------------------------------- */
 .btn-ghost {
@@ -2978,8 +3070,7 @@ html.dark .btn-ghost:hover {
   color: #93C5FD;
 }
 
-.btn-ghost:active {
-}
+.btn-ghost:active {}
 
 /* ---- Botón Volver universal del sistema (⬅️) ---- */
 .btn-ghost.text-xl,
@@ -3207,14 +3298,14 @@ html.dark .logout-toggle-btn:active {
 
 /* ---- BOTONES GHOST CON COLOR: EFECTO LIQUID GLASS TIPO TARJETA ---- */
 /* Muestran su tono en reposo y se intensifican con resplandor en hover, con altura homogénea de 38px */
-:not(.actions-grid) > .btn-ghost-amber,
-:not(.actions-grid) > .btn-ghost-red,
-:not(.actions-grid) > .btn-ghost-emerald,
-:not(.actions-grid) > .btn-ghost-purple,
-:not(.actions-grid) > .btn-ghost-violet,
-:not(.actions-grid) > .btn-ghost-blue,
-:not(.actions-grid) > .btn-ghost-indigo,
-:not(.actions-grid) > .btn-ghost-orange,
+:not(.actions-grid)>.btn-ghost-amber,
+:not(.actions-grid)>.btn-ghost-red,
+:not(.actions-grid)>.btn-ghost-emerald,
+:not(.actions-grid)>.btn-ghost-purple,
+:not(.actions-grid)>.btn-ghost-violet,
+:not(.actions-grid)>.btn-ghost-blue,
+:not(.actions-grid)>.btn-ghost-indigo,
+:not(.actions-grid)>.btn-ghost-orange,
 .btn-ghost:not(.actions-grid *):not([class*="w-8"]):not([class*="btn-action-"]):not(.print-dropdown-box):not([class*="print-dropdown"]):not(.text-xl):not([title*="Volver"]):not([title*="volver"])[class*="text-"],
 .btn-ghost:not(.actions-grid *):not([class*="w-8"]):not([class*="btn-action-"]):not(.print-dropdown-box):not([class*="print-dropdown"]):not(.text-xl):not([title*="Volver"]):not([title*="volver"])[class*="border-"] {
   height: 38px !important;
@@ -3260,8 +3351,7 @@ html.dark .btn-ghost[class*="border-"] {
 .btn-ghost-indigo:hover,
 .btn-ghost-orange:hover,
 .btn-ghost[class*="text-"]:hover,
-.btn-ghost[class*="border-"]:hover {
-}
+.btn-ghost[class*="border-"]:hover {}
 
 .btn-ghost-amber:active,
 .btn-ghost-red:active,
@@ -3272,8 +3362,7 @@ html.dark .btn-ghost[class*="border-"] {
 .btn-ghost-indigo:active,
 .btn-ghost-orange:active,
 .btn-ghost[class*="text-"]:active,
-.btn-ghost[class*="border-"]:active {
-}
+.btn-ghost[class*="border-"]:active {}
 
 /* 1. Índigo / Azul Violeta (ej. Ver Factura) */
 .btn-ghost[class*="text-indigo"],
@@ -3867,8 +3956,7 @@ html.dark .modal-divider {
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
-.btn-danger:active {
-}
+.btn-danger:active {}
 
 .btn-danger.btn-icon,
 .btn-icon-danger {
@@ -7129,19 +7217,21 @@ input.flatpickr-input.form-control {
   flex-wrap: wrap !important;
   justify-content: center !important;
   align-items: center !important;
-  gap: 0.375rem !important; /* 6px */
-  width: 4.625rem !important; /* 74px: caben exactamente dos bloques de 32px + 6px de gap */
+  gap: 0.375rem !important;
+  /* 6px */
+  width: 4.625rem !important;
+  /* 74px: caben exactamente dos bloques de 32px + 6px de gap */
   min-width: 4.625rem !important;
   max-width: 4.625rem !important;
   margin: 0 auto !important;
   box-sizing: border-box !important;
 }
 
-.actions-grid > *,
-.actions-grid > a,
-.actions-grid > button,
-.actions-grid > form,
-.actions-grid > span,
+.actions-grid>*,
+.actions-grid>a,
+.actions-grid>button,
+.actions-grid>form,
+.actions-grid>span,
 .actions-grid .btn-ghost,
 .actions-grid [class*="btn-"] {
   width: 2rem !important;
@@ -7164,7 +7254,7 @@ input.flatpickr-input.form-control {
   transform: none !important;
 }
 
-.actions-grid > form {
+.actions-grid>form {
   display: inline-flex !important;
   width: 2rem !important;
   height: 2rem !important;
@@ -7172,7 +7262,7 @@ input.flatpickr-input.form-control {
   padding: 0 !important;
 }
 
-.actions-grid > form > button {
+.actions-grid>form>button {
   width: 100% !important;
   height: 100% !important;
   padding: 0 !important;
@@ -7539,7 +7629,7 @@ div.print-dropdown-box,
   transform: none !important;
 }
 
-.print-dropdown-box > a.print-main-btn {
+.print-dropdown-box>a.print-main-btn {
   display: inline-flex !important;
   align-items: center !important;
   gap: 5px !important;
@@ -7555,11 +7645,11 @@ div.print-dropdown-box,
   transform: none !important;
 }
 
-.print-dropdown-box > .print-divider {
+.print-dropdown-box>.print-divider {
   display: none !important;
 }
 
-.print-dropdown-box > button.print-arrow-btn {
+.print-dropdown-box>button.print-arrow-btn {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -7574,7 +7664,7 @@ div.print-dropdown-box,
   transform: none !important;
 }
 
-.print-dropdown-box > button.print-arrow-btn svg {
+.print-dropdown-box>button.print-arrow-btn svg {
   width: 8px !important;
   height: 8px !important;
 }
@@ -7701,7 +7791,8 @@ html.dark optgroup {
 .actions-grid button[title*="Diagnóstico"] {
   color: #4F46E5 !important;
   /* Índigo */
-  padding-top: 1px !important; /* Calibración métrica vertical para emoji del ojo 50/50 */
+  padding-top: 1px !important;
+  /* Calibración métrica vertical para emoji del ojo 50/50 */
 }
 
 
@@ -9356,7 +9447,7 @@ button,
 [class*="btn-"],
 .actions-grid a,
 .actions-grid button,
-.actions-grid > * {
+.actions-grid>* {
   transform: none !important;
 }
 
@@ -9382,7 +9473,7 @@ button:hover,
 [class*="btn-"]:hover,
 .actions-grid a:hover,
 .actions-grid button:hover,
-.actions-grid > *:hover,
+.actions-grid>*:hover,
 .print-dropdown-box:hover,
 .print-dropdown-box a:hover,
 .print-dropdown-box button:hover {
@@ -9398,343 +9489,13 @@ button:active,
 [class*="btn-"]:active,
 .actions-grid a:active,
 .actions-grid button:active,
-.actions-grid > *:active,
+.actions-grid>*:active,
 .print-dropdown-box:active {
   transform: none !important;
-}
-
-/* ==========================================================================
-   NAVEGACIÓN DE INFORMES Y REPORTES: LIQUID GLASS CON FRANJA INFERIOR TIPO DASHBOARD
-   Reposo homogéneo neutro, franja inferior activa al estilo Mantenimiento/Electrónica
-   ========================================================================== */
-.ts-reportes-main-nav {
-  display: flex !important;
-  gap: 0.625rem !important;
-  align-items: center !important;
-  overflow-x: auto !important;
-  padding-bottom: 0.35rem !important;
-  margin-bottom: 1.5rem !important;
-  scrollbar-width: thin !important;
-}
-
-.reportes-nav-tabs {
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.625rem !important;
-}
-
-/* Base común de pestañas y sub-pestañas de informes */
-.ts-reporte-nav-card,
-.ts-subtab {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.5rem !important;
-  height: 40px !important;
-  min-height: 40px !important;
-  max-height: 40px !important;
-  padding: 0 1.25rem !important;
-  border-radius: 12px !important;
-  font-size: 0.875rem !important;
-  font-weight: 700 !important;
-  line-height: 1 !important;
-  white-space: nowrap !important;
-  text-decoration: none !important;
-  box-sizing: border-box !important;
-  cursor: pointer !important;
-  backdrop-filter: blur(14px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  transform: none !important;
-  border-bottom: 3px solid transparent !important;
-}
-
-.ts-subtab {
-  height: 38px !important;
-  min-height: 38px !important;
-  max-height: 38px !important;
-  padding: 0 1.15rem !important;
-  font-size: 0.8125rem !important;
-}
-
-.ts-reporte-nav-card:hover,
-.ts-reporte-nav-card:active,
-.ts-subtab:hover,
-.ts-subtab:active {
-  transform: none !important;
-}
-
-/* ==========================================================================
-   ESTILOS EN REPOSO (Conservan color y personalidad para no parecer inactivos)
-   ========================================================================== */
-
-/* 1. Informes Financieros (Ámbar / Oro) */
-.ts-reporte-nav-card.tab-amber {
-  color: #D97706 !important;
-  background: rgba(245, 158, 11, 0.04) !important;
-  border: 1px solid rgba(245, 158, 11, 0.15) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
-}
-html.dark .ts-reporte-nav-card.tab-amber {
-  color: #FCD34D !important;
-  background: rgba(245, 158, 11, 0.04) !important;
-  border: 1px solid rgba(251, 191, 36, 0.14) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
 }
 
 /* Encabezado de vistas de detalle: simetría vertical exacta entre borde superior del card y línea horizontal */
 .detail-header,
 .caja-detail-header {
   padding-bottom: 2rem !important; /* 32px: exactamente simétrico a los 32px superiores (md:p-8) */
-}
-
-/* 2. Reporte de Mantenimientos & Sub-pestaña Diario (Azul - Tinte translúcido ligero) */
-.ts-reporte-nav-card.tab-blue,
-.ts-subtab.tab-blue {
-  color: #2563EB !important;
-  background: rgba(37, 99, 235, 0.03) !important;
-  border: 1px solid rgba(37, 99, 235, 0.12) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
-}
-html.dark .ts-reporte-nav-card.tab-blue,
-html.dark .ts-subtab.tab-blue {
-  color: #93C5FD !important;
-  background: rgba(37, 99, 235, 0.04) !important;
-  border: 1px solid rgba(96, 165, 250, 0.12) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
-}
-
-/* 3. Reporte de Electrónica & Sub-pestaña Acumulado (Púrpura - Tinte translúcido ligero) */
-.ts-reporte-nav-card.tab-purple,
-.ts-subtab.tab-purple {
-  color: #7C3AED !important;
-  background: rgba(168, 85, 247, 0.03) !important;
-  border: 1px solid rgba(168, 85, 247, 0.12) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
-}
-html.dark .ts-reporte-nav-card.tab-purple,
-html.dark .ts-subtab.tab-purple {
-  color: #C084FC !important;
-  background: rgba(168, 85, 247, 0.04) !important;
-  border: 1px solid rgba(192, 132, 252, 0.12) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
-}
-
-/* 4. Informe Inventario (Naranja) */
-.ts-reporte-nav-card.tab-orange {
-  color: #EA580C !important;
-  background: rgba(249, 115, 22, 0.04) !important;
-  border: 1px solid rgba(249, 115, 22, 0.15) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
-}
-html.dark .ts-reporte-nav-card.tab-orange {
-  color: #FDBA74 !important;
-  background: rgba(249, 115, 22, 0.04) !important;
-  border: 1px solid rgba(251, 146, 60, 0.14) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
-}
-
-/* 5. Sub-pestaña Operaciones (Teal) */
-.ts-subtab.tab-teal {
-  color: #0D9488 !important;
-  background: rgba(20, 184, 166, 0.04) !important;
-  border: 1px solid rgba(20, 184, 166, 0.15) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
-}
-html.dark .ts-subtab.tab-teal {
-  color: #5EEAD4 !important;
-  background: rgba(20, 184, 166, 0.04) !important;
-  border: 1px solid rgba(45, 212, 191, 0.14) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
-}
-html.dark .ts-subtab.tab-teal {
-  color: #5EEAD4 !important;
-  background: rgba(20, 184, 166, 0.12) !important;
-  border: 1px solid rgba(45, 212, 191, 0.22) !important;
-  border-bottom: 3px solid transparent !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
-}
-
-/* ==========================================================================
-   ESTILOS EN HOVER (Tinte suave anticipado con franja translúcida)
-   ========================================================================== */
-.ts-reporte-nav-card.tab-amber:hover {
-  color: #B45309 !important;
-  background: rgba(245, 158, 11, 0.07) !important;
-  border-color: rgba(245, 158, 11, 0.22) !important;
-  border-bottom: 3px solid rgba(245, 158, 11, 0.40) !important;
-}
-html.dark .ts-reporte-nav-card.tab-amber:hover {
-  color: #FDE68A !important;
-  background: rgba(245, 158, 11, 0.07) !important;
-  border-color: rgba(251, 191, 36, 0.22) !important;
-  border-bottom: 3px solid rgba(251, 191, 36, 0.40) !important;
-}
-
-.ts-reporte-nav-card.tab-blue:hover,
-.ts-subtab.tab-blue:hover {
-  color: #1D4ED8 !important;
-  background: rgba(37, 99, 235, 0.06) !important;
-  border-color: rgba(37, 99, 235, 0.18) !important;
-  border-bottom: 3px solid rgba(37, 99, 235, 0.40) !important;
-}
-html.dark .ts-reporte-nav-card.tab-blue:hover,
-html.dark .ts-subtab.tab-blue:hover {
-  color: #BFDBFE !important;
-  background: rgba(37, 99, 235, 0.06) !important;
-  border-color: rgba(96, 165, 250, 0.18) !important;
-  border-bottom: 3px solid rgba(96, 165, 250, 0.40) !important;
-}
-
-.ts-reporte-nav-card.tab-purple:hover,
-.ts-subtab.tab-purple:hover {
-  color: #6B21A8 !important;
-  background: rgba(168, 85, 247, 0.06) !important;
-  border-color: rgba(168, 85, 247, 0.18) !important;
-  border-bottom: 3px solid rgba(168, 85, 247, 0.40) !important;
-}
-html.dark .ts-reporte-nav-card.tab-purple:hover,
-html.dark .ts-subtab.tab-purple:hover {
-  color: #E9D5FF !important;
-  background: rgba(168, 85, 247, 0.06) !important;
-  border-color: rgba(192, 132, 252, 0.18) !important;
-  border-bottom: 3px solid rgba(192, 132, 252, 0.40) !important;
-}
-
-.ts-reporte-nav-card.tab-orange:hover {
-  color: #C2410C !important;
-  background: rgba(249, 115, 22, 0.07) !important;
-  border-color: rgba(249, 115, 22, 0.22) !important;
-  border-bottom: 3px solid rgba(249, 115, 22, 0.40) !important;
-}
-html.dark .ts-reporte-nav-card.tab-orange:hover {
-  color: #FED7AA !important;
-  background: rgba(249, 115, 22, 0.07) !important;
-  border-color: rgba(251, 146, 60, 0.22) !important;
-  border-bottom: 3px solid rgba(251, 146, 60, 0.40) !important;
-}
-
-.ts-subtab.tab-teal:hover {
-  color: #0F766E !important;
-  background: rgba(20, 184, 166, 0.07) !important;
-  border-color: rgba(20, 184, 166, 0.22) !important;
-  border-bottom: 3px solid rgba(20, 184, 166, 0.40) !important;
-}
-html.dark .ts-subtab.tab-teal:hover {
-  color: #99F6E4 !important;
-  background: rgba(20, 184, 166, 0.07) !important;
-  border-color: rgba(45, 212, 191, 0.22) !important;
-  border-bottom: 3px solid rgba(45, 212, 191, 0.40) !important;
-}
-  background: rgba(20, 184, 166, 0.16) !important;
-  border-color: rgba(45, 212, 191, 0.30) !important;
-  border-bottom: 3px solid rgba(45, 212, 191, 0.45) !important;
-}
-
-/* ==========================================================================
-   ESTADOS ACTIVOS: FRANJA INFERIOR 3PX + LIQUID GLASS LUMINOSO
-   ========================================================================== */
-
-/* 1. Informes Financieros (Ámbar / Oro) */
-.ts-reporte-nav-card.tab-amber.active {
-  color: #B45309 !important;
-  background: rgba(245, 158, 11, 0.08) !important;
-  border: 1px solid rgba(245, 158, 11, 0.24) !important;
-  border-bottom: 3px solid #D97706 !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
-}
-html.dark .ts-reporte-nav-card.tab-amber.active {
-  color: #FCD34D !important;
-  background: rgba(245, 158, 11, 0.09) !important;
-  border: 1px solid rgba(251, 191, 36, 0.24) !important;
-  border-bottom: 3px solid #F59E0B !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
-}
-
-/* 2. Reporte de Mantenimientos & Sub-pestaña Diario (Azul) */
-.ts-reporte-nav-card.tab-blue.active,
-.ts-subtab.tab-blue.active {
-  color: #1D4ED8 !important;
-  background: rgba(37, 99, 235, 0.06) !important;
-  border: 1px solid rgba(37, 99, 235, 0.20) !important;
-  border-bottom: 3px solid #2563EB !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
-}
-html.dark .ts-reporte-nav-card.tab-blue.active,
-html.dark .ts-subtab.tab-blue.active {
-  color: #93C5FD !important;
-  background: rgba(37, 99, 235, 0.07) !important;
-  border: 1px solid rgba(96, 165, 250, 0.20) !important;
-  border-bottom: 3px solid #3B82F6 !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
-}
-
-/* 3. Reporte de Electrónica & Sub-pestaña Acumulado (Púrpura) */
-.ts-reporte-nav-card.tab-purple.active,
-.ts-subtab.tab-purple.active {
-  color: #7E22CE !important;
-  background: rgba(168, 85, 247, 0.06) !important;
-  border: 1px solid rgba(168, 85, 247, 0.20) !important;
-  border-bottom: 3px solid #9333EA !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
-}
-html.dark .ts-reporte-nav-card.tab-purple.active,
-html.dark .ts-subtab.tab-purple.active {
-  color: #D8B4FE !important;
-  background: rgba(168, 85, 247, 0.07) !important;
-  border: 1px solid rgba(192, 132, 252, 0.20) !important;
-  border-bottom: 3px solid #A855F7 !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
-}
-
-/* 4. Informe Inventario (Naranja) */
-.ts-reporte-nav-card.tab-orange.active {
-  color: #C2410C !important;
-  background: rgba(249, 115, 22, 0.08) !important;
-  border: 1px solid rgba(249, 115, 22, 0.24) !important;
-  border-bottom: 3px solid #EA580C !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
-}
-html.dark .ts-reporte-nav-card.tab-orange.active {
-  color: #FDBA74 !important;
-  background: rgba(249, 115, 22, 0.09) !important;
-  border: 1px solid rgba(251, 146, 60, 0.24) !important;
-  border-bottom: 3px solid #F97316 !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
-}
-
-/* 5. Sub-pestaña Operaciones (Teal) */
-.ts-subtab.tab-teal.active {
-  color: #0F766E !important;
-  background: rgba(20, 184, 166, 0.08) !important;
-  border: 1px solid rgba(20, 184, 166, 0.24) !important;
-  border-bottom: 3px solid #0D9488 !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
-}
-html.dark .ts-subtab.tab-teal.active {
-  color: #5EEAD4 !important;
-  background: rgba(20, 184, 166, 0.09) !important;
-  border: 1px solid rgba(45, 212, 191, 0.24) !important;
-  border-bottom: 3px solid #14B8A6 !important;
-  font-weight: 800 !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
 }
