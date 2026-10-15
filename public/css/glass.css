@@ -1995,15 +1995,31 @@ html.dark .backup-file-size {
   color: #2DD4BF !important;
 }
 
-/* Botones de acción en tabla */
-.btn-backup-download {
+/* Botones de acción en tabla de copias de seguridad (perfectamente cuadrados) */
+.btn-backup-download,
+.btn-backup-restore,
+.btn-backup-update,
+.btn-backup-delete {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: 12px !important;
-  padding: 5px 8px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
   border-radius: 8px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
   transition: all 0.2s ease !important;
+}
+
+.btn-backup-download {
   text-decoration: none !important;
   background: rgba(13, 148, 136, 0.12) !important;
   color: #0F766E !important;
@@ -2027,15 +2043,8 @@ html.dark .btn-backup-download:hover {
 }
 
 .btn-backup-restore {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 12px !important;
-  padding: 5px 8px !important;
-  border-radius: 8px !important;
   border: 1px solid rgba(59, 130, 246, 0.25) !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
   background: rgba(59, 130, 246, 0.12) !important;
   color: #2563EB !important;
 }
@@ -2057,15 +2066,8 @@ html.dark .btn-backup-restore:hover {
 }
 
 .btn-backup-update {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 12px !important;
-  padding: 5px 8px !important;
-  border-radius: 8px !important;
   border: 1px solid rgba(59, 130, 246, 0.25) !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
   background: rgba(59, 130, 246, 0.12) !important;
   color: #2563EB !important;
 }
@@ -2088,15 +2090,8 @@ html.dark .btn-backup-update:hover {
 }
 
 .btn-backup-delete {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 12px !important;
-  padding: 5px 8px !important;
-  border-radius: 8px !important;
   border: 1px solid rgba(239, 68, 68, 0.2) !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
   background: rgba(239, 68, 68, 0.1) !important;
   color: #DC2626 !important;
 }
@@ -2694,90 +2689,112 @@ input[type="number"].no-spinners,
 
 .btn-save-print:active {}
 
-/* ---- Botón conceptos ---- */
+/* ---- Botón conceptos (Dimensiones idénticas a btn-primary: 38px) ---- */
 .btn-concepts {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 13px 32px;
-  font-weight: 800;
-  font-size: 15px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: white !important;
   background: linear-gradient(135deg, #2DD4BF 0%, #0F766E 100%) !important;
-  border-radius: 14px !important;
+  border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-
-
 .btn-concepts:hover {
-  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: white !important;
 }
 
-.btn-concepts:active {}
+.btn-concepts:active {
+  transform: none !important;
+}
 
-/* ---- Botón venta (verde esmeralda vibrante) ---- */
+/* ---- Botón venta (verde esmeralda vibrante - Dimensiones idénticas a btn-primary: 38px) ---- */
 .btn-venta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13.5px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: white !important;
   background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-
-
 .btn-venta:hover {
-  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: white !important;
 }
 
-/* ---- Botón compra (naranja) ---- */
+.btn-venta:active {
+  transform: none !important;
+}
+
+/* ---- Botón compra (naranja - Dimensiones idénticas a btn-primary: 38px) ---- */
 .btn-compra {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13.5px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: white !important;
   background: linear-gradient(135deg, #F97316 0%, #EA580C 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-
-
 .btn-compra:hover {
-  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: white !important;
+}
+
+.btn-compra:active {
+  transform: none !important;
 }
 
 /* Cuando btn-venta o btn-compra actúan como botón de acción de formulario final (igual que btn-cancel y btn-save) */
@@ -2854,63 +2871,77 @@ html.dark .btn-purple:hover {
   transform: none !important;
 }
 
-/* ---- Botón imprimir (gris) ---- */
+/* ---- Botón imprimir (gris - Dimensiones idénticas a btn-primary: 38px) ---- */
 .btn-print {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: white !important;
   background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-
-
 .btn-print:hover {
-  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: white !important;
 }
 
-.btn-print:active {}
+.btn-print:active {
+  transform: none !important;
+}
 
-/* ---- Botón Excel (verde) ---- */
+/* ---- Botón Excel (verde - Dimensiones idénticas a btn-primary: 38px) ---- */
 .btn-excel {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: white !important;
   background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-
-
 .btn-excel:hover {
-  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: white !important;
 }
 
-.btn-excel:active {}
+.btn-excel:active {
+  transform: none !important;
+}
 
 /* ---- Botón Liquid Glass Universal (redondeado suave 13px, no ovalado) ---- */
 .btn-glass {
@@ -2918,9 +2949,14 @@ html.dark .btn-purple:hover {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 9px 18px;
+  padding: 0 18px;
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  box-sizing: border-box;
   font-weight: 700;
   font-size: 13px;
+  line-height: 1.25;
   border-radius: 13px;
   text-decoration: none;
   cursor: pointer;
@@ -2963,9 +2999,14 @@ html.dark .btn-glass:hover {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 9px 18px;
+  padding: 0 18px;
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  box-sizing: border-box;
   font-weight: 700;
   font-size: 13px;
+  line-height: 1.25;
   border-radius: 13px;
   text-decoration: none;
   cursor: pointer;
@@ -3005,34 +3046,41 @@ html.dark .btn-glass-excel:hover {
 .btn-excel-glass:active,
 .btn-glass-excel:active {}
 
-/* ---- Botón PDF (rojo) ---- */
+/* ---- Botón PDF (rojo - Dimensiones idénticas a btn-primary: 38px) ---- */
 .btn-pdf {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: white !important;
   background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-
-
 .btn-pdf:hover {
-  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: white !important;
 }
 
-.btn-pdf:active {}
+.btn-pdf:active {
+  transform: none !important;
+}
 
 /* --- BOTONES SECUNDARIOS / GHOST -------------------------------------------------- */
 .btn-ghost {
@@ -3106,6 +3154,59 @@ a.btn-ghost[title*="busqueda" i] {
   box-sizing: border-box !important;
   flex-shrink: 0 !important;
 }
+
+/* ---- Botones de acción cuadrados uniformes (💾 Guardar, 🗑️ Eliminar, 👁️ Ver) ---- */
+.btn-action-square,
+.btn-icon-square,
+.btn-ghost.btn-action-square,
+.btn-danger.btn-action-square,
+button.btn-ghost[title*="Guardar" i],
+button.btn-danger[title*="Eliminar clasificación" i],
+button.btn-danger[title*="Eliminar concepto" i],
+button.btn-danger[title*="Eliminar y devolver" i],
+button.btn-danger[title*="Anular abono" i],
+a.btn-ghost[title*="Ver movimiento en Caja" i] {
+  font-size: 15px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  max-width: 38px !important;
+  max-height: 38px !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 12px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn-action-square:hover,
+.btn-icon-square:hover,
+button.btn-ghost[title*="Guardar" i]:hover,
+button.btn-danger[title*="Eliminar clasificación" i]:hover,
+button.btn-danger[title*="Eliminar concepto" i]:hover,
+button.btn-danger[title*="Eliminar y devolver" i]:hover,
+button.btn-danger[title*="Anular abono" i]:hover,
+a.btn-ghost[title*="Ver movimiento en Caja" i]:hover {
+  transform: translateY(-1px) scale(1.04);
+}
+
+.btn-action-square:active,
+.btn-icon-square:active,
+button.btn-ghost[title*="Guardar" i]:active,
+button.btn-danger[title*="Eliminar clasificación" i]:active,
+button.btn-danger[title*="Eliminar concepto" i]:active,
+button.btn-danger[title*="Eliminar y devolver" i]:active,
+button.btn-danger[title*="Anular abono" i]:active,
+a.btn-ghost[title*="Ver movimiento en Caja" i]:active {
+  transform: translateY(0) scale(0.98);
+}
+
 
 /* ================================================================
    Botones de Acción Superior (TopBar & Header: Notif, Tema, Logout)
@@ -4570,8 +4671,28 @@ html.dark .ts-table.table-electronica tbody tr:hover {
 }
 
 .ts-table tbody tr:last-child td,
-.glass-table tbody tr:last-child td {
-  border-bottom: none;
+.ts-table tfoot tr:last-child td,
+.glass-table tbody tr:last-child td,
+.glass-table tfoot tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Desactivar hover en filas vacías de datos (@empty con colspan) */
+.ts-table tbody tr:has(td[colspan]):hover,
+.glass-table tbody tr:has(td[colspan]):hover,
+html.dark .ts-table tbody tr:has(td[colspan]):hover,
+html.dark .glass-table tbody tr:has(td[colspan]):hover {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Desactivar efecto hover en pie de tabla (totales) */
+.ts-table tfoot tr:hover,
+.glass-table tfoot tr:hover,
+html.dark .ts-table tfoot tr:hover,
+html.dark .glass-table tfoot tr:hover {
+  background: inherit !important;
+  box-shadow: none !important;
 }
 
 /* Esquinas inferiores perfectamente ovaladas/redondeadas en la última fila del cuerpo y pie de tabla */
@@ -4619,6 +4740,65 @@ html.dark .ts-table.table-electronica tbody tr:hover {
 .ts-table tbody tr:last-child:hover td:last-child,
 .glass-table tbody tr:last-child:hover td:last-child {
   border-bottom-right-radius: 16px !important;
+}
+
+/* En tablas CON tfoot: el tbody NO debe tener esquinas redondeadas inferiores ni borde que corte antes del total */
+.ts-table:has(tfoot) tbody tr:last-child,
+.ts-table:has(tfoot) tbody tr:last-child td,
+.ts-table:has(tfoot) tbody tr:last-child td:first-child,
+.ts-table:has(tfoot) tbody tr:last-child td:last-child,
+.ts-table:has(tfoot) tbody tr:last-child td[colspan],
+.glass-table:has(tfoot) tbody tr:last-child,
+.glass-table:has(tfoot) tbody tr:last-child td,
+.glass-table:has(tfoot) tbody tr:last-child td:first-child,
+.glass-table:has(tfoot) tbody tr:last-child td:last-child,
+.glass-table:has(tfoot) tbody tr:last-child td[colspan],
+.ts-table:has(tfoot) tbody tr:last-child:hover,
+.ts-table:has(tfoot) tbody tr:last-child:hover td,
+.ts-table:has(tfoot) tbody tr:last-child:hover td:first-child,
+.ts-table:has(tfoot) tbody tr:last-child:hover td:last-child,
+.ts-table:has(tfoot) tbody tr:last-child:hover td[colspan],
+.glass-table:has(tfoot) tbody tr:last-child:hover,
+.glass-table:has(tfoot) tbody tr:last-child:hover td,
+.glass-table:has(tfoot) tbody tr:last-child:hover td:first-child,
+.glass-table:has(tfoot) tbody tr:last-child:hover td:last-child,
+.glass-table:has(tfoot) tbody tr:last-child:hover td[colspan] {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* En tablas CON tfoot: las esquinas inferiores ovaladas corresponden exclusivamente a la última fila de tfoot */
+.ts-table tfoot tr:last-child,
+.glass-table tfoot tr:last-child {
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+.ts-table tfoot tr:last-child td:first-child,
+.glass-table tfoot tr:last-child td:first-child {
+  border-bottom-left-radius: 16px !important;
+}
+
+.ts-table tfoot tr:last-child td:last-child,
+.glass-table tfoot tr:last-child td:last-child {
+  border-bottom-right-radius: 16px !important;
+}
+
+.ts-table tfoot tr:last-child td[colspan]:only-child,
+.glass-table tfoot tr:last-child td[colspan]:only-child {
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+/* Pie de tabla completamente integrado al marco de la tabla */
+.ts-table tfoot tr,
+.glass-table tfoot tr {
+  border-top: none !important;
+}
+
+.ts-table tfoot td,
+.glass-table tfoot td {
+  border-bottom: none !important;
 }
 
 /* Margen inferior en tarjetas contenedoras de tablas (simétrico y homogéneo al espacio superior del título) */
@@ -7804,7 +7984,18 @@ html.dark optgroup {
 .btn-action-edit,
 .btn-action-anular,
 .btn-action-reactivar,
-.btn-action-baja {
+.btn-action-baja,
+.btn-action-revertir,
+.btn-ghost.w-8,
+.btn-ghost[class*="w-8"],
+.btn-ghost[class*="h-8"],
+.actions-grid span.btn-ghost,
+.actions-grid button,
+.actions-grid a,
+button[title*="Revertir" i],
+button[title*="revertir" i],
+a[title*="Revertir" i],
+a[title*="revertir" i] {
   width: 2rem !important;
   height: 2rem !important;
   min-width: 2rem !important;
@@ -7983,22 +8174,41 @@ html.dark .actions-grid a[title*="anular"] {
   /* Rojo en modo oscuro */
 }
 
-/* Excepción para botones de Reactivar (icono verde) */
+/* Excepción para botones de Reactivar y Revertir Baja (icono verde / esmeralda) */
+.btn-action-revertir,
 .actions-grid button[title*="Reactivar"],
 .actions-grid button[title*="reactivar"],
 .actions-grid a[title*="Reactivar"],
-.actions-grid a[title*="reactivar"] {
+.actions-grid a[title*="reactivar"],
+.actions-grid button[title*="Revertir"],
+.actions-grid button[title*="revertir"],
+.actions-grid a[title*="Revertir"],
+.actions-grid a[title*="revertir"],
+button[title*="Revertir" i],
+button[title*="revertir" i],
+a[title*="Revertir" i],
+a[title*="revertir" i] {
   color: #059669 !important;
 }
 
+.btn-action-revertir:hover,
 .actions-grid button[title*="Reactivar"]:hover,
-.actions-grid a[title*="Reactivar"]:hover {
+.actions-grid a[title*="Reactivar"]:hover,
+.actions-grid button[title*="Revertir"]:hover,
+.actions-grid a[title*="Revertir"]:hover,
+button[title*="Revertir" i]:hover,
+a[title*="Revertir" i]:hover {
   background: rgba(16, 185, 129, 0.12) !important;
   color: #047857 !important;
 }
 
+html.dark .btn-action-revertir,
 html.dark .actions-grid button[title*="Reactivar"],
-html.dark .actions-grid a[title*="Reactivar"] {
+html.dark .actions-grid a[title*="Reactivar"],
+html.dark .actions-grid button[title*="Revertir"],
+html.dark .actions-grid a[title*="Revertir"],
+html.dark button[title*="Revertir" i],
+html.dark a[title*="Revertir" i] {
   color: #34D399 !important;
 }
 
@@ -9569,4 +9779,74 @@ html.dark .reportes-nav-principal a {
 html.dark .reportes-nav-tabs a:hover,
 html.dark .reportes-nav-principal a:hover {
   box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* --- DATOS OPERATIVOS CIERRE (Distribución horizontal simétrica: Fecha izquierda, Cerrado Por centro, Cantidad derecha) --- */
+.cierre-operativo-bar {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 1.25rem !important;
+  width: 100% !important;
+  margin-bottom: 2rem !important;
+}
+
+@media (min-width: 768px) {
+  .cierre-operativo-bar {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 1rem !important;
+    align-items: start !important;
+  }
+}
+
+.cierre-operativo-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  min-width: 0 !important;
+}
+
+@media (min-width: 768px) {
+  .cierre-operativo-item.item-left {
+    justify-self: start !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .cierre-operativo-item.item-center {
+    justify-self: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .cierre-operativo-item.item-right {
+    justify-self: end !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+}
+
+@media print {
+  .cierre-operativo-bar {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    margin-bottom: 1.5rem !important;
+  }
+  .cierre-operativo-item.item-left {
+    justify-self: start !important;
+  }
+  .cierre-operativo-item.item-center {
+    justify-self: center !important;
+  }
+  .cierre-operativo-item.item-right {
+    justify-self: end !important;
+  }
+}
+
+/* --- PREVENIR DESBORDAMIENTO EN CAMPOS DE TEXTO / OBSERVACIONES --- */
+.whitespace-pre-line,
+.observaciones-box,
+[class*="observacion"] {
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
 }

@@ -76,8 +76,8 @@
                     🏭
                 </div>
                 <div class="min-w-0">
-                    <p class="text-[11px] font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">Proveedor Predeterminado</p>
-                    <p class="font-medium text-xl text-slate-800 dark:text-slate-200 leading-tight break-words">
+                    <p class="text-base font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">Proveedor Predeterminado</p>
+                    <p class="font-medium text-base text-slate-800 dark:text-slate-200 leading-tight break-words">
                         {{ $proveedor->nombre_razon_social ?? '—' }}
                     </p>
                     <p class="text-xs font-medium text-slate-600 dark:text-slate-300 mt-1">ID: {{ $proveedor->identificacion ?? 'N/A' }}</p>
@@ -86,7 +86,7 @@
             
             <div class="glass-card hover-glow glass-card-blue p-5 flex items-center justify-between min-w-0">
                 <div class="min-w-0">
-                    <p class="text-[11px] font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">Existencia Actual</p>
+                    <p class="text-base font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">Existencia Actual</p>
                     <p class="font-bold text-4xl text-slate-800 dark:text-white leading-tight">
                         {{ $stock->cantidad }} <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Unidades</span>
                     </p>
@@ -119,7 +119,7 @@
 
         {{-- Historial de Operaciones --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Historial de Operaciones (Compras y Ventas)</h3>
-        <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-6">
+        <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-8" style="overflow-y: auto !important;">
             <table class="ts-table table-dense mb-0">
                 <thead class="sticky top-0 z-20 shadow-sm">
                     <tr>
@@ -166,93 +166,95 @@
             </table>
         </div>
 
+        {{-- Historial de Bajas y Mermas --}}
+        <div class="mt-8">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">📉</span>
+                    <h3 class="font-bold text-lg text-slate-800 dark:text-white">Historial de Bajas y Mermas</h3>
+                </div>
+                @if(isset($bajas) && $bajas->count() > 0)
+                <div class="flex items-center gap-3 text-xs font-bold">
+                    <span class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                        Total descartado: {{ $stock->total_unidades_baja }} unidades
+                    </span>
+                    <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+                        Pérdida: $ {{ number_format($stock->total_perdida_bajas, 0, ',', '.') }}
+                    </span>
+                </div>
+                @endif
+            </div>
+
+            <div class="overflow-x-auto mb-6">
+                <table class="glass-table table-dense w-full text-center">
+                    <thead>
+                        <tr>
+                            <th class="p-3 text-center">Fecha</th>
+                            <th class="p-3 text-center">Cant.</th>
+                            <th class="p-3 text-center">P. Compra</th>
+                            <th class="p-3 text-center">Pérdida Total</th>
+                            <th class="p-3 text-center">Motivo</th>
+                            <th class="p-3 text-center">Observación</th>
+                            <th class="p-3 text-center">Autorizado Por</th>
+                            @if(!auth()->user()->isInvitado())
+                            <th class="p-3 text-center w-24">Acciones</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200/50 dark:divide-white/5">
+                        @forelse($bajas ?? [] as $baja)
+                        <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition text-sm">
+                            <td class="p-3 text-center font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap text-xs">
+                                {{ $baja->created_at->format('d/m/Y H:i') }}
+                            </td>
+                            <td class="p-3 text-center font-black text-amber-600 dark:text-amber-400 text-xs">
+                                -{{ $baja->cantidad }}
+                            </td>
+                            <td class="p-3 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
+                                $ {{ number_format($baja->precio_compra_unitario, 0, ',', '.') }}
+                            </td>
+                            <td class="p-3 text-center font-black text-red-600 dark:text-red-400 font-mono text-xs">
+                                $ {{ number_format($baja->costo_total_perdida, 0, ',', '.') }}
+                            </td>
+                            <td class="p-3 text-center">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                                    {{ $baja->motivo_label }}
+                                </span>
+                            </td>
+                            <td class="p-3 text-center text-xs text-slate-600 dark:text-slate-400 max-w-xs truncate" title="{{ $baja->observacion }}">
+                                {{ $baja->observacion ?: '—' }}
+                            </td>
+                            <td class="p-3 text-center text-xs font-medium text-slate-700 dark:text-slate-300">
+                                {{ $baja->user->name ?? 'Sistema' }}
+                            </td>
+                            @if(!auth()->user()->isInvitado())
+                            <td class="p-3 text-center">
+                                <div class="flex items-center justify-center">
+                                    <button type="button" 
+                                        onclick="openRevertirBajaModal('{{ route('stocks.bajas.revertir', $baja->id) }}', {{ $baja->cantidad }}, '{{ addslashes($stock->producto) }}')"
+                                        class="btn-ghost btn-action-revertir w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:bg-emerald-500/10 rounded-lg transition" 
+                                        title="Revertir baja (reintegrar {{ $baja->cantidad }} unidad(es) al stock)">
+                                        ↩️
+                                    </button>
+                                </div>
+                            </td>
+                            @endif
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="{{ !auth()->user()->isInvitado() ? '8' : '7' }}" class="text-center p-6 text-gray-500 font-medium text-xs">
+                                No se registran bajas ni mermas para este artículo. Todas las unidades ingresadas están en existencias o fueron vendidas/consumidas.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="pt-4 flex justify-between items-center text-xs font-semibold text-gray-400">
             <span>Última actualización: {{ $stock->updated_at->format('d/m/Y H:i:s') }}</span>
             <span>Registro inicial: {{ $stock->created_at->format('d/m/Y H:i:s') }}</span>
-        </div>
-    </div>
-
-    {{-- Tarjeta de Historial de Bajas y Mermas --}}
-    <div class="glass-card p-6 mt-6">
-        <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-                <span class="text-lg">📉</span>
-                <h3 class="font-bold text-slate-800 dark:text-white text-base">Historial de Bajas y Mermas</h3>
-            </div>
-            @if(isset($bajas) && $bajas->count() > 0)
-            <div class="flex items-center gap-3 text-xs font-bold">
-                <span class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                    Total descartado: {{ $stock->total_unidades_baja }} unidades
-                </span>
-                <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
-                    Pérdida: $ {{ number_format($stock->total_perdida_bajas, 0, ',', '.') }}
-                </span>
-            </div>
-            @endif
-        </div>
-
-        <div class="overflow-x-auto">
-            <table class="glass-table table-dense w-full text-center">
-                <thead>
-                    <tr>
-                        <th class="p-3 text-center">Fecha</th>
-                        <th class="p-3 text-center">Cant.</th>
-                        <th class="p-3 text-center">P. Compra</th>
-                        <th class="p-3 text-center">Pérdida Total</th>
-                        <th class="p-3 text-center">Motivo</th>
-                        <th class="p-3 text-center">Observación</th>
-                        <th class="p-3 text-center">Autorizado Por</th>
-                        @if(!auth()->user()->isInvitado())
-                        <th class="p-3 text-center w-24">Acciones</th>
-                        @endif
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200/50 dark:divide-white/5">
-                    @forelse($bajas ?? [] as $baja)
-                    <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition text-sm">
-                        <td class="p-3 text-center font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap text-xs">
-                            {{ $baja->created_at->format('d/m/Y H:i') }}
-                        </td>
-                        <td class="p-3 text-center font-black text-amber-600 dark:text-amber-400 text-xs">
-                            -{{ $baja->cantidad }}
-                        </td>
-                        <td class="p-3 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
-                            $ {{ number_format($baja->precio_compra_unitario, 0, ',', '.') }}
-                        </td>
-                        <td class="p-3 text-center font-black text-red-600 dark:text-red-400 font-mono text-xs">
-                            $ {{ number_format($baja->costo_total_perdida, 0, ',', '.') }}
-                        </td>
-                        <td class="p-3 text-center">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                                {{ $baja->motivo_label }}
-                            </span>
-                        </td>
-                        <td class="p-3 text-center text-xs text-slate-600 dark:text-slate-400 max-w-xs truncate" title="{{ $baja->observacion }}">
-                            {{ $baja->observacion ?: '—' }}
-                        </td>
-                        <td class="p-3 text-center text-xs font-medium text-slate-700 dark:text-slate-300">
-                            {{ $baja->user->name ?? 'Sistema' }}
-                        </td>
-                        @if(!auth()->user()->isInvitado())
-                        <td class="p-3 text-center">
-                            <button type="button" 
-                                onclick="openRevertirBajaModal('{{ route('stocks.bajas.revertir', $baja->id) }}', {{ $baja->cantidad }}, '{{ addslashes($stock->producto) }}')"
-                                class="btn-ghost w-8 h-8 inline-flex items-center justify-center p-0 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-500/10 rounded-lg transition" 
-                                title="Revertir baja (reintegrar {{ $baja->cantidad }} unidad(es) al stock)">
-                                ↩️
-                            </button>
-                        </td>
-                        @endif
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="{{ !auth()->user()->isInvitado() ? '8' : '7' }}" class="text-center p-6 text-gray-500 font-medium text-xs">
-                            No se registran bajas ni mermas para este artículo. Todas las unidades ingresadas están en existencias o fueron vendidas/consumidas.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
         </div>
     </div>
 </div>

@@ -46,10 +46,10 @@
    </div>
   @if(!auth()->user()->isInvitado())
   <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 w-full sm:w-auto">
-  <a href="{{ route('conceptos.index') }}" class="btn-concepts flex items-center justify-center gap-2 w-full sm:w-auto text-center" style="padding: 9px 18px; font-size: 13px;">
+  <a href="{{ route('conceptos.index') }}" class="btn-concepts flex items-center justify-center gap-2 w-full sm:w-auto text-center">
   🏷️ <span>Gestionar Conceptos</span>
   </a>
-  <a href="{{ route('caja.create') }}" class="btn-primary flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30 w-full sm:w-auto text-center" style="padding: 9px 18px; font-size: 13px;">
+  <a href="{{ route('caja.create') }}" class="btn-primary flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30 w-full sm:w-auto text-center">
   <span>➕</span> <span>Nuevo Movimiento</span>
   </a>
   </div>

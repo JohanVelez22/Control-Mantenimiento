@@ -53,7 +53,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 items-stretch gap-6 mb-4 relative z-10">
             <div class="p-5 glass-card flex flex-col justify-between min-w-0 h-full">
                 <div>
-                    <h3 class="text-xs font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">
+                    <h3 class="text-base font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">
                         {{ $cotizacion->destinatario_tipo === 'proveedor' ? '🏢 Datos del Proveedor' : '👤 Datos del Cliente' }}
                     </h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400"><span class="font-semibold">Nombre:</span> {{ $cotizacion->destinatario_nombre }}</p>
@@ -66,7 +66,7 @@
             </div>
             <div class="p-5 glass-card flex flex-col justify-between min-w-0 h-full">
                 <div>
-                    <h3 class="text-xs font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">Resumen de Cotización</h3>
+                    <h3 class="text-base font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">Resumen de Cotización</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400"><span class="font-semibold">Válida por:</span> {{ $cotizacion->validez_dias }} días</p>
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Vendedor:</span> {{ $cotizacion->user->name }}</p>
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Estado:</span> 

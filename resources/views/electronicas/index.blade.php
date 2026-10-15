@@ -168,7 +168,7 @@
   @if($e->estado === 'terminado' && $e->fecha_salida)
   <a href="{{ route('electronicas.factura', $e->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir Factura">🖨️</a>
   @elseif($e->estado === 'terminado')
-  <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
+  <span class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
   @endif
   
   @if(!auth()->user()->isInvitado())

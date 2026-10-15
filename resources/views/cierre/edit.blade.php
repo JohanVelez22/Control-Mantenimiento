@@ -137,9 +137,9 @@
                 </label>
                 <textarea name="observaciones" 
                           id="observaciones" 
-                          rows="4" 
+                          rows="2" 
                           placeholder="Escribe notas adicionales sobre la jornada o eventos extraordinarios..." 
-                          class="glass-input w-full p-3 font-medium text-slate-800 dark:text-slate-200">{{ old('observaciones', $cierre->observaciones) }}</textarea>
+                          class="glass-input w-full p-2.5 font-medium text-slate-800 dark:text-slate-200 text-sm">{{ old('observaciones', $cierre->observaciones) }}</textarea>
             </div>
 
             <div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">

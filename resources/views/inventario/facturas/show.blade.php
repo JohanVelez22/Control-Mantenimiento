@@ -77,8 +77,8 @@
  {{ $factura->tipo_movimiento === 'compra' ? '🏭' : '👤' }}
  </div>
  <div class="min-w-0">
- <p class="text-[11px] font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}</p>
- <p class="font-medium text-xl text-slate-800 dark:text-slate-200 leading-tight break-words">
+ <p class="text-base font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}</p>
+ <p class="font-medium text-base text-slate-800 dark:text-slate-200 leading-tight break-words">
  {{ $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? '—' }}
  </p>
             <p class="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1 break-words">
@@ -128,10 +128,10 @@
  {{-- Notas --}}
  <div class="w-full md:w-1/2">
  @if($factura->observaciones)
-  <div class="p-5 glass-card">
- <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Observaciones</p>
- <p class="text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-pre-line">{{ $factura->observaciones }}</p>
- </div>
+  <p class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-2">Observaciones</p>
+  <div class="py-2.5 px-4 glass-card rounded-xl overflow-hidden flex items-center min-h-[42px]">
+      <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line break-words my-auto" style="overflow-wrap: anywhere; word-break: break-word;">{{ $factura->observaciones }}</p>
+  </div>
  @endif
  </div>
  
@@ -173,7 +173,7 @@
 
  {{-- Historial de Pagos y Abonos --}}
  @if(isset($abonos) && $abonos->count() > 0)
- <div class="mb-8 pt-4 border-t border-gray-200/50 dark:border-white/10">
+ <div class="mb-8">
      <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
          💳 Historial de Pagos y Abonos en Caja ({{ $abonos->count() }})
      </h3>
@@ -220,7 +220,7 @@
  </div>
  @endif
 
- <div class="pt-4 border-t border-gray-200/50 dark:border-white/5 flex justify-between items-center text-xs font-semibold text-gray-400">
+ <div class="pt-4 flex justify-between items-center text-xs font-semibold text-gray-400">
  <span>Usuario: {{ $factura->user->name ?? '—' }}</span>
  <span>Registro: {{ $factura->created_at->format('d/m/Y H:i:s') }}</span>
  </div>

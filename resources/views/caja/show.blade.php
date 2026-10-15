@@ -68,45 +68,45 @@
         {{-- Datos Operativos del Movimiento --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 text-sm mb-6">
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
                     {{ $movimiento->persona ? '👤 Cliente / Persona' : ($movimiento->empresa ? '🏢 Proveedor / Empresa' : '👤 Tercero') }}
                 </span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 break-words">
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 break-words">
                     {{ $movimiento->persona ?? ($movimiento->empresa ?? '—') }}
                 </span>
             </div>
 
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">🏷️ Concepto de Caja</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 break-words">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">🏷️ Concepto de Caja</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 break-words">
                     {{ $movimiento->concepto->nombre ?? '—' }}
                 </span>
             </div>
 
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">💳 Forma de Pago</span>
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">💳 Forma de Pago</span>
                 <span class="pill {{ $movimiento->tipo_pago === 'efectivo' ? 'pill-efectivo' : 'pill-banco' }} text-xs font-bold mt-1 inline-block">
                     {{ $movimiento->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Banco / Consignación' }}
                 </span>
             </div>
 
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📊 Tipo Operación</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 capitalize flex items-center gap-1.5 mt-0.5">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📊 Tipo Operación</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 capitalize flex items-center gap-1.5 mt-0.5">
                     {{ $movimiento->tipo_movimiento === 'ingreso' ? '📈 Ingreso' : '📉 Egreso' }}
                 </span>
             </div>
 
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">👤 Registrado Por</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 break-words">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">👤 Registrado Por</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 break-words">
                     {{ $movimiento->user->name ?? 'Sistema' }}
                 </span>
             </div>
 
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📅 Fecha Registro</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📅 Fecha Registro</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">
                     {{ \Carbon\Carbon::parse($movimiento->fecha)->format('d/m/Y') }}
                 </span>
             </div>
@@ -128,7 +128,7 @@
 
             <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💵</span> Total Acumulado Pagado</p>
-                <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400 z-10">$ {{ number_format($movimiento->total_pagado, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($movimiento->total_pagado, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow {{ $movimiento->saldo_pendiente > 0 ? 'glass-card-orange' : 'glass-card-teal' }} p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
@@ -140,8 +140,8 @@
         {{-- Descripción --}}
         @if($movimiento->descripcion)
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-2">Descripción / Observaciones</h3>
-        <div class="py-2.5 px-4 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-xl mb-6 shadow-sm">
-            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">{{ $movimiento->descripcion }}</p>
+        <div class="py-2.5 px-4 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-xl mb-6 shadow-sm overflow-hidden flex items-center min-h-[42px]">
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line break-words my-auto" style="overflow-wrap: anywhere; word-break: break-word;">{{ $movimiento->descripcion }}</p>
         </div>
         @endif
 

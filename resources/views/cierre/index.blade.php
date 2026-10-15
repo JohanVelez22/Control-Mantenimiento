@@ -243,7 +243,7 @@
                         {{ $preview['num_movimientos'] }} movimiento(s) registrados hoy. Cuenta el efectivo real en caja para conciliar el arqueo.
                     </p>
                 </div>
-                <button type="button" onclick="openCalc()" class="btn-clean flex items-center justify-center gap-2 self-stretch md:self-auto" style="padding: 9px 18px; font-size: 13px;">
+                <button type="button" onclick="openCalc()" class="btn-clean flex items-center justify-center gap-2 self-stretch md:self-auto">
                     <span>🧮</span> Calcular dinero
                 </button>
             </div>
@@ -343,7 +343,7 @@
 
                 {{-- Botón de Cierre --}}
                 <div class="flex flex-col sm:flex-row justify-end items-center gap-3 mt-6 md:mt-8">
-                    <button type="submit" id="btn-submit-cierre" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20" style="padding: 9px 18px; font-size: 13px;">
+                    <button type="submit" id="btn-submit-cierre" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
                         <span>🔒</span> Cerrar y bloquear dia
                     </button>
                 </div>

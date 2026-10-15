@@ -108,9 +108,9 @@
                         <form action="{{ route('conceptos.update', $c->id) }}" method="POST" class="flex-1 flex items-center gap-2">
                             @csrf @method('PUT')
                             <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-2 px-3 text-sm">
-                            <button type="submit" class="btn-ghost px-2.5 py-2 text-xs text-blue-600 dark:text-blue-400 font-bold shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Guardar concepto">💾</button>
+                            <button type="submit" class="btn-ghost btn-action-square text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Guardar concepto">💾</button>
                         </form>
-                        <button type="button" onclick="openDeletePwd('{{ route('conceptos.destroy', $c->id) }}')" class="btn-danger px-2.5 py-2 text-xs shrink-0" title="Eliminar concepto">🗑️</button>
+                        <button type="button" onclick="openDeletePwd('{{ route('conceptos.destroy', $c->id) }}')" class="btn-danger btn-action-square" title="Eliminar concepto">🗑️</button>
                     </li>
                     @empty
                     <li class="py-6 text-center text-gray-500 font-medium text-sm">No hay conceptos registrados.</li>

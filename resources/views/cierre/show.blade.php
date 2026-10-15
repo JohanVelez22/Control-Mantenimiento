@@ -77,24 +77,24 @@
         </div>
 
         {{-- Datos Operativos del Cierre --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 text-sm p-6 glass-card mb-8">
-            <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📅 Fecha de Arqueo</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 break-words">
+        <div class="cierre-operativo-bar text-sm mb-8">
+            <div class="cierre-operativo-item item-left">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📅 Fecha de Arqueo</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 break-words">
                     {{ $cierre->fecha->format('d/m/Y') }}
                 </span>
             </div>
 
-            <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">👤 Cerrado Por</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 break-words">
+            <div class="cierre-operativo-item item-center">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">👤 Cerrado Por</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 break-words">
                     {{ $cierre->user->name ?? 'Sistema' }}
                 </span>
             </div>
 
-            <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📊 Cantidad de Movimientos</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300">
+            <div class="cierre-operativo-item item-right">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📊 Cantidad de Movimientos</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 block">
                     {{ $cierre->num_movimientos }} transacciones activas
                 </span>
             </div>
@@ -133,7 +133,7 @@
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
             <span>💵</span> Arqueo y Conciliación Física
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💻</span> Efectivo Teórico</p>
                 <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($cierre->efectivo, 0, ',', '.') }}</p>
@@ -189,22 +189,26 @@
 
         {{-- Motivo de la diferencia si existe --}}
         @if($cierre->motivo_diferencia)
-        <div class="mb-8 glass-card hover-glow {{ $cierre->estado_diferencia === 'faltante' ? 'glass-card-red' : ($cierre->estado_diferencia === 'sobrante' ? 'glass-card-blue' : 'glass-card-gray') }} p-5">
-            <h4 class="font-bold text-sm uppercase tracking-wider mb-1 z-10 flex items-center gap-2
-                        {{ $cierre->estado_diferencia === 'faltante' ? 'text-red-700 dark:text-red-400' : ($cierre->estado_diferencia === 'sobrante' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300') }}">
+        <div class="flex items-center justify-between gap-2 mb-2">
+            <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
                 <span>📝</span> Motivo / Justificación de la Diferencia
-            </h4>
-            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed z-10">
-                {{ $cierre->motivo_diferencia }}
-            </p>
+            </h3>
+            @if($cierre->estado_diferencia === 'faltante')
+                <span class="pill pill-anulado text-xs font-bold py-0.5 px-2.5">🔴 Faltante</span>
+            @elseif($cierre->estado_diferencia === 'sobrante')
+                <span class="pill pill-efectivo text-xs font-bold py-0.5 px-2.5">🔵 Sobrante</span>
+            @endif
+        </div>
+        <div class="py-2.5 px-4 glass-card hover-glow {{ $cierre->estado_diferencia === 'faltante' ? 'glass-card-red' : ($cierre->estado_diferencia === 'sobrante' ? 'glass-card-blue' : 'glass-card-gray') }} rounded-xl mb-6 shadow-sm overflow-hidden flex items-center min-h-[42px]">
+            <p class="text-sm font-medium {{ $cierre->estado_diferencia === 'faltante' ? 'text-red-700 dark:text-red-200' : ($cierre->estado_diferencia === 'sobrante' ? 'text-blue-700 dark:text-blue-200' : 'text-slate-700 dark:text-slate-200') }} leading-relaxed whitespace-pre-line break-words my-auto" style="overflow-wrap: anywhere; word-break: break-word;">{{ $cierre->motivo_diferencia }}</p>
         </div>
         @endif
 
         {{-- Observaciones del Cierre --}}
         @if($cierre->observaciones)
-        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Observaciones / Notas de Jornada</h3>
-        <div class="p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl mb-8 shadow-sm print:bg-white print:border-slate-300 print:shadow-none">
-            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 print:text-black leading-relaxed whitespace-pre-line">{{ $cierre->observaciones }}</p>
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-2">Observaciones / Notas de Jornada</h3>
+        <div class="py-2.5 px-4 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-xl mb-6 shadow-sm overflow-hidden flex items-center min-h-[42px] print:bg-white print:border-slate-300 print:shadow-none">
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 print:text-black leading-relaxed whitespace-pre-line break-words my-auto" style="overflow-wrap: anywhere; word-break: break-word;">{{ $cierre->observaciones }}</p>
         </div>
         @endif
 
@@ -260,7 +264,7 @@
                     @endforelse
                 </tbody>
                 <tfoot>
-                    <tr class="font-black border-t-2 border-slate-200 dark:border-white/10 bg-gray-50/50 dark:bg-gray-800/50">
+                    <tr class="font-black bg-gray-50/50 dark:bg-gray-800/50">
                         <td colspan="5" class="text-right text-xs uppercase tracking-wider font-bold text-slate-800 dark:text-white print:text-black py-3 pr-3">TOTAL:</td>
                         <td class="text-right font-black text-base {{ $cierre->saldo_final >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} print:text-black py-3 pr-4">
                             $ {{ number_format($cierre->saldo_final, 0, ',', '.') }}
@@ -270,7 +274,7 @@
             </table>
         </div>
 
-        <div class="pt-4 border-t border-gray-200/50 dark:border-white/5 flex justify-between items-center text-xs font-semibold text-gray-400">
+        <div class="pt-4 flex justify-between items-center text-xs font-semibold text-gray-400">
             <span>Última actualización: {{ $cierre->updated_at->format('d/m/Y H:i:s') }}</span>
             <span>Fecha creación del cierre: {{ $cierre->created_at->format('d/m/Y H:i:s') }}</span>
         </div>

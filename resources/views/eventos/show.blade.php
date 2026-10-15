@@ -54,19 +54,19 @@
         {{-- Metadata Grid --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                <span class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 mb-1">
                     <span>👤</span> Usuario Responsable
                 </span>
-                <span class="text-sm font-bold text-slate-800 dark:text-slate-100">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">
                     {{ $evento->user->name ?? 'Sistema' }}
                 </span>
             </div>
 
             <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                <span class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 mb-1">
                     <span>📦</span> Módulo / Modelo
                 </span>
-                <span class="text-sm font-bold text-slate-800 dark:text-slate-100 font-mono">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 font-mono">
                     {{ class_basename($evento->modelo_tipo) ?: 'General / Sistema' }}
                     @if($evento->modelo_id)
                         #{{ $evento->modelo_id }}
@@ -75,19 +75,19 @@
             </div>
 
             <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                <span class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 mb-1">
                     <span>🌐</span> Dirección IP
                 </span>
-                <span class="text-sm font-bold text-slate-800 dark:text-slate-100 font-mono">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 font-mono">
                     {{ $evento->ip_direccion ?: '127.0.0.1' }}
                 </span>
             </div>
 
             <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                <span class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 mb-1">
                     <span>🕒</span> Fecha y Hora
                 </span>
-                <span class="text-sm font-bold text-slate-800 dark:text-slate-100">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">
                     {{ $evento->created_at?->format('d/m/Y h:i:s A') }}
                 </span>
             </div>

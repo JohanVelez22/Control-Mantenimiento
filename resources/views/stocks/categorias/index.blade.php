@@ -121,9 +121,9 @@
                                 </select>
                             </div>
                             <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-2 px-3 text-sm" placeholder="Nombre de la clasificación...">
-                            <button type="submit" class="btn-ghost px-2.5 py-2 text-xs text-blue-600 dark:text-blue-400 font-bold shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Guardar clasificación">💾</button>
+                            <button type="submit" class="btn-ghost btn-action-square text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Guardar clasificación">💾</button>
                         </form>
-                        <button type="button" onclick="openDeletePwd('{{ route('stocks.categorias.destroy', $c->id) }}')" class="btn-danger px-2.5 py-2 text-xs shrink-0" title="Eliminar clasificación">🗑️</button>
+                        <button type="button" onclick="openDeletePwd('{{ route('stocks.categorias.destroy', $c->id) }}')" class="btn-danger btn-action-square" title="Eliminar clasificación">🗑️</button>
                     </li>
                     @empty
                     <li class="py-6 text-center text-gray-500 font-medium text-sm">No hay clasificaciones registradas.</li>

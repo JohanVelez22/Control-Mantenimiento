@@ -48,38 +48,38 @@
 
  {{-- Datos del mantenimiento --}}
  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 glass-card mb-6">
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
-   {{ $mantenimiento->equipo?->propietario_tipo === 'proveedor' ? '🏢 Proveedor' : '👤 Cliente' }}
- </span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->equipo?->propietario_nombre ?? '-' }}</span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Equipo</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->equipo->marca }} {{ $mantenimiento->equipo->modelo }} <span class="text-sm text-gray-500 font-semibold">({{ $mantenimiento->equipo->nombre }})</span></span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Técnico</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->tecnico->nombre }}</span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Tipo / Reparación</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 capitalize break-words">{{ $mantenimiento->tipo }} / {{ $mantenimiento->reparacion }}</span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Entrada</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200">{{ $mantenimiento->fecha_entrada->format('d/m/Y') }}</span>
- </div>
-    <div class="min-w-0">
-        <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Salida</span>
-        <span class="font-medium text-base text-slate-800 dark:text-slate-200">{{ $mantenimiento->fecha_salida?->format('d/m/Y') ?? '—' }}</span>
-    </div>
-    @if($mantenimiento->descripcion)
-    <div class="md:col-span-2 min-w-0 mt-2 p-3.5 bg-white/20 dark:bg-slate-900/30 rounded-xl border border-white/40 dark:border-white/5">
-        <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Descripción</span>
-        <span class="font-medium text-slate-800 dark:text-slate-200 break-words leading-relaxed">{{ $mantenimiento->descripcion }}</span>
-    </div>
-    @endif
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
+             {{ $mantenimiento->equipo?->propietario_tipo === 'proveedor' ? '🏢 Proveedor' : '👤 Cliente' }}
+         </span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200 break-words">{{ $mantenimiento->equipo?->propietario_nombre ?? '-' }}</span>
+     </div>
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Equipo</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200 break-words">{{ $mantenimiento->equipo->marca }} {{ $mantenimiento->equipo->modelo }} <span class="text-xs text-gray-500 font-semibold">({{ $mantenimiento->equipo->nombre }})</span></span>
+     </div>
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Técnico</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200 break-words">{{ $mantenimiento->tecnico->nombre }}</span>
+     </div>
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Tipo / Reparación</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200 capitalize break-words">{{ $mantenimiento->tipo }} / {{ $mantenimiento->reparacion }}</span>
+     </div>
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Entrada</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200">{{ $mantenimiento->fecha_entrada->format('d/m/Y') }}</span>
+     </div>
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Salida</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200">{{ $mantenimiento->fecha_salida?->format('d/m/Y') ?? '—' }}</span>
+     </div>
+     @if($mantenimiento->descripcion)
+     <div class="md:col-span-2 min-w-0 mt-2 p-3.5 bg-white/20 dark:bg-slate-900/30 rounded-xl border border-white/40 dark:border-white/5">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Descripción</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200 break-words leading-relaxed">{{ $mantenimiento->descripcion }}</span>
+     </div>
+     @endif
  </div>
     {{-- Contenedor Dinámico Asíncrono (Zero-Flash) --}}
     <div id="mantenimiento-dynamic-panel" class="transition-opacity duration-150">
@@ -178,7 +178,7 @@
                     <form action="{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}" method="POST" class="inline-block"
                         data-confirm-delete="¿Eliminar este repuesto ({{ $repuesto->producto }})? Se descontará del costo de la orden y volverá al inventario.">
                         @csrf @method('DELETE')
-                        <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Eliminar y devolver al stock">
+                        <button type="submit" class="btn-danger btn-action-square" title="Eliminar y devolver al stock">
                             🗑️
                         </button>
                     </form>
@@ -283,13 +283,13 @@
                 
                 <div class="flex items-center gap-2">
                     @if($abono->movimientoCaja)
-                    <a href="{{ route('caja.show', $abono->movimientoCaja->id) }}" class="btn-ghost px-2 py-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 flex items-center justify-center" title="Ver movimiento en Caja #{{ $abono->movimientoCaja->id }}">👁️</a>
+                    <a href="{{ route('caja.show', $abono->movimientoCaja->id) }}" class="btn-ghost btn-action-square font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver movimiento en Caja #{{ $abono->movimientoCaja->id }}">👁️</a>
                     @endif
 
                     @if(!$abono->anulado && auth()->user()->isAdmin())
                     <form action="{{ route('abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de $ {{ number_format($abono->monto, 0, ',', '.') }}?">
                         @csrf @method('DELETE')
-                        <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Anular abono">
+                        <button type="submit" class="btn-danger btn-action-square" title="Anular abono">
                             🗑️
                         </button>
                     </form>
