@@ -46,37 +46,37 @@
   <div class="reportes-cards-grid print-grid-7" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.75rem; width: 100%;">
   <div class="glass-card hover-glow glass-card-emerald p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
   <p class="text-xs xl:text-sm font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📈</span> Ingresos</p>
-  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($resumen['total_ingresos'], 0, ',', '.') }}</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">$ {{ number_format($resumen['total_ingresos'], 0, ',', '.') }}</p>
   </div>
 
   <div class="glass-card hover-glow glass-card-red p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
   <p class="text-xs xl:text-sm font-bold text-red-600 dark:text-red-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📉</span> Egresos</p>
-  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($resumen['total_egresos'], 0, ',', '.') }}</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">$ {{ number_format($resumen['total_egresos'], 0, ',', '.') }}</p>
   </div>
 
   <div class="glass-card hover-glow glass-card-blue p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
   <p class="text-xs xl:text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">🔧</span> Mantenimiento</p>
-  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($resumen['total_mantenimientos'], 0, ',', '.') }}</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">$ {{ number_format($resumen['total_mantenimientos'], 0, ',', '.') }}</p>
   </div>
 
   <div class="glass-card hover-glow glass-card-purple p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
   <p class="text-xs xl:text-sm font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">⚡</span> Electrónica</p>
-  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($resumen['total_electronica'], 0, ',', '.') }}</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">$ {{ number_format($resumen['total_electronica'], 0, ',', '.') }}</p>
   </div>
 
   <div class="glass-card hover-glow glass-card-teal p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
   <p class="text-xs xl:text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">🛒</span> Ventas</p>
-  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($resumen['total_ventas'], 0, ',', '.') }}</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">$ {{ number_format($resumen['total_ventas'], 0, ',', '.') }}</p>
   </div>
 
   <div class="glass-card hover-glow glass-card-orange p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
   <p class="text-xs xl:text-sm font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">📦</span> Compras</p>
-  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($resumen['total_compras'], 0, ',', '.') }}</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">$ {{ number_format($resumen['total_compras'], 0, ',', '.') }}</p>
   </div>
 
   <div class="glass-card hover-glow {{ $resumen['balance_neto'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
   <p class="text-xs xl:text-sm font-bold {{ $resumen['balance_neto'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-wider mb-1 z-10 flex items-center gap-1.5 justify-center truncate w-full"><span class="text-sm sm:text-base no-print-emoji">⚖️</span> Balance Neto</p>
-  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">${{ number_format($resumen['balance_neto'], 0, ',', '.') }}</p>
+  <p class="text-base sm:text-xl xl:text-2xl font-black text-slate-800 dark:text-white z-10 whitespace-nowrap">$ {{ number_format($resumen['balance_neto'], 0, ',', '.') }}</p>
   </div>
   </div>
 
@@ -151,7 +151,7 @@
                   </div>
                   <div>
                       <p class="text-xs xl:text-sm font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Total por cobrar</p>
-                      <p class="font-black text-emerald-600 dark:text-emerald-400 text-base sm:text-xl xl:text-2xl">${{ number_format($resumen['total_por_cobrar'], 0, ',', '.') }}</p>
+                      <p class="font-black text-emerald-600 dark:text-emerald-400 text-base sm:text-xl xl:text-2xl">$ {{ number_format($resumen['total_por_cobrar'], 0, ',', '.') }}</p>
                   </div>
               </div>
 
@@ -159,22 +159,22 @@
               <div class="mt-4 pt-3 saldos-divider flex flex-wrap gap-2 text-xs">
                   @if(($resumen['saldo_pendiente_venta'] ?? 0) > 0)
                       <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-500/10 text-teal-800 dark:text-teal-300 border border-teal-500/20 font-medium">
-                          🛒 <strong>Ventas:</strong> ${{ number_format($resumen['saldo_pendiente_venta'], 0, ',', '.') }}
+                          🛒 <strong>Ventas:</strong> $ {{ number_format($resumen['saldo_pendiente_venta'], 0, ',', '.') }}
                       </span>
                   @endif
                   @if(($resumen['saldo_pendiente_caja_ingreso'] ?? 0) > 0)
                       <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/20 font-medium">
-                          📈 <strong>Ingresos Caja:</strong> ${{ number_format($resumen['saldo_pendiente_caja_ingreso'], 0, ',', '.') }}
+                          📈 <strong>Ingresos Caja:</strong> $ {{ number_format($resumen['saldo_pendiente_caja_ingreso'], 0, ',', '.') }}
                       </span>
                   @endif
                   @if(($resumen['saldo_pendiente_mant'] ?? 0) > 0)
                       <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-800 dark:text-blue-300 border border-blue-500/20 font-medium">
-                          🔧 <strong>Mantenimientos:</strong> ${{ number_format($resumen['saldo_pendiente_mant'], 0, ',', '.') }}
+                          🔧 <strong>Mantenimientos:</strong> $ {{ number_format($resumen['saldo_pendiente_mant'], 0, ',', '.') }}
                       </span>
                   @endif
                   @if(($resumen['saldo_pendiente_elec'] ?? 0) > 0)
                       <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-800 dark:text-purple-300 border border-purple-500/20 font-medium">
-                          ⚡ <strong>Electrónica:</strong> ${{ number_format($resumen['saldo_pendiente_elec'], 0, ',', '.') }}
+                          ⚡ <strong>Electrónica:</strong> $ {{ number_format($resumen['saldo_pendiente_elec'], 0, ',', '.') }}
                       </span>
                   @endif
               </div>
@@ -190,7 +190,7 @@
                   </div>
                   <div>
                       <p class="text-xs xl:text-sm font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">Total por pagar</p>
-                      <p class="font-black text-red-600 dark:text-red-400 text-base sm:text-xl xl:text-2xl">${{ number_format($resumen['total_por_pagar'], 0, ',', '.') }}</p>
+                      <p class="font-black text-red-600 dark:text-red-400 text-base sm:text-xl xl:text-2xl">$ {{ number_format($resumen['total_por_pagar'], 0, ',', '.') }}</p>
                   </div>
               </div>
 
@@ -198,12 +198,12 @@
               <div class="mt-4 pt-3 saldos-divider flex flex-wrap gap-2 text-xs">
                   @if(($resumen['saldo_pendiente_compra'] ?? 0) > 0)
                       <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/20 font-medium">
-                          📦 <strong>Compras:</strong> ${{ number_format($resumen['saldo_pendiente_compra'], 0, ',', '.') }}
+                          📦 <strong>Compras:</strong> $ {{ number_format($resumen['saldo_pendiente_compra'], 0, ',', '.') }}
                       </span>
                   @endif
                   @if(($resumen['saldo_pendiente_caja_egreso'] ?? 0) > 0)
                       <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-800 dark:text-rose-300 border border-rose-500/20 font-medium">
-                          📉 <strong>Egresos Caja:</strong> ${{ number_format($resumen['saldo_pendiente_caja_egreso'], 0, ',', '.') }}
+                          📉 <strong>Egresos Caja:</strong> $ {{ number_format($resumen['saldo_pendiente_caja_egreso'], 0, ',', '.') }}
                       </span>
                   @endif
               </div>
@@ -282,7 +282,7 @@
  </span>
  </td>
  <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">
- ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
+ $ {{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
  </td>
  </tr>
  @endforeach
@@ -291,7 +291,7 @@
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
         <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $movimientos->count() }}</td>
         <td colspan="4" class="text-right uppercase text-xs">Balance Neto del Día:</td>
-        <td class="text-center font-bold text-xs">${{ number_format($resumen['balance_neto'], 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs">$ {{ number_format($resumen['balance_neto'], 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>

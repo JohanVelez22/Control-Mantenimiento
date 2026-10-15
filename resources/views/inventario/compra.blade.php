@@ -3,7 +3,7 @@
 <div class="max-w-7xl mx-auto">
  <div class="glass-card p-6 md:p-6">
  <div class="flex items-center gap-3 mb-8">
- <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+ <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
  <div>
  <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">📦 Registrar Compra de Inventario</h2>
  <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Ingresa productos al stock y genera la orden de pago</p>
@@ -73,7 +73,7 @@
                         <option value="">Seleccionar producto...</option>
                         @foreach($stocks as $s)
                             <option value="{{ $s->id }}" data-precio="{{ $s->precio_compra }}">
-                                {{ $s->producto }} (Stock: {{ $s->cantidad }}) — P.Compra: ${{ number_format($s->precio_compra, 0, ',', '.') }}
+                                {{ $s->producto }} (Stock: {{ $s->cantidad }}) — P.Compra: $ {{ number_format($s->precio_compra, 0, ',', '.') }}
                             </option>
                         @endforeach
                     </select>
@@ -86,7 +86,7 @@
                     <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-orange-500 font-bold text-slate-800 dark:text-white">
                 </td>
                 <td class="text-center font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle px-3 whitespace-nowrap overflow-hidden text-ellipsis">
-                    $0
+                    $ 0
                 </td>
                 <td class="col-accion align-middle text-center">
                     <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
@@ -99,7 +99,7 @@
                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                 </td>
                 <td class="py-4 text-right pr-3 border-0">
-                    <span class="font-black text-2xl text-orange-600 dark:text-orange-400 whitespace-nowrap" id="total-display">$0</span>
+                    <span class="font-black text-2xl text-orange-600 dark:text-orange-400 whitespace-nowrap" id="total-display">$ 0</span>
                 </td>
                 <td class="py-4 border-0"></td>
             </tr>
@@ -120,7 +120,7 @@
 </div>
  <div id="saldo-preview" class="hidden w-full md:w-1/2 flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">
  <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 mb-1 tracking-wide uppercase">⚠️ Saldo por Pagar</p>
- <p class="text-3xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$0</p>
+ <p class="text-3xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$ 0</p>
  </div>
  </div>
 
@@ -157,7 +157,7 @@ const escapeHtml = window.escapeHtml || function(text) {
 
 function stockSelectOptions() {
     return stocksData.map(s =>
-      `<option value="${s.id}" data-precio="${s.precio}">${escapeHtml(s.nombre)} (Stock: ${s.cantidad}) — P.Compra: $${window.formatNumber(s.precio)}</option>`
+      `<option value="${s.id}" data-precio="${s.precio}">${escapeHtml(s.nombre)} (Stock: ${s.cantidad}) — P.Compra: $ ${window.formatNumber(s.precio)}</option>`
     ).join('');
 }
 
@@ -179,7 +179,7 @@ tr.innerHTML = `
   <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="0" required class="hidden">
   <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-orange-500 font-bold text-slate-800 dark:text-white">
   </td>
-    <td class="text-center font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle px-3 whitespace-nowrap overflow-hidden text-ellipsis">$0</td>
+    <td class="text-center font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle px-3 whitespace-nowrap overflow-hidden text-ellipsis">$ 0</td>
     <td class="col-accion align-middle text-center">
         <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
     </td>`;
@@ -228,7 +228,7 @@ function actualizarSubtotal(tr) {
   const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
   const precio = parseFloat(precioReal?.value || '0') || 0;
   const sub = cant * precio;
-  tr.querySelector('.subtotal-cell').textContent = '$' + window.formatNumber(sub);
+  tr.querySelector('.subtotal-cell').textContent = '$ ' + window.formatNumber(sub);
   recalcular();
 }
 
@@ -241,11 +241,11 @@ function recalcular() {
     const subtotal = cant * precio;
     const subCell = tr.querySelector('.subtotal-cell');
     if (subCell) {
-      subCell.textContent = '$' + window.formatNumber(subtotal);
+      subCell.textContent = '$ ' + window.formatNumber(subtotal);
     }
     total += subtotal;
   });
-  document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
+  document.getElementById('total-display').textContent = '$ ' + window.formatNumber(total);
   
   calcularSaldo(total);
 }
@@ -256,7 +256,7 @@ function calcularSaldo(total) {
   const saldo = total - pagado;
   const box = document.getElementById('saldo-preview');
   if (saldo > 0.01) {
-    document.getElementById('saldo-display').textContent = '$' + window.formatNumber(Math.max(0, saldo));
+    document.getElementById('saldo-display').textContent = '$ ' + window.formatNumber(Math.max(0, saldo));
     box.classList.remove('hidden');
     box.classList.add('flex');
   } else {

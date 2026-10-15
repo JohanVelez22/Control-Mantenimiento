@@ -6,27 +6,27 @@
 <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
 <div class="glass-card hover-glow glass-card-emerald p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📈</span> Ingresos</p>
-<p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['ingresos'], 0, ',', '.') }}</p>
+<p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($totales['ingresos'], 0, ',', '.') }}</p>
 </div>
 
 <div class="glass-card hover-glow glass-card-red p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
 <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📉</span> Egresos</p>
-<p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['egresos'], 0, ',', '.') }}</p>
+<p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($totales['egresos'], 0, ',', '.') }}</p>
 </div>
 
 <div class="glass-card hover-glow glass-card-blue p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Efectivo</p>
-<p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['efectivo'], 0, ',', '.') }}</p>
+<p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($totales['efectivo'], 0, ',', '.') }}</p>
 </div>
 
 <div class="glass-card hover-glow glass-card-purple p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
 <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🏦</span> Banco/Consig.</p>
-<p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['consignacion'], 0, ',', '.') }}</p>
+<p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($totales['consignacion'], 0, ',', '.') }}</p>
 </div>
 
 <div class="glass-card hover-glow {{ $totales['saldo'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-5 flex flex-col justify-center items-center relative overflow-hidden group col-span-2 lg:col-span-1 text-center">
 <p class="text-xs font-bold {{ $totales['saldo'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">⚖️</span> Saldo General</p>
-<p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['saldo'], 0, ',', '.') }}</p>
+<p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($totales['saldo'], 0, ',', '.') }}</p>
 </div>
 </div>
 
@@ -178,15 +178,15 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
  </span>
  </td>
  <td data-label="Monto:" class="text-right font-black text-lg {{ $m->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} {{ $dim }}">
-  ${{ number_format($m->monto, 0, ',', '.') }}
+  $ {{ number_format($m->monto, 0, ',', '.') }}
    @if($m->effective_monto_total > 0)
        @if($m->saldo_pendiente > 0)
            <div class="text-[10px] text-orange-600 dark:text-orange-400 font-bold uppercase mt-1">
-               Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }} <span class="text-gray-400 font-normal">(Total: ${{ number_format($m->effective_monto_total, 0, ',', '.') }})</span>
+               Saldo: $ {{ number_format($m->saldo_pendiente, 0, ',', '.') }} <span class="text-gray-400 font-normal">(Total: $ {{ number_format($m->effective_monto_total, 0, ',', '.') }})</span>
            </div>
        @elseif($m->effective_monto_total > $m->monto || $m->parent_id)
            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase mt-1">
-               ✅ Pagado (${{ number_format($m->effective_monto_total, 0, ',', '.') }})
+               ✅ Pagado ($ {{ number_format($m->effective_monto_total, 0, ',', '.') }})
            </div>
        @endif
    @endif

@@ -47,9 +47,9 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        // Directiva Blade para formato de moneda uniforme ($1.000.000)
+        // Directiva Blade para formato de moneda uniforme ($ 1.000.000)
         Blade::directive('money', function ($expression) {
-            return "<?php echo '$' . number_format(($expression) ?? 0, 0, ',', '.'); ?>";
+            return "<?php echo '$ ' . number_format(($expression) ?? 0, 0, ',', '.'); ?>";
         });
 
         // Garantizar existencia de formato_factura en configuraciones (Riesgo Cero)

@@ -3,7 +3,7 @@
 <div class="max-w-7xl mx-auto">
  <div class="glass-card p-6 md:p-6">
  <div class="flex items-center gap-3 mb-8">
- <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+ <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
  <div>
  <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">🛒 Registrar Venta de Inventario</h2>
  <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Vende productos, descuenta del stock y genera ingreso</p>
@@ -71,7 +71,7 @@
                         <option value="">Seleccionar producto...</option>
                         @foreach($stocks as $s)
                             <option value="{{ $s->id }}" data-precio-compra="{{ $s->precio_compra }}" data-precio-venta="{{ $s->precio_venta }}" data-precio-tecnico="{{ $s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
-                                {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
+                                {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: $ {{ number_format($s->precio_venta, 0, ',', '.') }}
                             </option>
                         @endforeach
                     </select>
@@ -84,12 +84,12 @@
                     <div class="relative">
                         <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
                         <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis absolute right-1 top-full pointer-events-none uppercase tracking-wider">
-                            <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$0</span>)</span>
+                            <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$ 0</span>)</span>
                         </div>
                     </div>
                 </td>
                 <td class="text-center font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell px-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
-                    $0
+                    $ 0
                 </td>
                 <td class="col-accion text-center" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
                     <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
@@ -102,7 +102,7 @@
                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                 </td>
                 <td class="py-4 text-right pr-3 border-0">
-                    <span class="font-black text-2xl text-emerald-600 dark:text-emerald-400 whitespace-nowrap" id="total-display">$0</span>
+                    <span class="font-black text-2xl text-emerald-600 dark:text-emerald-400 whitespace-nowrap" id="total-display">$ 0</span>
                 </td>
                 <td class="py-4 border-0"></td>
             </tr>
@@ -122,7 +122,7 @@
 </div>
  <div id="saldo-preview" class="hidden w-full md:w-1/2 flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">
  <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 mb-1 tracking-wide uppercase">⚠️ Saldo por Cobrar</p>
- <p class="text-2xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$0</p>
+ <p class="text-2xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$ 0</p>
  </div>
  </div>
 
@@ -198,7 +198,7 @@ function stockSelectOptions() {
     return stocksData.map(s => {
       const p = esTec ? s.precio_tecnico : s.precio_venta;
       const labelTag = esTec ? '🔧 P.Técnico' : 'P.Venta';
-      return `<option value="${s.id}" data-precio-compra="${s.precio_compra}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-stock="${s.cantidad}">${escapeHtml(s.nombre)} (Disp: ${s.cantidad}) — ${labelTag}: $${window.formatNumber(p)}</option>`;
+      return `<option value="${s.id}" data-precio-compra="${s.precio_compra}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-stock="${s.cantidad}">${escapeHtml(s.nombre)} (Disp: ${s.cantidad}) — ${labelTag}: $ ${window.formatNumber(p)}</option>`;
     }).join('');
 }
 
@@ -221,11 +221,11 @@ function agregarFila() {
   <div class="relative">
       <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
       <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis absolute right-1 top-full pointer-events-none uppercase tracking-wider">
-          <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$0</span>)</span>
+          <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$ 0</span>)</span>
       </div>
   </div>
   </td>
-    <td class="text-center font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell px-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$0</td>
+    <td class="text-center font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell px-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$ 0</td>
     <td class="col-accion text-center" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
         <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
     </td>`;
@@ -274,7 +274,7 @@ function actualizarSubtotal(tr) {
   const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
   const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
   const precio = parseFloat(precioReal?.value || '0') || 0;
-  tr.querySelector('.subtotal-cell').textContent = '$' + window.formatNumber(cant * precio);
+  tr.querySelector('.subtotal-cell').textContent = '$ ' + window.formatNumber(cant * precio);
   recalcular();
 }
 
@@ -294,7 +294,7 @@ function verificarAlertaCosto(tr) {
 
   if (precioCompra > 0 && precioVenta > 0 && precioVenta < precioCompra) {
     if (badge) {
-      if (costoRef) costoRef.textContent = '$' + window.formatNumber(precioCompra);
+      if (costoRef) costoRef.textContent = '$ ' + window.formatNumber(precioCompra);
       badge.classList.remove('hidden');
       badge.classList.add('flex');
     }
@@ -318,14 +318,14 @@ function recalcular() {
     const subtotal = cant * precio;
     const subCell = tr.querySelector('.subtotal-cell');
     if (subCell) {
-      subCell.textContent = '$' + window.formatNumber(subtotal);
+      subCell.textContent = '$ ' + window.formatNumber(subtotal);
     }
     total += subtotal;
     if (verificarAlertaCosto(tr)) {
       hayBajoCosto = true;
     }
   });
-  document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
+  document.getElementById('total-display').textContent = '$ ' + window.formatNumber(total);
 
   const banner = document.getElementById('banner-alerta-bajo-costo');
   if (banner) {
@@ -347,7 +347,7 @@ function calcularSaldo(total) {
   const saldo = total - pagado;
   const box = document.getElementById('saldo-preview');
   if (saldo > 0.01) {
-    document.getElementById('saldo-display').textContent = '$' + window.formatNumber(Math.max(0, saldo));
+    document.getElementById('saldo-display').textContent = '$ ' + window.formatNumber(Math.max(0, saldo));
     box.classList.remove('hidden');
     box.classList.add('flex');
   } else {

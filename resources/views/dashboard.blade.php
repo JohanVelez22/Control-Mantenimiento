@@ -17,27 +17,27 @@
 <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-4">
   <div class="glass-card hover-glow glass-card-blue p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
   <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">💻</span> <span class="break-words">Equipos</span></div>
-  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalEquipos ?? 0 }}</div>
+  <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $totalEquipos ?? 0 }}</div>
   </div>
   
   <div class="glass-card hover-glow glass-card-emerald p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
   <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">🔧</span> <span class="break-words">Órdenes</span></div>
-  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalMantenimientos ?? 0 }}</div>
+  <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $totalMantenimientos ?? 0 }}</div>
   </div>
   
   <div class="glass-card hover-glow glass-card-amber p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
   <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">⏳</span> <span class="break-words">Mant. Pend.</span></div>
-  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['pendientes'] ?? 0 }}</div>
+  <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $stats['pendientes'] ?? 0 }}</div>
   </div>
   
   <div class="glass-card hover-glow glass-card-purple p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
   <div class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">⚡</span> <span class="break-words">Elec. Pend.</span></div>
-  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['electronica_pendientes'] ?? 0 }}</div>
+  <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $stats['electronica_pendientes'] ?? 0 }}</div>
   </div>
 
   <div class="glass-card hover-glow glass-card-red p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0 col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
   <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">📦</span> <span class="break-words">Stock Bajo (<5)</span></div>
-  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
+  <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
   </div>
 </div>
 
@@ -146,12 +146,12 @@
   @php $isSaldoNegativo = isset($cajaSaldoActual) && $cajaSaldoActual < 0; @endphp
   <div class="glass-card hover-glow {{ $isSaldoNegativo ? 'glass-card-red' : 'glass-card-emerald' }} p-4 flex flex-col justify-center relative overflow-hidden group items-center text-center">
   <div class="text-xs font-bold {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💰</span> Saldo en Caja (Histórico)</div>
-  <div class="text-2xl font-black {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoActual ?? 0), 0, ',', '.') }}</div>
+  <div class="text-2xl font-black {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoNegativo ? '-' : '' }}$ {{ number_format(abs($cajaSaldoActual ?? 0), 0, ',', '.') }}</div>
   </div>
   @php $isSaldoDiaNegativo = isset($cajaSaldoDia) && $cajaSaldoDia < 0; @endphp
   <div class="glass-card hover-glow {{ $isSaldoDiaNegativo ? 'glass-card-red' : 'glass-card-blue' }} p-4 flex flex-col justify-center relative overflow-hidden group items-center text-center">
   <div class="text-xs font-bold {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Balance Caja (Hoy)</div>
-  <div class="text-2xl font-black {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoDiaNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoDia ?? 0), 0, ',', '.') }}</div>
+  <div class="text-2xl font-black {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoDiaNegativo ? '-' : '' }}$ {{ number_format(abs($cajaSaldoDia ?? 0), 0, ',', '.') }}</div>
   </div>
   </div>
 
@@ -216,10 +216,10 @@
 
  <td class="text-center {{ $dim }}">
  <div class="flex flex-col items-center gap-1">
- <span class="font-bold text-gray-900 dark:text-white">${{ number_format($m->costo, 0, ',', '.') }}</span>
+ <span class="font-bold text-gray-900 dark:text-white">$ {{ number_format($m->costo, 0, ',', '.') }}</span>
  @if($m->total_abonado > 0)
- <span class="text-[11px] font-semibold text-green-600">Abonado: ${{ number_format($m->total_abonado, 0, ',', '.') }}</span>
- <span class="text-[11px] font-semibold text-red-500">Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }}</span>
+ <span class="text-[11px] font-semibold text-green-600">Abonado: $ {{ number_format($m->total_abonado, 0, ',', '.') }}</span>
+ <span class="text-[11px] font-semibold text-red-500">Saldo: $ {{ number_format($m->saldo_pendiente, 0, ',', '.') }}</span>
  @endif
  </div>
  </td>
@@ -310,7 +310,7 @@
  </td>
 
  <td class="text-center font-bold text-gray-900 dark:text-white {{ $dim }}">
- ${{ number_format($e->costo, 0, ',', '.') }}
+ $ {{ number_format($e->costo, 0, ',', '.') }}
  </td>
 
  <td class="text-center {{ $dimLight }}">
@@ -498,7 +498,7 @@ function switchDashTab(tab) {
 
  function formatMoneyEs(value) {
  const n = Number(value) || 0;
- return '$' + n.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+ return '$ ' + n.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
  }
 
  // Configurar gradientes para el gráfico de barras
@@ -818,7 +818,7 @@ function switchDashTab(tab) {
  beginAtZero: true,
  ticks: {
  precision: 0,
- callback: function(v) { return '$' + Number(v).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+ callback: function(v) { return '$ ' + Number(v).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
  },
  grid: { borderDash: [4, 4], color: 'rgba(156, 163, 175, 0.2)', drawBorder: false }
  },

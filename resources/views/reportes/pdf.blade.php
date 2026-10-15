@@ -125,19 +125,19 @@
         <div class="summary-row">
             <div class="summary-cell">
                 <div class="summary-label">Ingresos Totales</div>
-                <div class="summary-value green">${{ number_format($acumulado['ingresos'], 0, ',', '.') }}</div>
+                <div class="summary-value green">$ {{ number_format($acumulado['ingresos'], 0, ',', '.') }}</div>
             </div>
             <div class="summary-cell">
                 <div class="summary-label">Egresos Totales</div>
-                <div class="summary-value red">${{ number_format($acumulado['egresos'], 0, ',', '.') }}</div>
+                <div class="summary-value red">$ {{ number_format($acumulado['egresos'], 0, ',', '.') }}</div>
             </div>
             <div class="summary-cell">
                 <div class="summary-label">Facturación Total</div>
-                <div class="summary-value blue">${{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</div>
+                <div class="summary-value blue">$ {{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</div>
             </div>
             <div class="summary-cell">
                 <div class="summary-label">Utilidad Neta</div>
-                <div class="summary-value green">${{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</div>
+                <div class="summary-value green">$ {{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</div>
             </div>
         </div>
     </div>
@@ -156,15 +156,15 @@
         <tbody>
             <tr>
                 <td><strong>Efectivo</strong></td>
-                <td class="ingreso">${{ number_format($operaciones['ingresos_efectivo'], 0, ',', '.') }}</td>
-                <td class="egreso">${{ number_format($operaciones['egresos_efectivo'], 0, ',', '.') }}</td>
-                <td class="right">${{ number_format($operaciones['efectivo'], 0, ',', '.') }}</td>
+                <td class="ingreso">$ {{ number_format($operaciones['ingresos_efectivo'], 0, ',', '.') }}</td>
+                <td class="egreso">$ {{ number_format($operaciones['egresos_efectivo'], 0, ',', '.') }}</td>
+                <td class="right">$ {{ number_format($operaciones['efectivo'], 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td><strong>Consignación / Banco</strong></td>
-                <td class="ingreso">${{ number_format($operaciones['ingresos_consignacion'], 0, ',', '.') }}</td>
-                <td class="egreso">${{ number_format($operaciones['egresos_consignacion'], 0, ',', '.') }}</td>
-                <td class="right">${{ number_format($operaciones['consignacion'], 0, ',', '.') }}</td>
+                <td class="ingreso">$ {{ number_format($operaciones['ingresos_consignacion'], 0, ',', '.') }}</td>
+                <td class="egreso">$ {{ number_format($operaciones['egresos_consignacion'], 0, ',', '.') }}</td>
+                <td class="right">$ {{ number_format($operaciones['consignacion'], 0, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>
@@ -201,7 +201,7 @@
                 <td class="center">{{ ucfirst($tx->tipo_movimiento) }}</td>
                 <td class="center">{{ ucfirst($tx->tipo_pago) }}</td>
                 <td class="right">
-                    ${{ number_format($tx->monto, 0, ',', '.') }}
+                    $ {{ number_format($tx->monto, 0, ',', '.') }}
                 </td>
             </tr>
             @empty
@@ -214,7 +214,7 @@
         <tfoot>
             <tr>
                 <td colspan="5" style="text-align:right; text-transform:uppercase; font-size:8px;">Total ingresos / egresos del período:</td>
-                <td style="text-align:right; color:#000000;">${{ number_format($acumulado['ingresos'], 0, ',', '.') }} / ${{ number_format($acumulado['egresos'], 0, ',', '.') }}</td>
+                <td style="text-align:right; color:#000000;">$ {{ number_format($acumulado['ingresos'], 0, ',', '.') }} / $ {{ number_format($acumulado['egresos'], 0, ',', '.') }}</td>
             </tr>
         </tfoot>
         @endif

@@ -112,9 +112,9 @@
                                             @foreach($m->stocks as $repuesto)
                                                 <div class="flex items-center justify-between text-xs sm:text-sm bg-white/20 dark:bg-slate-900/30 px-3 py-2 rounded-lg border border-white/40 dark:border-white/5">
                                                     <span class="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
-                                                        <span>📦</span> {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
+                                                        <span>📦</span> {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x $ {{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
                                                     </span>
-                                                    <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</span>
+                                                    <span class="font-bold text-slate-800 dark:text-slate-100">$ {{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</span>
                                                 </div>
                                             @endforeach
 
@@ -122,7 +122,7 @@
                                                 <span class="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
                                                     <span>🛠️</span> Servicio / Mano de Obra:
                                                 </span>
-                                                <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($valorServicio, 0, ',', '.') }}</span>
+                                                <span class="font-bold text-slate-800 dark:text-slate-100">$ {{ number_format($valorServicio, 0, ',', '.') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -130,7 +130,7 @@
 
                                     <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200/60 dark:border-white/10 flex justify-between items-center">
                                         <span class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">Costo Total:</span>
-                                        <span class="text-lg font-black text-blue-600 dark:text-blue-400">${{ number_format($m->costo, 0, ',', '.') }}</span>
+                                        <span class="text-lg font-black text-blue-600 dark:text-blue-400">$ {{ number_format($m->costo, 0, ',', '.') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -179,9 +179,9 @@
                                             @foreach($e->stocks as $repuesto)
                                                 <div class="flex items-center justify-between text-xs sm:text-sm bg-white/20 dark:bg-slate-900/30 px-3 py-2 rounded-lg border border-white/40 dark:border-white/5">
                                                     <span class="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
-                                                        <span>📦</span> {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
+                                                        <span>📦</span> {{ $repuesto->producto }} <span class="text-slate-500 text-xs">({{ $repuesto->pivot->cantidad }}x $ {{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }})</span>
                                                     </span>
-                                                    <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</span>
+                                                    <span class="font-bold text-slate-800 dark:text-slate-100">$ {{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</span>
                                                 </div>
                                             @endforeach
 
@@ -189,7 +189,7 @@
                                                 <span class="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
                                                     <span>🛠️</span> Servicio / Mano de Obra:
                                                 </span>
-                                                <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($valorServicioE, 0, ',', '.') }}</span>
+                                                <span class="font-bold text-slate-800 dark:text-slate-100">$ {{ number_format($valorServicioE, 0, ',', '.') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -197,7 +197,7 @@
 
                                     <div class="sm:col-span-2 mt-2 pt-3 border-t border-gray-200/60 dark:border-white/10 flex justify-between items-center">
                                         <span class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">Costo Total:</span>
-                                        <span class="text-lg font-black text-purple-600 dark:text-purple-400">${{ number_format($e->costo, 0, ',', '.') }}</span>
+                                        <span class="text-lg font-black text-purple-600 dark:text-purple-400">$ {{ number_format($e->costo, 0, ',', '.') }}</span>
                                     </div>
                                 </div>
                             </div>

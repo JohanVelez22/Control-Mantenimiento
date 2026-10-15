@@ -34,7 +34,7 @@ function getStockOptions() {
            stocksData.map(s => {
                const p = esTec ? (s.precio_tecnico > 0 ? s.precio_tecnico : s.precio_venta) : s.precio_venta;
                const labelTag = esTec ? '🔧 P.Técnico' : 'P.Venta';
-               return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-nombre="${escapeHtml(s.nombre)}" data-cantidad="${s.cantidad}">${escapeHtml(s.nombre)} (Disp: ${s.cantidad}) — ${labelTag}: $${formatNum(p)}</option>`;
+               return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-nombre="${escapeHtml(s.nombre)}" data-cantidad="${s.cantidad}">${escapeHtml(s.nombre)} (Disp: ${s.cantidad}) — ${labelTag}: $ ${formatNum(p)}</option>`;
            }).join('');
 }
 
@@ -390,7 +390,7 @@ function actualizarSubtotal(tr) {
     const subtotal = cant * precio;
     const subCell = tr.querySelector('.subtotal-cell');
     if (subCell) {
-        subCell.textContent = '$' + formatNum(subtotal);
+        subCell.textContent = '$ ' + formatNum(subtotal);
     }
     recalcular();
 }
@@ -404,13 +404,13 @@ function recalcular() {
         const subtotal = cant * precio;
         const subCell = tr.querySelector('.subtotal-cell');
         if (subCell) {
-            subCell.textContent = '$' + formatNum(subtotal);
+            subCell.textContent = '$ ' + formatNum(subtotal);
         }
         total += subtotal;
     });
     const totalDisplay = document.getElementById('total-display');
     if (totalDisplay) {
-        totalDisplay.textContent = '$' + formatNum(total);
+        totalDisplay.textContent = '$ ' + formatNum(total);
     }
 }
 

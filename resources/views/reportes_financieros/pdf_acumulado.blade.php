@@ -143,33 +143,33 @@
     <div class="summary-grid" style="margin-bottom: 2px;">
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Mantenimientos</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['facturado_mant'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($acumulado['facturado_mant'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Electrónica</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['facturado_elec'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($acumulado['facturado_elec'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Compras</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['compras_inventario'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($acumulado['compras_inventario'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Ventas</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['ventas_inventario'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($acumulado['ventas_inventario'] ?? 0, 0, ',', '.') }}</div>
         </div>
     </div>
     <div class="summary-grid">
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Ingresos Reales</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['ingresos_caja'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($acumulado['ingresos_caja'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Egresos Reales</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['egresos_caja'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($acumulado['egresos_caja'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card" style="border-color: #e2e8f0;">
             <div class="card-label">Balance Neto</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</div>
         </div>
     </div>
     @if(($acumulado['total_por_cobrar'] ?? 0) > 0 || ($acumulado['total_por_pagar'] ?? 0) > 0)
@@ -177,13 +177,13 @@
         @if(($acumulado['total_por_cobrar'] ?? 0) > 0)
         <div class="card" style="border-color: #cbd5e0; background-color: #f7fafc;">
             <div class="card-label">Saldos Por Cobrar</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['total_por_cobrar'], 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($acumulado['total_por_cobrar'], 0, ',', '.') }}</div>
         </div>
         @endif
         @if(($acumulado['total_por_pagar'] ?? 0) > 0)
         <div class="card" style="border-color: #cbd5e0; background-color: #f7fafc;">
             <div class="card-label">Saldos Por Pagar</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($acumulado['total_por_pagar'], 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($acumulado['total_por_pagar'], 0, ',', '.') }}</div>
         </div>
         @endif
     </div>
@@ -204,37 +204,37 @@
             <tr>
                 <td>Mantenimientos</td>
                 <td style="text-align:center">{{ $acumulado['total_mantenimientos'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['facturado_mant'] ?? 0, 0, ',', '.') }}</td>
+                <td class="monto" style="text-align:center">$ {{ number_format($acumulado['facturado_mant'] ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>Electrónica</td>
                 <td style="text-align:center">{{ $acumulado['total_electronicas'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['facturado_elec'] ?? 0, 0, ',', '.') }}</td>
+                <td class="monto" style="text-align:center">$ {{ number_format($acumulado['facturado_elec'] ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>Compras de Inventario</td>
                 <td style="text-align:center">{{ $acumulado['total_compras'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['compras_inventario'] ?? 0, 0, ',', '.') }}</td>
+                <td class="monto" style="text-align:center">$ {{ number_format($acumulado['compras_inventario'] ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>Ventas de Inventario</td>
                 <td style="text-align:center">{{ $acumulado['total_ventas'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['ventas_inventario'] ?? 0, 0, ',', '.') }}</td>
+                <td class="monto" style="text-align:center">$ {{ number_format($acumulado['ventas_inventario'] ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>Ingresos Reales (Caja)</td>
                 <td style="text-align:center">{{ $acumulado['total_ingresos'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['ingresos_caja'] ?? 0, 0, ',', '.') }}</td>
+                <td class="monto" style="text-align:center">$ {{ number_format($acumulado['ingresos_caja'] ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>Egresos Reales (Caja)</td>
                 <td style="text-align:center">{{ $acumulado['total_egresos'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">${{ number_format($acumulado['egresos_caja'] ?? 0, 0, ',', '.') }}</td>
+                <td class="monto" style="text-align:center">$ {{ number_format($acumulado['egresos_caja'] ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>Movimientos Anulados</td>
                 <td style="text-align:center">{{ $acumulado['total_anulados'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">$0</td>
+                <td class="monto" style="text-align:center">$ 0</td>
             </tr>
         </tbody>
         <tfoot>
@@ -250,7 +250,7 @@
                 @endphp
                 <td style="text-align:center; padding: 5px 6px; color:#ffffff !important; font-weight:800;">TOTAL: 7</td>
                 <td style="text-align:center; padding: 5px 6px; color:#ffffff !important; font-weight:800;"><span style="position: relative; left: -55px; color:#ffffff !important;">TOTAL REGISTROS:</span> <span style="position: relative; left: -42.5px; color:#ffffff !important;">{{ $totalRegistros }}</span></td>
-                <td style="text-align:center; padding: 5px 6px; color:#ffffff !important; font-weight:800; font-size:10.5px; white-space:nowrap;"><span style="position: relative; left: -47px; color:#ffffff !important; font-size:9px;">BALANCE NETO:</span> <span style="position: relative; left: -36px; color:#ffffff !important;">{{ ($acumulado['balance_neto'] ?? 0) < 0 ? '-$' . number_format(abs($acumulado['balance_neto'] ?? 0), 0, ',', '.') : '$' . number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</span></td>
+                <td style="text-align:center; padding: 5px 6px; color:#ffffff !important; font-weight:800; font-size:10.5px; white-space:nowrap;"><span style="position: relative; left: -47px; color:#ffffff !important; font-size:9px;">BALANCE NETO:</span> <span style="position: relative; left: -36px; color:#ffffff !important;">{{ ($acumulado['balance_neto'] ?? 0) < 0 ? '-$ ' . number_format(abs($acumulado['balance_neto'] ?? 0), 0, ',', '.') : '$ ' . number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</span></td>
             </tr>
         </tfoot>
     </table>

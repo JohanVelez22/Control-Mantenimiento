@@ -41,7 +41,7 @@
         <tr>
             <td style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">Costo de Compra (Precio Proveedor)</td>
             <td class="text-center text-gray-500" style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">—</td>
-            <td class="text-right" style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">${{ number_format($stock->precio_compra, 0, ',', '.') }}</td>
+            <td class="text-right" style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">$ {{ number_format($stock->precio_compra, 0, ',', '.') }}</td>
         </tr>
         <tr>
             <td style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">Precio Especial a Técnico</td>
@@ -49,12 +49,12 @@
                 $utilidadTecnico = $stock->precio_compra > 0 ? (($stock->precio_tecnico - $stock->precio_compra) / $stock->precio_compra) * 100 : 0;
             @endphp
             <td class="text-center" style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">+{{ number_format($utilidadTecnico, 0) }}%</td>
-            <td class="text-right" style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">${{ number_format($stock->precio_tecnico, 0, ',', '.') }}</td>
+            <td class="text-right" style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">$ {{ number_format($stock->precio_tecnico, 0, ',', '.') }}</td>
         </tr>
         <tr style="background-color: #fafafa;">
             <td class="font-bold" style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">Precio de Venta Público (PVP)</td>
             <td class="text-center font-bold" style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">+{{ number_format($stock->utilidad ?? 0, 0) }}%</td>
-            <td class="text-right font-bold" style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">${{ number_format($stock->precio_venta, 0, ',', '.') }}</td>
+            <td class="text-right font-bold" style="padding: 1px 2px; font-size: 6.5pt; font-weight: bold;">$ {{ number_format($stock->precio_venta, 0, ',', '.') }}</td>
         </tr>
     </tbody>
 </table>

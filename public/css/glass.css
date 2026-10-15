@@ -236,6 +236,17 @@ html.dark .glass-card .glass-card {
   border-radius: 16px;
 }
 
+/* Excepción: el carrusel del dashboard necesita overflow:hidden para recortar el slide visible.
+   El .glass-card base establece overflow: visible para el calendario Flatpickr; aquí se anula
+   de forma específica y segura solo para el contenedor del carrusel. */
+#statsCarouselContainer {
+  overflow: hidden !important;
+}
+
+html.dark #statsCarouselContainer {
+  overflow: hidden !important;
+}
+
 /* --- GLASS CARD HOVER EFFECTS (Liquid Glass style) ----------------------------------- */
 /* --- GLASS CARD HOVER & COLOR GRADIENT SYSTEM (Liquid Glass style - Refined No-Neon) - */
 .glass-card {
@@ -3074,19 +3085,26 @@ html.dark .btn-ghost:hover {
 
 /* ---- Botón Volver universal del sistema (⬅️) ---- */
 .btn-ghost.text-xl,
-a.btn-ghost[title*="Volver"],
-a.btn-ghost[title*="volver"] {
+a.btn-ghost[title*="Volver" i],
+a.btn-ghost[title*="volver" i],
+a.btn-ghost[title*="búsqueda" i],
+a.btn-ghost[title*="busqueda" i] {
   font-size: 1.25rem !important;
-  line-height: 1.75rem !important;
+  line-height: 1 !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: auto !important;
-  height: auto !important;
-  min-width: unset !important;
-  min-height: unset !important;
-  padding: 0.5rem 0.75rem !important;
-  aspect-ratio: auto !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  max-width: 38px !important;
+  max-height: 38px !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 12px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
 }
 
 /* ================================================================
@@ -7782,6 +7800,28 @@ html.dark optgroup {
    Ver: Índigo | Imprimir: Azul | Editar: Amarillo | Dar de Baja: Violeta | Anular: Rojo | Reactivar: Verde
    ========================================================================== */
 .btn-action-view,
+.btn-action-print,
+.btn-action-edit,
+.btn-action-anular,
+.btn-action-reactivar,
+.btn-action-baja {
+  width: 2rem !important;
+  height: 2rem !important;
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+  max-width: 2rem !important;
+  max-height: 2rem !important;
+  aspect-ratio: 1 / 1 !important;
+  padding: 0 !important;
+  border-radius: 0.625rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+.btn-action-view,
 .actions-grid a[title*="Ver"],
 .actions-grid a[title*="ver"],
 .actions-grid a[title*="Detalle"],
@@ -9498,4 +9538,35 @@ button:active,
 .detail-header,
 .caja-detail-header {
   padding-bottom: 2rem !important; /* 32px: exactamente simétrico a los 32px superiores (md:p-8) */
+}
+
+/* --- SUBTABS & NAV REPORTES: LIQUID GLASS CON FRANJA PREVIEW AL HOVER --- */
+.reportes-nav-tabs a,
+.reportes-nav-principal a {
+  position: relative;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.40);
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+  border-right: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.60);
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.dark .reportes-nav-tabs a,
+html.dark .reportes-nav-principal a {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 3px 10px -2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.reportes-nav-tabs a:hover,
+.reportes-nav-principal a:hover {
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+html.dark .reportes-nav-tabs a:hover,
+html.dark .reportes-nav-principal a:hover {
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }

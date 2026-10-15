@@ -17,7 +17,7 @@
         {{-- Encabezado unificado: Flecha Volver + Imagen + Título con Auto-Redimensión + Botones de Acción --}}
         <div class="detail-header flex items-center justify-between gap-3 sm:gap-4 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8">
             <div class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                <a href="{{ route('stocks.index') }}" class="btn-ghost px-3 py-2 text-xl shrink-0" title="Volver">⬅️</a>
+                <a href="{{ route('stocks.index') }}" class="btn-ghost text-xl shrink-0" title="Volver">⬅️</a>
 
                 @if($stock->photo)
                     <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
@@ -100,20 +100,20 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div class="glass-card hover-glow glass-card-orange p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">📦</span> Costo de Compra</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($stock->precio_compra, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($stock->precio_compra, 0, ',', '.') }}</p>
             </div>
             <div class="glass-card hover-glow glass-card-purple p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">⚡</span> Precio a Técnico</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($stock->precio_tecnico, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($stock->precio_tecnico, 0, ',', '.') }}</p>
             </div>
             <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">🛒</span> Precio Público Venta</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($stock->precio_venta, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($stock->precio_venta, 0, ',', '.') }}</p>
                 @php
                     $utilidadPesos = $stock->precio_venta - $stock->precio_compra;
                     $utilidadPct = $stock->utilidad ?? 0;
                 @endphp
-                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1 z-10" title="Margen: {{ $utilidadPct }}%">+${{ number_format($utilidadPesos, 0, ',', '.') }}</p>
+                <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1 z-10" title="Margen: {{ $utilidadPct }}%">+$ {{ number_format($utilidadPesos, 0, ',', '.') }}</p>
             </div>
         </div>
 
@@ -150,9 +150,9 @@
                             {{ $item->factura->facturable->nombre_razon_social ?? $item->factura->facturable->nombre ?? '—' }}
                         </td>
                         <td class="text-center font-bold">{{ $item->cantidad }}</td>
-                        <td class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+                        <td class="text-right font-bold text-slate-800 dark:text-white">$ {{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
                         <td class="text-right font-black {{ $item->factura->tipo_movimiento === 'compra' ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
-                            {{ $item->factura->tipo_movimiento === 'compra' ? '-' : '+' }}${{ number_format($item->subtotal, 0, ',', '.') }}
+                            {{ $item->factura->tipo_movimiento === 'compra' ? '-' : '+' }}$ {{ number_format($item->subtotal, 0, ',', '.') }}
                         </td>
                     </tr>
                     @empty
@@ -185,7 +185,7 @@
                     Total descartado: {{ $stock->total_unidades_baja }} unidades
                 </span>
                 <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
-                    Pérdida: ${{ number_format($stock->total_perdida_bajas, 0, ',', '.') }}
+                    Pérdida: $ {{ number_format($stock->total_perdida_bajas, 0, ',', '.') }}
                 </span>
             </div>
             @endif
@@ -217,10 +217,10 @@
                             -{{ $baja->cantidad }}
                         </td>
                         <td class="p-3 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
-                            ${{ number_format($baja->precio_compra_unitario, 0, ',', '.') }}
+                            $ {{ number_format($baja->precio_compra_unitario, 0, ',', '.') }}
                         </td>
                         <td class="p-3 text-center font-black text-red-600 dark:text-red-400 font-mono text-xs">
-                            ${{ number_format($baja->costo_total_perdida, 0, ',', '.') }}
+                            $ {{ number_format($baja->costo_total_perdida, 0, ',', '.') }}
                         </td>
                         <td class="p-3 text-center">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">

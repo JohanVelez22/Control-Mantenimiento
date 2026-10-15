@@ -65,13 +65,13 @@ class ReportesFinancierosExport implements FromCollection, ShouldAutoSize, WithE
                 $total = $ingresos - $egresos;
 
                 // Aplicar formato de miles a la columna E (Costo)
-                $sheet->getStyle("E5:E{$lastRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
+                $sheet->getStyle("E5:E{$lastRow}")->getNumberFormat()->setFormatCode('"$ "#,##0');
 
                 // Alinear columna A (Código) a la izquierda para consistencia
                 $sheet->getStyle("A5:A{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 $sheet->setCellValue("A{$footerRow}", 'Total registros: '.$this->transacciones->count());
-                $sheet->setCellValue("E{$footerRow}", 'Balance Neto: $'.number_format($total, 0, ',', '.'));
+                $sheet->setCellValue("E{$footerRow}", 'Balance Neto: $ '.number_format($total, 0, ',', '.'));
 
                 $sheet->getStyle("A{$footerRow}:G{$footerRow}")->applyFromArray([
                     'font' => ['bold' => true, 'size' => 11],

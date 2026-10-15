@@ -128,7 +128,7 @@
             
             <div class="mt-4 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700/30 text-center">
                 <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1">Total Físico Contado</p>
-                <p class="text-3xl font-black text-slate-800 dark:text-white" id="calc-total">$0</p>
+                <p class="text-3xl font-black text-slate-800 dark:text-white" id="calc-total">$ 0</p>
             </div>
             <div class="mt-4 flex gap-3">
                 <button type="button" onclick="resetCalc()" class="btn-cancel flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Limpiar</button>
@@ -187,7 +187,7 @@
         }
 
         calcTotalValue = total;
-        document.getElementById('calc-total').innerText = '$' + new Intl.NumberFormat('es-CO').format(total);
+        document.getElementById('calc-total').innerText = '$ ' + new Intl.NumberFormat('es-CO').format(total);
     }
 
     function resetCalc() {
@@ -212,23 +212,23 @@
         <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
             <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_ingresos'], 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($preview['total_ingresos'], 0, ',', '.') }}</p>
             </div>
             <div class="glass-card hover-glow glass-card-red p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_egresos'], 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($preview['total_egresos'], 0, ',', '.') }}</p>
             </div>
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💵</span> Efectivo Sistema</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['efectivo'], 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($preview['efectivo'], 0, ',', '.') }}</p>
             </div>
             <div class="glass-card hover-glow glass-card-purple p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🏦</span> Consignación</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['consignacion'], 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($preview['consignacion'], 0, ',', '.') }}</p>
             </div>
             <div class="glass-card hover-glow {{ $preview['saldo_final'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0 col-span-2 lg:col-span-1">
                 <p class="text-xs font-bold {{ $preview['saldo_final'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Teórico</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['saldo_final'], 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($preview['saldo_final'], 0, ',', '.') }}</p>
             </div>
         </div>
 
@@ -261,7 +261,7 @@
                                 💻 Efectivo Teórico (Sistema)
                             </span>
                             <p class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white">
-                                ${{ number_format($preview['efectivo'], 0, ',', '.') }}
+                                $ {{ number_format($preview['efectivo'], 0, ',', '.') }}
                             </p>
                         </div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-2">
@@ -394,12 +394,12 @@
                     @forelse($cierres as $c)
                     <tr>
                         <td data-label="Fecha:" class="text-center font-bold">{{ $c->fecha->format('d/m/Y') }}</td>
-                        <td data-label="Ingresos:" class="text-right text-emerald-600 dark:text-emerald-400 font-bold">${{ number_format($c->total_ingresos, 0, ',', '.') }}</td>
-                        <td data-label="Egresos:" class="text-right text-red-600 dark:text-red-400 font-bold">${{ number_format($c->total_egresos, 0, ',', '.') }}</td>
-                        <td data-label="Efectivo Sist.:" class="text-right text-blue-600 dark:text-blue-400 font-semibold">${{ number_format($c->efectivo, 0, ',', '.') }}</td>
+                        <td data-label="Ingresos:" class="text-right text-emerald-600 dark:text-emerald-400 font-bold">$ {{ number_format($c->total_ingresos, 0, ',', '.') }}</td>
+                        <td data-label="Egresos:" class="text-right text-red-600 dark:text-red-400 font-bold">$ {{ number_format($c->total_egresos, 0, ',', '.') }}</td>
+                        <td data-label="Efectivo Sist.:" class="text-right text-blue-600 dark:text-blue-400 font-semibold">$ {{ number_format($c->efectivo, 0, ',', '.') }}</td>
                         <td data-label="Contado en Mano:" class="text-right font-black text-slate-800 dark:text-white">
                             @if($c->efectivo_real_contado !== null)
-                                ${{ number_format($c->efectivo_real_contado, 0, ',', '.') }}
+                                $ {{ number_format($c->efectivo_real_contado, 0, ',', '.') }}
                             @else
                                 <span class="text-gray-400 font-normal">—</span>
                             @endif
@@ -411,11 +411,11 @@
                                 </span>
                             @elseif($c->estado_diferencia === 'faltante')
                                 <span class="pill pill-anulado text-[11px] font-bold py-0.5 px-2" title="{{ $c->motivo_diferencia ?: 'Faltante de caja' }}">
-                                    🔴 Faltante ${{ number_format(abs($c->diferencia), 0, ',', '.') }}
+                                    🔴 Faltante $ {{ number_format(abs($c->diferencia), 0, ',', '.') }}
                                 </span>
                             @elseif($c->estado_diferencia === 'sobrante')
                                 <span class="pill pill-efectivo text-[11px] font-bold py-0.5 px-2" title="{{ $c->motivo_diferencia ?: 'Sobrante de caja' }}">
-                                    🔵 Sobrante ${{ number_format($c->diferencia, 0, ',', '.') }}
+                                    🔵 Sobrante $ {{ number_format($c->diferencia, 0, ',', '.') }}
                                 </span>
                             @else
                                 <span class="pill pill-done text-[11px] font-bold py-0.5 px-2 opacity-60" title="No se registró conteo físico del efectivo">
@@ -423,8 +423,8 @@
                                 </span>
                             @endif
                         </td>
-                        <td data-label="Consignación:" class="text-right text-purple-600 dark:text-purple-400 font-semibold">${{ number_format($c->consignacion, 0, ',', '.') }}</td>
-                        <td data-label="Saldo Final:" class="text-right font-black {{ $c->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }}">${{ number_format($c->saldo_final, 0, ',', '.') }}</td>
+                        <td data-label="Consignación:" class="text-right text-purple-600 dark:text-purple-400 font-semibold">$ {{ number_format($c->consignacion, 0, ',', '.') }}</td>
+                        <td data-label="Saldo Final:" class="text-right font-black {{ $c->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }}">$ {{ number_format($c->saldo_final, 0, ',', '.') }}</td>
                         <td data-label="Mov.:" class="text-center text-sm font-semibold text-gray-500">{{ $c->num_movimientos }}</td>
                         <td data-label="Registró:" class="text-xs text-gray-500 font-medium">{{ $c->user->name }}</td>
                         <td data-label="Acciones:" class="text-center w-28">
@@ -474,7 +474,7 @@
     }
 
     function formatearPesos(n) {
-        return '$' + new Intl.NumberFormat('es-CO').format(Math.round(n));
+        return '$ ' + new Intl.NumberFormat('es-CO').format(Math.round(n));
     }
 
     function actualizarDiferencia() {

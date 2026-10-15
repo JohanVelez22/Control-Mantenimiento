@@ -76,7 +76,7 @@
  </span>
  </td>
  <td data-label="P. Compra:" class="text-right font-medium {{ $dim }}">
- ${{ number_format($stock->precio_compra, 0, ',', '.') }}
+ $ {{ number_format($stock->precio_compra, 0, ',', '.') }}
  </td>
  @php
  $utilidadPesos = $stock->precio_venta - $stock->precio_compra;
@@ -88,15 +88,15 @@
  💹 +{{ number_format($utilidadPct, 0) }}%
  </span>
  <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
- +${{ number_format($utilidadPesos, 0, ',', '.') }}
+ +$ {{ number_format($utilidadPesos, 0, ',', '.') }}
  </span>
  </div>
  </td>
  <td data-label="P. Venta:" class="text-right font-black text-blue-600 dark:text-cyan-400 text-base {{ $dim }}">
- ${{ number_format($stock->precio_venta, 0, ',', '.') }}
+ $ {{ number_format($stock->precio_venta, 0, ',', '.') }}
  </td>
  <td data-label="P. Técnico:" class="text-right font-bold text-purple-600 dark:text-purple-400 {{ $dim }}">
- ${{ number_format($stock->precio_tecnico, 0, ',', '.') }}
+ $ {{ number_format($stock->precio_tecnico, 0, ',', '.') }}
  </td>
  <td data-label="Estado:" class="text-center">
  <span class="pill {{ $stock->active ? 'pill-done' : 'pill-anulado' }}">

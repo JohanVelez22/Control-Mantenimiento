@@ -185,12 +185,12 @@
                             {{ $isAnulado ? 'Inactivo' : 'Activo' }}
                         </span>
                     </td>
-                    <td class="text-center font-medium {{ $dim }}">${{ number_format($stock->precio_compra, 0, '', '.') }}</td>
+                    <td class="text-center font-medium {{ $dim }}">$ {{ number_format($stock->precio_compra, 0, '', '.') }}</td>
                     <td class="text-center font-bold text-green-600 dark:text-green-400 {{ $dim }}">
                         +{{ $stock->utilidad }}%
                     </td>
-                    <td class="text-center font-black text-slate-800 dark:text-white {{ $dim }}">${{ number_format($stock->precio_venta, 0, '', '.') }}</td>
-                    <td class="text-center font-black text-slate-800 dark:text-white {{ $dim }}">${{ number_format($stock->precio_tecnico, 0, '', '.') }}</td>
+                    <td class="text-center font-black text-slate-800 dark:text-white {{ $dim }}">$ {{ number_format($stock->precio_venta, 0, '', '.') }}</td>
+                    <td class="text-center font-black text-slate-800 dark:text-white {{ $dim }}">$ {{ number_format($stock->precio_tecnico, 0, '', '.') }}</td>
                 </tr>
                 @empty
                 <tr>
@@ -214,10 +214,10 @@
                     <td></td>
                     <td class="text-center font-bold text-xs">{{ $stocks->sum('cantidad') }}</td>
                     <td></td>
-                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}</td>
+                    <td class="text-center font-bold text-xs">$ {{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}</td>
                     <td></td>
-                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}</td>
-                    <td class="text-center font-bold text-xs">${{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}</td>
+                    <td class="text-center font-bold text-xs">$ {{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}</td>
+                    <td class="text-center font-bold text-xs">$ {{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}</td>
                 </tr>
             </tfoot>
             @endif

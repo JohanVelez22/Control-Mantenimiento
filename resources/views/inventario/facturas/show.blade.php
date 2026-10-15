@@ -18,7 +18,7 @@
   <div class="flex flex-col md:flex-row items-center gap-4">
       <div class="text-center md:text-right">
           <p class="font-black text-yellow-700 dark:text-yellow-400 uppercase tracking-tight">Saldo Actual</p>
-          <p class="text-2xl font-black text-yellow-700 dark:text-yellow-400">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</p>
+          <p class="text-2xl font-black text-yellow-700 dark:text-yellow-400">$ {{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</p>
       </div>
 
       @if(!auth()->user()->isInvitado() && $movimientoPadre)
@@ -41,7 +41,7 @@
  {{-- Encabezado --}}
  <div class="detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
   <div class="flex items-center gap-3">
-  <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+  <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
   <div>
   <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
   {{ $factura->numero_factura }}
@@ -114,8 +114,8 @@
  <tr>
  <td class="font-bold text-slate-800 dark:text-white">{{ $item->stock->producto ?? $item->descripcion ?? 'Producto/Servicio' }}</td>
  <td class="text-center font-bold">{{ $item->cantidad }}</td>
- <td class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
- <td class="text-right font-black text-blue-600 dark:text-cyan-400">${{ number_format($item->subtotal, 0, ',', '.') }}</td>
+ <td class="text-right font-bold text-slate-800 dark:text-white">$ {{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+ <td class="text-right font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($item->subtotal, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
@@ -139,32 +139,32 @@
  <div class="w-full md:w-1/2 glass-card p-5">
  <div class="flex justify-between items-center mb-3">
  <span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Total Documento</span>
- <span class="text-2xl font-black text-slate-800 dark:text-white">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>
+ <span class="text-2xl font-black text-slate-800 dark:text-white">$ {{ number_format($factura->total_documento, 0, ',', '.') }}</span>
  </div>
  
  <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
  <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400">Total Pagado</span>
- <span class="text-lg font-black text-emerald-600 dark:text-emerald-400">${{ number_format($factura->total_pagado, 0, ',', '.') }}</span>
+ <span class="text-lg font-black text-emerald-600 dark:text-emerald-400">$ {{ number_format($factura->total_pagado, 0, ',', '.') }}</span>
  </div>
  
   @if($factura->saldo_pendiente > 0)
   <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
   <span class="text-sm font-bold text-red-500">Saldo Pendiente</span>
-  <span class="text-lg font-black text-red-500">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
+  <span class="text-lg font-black text-red-500">$ {{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
   </div>
   @endif
 
   @if($factura->tipo_movimiento === 'venta' && $factura->estado !== 'anulada')
   <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
       <span class="text-sm font-bold text-gray-500 dark:text-gray-400">Costo Total Compra</span>
-      <span class="text-base font-black text-slate-700 dark:text-slate-300">${{ number_format($factura->costo_total, 0, ',', '.') }}</span>
+      <span class="text-base font-black text-slate-700 dark:text-slate-300">$ {{ number_format($factura->costo_total, 0, ',', '.') }}</span>
   </div>
   <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
       <span class="text-sm font-bold {{ $factura->utilidad >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500' }}">
           {{ $factura->utilidad >= 0 ? 'Utilidad Generada' : 'Pérdida Generada' }}
       </span>
       <span class="text-base font-black {{ $factura->utilidad >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500' }}">
-          {{ $factura->utilidad >= 0 ? '+' : '-' }}${{ number_format(abs($factura->utilidad), 0, ',', '.') }}
+          {{ $factura->utilidad >= 0 ? '+' : '-' }}$ {{ number_format(abs($factura->utilidad), 0, ',', '.') }}
       </span>
   </div>
   @endif
@@ -205,7 +205,7 @@
                          {{ $abono->user->name ?? 'Sistema' }}
                      </td>
                      <td class="text-right font-black text-emerald-600 dark:text-emerald-400 whitespace-nowrap px-2">
-                         ${{ number_format($abono->monto, 0, ',', '.') }}
+                         $ {{ number_format($abono->monto, 0, ',', '.') }}
                      </td>
                      <td class="text-center whitespace-nowrap">
                          <div class="actions-grid">
@@ -246,7 +246,7 @@
 
         <div class="mb-4 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 flex justify-between items-center text-sm">
             <span class="text-amber-800 dark:text-amber-300 font-semibold">Saldo Pendiente:</span>
-            <span class="text-lg font-black text-amber-600 dark:text-amber-400">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
+            <span class="text-lg font-black text-amber-600 dark:text-amber-400">$ {{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
         </div>
 
         <form action="{{ route('caja.abonos.store', $movimientoPadre->id) }}" method="POST" class="space-y-4">

@@ -144,31 +144,31 @@
     <div class="summary-grid">
         <div class="card ingresos">
             <div class="card-label">Ingresos</div>
-            <div class="card-value">${{ number_format($resumen['total_ingresos'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value">$ {{ number_format($resumen['total_ingresos'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card egresos">
             <div class="card-label">Egresos</div>
-            <div class="card-value">${{ number_format($resumen['total_egresos'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value">$ {{ number_format($resumen['total_egresos'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card mantenimientos">
             <div class="card-label">Mantenimiento</div>
-            <div class="card-value">${{ number_format($resumen['total_mantenimientos'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value">$ {{ number_format($resumen['total_mantenimientos'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card electronica">
             <div class="card-label">Electrónica</div>
-            <div class="card-value">${{ number_format($resumen['total_electronica'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value">$ {{ number_format($resumen['total_electronica'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card ventas">
             <div class="card-label">Ventas</div>
-            <div class="card-value">${{ number_format($resumen['total_ventas'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value">$ {{ number_format($resumen['total_ventas'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card compras">
             <div class="card-label">Compras</div>
-            <div class="card-value">${{ number_format($resumen['total_compras'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value">$ {{ number_format($resumen['total_compras'] ?? 0, 0, ',', '.') }}</div>
         </div>
         <div class="card anulados">
             <div class="card-label">Anulados</div>
-            <div class="card-value">${{ number_format($resumen['monto_anulados'] ?? 0, 0, ',', '.') }}</div>
+            <div class="card-value">$ {{ number_format($resumen['monto_anulados'] ?? 0, 0, ',', '.') }}</div>
         </div>
     </div>
     @if(($resumen['total_por_cobrar'] ?? 0) > 0 || ($resumen['total_por_pagar'] ?? 0) > 0)
@@ -176,13 +176,13 @@
         @if(($resumen['total_por_cobrar'] ?? 0) > 0)
         <div class="card" style="border-color: #cbd5e0; background-color: #f7fafc;">
             <div class="card-label">Saldos Por Cobrar</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($resumen['total_por_cobrar'], 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($resumen['total_por_cobrar'], 0, ',', '.') }}</div>
         </div>
         @endif
         @if(($resumen['total_por_pagar'] ?? 0) > 0)
         <div class="card" style="border-color: #cbd5e0; background-color: #f7fafc;">
             <div class="card-label">Saldos Por Pagar</div>
-            <div class="card-value" style="color: #000000;">${{ number_format($resumen['total_por_pagar'], 0, ',', '.') }}</div>
+            <div class="card-value" style="color: #000000;">$ {{ number_format($resumen['total_por_pagar'], 0, ',', '.') }}</div>
         </div>
         @endif
     </div>
@@ -235,7 +235,7 @@
                     @endif
                 </td>
                                 <td class="monto">
-                    ${{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
+                    $ {{ number_format($mov['monto'] ?? 0, 0, ',', '.') }}
                 </td>
             </tr>
             @empty
@@ -256,7 +256,7 @@
                     <span style="float:right; font-weight:700; color:#ffffff;">BALANCE NETO DEL DÍA:</span>
                 </td>
                 <td style="text-align:center; border:none !important; padding: 5px 6px; color:#ffffff; font-weight:800; font-size:10.5px; white-space:nowrap;">
-                    {{ $neto < 0 ? '-$' . number_format(abs($neto), 0, ',', '.') : '$' . number_format($neto, 0, ',', '.') }}
+                    {{ $neto < 0 ? '-$ ' . number_format(abs($neto), 0, ',', '.') : '$ ' . number_format($neto, 0, ',', '.') }}
                 </td>
             </tr>
         </tfoot>

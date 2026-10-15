@@ -3,7 +3,7 @@
 <div class="max-w-7xl mx-auto">
     <div class="glass-card p-6 md:p-6">
         <div class="flex items-center gap-3 mb-6">
-            <a href="{{ route('cotizaciones.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+            <a href="{{ route('cotizaciones.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
             <div>
                 <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">📝 Crear Nueva Cotización</h2>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Arma un presupuesto sin afectar el inventario o la caja</p>
@@ -89,7 +89,7 @@
                                     <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
                                     <input type="text" id="precio_unitario_visual_0" value="0" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); actualizarSubtotal(this.closest('tr'))" required class="precio-input glass-input py-1.5 px-2 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-full">
                                 </td>
-                                <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$0</td>
+                                <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$ 0</td>
                                 <td class="col-accion align-middle text-right">
                                     <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">
                                         🗑️
@@ -104,7 +104,7 @@
                                     <span class="font-bold text-slate-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Cotización:</span>
                                 </td>
                                 <td colspan="2" class="py-4 text-right pr-3 align-middle">
-                                    <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">$0</span>
+                                    <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">$ 0</span>
                                 </td>
                             </tr>
                         </tfoot>

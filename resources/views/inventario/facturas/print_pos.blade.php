@@ -44,10 +44,10 @@
             <td>
                 {{ $nombreItem }}
                 @if($item->cantidad > 1)
-                    <br><span style="font-size: 6.5pt; color: #444;">${{ number_format($item->precio_unitario, 0, ',', '.') }} c/u</span>
+                    <br><span style="font-size: 6.5pt; color: #444;">$ {{ number_format($item->precio_unitario, 0, ',', '.') }} c/u</span>
                 @endif
             </td>
-            <td class="text-right font-bold">${{ number_format($subtotalItem, 0, ',', '.') }}</td>
+            <td class="text-right font-bold">$ {{ number_format($subtotalItem, 0, ',', '.') }}</td>
         </tr>
         @endforeach
     </tbody>
@@ -59,15 +59,15 @@
 <table class="totals-pos">
     <tr>
         <td class="text-left font-bold">Total Documento:</td>
-        <td class="text-right font-bold">${{ number_format($factura->total_documento, 0, ',', '.') }}</td>
+        <td class="text-right font-bold">$ {{ number_format($factura->total_documento, 0, ',', '.') }}</td>
     </tr>
     <tr>
         <td class="text-left">Total Pagado / Abonos:</td>
-        <td class="text-right font-bold">${{ number_format($factura->total_pagado, 0, ',', '.') }}</td>
+        <td class="text-right font-bold">$ {{ number_format($factura->total_pagado, 0, ',', '.') }}</td>
     </tr>
     <tr class="grand-total">
         <td class="text-left">SALDO PENDIENTE:</td>
-        <td class="text-right font-bold">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</td>
+        <td class="text-right font-bold">$ {{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</td>
     </tr>
 </table>
 
@@ -94,7 +94,7 @@
             <tr>
                 <td>{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/y') }}</td>
                 <td>{{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Transf.' }}</td>
-                <td class="text-right font-bold">${{ number_format($abono->monto, 0, ',', '.') }}</td>
+                <td class="text-right font-bold">$ {{ number_format($abono->monto, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>

@@ -83,7 +83,7 @@
                     </td>
                     <td data-label="Fecha" class="text-center font-medium">{{ \Carbon\Carbon::parse($cot->fecha)->format('d/m/Y') }}</td>
                     <td data-label="Validez" class="text-center font-medium">{{ $cot->validez_dias }} días</td>
-                    <td data-label="Total" class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($cot->total, 0, '', '.') }}</td>
+                    <td data-label="Total" class="text-right font-bold text-slate-800 dark:text-white">$ {{ number_format($cot->total, 0, '', '.') }}</td>
                     <td data-label="Estado" class="text-center">
                         <span class="pill {{ $cot->anulado ? 'pill-anulado' : ($cot->estado === 'aprobada' ? 'pill-done' : ($cot->estado === 'rechazada' ? 'pill-anulado' : 'pill-pending')) }}">
                             @if($cot->anulado)

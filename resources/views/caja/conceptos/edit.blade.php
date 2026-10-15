@@ -5,7 +5,7 @@
 <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between mb-8">
         <div class="flex items-center gap-3">
-            <a href="{{ route('conceptos.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+            <a href="{{ route('conceptos.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
             <div>
                 <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                     🏷️ Editar Concepto

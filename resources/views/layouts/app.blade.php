@@ -982,7 +982,7 @@
                             <span class="text-xs font-bold text-indigo-500 dark:text-indigo-300">{{ $cCodigo }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $cCliente }}</p>
-                        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold truncate">Total: ${{ number_format($cTotal, 0, ',', '.') }}</p>
+                        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold truncate">Total: $ {{ number_format($cTotal, 0, ',', '.') }}</p>
                     </div>
                     <div class="flex items-center justify-end sm:justify-center gap-2 shrink-0 pl-2 sm:pl-0">
                         <span class="text-xs font-bold px-2.5 py-1 text-white rounded-lg group-hover:scale-105 transition-transform flex items-center gap-1 shadow-sm" style="background-color: #4f46e5;">📋 Ver Más Detalles</span>
@@ -1010,7 +1010,7 @@
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $fNombre }}</p>
                         <p class="text-xs text-orange-600 dark:text-orange-400 font-semibold">
-                            Saldo: ${{ number_format($fSaldo, 0, ',', '.') }}
+                            Saldo: $ {{ number_format($fSaldo, 0, ',', '.') }}
                         </p>
                     </div>
                     <div class="flex items-center justify-end sm:justify-center gap-2 shrink-0 pl-2 sm:pl-0">
@@ -1047,7 +1047,7 @@
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $displayName }}</p>
                         <p class="text-xs {{ $montoClass }} font-semibold">
-                            Falta pagar: ${{ number_format($movSaldo, 0, ',', '.') }}
+                            Falta pagar: $ {{ number_format($movSaldo, 0, ',', '.') }}
                         </p>
                     </div>
                     <div class="flex items-center justify-end sm:justify-center gap-2 shrink-0 pl-2 sm:pl-0">

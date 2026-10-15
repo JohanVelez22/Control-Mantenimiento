@@ -16,7 +16,7 @@
         {{-- Encabezado unificado dentro de la tarjeta, tal como caja.show --}}
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 relative z-20">
             <div class="flex items-center gap-4">
-                <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a la lista de caja">⬅️</a>
+                <a href="{{ route('caja.index') }}" class="btn-ghost text-xl" title="Volver a la lista de caja">⬅️</a>
                 <div>
                     <div class="flex flex-wrap items-center gap-3">
                         <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight whitespace-nowrap">
@@ -30,7 +30,7 @@
                         </span>
                         @if($movimiento->monto_total > 0 && $movimiento->saldo_pendiente > 0)
                             <span class="pill pill-pending text-xs py-1 px-3 font-bold whitespace-nowrap">
-                                Saldo: ${{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}
+                                Saldo: $ {{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}
                             </span>
                         @endif
                     </div>
@@ -59,22 +59,22 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💳</span> Monto Transacción</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($movimiento->monto, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($movimiento->monto, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow glass-card-indigo p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💰</span> Monto Total</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($movimiento->effective_monto_total ?: $movimiento->monto, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($movimiento->effective_monto_total ?: $movimiento->monto, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💵</span> Total Acumulado Pagado</p>
-                <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400 z-10">${{ number_format($movimiento->total_pagado, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400 z-10">$ {{ number_format($movimiento->total_pagado, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow {{ $movimiento->saldo_pendiente > 0 ? 'glass-card-orange' : 'glass-card-teal' }} p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold {{ $movimiento->saldo_pendiente > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">⚖️</span> Saldo Pendiente</p>
-                <p class="text-2xl font-black {{ $movimiento->saldo_pendiente > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-slate-800 dark:text-white' }} z-10">${{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black {{ $movimiento->saldo_pendiente > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-slate-800 dark:text-white' }} z-10">$ {{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}</p>
             </div>
         </div>
 
@@ -186,7 +186,7 @@
                                         {{ $child->user->name ?? 'Sistema' }}
                                     </td>
                                     <td data-label="Monto:" class="text-right font-black text-blue-600 dark:text-blue-400 whitespace-nowrap">
-                                        ${{ number_format($child->monto, 0, ',', '.') }}
+                                        $ {{ number_format($child->monto, 0, ',', '.') }}
                                     </td>
                                     <td data-label="Acciones:" class="text-center whitespace-nowrap">
                                         <div class="actions-grid">

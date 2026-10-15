@@ -224,7 +224,7 @@
    </div>
    </td>
   <td class="text-center font-medium text-sm {{ $m->fecha_salida ? '' : 'text-gray-400 italic' }} {{ $dim }}">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}</td>
-  <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">${{ number_format($m->costo, 0, '', '.') }}</td>
+  <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">$ {{ number_format($m->costo, 0, '', '.') }}</td>
   </tr>
   @empty
   <tr>
@@ -243,7 +243,7 @@
   <tr>
   <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $totales['cantidad'] }}</td>
   <td colspan="8" class="text-right uppercase text-xs">TOTAL FILTRADOS:</td>
-  <td class="text-center font-bold text-xs text-green-600 dark:text-green-400">${{ number_format($totales['costo'], 0, '', '.') }}</td>
+  <td class="text-center font-bold text-xs text-green-600 dark:text-green-400">$ {{ number_format($totales['costo'], 0, '', '.') }}</td>
   </tr>
   </tfoot>
   @endif

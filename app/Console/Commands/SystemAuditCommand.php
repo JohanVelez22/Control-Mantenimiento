@@ -302,7 +302,7 @@ class SystemAuditCommand extends Command
             ]);
 
             $saldoCalculado = $facturaVenta->saldo_pendiente;
-            $this->recordCheck('Finanzas / Saldos', 'Cálculo exacto de Saldo Pendiente ($100.000)', abs($saldoCalculado - 100000) < 0.01, 'Saldo: $'.number_format($saldoCalculado, 0, ',', '.'));
+            $this->recordCheck('Finanzas / Saldos', 'Cálculo exacto de Saldo Pendiente ($ 100.000)', abs($saldoCalculado - 100000) < 0.01, 'Saldo: $ '.number_format($saldoCalculado, 0, ',', '.'));
 
             // ── TEST 3.5: Abono Parcial a Factura y Trazabilidad en Caja ──
             $abonoMonto = 40000;
@@ -323,14 +323,14 @@ class SystemAuditCommand extends Command
 
             $facturaVenta->recalcularPagos();
             $facturaVenta->refresh();
-            $this->recordCheck('Finanzas / Abonos', 'Recálculo automático de Factura tras Abono', abs($facturaVenta->total_pagado - 100000) < 0.01, 'Total pagado: $'.number_format($facturaVenta->total_pagado, 0, ',', '.'));
-            $this->recordCheck('Finanzas / Abonos', 'Saldo restante exacto ($60.000)', abs($facturaVenta->saldo_pendiente - 60000) < 0.01, 'Saldo restante: $'.number_format($facturaVenta->saldo_pendiente, 0, ',', '.'));
+            $this->recordCheck('Finanzas / Abonos', 'Recálculo automático de Factura tras Abono', abs($facturaVenta->total_pagado - 100000) < 0.01, 'Total pagado: $ '.number_format($facturaVenta->total_pagado, 0, ',', '.'));
+            $this->recordCheck('Finanzas / Abonos', 'Saldo restante exacto ($ 60.000)', abs($facturaVenta->saldo_pendiente - 60000) < 0.01, 'Saldo restante: $ '.number_format($facturaVenta->saldo_pendiente, 0, ',', '.'));
 
             // ── TEST 3.6: Protección de Abonos que superan el saldo ──
             $intentoSobreabono = 70000;
             $saldoActual = (float) $movCajaVenta->fresh()->saldo_pendiente;
             $rechazoSobreabono = ($intentoSobreabono > $saldoActual && abs($saldoActual - 60000.0) < 0.01);
-            $this->recordCheck('Finanzas / Abonos', 'Validación de bloqueo si abono supera saldo pendiente', $rechazoSobreabono, "Saldo evaluado: \${$saldoActual} vs Intento: \${$intentoSobreabono}");
+            $this->recordCheck('Finanzas / Abonos', 'Validación de bloqueo si abono supera saldo pendiente', $rechazoSobreabono, "Saldo evaluado: $ {$saldoActual} vs Intento: $ {$intentoSobreabono}");
 
             // ── TEST 3.7: Flujo de Cotización (Creación, Rechazo, Reactivación y Conversión) ──
             $cotizacion = Cotizacion::create([

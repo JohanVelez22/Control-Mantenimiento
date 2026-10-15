@@ -5,7 +5,7 @@
         {{-- Header --}}
         <div class="detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 w-full relative z-20">
             <div class="flex items-center gap-3">
-                <a href="{{ route('proveedores.index') }}" class="btn-ghost px-3 py-2 text-xl shrink-0" title="Volver">⬅️</a>
+                <a href="{{ route('proveedores.index') }}" class="btn-ghost text-xl shrink-0" title="Volver">⬅️</a>
                 <div>
                     <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight">
                         <span class="text-indigo-500 mr-1 align-middle inline-block">{{ $proveedor->tipo_entidad === 'empresa' ? '🏢' : '👤' }}</span>
@@ -78,17 +78,17 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📦</span> Total Comprado</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($comprasTotales, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($comprasTotales, 0, ',', '.') }}</p>
             </div>
             
             <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">✅</span> Total Pagado</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($comprasPagadas, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($comprasPagadas, 0, ',', '.') }}</p>
             </div>
             
             <div class="glass-card hover-glow {{ $saldoProveedor > 0 ? 'glass-card-red' : 'glass-card-teal' }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold {{ $saldoProveedor > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Pendiente</p>
-                <p class="text-2xl font-black {{ $saldoProveedor > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">${{ number_format($saldoProveedor, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black {{ $saldoProveedor > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">$ {{ number_format($saldoProveedor, 0, ',', '.') }}</p>
             </div>
         </div>
 
@@ -124,8 +124,8 @@
  {{ $s->cantidad }}
  </span>
  </td>
- <td class="text-right font-medium">${{ number_format($s->precio_compra, 0, ',', '.') }}</td>
- <td class="text-right font-black text-blue-600 dark:text-cyan-400">${{ number_format($s->precio_venta, 0, ',', '.') }}</td>
+ <td class="text-right font-medium">$ {{ number_format($s->precio_compra, 0, ',', '.') }}</td>
+ <td class="text-right font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($s->precio_venta, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
@@ -162,9 +162,9 @@
  
  <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto mt-2 sm:mt-0">
  <div class="text-left sm:text-right">
- <p class="font-black text-lg text-slate-800 dark:text-white">${{ number_format($f->total_documento, 0, ',', '.') }}</p>
+ <p class="font-black text-lg text-slate-800 dark:text-white">$ {{ number_format($f->total_documento, 0, ',', '.') }}</p>
  @if($f->saldo_pendiente > 0)
- <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider mt-0.5">Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}</p>
+ <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider mt-0.5">Saldo: $ {{ number_format($f->saldo_pendiente, 0, ',', '.') }}</p>
  @endif
  </div>
  

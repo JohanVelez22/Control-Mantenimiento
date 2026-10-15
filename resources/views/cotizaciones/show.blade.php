@@ -15,7 +15,7 @@
 
         <div class="detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
             <div class="flex items-center gap-3">
-                <a href="{{ route('cotizaciones.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+                <a href="{{ route('cotizaciones.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
                 <div>
                     <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                         📝 {{ $cotizacion->codigo }}
@@ -85,7 +85,7 @@
                 </div>
                 <div class="mt-4 pt-4 border-t border-gray-200/50 dark:border-white/10">
                     <p class="text-2xl font-black bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent text-right">
-                        Total: ${{ number_format($cotizacion->total, 0, ',', '.') }}
+                        Total: $ {{ number_format($cotizacion->total, 0, ',', '.') }}
                     </p>
                 </div>
             </div>
@@ -123,8 +123,8 @@
                             @endif
                         </td>
                         <td data-label="Cant." class="text-center font-bold">{{ $item->cantidad }}</td>
-                        <td data-label="Precio Un." class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
-                        <td data-label="Subtotal" class="text-right font-black text-blue-600 dark:text-cyan-400">${{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                        <td data-label="Precio Un." class="text-right font-bold text-slate-800 dark:text-white">$ {{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+                        <td data-label="Subtotal" class="text-right font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                     </tr>
                     @endforeach
                 </tbody>

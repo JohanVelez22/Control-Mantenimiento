@@ -106,14 +106,14 @@
   </td>
   <td data-label="Fecha:" class="text-center font-medium {{ $dim }}">{{ $f->fecha->format('d/m/Y') }}</td>
   <td data-label="Total:" class="text-right font-black text-slate-800 dark:text-white text-base {{ $dim }}">
-  ${{ number_format($f->total_documento, 0, ',', '.') }}
+  $ {{ number_format($f->total_documento, 0, ',', '.') }}
   </td>
   <td data-label="Pagado:" class="text-right {{ $dim }}">
   <span class="font-bold text-sm {{ $f->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
-  ${{ number_format($f->total_pagado, 0, ',', '.') }}
+  $ {{ number_format($f->total_pagado, 0, ',', '.') }}
   </span>
   @if($f->saldo_pendiente > 0 && $f->estado !== 'anulada')
-  <div class="text-[10px] text-red-500 uppercase tracking-tight mt-0.5 font-bold">Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}</div>
+  <div class="text-[10px] text-red-500 uppercase tracking-tight mt-0.5 font-bold">Saldo: $ {{ number_format($f->saldo_pendiente, 0, ',', '.') }}</div>
   @endif
   </td>
   <td data-label="Util / Pérd:" class="text-center {{ $dim }}">
@@ -121,15 +121,15 @@
       <span class="text-gray-400 text-xs font-semibold">—</span>
   @elseif($f->tipo_movimiento === 'venta')
       @if($f->utilidad > 0)
-          <span class="inline-flex items-center gap-1 font-bold text-xs px-2.5 py-1 rounded-lg whitespace-nowrap shadow-sm" style="background: rgba(16, 185, 129, 0.15) !important; color: #10b981 !important; border: 1px solid rgba(16, 185, 129, 0.35) !important;" title="Utilidad estimada: +${{ number_format($f->utilidad, 0, ',', '.') }}">
-              + ${{ number_format($f->utilidad, 0, ',', '.') }}
+          <span class="inline-flex items-center gap-1 font-bold text-xs px-2.5 py-1 rounded-lg whitespace-nowrap shadow-sm" style="background: rgba(16, 185, 129, 0.15) !important; color: #10b981 !important; border: 1px solid rgba(16, 185, 129, 0.35) !important;" title="Utilidad estimada: +$ {{ number_format($f->utilidad, 0, ',', '.') }}">
+              + $ {{ number_format($f->utilidad, 0, ',', '.') }}
           </span>
       @elseif($f->utilidad < 0)
-          <span class="inline-flex items-center gap-1 font-bold text-xs px-2.5 py-1 rounded-lg whitespace-nowrap shadow-sm" style="background: rgba(239, 68, 68, 0.18) !important; color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.40) !important;" title="Pérdida en la venta (Margen negativo): -${{ number_format(abs($f->utilidad), 0, ',', '.') }}">
-            - ${{ number_format(abs($f->utilidad), 0, ',', '.') }}
+          <span class="inline-flex items-center gap-1 font-bold text-xs px-2.5 py-1 rounded-lg whitespace-nowrap shadow-sm" style="background: rgba(239, 68, 68, 0.18) !important; color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.40) !important;" title="Pérdida en la venta (Margen negativo): -$ {{ number_format(abs($f->utilidad), 0, ',', '.') }}">
+            - $ {{ number_format(abs($f->utilidad), 0, ',', '.') }}
           </span>
       @else
-          <span class="text-xs text-gray-400 font-semibold">$0</span>
+          <span class="text-xs text-gray-400 font-semibold">$ 0</span>
       @endif
   @else
       <span class="text-gray-400 text-xs font-semibold" title="No aplica para compras de inventario">—</span>

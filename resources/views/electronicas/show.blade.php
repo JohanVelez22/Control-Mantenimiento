@@ -12,9 +12,9 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 w-full relative z-20">
             <div class="flex items-center gap-3">
                 @if(!$esInvitado)
-                <a href="{{ route('electronicas.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+                <a href="{{ route('electronicas.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
                 @else
-                <a href="{{ route('consulta.electronicas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a búsqueda">⬅️</a>
+                <a href="{{ route('consulta.electronicas') }}" class="btn-ghost text-xl" title="Volver a búsqueda">⬅️</a>
                 @endif
                 <div>
                     <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
@@ -88,17 +88,17 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div class="glass-card hover-glow glass-card-purple p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">💰</span> Costo Estimado</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($electronica->costo, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($electronica->costo, 0, ',', '.') }}</p>
             </div>
             
             <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">💵</span> Total Abonado</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($electronica->total_abonado, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($electronica->total_abonado, 0, ',', '.') }}</p>
             </div>
             
             <div class="glass-card hover-glow {{ $electronica->saldo_pendiente > 0 ? 'glass-card-red' : 'glass-card-teal' }} p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold {{ $electronica->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">⚖️</span> Saldo Pendiente</p>
-                <p class="text-2xl font-black {{ $electronica->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">${{ number_format($electronica->saldo_pendiente, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black {{ $electronica->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">$ {{ number_format($electronica->saldo_pendiente, 0, ',', '.') }}</p>
             </div>
         </div>
 
@@ -123,7 +123,7 @@
                                 $precioRep = ($esCliTecnico && $stock->precio_tecnico > 0) ? $stock->precio_tecnico : $stock->precio_venta;
                                 $tagRep = ($esCliTecnico && $stock->precio_tecnico > 0) ? '🔧 P. Técnico' : 'P. Venta';
                             @endphp
-                            <option value="{{ $stock->id }}">{{ $stock->producto }} (Disp: {{ $stock->cantidad }} | {{ $tagRep }}: ${{ number_format($precioRep, 0, ',', '.') }})</option>
+                            <option value="{{ $stock->id }}">{{ $stock->producto }} (Disp: {{ $stock->cantidad }} | {{ $tagRep }}: $ {{ number_format($precioRep, 0, ',', '.') }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -163,7 +163,7 @@
                     <div>
                         <p class="font-bold text-slate-800 dark:text-white text-lg leading-tight">{{ $repuesto->producto }}</p>
                         <p class="text-xs font-semibold text-gray-500 mt-0.5">
-                            Cant: {{ $repuesto->pivot->cantidad }} <span class="text-gray-300 dark:text-gray-600 mx-1">|</span> Unit: ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }}
+                            Cant: {{ $repuesto->pivot->cantidad }} <span class="text-gray-300 dark:text-gray-600 mx-1">|</span> Unit: $ {{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }}
                         </p>
                     </div>
                 </div>
@@ -171,7 +171,7 @@
                 <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
                     <div class="text-right">
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">Subtotal</p>
-                        <p class="font-black text-blue-600 dark:text-cyan-400">${{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</p>
+                        <p class="font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</p>
                     </div>
                     
                     @if(auth()->user()->role === 'admin' && !$electronica->anulado)
@@ -266,7 +266,7 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <p class="font-black text-lg {{ $abono->anulado ? 'text-red-500/80 dark:text-red-400 line-through' : 'text-emerald-600 dark:text-emerald-400' }} leading-tight">
-                                ${{ number_format($abono->monto, 0, ',', '.') }}
+                                $ {{ number_format($abono->monto, 0, ',', '.') }}
                             </p>
                             @if($abono->anulado)
                                 <span class="pill pill-anulado text-[10px] py-0.5 px-2 font-bold uppercase tracking-wider">🚫 Anulado</span>
@@ -287,7 +287,7 @@
                     @endif
 
                     @if(!$abono->anulado && auth()->user()->isAdmin())
-                    <form action="{{ route('electronicas.abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de ${{ number_format($abono->monto, 0, ',', '.') }}?">
+                    <form action="{{ route('electronicas.abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de $ {{ number_format($abono->monto, 0, ',', '.') }}?">
                         @csrf @method('DELETE')
                         <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Anular abono">
                             🗑️

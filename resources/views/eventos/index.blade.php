@@ -202,9 +202,11 @@
                                     {{ $evento->user->name ?? 'Sistema' }}
                                 </span>
                             </td>
-                            <td data-label="Detalles:" class="text-center">
+                            <td data-label="Detalles:" class="text-center col-acciones">
                                 @if($evento->valores_antiguos || $evento->valores_nuevos)
-                                    <button type="button" onclick="openDetalle({{ $evento->id }}, '{{ $evento->accion }}')" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 mx-auto" title="Ver Detalles">👁️</button>
+                                    <div class="actions-grid">
+                                        <button type="button" onclick="openDetalle({{ $evento->id }}, '{{ $evento->accion }}')" class="btn-ghost btn-action-view" title="Ver Detalles">👁️</button>
+                                    </div>
                                     
                                     {{-- Data escondida para el modal --}}
                                     <div id="data-ant-{{ $evento->id }}" class="hidden">@json($evento->valores_antiguos)</div>
