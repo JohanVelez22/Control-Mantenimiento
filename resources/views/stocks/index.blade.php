@@ -164,7 +164,7 @@
         <form id="baja-stock-form" method="POST" action="">
             @csrf
             {{-- Contenedor Central al mismo ancho que el modal de notificaciones --}}
-            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1 pb-2">
+            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1">
                 
                 {{-- Bloque resumen del artículo con barra de acento --}}
                 <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 relative overflow-hidden mb-4">
@@ -212,7 +212,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 w-full modal-divider">
+            <div class="flex items-center gap-3 mt-4 w-full">
                 <button type="button" onclick="closeBajaStockModal()" class="flex-1 btn-ghost-red justify-center py-2.5 rounded-xl font-bold text-sm">
                     Cancelar
                 </button>
