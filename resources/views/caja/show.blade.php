@@ -64,7 +64,7 @@
         </div>
 
         {{-- Datos Operativos del Movimiento --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 text-sm p-6 glass-card mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 text-sm mb-6">
             <div class="min-w-0">
                 <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
                     {{ $movimiento->persona ? '👤 Cliente / Persona' : ($movimiento->empresa ? '🏢 Proveedor / Empresa' : '👤 Tercero') }}
@@ -137,8 +137,8 @@
 
         {{-- Descripción --}}
         @if($movimiento->descripcion)
-        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Descripción / Observaciones</h3>
-        <div class="p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl mb-8 shadow-sm">
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-2">Descripción / Observaciones</h3>
+        <div class="py-2.5 px-4 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-xl mb-6 shadow-sm">
             <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">{{ $movimiento->descripcion }}</p>
         </div>
         @endif
@@ -167,17 +167,17 @@
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
             <span>📑</span> Pagos y Abonos Relacionados ({{ $relacionados->count() }})
         </h3>
-        <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-8">
-            <table class="ts-table mb-0 w-full">
+        <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-6">
+            <table id="tabla-abonos-relacionados" class="ts-table table-dense mb-0 w-full">
                 <thead>
                     <tr>
-                        <th class="text-center whitespace-nowrap" style="width: 60px;">Código</th>
-                        <th class="text-center whitespace-nowrap" style="width: 100px;">Fecha</th>
+                        <th class="text-center whitespace-nowrap" style="width: 65px;">Código</th>
+                        <th class="text-center whitespace-nowrap" style="width: 95px;">Fecha</th>
                         <th class="text-left">Descripción</th>
-                        <th class="text-center whitespace-nowrap" style="width: 130px;">Método Pago</th>
-                        <th class="text-center whitespace-nowrap" style="width: 140px;">Registrado Por</th>
+                        <th class="text-center whitespace-nowrap" style="width: 120px;">Método Pago</th>
+                        <th class="text-center whitespace-nowrap" style="width: 130px;">Registrado Por</th>
                         <th class="text-right whitespace-nowrap" style="width: 100px;">Monto</th>
-                        <th class="text-center whitespace-nowrap" style="width: 90px;">Acciones</th>
+                        <th class="text-center whitespace-nowrap" style="width: 65px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -198,9 +198,11 @@
                             ${{ number_format($child->monto, 0, ',', '.') }}
                         </td>
                         <td class="text-center whitespace-nowrap">
-                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost px-2 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este pago">
-                                👁️
-                            </a>
+                            <div class="actions-grid">
+                                <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este pago">
+                                    👁️
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     @endforeach
@@ -209,7 +211,7 @@
         </div>
         @endif
 
-        <div class="pt-4 border-t border-gray-200/50 dark:border-white/5 flex justify-between items-center text-xs font-semibold text-gray-400">
+        <div class="pt-4 flex justify-between items-center text-xs font-semibold text-gray-400">
             <span>Última actualización: {{ $movimiento->updated_at->format('d/m/Y H:i:s') }}</span>
             <span>Fecha creación: {{ $movimiento->created_at->format('d/m/Y H:i:s') }}</span>
         </div>

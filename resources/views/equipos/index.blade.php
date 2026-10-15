@@ -172,8 +172,8 @@
 
         <form id="baja-equipo-form" method="POST" action="">
             @csrf
-            {{-- Contenedor Central al mismo ancho que el modal de notificaciones --}}
-            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1">
+            {{-- Contenedor Central a ancho completo alineado con el borde horizontal --}}
+            <div class="w-full flex flex-col flex-1">
                 
                 {{-- Bloque resumen del equipo con barra de acento --}}
                 <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 relative overflow-hidden mb-4">
@@ -234,7 +234,7 @@
 
 <!-- MODAL DETALLE DE BAJA Y DIAGNÓSTICO (Simétrico al de notificaciones) -->
 <div id="detalle-baja-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
-    <div id="detalle-baja-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px;">
+    <div id="detalle-baja-card" class="ts-modal-card scale-95 opacity-0 px-6 pb-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px; padding-top: 19px;">
         
         {{-- Header simétrico a notificaciones --}}
         <div class="flex items-center gap-3 mb-4">
@@ -245,8 +245,8 @@
             </div>
         </div>
 
-        {{-- Contenedor Central al mismo ancho que el modal de notificaciones --}}
-        <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1 space-y-3.5">
+        {{-- Contenedor Central a ancho completo alineado con el borde horizontal --}}
+        <div class="w-full flex flex-col flex-1 space-y-3.5">
             
             {{-- Bloque resumen del equipo con barra de acento --}}
             <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 relative overflow-hidden">
@@ -291,7 +291,7 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-3 mt-4 w-full">
+        <div class="flex items-center gap-3 mt-6 w-full" style="margin-top: 23px;">
             <button type="button" onclick="closeDetalleBajaModal()" class="w-full btn-ghost-red justify-center py-2.5 rounded-xl font-bold text-sm transition">
                 Cerrar
             </button>

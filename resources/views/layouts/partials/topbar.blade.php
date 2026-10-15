@@ -63,11 +63,11 @@
                                  style="background:rgba(255,255,255,0.82); border:1px solid rgba(255,255,255,0.5); backdrop-filter:blur(32px) saturate(200%); -webkit-backdrop-filter:blur(32px) saturate(200%); box-shadow:0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.6);">
 
                                 <!-- Header -->
-                                <div id="notif-header" class="px-3 py-2.5 relative border-b text-center"
+                                <div id="notif-header" class="px-4 py-2.5 relative border-b text-center"
                                      style="background:rgba(37,99,235,0.12); border-color:rgba(37,99,235,0.15);">
                                     <span id="notif-title" class="text-[11px] font-semibold tracking-[0.15em] font-logo inline-block uppercase" style="color:#06B6D4;">Pendientes</span>
                                     @if(isset($totalPendientes) && $totalPendientes > 0)
-                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center min-w-[20px] h-[20px] px-1 rounded-full text-white text-[10px] font-black" style="background:#ef4444; box-shadow:0 2px 6px rgba(239,68,68,0.5)">{{ $totalPendientes }}</span>
+                                    <span class="absolute top-1/2 -translate-y-1/2 flex items-center justify-center text-[11px] font-black px-2 py-0.5 rounded-full text-white" style="right:16px; background:#ef4444; box-shadow:0 2px 6px rgba(239,68,68,0.5)">{{ $totalPendientes }}</span>
                                     @endif
                                 </div>
 

@@ -25,53 +25,53 @@
             @endif
         </div>
 
- <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 rounded-2xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm">
             <div class="min-w-0">
                 <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Identificación</span>
                 <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">
                     <span class="text-indigo-500 mr-1">({{ strtoupper(str_replace('_', ' ', $proveedor->tipo_identificacion ?? 'NIT')) }})</span>{{ $proveedor->identificacion }}
                 </span>
             </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Contacto Principal</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->contacto_nombre ?? '—' }}</span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Teléfonos</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words flex flex-wrap items-center gap-2">
- <x-whatsapp-link :telefono="$proveedor->telefono" />
- @if($proveedor->telefono2)
- <span class="text-xs text-gray-400 font-normal inline-flex items-center gap-1">
- (Alt: <x-whatsapp-link :telefono="$proveedor->telefono2" class="text-xs text-gray-400 font-normal" />)
- </span>
- @endif
- </span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Correo Electrónico</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->email ?? '—' }}</span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Ubicación</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">
- @if($proveedor->municipio || $proveedor->departamento)
- {{ implode(', ', array_filter([$proveedor->municipio, $proveedor->departamento])) }}
- @else
- —
- @endif
- </span>
- </div>
-    <div class="min-w-0">
-        <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Dirección</span>
-        <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->direccion ?? '—' }}</span>
-    </div>
-    @if($proveedor->notas)
-    <div class="md:col-span-2 min-w-0 mt-2 p-3.5 glass-card !rounded-xl">
-        <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Notas / Condiciones Comerciales</span>
-        <span class="font-medium text-slate-800 dark:text-slate-200 break-words leading-relaxed">{{ $proveedor->notas }}</span>
-    </div>
-    @endif
- </div>
+            <div class="min-w-0">
+                <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Contacto Principal</span>
+                <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->contacto_nombre ?? '—' }}</span>
+            </div>
+            <div class="min-w-0">
+                <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Teléfonos</span>
+                <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words flex flex-wrap items-center gap-2">
+                    <x-whatsapp-link :telefono="$proveedor->telefono" />
+                    @if($proveedor->telefono2)
+                    <span class="text-xs text-gray-400 font-normal inline-flex items-center gap-1">
+                        (Alt: <x-whatsapp-link :telefono="$proveedor->telefono2" class="text-xs text-gray-400 font-normal" />)
+                    </span>
+                    @endif
+                </span>
+            </div>
+            <div class="min-w-0">
+                <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Correo Electrónico</span>
+                <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->email ?? '—' }}</span>
+            </div>
+            <div class="min-w-0">
+                <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Ubicación</span>
+                <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">
+                    @if($proveedor->municipio || $proveedor->departamento)
+                        {{ implode(', ', array_filter([$proveedor->municipio, $proveedor->departamento])) }}
+                    @else
+                        —
+                    @endif
+                </span>
+            </div>
+            <div class="min-w-0">
+                <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Dirección</span>
+                <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $proveedor->direccion ?? '—' }}</span>
+            </div>
+            @if($proveedor->notas)
+            <div class="md:col-span-2 min-w-0 mt-2">
+                <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Notas / Condiciones Comerciales</span>
+                <span class="font-medium text-slate-800 dark:text-slate-200 break-words leading-relaxed">{{ $proveedor->notas }}</span>
+            </div>
+            @endif
+        </div>
 
         {{-- Resumen financiero --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 mt-8">Resumen Financiero</h3>

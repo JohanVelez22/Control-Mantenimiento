@@ -322,7 +322,7 @@
                     <input type="text" 
                            name="motivo_diferencia" 
                            id="motivo_diferencia" 
-                           placeholder="Opcional: Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)..." 
+                           placeholder="Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)..." 
                            class="glass-input text-xs sm:text-sm">
                     <p id="error-motivo-diferencia" class="hidden text-xs text-red-500 font-bold mt-1">
                         ⚠️ Existe una diferencia en caja. Debes indicar la justificación o causa del descuadre para poder cerrar el día.
@@ -506,7 +506,7 @@
             if (asteriscoEl) asteriscoEl.classList.add('hidden');
             if (motivoInput) {
                 motivoInput.removeAttribute('required');
-                motivoInput.placeholder = 'Opcional: Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)...';
+                motivoInput.placeholder = 'Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)...';
                 motivoInput.classList.remove('!border-red-500', '!ring-2', '!ring-red-500/40');
             }
             if (errorMotivoEl) errorMotivoEl.classList.add('hidden');

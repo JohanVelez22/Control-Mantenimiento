@@ -272,8 +272,8 @@
 
         <form id="baja-stock-form" method="POST" action="">
             @csrf
-            {{-- Contenedor Central al mismo ancho que el modal de notificaciones --}}
-            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1">
+            {{-- Contenedor Central a ancho completo alineado con el borde horizontal --}}
+            <div class="w-full flex flex-col flex-1">
                 
                 {{-- Bloque resumen del artículo con barra de acento --}}
                 <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 relative overflow-hidden mb-4">
@@ -348,7 +348,8 @@
 
         <form id="revertir-baja-form" method="POST" action="">
             @csrf
-            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1">
+            {{-- Contenedor Central a ancho completo alineado con el borde horizontal --}}
+            <div class="w-full flex flex-col flex-1">
                 
                 {{-- Bloque resumen del reintegro con barra de acento --}}
                 <div class="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 relative overflow-hidden mb-4">
