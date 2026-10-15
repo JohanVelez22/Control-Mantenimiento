@@ -1294,8 +1294,6 @@
                 let tsInstance = new TomSelect(el, tsConfig);
 
                 // Asegurar cierre, limpieza de lo escrito y desenfoque al seleccionar cualquier opción
-                // Se usa requestAnimationFrame para que TomSelect termine de renderizar el ítem
-                // seleccionado ANTES de quitar .focus (que lo oculta vía CSS)
                 tsInstance.on('item_add', function() {
                     tsInstance.close();
                     tsInstance.setTextboxValue('');
@@ -1304,9 +1302,28 @@
                     });
                 });
 
-                // Al cerrar el desplegable, limpiar cualquier texto que se haya escrito para buscar
+                // Si el usuario vuelve a seleccionar la opción que YA estaba seleccionada,
+                // TomSelect en modo single no dispara 'item_add'. Interceptamos para cerrar y restaurar la vista inmediatamente.
+                let origOnOptionSelect = tsInstance.onOptionSelect;
+                tsInstance.onOptionSelect = function(evt, option) {
+                    let val = option ? (option.dataset.value || option.getAttribute('data-value')) : null;
+                    let wasAlreadySelected = val !== null && val !== undefined && tsInstance.items.includes(String(val));
+                    origOnOptionSelect.apply(tsInstance, arguments);
+                    if (wasAlreadySelected) {
+                        tsInstance.close();
+                        tsInstance.setTextboxValue('');
+                        requestAnimationFrame(function() {
+                            tsInstance.blur();
+                        });
+                    }
+                };
+
+                // Al cerrar el desplegable, limpiar cualquier texto que se haya escrito para buscar y desenfocar
                 tsInstance.on('dropdown_close', function() {
                     tsInstance.setTextboxValue('');
+                    requestAnimationFrame(function() {
+                        tsInstance.blur();
+                    });
                 });
 
                 // Al abrir el desplegable, asegurar que el campo de búsqueda esté limpio para escribir y alinear dropdown

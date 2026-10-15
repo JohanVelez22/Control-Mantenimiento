@@ -5817,21 +5817,26 @@ select.glass-input.no-tomselect {
   border-bottom: none !important;
 }
 
-/* Si hay un ítem seleccionado, ocultar el input para que no estorbe */
-.ts-wrapper.single.has-items:not(.focus):not(.dropdown-active) .ts-control>input {
+/* Si hay un ítem seleccionado y el dropdown está cerrado, ocultar el input de búsqueda */
+.ts-wrapper.single.has-items:not(.dropdown-active) .ts-control>input {
   display: none !important;
 }
 
-/* En selects con búsqueda, ocultar el ítem al abrir o enfocar para permitir escribir y filtrar limpiamente */
-.ts-wrapper.single.has-items:not(.no-search).focus .ts-control>.item,
+/* En selects con búsqueda, ocultar el ítem ÚNICAMENTE mientras el menú desplegable esté abierto */
 .ts-wrapper.single.has-items:not(.no-search).dropdown-active .ts-control>.item {
   display: none !important;
 }
 
-.ts-wrapper.single.has-items:not(.no-search).focus .ts-control>input,
 .ts-wrapper.single.has-items:not(.no-search).dropdown-active .ts-control>input {
   display: inline-block !important;
   width: 100% !important;
+}
+
+/* Cuando el dropdown está cerrado, el ítem seleccionado SIEMPRE debe mostrarse visible, incluso si el wrapper conserva el foco */
+.ts-wrapper.single.has-items:not(.dropdown-active) .ts-control>.item {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* NOTA: NO ocultamos .item al abrir dropdown para selects sin búsqueda.
