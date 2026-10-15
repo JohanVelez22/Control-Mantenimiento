@@ -9038,88 +9038,51 @@ input[type="radio"][value="correctivo"] {
   z-index: 100000 !important;
 }
 
-/* --- FILA DE CLASIFICACIONES EXISTENTES (CATEGORÍA / SUBCATEGORÍA) --- */
-.categoria-list {
-  padding: 0 !important;
-  margin: 0 !important;
-  list-style: none !important;
-  width: 100% !important;
-}
-
-.categoria-item-row {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 8px !important;
-  width: 100% !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  list-style: none !important;
-}
-
-.categoria-row-form {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 8px !important;
-  width: 100% !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-/* El campo tipo ajustado al ancho exacto de "Subcategoría" y con el mismo tamaño de letra que el nombre */
-.categoria-tipo-col {
-  width: 160px !important;
-  min-width: 160px !important;
-  max-width: 160px !important;
-  flex: 0 0 160px !important;
+/* --- SELECTOR TIPO CLASIFICACIÓN (CATEGORÍA / SUBCATEGORÍA) --- */
+.categoria-tipo-wrap {
+  width: 175px !important;
+  min-width: 175px !important;
+  max-width: 175px !important;
+  flex: 0 0 175px !important;
   flex-shrink: 0 !important;
-  margin-left: -12px !important;
-  margin-right: 0 !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding: 0 !important;
 }
 
-.categoria-tipo-col select.glass-input,
-.categoria-tipo-col .ts-wrapper,
-.categoria-tipo-col .ts-wrapper.glass-input,
-.categoria-tipo-col .ts-control {
-  width: 160px !important;
-  min-width: 160px !important;
-  max-width: 160px !important;
-  margin: 0 !important;
-  padding: 9px 12px !important;
+.categoria-tipo-wrap select.glass-input {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
   font-size: 14px !important;
   font-weight: 600 !important;
   box-sizing: border-box !important;
 }
 
-.categoria-tipo-col .ts-control .item,
-.categoria-tipo-col .ts-control .ts-item-display {
+.categoria-tipo-wrap .ts-wrapper {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.categoria-tipo-wrap .ts-control {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  padding: 8px 12px !important;
+  min-height: 38px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  box-sizing: border-box !important;
+}
+
+.categoria-tipo-wrap .ts-control .item,
+.categoria-tipo-wrap .ts-control .ts-item-display {
   font-size: 14px !important;
   font-weight: 600 !important;
   white-space: nowrap !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* El campo siguiente (Nombre) ocupa todo el resto del espacio disponible, con mismo tamaño de letra */
-.categoria-nombre-input {
-  flex: 1 1 0% !important;
-  min-width: 120px !important;
-  width: 100% !important;
-  font-size: 14px !important;
-  padding: 9px 12px !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
-}
-
-.categoria-actions {
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  flex-shrink: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
 }

@@ -104,7 +104,7 @@
                 
                 <ul class="space-y-3.5">
                     @forelse($conceptos as $c)
-                    <li class="flex items-center justify-between gap-3">
+                    <li class="flex items-center justify-between gap-2">
                         <form action="{{ route('conceptos.update', $c->id) }}" method="POST" class="flex-1 flex items-center gap-2">
                             @csrf @method('PUT')
                             <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-2 px-3 text-sm">

@@ -109,28 +109,26 @@
             <div class="glass-card p-6">
                 <h3 class="font-bold text-slate-800 dark:text-white mb-4">Clasificaciones Existentes</h3>
                 
-                <div class="categoria-list space-y-3.5">
+                <ul class="space-y-3.5">
                     @forelse($categorias as $c)
-                    <div class="categoria-item-row">
-                        <form action="{{ route('stocks.categorias.update', $c->id) }}" method="POST" class="categoria-row-form">
+                    <li class="flex items-center justify-between gap-2">
+                        <form action="{{ route('stocks.categorias.update', $c->id) }}" method="POST" class="flex-1 flex items-center gap-2">
                             @csrf @method('PUT')
-                            <div class="categoria-tipo-col">
-                                <select name="tipo" class="glass-input text-sm font-bold {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
+                            <div class="categoria-tipo-wrap">
+                                <select name="tipo" class="glass-input py-2 px-3 text-sm font-bold w-full {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
                                     <option value="categoria" {{ $c->tipo == 'categoria' ? 'selected' : '' }}>🗂️ Categoría</option>
                                     <option value="subcategoria" {{ $c->tipo == 'subcategoria' ? 'selected' : '' }}>📂 Subcategoría</option>
                                 </select>
                             </div>
-                            <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input categoria-nombre-input text-sm" placeholder="Nombre de la clasificación...">
-                            <div class="categoria-actions">
-                                <button type="submit" class="btn-ghost px-2.5 py-2 text-xs text-blue-600 dark:text-blue-400 font-bold shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Guardar clasificación">💾</button>
-                                <button type="button" onclick="openDeletePwd('{{ route('stocks.categorias.destroy', $c->id) }}')" class="btn-danger px-2.5 py-2 text-xs shrink-0" title="Eliminar clasificación">🗑️</button>
-                            </div>
+                            <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-2 px-3 text-sm" placeholder="Nombre de la clasificación...">
+                            <button type="submit" class="btn-ghost px-2.5 py-2 text-xs text-blue-600 dark:text-blue-400 font-bold shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Guardar clasificación">💾</button>
                         </form>
-                    </div>
+                        <button type="button" onclick="openDeletePwd('{{ route('stocks.categorias.destroy', $c->id) }}')" class="btn-danger px-2.5 py-2 text-xs shrink-0" title="Eliminar clasificación">🗑️</button>
+                    </li>
                     @empty
-                    <div class="py-6 text-center text-gray-500 font-medium text-sm">No hay clasificaciones registradas.</div>
+                    <li class="py-6 text-center text-gray-500 font-medium text-sm">No hay clasificaciones registradas.</li>
                     @endforelse
-                </div>
+                </ul>
             </div>
         </div>
     </div>
