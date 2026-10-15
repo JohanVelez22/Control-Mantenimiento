@@ -15,7 +15,9 @@
         @endif
 
         {{-- Encabezado --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 relative z-20">
+        <div class="caja-detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 relative z-20">
+
+
             <div class="flex items-center gap-4">
                 <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a la lista de caja">⬅️</a>
                 <div>
@@ -199,11 +201,10 @@
                         </td>
                         <td class="text-center whitespace-nowrap">
                             <div class="actions-grid">
-                                <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este pago">
-                                    👁️
-                                </a>
+                                <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este pago">👁️</a>
                             </div>
                         </td>
+
                     </tr>
                     @endforeach
                 </tbody>

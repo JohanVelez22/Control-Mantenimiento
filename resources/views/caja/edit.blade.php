@@ -190,9 +190,7 @@
                                     </td>
                                     <td data-label="Acciones:" class="text-center whitespace-nowrap">
                                         <div class="actions-grid">
-                                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este abono">
-                                                👁️
-                                            </a>
+                                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este abono">👁️</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -220,8 +218,8 @@
             </div>
         @endif
 
-        {{-- Botones de Acción al Final (Centrados verticalmente) --}}
-        <div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
+        {{-- Botones de Acción al Final (Centrados verticalmente con espacio balanceado) --}}
+        <div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-6 pt-0">
             <a href="{{ route('caja.index') }}" class="btn-cancel"><span>✕</span><span>Cancelar</span></a>
             <button type="submit" form="cajaEditForm" class="btn-save">🔄 Actualizar Movimiento</button>
         </div>

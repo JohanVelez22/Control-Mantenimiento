@@ -15,7 +15,7 @@
         @endif
 
         {{-- Encabezado unificado: Flecha Volver + Imagen + Título con Auto-Redimensión + Botones de Acción --}}
-        <div class="flex items-center justify-between gap-3 sm:gap-4 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6">
+        <div class="detail-header flex items-center justify-between gap-3 sm:gap-4 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8">
             <div class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
                 <a href="{{ route('stocks.index') }}" class="btn-ghost px-3 py-2 text-xl shrink-0" title="Volver">⬅️</a>
 

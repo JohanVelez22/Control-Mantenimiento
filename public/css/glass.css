@@ -715,52 +715,105 @@ html.dark #ts-topbar {
 .btn-secondary,
 .btn-ghost,
 .btn-danger,
-.btn-blue,
 .btn-success {
   white-space: nowrap !important;
   flex-shrink: 0;
 }
 
-/* --- BOTÓN PRIMARIO VIDRIO LIQUIDO -------------------------------------------------- */
+/* --- BOTÓN PRIMARIO VIDRIO LIQUIDO (Dimensiones idénticas a btn-purple: 38px) --- */
 .btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: white !important;
   background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
+/* --- LEVE BRILLO ELEGANTE EN BOTONES SÓLIDOS (Reflejo especular sutil Liquid Glass) --- */
+.btn-primary::before,
+.btn-today::before,
+.btn-print::before,
+.btn-excel::before,
+.btn-pdf::before,
+.btn-save::before,
+.btn-add::before,
+.btn-purple::before,
+.btn-backup::before,
+.btn-concepts::before,
+.btn-venta::before,
+.btn-compra::before,
+.btn-success::before,
+#btn-save-schedule::before,
+#btn-execute-backup::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 48% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.04) 70%, transparent 100%) !important;
+  border-radius: 12px 12px 0 0 !important;
+  pointer-events: none !important;
+  transition: all 0.22s ease !important;
 }
+
+.btn-primary:hover::before,
+.btn-today:hover::before,
+.btn-print:hover::before,
+.btn-excel:hover::before,
+.btn-pdf:hover::before,
+.btn-save:hover::before,
+.btn-add:hover::before,
+.btn-purple:hover::before,
+.btn-backup:hover::before,
+.btn-concepts:hover::before,
+.btn-venta:hover::before,
+.btn-compra:hover::before,
+.btn-success:hover::before,
+#btn-save-schedule:hover::before,
+#btn-execute-backup:hover::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.08) 70%, transparent 100%) !important;
+}
+
+.btn-danger::before,
+.btn-action-anular::before,
+[title*="Anular"]::before,
+[title*="anular"]::before,
+label[for*="photo"]::before,
+label[for*="image"]::before,
+label.btn-blue::before,
+.btn-blue::before {
+  content: none !important;
+  display: none !important;
+}
+
+
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(99, 102, 241, 0.52), 0 0 16px rgba(99, 102, 241, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: white !important;
 }
 
 .btn-primary:active {
-  transform: translateY(0);
 }
 
 /* Calibración milimétrica para Guardar Programación */
@@ -791,13 +844,11 @@ html.dark #ts-topbar {
 }
 
 #btn-save-schedule:hover {
-  transform: translateY(-1px) !important;
   box-shadow: 0 4px 16px rgba(99, 102, 241, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
   color: white !important;
 }
 
 #btn-save-schedule:active {
-  transform: translateY(0) !important;
 }
 
 #btn-save-schedule span {
@@ -836,11 +887,9 @@ html.dark #ts-topbar {
 }
 
 #btn-execute-backup:hover {
-  transform: translateY(-1px) !important;
 }
 
 #btn-execute-backup:active {
-  transform: translateY(0) !important;
 }
 
 #btn-execute-backup span {
@@ -869,32 +918,20 @@ html.dark #ts-topbar {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.40), inset 0 1.5px 0 rgba(255, 255, 255, 0.42);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.42);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-clean::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-clean:hover {
-  transform: translateY(-1px);
   background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%) !important;
-  box-shadow: 0 6px 22px rgba(139, 92, 246, 0.55), 0 0 16px rgba(139, 92, 246, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: #FFFFFF !important;
 }
 
 .btn-clean:active {
-  transform: translateY(0);
 }
 
 /* ---- Botón Agregar Línea / Artículo (Liquid Glass Esmeralda Constructivo) ---- */
@@ -913,76 +950,58 @@ html.dark #ts-topbar {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-add::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-add:hover {
-  transform: translateY(-1px);
   background: linear-gradient(135deg, #34D399 0%, #10B981 100%) !important;
-  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.50), 0 0 16px rgba(16, 185, 129, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: #FFFFFF !important;
 }
 
 .btn-add:active {
-  transform: translateY(0);
 }
 
-/* ---- Botón Hoy (Liquid Glass Cian Sólido / Atajo Temporal) ---- */
+/* ---- Botón Hoy (Sólido Cian / Idéntico comportamiento a Ver Día) ---- */
 .btn-today {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
   color: #FFFFFF !important;
-  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%) !important;
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.40), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-}
-
-.btn-today::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+  box-sizing: border-box !important;
 }
 
 .btn-today:hover {
-  transform: translateY(-1px);
-  background: linear-gradient(135deg, #38BDF8 0%, #0EA5E9 100%) !important;
-  box-shadow: 0 6px 22px rgba(14, 165, 233, 0.55), 0 0 16px rgba(14, 165, 233, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%) !important;
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   color: #FFFFFF !important;
+  transform: none !important;
 }
 
 .btn-today:active {
-  transform: translateY(0);
+  transform: none !important;
 }
 
 /* ---- Botón Respaldos / Seguridad (Liquid Glass Teal Tecnológico / Petróleo Blindado) ---- */
@@ -1001,32 +1020,20 @@ html.dark #ts-topbar {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.40), inset 0 1.5px 0 rgba(255, 255, 255, 0.42);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.42);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-backup::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-backup:hover {
-  transform: translateY(-1px);
   background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%) !important;
-  box-shadow: 0 6px 22px rgba(13, 148, 136, 0.55), 0 0 16px rgba(13, 148, 136, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: #FFFFFF !important;
 }
 
 .btn-backup:active {
-  transform: translateY(0);
 }
 
 /* Variantes dinámicas de color para el botón de ejecución según la opción seleccionada */
@@ -1609,7 +1616,6 @@ html.dark .backup-metric-val.val-teal {
   background: rgba(79, 70, 229, 0.2) !important;
   border-color: rgba(79, 70, 229, 0.45) !important;
   color: #3730A3 !important;
-  transform: translateY(-1px) !important;
 }
 
 .dark .btn-copy-path,
@@ -1624,7 +1630,6 @@ html.dark .btn-copy-path:hover {
   background: rgba(99, 102, 241, 0.28) !important;
   border-color: rgba(129, 140, 248, 0.6) !important;
   color: #FFFFFF !important;
-  transform: translateY(-1px) !important;
 }
 
 .btn-open-folder {
@@ -1654,7 +1659,6 @@ html.dark .btn-copy-path:hover {
   background: rgba(13, 148, 136, 0.2) !important;
   border-color: rgba(13, 148, 136, 0.45) !important;
   color: #0D9488 !important;
-  transform: translateY(-1px) !important;
   box-shadow: none !important;
 }
 
@@ -1671,7 +1675,6 @@ html.dark .btn-open-folder:hover {
   background: rgba(45, 212, 191, 0.26) !important;
   border-color: rgba(45, 212, 191, 0.6) !important;
   color: #FFFFFF !important;
-  transform: translateY(-1px) !important;
   box-shadow: none !important;
 }
 
@@ -1893,7 +1896,6 @@ html.dark .backup-file-size {
 
 .btn-backup-download:hover {
   background: rgba(13, 148, 136, 0.22) !important;
-  transform: translateY(-1px);
 }
 
 .dark .btn-backup-download,
@@ -1924,7 +1926,6 @@ html.dark .btn-backup-download:hover {
 
 .btn-backup-restore:hover {
   background: rgba(59, 130, 246, 0.22) !important;
-  transform: translateY(-1px);
 }
 
 .dark .btn-backup-restore,
@@ -1956,7 +1957,6 @@ html.dark .btn-backup-restore:hover {
 .btn-backup-update:hover {
   background: rgba(59, 130, 246, 0.22) !important;
   border-color: rgba(59, 130, 246, 0.45) !important;
-  transform: translateY(-1px);
 }
 
 .dark .btn-backup-update,
@@ -1987,7 +1987,6 @@ html.dark .btn-backup-update:hover {
 
 .btn-backup-delete:hover {
   background: rgba(239, 68, 68, 0.2) !important;
-  transform: translateY(-1px);
 }
 
 .dark .btn-backup-delete,
@@ -2457,31 +2456,19 @@ input[type="number"].no-spinners,
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.40), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-save::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 13px 13px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-save:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.55), 0 0 16px rgba(99, 102, 241, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
 .btn-save:active {
-  transform: translateY(0);
 }
 
 /* ---- Botón cancelar formularios (Opción 3: Coral Ahumado / Rosa Viejo elegante) ---- */
@@ -2506,31 +2493,19 @@ input[type="number"].no-spinners,
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(184, 44, 64, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-cancel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-cancel:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(184, 44, 64, 0.52), 0 0 16px rgba(184, 44, 64, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
 .btn-cancel:active {
-  transform: translateY(0);
 }
 
 /* ---- Botón Cerrar en modales (Mismo color y acabado que Cancelar: Rojo Opaco / Coral Ahumado) ---- */
@@ -2549,37 +2524,25 @@ input[type="number"].no-spinners,
   color: white !important;
   background: linear-gradient(135deg, #E05263 0%, #B82C40 100%) !important;
   border-radius: 12px !important;
-  border: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer !important;
   position: relative !important;
   overflow: hidden !important;
-  box-shadow: 0 2px 10px rgba(184, 44, 64, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
-  transition: all 0.25s ease !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
   text-decoration: none !important;
   box-sizing: border-box !important;
   vertical-align: middle !important;
 }
 
-.btn-close-modal::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-close-modal:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(184, 44, 64, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55) !important;
   color: white !important;
 }
 
 .btn-close-modal:active {
-  transform: translateY(0) !important;
 }
 
 /* ---- Botón guardar e imprimir ---- */
@@ -2604,31 +2567,19 @@ input[type="number"].no-spinners,
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(100, 116, 139, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-save-print::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-save-print:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(100, 116, 139, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
 .btn-save-print:active {
-  transform: translateY(0);
 }
 
 /* ---- Botón conceptos ---- */
@@ -2647,31 +2598,19 @@ input[type="number"].no-spinners,
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(15, 118, 110, 0.40), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-concepts::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 13px 13px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-concepts:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(15, 118, 110, 0.55), 0 0 16px rgba(45, 212, 191, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
 .btn-concepts:active {
-  transform: translateY(0);
 }
 
 /* ---- Botón venta (verde esmeralda vibrante) ---- */
@@ -2690,26 +2629,15 @@ input[type="number"].no-spinners,
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-venta::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-venta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.50), 0 0 16px rgba(16, 185, 129, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -2729,26 +2657,15 @@ input[type="number"].no-spinners,
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-compra::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-compra:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.50), 0 0 16px rgba(234, 88, 12, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -2775,49 +2692,58 @@ button.btn-compra[type="submit"] {
 .btn-cancel:active,
 .btn-venta:active,
 .btn-compra:active {
-  transform: translateY(0);
 }
 
-/* ---- Botón púrpura ---- */
+/* ---- Botón púrpura/violeta (Sólido Liquid Glass Violeta / Idéntico a btn-primary) ---- */
 .btn-purple {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 18px;
-  font-weight: 700;
-  font-size: 13px;
-  color: white !important;
-  background: linear-gradient(135deg, #A855F7 0%, #7C3AED 100%) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
   border-radius: 13px !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
 }
 
-.btn-purple::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
+html.dark .btn-purple {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
 }
 
 .btn-purple:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(124, 58, 237, 0.52), 0 0 16px rgba(124, 58, 237, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
-  color: white !important;
+  background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%) !important;
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+html.dark .btn-purple:hover {
+  background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%) !important;
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
 }
 
 .btn-purple:active {
-  transform: translateY(0);
+  transform: none !important;
 }
 
 /* ---- Botón imprimir (gris) ---- */
@@ -2835,31 +2761,19 @@ button.btn-compra[type="submit"] {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(107, 114, 128, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-print::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-print:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(107, 114, 128, 0.52), 0 0 16px rgba(107, 114, 128, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
 .btn-print:active {
-  transform: translateY(0);
 }
 
 /* ---- Botón Excel (verde) ---- */
@@ -2877,31 +2791,19 @@ button.btn-compra[type="submit"] {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-excel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-excel:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.50), 0 0 16px rgba(16, 185, 129, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
 .btn-excel:active {
-  transform: translateY(0);
 }
 
 /* ---- Botón Liquid Glass Universal (redondeado suave 13px, no ovalado) ---- */
@@ -2933,7 +2835,6 @@ html.dark .btn-glass {
 }
 
 .btn-glass:hover {
-  transform: translateY(-1px);
   background: rgba(255, 255, 255, 0.90);
   border-color: rgba(37, 99, 235, 0.40);
   box-shadow: 0 6px 20px -2px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255, 255, 255, 1);
@@ -2941,15 +2842,13 @@ html.dark .btn-glass {
 }
 
 html.dark .btn-glass:hover {
-  transform: translateY(-1px);
   background: rgba(30, 41, 59, 0.80);
   border-color: rgba(96, 165, 250, 0.50);
-  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.65), 0 0 16px rgba(59, 130, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   color: #93C5FD;
 }
 
 .btn-glass:active {
-  transform: translateY(0);
 }
 
 /* ---- Botón Excel Liquid Glass (opción cristalina redondeada) ---- */
@@ -2969,7 +2868,7 @@ html.dark .btn-glass:hover {
   backdrop-filter: blur(14px) saturate(180%);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
   border: 1px solid rgba(16, 185, 129, 0.35) !important;
-  box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   color: #059669 !important;
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -2978,31 +2877,28 @@ html.dark .btn-excel-glass,
 html.dark .btn-glass-excel {
   background: rgba(16, 185, 129, 0.15) !important;
   border-color: rgba(52, 211, 153, 0.40) !important;
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.45), 0 0 12px rgba(16, 185, 129, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16);
   color: #6EE7B7 !important;
 }
 
 .btn-excel-glass:hover,
 .btn-glass-excel:hover {
-  transform: translateY(-1px);
   background: rgba(16, 185, 129, 0.24) !important;
   border-color: rgba(52, 211, 153, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(16, 185, 129, 0.35), 0 0 16px rgba(16, 185, 129, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.45);
   color: #047857 !important;
 }
 
 html.dark .btn-excel-glass:hover,
 html.dark .btn-glass-excel:hover {
-  transform: translateY(-1px);
   background: rgba(16, 185, 129, 0.28) !important;
   border-color: rgba(110, 231, 183, 0.70) !important;
-  box-shadow: 0 6px 22px -2px rgba(0, 0, 0, 0.60), 0 0 18px rgba(52, 211, 153, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   color: #A7F3D0 !important;
 }
 
 .btn-excel-glass:active,
 .btn-glass-excel:active {
-  transform: translateY(0);
 }
 
 /* ---- Botón PDF (rojo) ---- */
@@ -3020,31 +2916,19 @@ html.dark .btn-glass-excel:hover {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
-.btn-pdf::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-}
+
 
 .btn-pdf:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(239, 68, 68, 0.50), 0 0 16px rgba(239, 68, 68, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
 .btn-pdf:active {
-  transform: translateY(0);
 }
 
 /* --- BOTONES SECUNDARIOS / GHOST -------------------------------------------------- */
@@ -3081,39 +2965,37 @@ html.dark .btn-ghost {
 }
 
 .btn-ghost:hover {
-  transform: translateY(-1px);
   background: rgba(255, 255, 255, 0.85);
   border-color: rgba(37, 99, 235, 0.35);
-  box-shadow: 0 6px 18px -2px rgba(37, 99, 235, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   color: #1D4ED8;
 }
 
 html.dark .btn-ghost:hover {
-  transform: translateY(-1px);
   background: rgba(30, 41, 59, 0.75);
   border-color: rgba(96, 165, 250, 0.45);
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(59, 130, 246, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.20);
   color: #93C5FD;
 }
 
 .btn-ghost:active {
-  transform: translateY(0);
 }
 
 /* ---- Botón Volver universal del sistema (⬅️) ---- */
-.btn-ghost.px-3.py-2.text-xl {
-  font-size: 1.35rem !important;
-  line-height: 1 !important;
+.btn-ghost.text-xl,
+a.btn-ghost[title*="Volver"],
+a.btn-ghost[title*="volver"] {
+  font-size: 1.25rem !important;
+  line-height: 1.75rem !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 42px !important;
-  height: 42px !important;
-  min-width: 42px !important;
-  min-height: 42px !important;
-  padding: 0 !important;
-  aspect-ratio: 1 / 1 !important;
-  border-radius: 12px !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: unset !important;
+  min-height: unset !important;
+  padding: 0.5rem 0.75rem !important;
+  aspect-ratio: auto !important;
 }
 
 /* ================================================================
@@ -3325,16 +3207,16 @@ html.dark .logout-toggle-btn:active {
 
 /* ---- BOTONES GHOST CON COLOR: EFECTO LIQUID GLASS TIPO TARJETA ---- */
 /* Muestran su tono en reposo y se intensifican con resplandor en hover, con altura homogénea de 38px */
-.btn-ghost-amber,
-.btn-ghost-red,
-.btn-ghost-emerald,
-.btn-ghost-purple,
-.btn-ghost-violet,
-.btn-ghost-blue,
-.btn-ghost-indigo,
-.btn-ghost-orange,
-.btn-ghost[class*="text-"],
-.btn-ghost[class*="border-"] {
+:not(.actions-grid) > .btn-ghost-amber,
+:not(.actions-grid) > .btn-ghost-red,
+:not(.actions-grid) > .btn-ghost-emerald,
+:not(.actions-grid) > .btn-ghost-purple,
+:not(.actions-grid) > .btn-ghost-violet,
+:not(.actions-grid) > .btn-ghost-blue,
+:not(.actions-grid) > .btn-ghost-indigo,
+:not(.actions-grid) > .btn-ghost-orange,
+.btn-ghost:not(.actions-grid *):not([class*="w-8"]):not([class*="btn-action-"]):not(.print-dropdown-box):not([class*="print-dropdown"]):not(.text-xl):not([title*="Volver"]):not([title*="volver"])[class*="text-"],
+.btn-ghost:not(.actions-grid *):not([class*="w-8"]):not([class*="btn-action-"]):not(.print-dropdown-box):not([class*="print-dropdown"]):not(.text-xl):not([title*="Volver"]):not([title*="volver"])[class*="border-"] {
   height: 38px !important;
   min-height: 38px !important;
   padding: 0 16px !important;
@@ -3379,7 +3261,6 @@ html.dark .btn-ghost[class*="border-"] {
 .btn-ghost-orange:hover,
 .btn-ghost[class*="text-"]:hover,
 .btn-ghost[class*="border-"]:hover {
-  transform: translateY(-1px) !important;
 }
 
 .btn-ghost-amber:active,
@@ -3392,7 +3273,6 @@ html.dark .btn-ghost[class*="border-"] {
 .btn-ghost-orange:active,
 .btn-ghost[class*="text-"]:active,
 .btn-ghost[class*="border-"]:active {
-  transform: translateY(0) !important;
 }
 
 /* 1. Índigo / Azul Violeta (ej. Ver Factura) */
@@ -3410,7 +3290,7 @@ html.dark .btn-ghost[class*="border-"] {
   color: #4338CA !important;
   background: rgba(99, 102, 241, 0.22) !important;
   border-color: rgba(99, 102, 241, 0.55) !important;
-  box-shadow: 0 4px 16px -2px rgba(99, 102, 241, 0.35), 0 0 10px rgba(99, 102, 241, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .btn-ghost[class*="text-indigo"],
@@ -3427,7 +3307,7 @@ html.dark .btn-ghost-indigo:hover {
   color: #C7D2FE !important;
   background: rgba(99, 102, 241, 0.28) !important;
   border-color: rgba(165, 180, 252, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(99, 102, 241, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* 2. Azul (ej. Imprimir dropdown, acciones neutras/banco) */
@@ -3445,7 +3325,7 @@ html.dark .btn-ghost-indigo:hover {
   color: #1D4ED8 !important;
   background: rgba(37, 99, 235, 0.22) !important;
   border-color: rgba(37, 99, 235, 0.55) !important;
-  box-shadow: 0 4px 16px -2px rgba(37, 99, 235, 0.35), 0 0 10px rgba(37, 99, 235, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .btn-ghost[class*="text-blue"],
@@ -3462,7 +3342,7 @@ html.dark .btn-ghost-blue:hover {
   color: #BFDBFE !important;
   background: rgba(37, 99, 235, 0.28) !important;
   border-color: rgba(147, 197, 253, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* 3. Ámbar / Amarillo (ej. Editar, Cancelar en modales) */
@@ -3484,7 +3364,7 @@ html.dark .btn-ghost-blue:hover {
   color: #B45309 !important;
   background: rgba(245, 158, 11, 0.22) !important;
   border-color: rgba(245, 158, 11, 0.58) !important;
-  box-shadow: 0 4px 16px -2px rgba(245, 158, 11, 0.35), 0 0 10px rgba(245, 158, 11, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .btn-ghost[class*="text-yellow"],
@@ -3505,7 +3385,7 @@ html.dark .btn-ghost-amber:hover {
   color: #FDE68A !important;
   background: rgba(245, 158, 11, 0.28) !important;
   border-color: rgba(252, 211, 77, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(245, 158, 11, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* 4. Esmeralda / Verde (ej. Reactivar, Ver en Caja, Confirmar) */
@@ -3527,7 +3407,7 @@ html.dark .btn-ghost-amber:hover {
   color: #047857 !important;
   background: rgba(16, 185, 129, 0.22) !important;
   border-color: rgba(16, 185, 129, 0.60) !important;
-  box-shadow: 0 4px 16px -2px rgba(16, 185, 129, 0.35), 0 0 10px rgba(16, 185, 129, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .btn-ghost[class*="text-emerald"],
@@ -3548,7 +3428,7 @@ html.dark .btn-ghost-emerald:hover {
   color: #A7F3D0 !important;
   background: rgba(16, 185, 129, 0.28) !important;
   border-color: rgba(110, 231, 183, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* 5. Rojo / Carmesí (Ghost Red) */
@@ -3566,7 +3446,7 @@ html.dark .btn-ghost-emerald:hover {
   color: #B91C1C !important;
   background: rgba(239, 68, 68, 0.22) !important;
   border-color: rgba(239, 68, 68, 0.60) !important;
-  box-shadow: 0 4px 16px -2px rgba(239, 68, 68, 0.35), 0 0 10px rgba(239, 68, 68, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .btn-ghost[class*="text-red"],
@@ -3583,7 +3463,7 @@ html.dark .btn-ghost-red:hover {
   color: #FECACA !important;
   background: rgba(239, 68, 68, 0.28) !important;
   border-color: rgba(252, 165, 165, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* 6. Púrpura / Violeta */
@@ -3603,7 +3483,7 @@ html.dark .btn-ghost-red:hover {
   color: #7E22CE !important;
   background: rgba(168, 85, 247, 0.22) !important;
   border-color: rgba(168, 85, 247, 0.60) !important;
-  box-shadow: 0 4px 16px -2px rgba(168, 85, 247, 0.35), 0 0 10px rgba(168, 85, 247, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .btn-ghost[class*="text-purple"],
@@ -3622,7 +3502,7 @@ html.dark .btn-ghost-violet:hover {
   color: #F3E8FF !important;
   background: rgba(168, 85, 247, 0.28) !important;
   border-color: rgba(216, 180, 254, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(168, 85, 247, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* 7. Naranja */
@@ -3640,7 +3520,7 @@ html.dark .btn-ghost-violet:hover {
   color: #C2410C !important;
   background: rgba(249, 115, 22, 0.22) !important;
   border-color: rgba(249, 115, 22, 0.60) !important;
-  box-shadow: 0 4px 16px -2px rgba(249, 115, 22, 0.35), 0 0 10px rgba(249, 115, 22, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .btn-ghost[class*="text-orange"],
@@ -3657,7 +3537,7 @@ html.dark .btn-ghost-orange:hover {
   color: #FED7AA !important;
   background: rgba(249, 115, 22, 0.28) !important;
   border-color: rgba(253, 186, 116, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(249, 115, 22, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* ---- BOTONES EN MODALES: CALIBRACIÓN HOMOGÉNEA Y LIQUID GLASS TIPO TARJETA ---- */
@@ -3717,11 +3597,10 @@ html.dark .btn-ghost-orange:hover {
 .ts-modal-card .btn-ghost[class*="text-yellow"]:hover,
 .ts-modal-card .btn-ghost[class*="border-yellow"]:hover,
 .ts-modal-overlay .btn-ghost-amber:hover {
-  transform: translateY(-1px) !important;
   color: #B45309 !important;
   background: rgba(245, 158, 11, 0.22) !important;
   border-color: rgba(245, 158, 11, 0.58) !important;
-  box-shadow: 0 4px 16px -2px rgba(245, 158, 11, 0.35), 0 0 10px rgba(245, 158, 11, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .ts-modal-card .btn-ghost-amber,
@@ -3742,11 +3621,10 @@ html.dark .ts-modal-card .btn-ghost[class*="border-amber"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="text-yellow"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-yellow"]:hover,
 html.dark .ts-modal-overlay .btn-ghost-amber:hover {
-  transform: translateY(-1px) !important;
   color: #FDE68A !important;
   background: rgba(245, 158, 11, 0.28) !important;
   border-color: rgba(252, 211, 77, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(245, 158, 11, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* 2. Modal Rojo / Danger (ej. Anular, Confirmar eliminación) */
@@ -3768,11 +3646,10 @@ html.dark .ts-modal-overlay .btn-ghost-amber:hover {
 .ts-modal-card .btn-ghost[class*="border-red"]:hover,
 .ts-modal-overlay .btn-danger:hover,
 .ts-modal-overlay .btn-ghost-red:hover {
-  transform: translateY(-1px) !important;
   color: #B91C1C !important;
   background: rgba(239, 68, 68, 0.22) !important;
   border-color: rgba(239, 68, 68, 0.60) !important;
-  box-shadow: 0 4px 16px -2px rgba(239, 68, 68, 0.35), 0 0 10px rgba(239, 68, 68, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .ts-modal-card .btn-danger,
@@ -3793,11 +3670,10 @@ html.dark .ts-modal-card .btn-ghost[class*="text-red"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-red"]:hover,
 html.dark .ts-modal-overlay .btn-danger:hover,
 html.dark .ts-modal-overlay .btn-ghost-red:hover {
-  transform: translateY(-1px) !important;
   color: #FECACA !important;
   background: rgba(239, 68, 68, 0.28) !important;
   border-color: rgba(252, 165, 165, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* 3. Modal Azul (ej. Confirmar baja) */
@@ -3817,11 +3693,10 @@ html.dark .ts-modal-overlay .btn-ghost-red:hover {
 .ts-modal-card .btn-ghost[class*="text-blue"]:hover,
 .ts-modal-card .btn-ghost[class*="border-blue"]:hover,
 .ts-modal-overlay .btn-ghost-blue:hover {
-  transform: translateY(-1px) !important;
   color: #1D4ED8 !important;
   background: rgba(37, 99, 235, 0.22) !important;
   border-color: rgba(37, 99, 235, 0.55) !important;
-  box-shadow: 0 4px 16px -2px rgba(37, 99, 235, 0.35), 0 0 10px rgba(37, 99, 235, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .ts-modal-card .btn-ghost-blue,
@@ -3840,11 +3715,10 @@ html.dark .ts-modal-card .btn-blue:hover,
 html.dark .ts-modal-card .btn-ghost[class*="text-blue"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-blue"]:hover,
 html.dark .ts-modal-overlay .btn-ghost-blue:hover {
-  transform: translateY(-1px) !important;
   color: #BFDBFE !important;
   background: rgba(37, 99, 235, 0.28) !important;
   border-color: rgba(147, 197, 253, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* 4. Modal Esmeralda / Verde */
@@ -3866,11 +3740,10 @@ html.dark .ts-modal-overlay .btn-ghost-blue:hover {
 .ts-modal-card .btn-ghost[class*="text-green"]:hover,
 .ts-modal-card .btn-ghost[class*="border-green"]:hover,
 .ts-modal-overlay .btn-ghost-emerald:hover {
-  transform: translateY(-1px) !important;
   color: #047857 !important;
   background: rgba(16, 185, 129, 0.22) !important;
   border-color: rgba(16, 185, 129, 0.60) !important;
-  box-shadow: 0 4px 16px -2px rgba(16, 185, 129, 0.35), 0 0 10px rgba(16, 185, 129, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .ts-modal-card .btn-ghost-emerald,
@@ -3891,11 +3764,10 @@ html.dark .ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="text-green"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-green"]:hover,
 html.dark .ts-modal-overlay .btn-ghost-emerald:hover {
-  transform: translateY(-1px) !important;
   color: #A7F3D0 !important;
   background: rgba(16, 185, 129, 0.28) !important;
   border-color: rgba(110, 231, 183, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* 5. Modal Púrpura / Violeta */
@@ -3921,11 +3793,10 @@ html.dark .ts-modal-overlay .btn-ghost-emerald:hover {
 .ts-modal-card .btn-ghost[class*="border-violet"]:hover,
 .ts-modal-overlay .btn-ghost-purple:hover,
 .ts-modal-overlay .btn-ghost-violet:hover {
-  transform: translateY(-1px) !important;
   color: #7E22CE !important;
   background: rgba(168, 85, 247, 0.22) !important;
   border-color: rgba(168, 85, 247, 0.60) !important;
-  box-shadow: 0 4px 16px -2px rgba(168, 85, 247, 0.35), 0 0 10px rgba(168, 85, 247, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .ts-modal-card .btn-ghost-purple,
@@ -3950,11 +3821,10 @@ html.dark .ts-modal-card .btn-ghost[class*="text-violet"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-violet"]:hover,
 html.dark .ts-modal-overlay .btn-ghost-purple:hover,
 html.dark .ts-modal-overlay .btn-ghost-violet:hover {
-  transform: translateY(-1px) !important;
   color: #F3E8FF !important;
   background: rgba(168, 85, 247, 0.28) !important;
   border-color: rgba(216, 180, 254, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(168, 85, 247, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 .modal-divider {
@@ -3991,15 +3861,13 @@ html.dark .modal-divider {
 }
 
 .btn-danger:hover {
-  transform: translateY(-1px) !important;
   color: #B91C1C !important;
   background: rgba(239, 68, 68, 0.22) !important;
   border-color: rgba(239, 68, 68, 0.60) !important;
-  box-shadow: 0 4px 16px -2px rgba(239, 68, 68, 0.35), 0 0 10px rgba(239, 68, 68, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 .btn-danger:active {
-  transform: translateY(0) !important;
 }
 
 .btn-danger.btn-icon,
@@ -4056,11 +3924,10 @@ html.dark .modal-divider {
 }
 
 .btn-blue:hover {
-  transform: translateY(-1px) !important;
   color: #1D4ED8 !important;
   background: rgba(37, 99, 235, 0.22) !important;
   border-color: rgba(37, 99, 235, 0.55) !important;
-  box-shadow: 0 4px 16px -2px rgba(37, 99, 235, 0.35), 0 0 10px rgba(37, 99, 235, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
 }
 
 html.dark .btn-danger {
@@ -4071,11 +3938,10 @@ html.dark .btn-danger {
 }
 
 html.dark .btn-danger:hover {
-  transform: translateY(-1px) !important;
   color: #FECACA !important;
   background: rgba(239, 68, 68, 0.26) !important;
   border-color: rgba(252, 165, 165, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 html.dark .btn-blue {
@@ -4086,11 +3952,10 @@ html.dark .btn-blue {
 }
 
 html.dark .btn-blue:hover {
-  transform: translateY(-1px) !important;
   color: #BFDBFE !important;
   background: rgba(37, 99, 235, 0.28) !important;
   border-color: rgba(147, 197, 253, 0.65) !important;
-  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 /* --- INPUT VIDRIO -------------------------------------------------- */
@@ -4732,7 +4597,6 @@ html.dark .logo-upload-container {
   border-color: #3B82F6 !important;
   background: rgba(59, 130, 246, 0.04) !important;
   box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15) !important;
-  transform: translateY(-1px) !important;
 }
 
 .logo-camera-badge {
@@ -7259,23 +7123,27 @@ input.flatpickr-input.form-control {
   }
 }
 
-/* Grilla de Acciones: Disposición balanceada y perfectamente centrada para 1, 2, 3 o 4 botones */
+/* Grilla de Acciones: Disposición en bloques de a dos (2 columnas) con centrado automático horizontal para botones impares o únicos */
 .actions-grid {
   display: flex !important;
   flex-wrap: wrap !important;
   justify-content: center !important;
   align-items: center !important;
-  gap: 0.375rem !important;
-  max-width: 4.5rem !important;
-  width: auto !important;
+  gap: 0.375rem !important; /* 6px */
+  width: 4.625rem !important; /* 74px: caben exactamente dos bloques de 32px + 6px de gap */
+  min-width: 4.625rem !important;
+  max-width: 4.625rem !important;
   margin: 0 auto !important;
+  box-sizing: border-box !important;
 }
 
-.actions-grid>*,
-.actions-grid>a,
-.actions-grid>button,
-.actions-grid>form,
-.actions-grid>span {
+.actions-grid > *,
+.actions-grid > a,
+.actions-grid > button,
+.actions-grid > form,
+.actions-grid > span,
+.actions-grid .btn-ghost,
+.actions-grid [class*="btn-"] {
   width: 2rem !important;
   height: 2rem !important;
   min-width: 2rem !important;
@@ -7287,9 +7155,30 @@ input.flatpickr-input.form-control {
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
-  border-radius: 0.75rem !important;
+  border-radius: 0.625rem !important;
   padding: 0 !important;
+  margin: 0 !important;
+  font-size: 0.8125rem !important;
+  line-height: 1 !important;
   box-sizing: border-box !important;
+  transform: none !important;
+}
+
+.actions-grid > form {
+  display: inline-flex !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.actions-grid > form > button {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0.625rem !important;
+  transform: none !important;
 }
 
 /* Modal Detalle de Usuario: Estilos Homogéneos Claro/Oscuro */
@@ -7633,8 +7522,10 @@ html.dark tr[id^="electronica-"].active-target {
   }
 }
 
-/* ---- Botón contenedor Dropdown Imprimir: Mismas dimensiones exactas que .btn-ghost y .btn-danger (38px de altura) ---- */
-.print-dropdown-box {
+/* ---- Botón contenedor Dropdown Imprimir: Mismas dimensiones exactas que .btn-ghost y .btn-danger (38px de altura, márgenes horizontales balanceados) ---- */
+.print-dropdown-box,
+div.print-dropdown-box,
+.btn-ghost.print-dropdown-box {
   padding: 0 !important;
   gap: 0 !important;
   border-radius: 12px !important;
@@ -7645,14 +7536,15 @@ html.dark tr[id^="electronica-"].active-target {
   max-height: 38px !important;
   box-sizing: border-box !important;
   vertical-align: middle !important;
+  transform: none !important;
 }
 
-.print-dropdown-box>a.print-main-btn {
+.print-dropdown-box > a.print-main-btn {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 5px !important;
   height: 100% !important;
-  padding: 0 4px 0 14px !important;
+  padding: 0 4px 0 12px !important;
   font-size: 13px !important;
   font-weight: 700 !important;
   line-height: 1.25 !important;
@@ -7660,29 +7552,31 @@ html.dark tr[id^="electronica-"].active-target {
   text-decoration: none !important;
   white-space: nowrap !important;
   box-sizing: border-box !important;
+  transform: none !important;
 }
 
-.print-dropdown-box>.print-divider {
+.print-dropdown-box > .print-divider {
   display: none !important;
 }
 
-.print-dropdown-box>button.print-arrow-btn {
+.print-dropdown-box > button.print-arrow-btn {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   height: 100% !important;
-  padding: 0 12px 0 4px !important;
+  padding: 0 10px 0 3px !important;
   color: inherit !important;
   background: transparent !important;
   border: none !important;
   cursor: pointer !important;
   outline: none !important;
   box-sizing: border-box !important;
+  transform: none !important;
 }
 
-.print-dropdown-box>button.print-arrow-btn svg {
-  width: 9.5px !important;
-  height: 9.5px !important;
+.print-dropdown-box > button.print-arrow-btn svg {
+  width: 8px !important;
+  height: 8px !important;
 }
 
 
@@ -7807,7 +7701,9 @@ html.dark optgroup {
 .actions-grid button[title*="Diagnóstico"] {
   color: #4F46E5 !important;
   /* Índigo */
+  padding-top: 1px !important; /* Calibración métrica vertical para emoji del ojo 50/50 */
 }
+
 
 .btn-action-view:hover,
 .actions-grid a[title*="Ver"]:hover,
@@ -8798,7 +8694,7 @@ input[type="radio"][value="correctivo"] {
   accent-color: #ea580c !important;
 }
 
-/* Base Selector Card - Clean, Elegant & Non-Neon (No-Jump Geometry Locked) */
+/* Base Selector Card - Authentic Liquid Glass (No-Jump Geometry Locked) */
 .ts-select-card {
   position: relative;
   display: flex;
@@ -8818,33 +8714,40 @@ input[type="radio"][value="correctivo"] {
   letter-spacing: -0.01em;
   color: #475569;
 
-  /* Clean, crisp surface and border - zero neon & exactly 2px locked to prevent jump */
-  background: rgba(255, 255, 255, 0.65);
-  border: 2px solid #cbd5e1 !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  /* Liquid Glass Translucent Surface & Crisp Edge */
+  background: rgba(255, 255, 255, 0.45);
+  border: 1.5px solid rgba(0, 0, 0, 0.10) !important;
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+html.dark .ts-select-card,
 .dark .ts-select-card {
-  background: rgba(30, 41, 59, 0.45);
-  border: 2px solid rgba(255, 255, 255, 0.12) !important;
-  color: #94a3b8;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  /* Liquid glass puro: fondo translúcido cristalino que deja fluir el fondo azul marino en vez del gris opaco */
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.10) !important;
+  color: #cbd5e1 !important;
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.35) !important;
 }
 
-/* Micro-interaction Hover (Base Fallback) */
+/* Micro-interaction Hover (Liquid Glass Refraction) */
 .ts-select-card:hover {
-  border-color: #94a3b8 !important;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.18) !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  color: #1e293b !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.90), 0 4px 12px -2px rgba(0, 0, 0, 0.06);
 }
 
+html.dark .ts-select-card:hover,
 .dark .ts-select-card:hover {
-  border-color: rgba(255, 255, 255, 0.25) !important;
-  background: rgba(51, 65, 85, 0.6);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 4px 12px -2px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* Vector Radio Dot Indicator */
@@ -8854,28 +8757,32 @@ input[type="radio"][value="correctivo"] {
   width: 18px;
   height: 18px;
   border-radius: 9999px;
-  border: 2px solid #cbd5e1;
-  background-color: #ffffff;
+  border: 1.5px solid rgba(0, 0, 0, 0.18);
+  background-color: rgba(255, 255, 255, 0.90);
   outline: none;
   cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
   margin: 0;
-  box-shadow: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
+html.dark .ts-radio-dot,
 .dark .ts-radio-dot {
-  border-color: #475569;
-  background-color: #1e293b;
-  box-shadow: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 
 .ts-select-card:hover .ts-radio-dot {
-  border-color: #94a3b8;
+  border-color: rgba(0, 0, 0, 0.28);
+  background-color: #ffffff;
 }
 
+html.dark .ts-select-card:hover .ts-radio-dot,
 .dark .ts-select-card:hover .ts-radio-dot {
-  border-color: #64748b;
+  border-color: rgba(255, 255, 255, 0.38);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 /* ==========================================================================
@@ -9422,3 +9329,412 @@ input[type="radio"][value="correctivo"] {
 .table-compact tbody tr:last-child td {
   border-bottom: none !important;
 }
+
+/* ==========================================================================
+   ELIMINACIÓN UNIVERSAL DE SALTO EN BOTONES
+   Ningún botón en el sistema cambia de posición o se desplaza en hover o active
+   ========================================================================== */
+button,
+.btn,
+.btn-primary,
+.btn-ghost,
+.btn-save,
+.btn-cancel,
+.btn-danger,
+.btn-blue,
+.btn-excel,
+.btn-pdf,
+.btn-print,
+.btn-add,
+.btn-clean,
+.btn-today,
+.btn-backup,
+.btn-concepts,
+.btn-venta,
+.btn-compra,
+.btn-purple,
+[class*="btn-"],
+.actions-grid a,
+.actions-grid button,
+.actions-grid > * {
+  transform: none !important;
+}
+
+button:hover,
+.btn:hover,
+.btn-primary:hover,
+.btn-ghost:hover,
+.btn-save:hover,
+.btn-cancel:hover,
+.btn-danger:hover,
+.btn-blue:hover,
+.btn-excel:hover,
+.btn-pdf:hover,
+.btn-print:hover,
+.btn-add:hover,
+.btn-clean:hover,
+.btn-today:hover,
+.btn-backup:hover,
+.btn-concepts:hover,
+.btn-venta:hover,
+.btn-compra:hover,
+.btn-purple:hover,
+[class*="btn-"]:hover,
+.actions-grid a:hover,
+.actions-grid button:hover,
+.actions-grid > *:hover,
+.print-dropdown-box:hover,
+.print-dropdown-box a:hover,
+.print-dropdown-box button:hover {
+  transform: none !important;
+}
+
+button:active,
+.btn:active,
+.btn-primary:active,
+.btn-ghost:active,
+.btn-save:active,
+.btn-cancel:active,
+[class*="btn-"]:active,
+.actions-grid a:active,
+.actions-grid button:active,
+.actions-grid > *:active,
+.print-dropdown-box:active {
+  transform: none !important;
+}
+
+/* ==========================================================================
+   NAVEGACIÓN DE INFORMES Y REPORTES: LIQUID GLASS CON FRANJA INFERIOR TIPO DASHBOARD
+   Reposo homogéneo neutro, franja inferior activa al estilo Mantenimiento/Electrónica
+   ========================================================================== */
+.ts-reportes-main-nav {
+  display: flex !important;
+  gap: 0.625rem !important;
+  align-items: center !important;
+  overflow-x: auto !important;
+  padding-bottom: 0.35rem !important;
+  margin-bottom: 1.5rem !important;
+  scrollbar-width: thin !important;
+}
+
+.reportes-nav-tabs {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.625rem !important;
+}
+
+/* Base común de pestañas y sub-pestañas de informes */
+.ts-reporte-nav-card,
+.ts-subtab {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  padding: 0 1.25rem !important;
+  border-radius: 12px !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform: none !important;
+  border-bottom: 3px solid transparent !important;
+}
+
+.ts-subtab {
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  padding: 0 1.15rem !important;
+  font-size: 0.8125rem !important;
+}
+
+.ts-reporte-nav-card:hover,
+.ts-reporte-nav-card:active,
+.ts-subtab:hover,
+.ts-subtab:active {
+  transform: none !important;
+}
+
+/* ==========================================================================
+   ESTILOS EN REPOSO (Conservan color y personalidad para no parecer inactivos)
+   ========================================================================== */
+
+/* 1. Informes Financieros (Ámbar / Oro) */
+.ts-reporte-nav-card.tab-amber {
+  color: #D97706 !important;
+  background: rgba(245, 158, 11, 0.04) !important;
+  border: 1px solid rgba(245, 158, 11, 0.15) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+html.dark .ts-reporte-nav-card.tab-amber {
+  color: #FCD34D !important;
+  background: rgba(245, 158, 11, 0.04) !important;
+  border: 1px solid rgba(251, 191, 36, 0.14) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+
+/* Encabezado de vistas de detalle: simetría vertical exacta entre borde superior del card y línea horizontal */
+.detail-header,
+.caja-detail-header {
+  padding-bottom: 2rem !important; /* 32px: exactamente simétrico a los 32px superiores (md:p-8) */
+}
+
+/* 2. Reporte de Mantenimientos & Sub-pestaña Diario (Azul - Tinte translúcido ligero) */
+.ts-reporte-nav-card.tab-blue,
+.ts-subtab.tab-blue {
+  color: #2563EB !important;
+  background: rgba(37, 99, 235, 0.03) !important;
+  border: 1px solid rgba(37, 99, 235, 0.12) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+html.dark .ts-reporte-nav-card.tab-blue,
+html.dark .ts-subtab.tab-blue {
+  color: #93C5FD !important;
+  background: rgba(37, 99, 235, 0.04) !important;
+  border: 1px solid rgba(96, 165, 250, 0.12) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+
+/* 3. Reporte de Electrónica & Sub-pestaña Acumulado (Púrpura - Tinte translúcido ligero) */
+.ts-reporte-nav-card.tab-purple,
+.ts-subtab.tab-purple {
+  color: #7C3AED !important;
+  background: rgba(168, 85, 247, 0.03) !important;
+  border: 1px solid rgba(168, 85, 247, 0.12) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+html.dark .ts-reporte-nav-card.tab-purple,
+html.dark .ts-subtab.tab-purple {
+  color: #C084FC !important;
+  background: rgba(168, 85, 247, 0.04) !important;
+  border: 1px solid rgba(192, 132, 252, 0.12) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+
+/* 4. Informe Inventario (Naranja) */
+.ts-reporte-nav-card.tab-orange {
+  color: #EA580C !important;
+  background: rgba(249, 115, 22, 0.04) !important;
+  border: 1px solid rgba(249, 115, 22, 0.15) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+html.dark .ts-reporte-nav-card.tab-orange {
+  color: #FDBA74 !important;
+  background: rgba(249, 115, 22, 0.04) !important;
+  border: 1px solid rgba(251, 146, 60, 0.14) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+
+/* 5. Sub-pestaña Operaciones (Teal) */
+.ts-subtab.tab-teal {
+  color: #0D9488 !important;
+  background: rgba(20, 184, 166, 0.04) !important;
+  border: 1px solid rgba(20, 184, 166, 0.15) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+html.dark .ts-subtab.tab-teal {
+  color: #5EEAD4 !important;
+  background: rgba(20, 184, 166, 0.04) !important;
+  border: 1px solid rgba(45, 212, 191, 0.14) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+html.dark .ts-subtab.tab-teal {
+  color: #5EEAD4 !important;
+  background: rgba(20, 184, 166, 0.12) !important;
+  border: 1px solid rgba(45, 212, 191, 0.22) !important;
+  border-bottom: 3px solid transparent !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+
+/* ==========================================================================
+   ESTILOS EN HOVER (Tinte suave anticipado con franja translúcida)
+   ========================================================================== */
+.ts-reporte-nav-card.tab-amber:hover {
+  color: #B45309 !important;
+  background: rgba(245, 158, 11, 0.07) !important;
+  border-color: rgba(245, 158, 11, 0.22) !important;
+  border-bottom: 3px solid rgba(245, 158, 11, 0.40) !important;
+}
+html.dark .ts-reporte-nav-card.tab-amber:hover {
+  color: #FDE68A !important;
+  background: rgba(245, 158, 11, 0.07) !important;
+  border-color: rgba(251, 191, 36, 0.22) !important;
+  border-bottom: 3px solid rgba(251, 191, 36, 0.40) !important;
+}
+
+.ts-reporte-nav-card.tab-blue:hover,
+.ts-subtab.tab-blue:hover {
+  color: #1D4ED8 !important;
+  background: rgba(37, 99, 235, 0.06) !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
+  border-bottom: 3px solid rgba(37, 99, 235, 0.40) !important;
+}
+html.dark .ts-reporte-nav-card.tab-blue:hover,
+html.dark .ts-subtab.tab-blue:hover {
+  color: #BFDBFE !important;
+  background: rgba(37, 99, 235, 0.06) !important;
+  border-color: rgba(96, 165, 250, 0.18) !important;
+  border-bottom: 3px solid rgba(96, 165, 250, 0.40) !important;
+}
+
+.ts-reporte-nav-card.tab-purple:hover,
+.ts-subtab.tab-purple:hover {
+  color: #6B21A8 !important;
+  background: rgba(168, 85, 247, 0.06) !important;
+  border-color: rgba(168, 85, 247, 0.18) !important;
+  border-bottom: 3px solid rgba(168, 85, 247, 0.40) !important;
+}
+html.dark .ts-reporte-nav-card.tab-purple:hover,
+html.dark .ts-subtab.tab-purple:hover {
+  color: #E9D5FF !important;
+  background: rgba(168, 85, 247, 0.06) !important;
+  border-color: rgba(192, 132, 252, 0.18) !important;
+  border-bottom: 3px solid rgba(192, 132, 252, 0.40) !important;
+}
+
+.ts-reporte-nav-card.tab-orange:hover {
+  color: #C2410C !important;
+  background: rgba(249, 115, 22, 0.07) !important;
+  border-color: rgba(249, 115, 22, 0.22) !important;
+  border-bottom: 3px solid rgba(249, 115, 22, 0.40) !important;
+}
+html.dark .ts-reporte-nav-card.tab-orange:hover {
+  color: #FED7AA !important;
+  background: rgba(249, 115, 22, 0.07) !important;
+  border-color: rgba(251, 146, 60, 0.22) !important;
+  border-bottom: 3px solid rgba(251, 146, 60, 0.40) !important;
+}
+
+.ts-subtab.tab-teal:hover {
+  color: #0F766E !important;
+  background: rgba(20, 184, 166, 0.07) !important;
+  border-color: rgba(20, 184, 166, 0.22) !important;
+  border-bottom: 3px solid rgba(20, 184, 166, 0.40) !important;
+}
+html.dark .ts-subtab.tab-teal:hover {
+  color: #99F6E4 !important;
+  background: rgba(20, 184, 166, 0.07) !important;
+  border-color: rgba(45, 212, 191, 0.22) !important;
+  border-bottom: 3px solid rgba(45, 212, 191, 0.40) !important;
+}
+  background: rgba(20, 184, 166, 0.16) !important;
+  border-color: rgba(45, 212, 191, 0.30) !important;
+  border-bottom: 3px solid rgba(45, 212, 191, 0.45) !important;
+}
+
+/* ==========================================================================
+   ESTADOS ACTIVOS: FRANJA INFERIOR 3PX + LIQUID GLASS LUMINOSO
+   ========================================================================== */
+
+/* 1. Informes Financieros (Ámbar / Oro) */
+.ts-reporte-nav-card.tab-amber.active {
+  color: #B45309 !important;
+  background: rgba(245, 158, 11, 0.08) !important;
+  border: 1px solid rgba(245, 158, 11, 0.24) !important;
+  border-bottom: 3px solid #D97706 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+}
+html.dark .ts-reporte-nav-card.tab-amber.active {
+  color: #FCD34D !important;
+  background: rgba(245, 158, 11, 0.09) !important;
+  border: 1px solid rgba(251, 191, 36, 0.24) !important;
+  border-bottom: 3px solid #F59E0B !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+
+/* 2. Reporte de Mantenimientos & Sub-pestaña Diario (Azul) */
+.ts-reporte-nav-card.tab-blue.active,
+.ts-subtab.tab-blue.active {
+  color: #1D4ED8 !important;
+  background: rgba(37, 99, 235, 0.06) !important;
+  border: 1px solid rgba(37, 99, 235, 0.20) !important;
+  border-bottom: 3px solid #2563EB !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+}
+html.dark .ts-reporte-nav-card.tab-blue.active,
+html.dark .ts-subtab.tab-blue.active {
+  color: #93C5FD !important;
+  background: rgba(37, 99, 235, 0.07) !important;
+  border: 1px solid rgba(96, 165, 250, 0.20) !important;
+  border-bottom: 3px solid #3B82F6 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+
+/* 3. Reporte de Electrónica & Sub-pestaña Acumulado (Púrpura) */
+.ts-reporte-nav-card.tab-purple.active,
+.ts-subtab.tab-purple.active {
+  color: #7E22CE !important;
+  background: rgba(168, 85, 247, 0.06) !important;
+  border: 1px solid rgba(168, 85, 247, 0.20) !important;
+  border-bottom: 3px solid #9333EA !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+}
+html.dark .ts-reporte-nav-card.tab-purple.active,
+html.dark .ts-subtab.tab-purple.active {
+  color: #D8B4FE !important;
+  background: rgba(168, 85, 247, 0.07) !important;
+  border: 1px solid rgba(192, 132, 252, 0.20) !important;
+  border-bottom: 3px solid #A855F7 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+
+/* 4. Informe Inventario (Naranja) */
+.ts-reporte-nav-card.tab-orange.active {
+  color: #C2410C !important;
+  background: rgba(249, 115, 22, 0.08) !important;
+  border: 1px solid rgba(249, 115, 22, 0.24) !important;
+  border-bottom: 3px solid #EA580C !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+}
+html.dark .ts-reporte-nav-card.tab-orange.active {
+  color: #FDBA74 !important;
+  background: rgba(249, 115, 22, 0.09) !important;
+  border: 1px solid rgba(251, 146, 60, 0.24) !important;
+  border-bottom: 3px solid #F97316 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}
+
+/* 5. Sub-pestaña Operaciones (Teal) */
+.ts-subtab.tab-teal.active {
+  color: #0F766E !important;
+  background: rgba(20, 184, 166, 0.08) !important;
+  border: 1px solid rgba(20, 184, 166, 0.24) !important;
+  border-bottom: 3px solid #0D9488 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+}
+html.dark .ts-subtab.tab-teal.active {
+  color: #5EEAD4 !important;
+  background: rgba(20, 184, 166, 0.09) !important;
+  border: 1px solid rgba(45, 212, 191, 0.24) !important;
+  border-bottom: 3px solid #14B8A6 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+}

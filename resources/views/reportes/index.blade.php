@@ -3,12 +3,7 @@
 @section('title', 'Informes y Reportes')
 
 @section('content')
-<div class="flex gap-4 mb-6 no-print">
- <a href="{{ route('reportes.financiero.diario') }}" class="bg-amber-500 text-white px-4 py-2 rounded-xl font-bold shadow-sm">💵 Informes Financieros</a>
- <a href="{{ route('mantenimientos.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚙️ Reporte de Mantenimientos</a>
- <a href="{{ route('electronicas.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">⚡ Reporte de Electrónica</a>
- <a href="{{ route('stocks.reportes') }}" class="bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">📦 Informe Inventario</a>
-</div>
+@include('reportes._nav_principal')
 
 <div class="mb-6 pb-4 border-b border-gray-200/50 dark:border-white/10 flex flex-col gap-4">
  <div>
@@ -19,20 +14,7 @@
  </div>
 </div>
 
-<div class="glass-card p-4 mb-6 reportes-nav-tabs flex flex-wrap items-center gap-2 no-print">
- <a href="{{ route('reportes.financiero.diario') }}"
- class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20">
- 📅 Diario
- </a>
- <a href="{{ route('reportes.index') }}"
- class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-purple-500 text-white shadow-lg ">
- 📈 Acumulado
- </a>
- <a href="{{ route('reportes.financiero.operaciones') }}"
- class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20">
- 📋 Operaciones
- </a>
-</div>
+@include('reportes_financieros._nav_subtabs')
 
 <div class="glass-card p-5 mb-4 no-print relative z-50">
   <form id="filtros-acumulado-general" action="{{ route('reportes.index') }}" method="GET" class="flex flex-wrap items-center gap-3">
