@@ -96,7 +96,7 @@
         </h3>
         
         <div class="overflow-x-auto pb-2 relative z-10" style="margin-bottom: 24px !important;">
-            <table class="ts-table w-full">
+            <table class="ts-table table-dense w-full">
                 <thead>
                     <tr>
                         <th class="text-left w-32">Tipo</th>

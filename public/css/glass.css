@@ -731,13 +731,13 @@ html.dark #ts-topbar {
   font-size: 13px;
   color: white !important;
   background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -747,15 +747,15 @@ html.dark #ts-topbar {
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6px 22px rgba(99, 102, 241, 0.52), 0 0 16px rgba(99, 102, 241, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -864,13 +864,13 @@ html.dark #ts-topbar {
   font-size: 13px;
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.40), inset 0 1.5px 0 rgba(255, 255, 255, 0.42);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -880,16 +880,16 @@ html.dark #ts-topbar {
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.30), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-clean:hover {
   transform: translateY(-1px);
   background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%) !important;
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  box-shadow: 0 6px 22px rgba(139, 92, 246, 0.55), 0 0 16px rgba(139, 92, 246, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: #FFFFFF !important;
 }
 
@@ -908,13 +908,13 @@ html.dark #ts-topbar {
   font-size: 13px;
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -924,16 +924,16 @@ html.dark #ts-topbar {
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-add:hover {
   transform: translateY(-1px);
   background: linear-gradient(135deg, #34D399 0%, #10B981 100%) !important;
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.50), 0 0 16px rgba(16, 185, 129, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: #FFFFFF !important;
 }
 
@@ -952,13 +952,13 @@ html.dark #ts-topbar {
   font-size: 13px;
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.30);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.40), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -968,16 +968,16 @@ html.dark #ts-topbar {
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-today:hover {
   transform: translateY(-1px);
   background: linear-gradient(135deg, #38BDF8 0%, #0EA5E9 100%) !important;
-  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  box-shadow: 0 6px 22px rgba(14, 165, 233, 0.55), 0 0 16px rgba(14, 165, 233, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: #FFFFFF !important;
 }
 
@@ -996,13 +996,13 @@ html.dark #ts-topbar {
   font-size: 13px;
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.40), inset 0 1.5px 0 rgba(255, 255, 255, 0.42);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -1012,16 +1012,16 @@ html.dark #ts-topbar {
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-backup:hover {
   transform: translateY(-1px);
   background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%) !important;
-  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 6px 22px rgba(13, 148, 136, 0.55), 0 0 16px rgba(13, 148, 136, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: #FFFFFF !important;
 }
 
@@ -2452,13 +2452,13 @@ input[type="number"].no-spinners,
   font-size: 15px;
   color: white !important;
   background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.40), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -2468,15 +2468,15 @@ input[type="number"].no-spinners,
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 13px 13px 0 0;
   pointer-events: none;
 }
 
 .btn-save:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.55), 0 0 16px rgba(99, 102, 241, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -2501,13 +2501,13 @@ input[type="number"].no-spinners,
   font-size: 15px;
   color: white !important;
   background: linear-gradient(135deg, #E05263 0%, #B82C40 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(184, 44, 64, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 18px rgba(184, 44, 64, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -2517,15 +2517,15 @@ input[type="number"].no-spinners,
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-cancel:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(184, 44, 64, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 24px rgba(184, 44, 64, 0.52), 0 0 16px rgba(184, 44, 64, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -2642,13 +2642,13 @@ input[type="number"].no-spinners,
   font-size: 15px;
   color: white !important;
   background: linear-gradient(135deg, #2DD4BF 0%, #0F766E 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(15, 118, 110, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 18px rgba(15, 118, 110, 0.40), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -2658,15 +2658,15 @@ input[type="number"].no-spinners,
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 13px 13px 0 0;
   pointer-events: none;
 }
 
 .btn-concepts:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(15, 118, 110, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 24px rgba(15, 118, 110, 0.55), 0 0 16px rgba(45, 212, 191, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -2685,13 +2685,13 @@ input[type="number"].no-spinners,
   font-size: 13.5px;
   color: white !important;
   background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -2701,15 +2701,15 @@ input[type="number"].no-spinners,
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-venta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.50), 0 0 16px rgba(16, 185, 129, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -2724,13 +2724,13 @@ input[type="number"].no-spinners,
   font-size: 13.5px;
   color: white !important;
   background: linear-gradient(135deg, #F97316 0%, #EA580C 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -2740,15 +2740,15 @@ input[type="number"].no-spinners,
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-compra:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.50), 0 0 16px rgba(234, 88, 12, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -2788,13 +2788,13 @@ button.btn-compra[type="submit"] {
   font-size: 13px;
   color: white !important;
   background: linear-gradient(135deg, #A855F7 0%, #7C3AED 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -2804,15 +2804,15 @@ button.btn-compra[type="submit"] {
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-purple:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6px 22px rgba(124, 58, 237, 0.52), 0 0 16px rgba(124, 58, 237, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -2830,13 +2830,13 @@ button.btn-compra[type="submit"] {
   font-size: 13px;
   color: white !important;
   background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(107, 114, 128, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(107, 114, 128, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -2846,15 +2846,15 @@ button.btn-compra[type="submit"] {
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-print:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(107, 114, 128, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6px 22px rgba(107, 114, 128, 0.52), 0 0 16px rgba(107, 114, 128, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -2872,13 +2872,13 @@ button.btn-compra[type="submit"] {
   font-size: 13px;
   color: white !important;
   background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -2888,15 +2888,15 @@ button.btn-compra[type="submit"] {
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-excel:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.50), 0 0 16px rgba(16, 185, 129, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -3015,13 +3015,13 @@ html.dark .btn-glass-excel:hover {
   font-size: 13px;
   color: white !important;
   background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
-  border-radius: 14px;
-  border: none !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -3031,15 +3031,15 @@ html.dark .btn-glass-excel:hover {
   top: 0;
   left: 0;
   right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent);
-  border-radius: 14px 14px 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.05) 80%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
 .btn-pdf:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6px 22px rgba(239, 68, 68, 0.50), 0 0 16px rgba(239, 68, 68, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
   color: white !important;
 }
 
@@ -3053,7 +3053,10 @@ html.dark .btn-glass-excel:hover {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  padding: 10px 16px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 16px;
+  box-sizing: border-box;
   font-weight: 700;
   font-size: 13px;
   line-height: 1.25;
@@ -3067,6 +3070,7 @@ html.dark .btn-glass-excel:hover {
   box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   cursor: pointer;
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
 }
 
 html.dark .btn-ghost {
@@ -3319,109 +3323,37 @@ html.dark .logout-toggle-btn:active {
   }
 }
 
-/* ---- Sobrescrituras botones ghost colores específicos ---- */
-.btn-ghost.text-yellow-600:hover {
-  color: #D97706 !important;
-  border-color: rgba(217, 119, 6, 0.3) !important;
-  background: rgba(245, 158, 11, 0.1) !important;
-}
-
-.btn-ghost.text-green-600:hover,
-.btn-ghost.text-emerald-600:hover {
-  color: #059669 !important;
-  border-color: rgba(16, 185, 129, 0.35) !important;
-  background: rgba(16, 185, 129, 0.12) !important;
-}
-
-.btn-ghost.text-red-600:hover {
-  color: #DC2626 !important;
-  border-color: rgba(220, 38, 38, 0.3) !important;
-  background: rgba(239, 68, 68, 0.1) !important;
-}
-
-.btn-ghost.text-orange-600:hover {
-  color: #EA580C !important;
-  border-color: rgba(234, 88, 12, 0.3) !important;
-  background: rgba(249, 115, 22, 0.1) !important;
-}
-
-.btn-ghost.text-indigo-600:hover {
-  color: #4F46E5 !important;
-  border-color: rgba(79, 70, 229, 0.3) !important;
-  background: rgba(99, 102, 241, 0.1) !important;
-}
-
-.btn-ghost.text-purple-600:hover,
-.btn-ghost.text-purple-500:hover {
-  color: #9333EA !important;
-  border-color: rgba(147, 51, 234, 0.35) !important;
-  background: rgba(168, 85, 247, 0.12) !important;
-}
-
-html.dark .btn-ghost.text-yellow-600:hover {
-  color: #FCD34D !important;
-  border-color: rgba(252, 211, 77, 0.3) !important;
-  background: rgba(251, 191, 36, 0.15) !important;
-}
-
-html.dark .btn-ghost.text-green-600:hover,
-html.dark .btn-ghost.text-emerald-600:hover,
-html.dark .btn-ghost.text-emerald-400:hover {
-  color: #34D399 !important;
-  border-color: rgba(52, 211, 153, 0.35) !important;
-  background: rgba(16, 185, 129, 0.20) !important;
-}
-
-html.dark .btn-ghost.text-red-600:hover {
-  color: #FCA5A5 !important;
-  border-color: rgba(252, 165, 165, 0.3) !important;
-  background: rgba(248, 113, 113, 0.15) !important;
-}
-
-html.dark .btn-ghost.text-orange-600:hover {
-  color: #FDBA74 !important;
-  border-color: rgba(253, 186, 116, 0.3) !important;
-  background: rgba(251, 146, 60, 0.15) !important;
-}
-
-html.dark .btn-ghost.text-indigo-600:hover {
-  color: #818CF8 !important;
-  border-color: rgba(129, 140, 248, 0.3) !important;
-  background: rgba(99, 102, 241, 0.15) !important;
-}
-
-html.dark .btn-ghost.text-purple-600:hover,
-html.dark .btn-ghost.text-purple-400:hover {
-  color: #C084FC !important;
-  border-color: rgba(192, 132, 252, 0.35) !important;
-  background: rgba(168, 85, 247, 0.20) !important;
-}
-
-.btn-ghost.text-blue-600:hover,
-.btn-ghost.text-blue-500:hover {
-  color: #2563EB !important;
-  border-color: rgba(37, 99, 235, 0.35) !important;
-  background: rgba(37, 99, 235, 0.12) !important;
-}
-
-html.dark .btn-ghost.text-blue-600:hover,
-html.dark .btn-ghost.text-blue-400:hover {
-  color: #93C5FD !important;
-  border-color: rgba(147, 197, 253, 0.35) !important;
-  background: rgba(37, 99, 235, 0.20) !important;
-}
-
-/* ---- Botones Ghost con Tonalidades Específicas (Liquid Glass) ---- */
+/* ---- BOTONES GHOST CON COLOR: EFECTO LIQUID GLASS TIPO TARJETA ---- */
+/* Muestran su tono en reposo y se intensifican con resplandor en hover, con altura homogénea de 38px */
 .btn-ghost-amber,
 .btn-ghost-red,
 .btn-ghost-emerald,
 .btn-ghost-purple,
 .btn-ghost-violet,
-.btn-ghost-blue {
+.btn-ghost-blue,
+.btn-ghost-indigo,
+.btn-ghost-orange,
+.btn-ghost[class*="text-"],
+.btn-ghost[class*="border-"] {
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  border-radius: 12px !important;
   backdrop-filter: blur(14px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
 }
 
 html.dark .btn-ghost-amber,
@@ -3429,8 +3361,12 @@ html.dark .btn-ghost-red,
 html.dark .btn-ghost-emerald,
 html.dark .btn-ghost-purple,
 html.dark .btn-ghost-violet,
-html.dark .btn-ghost-blue {
-  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+html.dark .btn-ghost-blue,
+html.dark .btn-ghost-indigo,
+html.dark .btn-ghost-orange,
+html.dark .btn-ghost[class*="text-"],
+html.dark .btn-ghost[class*="border-"] {
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
 }
 
 .btn-ghost-amber:hover,
@@ -3438,7 +3374,11 @@ html.dark .btn-ghost-blue {
 .btn-ghost-emerald:hover,
 .btn-ghost-purple:hover,
 .btn-ghost-violet:hover,
-.btn-ghost-blue:hover {
+.btn-ghost-blue:hover,
+.btn-ghost-indigo:hover,
+.btn-ghost-orange:hover,
+.btn-ghost[class*="text-"]:hover,
+.btn-ghost[class*="border-"]:hover {
   transform: translateY(-1px) !important;
 }
 
@@ -3447,389 +3387,574 @@ html.dark .btn-ghost-blue {
 .btn-ghost-emerald:active,
 .btn-ghost-purple:active,
 .btn-ghost-violet:active,
-.btn-ghost-blue:active {
+.btn-ghost-blue:active,
+.btn-ghost-indigo:active,
+.btn-ghost-orange:active,
+.btn-ghost[class*="text-"]:active,
+.btn-ghost[class*="border-"]:active {
   transform: translateY(0) !important;
 }
 
+/* 1. Índigo / Azul Violeta (ej. Ver Factura) */
+.btn-ghost[class*="text-indigo"],
+.btn-ghost[class*="border-indigo"],
+.btn-ghost-indigo {
+  color: #4F46E5 !important;
+  background: rgba(99, 102, 241, 0.10) !important;
+  border: 1px solid rgba(99, 102, 241, 0.28) !important;
+}
+
+.btn-ghost[class*="text-indigo"]:hover,
+.btn-ghost[class*="border-indigo"]:hover,
+.btn-ghost-indigo:hover {
+  color: #4338CA !important;
+  background: rgba(99, 102, 241, 0.22) !important;
+  border-color: rgba(99, 102, 241, 0.55) !important;
+  box-shadow: 0 4px 16px -2px rgba(99, 102, 241, 0.35), 0 0 10px rgba(99, 102, 241, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+html.dark .btn-ghost[class*="text-indigo"],
+html.dark .btn-ghost[class*="border-indigo"],
+html.dark .btn-ghost-indigo {
+  color: #A5B4FC !important;
+  background: rgba(99, 102, 241, 0.15) !important;
+  border-color: rgba(129, 140, 248, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-indigo"]:hover,
+html.dark .btn-ghost[class*="border-indigo"]:hover,
+html.dark .btn-ghost-indigo:hover {
+  color: #C7D2FE !important;
+  background: rgba(99, 102, 241, 0.28) !important;
+  border-color: rgba(165, 180, 252, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(99, 102, 241, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+}
+
+/* 2. Azul (ej. Imprimir dropdown, acciones neutras/banco) */
+.btn-ghost[class*="text-blue"],
+.btn-ghost[class*="border-blue"],
+.btn-ghost-blue {
+  color: #2563EB !important;
+  background: rgba(37, 99, 235, 0.10) !important;
+  border: 1px solid rgba(37, 99, 235, 0.28) !important;
+}
+
+.btn-ghost[class*="text-blue"]:hover,
+.btn-ghost[class*="border-blue"]:hover,
+.btn-ghost-blue:hover {
+  color: #1D4ED8 !important;
+  background: rgba(37, 99, 235, 0.22) !important;
+  border-color: rgba(37, 99, 235, 0.55) !important;
+  box-shadow: 0 4px 16px -2px rgba(37, 99, 235, 0.35), 0 0 10px rgba(37, 99, 235, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+html.dark .btn-ghost[class*="text-blue"],
+html.dark .btn-ghost[class*="border-blue"],
+html.dark .btn-ghost-blue {
+  color: #93C5FD !important;
+  background: rgba(37, 99, 235, 0.15) !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-blue"]:hover,
+html.dark .btn-ghost[class*="border-blue"]:hover,
+html.dark .btn-ghost-blue:hover {
+  color: #BFDBFE !important;
+  background: rgba(37, 99, 235, 0.28) !important;
+  border-color: rgba(147, 197, 253, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+}
+
+/* 3. Ámbar / Amarillo (ej. Editar, Cancelar en modales) */
+.btn-ghost[class*="text-yellow"],
+.btn-ghost[class*="border-yellow"],
+.btn-ghost[class*="text-amber"],
+.btn-ghost[class*="border-amber"],
 .btn-ghost-amber {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 7px !important;
-  padding: 10px 16px !important;
-  font-weight: 700 !important;
-  font-size: 13.5px !important;
-  border-radius: 12px !important;
-  cursor: pointer !important;
-  text-decoration: none !important;
   color: #D97706 !important;
-  background: rgba(217, 119, 6, 0.10) !important;
-  border: 1px solid rgba(217, 119, 6, 0.30) !important;
-  transition: all 0.22s ease !important;
+  background: rgba(245, 158, 11, 0.10) !important;
+  border: 1px solid rgba(245, 158, 11, 0.30) !important;
 }
 
+.btn-ghost[class*="text-yellow"]:hover,
+.btn-ghost[class*="border-yellow"]:hover,
+.btn-ghost[class*="text-amber"]:hover,
+.btn-ghost[class*="border-amber"]:hover,
 .btn-ghost-amber:hover {
-  background: rgba(217, 119, 6, 0.20) !important;
-  border-color: rgba(217, 119, 6, 0.55) !important;
   color: #B45309 !important;
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: rgba(245, 158, 11, 0.58) !important;
+  box-shadow: 0 4px 16px -2px rgba(245, 158, 11, 0.35), 0 0 10px rgba(245, 158, 11, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
+html.dark .btn-ghost[class*="text-yellow"],
+html.dark .btn-ghost[class*="border-yellow"],
+html.dark .btn-ghost[class*="text-amber"],
+html.dark .btn-ghost[class*="border-amber"],
 html.dark .btn-ghost-amber {
   color: #FBBF24 !important;
-  background: rgba(245, 158, 11, 0.12) !important;
-  border-color: rgba(245, 158, 11, 0.35) !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
 }
 
+html.dark .btn-ghost[class*="text-yellow"]:hover,
+html.dark .btn-ghost[class*="border-yellow"]:hover,
+html.dark .btn-ghost[class*="text-amber"]:hover,
+html.dark .btn-ghost[class*="border-amber"]:hover,
 html.dark .btn-ghost-amber:hover {
-  background: rgba(245, 158, 11, 0.24) !important;
-  border-color: rgba(245, 158, 11, 0.60) !important;
   color: #FDE68A !important;
+  background: rgba(245, 158, 11, 0.28) !important;
+  border-color: rgba(252, 211, 77, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(245, 158, 11, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
 }
 
-.btn-ghost-red {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 7px !important;
-  padding: 10px 16px !important;
-  font-weight: 700 !important;
-  font-size: 13.5px !important;
-  border-radius: 12px !important;
-  cursor: pointer !important;
-  text-decoration: none !important;
-  color: #DC2626 !important;
-  background: rgba(220, 38, 38, 0.08) !important;
-  border: 1px solid rgba(220, 38, 38, 0.25) !important;
-  transition: all 0.22s ease !important;
-}
-
-.btn-ghost-red:hover {
-  background: rgba(220, 38, 38, 0.18) !important;
-  border-color: rgba(220, 38, 38, 0.50) !important;
-  color: #B91C1C !important;
-}
-
-.dark .btn-ghost-red,
-html.dark .btn-ghost-red {
-  color: #F87171 !important;
-  background: rgba(239, 68, 68, 0.12) !important;
-  border-color: rgba(248, 113, 113, 0.35) !important;
-}
-
-.dark .btn-ghost-red:hover,
-html.dark .btn-ghost-red:hover {
-  background: rgba(239, 68, 68, 0.22) !important;
-  border-color: rgba(248, 113, 113, 0.60) !important;
-  color: #FECACA !important;
-}
-
+/* 4. Esmeralda / Verde (ej. Reactivar, Ver en Caja, Confirmar) */
+.btn-ghost[class*="text-emerald"],
+.btn-ghost[class*="border-emerald"],
+.btn-ghost[class*="text-green"],
+.btn-ghost[class*="border-green"],
 .btn-ghost-emerald {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 7px !important;
-  padding: 10px 16px !important;
-  font-weight: 700 !important;
-  font-size: 13.5px !important;
-  border-radius: 12px !important;
-  cursor: pointer !important;
-  text-decoration: none !important;
   color: #059669 !important;
   background: rgba(16, 185, 129, 0.10) !important;
   border: 1px solid rgba(16, 185, 129, 0.30) !important;
-  transition: all 0.22s ease !important;
 }
 
+.btn-ghost[class*="text-emerald"]:hover,
+.btn-ghost[class*="border-emerald"]:hover,
+.btn-ghost[class*="text-green"]:hover,
+.btn-ghost[class*="border-green"]:hover,
 .btn-ghost-emerald:hover {
-  background: rgba(16, 185, 129, 0.20) !important;
-  border-color: rgba(16, 185, 129, 0.55) !important;
   color: #047857 !important;
+  background: rgba(16, 185, 129, 0.22) !important;
+  border-color: rgba(16, 185, 129, 0.60) !important;
+  box-shadow: 0 4px 16px -2px rgba(16, 185, 129, 0.35), 0 0 10px rgba(16, 185, 129, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
-.dark .btn-ghost-emerald,
+html.dark .btn-ghost[class*="text-emerald"],
+html.dark .btn-ghost[class*="border-emerald"],
+html.dark .btn-ghost[class*="text-green"],
+html.dark .btn-ghost[class*="border-green"],
 html.dark .btn-ghost-emerald {
-  color: #34D399 !important;
-  background: rgba(16, 185, 129, 0.14) !important;
+  color: #6EE7B7 !important;
+  background: rgba(16, 185, 129, 0.15) !important;
   border-color: rgba(52, 211, 153, 0.35) !important;
 }
 
-.dark .btn-ghost-emerald:hover,
+html.dark .btn-ghost[class*="text-emerald"]:hover,
+html.dark .btn-ghost[class*="border-emerald"]:hover,
+html.dark .btn-ghost[class*="text-green"]:hover,
+html.dark .btn-ghost[class*="border-green"]:hover,
 html.dark .btn-ghost-emerald:hover {
-  background: rgba(16, 185, 129, 0.25) !important;
-  border-color: rgba(52, 211, 153, 0.60) !important;
   color: #A7F3D0 !important;
+  background: rgba(16, 185, 129, 0.28) !important;
+  border-color: rgba(110, 231, 183, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
 }
 
-.btn-ghost-purple {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 7px !important;
-  padding: 10px 16px !important;
-  font-weight: 700 !important;
-  font-size: 13.5px !important;
-  border-radius: 12px !important;
-  cursor: pointer !important;
-  text-decoration: none !important;
-  color: #7E22CE !important;
-  background: rgba(147, 51, 234, 0.10) !important;
-  border: 1px solid rgba(147, 51, 234, 0.35) !important;
-  transition: all 0.22s ease !important;
-}
-
-.btn-ghost-purple:hover {
-  background: rgba(147, 51, 234, 0.20) !important;
-  border-color: rgba(147, 51, 234, 0.55) !important;
-  color: #6B21A8 !important;
-}
-
-.dark .btn-ghost-purple,
-html.dark .btn-ghost-purple {
-  color: #C084FC !important;
-  background: rgba(168, 85, 247, 0.16) !important;
-  border-color: rgba(192, 132, 252, 0.40) !important;
-}
-
-.dark .btn-ghost-purple:hover,
-html.dark .btn-ghost-purple:hover {
-  background: rgba(168, 85, 247, 0.28) !important;
-  border-color: rgba(192, 132, 252, 0.65) !important;
-  color: #F3E8FF !important;
-}
-
-.btn-ghost-violet {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 7px !important;
-  padding: 10px 16px !important;
-  font-weight: 700 !important;
-  font-size: 13.5px !important;
-  border-radius: 12px !important;
-  cursor: pointer !important;
-  text-decoration: none !important;
-  color: #7E22CE !important;
-  background: rgba(147, 51, 234, 0.10) !important;
-  border: 1px solid rgba(147, 51, 234, 0.35) !important;
-  transition: all 0.22s ease !important;
-}
-
-.btn-ghost-violet:hover {
-  background: rgba(147, 51, 234, 0.20) !important;
-  border-color: rgba(147, 51, 234, 0.55) !important;
-  color: #6B21A8 !important;
-}
-
-.dark .btn-ghost-violet,
-html.dark .btn-ghost-violet {
-  color: #C084FC !important;
-  background: rgba(168, 85, 247, 0.16) !important;
-  border-color: rgba(192, 132, 252, 0.40) !important;
-}
-
-.dark .btn-ghost-violet:hover,
-html.dark .btn-ghost-violet:hover {
-  background: rgba(168, 85, 247, 0.28) !important;
-  border-color: rgba(192, 132, 252, 0.65) !important;
-  color: #F3E8FF !important;
-}
-
-.btn-ghost-blue {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 7px !important;
-  padding: 10px 16px !important;
-  font-weight: 700 !important;
-  font-size: 13.5px !important;
-  border-radius: 12px !important;
-  cursor: pointer !important;
-  text-decoration: none !important;
-  color: #2563EB !important;
-  background: rgba(37, 99, 235, 0.10) !important;
-  border: 1px solid rgba(37, 99, 235, 0.30) !important;
-  transition: all 0.22s ease !important;
-}
-
-.btn-ghost-blue:hover {
-  background: rgba(37, 99, 235, 0.20) !important;
-  border-color: rgba(37, 99, 235, 0.55) !important;
-  color: #1D4ED8 !important;
-}
-
-.dark .btn-ghost-blue,
-html.dark .btn-ghost-blue {
-  color: #60A5FA !important;
-  background: rgba(59, 130, 246, 0.14) !important;
-  border-color: rgba(96, 165, 250, 0.35) !important;
-}
-
-.dark .btn-ghost-blue:hover,
-html.dark .btn-ghost-blue:hover {
-  background: rgba(59, 130, 246, 0.25) !important;
-  border-color: rgba(96, 165, 250, 0.60) !important;
-  color: #BFDBFE !important;
-}
-
-/* ---- Soporte automático para botones .btn-ghost coloreados en modales ---- */
-.ts-modal-card .btn-ghost[class*="text-red"],
-.ts-modal-card .btn-ghost[class*="border-red"],
-.ts-modal-overlay .btn-ghost[class*="text-red"],
-.ts-modal-overlay .btn-ghost[class*="border-red"] {
+/* 5. Rojo / Carmesí (Ghost Red) */
+.btn-ghost[class*="text-red"],
+.btn-ghost[class*="border-red"],
+.btn-ghost-red {
   color: #DC2626 !important;
-  background: rgba(220, 38, 38, 0.08) !important;
-  border-color: rgba(220, 38, 38, 0.25) !important;
+  background: rgba(239, 68, 68, 0.10) !important;
+  border: 1px solid rgba(239, 68, 68, 0.30) !important;
 }
 
-.ts-modal-card .btn-ghost[class*="text-red"]:hover,
-.ts-modal-card .btn-ghost[class*="border-red"]:hover,
-.ts-modal-overlay .btn-ghost[class*="text-red"]:hover,
-.ts-modal-overlay .btn-ghost[class*="border-red"]:hover {
-  background: rgba(220, 38, 38, 0.18) !important;
-  border-color: rgba(220, 38, 38, 0.50) !important;
+.btn-ghost[class*="text-red"]:hover,
+.btn-ghost[class*="border-red"]:hover,
+.btn-ghost-red:hover {
   color: #B91C1C !important;
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(239, 68, 68, 0.60) !important;
+  box-shadow: 0 4px 16px -2px rgba(239, 68, 68, 0.35), 0 0 10px rgba(239, 68, 68, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
-html.dark .ts-modal-card .btn-ghost[class*="text-red"],
-html.dark .ts-modal-card .btn-ghost[class*="border-red"],
-html.dark .ts-modal-overlay .btn-ghost[class*="text-red"],
-html.dark .ts-modal-overlay .btn-ghost[class*="border-red"] {
+html.dark .btn-ghost[class*="text-red"],
+html.dark .btn-ghost[class*="border-red"],
+html.dark .btn-ghost-red {
   color: #F87171 !important;
-  background: rgba(239, 68, 68, 0.12) !important;
+  background: rgba(239, 68, 68, 0.15) !important;
   border-color: rgba(248, 113, 113, 0.35) !important;
 }
 
+html.dark .btn-ghost[class*="text-red"]:hover,
+html.dark .btn-ghost[class*="border-red"]:hover,
+html.dark .btn-ghost-red:hover {
+  color: #FECACA !important;
+  background: rgba(239, 68, 68, 0.28) !important;
+  border-color: rgba(252, 165, 165, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+}
+
+/* 6. Púrpura / Violeta */
+.btn-ghost[class*="text-purple"],
+.btn-ghost[class*="border-purple"],
+.btn-ghost-purple,
+.btn-ghost-violet {
+  color: #9333EA !important;
+  background: rgba(168, 85, 247, 0.10) !important;
+  border: 1px solid rgba(168, 85, 247, 0.30) !important;
+}
+
+.btn-ghost[class*="text-purple"]:hover,
+.btn-ghost[class*="border-purple"]:hover,
+.btn-ghost-purple:hover,
+.btn-ghost-violet:hover {
+  color: #7E22CE !important;
+  background: rgba(168, 85, 247, 0.22) !important;
+  border-color: rgba(168, 85, 247, 0.60) !important;
+  box-shadow: 0 4px 16px -2px rgba(168, 85, 247, 0.35), 0 0 10px rgba(168, 85, 247, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+html.dark .btn-ghost[class*="text-purple"],
+html.dark .btn-ghost[class*="border-purple"],
+html.dark .btn-ghost-purple,
+html.dark .btn-ghost-violet {
+  color: #D8B4FE !important;
+  background: rgba(168, 85, 247, 0.15) !important;
+  border-color: rgba(192, 132, 252, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-purple"]:hover,
+html.dark .btn-ghost[class*="border-purple"]:hover,
+html.dark .btn-ghost-purple:hover,
+html.dark .btn-ghost-violet:hover {
+  color: #F3E8FF !important;
+  background: rgba(168, 85, 247, 0.28) !important;
+  border-color: rgba(216, 180, 254, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(168, 85, 247, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+}
+
+/* 7. Naranja */
+.btn-ghost[class*="text-orange"],
+.btn-ghost[class*="border-orange"],
+.btn-ghost-orange {
+  color: #EA580C !important;
+  background: rgba(249, 115, 22, 0.10) !important;
+  border: 1px solid rgba(249, 115, 22, 0.30) !important;
+}
+
+.btn-ghost[class*="text-orange"]:hover,
+.btn-ghost[class*="border-orange"]:hover,
+.btn-ghost-orange:hover {
+  color: #C2410C !important;
+  background: rgba(249, 115, 22, 0.22) !important;
+  border-color: rgba(249, 115, 22, 0.60) !important;
+  box-shadow: 0 4px 16px -2px rgba(249, 115, 22, 0.35), 0 0 10px rgba(249, 115, 22, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+html.dark .btn-ghost[class*="text-orange"],
+html.dark .btn-ghost[class*="border-orange"],
+html.dark .btn-ghost-orange {
+  color: #FDBA74 !important;
+  background: rgba(249, 115, 22, 0.15) !important;
+  border-color: rgba(251, 146, 60, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-orange"]:hover,
+html.dark .btn-ghost[class*="border-orange"]:hover,
+html.dark .btn-ghost-orange:hover {
+  color: #FED7AA !important;
+  background: rgba(249, 115, 22, 0.28) !important;
+  border-color: rgba(253, 186, 116, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(249, 115, 22, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+}
+
+/* ---- BOTONES EN MODALES: CALIBRACIÓN HOMOGÉNEA Y LIQUID GLASS TIPO TARJETA ---- */
+.ts-modal-card .btn-ghost,
+.ts-modal-card .btn-ghost-amber,
+.ts-modal-card .btn-ghost-red,
+.ts-modal-card .btn-ghost-emerald,
+.ts-modal-card .btn-ghost-purple,
+.ts-modal-card .btn-ghost-violet,
+.ts-modal-card .btn-ghost-blue,
+.ts-modal-card .btn-ghost-indigo,
+.ts-modal-card .btn-ghost-orange,
+.ts-modal-card .btn-danger,
+.ts-modal-card .btn-blue,
+.ts-modal-card .btn-cancel,
+.ts-modal-overlay .btn-ghost,
+.ts-modal-overlay .btn-ghost-amber,
+.ts-modal-overlay .btn-ghost-red,
+.ts-modal-overlay .btn-ghost-blue,
+.ts-modal-overlay .btn-danger {
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  padding: 0 18px !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+
+/* 1. Modal Ámbar (ej. Cancelar modal, Volver) */
+.ts-modal-card .btn-ghost-amber,
+.ts-modal-card .btn-ghost[class*="text-amber"],
+.ts-modal-card .btn-ghost[class*="border-amber"],
+.ts-modal-card .btn-ghost[class*="text-yellow"],
+.ts-modal-card .btn-ghost[class*="border-yellow"],
+.ts-modal-overlay .btn-ghost-amber {
+  color: #D97706 !important;
+  background: rgba(245, 158, 11, 0.10) !important;
+  border: 1px solid rgba(245, 158, 11, 0.30) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.ts-modal-card .btn-ghost-amber:hover,
+.ts-modal-card .btn-ghost[class*="text-amber"]:hover,
+.ts-modal-card .btn-ghost[class*="border-amber"]:hover,
+.ts-modal-card .btn-ghost[class*="text-yellow"]:hover,
+.ts-modal-card .btn-ghost[class*="border-yellow"]:hover,
+.ts-modal-overlay .btn-ghost-amber:hover {
+  transform: translateY(-1px) !important;
+  color: #B45309 !important;
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: rgba(245, 158, 11, 0.58) !important;
+  box-shadow: 0 4px 16px -2px rgba(245, 158, 11, 0.35), 0 0 10px rgba(245, 158, 11, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-amber,
+html.dark .ts-modal-card .btn-ghost[class*="text-amber"],
+html.dark .ts-modal-card .btn-ghost[class*="border-amber"],
+html.dark .ts-modal-card .btn-ghost[class*="text-yellow"],
+html.dark .ts-modal-card .btn-ghost[class*="border-yellow"],
+html.dark .ts-modal-overlay .btn-ghost-amber {
+  color: #FBBF24 !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-amber:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-amber"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-amber"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-yellow"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-yellow"]:hover,
+html.dark .ts-modal-overlay .btn-ghost-amber:hover {
+  transform: translateY(-1px) !important;
+  color: #FDE68A !important;
+  background: rgba(245, 158, 11, 0.28) !important;
+  border-color: rgba(252, 211, 77, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(245, 158, 11, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+}
+
+/* 2. Modal Rojo / Danger (ej. Anular, Confirmar eliminación) */
+.ts-modal-card .btn-danger,
+.ts-modal-card .btn-ghost-red,
+.ts-modal-card .btn-ghost[class*="text-red"],
+.ts-modal-card .btn-ghost[class*="border-red"],
+.ts-modal-overlay .btn-danger,
+.ts-modal-overlay .btn-ghost-red {
+  color: #DC2626 !important;
+  background: rgba(239, 68, 68, 0.10) !important;
+  border: 1px solid rgba(239, 68, 68, 0.30) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.ts-modal-card .btn-danger:hover,
+.ts-modal-card .btn-ghost-red:hover,
+.ts-modal-card .btn-ghost[class*="text-red"]:hover,
+.ts-modal-card .btn-ghost[class*="border-red"]:hover,
+.ts-modal-overlay .btn-danger:hover,
+.ts-modal-overlay .btn-ghost-red:hover {
+  transform: translateY(-1px) !important;
+  color: #B91C1C !important;
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(239, 68, 68, 0.60) !important;
+  box-shadow: 0 4px 16px -2px rgba(239, 68, 68, 0.35), 0 0 10px rgba(239, 68, 68, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+html.dark .ts-modal-card .btn-danger,
+html.dark .ts-modal-card .btn-ghost-red,
+html.dark .ts-modal-card .btn-ghost[class*="text-red"],
+html.dark .ts-modal-card .btn-ghost[class*="border-red"],
+html.dark .ts-modal-overlay .btn-danger,
+html.dark .ts-modal-overlay .btn-ghost-red {
+  color: #F87171 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(248, 113, 113, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .ts-modal-card .btn-danger:hover,
+html.dark .ts-modal-card .btn-ghost-red:hover,
 html.dark .ts-modal-card .btn-ghost[class*="text-red"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-red"]:hover,
-html.dark .ts-modal-overlay .btn-ghost[class*="text-red"]:hover,
-html.dark .ts-modal-overlay .btn-ghost[class*="border-red"]:hover {
-  background: rgba(239, 68, 68, 0.22) !important;
-  border-color: rgba(248, 113, 113, 0.60) !important;
+html.dark .ts-modal-overlay .btn-danger:hover,
+html.dark .ts-modal-overlay .btn-ghost-red:hover {
+  transform: translateY(-1px) !important;
   color: #FECACA !important;
+  background: rgba(239, 68, 68, 0.28) !important;
+  border-color: rgba(252, 165, 165, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
 }
 
-.ts-modal-card .btn-ghost[class*="text-violet"],
-.ts-modal-card .btn-ghost[class*="text-purple"],
-.ts-modal-card .btn-ghost[class*="border-violet"],
-.ts-modal-card .btn-ghost[class*="border-purple"],
-.ts-modal-overlay .btn-ghost[class*="text-violet"],
-.ts-modal-overlay .btn-ghost[class*="text-purple"],
-.ts-modal-overlay .btn-ghost[class*="border-violet"],
-.ts-modal-overlay .btn-ghost[class*="border-purple"] {
-  color: #7E22CE !important;
-  background: rgba(147, 51, 234, 0.10) !important;
-  border-color: rgba(147, 51, 234, 0.35) !important;
-}
-
-.ts-modal-card .btn-ghost[class*="text-violet"]:hover,
-.ts-modal-card .btn-ghost[class*="text-purple"]:hover,
-.ts-modal-card .btn-ghost[class*="border-violet"]:hover,
-.ts-modal-card .btn-ghost[class*="border-purple"]:hover,
-.ts-modal-overlay .btn-ghost[class*="text-violet"]:hover,
-.ts-modal-overlay .btn-ghost[class*="text-purple"]:hover,
-.ts-modal-overlay .btn-ghost[class*="border-violet"]:hover,
-.ts-modal-overlay .btn-ghost[class*="border-purple"]:hover {
-  background: rgba(147, 51, 234, 0.20) !important;
-  border-color: rgba(147, 51, 234, 0.55) !important;
-  color: #6B21A8 !important;
-}
-
-html.dark .ts-modal-card .btn-ghost[class*="text-violet"],
-html.dark .ts-modal-card .btn-ghost[class*="text-purple"],
-html.dark .ts-modal-card .btn-ghost[class*="border-violet"],
-html.dark .ts-modal-card .btn-ghost[class*="border-purple"],
-html.dark .ts-modal-overlay .btn-ghost[class*="text-violet"],
-html.dark .ts-modal-overlay .btn-ghost[class*="text-purple"],
-html.dark .ts-modal-overlay .btn-ghost[class*="border-violet"],
-html.dark .ts-modal-overlay .btn-ghost[class*="border-purple"] {
-  color: #C084FC !important;
-  background: rgba(168, 85, 247, 0.16) !important;
-  border-color: rgba(192, 132, 252, 0.40) !important;
-}
-
-html.dark .ts-modal-card .btn-ghost[class*="text-violet"]:hover,
-html.dark .ts-modal-card .btn-ghost[class*="text-purple"]:hover,
-html.dark .ts-modal-card .btn-ghost[class*="border-violet"]:hover,
-html.dark .ts-modal-card .btn-ghost[class*="border-purple"]:hover,
-html.dark .ts-modal-overlay .btn-ghost[class*="text-violet"]:hover,
-html.dark .ts-modal-overlay .btn-ghost[class*="text-purple"]:hover,
-html.dark .ts-modal-overlay .btn-ghost[class*="border-violet"]:hover,
-html.dark .ts-modal-overlay .btn-ghost[class*="border-purple"]:hover {
-  background: rgba(168, 85, 247, 0.28) !important;
-  border-color: rgba(192, 132, 252, 0.65) !important;
-  color: #F3E8FF !important;
-}
-
-.ts-modal-card .btn-ghost[class*="text-emerald"],
-.ts-modal-card .btn-ghost[class*="border-emerald"],
-.ts-modal-overlay .btn-ghost[class*="text-emerald"],
-.ts-modal-overlay .btn-ghost[class*="border-emerald"] {
-  color: #059669 !important;
-  background: rgba(16, 185, 129, 0.10) !important;
-  border-color: rgba(16, 185, 129, 0.30) !important;
-}
-
-.ts-modal-card .btn-ghost[class*="text-emerald"]:hover,
-.ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
-.ts-modal-overlay .btn-ghost[class*="text-emerald"]:hover,
-.ts-modal-overlay .btn-ghost[class*="border-emerald"]:hover {
-  background: rgba(16, 185, 129, 0.20) !important;
-  border-color: rgba(16, 185, 129, 0.55) !important;
-  color: #047857 !important;
-}
-
-html.dark .ts-modal-card .btn-ghost[class*="text-emerald"],
-html.dark .ts-modal-card .btn-ghost[class*="border-emerald"],
-html.dark .ts-modal-overlay .btn-ghost[class*="text-emerald"],
-html.dark .ts-modal-overlay .btn-ghost[class*="border-emerald"] {
-  color: #34D399 !important;
-  background: rgba(16, 185, 129, 0.14) !important;
-  border-color: rgba(52, 211, 153, 0.35) !important;
-}
-
-html.dark .ts-modal-card .btn-ghost[class*="text-emerald"]:hover,
-html.dark .ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
-html.dark .ts-modal-overlay .btn-ghost[class*="text-emerald"]:hover,
-html.dark .ts-modal-overlay .btn-ghost[class*="border-emerald"]:hover {
-  background: rgba(16, 185, 129, 0.25) !important;
-  border-color: rgba(52, 211, 153, 0.60) !important;
-  color: #A7F3D0 !important;
-}
-
+/* 3. Modal Azul (ej. Confirmar baja) */
+.ts-modal-card .btn-ghost-blue,
+.ts-modal-card .btn-blue,
 .ts-modal-card .btn-ghost[class*="text-blue"],
 .ts-modal-card .btn-ghost[class*="border-blue"],
-.ts-modal-overlay .btn-ghost[class*="text-blue"],
-.ts-modal-overlay .btn-ghost[class*="border-blue"] {
+.ts-modal-overlay .btn-ghost-blue {
   color: #2563EB !important;
   background: rgba(37, 99, 235, 0.10) !important;
-  border-color: rgba(37, 99, 235, 0.30) !important;
+  border: 1px solid rgba(37, 99, 235, 0.28) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
 }
 
+.ts-modal-card .btn-ghost-blue:hover,
+.ts-modal-card .btn-blue:hover,
 .ts-modal-card .btn-ghost[class*="text-blue"]:hover,
 .ts-modal-card .btn-ghost[class*="border-blue"]:hover,
-.ts-modal-overlay .btn-ghost[class*="text-blue"]:hover,
-.ts-modal-overlay .btn-ghost[class*="border-blue"]:hover {
-  background: rgba(37, 99, 235, 0.20) !important;
-  border-color: rgba(37, 99, 235, 0.55) !important;
+.ts-modal-overlay .btn-ghost-blue:hover {
+  transform: translateY(-1px) !important;
   color: #1D4ED8 !important;
+  background: rgba(37, 99, 235, 0.22) !important;
+  border-color: rgba(37, 99, 235, 0.55) !important;
+  box-shadow: 0 4px 16px -2px rgba(37, 99, 235, 0.35), 0 0 10px rgba(37, 99, 235, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
+html.dark .ts-modal-card .btn-ghost-blue,
+html.dark .ts-modal-card .btn-blue,
 html.dark .ts-modal-card .btn-ghost[class*="text-blue"],
 html.dark .ts-modal-card .btn-ghost[class*="border-blue"],
-html.dark .ts-modal-overlay .btn-ghost[class*="text-blue"],
-html.dark .ts-modal-overlay .btn-ghost[class*="border-blue"] {
-  color: #60A5FA !important;
-  background: rgba(59, 130, 246, 0.14) !important;
+html.dark .ts-modal-overlay .btn-ghost-blue {
+  color: #93C5FD !important;
+  background: rgba(37, 99, 235, 0.15) !important;
   border-color: rgba(96, 165, 250, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
 }
 
+html.dark .ts-modal-card .btn-ghost-blue:hover,
+html.dark .ts-modal-card .btn-blue:hover,
 html.dark .ts-modal-card .btn-ghost[class*="text-blue"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-blue"]:hover,
-html.dark .ts-modal-overlay .btn-ghost[class*="text-blue"]:hover,
-html.dark .ts-modal-overlay .btn-ghost[class*="border-blue"]:hover {
-  background: rgba(59, 130, 246, 0.25) !important;
-  border-color: rgba(96, 165, 250, 0.60) !important;
+html.dark .ts-modal-overlay .btn-ghost-blue:hover {
+  transform: translateY(-1px) !important;
   color: #BFDBFE !important;
+  background: rgba(37, 99, 235, 0.28) !important;
+  border-color: rgba(147, 197, 253, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+}
+
+/* 4. Modal Esmeralda / Verde */
+.ts-modal-card .btn-ghost-emerald,
+.ts-modal-card .btn-ghost[class*="text-emerald"],
+.ts-modal-card .btn-ghost[class*="border-emerald"],
+.ts-modal-card .btn-ghost[class*="text-green"],
+.ts-modal-card .btn-ghost[class*="border-green"],
+.ts-modal-overlay .btn-ghost-emerald {
+  color: #059669 !important;
+  background: rgba(16, 185, 129, 0.10) !important;
+  border: 1px solid rgba(16, 185, 129, 0.30) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.ts-modal-card .btn-ghost-emerald:hover,
+.ts-modal-card .btn-ghost[class*="text-emerald"]:hover,
+.ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
+.ts-modal-card .btn-ghost[class*="text-green"]:hover,
+.ts-modal-card .btn-ghost[class*="border-green"]:hover,
+.ts-modal-overlay .btn-ghost-emerald:hover {
+  transform: translateY(-1px) !important;
+  color: #047857 !important;
+  background: rgba(16, 185, 129, 0.22) !important;
+  border-color: rgba(16, 185, 129, 0.60) !important;
+  box-shadow: 0 4px 16px -2px rgba(16, 185, 129, 0.35), 0 0 10px rgba(16, 185, 129, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-emerald,
+html.dark .ts-modal-card .btn-ghost[class*="text-emerald"],
+html.dark .ts-modal-card .btn-ghost[class*="border-emerald"],
+html.dark .ts-modal-card .btn-ghost[class*="text-green"],
+html.dark .ts-modal-card .btn-ghost[class*="border-green"],
+html.dark .ts-modal-overlay .btn-ghost-emerald {
+  color: #6EE7B7 !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-emerald:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-emerald"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-green"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-green"]:hover,
+html.dark .ts-modal-overlay .btn-ghost-emerald:hover {
+  transform: translateY(-1px) !important;
+  color: #A7F3D0 !important;
+  background: rgba(16, 185, 129, 0.28) !important;
+  border-color: rgba(110, 231, 183, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+}
+
+/* 5. Modal Púrpura / Violeta */
+.ts-modal-card .btn-ghost-purple,
+.ts-modal-card .btn-ghost-violet,
+.ts-modal-card .btn-ghost[class*="text-purple"],
+.ts-modal-card .btn-ghost[class*="border-purple"],
+.ts-modal-card .btn-ghost[class*="text-violet"],
+.ts-modal-card .btn-ghost[class*="border-violet"],
+.ts-modal-overlay .btn-ghost-purple,
+.ts-modal-overlay .btn-ghost-violet {
+  color: #9333EA !important;
+  background: rgba(168, 85, 247, 0.10) !important;
+  border: 1px solid rgba(168, 85, 247, 0.30) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.ts-modal-card .btn-ghost-purple:hover,
+.ts-modal-card .btn-ghost-violet:hover,
+.ts-modal-card .btn-ghost[class*="text-purple"]:hover,
+.ts-modal-card .btn-ghost[class*="border-purple"]:hover,
+.ts-modal-card .btn-ghost[class*="text-violet"]:hover,
+.ts-modal-card .btn-ghost[class*="border-violet"]:hover,
+.ts-modal-overlay .btn-ghost-purple:hover,
+.ts-modal-overlay .btn-ghost-violet:hover {
+  transform: translateY(-1px) !important;
+  color: #7E22CE !important;
+  background: rgba(168, 85, 247, 0.22) !important;
+  border-color: rgba(168, 85, 247, 0.60) !important;
+  box-shadow: 0 4px 16px -2px rgba(168, 85, 247, 0.35), 0 0 10px rgba(168, 85, 247, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-purple,
+html.dark .ts-modal-card .btn-ghost-violet,
+html.dark .ts-modal-card .btn-ghost[class*="text-purple"],
+html.dark .ts-modal-card .btn-ghost[class*="border-purple"],
+html.dark .ts-modal-card .btn-ghost[class*="text-violet"],
+html.dark .ts-modal-card .btn-ghost[class*="border-violet"],
+html.dark .ts-modal-overlay .btn-ghost-purple,
+html.dark .ts-modal-overlay .btn-ghost-violet {
+  color: #D8B4FE !important;
+  background: rgba(168, 85, 247, 0.15) !important;
+  border-color: rgba(192, 132, 252, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-purple:hover,
+html.dark .ts-modal-card .btn-ghost-violet:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-purple"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-purple"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-violet"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-violet"]:hover,
+html.dark .ts-modal-overlay .btn-ghost-purple:hover,
+html.dark .ts-modal-overlay .btn-ghost-violet:hover {
+  transform: translateY(-1px) !important;
+  color: #F3E8FF !important;
+  background: rgba(168, 85, 247, 0.28) !important;
+  border-color: rgba(216, 180, 254, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(168, 85, 247, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
 }
 
 .modal-divider {
@@ -3841,94 +3966,131 @@ html.dark .modal-divider {
 }
 
 .btn-danger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 12px 15px;
-  font-weight: 600;
-  font-size: 13.5px;
-  line-height: 1.25;
-  color: #DC2626;
-  border-radius: 12px;
-  cursor: pointer;
-  text-decoration: none;
-  background: rgba(220, 38, 38, 0.08);
-  border: 1px solid rgba(220, 38, 38, 0.20);
-  transition: all 0.22s ease;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #DC2626 !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  background: rgba(239, 68, 68, 0.10) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  border: 1px solid rgba(239, 68, 68, 0.30) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .btn-danger:hover {
-  background: rgba(220, 38, 38, 0.15);
+  transform: translateY(-1px) !important;
+  color: #B91C1C !important;
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(239, 68, 68, 0.60) !important;
+  box-shadow: 0 4px 16px -2px rgba(239, 68, 68, 0.35), 0 0 10px rgba(239, 68, 68, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+.btn-danger:active {
+  transform: translateY(0) !important;
 }
 
 .btn-danger.btn-icon,
 .btn-icon-danger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  min-height: 32px;
-  max-width: 32px;
-  max-height: 32px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
   padding: 0 !important;
-  font-size: 13px;
-  color: #DC2626;
-  border-radius: 10px;
-  cursor: pointer;
-  text-decoration: none;
-  background: rgba(220, 38, 38, 0.08);
-  border: 1px solid rgba(220, 38, 38, 0.20);
-  transition: all 0.22s ease;
-  box-sizing: border-box;
+  font-size: 13px !important;
+  color: #DC2626 !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  background: rgba(239, 68, 68, 0.10) !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+  transition: all 0.22s ease !important;
+  box-sizing: border-box !important;
 }
 
 .btn-danger.btn-icon:hover,
 .btn-icon-danger:hover {
-  background: rgba(220, 38, 38, 0.15);
-  transform: scale(1.05);
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(239, 68, 68, 0.50) !important;
+  transform: scale(1.05) !important;
 }
 
 .btn-blue {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  font-weight: 600;
-  font-size: 13px;
-  color: #2563EB;
-  border-radius: 14px;
-  cursor: pointer;
-  text-decoration: none;
-  background: rgba(37, 99, 235, 0.08);
-  border: 1px solid rgba(37, 99, 235, 0.20);
-  transition: all 0.22s ease;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #2563EB !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  background: rgba(37, 99, 235, 0.10) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  border: 1px solid rgba(37, 99, 235, 0.28) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  transition: all 0.22s ease !important;
 }
 
 .btn-blue:hover {
-  background: rgba(37, 99, 235, 0.15);
+  transform: translateY(-1px) !important;
+  color: #1D4ED8 !important;
+  background: rgba(37, 99, 235, 0.22) !important;
+  border-color: rgba(37, 99, 235, 0.55) !important;
+  box-shadow: 0 4px 16px -2px rgba(37, 99, 235, 0.35), 0 0 10px rgba(37, 99, 235, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
 html.dark .btn-danger {
-  color: #F87171;
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(248, 113, 113, 0.25);
+  color: #F87171 !important;
+  background: rgba(239, 68, 68, 0.14) !important;
+  border-color: rgba(248, 113, 113, 0.30) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
 }
 
 html.dark .btn-danger:hover {
-  background: rgba(239, 68, 68, 0.22);
+  transform: translateY(-1px) !important;
+  color: #FECACA !important;
+  background: rgba(239, 68, 68, 0.26) !important;
+  border-color: rgba(252, 165, 165, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
 }
 
 html.dark .btn-blue {
-  color: #60A5FA;
-  background: rgba(37, 99, 235, 0.12);
-  border-color: rgba(96, 165, 250, 0.25);
+  color: #93C5FD !important;
+  background: rgba(37, 99, 235, 0.15) !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
 }
 
 html.dark .btn-blue:hover {
-  background: rgba(37, 99, 235, 0.22);
+  transform: translateY(-1px) !important;
+  color: #BFDBFE !important;
+  background: rgba(37, 99, 235, 0.28) !important;
+  border-color: rgba(147, 197, 253, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
 }
 
 /* --- INPUT VIDRIO -------------------------------------------------- */
@@ -7471,26 +7633,33 @@ html.dark tr[id^="electronica-"].active-target {
   }
 }
 
-/* ---- Botón contenedor Dropdown Imprimir: Mismas dimensiones exactas que .btn-ghost y .btn-danger ---- */
+/* ---- Botón contenedor Dropdown Imprimir: Mismas dimensiones exactas que .btn-ghost y .btn-danger (38px de altura) ---- */
 .print-dropdown-box {
   padding: 0 !important;
   gap: 0 !important;
   border-radius: 12px !important;
   display: inline-flex !important;
   align-items: stretch !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
 }
 
 .print-dropdown-box>a.print-main-btn {
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  padding: 12px 3px 12px 15px !important;
-  font-size: 13.5px !important;
-  font-weight: 600 !important;
+  height: 100% !important;
+  padding: 0 4px 0 14px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
   line-height: 1.25 !important;
   color: inherit !important;
   text-decoration: none !important;
   white-space: nowrap !important;
+  box-sizing: border-box !important;
 }
 
 .print-dropdown-box>.print-divider {
@@ -7501,17 +7670,19 @@ html.dark tr[id^="electronica-"].active-target {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 12px 14px 12px 3px !important;
+  height: 100% !important;
+  padding: 0 12px 0 4px !important;
   color: inherit !important;
   background: transparent !important;
   border: none !important;
   cursor: pointer !important;
   outline: none !important;
+  box-sizing: border-box !important;
 }
 
 .print-dropdown-box>button.print-arrow-btn svg {
-  width: 10px !important;
-  height: 10px !important;
+  width: 9.5px !important;
+  height: 9.5px !important;
 }
 
 
@@ -9226,6 +9397,7 @@ input[type="radio"][value="correctivo"] {
 #tabla-abonos-relacionados th,
 #tabla-abonos-caja-edit th,
 #tabla-abonos-facturas th,
+.table-dense th,
 .table-compact th {
   padding: 8px 12px !important;
   font-size: 11.5px !important;
@@ -9235,8 +9407,18 @@ input[type="radio"][value="correctivo"] {
 #tabla-abonos-relacionados td,
 #tabla-abonos-caja-edit td,
 #tabla-abonos-facturas td,
+.table-dense td,
 .table-compact td {
   padding: 6px 12px !important;
   font-size: 12.5px !important;
   vertical-align: middle !important;
+}
+
+/* Evitar línea horizontal sobrante en la última fila de tablas densas/compactas */
+#tabla-abonos-relacionados tbody tr:last-child td,
+#tabla-abonos-caja-edit tbody tr:last-child td,
+#tabla-abonos-facturas tbody tr:last-child td,
+.table-dense tbody tr:last-child td,
+.table-compact tbody tr:last-child td {
+  border-bottom: none !important;
 }

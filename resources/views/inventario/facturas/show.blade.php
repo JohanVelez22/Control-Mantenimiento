@@ -100,7 +100,7 @@
  <div class="mb-8">
  <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4">Detalle del Documento</h3>
  <div class="overflow-x-auto pb-2">
- <table class="ts-table">
+ <table class="ts-table table-dense">
  <thead>
  <tr>
  <th>Producto</th>

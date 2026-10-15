@@ -214,7 +214,7 @@
         </h3>
         
         <div class="overflow-x-auto overflow-y-auto max-h-[450px] relative mb-8">
-            <table class="ts-table responsive-table w-full mb-0">
+            <table class="ts-table responsive-table table-dense w-full mb-0">
                 <thead>
                     <tr>
                         <th class="w-16 text-left">Código</th>
