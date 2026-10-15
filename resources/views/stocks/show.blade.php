@@ -166,7 +166,7 @@
             </table>
         </div>
 
-        <div class="pt-4 border-t border-gray-200/50 dark:border-white/5 flex justify-between items-center text-xs font-semibold text-gray-400">
+        <div class="pt-4 flex justify-between items-center text-xs font-semibold text-gray-400">
             <span>Última actualización: {{ $stock->updated_at->format('d/m/Y H:i:s') }}</span>
             <span>Registro inicial: {{ $stock->created_at->format('d/m/Y H:i:s') }}</span>
         </div>
