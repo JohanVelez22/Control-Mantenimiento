@@ -62,7 +62,7 @@
     </div>
 
     <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
-        <a href="{{ route('equipos.index') }}" class="btn-cancel">✕ Cancelar</a>
+        <a href="{{ route('equipos.index') }}" class="btn-cancel"><span>✕</span><span>Cancelar</span></a>
         <button type="submit" class="btn-save">{{ $eq ? '🔄 Actualizar Equipo' : '💾 Guardar Equipo' }}</button>
     </div>
 </div>

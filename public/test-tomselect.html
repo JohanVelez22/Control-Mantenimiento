@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
+  <link rel="stylesheet" href="css/glass.css">
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+</head>
+<body>
+  <select id="sel" class="glass-input">
+    <option value="1" selected>Opción 1</option>
+    <option value="2">Opción 2</option>
+  </select>
+
+  <div id="log"></div>
+
+  <script>
+    let el = document.getElementById('sel');
+    let tsInstance = new TomSelect(el, {
+      create: false,
+      openOnFocus: true,
+      closeAfterSelect: true,
+      plugins: ['clear_button']
+    });
+
+    tsInstance.on('item_add', (v) => { document.getElementById('log').innerHTML += 'item_add: ' + v + '<br>'; });
+    tsInstance.on('item_remove', (v) => { document.getElementById('log').innerHTML += 'item_remove: ' + v + '<br>'; });
+    tsInstance.on('change', (v) => { document.getElementById('log').innerHTML += 'change: ' + v + '<br>'; });
+    tsInstance.on('dropdown_close', () => { document.getElementById('log').innerHTML += 'dropdown_close<br>'; });
+
+    tsInstance.open();
+    let opt1 = tsInstance.dropdown_content.querySelector('[data-value="1"]');
+    document.getElementById('log').innerHTML += 'Clicking option 1...<br>';
+    if (opt1) {
+      opt1.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      opt1.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    }
+    document.getElementById('log').innerHTML += 'After click: value=' + tsInstance.getValue() + ', items=' + JSON.stringify(tsInstance.items) + ', isFocused=' + tsInstance.isFocused + ', isOpen=' + tsInstance.isOpen + ', classes=' + tsInstance.wrapper.className + '<br>';
+  </script>
+</body>
+</html>

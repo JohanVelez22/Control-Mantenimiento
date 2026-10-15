@@ -121,7 +121,7 @@
     @endif
 
     <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
-        <a href="{{ route('electronicas.index') }}" class="btn-cancel">✕ Cancelar</a>
+        <a href="{{ route('electronicas.index') }}" class="btn-cancel"><span>✕</span><span>Cancelar</span></a>
         <button type="submit" class="btn-save">{{ isset($electronica) ? '🔄 Actualizar Registro' : '💾 Guardar Registro' }}</button>
     </div>
 

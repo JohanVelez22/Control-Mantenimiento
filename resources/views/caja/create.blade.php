@@ -14,7 +14,7 @@
  @include('caja._form')
  
     <div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
- <a href="{{ route('caja.index') }}" class="btn-cancel">✕ Cancelar</a>
+ <a href="{{ route('caja.index') }}" class="btn-cancel"><span>✕</span><span>Cancelar</span></a>
  <button type="submit" name="print_after" value="1" class="btn-save-print">
  🖨️ Guardar e Imprimir
  </button>
