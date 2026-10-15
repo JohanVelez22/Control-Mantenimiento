@@ -110,13 +110,17 @@ html.dark .content-scroll::-webkit-scrollbar-thumb:hover {
   /* ---- Tokens: Modo Claro (Glass Light) ---- */
   --glass-bg: rgba(255, 255, 255, 0.65);
   --glass-border: rgba(255, 255, 255, 0.75);
-  --glass-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.90);
+  --glass-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.08),
+  0 4px 12px rgba(0, 0, 0, 0.03),
+  inset 0 1px 0 rgba(255, 255, 255, 0.90);
   --glass-blur: 28px;
 
   /* ---- Tokens: Modo Oscuro (Glass Dark) ---- */
   --glass-dark-bg: rgba(13, 21, 41, 0.75);
   --glass-dark-border: rgba(255, 255, 255, 0.12);
-  --glass-dark-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  --glass-dark-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.55),
+  0 4px 16px rgba(0, 0, 0, 0.30),
+  inset 0 1px 0 rgba(255, 255, 255, 0.16);
 
   /* ---- Tokens: Sidebar ---- */
   --sidebar-w: 72px;
@@ -3548,6 +3552,7 @@ html.dark .btn-ghost-blue:hover {
   background: rgba(220, 38, 38, 0.08) !important;
   border-color: rgba(220, 38, 38, 0.25) !important;
 }
+
 .ts-modal-card .btn-ghost[class*="text-red"]:hover,
 .ts-modal-card .btn-ghost[class*="border-red"]:hover,
 .ts-modal-overlay .btn-ghost[class*="text-red"]:hover,
@@ -3556,6 +3561,7 @@ html.dark .btn-ghost-blue:hover {
   border-color: rgba(220, 38, 38, 0.50) !important;
   color: #B91C1C !important;
 }
+
 html.dark .ts-modal-card .btn-ghost[class*="text-red"],
 html.dark .ts-modal-card .btn-ghost[class*="border-red"],
 html.dark .ts-modal-overlay .btn-ghost[class*="text-red"],
@@ -3564,6 +3570,7 @@ html.dark .ts-modal-overlay .btn-ghost[class*="border-red"] {
   background: rgba(239, 68, 68, 0.12) !important;
   border-color: rgba(248, 113, 113, 0.35) !important;
 }
+
 html.dark .ts-modal-card .btn-ghost[class*="text-red"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-red"]:hover,
 html.dark .ts-modal-overlay .btn-ghost[class*="text-red"]:hover,
@@ -3585,6 +3592,7 @@ html.dark .ts-modal-overlay .btn-ghost[class*="border-red"]:hover {
   background: rgba(147, 51, 234, 0.10) !important;
   border-color: rgba(147, 51, 234, 0.35) !important;
 }
+
 .ts-modal-card .btn-ghost[class*="text-violet"]:hover,
 .ts-modal-card .btn-ghost[class*="text-purple"]:hover,
 .ts-modal-card .btn-ghost[class*="border-violet"]:hover,
@@ -3597,6 +3605,7 @@ html.dark .ts-modal-overlay .btn-ghost[class*="border-red"]:hover {
   border-color: rgba(147, 51, 234, 0.55) !important;
   color: #6B21A8 !important;
 }
+
 html.dark .ts-modal-card .btn-ghost[class*="text-violet"],
 html.dark .ts-modal-card .btn-ghost[class*="text-purple"],
 html.dark .ts-modal-card .btn-ghost[class*="border-violet"],
@@ -3609,6 +3618,7 @@ html.dark .ts-modal-overlay .btn-ghost[class*="border-purple"] {
   background: rgba(168, 85, 247, 0.16) !important;
   border-color: rgba(192, 132, 252, 0.40) !important;
 }
+
 html.dark .ts-modal-card .btn-ghost[class*="text-violet"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="text-purple"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-violet"]:hover,
@@ -3630,6 +3640,7 @@ html.dark .ts-modal-overlay .btn-ghost[class*="border-purple"]:hover {
   background: rgba(16, 185, 129, 0.10) !important;
   border-color: rgba(16, 185, 129, 0.30) !important;
 }
+
 .ts-modal-card .btn-ghost[class*="text-emerald"]:hover,
 .ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
 .ts-modal-overlay .btn-ghost[class*="text-emerald"]:hover,
@@ -3638,6 +3649,7 @@ html.dark .ts-modal-overlay .btn-ghost[class*="border-purple"]:hover {
   border-color: rgba(16, 185, 129, 0.55) !important;
   color: #047857 !important;
 }
+
 html.dark .ts-modal-card .btn-ghost[class*="text-emerald"],
 html.dark .ts-modal-card .btn-ghost[class*="border-emerald"],
 html.dark .ts-modal-overlay .btn-ghost[class*="text-emerald"],
@@ -3646,6 +3658,7 @@ html.dark .ts-modal-overlay .btn-ghost[class*="border-emerald"] {
   background: rgba(16, 185, 129, 0.14) !important;
   border-color: rgba(52, 211, 153, 0.35) !important;
 }
+
 html.dark .ts-modal-card .btn-ghost[class*="text-emerald"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
 html.dark .ts-modal-overlay .btn-ghost[class*="text-emerald"]:hover,
@@ -3663,6 +3676,7 @@ html.dark .ts-modal-overlay .btn-ghost[class*="border-emerald"]:hover {
   background: rgba(37, 99, 235, 0.10) !important;
   border-color: rgba(37, 99, 235, 0.30) !important;
 }
+
 .ts-modal-card .btn-ghost[class*="text-blue"]:hover,
 .ts-modal-card .btn-ghost[class*="border-blue"]:hover,
 .ts-modal-overlay .btn-ghost[class*="text-blue"]:hover,
@@ -3671,6 +3685,7 @@ html.dark .ts-modal-overlay .btn-ghost[class*="border-emerald"]:hover {
   border-color: rgba(37, 99, 235, 0.55) !important;
   color: #1D4ED8 !important;
 }
+
 html.dark .ts-modal-card .btn-ghost[class*="text-blue"],
 html.dark .ts-modal-card .btn-ghost[class*="border-blue"],
 html.dark .ts-modal-overlay .btn-ghost[class*="text-blue"],
@@ -3679,6 +3694,7 @@ html.dark .ts-modal-overlay .btn-ghost[class*="border-blue"] {
   background: rgba(59, 130, 246, 0.14) !important;
   border-color: rgba(96, 165, 250, 0.35) !important;
 }
+
 html.dark .ts-modal-card .btn-ghost[class*="text-blue"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-blue"]:hover,
 html.dark .ts-modal-overlay .btn-ghost[class*="text-blue"]:hover,
@@ -4183,16 +4199,15 @@ html.dark input[type="datetime-local"].glass-input::-webkit-calendar-picker-indi
 /* --- ETIQUETA VIDRIO -------------------------------------------------- */
 .field-label {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #475569;
+  letter-spacing: 0.3px;
+  color: #374151;
   margin-bottom: 5px;
 }
 
 html.dark .field-label {
-  color: #94A3B8;
+  color: #CBD5E1;
 }
 
 
@@ -5155,13 +5170,14 @@ html.dark .ts-control>input {
 /* ---- Panel dropdown ---- */
 /* ---- Panel dropdown ---- */
 .ts-dropdown {
+  box-sizing: border-box !important;
   background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border: 1px solid rgba(226, 232, 240, 0.80) !important;
+  border: 1px solid rgba(226, 232, 240, 0.85) !important;
   border-radius: 12px !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06) !important;
-  margin-top: 4px !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.90) !important;
+  margin-top: 3px !important;
   z-index: 9999 !important;
   overflow: hidden !important;
 }
@@ -5197,8 +5213,8 @@ html.dark .ts-control>input {
 /* ---- Dropdown modo oscuro ---- */
 html.dark .ts-dropdown {
   background: rgba(15, 23, 42, 0.95) !important;
-  border-color: rgba(255, 255, 255, 0.10) !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
 }
 
 html.dark .ts-dropdown .option,
@@ -9020,4 +9036,90 @@ input[type="radio"][value="correctivo"] {
   width: 100% !important;
   max-width: min(380px, calc(100vw - 24px)) !important;
   z-index: 100000 !important;
+}
+
+/* --- FILA DE CLASIFICACIONES EXISTENTES (CATEGORÍA / SUBCATEGORÍA) --- */
+.categoria-list {
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+  width: 100% !important;
+}
+
+.categoria-item-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+}
+
+.categoria-row-form {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* El campo tipo ajustado al ancho exacto de "Subcategoría" y con el mismo tamaño de letra que el nombre */
+.categoria-tipo-col {
+  width: 160px !important;
+  min-width: 160px !important;
+  max-width: 160px !important;
+  flex: 0 0 160px !important;
+  flex-shrink: 0 !important;
+  margin-left: -12px !important;
+  margin-right: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
+.categoria-tipo-col select.glass-input,
+.categoria-tipo-col .ts-wrapper,
+.categoria-tipo-col .ts-wrapper.glass-input,
+.categoria-tipo-col .ts-control {
+  width: 160px !important;
+  min-width: 160px !important;
+  max-width: 160px !important;
+  margin: 0 !important;
+  padding: 9px 12px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  box-sizing: border-box !important;
+}
+
+.categoria-tipo-col .ts-control .item,
+.categoria-tipo-col .ts-control .ts-item-display {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* El campo siguiente (Nombre) ocupa todo el resto del espacio disponible, con mismo tamaño de letra */
+.categoria-nombre-input {
+  flex: 1 1 0% !important;
+  min-width: 120px !important;
+  width: 100% !important;
+  font-size: 14px !important;
+  padding: 9px 12px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.categoria-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }

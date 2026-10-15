@@ -783,31 +783,48 @@
             watchDprChange();
         })();
 
-        // ─── REPOSICIONAR TOMSELECT DROPDOWNS AL CAMBIAR SIDEBAR ───────────────
-        // Trackear instancias TomSelect para reposicionar al cambiar sidebar
+        // ─── REPOSICIONAR Y ALINEAR TOMSELECT DROPDOWNS ────────────────────────
+        // Trackear instancias TomSelect para posicionar correctamente al abrir, redimensionar o cambiar sidebar
         window._glassTomSelectInstances = window._glassTomSelectInstances || [];
+
+        function positionGlassTomSelectDropdown(ts) {
+            if (!ts || ts.isDestroyed || !ts.isOpen || !ts.dropdown) return;
+            var control = ts.control || ts.wrapper;
+            if (!control || !control.isConnected) return;
+            var rect = control.getBoundingClientRect();
+            if (rect.width === 0 && rect.height === 0) return;
+
+            var scrollY = window.scrollY || window.pageYOffset;
+            var scrollX = window.scrollX || window.pageXOffset;
+
+            // Ajustar ancho idéntico al control para evitar que se reduzca o se desalinee
+            ts.dropdown.style.width = rect.width + 'px';
+            ts.dropdown.style.minWidth = rect.width + 'px';
+            ts.dropdown.style.left = (rect.left + scrollX) + 'px';
+            ts.dropdown.style.top = (rect.bottom + scrollY) + 'px';
+        }
+
+        window.positionGlassTomSelectDropdown = positionGlassTomSelectDropdown;
+
+        function repositionOpenTomSelects() {
+            if (!window._glassTomSelectInstances) return;
+            window._glassTomSelectInstances.forEach(function(ts) {
+                positionGlassTomSelectDropdown(ts);
+            });
+        }
 
         function trackTomSelectDropdowns(durationMs) {
             const start = performance.now();
             function tick(now) {
-                if (window._glassTomSelectInstances) {
-                    window._glassTomSelectInstances.forEach(function(ts) {
-                        if (ts && ts.isOpen && ts.dropdown && ts.wrapper) {
-                            var control = ts.wrapper;
-                            var rect = control.getBoundingClientRect();
-                            var scrollY = window.scrollY || window.pageYOffset;
-                            var scrollX = window.scrollX || window.pageXOffset;
-                            var dropdownWidth = ts.dropdown.offsetWidth;
-                            var leftPos = rect.left + scrollX + (rect.width / 2) - (dropdownWidth / 2);
-                            ts.dropdown.style.top = (rect.bottom + scrollY + 4) + 'px';
-                            ts.dropdown.style.left = leftPos + 'px';
-                        }
-                    });
-                }
+                repositionOpenTomSelects();
                 if (now - start < durationMs) requestAnimationFrame(tick);
             }
             requestAnimationFrame(tick);
         }
+
+        // Reposicionar al cambiar tamaño de ventana o hacer scroll
+        window.addEventListener('resize', repositionOpenTomSelects);
+        window.addEventListener('scroll', repositionOpenTomSelects, true);
 
         // Detectar cambios en el sidebar (hover/expanded)
         const sidebar = document.getElementById('ts-sidebar');
@@ -1292,9 +1309,12 @@
                     tsInstance.setTextboxValue('');
                 });
 
-                // Al abrir el desplegable, asegurar que el campo de búsqueda esté limpio para escribir
+                // Al abrir el desplegable, asegurar que el campo de búsqueda esté limpio para escribir y alinear dropdown
                 tsInstance.on('dropdown_open', function() {
                     tsInstance.setTextboxValue('');
+                    requestAnimationFrame(function() {
+                        positionGlassTomSelectDropdown(tsInstance);
+                    });
                 });
 
                 // Track open TomSelect instances for sidebar repositioning
