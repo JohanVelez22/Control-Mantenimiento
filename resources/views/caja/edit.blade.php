@@ -159,16 +159,16 @@
                     </h3>
                     @if($movimiento->childPayments->isNotEmpty())
                     <div class="overflow-x-auto overflow-y-auto max-h-[350px] relative">
-                        <table class="ts-table responsive-table w-full mb-0">
+                        <table id="tabla-abonos-caja-edit" class="ts-table table-dense responsive-table w-full mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-center" style="width: 70px;">Código</th>
-                                    <th class="text-center" style="width: 110px;">Fecha</th>
+                                    <th class="text-center whitespace-nowrap" style="width: 65px;">Código</th>
+                                    <th class="text-center whitespace-nowrap" style="width: 95px;">Fecha</th>
                                     <th class="text-left">Descripción</th>
-                                    <th class="text-center" style="width: 140px;">Método Pago</th>
-                                    <th class="text-center" style="width: 140px;">Registrado Por</th>
-                                    <th class="text-right" style="width: 120px;">Monto</th>
-                                    <th class="text-center" style="width: 90px;">Acciones</th>
+                                    <th class="text-center whitespace-nowrap" style="width: 120px;">Método Pago</th>
+                                    <th class="text-center whitespace-nowrap" style="width: 130px;">Registrado Por</th>
+                                    <th class="text-right whitespace-nowrap" style="width: 100px;">Monto</th>
+                                    <th class="text-center whitespace-nowrap" style="width: 65px;">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -182,16 +182,18 @@
                                             {{ $child->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Banco' }}
                                         </span>
                                     </td>
-                                    <td data-label="Registró:" class="text-center text-xs font-bold text-slate-700 dark:text-slate-300">
+                                    <td data-label="Registró:" class="text-center text-xs font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">
                                         {{ $child->user->name ?? 'Sistema' }}
                                     </td>
                                     <td data-label="Monto:" class="text-right font-black text-blue-600 dark:text-blue-400 whitespace-nowrap">
                                         ${{ number_format($child->monto, 0, ',', '.') }}
                                     </td>
                                     <td data-label="Acciones:" class="text-center whitespace-nowrap">
-                                        <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost px-2 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este abono">
-                                            👁️
-                                        </a>
+                                        <div class="actions-grid">
+                                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este abono">
+                                                👁️
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach

@@ -120,7 +120,7 @@
         {{-- Historial de Operaciones --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Historial de Operaciones (Compras y Ventas)</h3>
         <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-6">
-            <table class="ts-table mb-0">
+            <table class="ts-table table-dense mb-0">
                 <thead class="sticky top-0 z-20 shadow-sm">
                     <tr>
                         <th>Fecha</th>
@@ -192,7 +192,7 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="glass-table w-full text-center">
+            <table class="glass-table table-dense w-full text-center">
                 <thead>
                     <tr>
                         <th class="p-3 text-center">Fecha</th>

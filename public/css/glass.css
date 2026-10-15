@@ -2904,6 +2904,107 @@ button.btn-compra[type="submit"] {
   transform: translateY(0);
 }
 
+/* ---- Botón Liquid Glass Universal (redondeado suave 13px, no ovalado) ---- */
+.btn-glass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 13px;
+  text-decoration: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.60);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  color: #1E293B;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.dark .btn-glass {
+  color: #F8FAFC;
+  background: rgba(15, 23, 42, 0.60);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 6px 18px -3px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.btn-glass:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.90);
+  border-color: rgba(37, 99, 235, 0.40);
+  box-shadow: 0 6px 20px -2px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255, 255, 255, 1);
+  color: #1D4ED8;
+}
+
+html.dark .btn-glass:hover {
+  transform: translateY(-1px);
+  background: rgba(30, 41, 59, 0.80);
+  border-color: rgba(96, 165, 250, 0.50);
+  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.65), 0 0 16px rgba(59, 130, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: #93C5FD;
+}
+
+.btn-glass:active {
+  transform: translateY(0);
+}
+
+/* ---- Botón Excel Liquid Glass (opción cristalina redondeada) ---- */
+.btn-excel-glass,
+.btn-glass-excel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 13px;
+  text-decoration: none;
+  cursor: pointer;
+  background: rgba(16, 185, 129, 0.12) !important;
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: #059669 !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.dark .btn-excel-glass,
+html.dark .btn-glass-excel {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(52, 211, 153, 0.40) !important;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.45), 0 0 12px rgba(16, 185, 129, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  color: #6EE7B7 !important;
+}
+
+.btn-excel-glass:hover,
+.btn-glass-excel:hover {
+  transform: translateY(-1px);
+  background: rgba(16, 185, 129, 0.24) !important;
+  border-color: rgba(52, 211, 153, 0.65) !important;
+  box-shadow: 0 6px 20px -2px rgba(16, 185, 129, 0.35), 0 0 16px rgba(16, 185, 129, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  color: #047857 !important;
+}
+
+html.dark .btn-excel-glass:hover,
+html.dark .btn-glass-excel:hover {
+  transform: translateY(-1px);
+  background: rgba(16, 185, 129, 0.28) !important;
+  border-color: rgba(110, 231, 183, 0.70) !important;
+  box-shadow: 0 6px 22px -2px rgba(0, 0, 0, 0.60), 0 0 18px rgba(52, 211, 153, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  color: #A7F3D0 !important;
+}
+
+.btn-excel-glass:active,
+.btn-glass-excel:active {
+  transform: translateY(0);
+}
+
 /* ---- Botón PDF (rojo) ---- */
 .btn-pdf {
   display: inline-flex;
@@ -2952,34 +3053,47 @@ button.btn-compra[type="submit"] {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  padding: 12px 15px;
-  font-weight: 600;
-  font-size: 13.5px;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 13px;
   line-height: 1.25;
-  color: #374151;
+  color: #334155;
   border-radius: 12px;
   text-decoration: none;
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(203, 213, 225, 0.75);
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   cursor: pointer;
-  transition: all 0.22s ease;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 html.dark .btn-ghost {
-  color: #CBD5E1;
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.10);
+  color: #E2E8F0;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .btn-ghost:hover {
-  background: rgba(37, 99, 235, 0.10);
-  border-color: rgba(37, 99, 235, 0.25);
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(37, 99, 235, 0.35);
+  box-shadow: 0 6px 18px -2px rgba(37, 99, 235, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1);
   color: #1D4ED8;
 }
 
 html.dark .btn-ghost:hover {
-  background: rgba(37, 99, 235, 0.18);
+  transform: translateY(-1px);
+  background: rgba(30, 41, 59, 0.75);
+  border-color: rgba(96, 165, 250, 0.45);
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), 0 0 14px rgba(59, 130, 246, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.22);
   color: #93C5FD;
+}
+
+.btn-ghost:active {
+  transform: translateY(0);
 }
 
 /* ---- Botón Volver universal del sistema (⬅️) ---- */
@@ -3298,6 +3412,45 @@ html.dark .btn-ghost.text-blue-400:hover {
 }
 
 /* ---- Botones Ghost con Tonalidades Específicas (Liquid Glass) ---- */
+.btn-ghost-amber,
+.btn-ghost-red,
+.btn-ghost-emerald,
+.btn-ghost-purple,
+.btn-ghost-violet,
+.btn-ghost-blue {
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+html.dark .btn-ghost-amber,
+html.dark .btn-ghost-red,
+html.dark .btn-ghost-emerald,
+html.dark .btn-ghost-purple,
+html.dark .btn-ghost-violet,
+html.dark .btn-ghost-blue {
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+.btn-ghost-amber:hover,
+.btn-ghost-red:hover,
+.btn-ghost-emerald:hover,
+.btn-ghost-purple:hover,
+.btn-ghost-violet:hover,
+.btn-ghost-blue:hover {
+  transform: translateY(-1px) !important;
+}
+
+.btn-ghost-amber:active,
+.btn-ghost-red:active,
+.btn-ghost-emerald:active,
+.btn-ghost-purple:active,
+.btn-ghost-violet:active,
+.btn-ghost-blue:active {
+  transform: translateY(0) !important;
+}
+
 .btn-ghost-amber {
   display: inline-flex !important;
   align-items: center !important;
@@ -9069,14 +9222,20 @@ input[type="radio"][value="correctivo"] {
   padding: 0 !important;
 }
 
-/* Tabla de abonos relacionados compacta, equilibrada y estandarizada */
-#tabla-abonos-relacionados th {
+/* Tablas secundarias y de abonos compactas, equilibradas y estandarizadas */
+#tabla-abonos-relacionados th,
+#tabla-abonos-caja-edit th,
+#tabla-abonos-facturas th,
+.table-compact th {
   padding: 8px 12px !important;
   font-size: 11.5px !important;
   letter-spacing: 0.5px !important;
 }
 
-#tabla-abonos-relacionados td {
+#tabla-abonos-relacionados td,
+#tabla-abonos-caja-edit td,
+#tabla-abonos-facturas td,
+.table-compact td {
   padding: 6px 12px !important;
   font-size: 12.5px !important;
   vertical-align: middle !important;

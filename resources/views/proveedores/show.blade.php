@@ -104,7 +104,7 @@
         </div>
  @else
  <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-2">
- <table class="ts-table mb-0">
+ <table class="ts-table table-dense mb-0">
  <thead class="sticky top-0 z-20 shadow-sm">
  <tr>
  <th class="w-24">Código</th>
@@ -172,7 +172,9 @@
  <span class="pill {{ $f->estado === 'anulada' ? 'pill-anulado' : ($f->estado === 'pendiente_pago' ? 'pill-pending' : 'pill-done') }} py-1 text-xs">
  {{ ucfirst(str_replace('_', ' ', $f->estado === 'pendiente_pago' ? 'Pendiente' : $f->estado)) }}
  </span>
- <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost px-2 py-1 text-xs" title="Ver Detalles">👁️</a>
+ <div class="actions-grid">
+     <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost btn-action-view" title="Ver Detalles">👁️</a>
+ </div>
  </div>
  </div>
  </div>

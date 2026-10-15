@@ -178,16 +178,16 @@
          💳 Historial de Pagos y Abonos en Caja ({{ $abonos->count() }})
      </h3>
      <div class="overflow-x-auto">
-         <table class="ts-table mb-0 w-full text-xs">
+         <table id="tabla-abonos-facturas" class="ts-table table-dense mb-0 w-full">
              <thead>
                  <tr>
-                     <th class="text-center whitespace-nowrap px-2" style="width: 50px;">Código</th>
-                     <th class="text-center whitespace-nowrap px-2" style="width: 85px;">Fecha</th>
-                     <th class="text-left px-2">Descripción</th>
-                     <th class="text-center whitespace-nowrap px-2" style="width: 100px;">Método Pago</th>
-                     <th class="text-center whitespace-nowrap px-2" style="width: 110px;">Registrado Por</th>
-                     <th class="text-right whitespace-nowrap px-2" style="width: 85px;">Monto</th>
-                     <th class="text-center whitespace-nowrap px-2" style="width: 45px;">Acciones</th>
+                     <th class="text-center whitespace-nowrap" style="width: 65px;">Código</th>
+                     <th class="text-center whitespace-nowrap" style="width: 95px;">Fecha</th>
+                     <th class="text-left">Descripción</th>
+                     <th class="text-center whitespace-nowrap" style="width: 120px;">Método Pago</th>
+                     <th class="text-center whitespace-nowrap" style="width: 130px;">Registrado Por</th>
+                     <th class="text-right whitespace-nowrap" style="width: 100px;">Monto</th>
+                     <th class="text-center whitespace-nowrap" style="width: 65px;">Acciones</th>
                  </tr>
              </thead>
              <tbody>
@@ -207,10 +207,12 @@
                      <td class="text-right font-black text-emerald-600 dark:text-emerald-400 whitespace-nowrap px-2">
                          ${{ number_format($abono->monto, 0, ',', '.') }}
                      </td>
-                     <td class="text-center whitespace-nowrap px-2">
-                         <a href="{{ route('caja.show', $abono->id) }}" class="btn-ghost px-1.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este pago #{{ $abono->id }}">
-                             👁️
-                         </a>
+                     <td class="text-center whitespace-nowrap">
+                         <div class="actions-grid">
+                             <a href="{{ route('caja.show', $abono->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este pago #{{ $abono->id }}">
+                                 👁️
+                             </a>
+                         </div>
                      </td>
                  </tr>
                  @endforeach
