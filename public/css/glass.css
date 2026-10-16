@@ -4809,19 +4809,89 @@ html.dark .glass-table tfoot tr:hover {
 }
 
 /* Contenedor responsivo redondeado para tablas (elimina sombras cuadradas / cortes en punta) */
-.overflow-x-auto:has(.ts-table),
-.overflow-x-auto:has(.glass-table),
-.overflow-x-auto:has(table),
-.glass-card .overflow-x-auto,
-.card-operacion-header .overflow-x-auto,
-.card-operacion-pago .overflow-x-auto,
-[class*="card"] .overflow-x-auto,
-.table-wrapper {
+.overflow-x-auto:has(.ts-table):not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.overflow-x-auto:has(.glass-table):not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.overflow-x-auto:has(table):not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.glass-card .overflow-x-auto:not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.card-operacion-header .overflow-x-auto:not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.card-operacion-pago .overflow-x-auto:not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+[class*="card"] .overflow-x-auto:not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.table-wrapper:not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]) {
   border-radius: 16px !important;
   padding-bottom: 0 !important;
   margin-bottom: 0 !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
+}
+
+/* Permitir scroll vertical suave y visualmente estilizado en tablas con max-height o overflow-y-auto */
+.overflow-x-auto.overflow-y-auto,
+.overflow-x-auto[class*="overflow-y-auto"],
+.overflow-x-auto[class*="max-h-"],
+.glass-card .overflow-x-auto.overflow-y-auto,
+.glass-card .overflow-x-auto[class*="overflow-y-auto"],
+.glass-card .overflow-x-auto[class*="max-h-"],
+.table-wrapper.overflow-y-auto,
+.cotizacion-table-scroll {
+  border-radius: 16px !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  scroll-behavior: smooth !important;
+}
+
+.overflow-x-auto.overflow-y-auto::-webkit-scrollbar,
+.overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar,
+.overflow-x-auto[class*="max-h-"]::-webkit-scrollbar,
+.cotizacion-table-scroll::-webkit-scrollbar {
+  width: 7px !important;
+  height: 7px !important;
+}
+
+.overflow-x-auto.overflow-y-auto::-webkit-scrollbar-track,
+.overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar-track,
+.overflow-x-auto[class*="max-h-"]::-webkit-scrollbar-track,
+.cotizacion-table-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-radius: 8px !important;
+}
+
+.overflow-x-auto.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar-thumb,
+.overflow-x-auto[class*="max-h-"]::-webkit-scrollbar-thumb,
+.cotizacion-table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.45) !important;
+  border-radius: 8px !important;
+}
+
+.overflow-x-auto.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar-thumb:hover,
+.overflow-x-auto[class*="max-h-"]::-webkit-scrollbar-thumb:hover,
+.cotizacion-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7) !important;
+}
+
+html.dark .overflow-x-auto.overflow-y-auto::-webkit-scrollbar-thumb,
+html.dark .overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar-thumb,
+html.dark .overflow-x-auto[class*="max-h-"]::-webkit-scrollbar-thumb,
+html.dark .cotizacion-table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+html.dark .overflow-x-auto.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+html.dark .overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar-thumb:hover,
+html.dark .overflow-x-auto[class*="max-h-"]::-webkit-scrollbar-thumb:hover,
+html.dark .cotizacion-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* Evitar que selectores de productos no inicializados ensanchen la tabla y causen parpadeo horizontal */
+.ts-table select.stock-select,
+#items-table select.stock-select,
+#factura-items-table select.stock-select {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 /* Espacio vertical simétrico y perfectamente centrado para botones de pie de tabla y paginadores */

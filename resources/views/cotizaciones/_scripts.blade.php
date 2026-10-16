@@ -79,6 +79,9 @@ function agregarFila(itemData = null) {
     window.cambiarTipo(newTipoSel, tr, newTipoSel.value, itemData);
     bindFilaCotizacion(tr);
     recalcular();
+
+    // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
+    tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function bindFilaCotizacion(tr) {
@@ -161,7 +164,7 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
 
     if (val === 'stock') {
         tdDesc.innerHTML = `
-            <select class="stock-select glass-input py-1.5" required data-placeholder="Seleccionar producto del stock...">
+            <select class="stock-select glass-input py-1.5 w-full" required data-placeholder="Seleccionar producto del stock..." style="display: none;">
                 ${getStockOptions()}
             </select>
             <input type="hidden" name="items[${idx}][item_id]" class="stock-id-input">

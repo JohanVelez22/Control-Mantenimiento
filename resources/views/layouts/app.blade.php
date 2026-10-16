@@ -1242,6 +1242,7 @@
             // Función global para inicializar TomSelect con el comportamiento "Limpieza Mágica"
             window.initGlassTomSelect = function(el, customConfig = {}) {
                 if (el.classList.contains('tomselected')) return;
+                el.style.display = 'none';
 
                 let defaultPlaceholder = el.getAttribute('data-placeholder');
                 let isNoSearch = el.classList.contains('no-search');

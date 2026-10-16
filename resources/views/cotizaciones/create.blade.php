@@ -57,7 +57,7 @@
                     </button>
                 </div>
 
-                <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto cotizacion-table-scroll min-h-[165px]">
+                <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto cotizacion-table-scroll min-h-[165px]" style="overflow-y: auto !important;">
                     <table class="ts-table w-full table-fixed" id="items-table">
                         <thead>
                             <tr>

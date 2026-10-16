@@ -53,7 +53,7 @@
  </button>
  </div>
 
- <div class="overflow-x-auto pb-2 max-h-[420px] overflow-y-auto">
+ <div class="overflow-x-auto pb-2 max-h-[420px] overflow-y-auto" style="overflow-y: auto !important;">
  <table class="ts-table w-full table-fixed" id="items-table">
         <thead>
             <tr>
@@ -205,10 +205,10 @@ function stockSelectOptions() {
 function agregarFila() {
   const tbody = document.getElementById('items-body');
   const tr = document.createElement('tr');
-  tr.className = 'item-row bg-transparent border-t border-gray-200/50 dark:border-white/10';
+  tr.className = 'item-row bg-transparent';
   tr.innerHTML = `
   <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-   <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
+   <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500 w-full" data-placeholder="Seleccionar producto..." style="display: none;">
    <option value="">Seleccionar producto...</option>
   ${stockSelectOptions()}
   </select>
@@ -236,8 +236,11 @@ function agregarFila() {
   // Inicializar TomSelect en el nuevo select
   const newSelect = tr.querySelector('.stock-select');
   if (newSelect && typeof window.initGlassTomSelect === 'function') {
-  window.initGlassTomSelect(newSelect);
+    window.initGlassTomSelect(newSelect);
   }
+
+  // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
+  tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function eliminarFila(btn) {

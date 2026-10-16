@@ -194,7 +194,7 @@
     height: 38px !important;
 }
 </style>
-                <div class="overflow-x-auto pb-2">
+                <div class="overflow-x-auto pb-2 max-h-[450px] overflow-y-auto" style="overflow-y: auto !important;">
                     <table class="ts-table w-full table-fixed table-factura-edit" id="factura-items-table">
                         <thead>
                             <tr>
@@ -365,7 +365,7 @@ function agregarFila() {
         <td class="col-art py-2.5" style="vertical-align: top !important;">
             <div class="flex flex-col gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto / Stock</span>
-                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 {{ $ringColor }}" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
+                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 {{ $ringColor }} w-full" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)" style="display: none;">
                     ${optionsHtml}
                 </select>
             </div>
@@ -421,6 +421,9 @@ function agregarFila() {
             });
         }
     }
+
+    // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
+    tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 let _pendingRowToDelete = null;
