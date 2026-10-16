@@ -127,6 +127,10 @@ class ElectronicaController extends Controller
 
     public function edit(Electronica $electronica)
     {
+        if ($electronica->anulado) {
+            return redirect()->route('electronicas.show', $electronica)->with('error', 'Por seguridad, no se puede editar una orden de electrónica que se encuentra anulada.');
+        }
+
         $tecnicos = Tecnico::where(function ($q) use ($electronica) {
             $q->activos()->orWhere('id', $electronica->tecnico_id);
         })->orderBy('nombre')->get();
@@ -139,6 +143,10 @@ class ElectronicaController extends Controller
 
     public function update(Request $request, Electronica $electronica)
     {
+        if ($electronica->anulado) {
+            return redirect()->route('electronicas.show', $electronica)->with('error', 'Por seguridad, no se puede editar una orden de electrónica que se encuentra anulada.');
+        }
+
         // El técnico puede editar, pero debe confirmar con la contraseña de un admin.
         $reglas = [
             'id_orden' => 'nullable|string|unique:electronicas,id_orden,'.$electronica->id,

@@ -108,11 +108,13 @@
     <a href="{{ route('stocks.show', $stock->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Detalles">👁️</a>
     <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir">🖨️</a>
     @if(!auth()->user()->isInvitado())
+    @if($stock->active)
     <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/10" title="Editar">✏️</a>
     @if($stock->cantidad > 0)
     <button type="button" onclick="openBajaStockModal('{{ route('stocks.dar-de-baja', $stock->id) }}', '{{ addslashes($stock->producto) }}', {{ $stock->cantidad }}, {{ $stock->precio_compra }})" class="btn-ghost btn-action-baja w-8 h-8 flex items-center justify-center p-0 text-xs text-purple-600 dark:text-purple-400 hover:bg-purple-500/10" title="Dar de baja unidades por daño o merma">
     📉
     </button>
+    @endif
     @endif
     <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs {{ $stock->active ? 'text-red-600 dark:text-red-400 hover:bg-red-500/10' : 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10' }}" title="{{ $stock->active ? 'Anular Producto' : 'Reactivar Producto' }}">
     {{ $stock->active ? '🚫' : '✅' }}

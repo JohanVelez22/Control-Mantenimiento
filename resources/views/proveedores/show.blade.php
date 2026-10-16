@@ -17,7 +17,7 @@
                 </div>
             </div>
             
-            @if(!auth()->user()->isInvitado())
+            @if(!auth()->user()->isInvitado() && $proveedor->active)
             <div class="flex items-center gap-3 shrink-0">
                 <a href="{{ route('proveedores.edit', $proveedor) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">✏️ Editar</a>
                 <a href="{{ route('inventario.compra.create') }}?proveedor_id={{ $proveedor->id }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400">📦 Nueva Compra</a>

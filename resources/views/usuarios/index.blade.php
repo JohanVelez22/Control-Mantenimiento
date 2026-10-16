@@ -63,7 +63,7 @@
  <td class="text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
  <td data-label="Acciones:" class="text-center align-middle w-28 {{ $dim }}">
     <div class="actions-grid">
-    @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
+    @if((auth()->user()->isAdmin() || auth()->id() === $u->id) && $u->active)
     <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
     @else
     <button type="button" onclick="openUserDetailModal({{ json_encode([

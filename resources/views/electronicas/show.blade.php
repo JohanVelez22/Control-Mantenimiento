@@ -40,7 +40,7 @@
                     id="print-elec-{{ $electronica->id }}"
                 />
                 @endif
-                @if(!auth()->user()->isInvitado())
+                @if(!auth()->user()->isInvitado() && !$electronica->anulado)
                 <a href="{{ route('electronicas.edit', $electronica) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/30">✏️ Editar</a>
                 @endif
             </div>

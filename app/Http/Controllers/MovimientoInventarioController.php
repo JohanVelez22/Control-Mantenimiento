@@ -534,8 +534,12 @@ class MovimientoInventarioController extends Controller
         }
     }
 
-    public function editFactura(Factura $factura): View
+    public function editFactura(Factura $factura): View|RedirectResponse
     {
+        if ($factura->estado === 'anulada') {
+            return redirect()->route('inventario.facturas.show', $factura)->with('error', 'Por seguridad, no se puede editar una factura que se encuentra anulada.');
+        }
+
         $proveedores = Proveedor::where(function ($q) use ($factura) {
             $q->activos();
             if ($factura->facturable_type === Proveedor::class) {
@@ -556,6 +560,10 @@ class MovimientoInventarioController extends Controller
 
     public function updateFactura(Request $request, Factura $factura): RedirectResponse
     {
+        if ($factura->estado === 'anulada') {
+            return redirect()->route('inventario.facturas.show', $factura)->with('error', 'Por seguridad, no se puede editar una factura que se encuentra anulada.');
+        }
+
         if ($request->has('total_pagado')) {
             $request->merge(['total_pagado' => $this->cleanAmount($request->total_pagado)]);
         }

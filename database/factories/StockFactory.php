@@ -20,7 +20,7 @@ class StockFactory extends Factory
         $faker = \Faker\Factory::create('es_ES');
 
         return [
-            'codigo' => 'STK-'.$faker->unique()->numerify('###-??'),
+            'codigo' => 'STK-'.fake()->unique()->bothify('######-????'),
             'producto' => $faker->unique()->words(3, true),
             'categoria' => $faker->randomElement(['Componentes', 'Herramientas', 'Accesorios', 'Consumibles']),
             'subcategoria' => $faker->randomElement(['Eléctricos', 'Mecánicos', 'Electrónicos', 'Varios']),

@@ -196,9 +196,11 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
   <a href="{{ route('caja.show', $m->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver detalle">👁️</a>
   <a href="{{ route('caja.print', $m->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir">🖨️</a>
   @if(!auth()->user()->isInvitado())
+  @if(!$m->anulado && $m->estado !== 'anulado')
   <a href="{{ route('caja.edit', $m->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+  @endif
 
-                         <button type="button" onclick="openAnularModal('{{ route('caja.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost {{ $m->anulado ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $m->anulado ? 'Reactivar movimiento' : 'Anular movimiento' }}">
+  <button type="button" onclick="openAnularModal('{{ route('caja.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost {{ $m->anulado ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $m->anulado ? 'Reactivar movimiento' : 'Anular movimiento' }}">
   {{ $m->anulado ? '✅' : '🚫' }}
   </button>
   @endif </div>

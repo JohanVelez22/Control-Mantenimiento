@@ -292,4 +292,118 @@ class EquipoControllerTest extends TestCase
         $this->assertTrue($equipo->active);
         $this->assertNull($equipo->motivo_baja);
     }
+
+    public function test_equipo_dado_de_baja_cannot_be_edited(): void
+    {
+        $equipo = Equipo::create([
+            'nombre' => 'Equipo Baja',
+            'marca' => 'Marca',
+            'modelo' => 'Modelo',
+            'serie' => 'SN-BAJA-EDIT-001',
+            'cliente_id' => $this->cliente->id,
+            'user_id' => $this->admin->id,
+            'estado' => 'dado_de_baja',
+            'active' => false,
+            'motivo_baja' => 'irreparable',
+        ]);
+
+        $response = $this->actingAs($this->admin)->get(route('equipos.edit', $equipo));
+        $response->assertRedirect(route('equipos.index'));
+        $response->assertSessionHas('error');
+    }
+
+    public function test_equipo_dado_de_baja_cannot_be_updated(): void
+    {
+        $equipo = Equipo::create([
+            'nombre' => 'Equipo Baja',
+            'marca' => 'Marca',
+            'modelo' => 'Modelo',
+            'serie' => 'SN-BAJA-UPD-001',
+            'cliente_id' => $this->cliente->id,
+            'user_id' => $this->admin->id,
+            'estado' => 'dado_de_baja',
+            'active' => false,
+            'motivo_baja' => 'irreparable',
+        ]);
+
+        $response = $this->actingAs($this->admin)->put(route('equipos.update', $equipo), [
+            'nombre' => 'Nombre Modificado',
+            'marca' => 'Marca',
+            'modelo' => 'Modelo',
+            'serie' => 'SN-BAJA-UPD-001',
+            'propietario_global' => 'Cliente:'.$this->cliente->id,
+        ]);
+
+        $response->assertRedirect(route('equipos.index'));
+        $response->assertSessionHas('error');
+        $equipo->refresh();
+        $this->assertEquals('Equipo Baja', $equipo->nombre);
+    }
+
+    public function test_equipo_anulado_cannot_be_edited(): void
+    {
+        $equipo = Equipo::create([
+            'nombre' => 'Equipo Anulado',
+            'marca' => 'Marca',
+            'modelo' => 'Modelo',
+            'serie' => 'SN-ANUL-EDIT-001',
+            'cliente_id' => $this->cliente->id,
+            'user_id' => $this->admin->id,
+            'estado' => 'operativo',
+            'active' => false,
+        ]);
+
+        $response = $this->actingAs($this->admin)->get(route('equipos.edit', $equipo));
+        $response->assertRedirect(route('equipos.index'));
+        $response->assertSessionHas('error');
+    }
+
+    public function test_equipo_anulado_cannot_be_updated(): void
+    {
+        $equipo = Equipo::create([
+            'nombre' => 'Equipo Anulado',
+            'marca' => 'Marca',
+            'modelo' => 'Modelo',
+            'serie' => 'SN-ANUL-UPD-001',
+            'cliente_id' => $this->cliente->id,
+            'user_id' => $this->admin->id,
+            'estado' => 'operativo',
+            'active' => false,
+        ]);
+
+        $response = $this->actingAs($this->admin)->put(route('equipos.update', $equipo), [
+            'nombre' => 'Nombre Modificado',
+            'marca' => 'Marca',
+            'modelo' => 'Modelo',
+            'serie' => 'SN-ANUL-UPD-001',
+            'propietario_global' => 'Cliente:'.$this->cliente->id,
+        ]);
+
+        $response->assertRedirect(route('equipos.index'));
+        $response->assertSessionHas('error');
+        $equipo->refresh();
+        $this->assertEquals('Equipo Anulado', $equipo->nombre);
+    }
+
+    public function test_equipo_dado_de_baja_cannot_be_anulado(): void
+    {
+        $equipo = Equipo::create([
+            'nombre' => 'Equipo Baja',
+            'marca' => 'Marca',
+            'modelo' => 'Modelo',
+            'serie' => 'SN-BAJA-ANUL-001',
+            'cliente_id' => $this->cliente->id,
+            'user_id' => $this->admin->id,
+            'estado' => 'dado_de_baja',
+            'active' => false,
+            'motivo_baja' => 'irreparable',
+        ]);
+
+        $response = $this->actingAs($this->admin)->post(route('equipos.anular', $equipo), [
+            'password_confirm' => 'password',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+    }
 }

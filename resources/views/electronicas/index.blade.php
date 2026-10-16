@@ -172,7 +172,9 @@
   @endif
   
   @if(!auth()->user()->isInvitado())
+  @if(!$e->anulado)
   <a href="{{ route('electronicas.edit', $e->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+  @endif
   
   <button type="button" onclick="openAnularModal('{{ route('electronicas.anular', $e->id) }}', {{ $e->anulado ? 'true' : 'false' }})" class="btn-ghost {{ $e->anulado ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $e->anulado ? 'Reactivar orden' : 'Anular orden' }}">
   {{ $e->anulado ? '✅' : '🚫' }}

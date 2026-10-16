@@ -154,7 +154,9 @@
   <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir">🖨️</a>
   
   @if(!auth()->user()->isInvitado())
+  @if($f->estado !== 'anulada')
   <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+  @endif
   
   <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}', {{ $f->estado === 'anulada' ? 'true' : 'false' }})" class="btn-ghost {{ $f->estado === 'anulada' ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $f->estado === 'anulada' ? 'Reactivar Factura' : 'Anular Factura' }}">
   {{ $f->estado === 'anulada' ? '✅' : '🚫' }}

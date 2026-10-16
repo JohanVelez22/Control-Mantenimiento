@@ -122,8 +122,8 @@ class CotizacionController extends Controller
 
     public function edit(Cotizacion $cotizacion)
     {
-        if ($cotizacion->estado !== 'pendiente') {
-            return redirect()->route('cotizaciones.show', $cotizacion)->with('error', 'Solo se pueden editar cotizaciones pendientes.');
+        if ($cotizacion->estado !== 'pendiente' || $cotizacion->anulado) {
+            return redirect()->route('cotizaciones.show', $cotizacion)->with('error', 'Solo se pueden editar cotizaciones pendientes que no estén anuladas.');
         }
 
         $clientes = Cliente::where(function ($q) use ($cotizacion) {
@@ -153,8 +153,8 @@ class CotizacionController extends Controller
 
     public function update(Request $request, Cotizacion $cotizacion)
     {
-        if ($cotizacion->estado !== 'pendiente') {
-            return back()->with('error', 'Solo se pueden editar cotizaciones pendientes.');
+        if ($cotizacion->estado !== 'pendiente' || $cotizacion->anulado) {
+            return back()->with('error', 'Solo se pueden editar cotizaciones pendientes que no estén anuladas.');
         }
 
         $request->validate([

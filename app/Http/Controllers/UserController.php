@@ -76,6 +76,10 @@ class UserController extends Controller
             return redirect()->route('usuarios.index')->with('error', 'Solo puedes editar tu propio perfil.');
         }
 
+        if (! $usuario->active) {
+            return redirect()->route('usuarios.index')->with('error', 'Por seguridad, no se puede editar un usuario que se encuentra anulado (inactivo).');
+        }
+
         return view('usuarios.edit', ['user' => $usuario]);
     }
 
@@ -83,6 +87,10 @@ class UserController extends Controller
     {
         if (auth()->user()->role !== 'admin' && auth()->id() !== $usuario->id) {
             return redirect()->route('usuarios.index')->with('error', 'Solo puedes editar tu propio perfil.');
+        }
+
+        if (! $usuario->active) {
+            return redirect()->route('usuarios.index')->with('error', 'Por seguridad, no se puede editar un usuario que se encuentra anulado (inactivo).');
         }
 
         $request->validate([

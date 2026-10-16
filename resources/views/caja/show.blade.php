@@ -59,7 +59,9 @@
                 />
                 
                 @if(!auth()->user()->isInvitado())
+                @if(!$movimiento->anulado && $movimiento->estado !== 'anulado')
                 <a href="{{ route('caja.edit', $movimiento->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/30">✏️ Editar</a>
+                @endif
                 <button type="button" onclick="openAnularModal('{{ route('caja.anular', $movimiento->id) }}', {{ $movimiento->anulado ? 'true' : 'false' }})" class="{{ $movimiento->anulado ? 'btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30' : 'btn-danger' }}">{{ $movimiento->anulado ? '✅ Reactivar' : '🚫 Anular' }}</button>
                 @endif
             </div>

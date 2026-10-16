@@ -70,6 +70,10 @@ class ClienteController extends Controller
 
     public function edit(Cliente $cliente)
     {
+        if (! $cliente->active) {
+            return redirect()->route('clientes.index')->with('error', 'Por seguridad, no se puede editar un cliente que se encuentra anulado (inactivo).');
+        }
+
         $departamentos = ColombiaHelper::departamentos();
         $tiposId = ColombiaHelper::tiposIdentificacion();
         $municipios = $cliente->departamento
@@ -81,6 +85,9 @@ class ClienteController extends Controller
 
     public function update(Request $request, Cliente $cliente)
     {
+        if (! $cliente->active) {
+            return redirect()->route('clientes.index')->with('error', 'Por seguridad, no se puede editar un cliente que se encuentra anulado (inactivo).');
+        }
 
         $validated = $request->validate([
             'nombres' => 'required|string|max:60',

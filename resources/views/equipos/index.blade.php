@@ -78,27 +78,9 @@
  <td class="{{ $dim }}"><span class="font-medium text-slate-700 dark:text-slate-300">{{ $equipo->user->name ?? '-' }}</span></td>
   <td class="text-center">
    @if($equipo->estado === 'dado_de_baja')
-   @php
-       $detallePayload = [
-           'nombre' => $equipo->nombre,
-           'serie' => $equipo->serie ?: ($equipo->modelo ?: 'S/N'),
-           'propietario' => $equipo->propietario_label,
-           'motivo' => $equipo->motivo_baja_label,
-           'observacion' => $equipo->observacion_baja ?: 'Sin observaciones registradas',
-           'autor' => $equipo->bajaUser ? $equipo->bajaUser->name : ($equipo->user ? $equipo->user->name : 'Sistema'),
-           'fecha' => $equipo->fecha_baja ? $equipo->fecha_baja->format('d/m/Y h:i A') : 'No registrada'
-       ];
-   @endphp
-   <div class="inline-flex flex-col items-center">
-        <span class="pill pill-pending" title="{{ $equipo->motivo_baja_label }}">
-            ⚠️ Dado de Baja
-        </span>
-       <button type="button" 
-           onclick='openDetalleBajaModal(@json($detallePayload))'
-           class="mt-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline flex items-center gap-1 transition cursor-pointer">
-           <span>📋</span> Ver diagnóstico
-       </button>
-   </div>
+   <span class="pill pill-pending" title="{{ $equipo->motivo_baja_label }}">
+       ⚠️ Dado de Baja
+   </span>
    @else
    <span class="pill {{ $equipo->active ? 'pill-done' : 'pill-anulado' }}">
        {{ $equipo->active ? 'Activo' : 'Inactivo' }}
@@ -108,16 +90,30 @@
  <td data-label="Acciones:" class="text-center w-36 {{ $dim }}">
     <div class="actions-grid">
     @if(!auth()->user()->isInvitado())
+    @if($equipo->estado !== 'dado_de_baja' && $equipo->active)
     <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/10" title="Editar">✏️</a>
-    
-    @if($equipo->estado !== 'dado_de_baja')
     <button type="button" onclick="openBajaEquipoModal('{{ route('equipos.dar-de-baja', $equipo->id) }}', '{{ addslashes($equipo->nombre) }} ({{ addslashes($equipo->serie ?? $equipo->modelo ?? '') }})')" class="btn-ghost btn-action-baja w-8 h-8 flex items-center justify-center p-0 text-xs text-purple-600 dark:text-purple-400 hover:bg-purple-500/10" title="Dar de baja equipo (irreparable / desguace)">
         ⚠️
     </button>
-    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', {{ !$equipo->active ? 'true' : 'false' }})" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs {{ $equipo->active ? 'text-red-600 dark:text-red-400 hover:bg-red-500/10' : 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10' }}" title="{{ $equipo->active ? 'Anular Equipo' : 'Reactivar Equipo' }}">
-        {{ $equipo->active ? '🚫' : '✅' }}
+    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', false)" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs text-red-600 dark:text-red-400 hover:bg-red-500/10" title="Anular Equipo">
+        🚫
+    </button>
+    @elseif($equipo->estado !== 'dado_de_baja' && !$equipo->active)
+    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', true)" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Reactivar Equipo">
+        ✅
     </button>
     @else
+    @php
+        $detallePayload = [
+            'nombre' => $equipo->nombre,
+            'serie' => $equipo->serie ?: ($equipo->modelo ?: 'S/N'),
+            'propietario' => $equipo->propietario_label,
+            'motivo' => $equipo->motivo_baja_label,
+            'observacion' => $equipo->observacion_baja ?: 'Sin observaciones registradas',
+            'autor' => $equipo->bajaUser ? $equipo->bajaUser->name : ($equipo->user ? $equipo->user->name : 'Sistema'),
+            'fecha' => $equipo->fecha_baja ? $equipo->fecha_baja->format('d/m/Y h:i A') : 'No registrada'
+        ];
+    @endphp
      <button type="button" 
          onclick='openDetalleBajaModal(@json($detallePayload))'
          class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Diagnóstico y Motivo de Baja">

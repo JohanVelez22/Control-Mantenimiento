@@ -260,6 +260,10 @@ class MovimientoCajaController extends Controller
 
     public function edit(MovimientoCaja $movimiento)
     {
+        if ($movimiento->anulado || $movimiento->estado === 'anulado') {
+            return redirect()->route('caja.index')->with('error', 'Por seguridad, no se puede editar un movimiento de caja que se encuentra anulado.');
+        }
+
         $fechaOrig = $movimiento->fecha ? $movimiento->fecha->toDateString() : null;
         if (CierreCajaGuard::fechaEstaCerrada($fechaOrig)) {
             return redirect()->route('caja.index')->with('error', 'No se puede editar el movimiento: el día '.$fechaOrig.' ya está cerrado y bloqueado por arqueo.');
@@ -289,6 +293,10 @@ class MovimientoCajaController extends Controller
 
     public function update(Request $request, MovimientoCaja $movimiento)
     {
+        if ($movimiento->anulado || $movimiento->estado === 'anulado') {
+            return redirect()->route('caja.index')->with('error', 'Por seguridad, no se puede editar un movimiento de caja que se encuentra anulado.');
+        }
+
         $validated = $request->validate([
             'empresa' => 'nullable|string|max:80',
             'persona' => 'nullable|string|max:80',

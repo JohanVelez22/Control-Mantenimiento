@@ -90,6 +90,11 @@ class StockController extends Controller
         if (auth()->user()->role === 'invitado') {
             return redirect()->route('stocks.index')->with('error', 'No tienes permisos para editar.');
         }
+
+        if (! $stock->active) {
+            return redirect()->route('stocks.index')->with('error', 'Por seguridad, no se puede editar un producto que se encuentra anulado (inactivo).');
+        }
+
         $proveedores = Proveedor::all();
 
         return view('stocks.edit', compact('stock', 'proveedores'));
@@ -99,6 +104,10 @@ class StockController extends Controller
     {
         if (auth()->user()->role === 'invitado') {
             return redirect()->route('stocks.index')->with('error', 'No tienes permisos para actualizar.');
+        }
+
+        if (! $stock->active) {
+            return redirect()->route('stocks.index')->with('error', 'Por seguridad, no se puede editar un producto que se encuentra anulado (inactivo).');
         }
 
         $validated = $request->validate([
@@ -266,6 +275,10 @@ class StockController extends Controller
     {
         if (! $stock->exists && $request->route('stock')) {
             $stock = Stock::findOrFail($request->route('stock'));
+        }
+
+        if (! $stock->active) {
+            return redirect()->back()->with('error', 'No se pueden dar de baja unidades de un producto que se encuentra anulado (inactivo).')->withInput();
         }
 
         if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {

@@ -242,6 +242,10 @@ class MantenimientoController extends Controller
 
     public function edit(Mantenimiento $mantenimiento)
     {
+        if ($mantenimiento->anulado) {
+            return redirect()->route('mantenimientos.show', $mantenimiento)->with('error', 'Por seguridad, no se puede editar una orden de mantenimiento que se encuentra anulada.');
+        }
+
         $equipos = Equipo::where(function ($q) use ($mantenimiento) {
             $q->activos()->orWhere('id', $mantenimiento->equipo_id);
         })->with('cliente')->orderBy('nombre')->get();
@@ -255,6 +259,9 @@ class MantenimientoController extends Controller
 
     public function update(Request $request, Mantenimiento $mantenimiento)
     {
+        if ($mantenimiento->anulado) {
+            return redirect()->route('mantenimientos.show', $mantenimiento)->with('error', 'Por seguridad, no se puede editar una orden de mantenimiento que se encuentra anulada.');
+        }
 
         // El técnico puede editar, pero debe confirmar con la contraseña de un admin.
         $reglas = [

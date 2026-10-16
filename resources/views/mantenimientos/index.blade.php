@@ -171,7 +171,9 @@
   @endif
 
   @if(!auth()->user()->isInvitado())
+  @if(!$m->anulado)
   <a href="{{ route('mantenimientos.edit', $m->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+  @endif
 
   <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost {{ $m->anulado ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $m->anulado ? 'Reactivar orden' : 'Anular orden' }}">
   {{ $m->anulado ? '✅' : '🚫' }}
