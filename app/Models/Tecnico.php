@@ -26,7 +26,28 @@ class Tecnico extends Model
         'active' => 'boolean',
     ];
 
+    public function getNombreAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setNombreAttribute($value)
+    {
+        $this->attributes['nombre'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function getDireccionAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setDireccionAttribute($value)
+    {
+        $this->attributes['direccion'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
     // Relación: Un técnico puede tener muchos mantenimientos (Lo usaremos en la siguiente fase)
+
     public function mantenimientos()
     {
         return $this->hasMany(Mantenimiento::class);

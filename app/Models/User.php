@@ -35,7 +35,18 @@ class User extends Authenticatable
         ];
     }
 
+    public function getNameAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
     // Método helper para verificar si es admin
+
     public function isAdmin()
     {
         return $this->role === 'admin';

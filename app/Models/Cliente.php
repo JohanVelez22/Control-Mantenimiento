@@ -39,6 +39,37 @@ class Cliente extends Model
         $this->attributes['identificacion'] = $value ? strtoupper($value) : $value;
     }
 
+    public function getNombresAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setNombresAttribute($value)
+    {
+        $this->attributes['nombres'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function getApellidosAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setApellidosAttribute($value)
+    {
+        $this->attributes['apellidos'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function getDireccionAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setDireccionAttribute($value)
+    {
+        $this->attributes['direccion'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+
     /**
      * Retorna el nombre completo de forma dinámica.
      */
@@ -66,6 +97,12 @@ class Cliente extends Model
     public function getTipoClienteLabelAttribute(): string
     {
         return $this->tipo_cliente === 'tecnico' ? '🛠️ Técnico' : '👤 Cliente';
+    }
+
+    /** Abreviatura legible del tipo de identificación (ej. C.C., NIT, Pass, etc.) */
+    public function getTipoIdentificacionAbreviadoAttribute(): string
+    {
+        return \App\Helpers\ColombiaHelper::abreviaturaTipoIdentificacion($this->tipo_identificacion);
     }
 
     /** Relación: Un cliente tiene muchos equipos */

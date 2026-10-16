@@ -11,9 +11,9 @@
 <div class="space-y-4">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <label for="codigo" class="field-label">Código (Opcional)</label>
+            <label for="codigo" class="field-label">Código <span class="text-red-500 font-bold">*</span></label>
             <input type="text" name="codigo" id="codigo" value="{{ old('codigo', $st?->codigo) }}"
-                   oninput="this.value = this.value.toUpperCase()" class="glass-input" placeholder="Ej: REF-001">
+                   oninput="this.value = this.value.toUpperCase()" required class="glass-input" placeholder="Ej: REF-001">
             @error('codigo') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
         </div>
 

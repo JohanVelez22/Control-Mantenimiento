@@ -229,4 +229,45 @@ class ClienteControllerTest extends TestCase
         $response->assertStatus(200);
         $this->assertEquals([], $response->json());
     }
+
+    public function test_cliente_creation_and_update_automatically_applies_title_case_to_names_and_address(): void
+    {
+        // 1. Crear con minúsculas y mayúsculas desordenadas
+        $response = $this->actingAs($this->admin)->post(route('clientes.store'), [
+            'nombres' => 'juan guillermo',
+            'apellidos' => 'JARAMILLO RESTREPO',
+            'tipo_identificacion' => 'cedula_ciudadania',
+            'identificacion' => '71234567',
+            'genero' => 'masculino',
+            'tipo_cliente' => 'cliente',
+            'movil' => '3109998877',
+            'direccion' => 'calle 45 # 12-34 apto 201 bogotá d.c.',
+        ]);
+
+        $response->assertRedirect(route('clientes.index'));
+        $cliente = Cliente::where('identificacion', '71234567')->first();
+        $this->assertNotNull($cliente);
+        $this->assertEquals('Juan Guillermo', $cliente->nombres);
+        $this->assertEquals('Jaramillo Restrepo', $cliente->apellidos);
+        $this->assertEquals('Calle 45 # 12-34 Apto 201 Bogotá D.C.', $cliente->direccion);
+
+        // 2. Actualizar con mayúsculas y minúsculas invertidas
+        $updateResponse = $this->actingAs($this->admin)->put(route('clientes.update', $cliente), [
+            'nombres' => 'ANDRÉS FELIPE',
+            'apellidos' => 'castro gómez',
+            'tipo_identificacion' => 'cedula_ciudadania',
+            'identificacion' => '71234567',
+            'genero' => 'masculino',
+            'tipo_cliente' => 'cliente',
+            'movil' => '3109998877',
+            'direccion' => 'CRA 15 # 20-30 OFICINA 504',
+        ]);
+
+        $updateResponse->assertRedirect(route('clientes.index'));
+        $cliente->refresh();
+        $this->assertEquals('Andrés Felipe', $cliente->nombres);
+        $this->assertEquals('Castro Gómez', $cliente->apellidos);
+        $this->assertEquals('Cra 15 # 20-30 Oficina 504', $cliente->direccion);
+    }
 }
+

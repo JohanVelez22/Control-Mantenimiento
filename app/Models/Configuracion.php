@@ -28,4 +28,25 @@ class Configuracion extends Model
         'backup_max_copias',
         'backup_tipo_incluido',
     ];
+
+    public function getNombreAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setNombreAttribute($value)
+    {
+        $this->attributes['nombre'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function getDireccionAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setDireccionAttribute($value)
+    {
+        $this->attributes['direccion'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
 }
+

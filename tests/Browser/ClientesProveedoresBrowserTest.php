@@ -49,7 +49,12 @@ class ClientesProveedoresBrowserTest extends DuskTestCase
             ]
         );
 
-        $this->browse(function (Browser $browser) use ($admin) {
+        $proveedor->update([
+            'tipo_identificacion' => 'cedula_ciudadania',
+            'telefono2' => '6060606',
+        ]);
+
+        $this->browse(function (Browser $browser) use ($admin, $proveedor) {
             // 1. Módulo Clientes: Ver listado y filtrar en tiempo real
             $browser->loginAs($admin)
                 ->visit('/clientes')
@@ -70,6 +75,27 @@ class ClientesProveedoresBrowserTest extends DuskTestCase
                 ->pause(200)
                 ->assertSee('Mayorista Tecnológico Dusk SAS')
                 ->screenshot('proveedores_directorio_filtro');
+
+            // 3. Módulo Proveedores: Ver detalle con abreviatura (C.C.) y teléfono alternativo
+            $browser->visit('/proveedores/' . $proveedor->id)
+                ->assertPathIs('/proveedores/' . $proveedor->id)
+                ->assertSee('(C.C.)')
+                ->assertSee('Alt:')
+                ->assertSee('6060606')
+                ->screenshot('proveedor_detalle_abreviado');
+
+            // 4. Módulo Proveedores: Verificar que el desplegable de Tipo de Identificación muestra 5 opciones completas sin cortes horizontales
+            $browser->visit('/proveedores/create')
+                ->waitFor('.ts-wrapper')
+                ->pause(300)
+                ->script("document.querySelector('select[name=\"tipo_identificacion\"]').tomselect.open();");
+
+            $browser->pause(400)
+                ->assertSee('Cédula de Ciudadanía (CC)')
+                ->assertSee('Tarjeta de Identidad (TI)')
+                ->screenshot('desplegable_tipo_identificacion_calibrado');
         });
     }
 }
+
+

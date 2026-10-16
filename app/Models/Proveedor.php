@@ -44,10 +44,57 @@ class Proveedor extends Model
         return $this->morphMany(Factura::class, 'facturable');
     }
 
+    public function getIdentificacionAttribute($value)
+    {
+        return $value ? strtoupper($value) : $value;
+    }
+
+    public function setIdentificacionAttribute($value)
+    {
+        $this->attributes['identificacion'] = $value ? strtoupper($value) : $value;
+    }
+
+    public function getNombreRazonSocialAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setNombreRazonSocialAttribute($value)
+    {
+        $this->attributes['nombre_razon_social'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function getContactoNombreAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setContactoNombreAttribute($value)
+    {
+        $this->attributes['contacto_nombre'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function getDireccionAttribute($value)
+    {
+        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setDireccionAttribute($value)
+    {
+        $this->attributes['direccion'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+    }
+
     /** Etiqueta legible del tipo de entidad */
+
     public function getTipoLabelAttribute(): string
     {
         return $this->tipo_entidad === 'empresa' ? '🏢 Empresa' : '👤 Persona';
+    }
+
+    /** Abreviatura legible del tipo de identificación (ej. C.C., NIT, Pass, etc.) */
+    public function getTipoIdentificacionAbreviadoAttribute(): string
+    {
+        return \App\Helpers\ColombiaHelper::abreviaturaTipoIdentificacion($this->tipo_identificacion);
     }
 
     /** Scope: solo registros activos (no dados de baja lógicamente) */

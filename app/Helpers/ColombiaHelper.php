@@ -73,11 +73,29 @@ class ColombiaHelper
         return [
             'cedula_ciudadania' => 'Cédula de Ciudadanía (CC)',
             'cedula_extranjeria' => 'Cédula de Extranjería (CE)',
-            'nit' => 'NIT / RUT',
+            'nit' => 'NIT (Empresa)',
             'pasaporte' => 'Pasaporte',
             'tarjeta_identidad' => 'Tarjeta de Identidad (TI)',
             'rut' => 'RUT (Persona Natural)',
         ];
+    }
+
+    /**
+     * Retorna la abreviatura estándar del tipo de identificación (ej. C.C., C.E., Pass, NIT, T.I., RUT).
+     */
+    public static function abreviaturaTipoIdentificacion(?string $tipo): string
+    {
+        $tipoNorm = strtolower(trim((string) $tipo));
+
+        return match ($tipoNorm) {
+            'cedula_ciudadania', 'cc', 'c.c', 'c.c.' => 'C.C.',
+            'cedula_extranjeria', 'ce', 'c.e', 'c.e.' => 'C.E.',
+            'pasaporte', 'pass', 'pas' => 'Pass',
+            'tarjeta_identidad', 'ti', 't.i', 't.i.' => 'T.I.',
+            'nit' => 'NIT',
+            'rut' => 'RUT',
+            default => !empty($tipo) ? strtoupper(str_replace('_', ' ', (string) $tipo)) : 'NIT',
+        };
     }
 
     /**
@@ -111,4 +129,62 @@ class ColombiaHelper
 
         return $url;
     }
+
+    /**
+     * Formatea un texto a Title Case (primera letra de cada palabra en mayúscula),
+     * preservando siglas comerciales/legales comunes (SAS, S.A.S., LTDA, S.A., NIT, RUT, etc.)
+     * y sanitizando espacios redundantes.
+     */
+    public static function formatTitleCase(?string $value, bool $preserveAcronyms = true): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $trimmed = trim(preg_replace('/\s+/', ' ', $value));
+        if ($trimmed === '') {
+            return '';
+        }
+
+        // Convertir a minúsculas y luego a Title Case con soporte completo UTF-8
+        $lower = mb_strtolower($trimmed, 'UTF-8');
+        $title = mb_convert_case($lower, MB_CASE_TITLE, 'UTF-8');
+
+        if ($preserveAcronyms) {
+            // Siglas y formas jurídicas colombianas que deben permanecer en mayúsculas
+            $acronyms = [
+                'S.A.S.',
+                'SAS',
+                'S.A.',
+                'SA',
+                'LTDA.',
+                'LTDA',
+                'L.T.D.A.',
+                'S. EN C.',
+                'S.C.',
+                'E.U.',
+                'EU',
+                'NIT',
+                'RUT',
+                'EPS',
+                'IPS',
+                'BIC',
+                'D.C.',
+                'DC',
+                'ABC',
+            ];
+
+            foreach ($acronyms as $acronym) {
+                $pattern = preg_quote($acronym, '/');
+                $title = (string) preg_replace(
+                    '/(?<=^|[\s,;.\-\(\)\/])' . $pattern . '(?=$|[\s,;.\-\(\)\/])/ui',
+                    $acronym,
+                    $title
+                );
+            }
+        }
+
+        return $title;
+    }
 }
+

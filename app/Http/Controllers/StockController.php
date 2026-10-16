@@ -60,7 +60,7 @@ class StockController extends Controller
         }
 
         $validated = $request->validate([
-            'codigo' => 'nullable|string|max:50|unique:stocks,codigo',
+            'codigo' => 'required|string|max:50|unique:stocks,codigo',
             'producto' => 'required|string|max:80',
             'categoria' => 'required|string|max:50',
             'subcategoria' => 'required|string|max:50',
@@ -111,7 +111,7 @@ class StockController extends Controller
         }
 
         $validated = $request->validate([
-            'codigo' => 'nullable|string|max:50|unique:stocks,codigo,'.$stock->id,
+            'codigo' => 'required|string|max:50|unique:stocks,codigo,'.$stock->id,
             'producto' => 'required|string|max:80',
             'categoria' => 'required|string|max:50',
             'subcategoria' => 'required|string|max:50',

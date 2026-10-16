@@ -192,4 +192,43 @@ class ProveedorControllerTest extends TestCase
         $proveedor->refresh();
         $this->assertFalse($proveedor->active);
     }
+
+    public function test_proveedor_creation_and_update_automatically_applies_title_case_and_preserves_acronyms(): void
+    {
+        // 1. Crear con minúsculas y siglas que deben preservarse
+        $response = $this->actingAs($this->admin)->post(route('proveedores.store'), [
+            'tipo_entidad' => 'empresa',
+            'identificacion' => '901234567',
+            'nombre_razon_social' => 'suministros y repuestos del valle s.a.s.',
+            'tipo_identificacion' => 'nit',
+            'telefono' => '3123456789',
+            'contacto_nombre' => 'CARLOS ALBERTO GÓMEZ',
+            'direccion' => 'avenida 6 norte # 22-45 oficina 302',
+        ]);
+
+        $response->assertRedirect(route('proveedores.index'));
+        $proveedor = Proveedor::where('identificacion', '901234567')->first();
+        $this->assertNotNull($proveedor);
+        $this->assertEquals('Suministros Y Repuestos Del Valle S.A.S.', $proveedor->nombre_razon_social);
+        $this->assertEquals('Carlos Alberto Gómez', $proveedor->contacto_nombre);
+        $this->assertEquals('Avenida 6 Norte # 22-45 Oficina 302', $proveedor->direccion);
+
+        // 2. Actualizar con mayúsculas y siglas LTDA / D.C.
+        $updateResponse = $this->actingAs($this->admin)->put(route('proveedores.update', $proveedor), [
+            'tipo_entidad' => 'empresa',
+            'identificacion' => '901234567',
+            'nombre_razon_social' => 'TECNOLOGÍA Y REDES LTDA',
+            'tipo_identificacion' => 'nit',
+            'telefono' => '3123456789',
+            'contacto_nombre' => 'mario alberto hincapie',
+            'direccion' => 'CRA 100 # 15-20 BOGOTÁ D.C.',
+        ]);
+
+        $updateResponse->assertRedirect(route('proveedores.index'));
+        $proveedor->refresh();
+        $this->assertEquals('Tecnología Y Redes LTDA', $proveedor->nombre_razon_social);
+        $this->assertEquals('Mario Alberto Hincapie', $proveedor->contacto_nombre);
+        $this->assertEquals('Cra 100 # 15-20 Bogotá D.C.', $proveedor->direccion);
+    }
 }
+

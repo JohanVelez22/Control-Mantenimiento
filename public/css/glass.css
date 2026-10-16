@@ -830,6 +830,9 @@ html.dark #ts-topbar {
 .btn-excel::before,
 .btn-pdf::before,
 .btn-save::before,
+.btn-cancel::before,
+.btn-close-modal::before,
+.btn-save-print::before,
 .btn-add::before,
 .btn-purple::before,
 .btn-backup::before,
@@ -846,20 +849,35 @@ html.dark #ts-topbar {
   left: 0 !important;
   right: 0 !important;
   height: 48% !important;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.04) 70%, transparent 100%) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.06) 70%, transparent 100%) !important;
   border-radius: 12px 12px 0 0 !important;
   pointer-events: none !important;
   transition: all 0.22s ease !important;
 }
 
 .btn-primary:hover::before,
+.btn-primary:focus::before,
+.btn-primary:focus-visible::before,
 .btn-today:hover::before,
 .btn-clean:hover::before,
 .btn-print:hover::before,
 .btn-excel:hover::before,
 .btn-pdf:hover::before,
 .btn-save:hover::before,
+.btn-save:focus::before,
+.btn-save:focus-visible::before,
+.btn-cancel:hover::before,
+.btn-cancel:focus::before,
+.btn-cancel:focus-visible::before,
+.btn-close-modal:hover::before,
+.btn-close-modal:focus::before,
+.btn-close-modal:focus-visible::before,
+.btn-save-print:hover::before,
+.btn-save-print:focus::before,
+.btn-save-print:focus-visible::before,
 .btn-add:hover::before,
+.btn-add:focus::before,
+.btn-add:focus-visible::before,
 .btn-purple:hover::before,
 .btn-backup:hover::before,
 .btn-concepts:hover::before,
@@ -868,7 +886,7 @@ html.dark #ts-topbar {
 .btn-success:hover::before,
 #btn-save-schedule:hover::before,
 #btn-execute-backup:hover::before {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.08) 70%, transparent 100%) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.12) 70%, transparent 100%) !important;
 }
 
 .btn-danger::before,
@@ -2569,6 +2587,7 @@ input[type="number"].no-spinners,
   overflow: hidden;
   box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: none !important;
   text-decoration: none;
 }
 
@@ -2605,6 +2624,7 @@ input[type="number"].no-spinners,
   overflow: hidden;
   box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: none !important;
   text-decoration: none;
 }
 
@@ -2639,6 +2659,7 @@ input[type="number"].no-spinners,
   overflow: hidden !important;
   box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform: none !important;
   text-decoration: none !important;
   box-sizing: border-box !important;
   vertical-align: middle !important;
@@ -3106,6 +3127,7 @@ html.dark .btn-glass-excel:hover {
   cursor: pointer;
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
+  transform: none !important;
 }
 
 html.dark .btn-ghost {
@@ -4066,6 +4088,7 @@ html.dark .modal-divider {
   border: 1px solid rgba(239, 68, 68, 0.30) !important;
   box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform: none !important;
 }
 
 .btn-danger:hover {
@@ -5696,7 +5719,13 @@ html.dark .ts-control>input {
 
 .ts-dropdown .option,
 .ts-dropdown .ts-option-item {
-  padding: 9px 12px !important;
+  box-sizing: border-box !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  padding: 0 12px !important;
+  display: flex !important;
+  align-items: center !important;
   font-size: 13.5px !important;
   color: #1E293B !important;
   border-radius: 0 !important;
@@ -5708,6 +5737,15 @@ html.dark .ts-control>input {
   font-weight: 500 !important;
   transition: background 0.15s ease, color 0.15s ease !important;
 }
+
+.ts-dropdown .option>.ts-option-item {
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: inherit !important;
+  font-weight: inherit !important;
+}
+
+
 
 .ts-dropdown .option:hover,
 .ts-dropdown .active {
@@ -6261,16 +6299,28 @@ select.glass-input.no-tomselect {
   text-align: left !important;
 }
 
-/* Limitar la altura de los desplegables de stock a exactamente 3 ítems */
+/* Altura calibrada a exactamente 5 opciones completas sin cortes horizontales */
+.ts-dropdown-content {
+  max-height: 180px !important;
+  overflow-y: auto !important;
+  scroll-behavior: smooth !important;
+  overscroll-behavior: contain !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(37, 99, 235, 0.25) transparent !important;
+}
+
+/* Desplegables de stock a altura para productos de dos líneas */
 .stock-select-dropdown .ts-dropdown-content {
   max-height: 200px !important;
 }
 
-/* Estilizar barra de desplazamiento en los desplegables de TomSelect */
-.ts-dropdown-content {
-  scrollbar-width: thin !important;
-  scrollbar-color: rgba(37, 99, 235, 0.25) transparent !important;
+.stock-select-dropdown .option {
+  height: auto !important;
+  min-height: 48px !important;
+  max-height: none !important;
+  padding: 8px 12px !important;
 }
+
 
 .ts-dropdown-content::-webkit-scrollbar {
   width: 6px !important;
@@ -9817,7 +9867,8 @@ button:active,
 /* Encabezado de vistas de detalle: simetría vertical exacta entre borde superior del card y línea horizontal */
 .detail-header,
 .caja-detail-header {
-  padding-bottom: 2rem !important; /* 32px: exactamente simétrico a los 32px superiores (md:p-8) */
+  padding-bottom: 2rem !important;
+  /* 32px: exactamente simétrico a los 32px superiores (md:p-8) */
 }
 
 /* --- SUBTABS & NAV REPORTES: LIQUID GLASS CON FRANJA PREVIEW AL HOVER --- */
@@ -9902,12 +9953,15 @@ html.dark .reportes-nav-principal a:hover {
     grid-template-columns: 1fr 1fr 1fr !important;
     margin-bottom: 1.5rem !important;
   }
+
   .cierre-operativo-item.item-left {
     justify-self: start !important;
   }
+
   .cierre-operativo-item.item-center {
     justify-self: center !important;
   }
+
   .cierre-operativo-item.item-right {
     justify-self: end !important;
   }
@@ -9919,4 +9973,4 @@ html.dark .reportes-nav-principal a:hover {
 [class*="observacion"] {
   overflow-wrap: anywhere !important;
   word-break: break-word !important;
-}
+}

@@ -29,7 +29,7 @@
             <div class="min-w-0">
                 <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Identificación</span>
                 <span class="font-medium text-sm text-slate-700 dark:text-slate-200 break-words">
-                    <span class="text-indigo-500 mr-1">({{ strtoupper(str_replace('_', ' ', $proveedor->tipo_identificacion ?? 'NIT')) }})</span>{{ $proveedor->identificacion }}
+                    <span class="text-indigo-500 mr-1">({{ $proveedor->tipo_identificacion_abreviado }})</span>{{ $proveedor->identificacion }}
                 </span>
             </div>
             <div class="min-w-0">
@@ -41,8 +41,8 @@
                 <span class="font-medium text-sm text-slate-700 dark:text-slate-200 break-words flex flex-wrap items-center gap-2">
                     <x-whatsapp-link :telefono="$proveedor->telefono" />
                     @if($proveedor->telefono2)
-                    <span class="text-xs text-gray-400 font-normal inline-flex items-center gap-1">
-                        (Alt: <x-whatsapp-link :telefono="$proveedor->telefono2" class="text-xs text-gray-400 font-normal" />)
+                    <span class="text-sm text-gray-400 font-normal inline-flex items-center gap-1">
+                        (Alt: <x-whatsapp-link :telefono="$proveedor->telefono2" class="text-sm font-medium text-slate-700 dark:text-slate-200" />)
                     </span>
                     @endif
                 </span>
