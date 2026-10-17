@@ -1294,6 +1294,20 @@
 
                 let tsInstance = new TomSelect(el, tsConfig);
 
+                // Limpiar aviso de validación al interactuar o seleccionar opción
+                if (tsInstance.control_input) {
+                    tsInstance.control_input.addEventListener('input', function() {
+                        tsInstance.control_input.setCustomValidity('');
+                        if (tsInstance.wrapper) tsInstance.wrapper.classList.remove('is-invalid');
+                    });
+                }
+                tsInstance.on('change', function(val) {
+                    if (val) {
+                        if (tsInstance.control_input) tsInstance.control_input.setCustomValidity('');
+                        if (tsInstance.wrapper) tsInstance.wrapper.classList.remove('is-invalid');
+                    }
+                });
+
                 // Asegurar cierre, limpieza de lo escrito y desenfoque al seleccionar cualquier opción
                 tsInstance.on('item_add', function() {
                     tsInstance.close();
@@ -1551,6 +1565,54 @@
             });
             // Despachar evento global para que los formularios sepan cuándo TomSelect terminó
             document.dispatchEvent(new CustomEvent('tomselect:ready'));
+
+            // ─── VALIDACIÓN DE DESPLEGABLES OBLIGATORIOS (TOMSELECT) ──────────
+            // Muestra el aviso nativo del navegador ("Selecciona un elemento de la lista")
+            // y resalta el desplegable si un campo obligatorio no ha sido seleccionado al guardar.
+            const handleTomSelectValidation = function(e) {
+                let form = null;
+                if (e.type === 'click') {
+                    const btn = e.target.closest('button[type="submit"], input[type="submit"]');
+                    if (!btn) return;
+                    form = btn.form || btn.closest('form');
+                } else if (e.type === 'submit') {
+                    form = e.target;
+                }
+                if (!form || !form.elements) return;
+
+                const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+                for (let field of requiredFields) {
+                    if (!field.classList.contains('tomselected')) {
+                        if (!field.checkValidity()) {
+                            // Dejar que el navegador muestre su aviso en los campos normales primero
+                            return;
+                        }
+                    } else {
+                        // Es un desplegable con TomSelect
+                        if (!field.value) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const ts = field.tomselect;
+                            if (ts) {
+                                if (ts.wrapper) {
+                                    ts.wrapper.classList.add('is-invalid');
+                                }
+                                if (ts.control_input) {
+                                    ts.control_input.setCustomValidity('Selecciona un elemento de la lista');
+                                    ts.control_input.reportValidity();
+                                    ts.focus();
+                                } else {
+                                    field.reportValidity();
+                                    ts.focus();
+                                }
+                            }
+                            return;
+                        }
+                    }
+                }
+            };
+            document.addEventListener('click', handleTomSelectValidation, true);
+            document.addEventListener('submit', handleTomSelectValidation, true);
 
 
             // 3. Auto-centrar elementos al navegar por ancla (hash)

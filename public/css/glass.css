@@ -5852,6 +5852,18 @@ select.tomselected {
   display: none !important;
 }
 
+/* Estado de error para selects obligatorios con TomSelect */
+.ts-wrapper.is-invalid .ts-control {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25) !important;
+}
+
+html.dark .ts-wrapper.is-invalid .ts-control {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.35) !important;
+}
+
+
 
 /* --- GLASSMORPHISM: FLATPICKR CALENDAR -------------------------------------------------- */
 .flatpickr-calendar {
@@ -9887,19 +9899,23 @@ td[class*="valor"] {
   display: inline-flex;
   align-items: center;
   padding: 3px 10px;
-  border-radius: 8px !important; /* rounded-lg idéntico a Total descartado */
+  border-radius: 8px !important;
+  /* rounded-lg idéntico a Total descartado */
   font-size: 11px;
   font-weight: 700;
   line-height: 1.25;
   white-space: nowrap !important;
   background: rgba(245, 158, 11, 0.10);
-  color: #d97706; /* text-amber-600 */
-  border: 1px solid rgba(245, 158, 11, 0.20); /* border-amber-500/20 */
+  color: #d97706;
+  /* text-amber-600 */
+  border: 1px solid rgba(245, 158, 11, 0.20);
+  /* border-amber-500/20 */
 }
 
 html.dark .badge-motivo-baja {
   background: rgba(245, 158, 11, 0.10) !important;
-  color: #fbbf24 !important; /* dark:text-amber-400 */
+  color: #fbbf24 !important;
+  /* dark:text-amber-400 */
   border: 1px solid rgba(245, 158, 11, 0.20) !important;
 }
 
@@ -10116,6 +10132,7 @@ html.dark .reportes-nav-principal a:hover {
 
 @media (min-width: 640px) {
   .stock-detail-title {
-    font-size: 1.5rem !important; /* 24px: perfectamente calibrado, visible y coherente con el espacio */
+    font-size: 1.5rem !important;
+    /* 24px: perfectamente calibrado, visible y coherente con el espacio */
   }
-}
+}

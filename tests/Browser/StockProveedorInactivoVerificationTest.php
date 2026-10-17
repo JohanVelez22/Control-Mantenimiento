@@ -51,13 +51,43 @@ class StockProveedorInactivoVerificationTest extends DuskTestCase
             $browser->loginAs($admin)
                 ->visit(route('stocks.show', 70))
                 ->resize(1440, 900)
-                ->pause(200)
-                ->screenshot('stock_show_calibrated_final_dark');
+                ->pause(300)
+                ->screenshot('stock_70_inline_pill_dark');
 
-            // 1. LIGHT MODE TEST
-            $browser->script("document.documentElement.classList.remove('dark'); localStorage.setItem('theme', 'light');");
-            $browser->pause(300);
-            $browser->screenshot('stock_show_calibrated_final_light');
+            // TEST BROWSER NATIVE VALIDATION ON EMPTY CATEGORIA
+            $browser->visit('/stocks/create')
+                ->type('#codigo', 'TEST-CAT-01')
+                ->type('#producto', 'Producto Prueba Validacion')
+                ->type('#cantidad', '10')
+                ->type('#precio_compra_visual', '50000');
+
+            // Select proveedor so only categoria & subcategoria are empty
+            $browser->script("
+                const prov = document.getElementById('proveedor_id');
+                if (prov && prov.tomselect) {
+                    prov.tomselect.setValue(prov.options[1].value);
+                }
+            ");
+            $browser->pause(200);
+
+            // Press submit button as a user would
+            $browser->press('Guardar Producto')
+                ->pause(300);
+
+            $submitCheck = $browser->script("
+                const cat = document.getElementById('categoria');
+                const ts = cat ? cat.tomselect : null;
+                return {
+                    url: window.location.href,
+                    active_tag: document.activeElement ? document.activeElement.tagName : null,
+                    active_class: document.activeElement ? document.activeElement.className : null,
+                    is_wrapper_invalid: ts && ts.wrapper ? ts.wrapper.classList.contains('is-invalid') : false,
+                    control_input_val: ts && ts.control_input ? ts.control_input.validationMessage : null,
+                    is_active: ts && ts.control_input ? (document.activeElement === ts.control_input) : false
+                };
+            ");
+            dump('REAL SUBMIT BUTTON CLICK CHECK:', $submitCheck[0]);
+            $browser->screenshot('real_submit_click_tooltip');
 
             $lightComparison = $browser->script("
                 const tables = document.querySelectorAll('table.ts-table');
