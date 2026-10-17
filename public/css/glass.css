@@ -10105,3 +10105,17 @@ html.dark .reportes-nav-principal a:hover {
   overflow-wrap: anywhere !important;
   word-break: break-word !important;
 }
+
+/* --- TÍTULO DE ARTÍCULO EN VER STOCK (CALIBRADO Y COHERENTE) --- */
+.stock-detail-title {
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.25 !important;
+}
+
+@media (min-width: 640px) {
+  .stock-detail-title {
+    font-size: 1.5rem !important; /* 24px: perfectamente calibrado, visible y coherente con el espacio */
+  }
+}

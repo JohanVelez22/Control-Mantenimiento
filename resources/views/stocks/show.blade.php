@@ -22,14 +22,12 @@
                 @endif
 
                 <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-2.5 min-w-0">
-                        <h2 id="stock-header-title" class="font-black text-slate-800 dark:text-white tracking-tight truncate leading-tight transition-all text-2xl sm:text-3xl" title="{{ $stock->producto }}">
-                            {{ $stock->producto }}
-                        </h2>
-                        <span class="pill {{ $stock->active ? 'pill-done' : 'pill-anulado' }} text-[10px] py-0.5 px-2 font-bold uppercase tracking-wider shrink-0">
+                    <h2 class="stock-detail-title font-black text-slate-800 dark:text-white tracking-tight break-words" title="{{ $stock->producto }}">
+                        <span>{{ $stock->producto }}</span>
+                        <span class="pill {{ $stock->active ? 'pill-done' : 'pill-anulado' }} text-[10px] py-0.5 px-2 font-bold uppercase tracking-wider align-middle inline-flex ml-2 whitespace-nowrap">
                             {{ $stock->active ? 'ACTIVO' : 'INACTIVO' }}
                         </span>
-                    </div>
+                    </h2>
                     <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 truncate">
                         <span>Código: <strong class="font-mono text-indigo-500 dark:text-indigo-400 font-bold">{{ $stock->codigo ?? 'N/A' }}</strong></span>
                         <span class="mx-1 text-gray-300 dark:text-gray-600">|</span>
@@ -468,28 +466,7 @@
 </div>
 
 <script>
-(function() {
-    function autoResizeStockTitle() {
-        var title = document.getElementById('stock-header-title');
-        if (!title) return;
-        
-        var baseSize = window.innerWidth < 640 ? 1.5 : 1.95;
-        title.style.fontSize = baseSize + 'rem';
-        
-        var current = baseSize;
-        while (title.scrollWidth > title.clientWidth && current > 0.95) {
-            current -= 0.05;
-            title.style.fontSize = current.toFixed(2) + 'rem';
-        }
-    }
 
-    window.addEventListener('resize', autoResizeStockTitle);
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', autoResizeStockTitle);
-    } else {
-        autoResizeStockTitle();
-    }
-})();
 
 function openBajaStockModal(actionUrl, producto, maxCantidad, precioCompra) {
     const modal = document.getElementById('baja-stock-modal');

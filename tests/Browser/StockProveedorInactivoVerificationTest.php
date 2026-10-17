@@ -50,11 +50,14 @@ class StockProveedorInactivoVerificationTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($admin) {
             $browser->loginAs($admin)
                 ->visit(route('stocks.show', 70))
-                ->pause(500);
+                ->resize(1440, 900)
+                ->pause(200)
+                ->screenshot('stock_show_calibrated_final_dark');
 
             // 1. LIGHT MODE TEST
             $browser->script("document.documentElement.classList.remove('dark'); localStorage.setItem('theme', 'light');");
             $browser->pause(300);
+            $browser->screenshot('stock_show_calibrated_final_light');
 
             $lightComparison = $browser->script("
                 const tables = document.querySelectorAll('table.ts-table');
