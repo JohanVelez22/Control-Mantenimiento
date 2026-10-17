@@ -82,7 +82,16 @@ class ClientesProveedoresBrowserTest extends DuskTestCase
                 ->assertSee('(C.C.)')
                 ->assertSee('Alt:')
                 ->assertSee('6060606')
-                ->screenshot('proveedor_detalle_abreviado');
+                ->screenshot('proveedor_detalle_abreviado')
+                ->visit('/proveedores/' . $proveedor->id)
+                ->assertSee('Artículos Suministrados')
+                ->assertSee('Historial de Compras')
+                ->screenshot('proveedor_1_tablas')
+                ->script("window.scrollTo(0, 600);");
+            $browser->pause(200)
+                ->screenshot('proveedor_1_historial_compras')
+                ->visit('/stocks/1')
+                ->screenshot('stock_1_proveedor_card');
 
             // 4. Módulo Proveedores: Verificar que el desplegable de Tipo de Identificación muestra 5 opciones completas sin cortes horizontales
             $browser->visit('/proveedores/create')

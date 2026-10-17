@@ -3591,7 +3591,7 @@ html.dark .btn-ghost-blue:hover {
 .btn-ghost[class*="text-amber"]:hover,
 .btn-ghost[class*="border-amber"]:hover,
 .btn-ghost-amber:hover {
-  color: #B45309 !important;
+  color: #D97706 !important;
   background: rgba(245, 158, 11, 0.22) !important;
   border-color: rgba(245, 158, 11, 0.58) !important;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
@@ -3612,7 +3612,7 @@ html.dark .btn-ghost[class*="border-yellow"]:hover,
 html.dark .btn-ghost[class*="text-amber"]:hover,
 html.dark .btn-ghost[class*="border-amber"]:hover,
 html.dark .btn-ghost-amber:hover {
-  color: #FDE68A !important;
+  color: #FBBF24 !important;
   background: rgba(245, 158, 11, 0.28) !important;
   border-color: rgba(252, 211, 77, 0.65) !important;
   box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
@@ -3634,7 +3634,7 @@ html.dark .btn-ghost-amber:hover {
 .btn-ghost[class*="text-green"]:hover,
 .btn-ghost[class*="border-green"]:hover,
 .btn-ghost-emerald:hover {
-  color: #047857 !important;
+  color: #059669 !important;
   background: rgba(16, 185, 129, 0.22) !important;
   border-color: rgba(16, 185, 129, 0.60) !important;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
@@ -3655,7 +3655,7 @@ html.dark .btn-ghost[class*="border-emerald"]:hover,
 html.dark .btn-ghost[class*="text-green"]:hover,
 html.dark .btn-ghost[class*="border-green"]:hover,
 html.dark .btn-ghost-emerald:hover {
-  color: #A7F3D0 !important;
+  color: #6EE7B7 !important;
   background: rgba(16, 185, 129, 0.28) !important;
   border-color: rgba(110, 231, 183, 0.65) !important;
   box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
@@ -3673,7 +3673,7 @@ html.dark .btn-ghost-emerald:hover {
 .btn-ghost[class*="text-red"]:hover,
 .btn-ghost[class*="border-red"]:hover,
 .btn-ghost-red:hover {
-  color: #B91C1C !important;
+  color: #DC2626 !important;
   background: rgba(239, 68, 68, 0.22) !important;
   border-color: rgba(239, 68, 68, 0.60) !important;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
@@ -3690,7 +3690,7 @@ html.dark .btn-ghost-red {
 html.dark .btn-ghost[class*="text-red"]:hover,
 html.dark .btn-ghost[class*="border-red"]:hover,
 html.dark .btn-ghost-red:hover {
-  color: #FECACA !important;
+  color: #F87171 !important;
   background: rgba(239, 68, 68, 0.28) !important;
   border-color: rgba(252, 165, 165, 0.65) !important;
   box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
@@ -3792,9 +3792,9 @@ html.dark .btn-ghost-orange:hover {
   min-height: 40px !important;
   max-height: 40px !important;
   padding: 0 18px !important;
-  font-size: 13.5px !important;
+  font-size: 13px !important;
   font-weight: 700 !important;
-  line-height: 1 !important;
+  line-height: 1.25 !important;
   border-radius: 12px !important;
   display: inline-flex !important;
   align-items: center !important;
@@ -3803,7 +3803,11 @@ html.dark .btn-ghost-orange:hover {
   box-sizing: border-box !important;
   backdrop-filter: blur(14px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: geometricPrecision !important;
+  transform: none !important;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease !important;
   cursor: pointer !important;
   white-space: nowrap !important;
 }
@@ -3827,7 +3831,7 @@ html.dark .btn-ghost-orange:hover {
 .ts-modal-card .btn-ghost[class*="text-yellow"]:hover,
 .ts-modal-card .btn-ghost[class*="border-yellow"]:hover,
 .ts-modal-overlay .btn-ghost-amber:hover {
-  color: #B45309 !important;
+  color: #D97706 !important;
   background: rgba(245, 158, 11, 0.22) !important;
   border-color: rgba(245, 158, 11, 0.58) !important;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
@@ -3851,7 +3855,7 @@ html.dark .ts-modal-card .btn-ghost[class*="border-amber"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="text-yellow"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-yellow"]:hover,
 html.dark .ts-modal-overlay .btn-ghost-amber:hover {
-  color: #FDE68A !important;
+  color: #FBBF24 !important;
   background: rgba(245, 158, 11, 0.28) !important;
   border-color: rgba(252, 211, 77, 0.65) !important;
   box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
@@ -3876,7 +3880,7 @@ html.dark .ts-modal-overlay .btn-ghost-amber:hover {
 .ts-modal-card .btn-ghost[class*="border-red"]:hover,
 .ts-modal-overlay .btn-danger:hover,
 .ts-modal-overlay .btn-ghost-red:hover {
-  color: #B91C1C !important;
+  color: #DC2626 !important;
   background: rgba(239, 68, 68, 0.22) !important;
   border-color: rgba(239, 68, 68, 0.60) !important;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
@@ -3900,7 +3904,7 @@ html.dark .ts-modal-card .btn-ghost[class*="text-red"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-red"]:hover,
 html.dark .ts-modal-overlay .btn-danger:hover,
 html.dark .ts-modal-overlay .btn-ghost-red:hover {
-  color: #FECACA !important;
+  color: #F87171 !important;
   background: rgba(239, 68, 68, 0.28) !important;
   border-color: rgba(252, 165, 165, 0.65) !important;
   box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
@@ -3970,7 +3974,7 @@ html.dark .ts-modal-overlay .btn-ghost-blue:hover {
 .ts-modal-card .btn-ghost[class*="text-green"]:hover,
 .ts-modal-card .btn-ghost[class*="border-green"]:hover,
 .ts-modal-overlay .btn-ghost-emerald:hover {
-  color: #047857 !important;
+  color: #059669 !important;
   background: rgba(16, 185, 129, 0.22) !important;
   border-color: rgba(16, 185, 129, 0.60) !important;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
@@ -3994,7 +3998,7 @@ html.dark .ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="text-green"]:hover,
 html.dark .ts-modal-card .btn-ghost[class*="border-green"]:hover,
 html.dark .ts-modal-overlay .btn-ghost-emerald:hover {
-  color: #A7F3D0 !important;
+  color: #6EE7B7 !important;
   background: rgba(16, 185, 129, 0.28) !important;
   border-color: rgba(110, 231, 183, 0.65) !important;
   box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
@@ -4087,12 +4091,12 @@ html.dark .modal-divider {
   -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
   border: 1px solid rgba(239, 68, 68, 0.30) !important;
   box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease !important;
   transform: none !important;
 }
 
 .btn-danger:hover {
-  color: #B91C1C !important;
+  color: #DC2626 !important;
   background: rgba(239, 68, 68, 0.22) !important;
   border-color: rgba(239, 68, 68, 0.60) !important;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
@@ -4168,7 +4172,7 @@ html.dark .btn-danger {
 }
 
 html.dark .btn-danger:hover {
-  color: #FECACA !important;
+  color: #F87171 !important;
   background: rgba(239, 68, 68, 0.26) !important;
   border-color: rgba(252, 165, 165, 0.65) !important;
   box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
@@ -4365,7 +4369,7 @@ input[type="password"]::-ms-clear {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  transition: color 0.15s ease, opacity 0.15s ease, transform 0.1s ease !important;
+  transition: color 0.15s ease, opacity 0.15s ease !important;
   z-index: 10 !important;
   line-height: 1 !important;
   touch-action: manipulation !important;
@@ -4385,6 +4389,7 @@ input[type="password"]::-ms-clear {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  transform: translateY(-50%) !important;
 }
 
 html.dark .ts-password-toggle,
@@ -4398,10 +4403,11 @@ html.dark .ts-password-toggle:active {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  transform: translateY(-50%) !important;
 }
 
 .ts-password-toggle:active {
-  transform: translateY(-50%) scale(0.90) !important;
+  transform: translateY(-50%) !important;
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -4410,6 +4416,7 @@ html.dark .ts-password-toggle:active {
 }
 
 html.dark .ts-password-toggle:active {
+  transform: translateY(-50%) !important;
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -4422,6 +4429,7 @@ html.dark .ts-password-toggle:active {
   height: 20px !important;
   display: block !important;
   pointer-events: none !important;
+  transform: none !important;
 }
 
 .ts-password-wrapper>input:disabled~.ts-password-toggle {
@@ -4620,26 +4628,36 @@ html.dark .glass-table {
 }
 
 .ts-table thead th,
-.glass-table thead th {
-  padding: 16px;
+.glass-table thead th,
+.table-dense thead th,
+.table-compact thead th,
+table thead th {
+  padding: 8px 12px !important;
   text-align: center;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px !important;
+  line-height: 1.3 !important;
+  height: 35px !important;
+  box-sizing: border-box !important;
+  text-transform: uppercase !important;
   color: #1E293B;
-  background: rgba(255, 255, 255, 0.40);
+  background: rgba(255, 255, 255, 0.55);
   border-bottom: 1px solid rgba(226, 232, 240, 0.80);
   position: sticky;
   top: 0;
+  white-space: nowrap !important;
   transition: none !important;
 }
 
 html.dark .ts-table thead th,
-html.dark .glass-table thead th {
-  color: #F8FAFC;
-  background: rgba(15, 23, 42, 0.85);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+html.dark .glass-table thead th,
+html.dark .table-dense thead th,
+html.dark .table-compact thead th,
+html.dark table thead th {
+  color: #F8FAFC !important;
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 .ts-table thead th:first-child,
@@ -5006,6 +5024,36 @@ html.dark .ts-table tbody td {
   border-bottom-color: rgba(255, 255, 255, 0.06);
 }
 
+html.dark .ts-table tbody td.text-amber-400,
+html.dark .ts-table tbody td.dark\:text-amber-400,
+html.dark .ts-table tbody td.text-amber-500 {
+  color: #fbbf24 !important;
+}
+
+.ts-table tbody td.text-amber-600 {
+  color: #d97706 !important;
+}
+
+html.dark .ts-table tbody td.text-red-400,
+html.dark .ts-table tbody td.dark\:text-red-400,
+html.dark .ts-table tbody td.text-red-600 {
+  color: #f87171 !important;
+}
+
+.ts-table tbody td.text-red-600 {
+  color: #dc2626 !important;
+}
+
+html.dark .ts-table tbody td.text-emerald-400,
+html.dark .ts-table tbody td.dark\:text-emerald-400,
+html.dark .ts-table tbody td.text-emerald-600 {
+  color: #34d399 !important;
+}
+
+.ts-table tbody td.text-emerald-600 {
+  color: #059669 !important;
+}
+
 /* Row state: anulado */
 .ts-table tbody tr.row-anulado {
   opacity: 0.60;
@@ -5026,13 +5074,21 @@ html.dark .ts-table tbody td {
     width: 100% !important;
   }
 
+  .ts-table thead th,
+  .glass-table thead th,
   .ts-table.table-dense thead th,
   #tabla-mantenimientos thead th,
-  #tabla-electronicas thead th {
-    padding: 13px 12px !important;
-    font-size: 12px !important;
+  #tabla-electronicas thead th,
+  .ts-table.table-compact-header thead th,
+  .table-compact-header thead th {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
     font-weight: 800 !important;
-    letter-spacing: 0.8px !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1.3 !important;
+    height: 35px !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
   }
 
   .ts-table.table-dense tbody td,
@@ -5428,7 +5484,8 @@ html.dark .entity-tab.active {
   width: 100%;
   max-height: 90dvh;
   overflow-y: auto;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease;
+  transform: none !important;
+  transition: opacity 0.2s ease !important;
 }
 
 html.dark .ts-modal-card {
@@ -6039,7 +6096,8 @@ html.dark input:-webkit-autofill:active {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  transform: none !important;
+  transition: opacity 0.2s ease !important;
 }
 
 /* Modificadores de ancho para modales Liquid Glass */
@@ -9761,15 +9819,88 @@ html.dark .ts-select-card:hover .ts-radio-dot,
   padding: 0 !important;
 }
 
-/* Tablas secundarias y de abonos compactas, equilibradas y estandarizadas */
+/* Tablas secundarias y de abonos compactas, equilibradas y estandarizadas en todo el proyecto */
 #tabla-abonos-relacionados th,
 #tabla-abonos-caja-edit th,
 #tabla-abonos-facturas th,
 .table-dense th,
-.table-compact th {
+.table-compact th,
+.table-compact-header th,
+.ts-table.table-compact-header thead th {
   padding: 8px 12px !important;
-  font-size: 11.5px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
   letter-spacing: 0.5px !important;
+  line-height: 1.3 !important;
+  height: 35px !important;
+  box-sizing: border-box !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+/* ================================================================
+   Protección de moneda ($) y valores numéricos en tablas:
+   Evita que el signo $ se parta o quede encima de los números.
+   Permite que las columnas de texto (equipo, cliente, técnico, etc.)
+   se ajusten y envuelvan libremente sin forzar scroll horizontal.
+   ================================================================ */
+.ts-table th,
+.glass-table th,
+.table-dense th,
+.table-compact th,
+.table-compact-header th {
+  white-space: nowrap !important;
+}
+
+/* Solo celdas de valores monetarios o numéricos permanecen en una línea */
+.ts-table td.whitespace-nowrap,
+.glass-table td.whitespace-nowrap,
+.table-dense td.whitespace-nowrap,
+.table-compact td.whitespace-nowrap,
+.responsive-table td.whitespace-nowrap,
+.whitespace-nowrap,
+.price-value,
+.currency-value,
+td[class*="price"],
+td[class*="precio"],
+td[class*="subtotal"],
+td[class*="total"],
+td[class*="costo"],
+td[class*="monto"],
+td[class*="valor"] {
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Permitir que columnas de texto descriptivo se adapten y envuelvan */
+.ts-table td.col-equipo,
+.ts-table td.col-cliente,
+.ts-table td.col-tecnico,
+.ts-table td.col-observacion,
+.ts-table td.break-words,
+.glass-table td.break-words {
+  white-space: normal !important;
+}
+
+/* Badge de Motivo en Historial de Bajas y Mermas (idéntico en bordes y estética a 'Total descartado') */
+.badge-motivo-baja {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 8px !important; /* rounded-lg idéntico a Total descartado */
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap !important;
+  background: rgba(245, 158, 11, 0.10);
+  color: #d97706; /* text-amber-600 */
+  border: 1px solid rgba(245, 158, 11, 0.20); /* border-amber-500/20 */
+}
+
+html.dark .badge-motivo-baja {
+  background: rgba(245, 158, 11, 0.10) !important;
+  color: #fbbf24 !important; /* dark:text-amber-400 */
+  border: 1px solid rgba(245, 158, 11, 0.20) !important;
 }
 
 #tabla-abonos-relacionados td,

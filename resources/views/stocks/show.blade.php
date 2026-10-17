@@ -4,15 +4,6 @@
 @section('content')
 <div class="max-w-7xl mx-auto">
     <div class="glass-card p-6 md:p-8">
-        
-        {{-- Alerta de estado --}}
-        @if(!$stock->active)
-        <div class="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-center shadow-[0_4px_20px_rgba(239,68,68,0.15)]">
-            <span class="text-2xl drop-shadow-md">🚫</span>
-            <h3 class="font-black text-red-600 dark:text-red-400 mt-1 uppercase tracking-widest">Producto Anulado / Inactivo</h3>
-            <p class="text-sm font-medium text-red-500/80 mt-1">Este producto no está disponible para nuevas operaciones.</p>
-        </div>
-        @endif
 
         {{-- Encabezado unificado: Flecha Volver + Imagen + Título con Auto-Redimensión + Botones de Acción --}}
         <div class="detail-header flex items-center justify-between gap-3 sm:gap-4 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8">
@@ -32,7 +23,7 @@
 
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2.5 min-w-0">
-                        <h2 id="stock-header-title" class="font-black text-slate-800 dark:text-white tracking-tight truncate leading-tight transition-all text-xl sm:text-2xl" title="{{ $stock->producto }}">
+                        <h2 id="stock-header-title" class="font-black text-slate-800 dark:text-white tracking-tight truncate leading-tight transition-all text-2xl sm:text-3xl" title="{{ $stock->producto }}">
                             {{ $stock->producto }}
                         </h2>
                         <span class="pill {{ $stock->active ? 'pill-done' : 'pill-anulado' }} text-[10px] py-0.5 px-2 font-bold uppercase tracking-wider shrink-0">
@@ -82,7 +73,15 @@
                     <p class="font-medium text-base text-slate-800 dark:text-slate-200 leading-tight break-words">
                         {{ $proveedor->nombre_razon_social ?? '—' }}
                     </p>
-                    <p class="text-xs font-medium text-slate-600 dark:text-slate-300 mt-1">ID: {{ $proveedor->identificacion ?? 'N/A' }}</p>
+                    <p class="text-xs font-medium text-slate-600 dark:text-slate-300 mt-1 flex flex-wrap items-center gap-2">
+                        <span>ID: {{ $proveedor->identificacion ?? 'N/A' }}</span>
+                        @if($proveedor && $proveedor->telefono)
+                            <span class="text-gray-300 dark:text-gray-600"></span>
+                            <span class="inline-flex items-center gap-1">
+                                <x-whatsapp-link :telefono="$proveedor->telefono" class="text-xs font-medium text-slate-700 dark:text-slate-200" />
+                            </span>
+                        @endif
+                    </p>
                 </div>
             </div>
             
@@ -120,30 +119,104 @@
         </div>
 
         {{-- Historial de Operaciones --}}
-        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Historial de Operaciones (Compras y Ventas)</h3>
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+                <span class="text-lg">💳</span>
+                <h3 class="font-bold text-lg text-slate-800 dark:text-white">Historial de Operaciones (Compras y Ventas)</h3>
+            </div>
+            @if(isset($historial) && $historial->count() > 0)
+            @php
+                $totalCompradas = $historial->where('factura.tipo_movimiento', 'compra')->where('factura.estado', '!=', 'anulada')->sum('cantidad');
+                $totalVendidas = $historial->where('factura.tipo_movimiento', 'venta')->where('factura.estado', '!=', 'anulada')->sum('cantidad');
+            @endphp
+            <div class="flex items-center gap-3 text-xs font-bold">
+                <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                    Compras: {{ $totalCompradas }} unidades
+                </span>
+                <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    Ventas: {{ $totalVendidas }} unidades
+                </span>
+            </div>
+            @endif
+        </div>
+
+        <style>
+        .table-compact-header thead th,
+        .ts-table.table-compact-header thead th {
+            padding: 8px 12px !important;
+            font-size: 11px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.5px !important;
+            line-height: 1.3 !important;
+            height: 35px !important;
+            box-sizing: border-box !important;
+            white-space: nowrap !important;
+        }
+        .table-compact-header tbody td,
+        .ts-table.table-compact-header tbody td {
+            padding: 10px 12px !important;
+        }
+
+        /* En modo oscuro, aplicar gradiente profundo con transparencia de cristal */
+        html.dark .ts-table.table-compact-header {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.70) 0%, rgba(10, 18, 36, 0.78) 100%) !important;
+            backdrop-filter: blur(24px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 12px 35px -8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+        }
+
+        html.dark .ts-table.table-compact-header thead th {
+            background: rgba(15, 23, 42, 0.82) !important;
+            color: #F8FAFC !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.09) !important;
+        }
+
+        /* Badge de Motivo en Historial de Bajas y Mermas (idéntico en bordes y estética a 'Total descartado') */
+        .badge-motivo-baja {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 8px !important; /* rounded-lg idéntico a Total descartado */
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.25;
+            white-space: nowrap;
+            background: rgba(245, 158, 11, 0.10);
+            color: #d97706; /* amber-600 */
+            border: 1px solid rgba(245, 158, 11, 0.20); /* border-amber-500/20 */
+        }
+
+        html.dark .badge-motivo-baja {
+            background: rgba(245, 158, 11, 0.10) !important;
+            color: #fbbf24 !important; /* amber-400 */
+            border: 1px solid rgba(245, 158, 11, 0.20) !important;
+        }
+        </style>
+
         <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-8" style="overflow-y: auto !important;">
-            <table class="ts-table table-dense mb-0">
+            <table class="ts-table table-dense table-compact-header mb-0">
                 <thead class="sticky top-0 z-20 shadow-sm">
                     <tr>
-                        <th>Fecha</th>
-                        <th>Tipo</th>
-                        <th>Factura</th>
-                        <th>Entidad</th>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Tipo</th>
+                        <th class="text-center">Factura</th>
+                        <th class="text-center">Entidad</th>
                         <th class="text-center w-20">Cant.</th>
-                        <th class="text-right">Precio U.</th>
-                        <th class="text-right">Subtotal</th>
+                        <th class="text-center">Precio U.</th>
+                        <th class="text-center">Subtotal</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($historial as $item)
                     <tr class="{{ $item->factura->estado === 'anulada' ? 'opacity-50 grayscale' : '' }}">
-                        <td class="text-sm font-medium">{{ \Carbon\Carbon::parse($item->factura->fecha ?? $item->created_at)->format('d/m/Y') }}</td>
-                        <td>
-                            <span class="pill {{ $item->factura->tipo_movimiento === 'compra' ? 'pill-pending' : 'pill-done' }} text-xs">
+                        <td class="text-sm font-medium text-center whitespace-nowrap">{{ \Carbon\Carbon::parse($item->factura->fecha ?? $item->created_at)->format('d/m/Y') }}</td>
+                        <td class="text-center whitespace-nowrap">
+                            <span class="pill {{ $item->factura->tipo_movimiento === 'compra' ? 'pill-pending' : 'pill-done' }} text-xs whitespace-nowrap">
                                 {{ $item->factura->tipo_movimiento === 'compra' ? '📦 Compra' : '🛒 Venta' }}
                             </span>
                         </td>
-                        <td class="font-bold">
+                        <td class="font-bold text-center whitespace-nowrap">
                             <a href="{{ route('inventario.facturas.show', $item->factura_id) }}" class="text-blue-600 hover:underline">
                                 {{ $item->factura->numero_factura }}
                             </a>
@@ -151,10 +224,10 @@
                         <td class="text-sm font-bold text-slate-700 dark:text-slate-300">
                             {{ $item->factura->facturable->nombre_razon_social ?? $item->factura->facturable->nombre ?? '—' }}
                         </td>
-                        <td class="text-center font-bold">{{ $item->cantidad }}</td>
-                        <td class="text-right font-bold text-slate-800 dark:text-white">$ {{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
-                        <td class="text-right font-black {{ $item->factura->tipo_movimiento === 'compra' ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
-                            {{ $item->factura->tipo_movimiento === 'compra' ? '-' : '+' }}$ {{ number_format($item->subtotal, 0, ',', '.') }}
+                        <td class="text-center font-bold whitespace-nowrap">{{ $item->cantidad }}</td>
+                        <td class="text-right font-bold text-slate-800 dark:text-white whitespace-nowrap">$&nbsp;{{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+                        <td class="text-right font-black whitespace-nowrap {{ $item->factura->tipo_movimiento === 'compra' ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
+                            {{ $item->factura->tipo_movimiento === 'compra' ? '-' : '+' }}$&nbsp;{{ number_format($item->subtotal, 0, ',', '.') }}
                         </td>
                     </tr>
                     @empty
@@ -177,60 +250,60 @@
                 </div>
                 @if(isset($bajas) && $bajas->count() > 0)
                 <div class="flex items-center gap-3 text-xs font-bold">
-                    <span class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                    <span class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap">
                         Total descartado: {{ $stock->total_unidades_baja }} unidades
                     </span>
-                    <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
-                        Pérdida: $ {{ number_format($stock->total_perdida_bajas, 0, ',', '.') }}
+                    <span class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 whitespace-nowrap">
+                        Pérdida: $&nbsp;{{ number_format($stock->total_perdida_bajas, 0, ',', '.') }}
                     </span>
                 </div>
                 @endif
             </div>
 
-            <div class="overflow-x-auto mb-6">
-                <table class="glass-table table-dense w-full text-center">
-                    <thead>
+            <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-6" style="overflow-y: auto !important;">
+                <table class="ts-table table-dense table-compact-header mb-0">
+                    <thead class="sticky top-0 z-20 shadow-sm">
                         <tr>
-                            <th class="p-3 text-center">Fecha</th>
-                            <th class="p-3 text-center">Cant.</th>
-                            <th class="p-3 text-center">P. Compra</th>
-                            <th class="p-3 text-center">Pérdida Total</th>
-                            <th class="p-3 text-center">Motivo</th>
-                            <th class="p-3 text-center">Observación</th>
-                            <th class="p-3 text-center">Autorizado Por</th>
+                            <th class="text-center">Fecha</th>
+                            <th class="text-center">Cant.</th>
+                            <th class="text-center">P. Compra</th>
+                            <th class="text-center">Pérdida Total</th>
+                            <th class="text-center">Motivo</th>
+                            <th class="text-center">Observación</th>
+                            <th class="text-center">Autorizado Por</th>
                             @if(!auth()->user()->isInvitado())
-                            <th class="p-3 text-center w-24">Acciones</th>
+                            <th class="text-center w-24">Acciones</th>
                             @endif
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200/50 dark:divide-white/5">
+                    <tbody>
                         @forelse($bajas ?? [] as $baja)
-                        <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition text-sm">
-                            <td class="p-3 text-center font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap text-xs">
-                                {{ $baja->created_at->format('d/m/Y H:i') }}
+                        <tr>
+                            <td class="text-center text-xs font-semibold text-slate-700 dark:text-slate-100 whitespace-nowrap">
+                                {{ $baja->created_at->format('d/m/Y') }}
                             </td>
-                            <td class="p-3 text-center font-black text-amber-600 dark:text-amber-400 text-xs">
+                            <td class="text-center font-black text-xs whitespace-nowrap text-amber-600 dark:text-amber-400">
                                 -{{ $baja->cantidad }}
                             </td>
-                            <td class="p-3 text-center text-slate-600 dark:text-slate-400 font-mono text-xs">
-                                $ {{ number_format($baja->precio_compra_unitario, 0, ',', '.') }}
+                            <td class="text-center font-bold text-slate-800 dark:text-white text-xs whitespace-nowrap">
+                                $&nbsp;{{ number_format($baja->precio_compra_unitario, 0, ',', '.') }}
                             </td>
-                            <td class="p-3 text-center font-black text-red-600 dark:text-red-400 font-mono text-xs">
-                                $ {{ number_format($baja->costo_total_perdida, 0, ',', '.') }}
+                            <td class="text-center font-black text-xs whitespace-nowrap text-red-600 dark:text-red-400">
+                                $&nbsp;{{ number_format($baja->costo_total_perdida, 0, ',', '.') }}
                             </td>
-                            <td class="p-3 text-center">
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                            <td class="text-center whitespace-nowrap">
+                                <span class="badge-motivo-baja px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap">
                                     {{ $baja->motivo_label }}
                                 </span>
                             </td>
-                            <td class="p-3 text-center text-xs text-slate-600 dark:text-slate-400 max-w-xs truncate" title="{{ $baja->observacion }}">
+                            <td class="text-center text-xs text-slate-600 dark:text-slate-200 max-w-xs break-words [overflow-wrap:anywhere]" title="{{ $baja->observacion }}">
                                 {{ $baja->observacion ?: '—' }}
                             </td>
-                            <td class="p-3 text-center text-xs font-medium text-slate-700 dark:text-slate-300">
+                            <td class="text-center text-xs font-bold text-slate-700 dark:text-white whitespace-nowrap">
                                 {{ $baja->user->name ?? 'Sistema' }}
                             </td>
                             @if(!auth()->user()->isInvitado())
-                            <td class="p-3 text-center">
+                            <td class="text-center whitespace-nowrap">
                                 <div class="flex items-center justify-center">
                                     <button type="button" 
                                         onclick="openRevertirBajaModal('{{ route('stocks.bajas.revertir', $baja->id) }}', {{ $baja->cantidad }}, '{{ addslashes($stock->producto) }}')"
@@ -244,7 +317,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="{{ !auth()->user()->isInvitado() ? '8' : '7' }}" class="text-center p-6 text-gray-500 font-medium text-xs">
+                            <td colspan="{{ !auth()->user()->isInvitado() ? '8' : '7' }}" class="text-center p-8 text-gray-500 font-medium">
                                 No se registran bajas ni mermas para este artículo. Todas las unidades ingresadas están en existencias o fueron vendidas/consumidas.
                             </td>
                         </tr>
@@ -400,11 +473,11 @@
         var title = document.getElementById('stock-header-title');
         if (!title) return;
         
-        var baseSize = window.innerWidth < 640 ? 1.2 : 1.5;
+        var baseSize = window.innerWidth < 640 ? 1.5 : 1.95;
         title.style.fontSize = baseSize + 'rem';
         
         var current = baseSize;
-        while (title.scrollWidth > title.clientWidth && current > 0.85) {
+        while (title.scrollWidth > title.clientWidth && current > 0.95) {
             current -= 0.05;
             title.style.fontSize = current.toFixed(2) + 'rem';
         }

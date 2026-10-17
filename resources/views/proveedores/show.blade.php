@@ -7,20 +7,28 @@
             <div class="flex items-center gap-3">
                 <a href="{{ route('proveedores.index') }}" class="btn-ghost text-xl shrink-0" title="Volver">⬅️</a>
                 <div>
-                    <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight">
+                    <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight flex items-center flex-wrap gap-2">
                         <span class="text-indigo-500 mr-1 align-middle inline-block">{{ $proveedor->tipo_entidad === 'empresa' ? '🏢' : '👤' }}</span>
                         <span class="align-middle">{{ $proveedor->nombre_razon_social }}</span>
-                        <span class="pill {{ $proveedor->tipo_entidad === 'empresa' ? 'pill-done' : 'pill-pending' }} text-xs py-1 px-2 ml-2 align-middle inline-flex whitespace-nowrap">
+                        <span class="pill {{ $proveedor->tipo_entidad === 'empresa' ? 'pill-done' : 'pill-pending' }} text-xs py-1 px-2 align-middle inline-flex whitespace-nowrap">
                             {{ $proveedor->tipo_label }}
+                        </span>
+                        <span class="pill {{ $proveedor->active ? 'pill-done' : 'pill-anulado' }} text-[10px] py-0.5 px-2 font-bold uppercase tracking-wider shrink-0 align-middle inline-flex whitespace-nowrap">
+                            {{ $proveedor->active ? 'ACTIVO' : 'INACTIVO' }}
                         </span>
                     </h2>
                 </div>
             </div>
             
-            @if(!auth()->user()->isInvitado() && $proveedor->active)
+            @if(!auth()->user()->isInvitado())
             <div class="flex items-center gap-3 shrink-0">
-                <a href="{{ route('proveedores.edit', $proveedor) }}" class="btn-ghost border-yellow-500/20 text-yellow-600">✏️ Editar</a>
-                <a href="{{ route('inventario.compra.create') }}?proveedor_id={{ $proveedor->id }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400">📦 Nueva Compra</a>
+                @if($proveedor->active)
+                <a href="{{ route('proveedores.edit', $proveedor) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 hover:bg-yellow-500/10">✏️ Editar</a>
+                <a href="{{ route('inventario.compra.create') }}?proveedor_id={{ $proveedor->id }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10">📦 Nueva Compra</a>
+                @endif
+                <button type="button" onclick="openAnularModal('{{ route('proveedores.anular', $proveedor->id) }}', {{ !$proveedor->active ? 'true' : 'false' }})" class="btn-danger">
+                    {{ $proveedor->active ? '🚫 Anular' : '✅ Reactivar' }}
+                </button>
             </div>
             @endif
         </div>
@@ -102,39 +110,41 @@
             <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">📦</span>
             <p class="text-gray-500 font-medium">No hay artículos de inventario asociados a este proveedor.</p>
         </div>
- @else
- <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-2">
- <table class="ts-table table-dense mb-0">
- <thead class="sticky top-0 z-20 shadow-sm">
- <tr>
- <th class="w-24">Código</th>
- <th>Producto</th>
- <th class="text-center w-24">Stock</th>
- <th class="text-right w-32">P. Compra</th>
- <th class="text-right w-32">P. Venta</th>
- </tr>
- </thead>
- <tbody>
- @foreach($proveedor->stocks as $s)
- <tr>
- <td class="font-mono text-xs font-bold text-slate-500 dark:text-slate-400">{{ $s->codigo ?? '—' }}</td>
- <td class="font-bold text-slate-800 dark:text-white">{{ $s->producto }}</td>
- <td class="text-center">
- <span class="pill {{ $s->cantidad <= 0 ? 'pill-anulado' : ($s->cantidad < 5 ? 'pill-pending' : 'pill-done') }} py-0.5 px-2 text-[10px]">
- {{ $s->cantidad }}
- </span>
- </td>
- <td class="text-right font-medium">$ {{ number_format($s->precio_compra, 0, ',', '.') }}</td>
- <td class="text-right font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($s->precio_venta, 0, ',', '.') }}</td>
- </tr>
- @endforeach
- </tbody>
- </table>
- </div>
+        @else
+        <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-2">
+            <table class="ts-table table-dense mb-0">
+                <thead class="sticky top-0 z-20 shadow-sm">
+                    <tr>
+                        <th class="w-24">Código</th>
+                        <th>Producto</th>
+                        <th class="text-center w-28">Fecha</th>
+                        <th class="text-center w-24">Stock</th>
+                        <th class="text-right w-32">P. Compra</th>
+                        <th class="text-right w-32">P. Venta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach($proveedor->stocks as $s)
+                    <tr>
+                        <td class="font-mono text-xs font-bold text-slate-500 dark:text-slate-400">{{ $s->codigo ?? '—' }}</td>
+                        <td class="font-bold text-slate-800 dark:text-white">{{ $s->producto }}</td>
+                        <td class="text-center text-xs font-medium text-gray-500 dark:text-gray-400">{{ $s->created_at ? $s->created_at->format('d/m/Y') : '—' }}</td>
+                        <td class="text-center">
+                            <span class="pill {{ $s->cantidad <= 0 ? 'pill-anulado' : ($s->cantidad < 5 ? 'pill-pending' : 'pill-done') }} py-0.5 px-2 text-[10px]">
+                                {{ $s->cantidad }}
+                            </span>
+                        </td>
+                        <td class="text-right font-medium">$ {{ number_format($s->precio_compra, 0, ',', '.') }}</td>
+                        <td class="text-right font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($s->precio_venta, 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
         @endif
 
         {{-- Historial de facturas/compras --}}
-        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 mt-8 border-t border-gray-200/50 dark:border-white/10 pt-6 flex items-center gap-2">🧾 Historial de Compras
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 mt-8 flex items-center gap-2">🧾 Historial de Compras
             <span class="px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700 text-xs font-bold text-gray-600 dark:text-gray-300">{{ $proveedor->facturas->count() }}</span>
         </h3>
         
@@ -143,43 +153,64 @@
             <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">🧾</span>
             <p class="text-gray-500 font-medium">No hay compras registradas con este proveedor.</p>
         </div>
- @else
- <div class="space-y-3 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
- @foreach($proveedor->facturas->sortByDesc('fecha') as $f)
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 p-4 bg-white/20 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 rounded-xl backdrop-blur-md hover:bg-white/35 dark:hover:bg-slate-900/50 transition-all shadow-sm">
- <div class="flex items-start gap-4">
- <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xl shrink-0">
- 📦
- </div>
- <div>
- <div class="flex items-center gap-2">
- <p class="font-bold text-slate-800 dark:text-white">{{ $f->numero_factura }}</p>
- <span class="text-xs font-medium text-gray-400">{{ $f->fecha->format('d/m/Y') }}</span>
- </div>
- <p class="text-xs font-semibold text-gray-500 mt-1">{{ $f->items->count() }} ítems • Registrado por: {{ $f->user->name ?? '—' }}</p>
- </div>
- </div>
- 
- <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto mt-2 sm:mt-0">
- <div class="text-left sm:text-right">
- <p class="font-black text-lg text-slate-800 dark:text-white">$ {{ number_format($f->total_documento, 0, ',', '.') }}</p>
- @if($f->saldo_pendiente > 0)
- <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider mt-0.5">Saldo: $ {{ number_format($f->saldo_pendiente, 0, ',', '.') }}</p>
- @endif
- </div>
- 
- <div class="flex items-center gap-3">
- <span class="pill {{ $f->estado === 'anulada' ? 'pill-anulado' : ($f->estado === 'pendiente_pago' ? 'pill-pending' : 'pill-done') }} py-1 text-xs">
- {{ ucfirst(str_replace('_', ' ', $f->estado === 'pendiente_pago' ? 'Pendiente' : $f->estado)) }}
- </span>
- <div class="actions-grid">
-     <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost btn-action-view" title="Ver Detalles">👁️</a>
- </div>
- </div>
- </div>
- </div>
- @endforeach
- </div>
+        @else
+        <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-2">
+            <table class="ts-table table-dense mb-0">
+                <thead class="sticky top-0 z-20 shadow-sm">
+                    <tr>
+                        <th class="w-28">Factura</th>
+                        <th class="text-center w-28">Fecha</th>
+                        <th class="text-center w-20">Ítems</th>
+                        <th>Registrado Por</th>
+                        <th class="text-right w-32">Total</th>
+                        <th class="text-right w-32">Saldo</th>
+                        <th class="text-center w-28">Estado</th>
+                        <th class="text-center w-16">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach($proveedor->facturas->sortByDesc('fecha') as $f)
+                    @php
+                        $dim = $f->estado === 'anulada' ? 'opacity-60 grayscale text-gray-400 dark:text-gray-500' : '';
+                    @endphp
+                    <tr>
+                        <td class="font-mono text-xs font-bold text-slate-800 dark:text-white {{ $dim }}">
+                            <span class="text-indigo-500 mr-1">📦</span>{{ $f->numero_factura }}
+                        </td>
+                        <td class="text-center text-xs font-medium text-gray-500 dark:text-gray-400 {{ $dim }}">
+                            {{ $f->fecha ? $f->fecha->format('d/m/Y') : '—' }}
+                        </td>
+                        <td class="text-center text-xs font-semibold text-slate-600 dark:text-slate-300 {{ $dim }}">
+                            {{ $f->items->count() }}
+                        </td>
+                        <td class="text-xs font-medium text-slate-600 dark:text-slate-300 {{ $dim }}">
+                            {{ $f->user->name ?? '—' }}
+                        </td>
+                        <td class="text-right font-black text-slate-800 dark:text-white {{ $dim }}">
+                            $ {{ number_format($f->total_documento, 0, ',', '.') }}
+                        </td>
+                        <td class="text-right font-bold text-xs {{ $dim }}">
+                            @if($f->saldo_pendiente > 0)
+                                <span class="text-red-500 dark:text-red-400">$ {{ number_format($f->saldo_pendiente, 0, ',', '.') }}</span>
+                            @else
+                                <span class="text-emerald-600 dark:text-emerald-400 font-semibold">$ 0</span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            <span class="pill {{ $f->estado === 'anulada' ? 'pill-anulado' : ($f->estado === 'pendiente_pago' ? 'pill-pending' : 'pill-done') }} py-0.5 px-2 text-[10px]">
+                                {{ ucfirst(str_replace('_', ' ', $f->estado === 'pendiente_pago' ? 'Pendiente' : $f->estado)) }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="actions-grid justify-center">
+                                <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost btn-action-view" title="Ver Detalles">👁️</a>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
         @endif
     </div>
 </div>

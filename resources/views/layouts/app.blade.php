@@ -125,7 +125,7 @@
 
     <!-- MODAL DE CONFIRMACIÓN DE ALERTA/ELIMINACIÓN (Liquid Glass) -->
     <div id="ts-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" style="z-index: 50000 !important;" onclick="if(event.target === this) closeTsModal()">
-        <div class="ts-modal-card scale-95 opacity-0" id="ts-modal-card">
+        <div class="ts-modal-card opacity-0" id="ts-modal-card">
             <div class="p-6">
                 <div id="ts-modal-icon-box" class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
                     <span id="ts-modal-icon">⚠️</span>
@@ -149,7 +149,7 @@
 
     <!-- MODAL GLOBAL DE ANULACIÓN (fuera del main-wrapper para centrado correcto) -->
     <div id="global-anular-modal" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
-        <div class="ts-modal-card scale-95 opacity-0 transition-all duration-300" id="global-anular-card">
+        <div class="ts-modal-card opacity-0" id="global-anular-card">
             <div class="p-6">
                 <div id="global-anular-icon-container" class="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4">
                     <span id="global-anular-icon">🚫</span>
@@ -182,7 +182,7 @@
 
     <!-- MODAL GLOBAL DE RECHAZAR COTIZACIÓN (Sí/No sin contraseña) -->
     <div id="global-rechazar-modal" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
-        <div class="ts-modal-card scale-95 opacity-0 transition-all duration-300" id="global-rechazar-card">
+        <div class="ts-modal-card opacity-0" id="global-rechazar-card">
             <div class="p-6">
                 <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 flex items-center justify-center text-3xl mx-auto mb-4">
                     <span>⚠️</span>
@@ -313,7 +313,7 @@
             // Timeout pequeño para permitir display:flex antes de animar
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
-                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.remove('opacity-0');
             }, 10);
         }
 
@@ -322,7 +322,7 @@
             const card = document.getElementById('ts-modal-card');
             
             modal.classList.add('opacity-0');
-            card.classList.add('scale-95', 'opacity-0');
+            card.classList.add('opacity-0');
             
             setTimeout(() => {
                 modal.classList.add('hidden');
@@ -397,7 +397,7 @@
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
-                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.remove('opacity-0');
                 if (input) input.focus();
             }, 10);
         }
@@ -406,8 +406,8 @@
             const modal = document.getElementById('global-anular-modal');
             const card  = document.getElementById('global-anular-card');
             modal.classList.add('opacity-0');
-            card.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+            card.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 200);
         }
 
         // ─── MODAL GLOBAL DE RECHAZAR COTIZACIÓN ─────────────────────────────
@@ -421,7 +421,7 @@
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
-                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.remove('opacity-0');
             }, 10);
         }
 
@@ -429,8 +429,8 @@
             const modal = document.getElementById('global-rechazar-modal');
             const card  = document.getElementById('global-rechazar-card');
             modal.classList.add('opacity-0');
-            card.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+            card.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 200);
         }
 
         document.addEventListener('keydown', e => {
@@ -877,7 +877,7 @@
     <!-- Modal de Notificaciones Pendientes (siempre disponible, abierto desde campana o al iniciar sesión) -->
     @if(isset($totalPendientes) && $totalPendientes > 0)
     <div id="ts-notif-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
-        <div id="ts-notif-card" class="ts-modal-card scale-95 opacity-0 p-4 sm:p-6 flex flex-col transition-all duration-300 w-full mx-3 sm:mx-4" style="max-width: 550px;">
+        <div id="ts-notif-card" class="ts-modal-card opacity-0 p-4 sm:p-6 flex flex-col w-full mx-3 sm:mx-4" style="max-width: 550px;">
 
             {{-- Header --}}
             <div class="flex items-center gap-3 mb-4">
@@ -1138,7 +1138,7 @@
             document.body.style.overflow = 'hidden';
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
-                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.remove('opacity-0');
             }, 10);
             // Apply tab filter if provided, otherwise default to all
             const targetTab = tab || 'all';
@@ -1150,9 +1150,9 @@
             const card  = document.getElementById('ts-notif-card');
             if (!modal) return;
             modal.classList.add('opacity-0');
-            card.classList.add('scale-95', 'opacity-0');
+            card.classList.add('opacity-0');
             document.body.style.overflow = 'auto';
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            setTimeout(() => { modal.classList.add('hidden'); }, 200);
         }
 
         // Abrir automáticamente al iniciar sesión si hay alertas de sesión pendientes
