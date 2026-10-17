@@ -136,5 +136,40 @@ class StockProveedorInactivoVerificationTest extends DuskTestCase
             $this->assertEquals('Selecciona un elemento de la lista', $submitCheck[0]['control_input_val']);
         });
     }
+
+    public function test_utilidad_focus_has_no_blue_border(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+        $this->browse(function (Browser $browser) use ($admin) {
+            $browser->loginAs($admin)
+                ->visit('/stocks/create')
+                ->click('#utilidad')
+                ->pause(200);
+
+            $browser->script("document.getElementById('utilidad').focus();");
+            $browser->pause(200);
+
+            $styles = $browser->script("
+                const input = document.getElementById('utilidad');
+                const computed = window.getComputedStyle(input);
+                return {
+                    outline: computed.outline,
+                    outlineWidth: computed.outlineWidth,
+                    outlineStyle: computed.outlineStyle,
+                    boxShadow: computed.boxShadow,
+                    border: computed.border
+                };
+            ");
+            dump('UTILIDAD FOCUS STYLES:', $styles[0]);
+            $browser->screenshot('utilidad_focused_no_blue_border_dark');
+
+            // Light mode
+            $browser->script("document.documentElement.classList.remove('dark'); localStorage.setItem('theme', 'light');");
+            $browser->pause(200);
+            $browser->screenshot('utilidad_focused_no_blue_border_light');
+            $this->assertEquals('none', $styles[0]['outlineStyle']);
+            $this->assertEquals('none', $styles[0]['boxShadow']);
+        });
+    }
 }
 
