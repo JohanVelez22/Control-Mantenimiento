@@ -4240,6 +4240,26 @@ html.dark .ts-wrapper.glass-input.focus {
   --tw-ring-offset-shadow: 0 0 #0000 !important;
 }
 
+/* Quitar borde/anillo azul nativo en input interno de utilidad */
+#utilidad,
+#utilidad:focus,
+#utilidad:focus-visible,
+#utilidad:active {
+  outline: none !important;
+  outline-style: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  border: none !important;
+}
+
+.glass-input:has(#utilidad:focus) {
+  border-color: rgba(37, 99, 235, 0.60) !important;
+}
+
+html.dark .glass-input:has(#utilidad:focus) {
+  border-color: rgba(96, 165, 250, 0.50) !important;
+}
+
 .glass-input::placeholder {
   color: #94A3B8;
 }

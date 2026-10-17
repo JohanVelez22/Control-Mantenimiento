@@ -153,11 +153,12 @@
 
             <div>
                 <label for="utilidad" class="field-label">Utilidad (%) <span class="text-red-500 font-bold">*</span></label>
-                <div class="glass-input flex items-center justify-end pr-3">
+                <div class="glass-input flex items-center justify-end pr-3 focus-within:border-blue-500/60 dark:focus-within:border-blue-400/50">
                     <input type="number" step="1" name="utilidad" id="utilidad"
                            value="{{ old('utilidad', isset($st) && $st->utilidad !== null ? (int)$st->utilidad : 30) }}" required min="0"
-                           class="w-12 bg-transparent border-none outline-none focus:ring-0 text-left pl-1 font-bold text-slate-800 dark:text-white dark:[color-scheme:dark] p-0">
-                    <span class="text-emerald-600 dark:text-emerald-400 font-bold text-sm ml-1">%</span>
+                           class="w-12 bg-transparent border-0 border-none outline-none focus:outline-none focus:ring-0 focus:border-0 text-left pl-1 font-bold text-slate-800 dark:text-white dark:[color-scheme:dark] p-0"
+                           style="outline: none !important; box-shadow: none !important; border: none !important;">
+                    <span class="text-emerald-600 dark:text-emerald-400 font-bold text-sm ml-1 select-none">%</span>
                 </div>
                 @error('utilidad') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
