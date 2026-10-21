@@ -2,11 +2,11 @@
 
 ![TECNI SYSTEMAS Banner](public/favicon.svg)
 
-[![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.3%20%7C%208.4-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
+[![MySQL](https://img.shields.io/badge/MySQL-8.4-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Liquid_Glass-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
-[![Tests](https://img.shields.io/badge/Tests-51_Passed_(166_Assertions)-brightgreen?style=for-the-badge&logo=checkmarx)](tests)
+[![Tests](https://img.shields.io/badge/Tests-554_Passed_(1784_Assertions)-brightgreen?style=for-the-badge&logo=checkmarx)](tests)
 [![Audit](https://img.shields.io/badge/System_Audit-100%25_Passing-success?style=for-the-badge&logo=shield)](app/Console/Commands/SystemAuditCommand.php)
 
 Aplicación web empresarial de alto rendimiento diseñada para la gestión integral de talleres de servicio técnico, mantenimiento de equipos de cómputo, laboratorio de microelectrónica, inventario de repuestos con cálculo de utilidad, facturación POS, cotizaciones, control de caja chica y portal público de seguimiento para clientes.
@@ -124,30 +124,31 @@ El sistema implementa reglas de precisión decimal y consistencia contable:
 El proyecto cuenta con una cobertura integral de pruebas automatizadas:
 
 ```bash
-# Ejecutar todas las pruebas Unit y Feature (51 tests / 166 aserciones)
+# Ejecutar la suite completa de pruebas automatizadas (554 tests / 1784 aserciones)
 php artisan test
 
-# Ejecutar pruebas de integración con base de datos real
-./vendor/bin/phpunit -c phpunit-integration.xml
+# Ejecutar análisis de estilo de código PSR-12
+vendor/bin/pint --test
 
-# Ejecutar la auditoría profunda del sistema (28 reglas de negocio críticas)
-php artisan system:audit --deep
-
-# Sembrar 5 registros realistas por cada módulo (Pruebas manuales)
-php artisan app:seed-demo-data --force
+# Compilar activos de producción
+npm run build
 ```
 
 ---
 
-## 📚 Documentación Adicional
+## 📚 Documentación Técnica y Manuales
 
-En la raíz del proyecto se incluyen los siguientes manuales y cuadernos técnicos:
+- 🚀 [DEPLOY_CHECKLIST.md](DEPLOY_CHECKLIST.md) — Protocolo de despliegue a producción y optimización de caché.
+- 📋 [SECURITY_DEBT.md](SECURITY_DEBT.md) — Matriz de certificación de seguridad y resolución de vulnerabilidades.
+- 📜 [CHANGELOG.md](CHANGELOG.md) — Historial detallado de versiones y fases de evolución.
+- 📖 [docs/MANUAL_OPERACIONES_Y_MANTENIMIENTO.md](docs/MANUAL_OPERACIONES_Y_MANTENIMIENTO.md) — Manual operativo de respaldos, caja e inventario.
+- 🏛️ [docs/ARQUITECTURA_Y_MODELO_DATOS.md](docs/ARQUITECTURA_Y_MODELO_DATOS.md) — Arquitectura de software, modelo relacional y secuencias atómicas.
 - 📖 [DOCUMENTACION_1_GUIA_INSTALACION_SERVBAY.md](DOCUMENTACION_1_GUIA_INSTALACION_SERVBAY.md) — Guía paso a paso desde cero para principiantes.
-- 📘 [DOCUMENTACION_2_MANUAL_ARQUITECTURA_Y_NEGOCIO.md](DOCUMENTACION_2_MANUAL_ARQUITECTURA_Y_NEGOCIO.md) — Manual de arquitectura, diagramas relacionales y reglas financieras.
+- 📘 [DOCUMENTACION_2_MANUAL_ARQUITECTURA_Y_NEGOCIO.md](DOCUMENTACION_2_MANUAL_ARQUITECTURA_Y_NEGOCIO.md) — Manual de arquitectura original y reglas de negocio.
 - 📊 [DOCUMENTACION_3_PRESENTACION_GRADO_Y_EMPRESA.md](DOCUMENTACION_3_PRESENTACION_GRADO_Y_EMPRESA.md) — Estructura de presentación y sustentación ejecutiva.
 - 📜 [DOCUMENTACION_4_ACTA_ENTREGA_TERMINOS_LEGALES.md](DOCUMENTACION_4_ACTA_ENTREGA_TERMINOS_LEGALES.md) — Acta formal de entrega de software y garantía.
 - 🤖 [DOCUMENTACION_PROYECTO_NOTEBOOKLM.md](DOCUMENTACION_PROYECTO_NOTEBOOKLM.md) — Base de conocimiento optimizada para Google NotebookLM.
 
 ---
 
-*Desarrollado con arquitectura moderna, seguridad y rendimiento.*
+*Desarrollado con arquitectura moderna, seguridad, trazabilidad e integridad financiera.*
