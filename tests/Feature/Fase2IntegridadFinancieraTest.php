@@ -142,6 +142,9 @@ class Fase2IntegridadFinancieraTest extends TestCase
             'estado' => 'pendiente',
             'anulado' => false,
         ]);
+        if ($mantenimiento->equipo?->cliente) {
+            $mantenimiento->equipo->cliente->update(['tipo_cliente' => 'cliente']);
+        }
 
         $stock = Stock::create([
             'codigo' => 'MEM-8GB',

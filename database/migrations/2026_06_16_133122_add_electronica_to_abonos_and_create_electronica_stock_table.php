@@ -32,9 +32,8 @@ return new class extends Migration
         Schema::table('abonos', function (Blueprint $table) {
             $table->dropForeign(['electronica_id']);
             $table->dropColumn('electronica_id');
-            // Hacer mantenimiento_id requerido nuevamente no es seguro si hay nulos,
-            // pero lo intentamos
-            $table->foreignId('mantenimiento_id')->nullable(false)->change();
+            // Dejar mantenimiento_id nullable para evitar violaciones de integridad si existen abonos sin mantenimiento
+            $table->foreignId('mantenimiento_id')->nullable()->change();
         });
     }
 };

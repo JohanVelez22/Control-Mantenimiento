@@ -1,5 +1,5 @@
 @php
-    $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
+    $empresa = \App\Models\Configuracion::getGlobal();
     $logoBase64 = \Illuminate\Support\Facades\Cache::remember('empresa_logo_base64', 3600, function () use ($empresa) {
         if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
             $type = strtolower(pathinfo($empresa->logo_path, PATHINFO_EXTENSION));

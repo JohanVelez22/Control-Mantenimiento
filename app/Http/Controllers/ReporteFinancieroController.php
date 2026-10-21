@@ -6,6 +6,7 @@ use App\Exports\AcumuladoExport;
 use App\Exports\ElectronicasExport;
 use App\Exports\MantenimientosExport;
 use App\Exports\ReportesFinancierosExport;
+use App\Models\Abono;
 use App\Models\Electronica;
 use App\Models\Factura;
 use App\Models\Mantenimiento;
@@ -126,17 +127,44 @@ class ReporteFinancieroController extends Controller
         // ════════════════════════════════════════════════════════════════════
         // CONSULTAS DIRECTAS A BASE DE DATOS PARA RIGOR CONTABLE (DINERO REAL)
         // ════════════════════════════════════════════════════════════════════
-        $efectivoIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto');
-        $efectivoEgresos = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto');
-        $consignacionIngresos = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto');
-        $consignacionEgresos = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto');
+        $movCajaTotales = MovimientoCaja::whereDate('fecha', $fecha)
+            ->where('estado', 'activo')
+            ->where('anulado', false)
+            ->selectRaw("
+                SUM(CASE WHEN tipo_movimiento = 'ingreso' AND tipo_pago = 'efectivo' THEN monto ELSE 0 END) as ef_ing,
+                SUM(CASE WHEN tipo_movimiento = 'egreso' AND tipo_pago = 'efectivo' THEN monto ELSE 0 END) as ef_eg,
+                SUM(CASE WHEN tipo_movimiento = 'ingreso' AND tipo_pago = 'consignacion' THEN monto ELSE 0 END) as con_ing,
+                SUM(CASE WHEN tipo_movimiento = 'egreso' AND tipo_pago = 'consignacion' THEN monto ELSE 0 END) as con_eg,
+                SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE 0 END) as tot_ing,
+                SUM(CASE WHEN tipo_movimiento = 'egreso' THEN monto ELSE 0 END) as tot_eg
+            ")
+            ->first();
 
-        $ingresosCaja = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'ingreso')->sum('monto');
-        $egresosCaja = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->where('tipo_movimiento', 'egreso')->sum('monto');
+        $efectivoIngresos = (float) ($movCajaTotales->ef_ing ?? 0);
+        $efectivoEgresos = (float) ($movCajaTotales->ef_eg ?? 0);
+        $consignacionIngresos = (float) ($movCajaTotales->con_ing ?? 0);
+        $consignacionEgresos = (float) ($movCajaTotales->con_eg ?? 0);
+        $ingresosCaja = (float) ($movCajaTotales->tot_ing ?? 0);
+        $egresosCaja = (float) ($movCajaTotales->tot_eg ?? 0);
+
         $facturadoMant = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
         $facturadoElec = Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
-        $ventasInv = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->where('tipo_movimiento', 'venta')->sum('total_documento');
-        $comprasInv = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->where('tipo_movimiento', 'compra')->sum('total_documento');
+
+        // Consolidación de totales y saldos de Facturas en una sola consulta
+        $facturasAgg = Factura::whereDate('fecha', $fecha)
+            ->where('estado', '!=', 'anulada')
+            ->selectRaw("
+                SUM(CASE WHEN tipo_movimiento = 'venta' THEN total_documento ELSE 0 END) as ventas_inv,
+                SUM(CASE WHEN tipo_movimiento = 'compra' THEN total_documento ELSE 0 END) as compras_inv,
+                SUM(CASE WHEN tipo_movimiento = 'venta' AND total_documento > total_pagado THEN total_documento - total_pagado ELSE 0 END) as saldo_pend_vta,
+                SUM(CASE WHEN tipo_movimiento = 'compra' AND total_documento > total_pagado THEN total_documento - total_pagado ELSE 0 END) as saldo_pend_cmp
+            ")
+            ->first();
+
+        $ventasInv = (float) ($facturasAgg->ventas_inv ?? 0);
+        $comprasInv = (float) ($facturasAgg->compras_inv ?? 0);
+        $saldoPendienteVenta = (float) ($facturasAgg->saldo_pend_vta ?? 0);
+        $saldoPendienteCompra = (float) ($facturasAgg->saldo_pend_cmp ?? 0);
 
         $totalAnuladosCount = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', true)->count()
                             + Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', true)->count()
@@ -151,13 +179,6 @@ class ReporteFinancieroController extends Controller
         // ════════════════════════════════════════════════════════════════════
         // SALDOS PENDIENTES DEL DÍA (CUENTAS POR COBRAR Y POR PAGAR)
         // ════════════════════════════════════════════════════════════════════
-        $facturasDia = Factura::where('estado', '!=', 'anulada')->whereDate('fecha', $fecha);
-        $saldoPendienteVenta = (float) ((clone $facturasDia)->where('tipo_movimiento', 'venta')
-            ->selectRaw('SUM(CASE WHEN total_documento > total_pagado THEN total_documento - total_pagado ELSE 0 END) as s')
-            ->value('s') ?? 0);
-        $saldoPendienteCompra = (float) ((clone $facturasDia)->where('tipo_movimiento', 'compra')
-            ->selectRaw('SUM(CASE WHEN total_documento > total_pagado THEN total_documento - total_pagado ELSE 0 END) as s')
-            ->value('s') ?? 0);
 
         $cajaPendientesDia = MovimientoCaja::with(['childPayments' => function ($q) {
             $q->where('anulado', false)->where('estado', 'activo');
@@ -169,7 +190,7 @@ class ReporteFinancieroController extends Controller
             ->whereDate('fecha', $fecha)
             ->get();
 
-        $facturaNumerosDia = (clone $facturasDia)->pluck('numero_factura')->filter()->all();
+        $facturaNumerosDia = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->pluck('numero_factura')->filter()->all();
         $saldoPendienteCajaIngreso = 0;
         $saldoPendienteCajaEgreso = 0;
 
@@ -357,8 +378,15 @@ class ReporteFinancieroController extends Controller
             }
         }
 
-        $saldoPendienteMant = (float) (clone $mantenimientosQuery)->with('abonos')->get()->sum(fn ($m) => $m->saldo_pendiente);
-        $saldoPendienteElec = (float) (clone $electronicasQuery)->with('abonos')->get()->sum(fn ($e) => $e->saldo_pendiente);
+        $mantsIds = (clone $mantenimientosQuery)->pluck('id');
+        $mantsCosto = (float) (clone $mantenimientosQuery)->sum('costo');
+        $mantsAbonos = (float) Abono::whereIn('mantenimiento_id', $mantsIds)->where('anulado', false)->sum('monto');
+        $saldoPendienteMant = max(0.0, round($mantsCosto - $mantsAbonos, 2));
+
+        $elecsIds = (clone $electronicasQuery)->pluck('id');
+        $elecsCosto = (float) (clone $electronicasQuery)->sum('costo');
+        $elecsAbonos = (float) Abono::whereIn('electronica_id', $elecsIds)->where('anulado', false)->sum('monto');
+        $saldoPendienteElec = max(0.0, round($elecsCosto - $elecsAbonos, 2));
 
         $totalPorCobrar = $saldoPendienteVenta + $saldoPendienteCajaIngreso + $saldoPendienteMant + $saldoPendienteElec;
         $totalPorPagar = $saldoPendienteCompra + $saldoPendienteCajaEgreso;
