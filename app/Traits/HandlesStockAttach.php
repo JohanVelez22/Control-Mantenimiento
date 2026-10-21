@@ -38,7 +38,13 @@ trait HandlesStockAttach
                 $existing = $model->stocks()->where('stock_id', $stock->id)->first();
                 if ($existing) {
                     $newCantidad = $existing->pivot->cantidad + $validated['cantidad'];
-                    $model->stocks()->updateExistingPivot($stock->id, ['cantidad' => $newCantidad]);
+                    $totalPrevio = (float) $existing->pivot->cantidad * (float) $existing->pivot->precio_unitario;
+                    $totalNuevo = (float) $validated['cantidad'] * $precioUnitario;
+                    $nuevoPrecioUnitario = round(($totalPrevio + $totalNuevo) / $newCantidad, 2);
+                    $model->stocks()->updateExistingPivot($stock->id, [
+                        'cantidad' => $newCantidad,
+                        'precio_unitario' => $nuevoPrecioUnitario,
+                    ]);
                     $successMsg = "Se sumaron {$validated['cantidad']} unidad(es) a '{$stock->producto}' (total actual: {$newCantidad} uds).";
                 } else {
                     $model->stocks()->attach($stock->id, [

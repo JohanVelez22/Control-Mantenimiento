@@ -54,7 +54,7 @@ class DashboardController extends Controller
 
         // Mantenimientos recientes (usando withSum para evitar N+1 en abonos)
         $recentMant = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user'])
-            ->withSum('abonos as total_abonado', 'monto')
+            ->withSum(['abonos as total_abonado' => fn ($q) => $q->where('anulado', false)], 'monto')
             ->orderBy('id', 'desc')
             ->take(5)
             ->get();

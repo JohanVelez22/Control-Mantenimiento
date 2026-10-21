@@ -134,8 +134,15 @@ class Factura extends Model
             ->where(function ($q) {
                 $q->where('factura_id', $this->id)
                     ->orWhere(function ($legacy) {
+                        $num = $this->numero_factura;
                         $legacy->whereNull('factura_id')
-                            ->where('descripcion', 'like', "%#{$this->numero_factura}%");
+                            ->where(function ($sub) use ($num) {
+                                $sub->where('descripcion', 'like', "%#{$num}")
+                                    ->orWhere('descripcion', 'like', "%#{$num} %")
+                                    ->orWhere('descripcion', 'like', "%#{$num},%")
+                                    ->orWhere('descripcion', 'like', "%#{$num}.%")
+                                    ->orWhere('descripcion', 'like', "%#{$num}\n%");
+                            });
                     });
             })
             ->pluck('id');

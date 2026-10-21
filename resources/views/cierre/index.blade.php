@@ -251,21 +251,25 @@
             <form action="{{ route('cierre.store') }}" method="POST" id="form-cierre-caja" class="space-y-6">
                 @csrf
                 <input type="hidden" name="fecha" value="{{ $hoy }}">
-                <input type="hidden" id="efectivo_sistema_val" value="{{ $preview['efectivo'] }}">
+                <input type="hidden" id="efectivo_sistema_val" value="{{ $preview['efectivo_esperado'] ?? $preview['efectivo'] }}">
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
-                    {{-- Tarjeta Efectivo Teórico (Sistema) --}}
+                    {{-- Tarjeta Efectivo Esperado en Caja (Sistema) --}}
                     <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                         <div>
                             <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">
-                                💻 Efectivo Teórico (Sistema)
+                                💻 Efectivo Esperado en Caja
                             </span>
                             <p class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white">
-                                $ {{ number_format($preview['efectivo'], 0, ',', '.') }}
+                                $ {{ number_format($preview['efectivo_esperado'] ?? $preview['efectivo'], 0, ',', '.') }}
                             </p>
                         </div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-2">
-                            Total calculado de entradas y salidas registradas en efectivo.
+                            @if(! empty($preview['saldo_anterior']) && abs($preview['saldo_anterior']) > 0.01)
+                                Base/Saldo anterior: ${{ number_format($preview['saldo_anterior'], 0, ',', '.') }} | Flujo hoy: ${{ number_format($preview['flujo_dia'] ?? $preview['efectivo'], 0, ',', '.') }}
+                            @else
+                                Total calculado de entradas y salidas registradas en efectivo.
+                            @endif
                         </p>
                     </div>
 

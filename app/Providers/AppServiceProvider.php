@@ -144,21 +144,35 @@ class AppServiceProvider extends ServiceProvider
                     ->limit(50)
                     ->get();
 
-                // Extraer números de factura pendientes para búsqueda en lote (evita N+1 queries)
+                // Extraer IDs y números de factura pendientes para búsqueda en lote (evita N+1 queries)
+                $facturaIds = $cajaFacturas->pluck('id')->filter()->values()->toArray();
                 $facturasNumeros = $cajaFacturas->pluck('numero_factura')->filter()->values()->toArray();
 
-                // Movimientos de caja relacionados en lote
-                $movimientosRel = empty($facturasNumeros) ? collect() : MovimientoCaja::whereNull('parent_id')
-                    ->where(function ($q) use ($facturasNumeros) {
-                        foreach ($facturasNumeros as $num) {
-                            $q->orWhere('descripcion', 'like', "%#{$num}%");
+                // Movimientos de caja relacionados en lote vinculados por factura_id (con fallback de compatibilidad)
+                $movimientosRel = empty($facturaIds) ? collect() : MovimientoCaja::whereNull('parent_id')
+                    ->where(function ($q) use ($facturaIds, $facturasNumeros) {
+                        $q->whereIn('factura_id', $facturaIds);
+                        if (! empty($facturasNumeros)) {
+                            $q->orWhere(function ($sub) use ($facturasNumeros) {
+                                $sub->whereNull('factura_id')
+                                    ->where(function ($legacy) use ($facturasNumeros) {
+                                        foreach ($facturasNumeros as $num) {
+                                            $legacy->orWhere('descripcion', 'like', "%#{$num} %")
+                                                ->orWhere('descripcion', 'like', "%#{$num}");
+                                        }
+                                    });
+                            });
                         }
                     })
-                    ->select('id', 'descripcion')
+                    ->select('id', 'factura_id', 'descripcion')
                     ->get();
 
                 $cajaList = $cajaFacturas->map(function ($f) use ($movimientosRel) {
                     $matched = $movimientosRel->first(function ($m) use ($f) {
+                        if ($m->factura_id) {
+                            return (int) $m->factura_id === (int) $f->id;
+                        }
+
                         return str_contains($m->descripcion ?? '', "#{$f->numero_factura}");
                     });
                     $movCajaId = $matched?->id;
@@ -181,6 +195,7 @@ class AppServiceProvider extends ServiceProvider
                     ->whereNull('parent_id')
                     ->whereNotNull('monto_total')
                     ->where('monto_total', '>', 0)
+                    ->whereNull('factura_id')
                     ->when(! empty($facturasNumeros), function ($query) use ($facturasNumeros) {
                         $query->where(function ($q) use ($facturasNumeros) {
                             foreach ($facturasNumeros as $num) {

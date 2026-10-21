@@ -337,9 +337,15 @@ class CotizacionController extends Controller
 
             $cotizacion->load('items');
 
-            // Validar y bloquear stock disponible para todos los ítems de tipo 'stock'
-            foreach ($cotizacion->items as $item) {
-                if ($item->tipo === 'stock' && $item->item_id) {
+            $esProveedor = ! empty($cotizacion->proveedor_id);
+            $tipoMovimiento = $esProveedor ? 'compra' : 'venta';
+            $prefijoFactura = $esProveedor ? 'CMP-' : 'VT-';
+
+            // Validar y bloquear stock disponible para ventas a clientes
+            if (! $esProveedor) {
+                // Ordenar ítems por item_id para prevenir deadlocks en transacciones concurrentes
+                $stockItems = $cotizacion->items->filter(fn ($it) => $it->tipo === 'stock' && $it->item_id)->sortBy('item_id');
+                foreach ($stockItems as $item) {
                     $stock = Stock::where('id', $item->item_id)->lockForUpdate()->first();
                     if (! $stock || ! $stock->tieneDisponible((int) $item->cantidad)) {
                         $prodNombre = $stock ? $stock->producto : $item->descripcion;
@@ -355,24 +361,24 @@ class CotizacionController extends Controller
             $cotizacion->update(['estado' => 'aprobada']);
 
             $facturableId = $cotizacion->proveedor_id ?: $cotizacion->cliente_id;
-            $facturableType = $cotizacion->proveedor_id ? Proveedor::class : Cliente::class;
+            $facturableType = $esProveedor ? Proveedor::class : Cliente::class;
             $destinatarioNombre = $cotizacion->destinatario_nombre;
 
-            // 2. Crear Factura de Venta
+            // 2. Crear Factura correspondiente (Compra a Proveedor o Venta a Cliente)
             $factura = Factura::create([
-                'numero_factura' => Factura::siguienteNumero('VT-'),
-                'tipo_movimiento' => 'venta',
+                'numero_factura' => Factura::siguienteNumero($prefijoFactura),
+                'tipo_movimiento' => $tipoMovimiento,
                 'estado' => 'pendiente_pago',
                 'facturable_id' => $facturableId,
                 'facturable_type' => $facturableType,
                 'total_documento' => $cotizacion->total,
                 'total_pagado' => 0,
-                'observaciones' => "Venta generada automáticamente desde Cotización #{$cotizacion->codigo}".($cotizacion->notas ? "\nNotas: {$cotizacion->notas}" : ''),
+                'observaciones' => ($esProveedor ? 'Compra' : 'Venta')." generada automáticamente desde Cotización #{$cotizacion->codigo}".($cotizacion->notas ? "\nNotas: {$cotizacion->notas}" : ''),
                 'fecha' => $hoy,
                 'user_id' => auth()->id(),
             ]);
 
-            // 3. Crear FacturaItems y descontar stock cuando aplique
+            // 3. Crear FacturaItems y ajustar inventario según corresponda
             foreach ($cotizacion->items as $item) {
                 FacturaItem::create([
                     'factura_id' => $factura->id,
@@ -385,22 +391,29 @@ class CotizacionController extends Controller
                 if ($item->tipo === 'stock' && $item->item_id) {
                     $stock = Stock::find($item->item_id);
                     if ($stock) {
-                        $stock->decrementarStock((int) $item->cantidad);
+                        if ($esProveedor) {
+                            $stock->incrementarStock((int) $item->cantidad);
+                        } else {
+                            $stock->decrementarStock((int) $item->cantidad);
+                        }
                     }
                 }
             }
 
             // 4. Registrar movimiento raíz en Caja para seguimiento de saldos
-            $conceptoVenta = ConceptoCaja::firstOrCreate(['nombre' => 'Venta de Inventario']);
+            $nombreConcepto = $esProveedor ? 'Compra de Inventario' : 'Venta de Inventario';
+            $conceptoCaja = ConceptoCaja::firstOrCreate(['nombre' => $nombreConcepto]);
+            $tipoMovCaja = $esProveedor ? 'egreso' : 'ingreso';
+            $descCaja = $esProveedor ? "Pago compra #{$factura->numero_factura}" : "Cobro venta #{$factura->numero_factura}";
 
             MovimientoCaja::create([
-                'tipo_movimiento' => 'ingreso',
+                'tipo_movimiento' => $tipoMovCaja,
                 'tipo_pago' => 'efectivo',
                 'monto' => 0,
                 'monto_total' => (float) $cotizacion->total,
-                'persona' => $destinatarioNombre ?: 'Cliente / Proveedor',
-                'concepto_id' => $conceptoVenta->id,
-                'descripcion' => "Cobro venta #{$factura->numero_factura}",
+                'persona' => $destinatarioNombre ?: ($esProveedor ? 'Proveedor' : 'Cliente'),
+                'concepto_id' => $conceptoCaja->id,
+                'descripcion' => $descCaja,
                 'fecha' => $hoy,
                 'estado' => 'activo',
                 'user_id' => auth()->id(),
@@ -409,8 +422,10 @@ class CotizacionController extends Controller
 
             DB::commit();
 
+            $labelOperacion = $esProveedor ? 'Compra' : 'Venta';
+
             return redirect()->route('inventario.facturas.show', $factura->id)
-                ->with('success', "Cotización {$cotizacion->codigo} aprobada y convertida en Venta #{$factura->numero_factura} exitosamente.");
+                ->with('success', "Cotización {$cotizacion->codigo} aprobada y convertida en {$labelOperacion} #{$factura->numero_factura} exitosamente.");
 
         } catch (\Exception $e) {
             DB::rollBack();

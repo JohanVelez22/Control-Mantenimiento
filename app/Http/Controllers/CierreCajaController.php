@@ -80,13 +80,13 @@ class CierreCajaController extends Controller
             // `efectivo_real_contado` queda NULL y el modelo lo reporta como
             // 'sin_conciliar'. Nunca se infiere el contado desde el valor
             // teórico del sistema: eso afirmaría un cuadre no verificado.
-            $efectivoSistema = (float) $datos['efectivo'];
+            $efectivoEsperado = (float) ($datos['efectivo_esperado'] ?? $datos['efectivo']);
             $conteoRegistrado = $request->filled('efectivo_real_contado')
                 && is_numeric($request->efectivo_real_contado);
 
             if ($conteoRegistrado) {
                 $efectivoReal = round((float) $request->efectivo_real_contado, 2);
-                $diferencia = round($efectivoReal - $efectivoSistema, 2);
+                $diferencia = round($efectivoReal - $efectivoEsperado, 2);
             } else {
                 $efectivoReal = null;
                 $diferencia = 0;
@@ -187,9 +187,35 @@ class CierreCajaController extends Controller
         $consignacionEgresos = (float) $movs->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto');
         $consignacionNeto = $consignacionIngresos - $consignacionEgresos;
 
+        // Saldo anterior acumulado en efectivo previo a esta fecha
+        $ultimoCierre = CierreCaja::where('fecha', '<', $fecha)->orderBy('fecha', 'desc')->first();
+        if ($ultimoCierre && $ultimoCierre->efectivo_real_contado !== null) {
+            $base = (float) $ultimoCierre->efectivo_real_contado;
+            $intermedio = (float) MovimientoCaja::where('fecha', '>', $ultimoCierre->fecha)
+                ->where('fecha', '<', $fecha)
+                ->where('estado', 'activo')
+                ->where('anulado', false)
+                ->where('tipo_pago', 'efectivo')
+                ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
+                ->value('total') ?? 0;
+            $saldoAnterior = $base + $intermedio;
+        } else {
+            $saldoAnterior = (float) MovimientoCaja::where('fecha', '<', $fecha)
+                ->where('estado', 'activo')
+                ->where('anulado', false)
+                ->where('tipo_pago', 'efectivo')
+                ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
+                ->value('total') ?? 0;
+        }
+
+        $efectivoEsperado = $saldoAnterior + $efectivoNeto;
+
         return [
             'total_ingresos' => $ingresos,
             'total_egresos' => $egresos,
+            'saldo_anterior' => $saldoAnterior,
+            'flujo_dia' => $efectivoNeto,
+            'efectivo_esperado' => $efectivoEsperado,
             'efectivo' => $efectivoNeto,
             'consignacion' => $consignacionNeto,
             'saldo_final' => $ingresos - $egresos,

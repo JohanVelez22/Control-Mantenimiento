@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class MovimientoInventarioController extends Controller
@@ -598,7 +599,11 @@ class MovimientoInventarioController extends Controller
             'observaciones' => 'nullable|string',
             'facturable_global' => 'required|string',
             'existing_items' => 'nullable|array',
-            'existing_items.*.id' => 'required|exists:factura_items,id',
+            'existing_items.*.id' => [
+                'required',
+                'distinct',
+                Rule::exists('factura_items', 'id')->where('factura_id', $factura->id),
+            ],
             'existing_items.*.stock_id' => 'nullable|exists:stocks,id',
             'existing_items.*.descripcion' => 'nullable|string',
             'existing_items.*.cantidad' => 'required|integer|min:1',
@@ -665,7 +670,7 @@ class MovimientoInventarioController extends Controller
             // 2. Ajustar stock por modificación de cantidad o artículo de los ítems existentes
             if (isset($request->existing_items) && is_array($request->existing_items) && ! $shouldBeAnulada) {
                 foreach ($request->existing_items as $itemData) {
-                    $item = FacturaItem::findOrFail($itemData['id']);
+                    $item = $factura->items()->findOrFail($itemData['id']);
                     $oldStock = $item->stock;
                     $oldQty = (int) $item->cantidad;
 

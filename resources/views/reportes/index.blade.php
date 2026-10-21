@@ -65,7 +65,7 @@
    <div class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</div>
    </div>
    <div class="glass-card hover-glow {{ $acumulado['utilidad_neta'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
-   <div class="text-xs font-bold {{ $acumulado['utilidad_neta'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">⚖️</span> Utilidad Neta</div>
+   <div class="text-xs font-bold {{ $acumulado['utilidad_neta'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5" title="Flujo neto de caja del mes: Ingresos − Egresos"><span class="text-lg no-print-emoji">⚖️</span> Flujo Neto de Caja</div>
    <div class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</div>
    </div>
    </div>

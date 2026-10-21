@@ -102,6 +102,18 @@ class MovimientoCaja extends Model
             return (float) ($root->anulado ? 0 : $root->monto) + $abonosSum;
         }
 
+        if ($root->factura_id) {
+            return (float) self::activos()
+                ->where(function ($q) use ($rootId, $root) {
+                    if ($rootId) {
+                        $q->where('id', $rootId)
+                            ->orWhere('parent_id', $rootId);
+                    }
+                    $q->orWhere('factura_id', $root->factura_id);
+                })
+                ->sum('monto');
+        }
+
         return (float) self::activos()
             ->where(function ($q) use ($rootId, $refSearch) {
                 if ($rootId) {
@@ -109,7 +121,17 @@ class MovimientoCaja extends Model
                         ->orWhere('parent_id', $rootId);
                 }
                 if ($refSearch) {
-                    $q->orWhere('descripcion', 'like', "%{$refSearch}%");
+                    if (str_starts_with($refSearch, '#')) {
+                        $q->orWhere(function ($sub) use ($refSearch) {
+                            $sub->where('descripcion', 'like', "%{$refSearch}")
+                                ->orWhere('descripcion', 'like', "%{$refSearch} %")
+                                ->orWhere('descripcion', 'like', "%{$refSearch},%")
+                                ->orWhere('descripcion', 'like', "%{$refSearch}.%")
+                                ->orWhere('descripcion', 'like', "%{$refSearch}\n%");
+                        });
+                    } else {
+                        $q->orWhere('descripcion', 'like', "%{$refSearch}%");
+                    }
                 }
             })
             ->sum('monto');

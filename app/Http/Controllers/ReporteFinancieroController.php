@@ -175,7 +175,9 @@ class ReporteFinancieroController extends Controller
 
         foreach ($cajaPendientesDia as $cmov) {
             $isLinkedToFactura = false;
-            if ($cmov->descripcion) {
+            if ($cmov->factura_id) {
+                $isLinkedToFactura = true;
+            } elseif ($cmov->descripcion) {
                 foreach ($facturaNumerosDia as $fnum) {
                     if (str_contains($cmov->descripcion, $fnum)) {
                         $isLinkedToFactura = true;
@@ -250,7 +252,7 @@ class ReporteFinancieroController extends Controller
 
         if ($request->get('export') === 'excel') {
             return Excel::download(
-                new ReportesFinancierosExport($movimientos),
+                new ReportesFinancierosExport($movimientos, $resumen),
                 'Reporte_Diario_'.date('Y-m-d_His').'.xlsx'
             );
         }
