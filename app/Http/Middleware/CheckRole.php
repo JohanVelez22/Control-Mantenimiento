@@ -24,6 +24,13 @@ class CheckRole
 
         // 2. Verificamos el rol
         if (! Auth::check() || ! in_array(Auth::user()->role, $roles)) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No tienes permisos para acceder a esta sección.',
+                ], 403);
+            }
+
             return redirect()->route('dashboard')->with('error', 'No tienes permisos para acceder a esta sección.');
         }
 
