@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Dusk\DuskServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,8 +33,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if ($this->app->environment('local', 'testing')) {
-            $this->app->register(\Laravel\Dusk\DuskServiceProvider::class);
+        if (filter_var(env('DUSK_ENABLED', false), FILTER_VALIDATE_BOOLEAN)) {
+            $this->app->register(DuskServiceProvider::class);
         }
     }
 

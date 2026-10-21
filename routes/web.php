@@ -172,12 +172,12 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
         // Gestión y Programación de Respaldos (Backups)
         Route::get('/backups/config', [BackupController::class, 'getConfig'])->name('backups.config');
-        Route::post('/backups/manual', [BackupController::class, 'createManual'])->name('backups.manual');
+        Route::post('/backups/manual', [BackupController::class, 'createManual'])->middleware('throttle:10,1')->name('backups.manual');
         Route::post('/backups/schedule', [BackupController::class, 'saveSchedule'])->name('backups.schedule');
         Route::get('/backups/download/{filename}', [BackupController::class, 'download'])->where('filename', '.*')->name('backups.download');
         Route::delete('/backups/destroy/{filename}', [BackupController::class, 'destroy'])->where('filename', '.*')->name('backups.destroy');
-        Route::post('/backups/restore/{filename}', [BackupController::class, 'restore'])->where('filename', '.*')->name('backups.restore');
-        Route::post('/backups/git-update', [BackupController::class, 'gitUpdate'])->name('backups.git-update');
+        Route::post('/backups/restore/{filename}', [BackupController::class, 'restore'])->middleware('throttle:10,1')->where('filename', '.*')->name('backups.restore');
+        Route::post('/backups/git-update', [BackupController::class, 'gitUpdate'])->middleware('throttle:5,1')->name('backups.git-update');
         Route::post('/backups/open-folder', [BackupController::class, 'openFolder'])->name('backups.open-folder');
 
         // Mantenimientos y Electrónicas: listados generales (solo admin y técnico)

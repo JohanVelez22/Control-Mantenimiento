@@ -294,19 +294,17 @@ class BackupDatabase extends Command
             throw new \Exception($msg);
         }
 
-        $username = env('DB_USERNAME', 'root');
-        $password = env('DB_PASSWORD', '');
-        $host = env('DB_HOST', '127.0.0.1');
-        $port = env('DB_PORT', '3306');
+        $username = config('database.connections.mysql.username', env('DB_USERNAME', 'root'));
+        $password = config('database.connections.mysql.password', env('DB_PASSWORD', ''));
+        $host = config('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
+        $port = config('database.connections.mysql.port', env('DB_PORT', '3306'));
 
-        $escapedPassword = str_replace('"', '\"', $password);
         $command = sprintf(
-            '"%s" --user="%s" --host="%s" --port="%s" --password="%s" "%s" --result-file="%s"',
+            '"%s" --user="%s" --host="%s" --port="%s" "%s" --result-file="%s"',
             $mysqldumpBinary,
             $username,
             $host,
             $port,
-            $escapedPassword,
             $database,
             $targetSqlPath
         );
