@@ -10156,3 +10156,21 @@ html.dark .reportes-nav-principal a:hover {
     /* 24px: perfectamente calibrado, visible y coherente con el espacio */
   }
 }
+
+/* --- SOLO EN MODO MÓVIL (< 640px / pantallas de celular): Evitar que los botones de acción compriman el título --- */
+@media (max-width: 639px) {
+  .detail-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+  .detail-header > div:first-child {
+    width: 100% !important;
+  }
+  .detail-header .stock-detail-actions {
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+}

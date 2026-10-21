@@ -171,5 +171,34 @@ class StockProveedorInactivoVerificationTest extends DuskTestCase
             $this->assertEquals('none', $styles[0]['boxShadow']);
         });
     }
+
+    public function test_stock_show_mobile_view_fixed(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+        $this->browse(function (Browser $browser) use ($admin) {
+            $browser->loginAs($admin)
+                ->resize(390, 844)
+                ->visit(route('stocks.show', 70))
+                ->pause(300)
+                ->screenshot('stock_show_mobile_header_fixed');
+
+            $browser->scrollIntoView('.table-dense')
+                ->pause(200)
+                ->screenshot('stock_show_mobile_operaciones_fixed');
+
+            $browser->scrollIntoView('.mt-8')
+                ->pause(200)
+                ->screenshot('stock_show_mobile_bajas_fixed');
+
+            // Confirm desktop web remains intact
+            $browser->resize(1440, 900)
+                ->pause(200)
+                ->screenshot('stock_show_desktop_unaltered_fixed');
+
+            $browser->script('window.scrollTo(0, 0);');
+            $browser->pause(200)->screenshot('stock_show_desktop_header_unaltered');
+        });
+    }
 }
+
 

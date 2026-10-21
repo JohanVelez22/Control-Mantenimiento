@@ -36,8 +36,8 @@
                 </div>
             </div>
 
-            {{-- Botones de Acción a la derecha --}}
-            <div class="flex items-center gap-3 shrink-0">
+            {{-- Botones de Acción a la derecha (posición original conservada para modo web) --}}
+            <div class="stock-detail-actions flex items-center gap-3 shrink-0">
                 <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30">
                     🖨️ Imprimir
                 </a>
@@ -117,21 +117,21 @@
         </div>
 
         {{-- Historial de Operaciones --}}
-        <div class="flex items-center justify-between mb-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
             <div class="flex items-center gap-2">
                 <span class="text-lg">💳</span>
-                <h3 class="font-bold text-lg text-slate-800 dark:text-white">Historial de Operaciones (Compras y Ventas)</h3>
+                <h3 class="font-bold text-base sm:text-lg text-slate-800 dark:text-white">Historial de Operaciones (Compras y Ventas)</h3>
             </div>
             @if(isset($historial) && $historial->count() > 0)
             @php
                 $totalCompradas = $historial->where('factura.tipo_movimiento', 'compra')->where('factura.estado', '!=', 'anulada')->sum('cantidad');
                 $totalVendidas = $historial->where('factura.tipo_movimiento', 'venta')->where('factura.estado', '!=', 'anulada')->sum('cantidad');
             @endphp
-            <div class="flex items-center gap-3 text-xs font-bold">
-                <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-bold">
+                <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 whitespace-nowrap">
                     Compras: {{ $totalCompradas }} unidades
                 </span>
-                <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap">
                     Ventas: {{ $totalVendidas }} unidades
                 </span>
             </div>
@@ -241,13 +241,13 @@
 
         {{-- Historial de Bajas y Mermas --}}
         <div class="mt-8">
-            <div class="flex items-center justify-between mb-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
                 <div class="flex items-center gap-2">
                     <span class="text-lg">📉</span>
-                    <h3 class="font-bold text-lg text-slate-800 dark:text-white">Historial de Bajas y Mermas</h3>
+                    <h3 class="font-bold text-base sm:text-lg text-slate-800 dark:text-white">Historial de Bajas y Mermas</h3>
                 </div>
                 @if(isset($bajas) && $bajas->count() > 0)
-                <div class="flex items-center gap-3 text-xs font-bold">
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-bold">
                     <span class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap">
                         Total descartado: {{ $stock->total_unidades_baja }} unidades
                     </span>
