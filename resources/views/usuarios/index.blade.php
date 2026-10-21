@@ -42,7 +42,7 @@
  <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $u->id }}</td>
  <td class="text-center py-2 {{ $dim }}">
   @if($u->photo)
-    <img src="{{ asset('storage/' . $u->photo) }}" width="32" height="32" class="w-8 h-8 rounded-lg object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $u->photo) }}', '{{ addslashes($u->name) }}', this)" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+    <img src="{{ asset('storage/' . $u->photo) }}" width="32" height="32" class="w-8 h-8 rounded-lg object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" data-lightbox-src="{{ asset('storage/' . $u->photo) }}" data-lightbox-alt="{{ $u->name }}" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
     <div class="hidden w-8 h-8 rounded-lg bg-gray-200 dark:bg-gray-700 items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">
       N/A
     </div>

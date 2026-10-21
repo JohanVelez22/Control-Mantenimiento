@@ -80,7 +80,7 @@
                 <div id="existing-photo-container" class="mb-3 flex items-center gap-4">
                     <div class="p-1 rounded-2xl bg-white/40 dark:bg-slate-900/40 border border-white/50 dark:border-white/10 backdrop-blur-sm shadow-sm shrink-0">
                         <img src="{{ asset('storage/' . $st->photo) }}" alt="{{ $st->producto }}"
-                             onclick="openImageLightbox('{{ asset('storage/' . $st->photo) }}', '{{ addslashes($st->producto) }}', this)"
+                             data-lightbox-src="{{ asset('storage/' . $st->photo) }}" data-lightbox-alt="{{ $st->producto }}"
                              class="w-20 h-20 rounded-xl object-cover cursor-pointer hover:opacity-80 transition block">
                     </div>
                     <div class="space-y-1.5">

@@ -292,7 +292,11 @@ async function ejecutarEliminacionLogo() {
 
     if (btnRemove) {
         btnRemove.disabled = true;
-        btnRemove.innerHTML = '<span>⏳</span><span>Eliminando...</span>';
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '⏳';
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'Eliminando...';
+        btnRemove.replaceChildren(iconSpan, textSpan);
     }
 
     const form = document.getElementById('form-configuracion');
@@ -342,7 +346,11 @@ async function ejecutarEliminacionLogo() {
     } finally {
         if (btnRemove) {
             btnRemove.disabled = false;
-            btnRemove.innerHTML = '<span>🗑️</span><span>Quitar logo</span>';
+            const iconSpan = document.createElement('span');
+            iconSpan.textContent = '🗑️';
+            const textSpan = document.createElement('span');
+            textSpan.textContent = 'Quitar logo';
+            btnRemove.replaceChildren(iconSpan, textSpan);
         }
     }
 }

@@ -12,7 +12,7 @@
 
                 @if($stock->photo)
                     <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
-                         onclick="openImageLightbox('{{ asset('storage/' . $stock->photo) }}', '{{ addslashes($stock->producto) }}', this)"
+                         data-lightbox-src="{{ asset('storage/' . $stock->photo) }}" data-lightbox-alt="{{ $stock->producto }}"
                          class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl object-cover cursor-pointer border border-white/40 shadow-sm shrink-0 hover:scale-105 transition-transform"
                          title="Ver foto del producto">
                 @else

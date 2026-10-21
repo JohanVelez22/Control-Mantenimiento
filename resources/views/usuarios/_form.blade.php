@@ -40,7 +40,7 @@
     @if($isEdit && $user->photo)
         <div id="existing-user-photo-container" class="mb-3 flex items-center gap-4">
             <div class="p-1 rounded-2xl bg-white/40 dark:bg-slate-900/40 border border-white/50 dark:border-white/10 backdrop-blur-sm shadow-sm shrink-0">
-                <img src="{{ asset('storage/' . $user->photo) }}" width="100" height="100" class="w-20 h-20 rounded-xl object-cover shadow-sm cursor-pointer hover:opacity-80 transition block" onclick="openImageLightbox('{{ asset('storage/' . $user->photo) }}', '{{ addslashes($user->name) }}', this)">
+                <img src="{{ asset('storage/' . $user->photo) }}" width="100" height="100" class="w-20 h-20 rounded-xl object-cover shadow-sm cursor-pointer hover:opacity-80 transition block" data-lightbox-src="{{ asset('storage/' . $user->photo) }}" data-lightbox-alt="{{ $user->name }}">
             </div>
             <div class="space-y-1.5">
                 <span class="text-xs font-bold text-slate-700 dark:text-slate-300 block">Foto actual del usuario</span>
@@ -112,7 +112,10 @@
 
 {{-- Password --}}
 <div class="mb-4">
-    <label class="block text-sm font-medium mb-2 text-gray-500">{!! $isEdit ? 'Cambiar Contraseña del Usuario (opcional)' : 'Contraseña del Nuevo Usuario <span class="text-red-500 font-bold">*</span>' !!}</label>
+    <label class="block text-sm font-medium mb-2 text-gray-500">
+        {{ $isEdit ? 'Cambiar Contraseña del Usuario (opcional)' : 'Contraseña del Nuevo Usuario' }}
+        @if(!$isEdit)<span class="text-red-500 font-bold">*</span>@endif
+    </label>
     <input type="password" id="password" name="password" {{ $isEdit ? '' : 'required' }} placeholder="{{ $isEdit ? 'Dejar en blanco para no cambiar' : '' }}" class="glass-input mt-1 @error('password') border-red-500 @enderror">
     @error('password') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
     <ul id="password-requirements" class="mt-2 text-xs space-y-1.5 hidden transition-all duration-300">
@@ -130,7 +133,10 @@
 
 {{-- Confirmar Contraseña --}}
 <div class="mb-4">
-    <label class="block text-sm font-medium mb-2 text-gray-500">{!! $isEdit ? 'Confirmar Nueva Contraseña' : 'Confirmar Contraseña <span class="text-red-500 font-bold">*</span>' !!}</label>
+    <label class="block text-sm font-medium mb-2 text-gray-500">
+        {{ $isEdit ? 'Confirmar Nueva Contraseña' : 'Confirmar Contraseña' }}
+        @if(!$isEdit)<span class="text-red-500 font-bold">*</span>@endif
+    </label>
     <input type="password" id="password_confirmation" name="password_confirmation" {{ $isEdit ? '' : 'required' }} class="glass-input">
     <p id="req-match" class="mt-1 text-sm text-red-500 hidden">Las contraseñas no coinciden</p>
 </div>

@@ -37,6 +37,8 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     
     <!-- CSS Propio (Liquid Glass) - va DESPUÉS para sobreescribir estilos base -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ @filemtime(public_path('css/glass.css')) ?: '1.4' }}">
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
@@ -124,7 +126,7 @@
     <div id="toast-container" class="fixed bottom-5 right-3 flex flex-col gap-2.5 pointer-events-none w-full max-w-sm" style="z-index: 100000 !important;"></div>
 
     <!-- MODAL DE CONFIRMACIÓN DE ALERTA/ELIMINACIÓN (Liquid Glass) -->
-    <div id="ts-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" style="z-index: 50000 !important;" onclick="if(event.target === this) closeTsModal()">
+    <div id="ts-modal" role="dialog" aria-modal="true" aria-labelledby="ts-modal-title" aria-describedby="ts-modal-msg" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" style="z-index: 50000 !important;" onclick="if(event.target === this) closeTsModal()">
         <div class="ts-modal-card opacity-0" id="ts-modal-card">
             <div class="p-6">
                 <div id="ts-modal-icon-box" class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
@@ -148,7 +150,7 @@
     </div>
 
     <!-- MODAL GLOBAL DE ANULACIÓN (fuera del main-wrapper para centrado correcto) -->
-    <div id="global-anular-modal" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
+    <div id="global-anular-modal" role="dialog" aria-modal="true" aria-labelledby="global-anular-title" aria-describedby="global-anular-msg" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
         <div class="ts-modal-card opacity-0" id="global-anular-card">
             <div class="p-6">
                 <div id="global-anular-icon-container" class="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4">
@@ -181,14 +183,14 @@
     </div>
 
     <!-- MODAL GLOBAL DE RECHAZAR COTIZACIÓN (Sí/No sin contraseña) -->
-    <div id="global-rechazar-modal" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
+    <div id="global-rechazar-modal" role="dialog" aria-modal="true" aria-labelledby="global-rechazar-title" aria-describedby="global-rechazar-msg" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
         <div class="ts-modal-card opacity-0" id="global-rechazar-card">
             <div class="p-6">
                 <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 flex items-center justify-center text-3xl mx-auto mb-4">
                     <span>⚠️</span>
                 </div>
-                <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Rechazo</h3>
-                <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+                <h3 id="global-rechazar-title" class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Rechazo</h3>
+                <p id="global-rechazar-msg" class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
                     ¿Estás seguro de rechazar esta cotización? Cambiará su estado a "Rechazada".
                 </p>
                 <form id="global-rechazar-form" method="POST" class="space-y-4">
@@ -256,10 +258,25 @@
         @if(session('error')) showToast("{{ session('error') }}", 'error'); @endif
         @if(isset($errors) && $errors->any()) showToast("Verifica los campos obligatorios del formulario.", 'error'); @endif
 
+        // ─── ACCESIBILIDAD Y GESTIÓN DE FOCO EN MODALES (WCAG 2.1) ────────
+        let _lastFocusedElement = null;
+
+        function recordFocus() {
+            _lastFocusedElement = document.activeElement;
+        }
+
+        function restoreFocus() {
+            if (_lastFocusedElement && typeof _lastFocusedElement.focus === 'function') {
+                try { _lastFocusedElement.focus(); } catch (err) {}
+                _lastFocusedElement = null;
+            }
+        }
+
         // ─── MODAL GLOBAL DE CONFIRMACIÓN ─────────────────────────────
         let _pendingForm = null;
 
         function confirmDelete(form, message) {
+            recordFocus();
             _pendingForm = form;
             const modal = document.getElementById('ts-modal');
             const card = document.getElementById('ts-modal-card');
@@ -314,6 +331,7 @@
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 card.classList.remove('opacity-0');
+                if (cancelBtn) cancelBtn.focus();
             }, 10);
         }
 
@@ -336,6 +354,7 @@
                 if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4';
                 if (cancelBtn) cancelBtn.className = 'flex-1 btn-ghost-amber';
                 if (confirmBtn) confirmBtn.className = 'flex-1 btn-danger justify-center font-bold';
+                restoreFocus();
             }, 300);
         }
 
@@ -343,6 +362,7 @@
         const isTecnicoGlobal = {{ (auth()->check() && auth()->user()->isTecnico()) ? 'true' : 'false' }};
 
         function openAnularModal(actionUrl, isReactivation = false) {
+            recordFocus();
             const modal = document.getElementById('global-anular-modal');
             const card  = document.getElementById('global-anular-card');
             const form  = document.getElementById('global-anular-form');
@@ -399,6 +419,7 @@
                 modal.classList.remove('opacity-0');
                 card.classList.remove('opacity-0');
                 if (input) input.focus();
+                else if (cancelBtn) cancelBtn.focus();
             }, 10);
         }
 
@@ -407,11 +428,15 @@
             const card  = document.getElementById('global-anular-card');
             modal.classList.add('opacity-0');
             card.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 200);
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                restoreFocus();
+            }, 200);
         }
 
         // ─── MODAL GLOBAL DE RECHAZAR COTIZACIÓN ─────────────────────────────
         function openRechazarModal(actionUrl) {
+            recordFocus();
             const modal = document.getElementById('global-rechazar-modal');
             const card  = document.getElementById('global-rechazar-card');
             const form  = document.getElementById('global-rechazar-form');
@@ -422,6 +447,8 @@
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 card.classList.remove('opacity-0');
+                const cancelBtn = modal.querySelector('button[type="button"]');
+                if (cancelBtn) cancelBtn.focus();
             }, 10);
         }
 
@@ -430,11 +457,41 @@
             const card  = document.getElementById('global-rechazar-card');
             modal.classList.add('opacity-0');
             card.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 200);
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                restoreFocus();
+            }, 200);
         }
 
+        // Manejador global de la tecla Escape para todos los modales
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeAnularModal();
+            if (e.key === 'Escape') {
+                const tsModal = document.getElementById('ts-modal');
+                const anularModal = document.getElementById('global-anular-modal');
+                const rechazarModal = document.getElementById('global-rechazar-modal');
+                if (tsModal && !tsModal.classList.contains('hidden')) {
+                    closeTsModal();
+                } else if (anularModal && !anularModal.classList.contains('hidden')) {
+                    closeAnularModal();
+                } else if (rechazarModal && !rechazarModal.classList.contains('hidden')) {
+                    closeRechazarModal();
+                } else if (typeof lightboxOpen !== 'undefined' && lightboxOpen) {
+                    closeImageLightbox();
+                }
+            }
+        });
+
+        // Delegación de eventos para apertura de lightbox desde atributos data-*
+        document.addEventListener('click', e => {
+            const trigger = e.target.closest('[data-lightbox-src]');
+            if (trigger) {
+                e.preventDefault();
+                openImageLightbox(
+                    trigger.getAttribute('data-lightbox-src'),
+                    trigger.getAttribute('data-lightbox-alt') || '',
+                    trigger
+                );
+            }
         });
 
         // ─── PANELES DINÁMICOS ASÍNCRONOS (ZERO-FLASH) ───────────────
@@ -1727,7 +1784,7 @@
     </div>
 
     {{-- Visor de imagen minimalista - sin fondo, tamaño moderado --}}
-    <div id="image-lightbox" onclick="closeImageLightbox()" style="display:none; position:fixed; inset:0; z-index:9999; background:transparent; align-items:center; justify-content:center; padding:2vh 2vw; opacity:0; visibility:hidden; transition:opacity 0.25s ease;">
+    <div id="image-lightbox" role="dialog" aria-modal="true" aria-label="Vista previa de imagen" onclick="closeImageLightbox()" style="display:none; position:fixed; inset:0; z-index:9999; background:transparent; align-items:center; justify-content:center; padding:2vh 2vw; opacity:0; visibility:hidden; transition:opacity 0.25s ease;">
         <div style="position:relative; display:inline-flex; flex-direction:column; align-items:center;">
             <img id="image-lightbox-img" src="" alt="" style="max-width:70vw; max-height:65vh; width:auto; height:auto; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04); object-fit:contain; transform:scale(0.95); opacity:0; transition:transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.2s ease; cursor:pointer;">
         </div>
@@ -1737,6 +1794,7 @@
         let lightboxOrigin = null;
         
         function openImageLightbox(src, alt = '', originEl = null) {
+            recordFocus();
             const box = document.getElementById('image-lightbox');
             const img = document.getElementById('image-lightbox-img');
             
@@ -1814,15 +1872,12 @@
                 box.style.display = 'none';
                 box.style.visibility = 'hidden';
                 img.style.transition = 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.2s ease';
+                restoreFocus();
             }, 350);
             
             lightboxOpen = false;
             lightboxOrigin = null;
         }
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && lightboxOpen) closeImageLightbox();
-        });
 
         // Global Hash Target Row Highlighter
         // (Unificado con activateHashTarget — ya no se necesita un handler separado)

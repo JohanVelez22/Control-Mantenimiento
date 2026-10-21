@@ -52,7 +52,7 @@
   <td data-label="Foto:" class="text-center py-2 {{ $dim }}">
   @if($stock->photo)
   <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
-       onclick="openImageLightbox('{{ asset('storage/' . $stock->photo) }}', '{{ addslashes($stock->producto) }}', this)"
+       data-lightbox-src="{{ asset('storage/' . $stock->photo) }}" data-lightbox-alt="{{ $stock->producto }}"
        onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
        class="w-8 h-8 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm mx-auto hover:opacity-80 transition">
   <span class="hidden text-[10px] text-gray-400 dark:text-gray-500">—</span>
