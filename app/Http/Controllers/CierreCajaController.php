@@ -17,7 +17,7 @@ class CierreCajaController extends Controller
 
         // Pre-calcular datos del día actual (aún no cerrado)
         $hoy = now()->toDateString();
-        $yaExiste = CierreCaja::whereDate('fecha', $hoy)->exists();
+        $yaExiste = CierreCaja::where('fecha', $hoy)->exists();
 
         $preview = null;
         if (! $yaExiste) {
@@ -57,7 +57,7 @@ class CierreCajaController extends Controller
                 'required',
                 'date',
                 function ($attribute, $value, $fail) use ($fecha) {
-                    if (CierreCaja::whereDate('fecha', $fecha)->exists()) {
+                    if (CierreCaja::where('fecha', $fecha)->exists()) {
                         $fail('Ya existe un cierre registrado para esta fecha.');
                     }
                 },
@@ -68,8 +68,8 @@ class CierreCajaController extends Controller
         ]);
 
         return DB::transaction(function () use ($request, $fecha) {
-            // Protección contra race condition con bloqueo pesimista
-            $yaExiste = CierreCaja::whereDate('fecha', $fecha)->lockForUpdate()->exists();
+            // Protección contra race condition con bloqueo pesimista en índice único directo (F-24)
+            $yaExiste = CierreCaja::where('fecha', $fecha)->lockForUpdate()->exists();
             if ($yaExiste) {
                 return back()->with('error', 'Ya existe un cierre registrado para la fecha seleccionada.')->withInput();
             }
@@ -139,10 +139,15 @@ class CierreCajaController extends Controller
         $cierre->load('user');
         $fecha = $cierre->fecha->toDateString();
 
-        $movimientos = MovimientoCaja::with(['user', 'concepto'])
-            ->whereDate('fecha', $fecha)
-            ->orderBy('id', 'desc')
-            ->get();
+        $movQuery = MovimientoCaja::with(['user', 'concepto']);
+        if (DB::connection()->getDriverName() === 'mysql') {
+            $movQuery->where('fecha', $fecha);
+        } else {
+            $movQuery->where(function ($q) use ($fecha) {
+                $q->where('fecha', $fecha)->orWhereDate('fecha', $fecha);
+            });
+        }
+        $movimientos = $movQuery->orderBy('id', 'desc')->get();
 
         return view('cierre.show', compact('cierre', 'movimientos'));
     }
@@ -174,7 +179,15 @@ class CierreCajaController extends Controller
     /** Helper: calcula totales de movimientos de un día dado excluyendo los anulados */
     private function calcularDia(string $fecha): array
     {
-        $movs = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->get();
+        $movQuery = MovimientoCaja::query();
+        if (DB::connection()->getDriverName() === 'mysql') {
+            $movQuery->where('fecha', $fecha);
+        } else {
+            $movQuery->where(function ($q) use ($fecha) {
+                $q->where('fecha', $fecha)->orWhereDate('fecha', $fecha);
+            });
+        }
+        $movs = $movQuery->where('estado', 'activo')->where('anulado', false)->get();
 
         $ingresos = (float) $movs->where('tipo_movimiento', 'ingreso')->sum('monto');
         $egresos = (float) $movs->where('tipo_movimiento', 'egreso')->sum('monto');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\ColombiaHelper;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -41,34 +42,33 @@ class Cliente extends Model
 
     public function getNombresAttribute($value)
     {
-        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+        return ColombiaHelper::formatTitleCase($value);
     }
 
     public function setNombresAttribute($value)
     {
-        $this->attributes['nombres'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+        $this->attributes['nombres'] = ColombiaHelper::formatTitleCase($value);
     }
 
     public function getApellidosAttribute($value)
     {
-        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+        return ColombiaHelper::formatTitleCase($value);
     }
 
     public function setApellidosAttribute($value)
     {
-        $this->attributes['apellidos'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+        $this->attributes['apellidos'] = ColombiaHelper::formatTitleCase($value);
     }
 
     public function getDireccionAttribute($value)
     {
-        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+        return ColombiaHelper::formatTitleCase($value);
     }
 
     public function setDireccionAttribute($value)
     {
-        $this->attributes['direccion'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+        $this->attributes['direccion'] = ColombiaHelper::formatTitleCase($value);
     }
-
 
     /**
      * Retorna el nombre completo de forma dinámica.
@@ -102,7 +102,7 @@ class Cliente extends Model
     /** Abreviatura legible del tipo de identificación (ej. C.C., NIT, Pass, etc.) */
     public function getTipoIdentificacionAbreviadoAttribute(): string
     {
-        return \App\Helpers\ColombiaHelper::abreviaturaTipoIdentificacion($this->tipo_identificacion);
+        return ColombiaHelper::abreviaturaTipoIdentificacion($this->tipo_identificacion);
     }
 
     /** Relación: Un cliente tiene muchos equipos */

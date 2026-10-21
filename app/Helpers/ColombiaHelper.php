@@ -94,7 +94,7 @@ class ColombiaHelper
             'tarjeta_identidad', 'ti', 't.i', 't.i.' => 'T.I.',
             'nit' => 'NIT',
             'rut' => 'RUT',
-            default => !empty($tipo) ? strtoupper(str_replace('_', ' ', (string) $tipo)) : 'NIT',
+            default => ! empty($tipo) ? strtoupper(str_replace('_', ' ', (string) $tipo)) : 'NIT',
         };
     }
 
@@ -177,7 +177,7 @@ class ColombiaHelper
             foreach ($acronyms as $acronym) {
                 $pattern = preg_quote($acronym, '/');
                 $title = (string) preg_replace(
-                    '/(?<=^|[\s,;.\-\(\)\/])' . $pattern . '(?=$|[\s,;.\-\(\)\/])/ui',
+                    '/(?<=^|[\s,;.\-\(\)\/])'.$pattern.'(?=$|[\s,;.\-\(\)\/])/ui',
                     $acronym,
                     $title
                 );
@@ -187,4 +187,3 @@ class ColombiaHelper
         return $title;
     }
 }
-

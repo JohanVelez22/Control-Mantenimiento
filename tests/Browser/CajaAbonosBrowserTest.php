@@ -12,6 +12,7 @@ use Tests\DuskTestCase;
 class CajaAbonosBrowserTest extends DuskTestCase
 {
     protected static ?User $adminUser = null;
+
     protected static ?ConceptoCaja $concepto = null;
 
     public function test_caja_lifecycle_and_abonos_in_browser(): void

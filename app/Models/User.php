@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\ColombiaHelper;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -37,12 +38,12 @@ class User extends Authenticatable
 
     public function getNameAttribute($value)
     {
-        return \App\Helpers\ColombiaHelper::formatTitleCase($value);
+        return ColombiaHelper::formatTitleCase($value);
     }
 
     public function setNameAttribute($value)
     {
-        $this->attributes['name'] = \App\Helpers\ColombiaHelper::formatTitleCase($value);
+        $this->attributes['name'] = ColombiaHelper::formatTitleCase($value);
     }
 
     // Método helper para verificar si es admin

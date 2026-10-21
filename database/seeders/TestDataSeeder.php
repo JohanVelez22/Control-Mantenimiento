@@ -83,7 +83,7 @@ class TestDataSeeder extends Seeder
             'Mauricio', 'Julián', 'Felipe', 'Gustavo Adolfo', 'Camilo', 'Álvaro',
             'Nicolás', 'Daniel', 'Esteban', 'Javier Darío', 'Rodrigo', 'César Augusto',
             'Manuel', 'Héctor Fabio', 'Oscar Iván', 'Hernán', 'Rubén Darío', 'Cristian',
-            'Guillermo', 'Fabio Nelson', 'Edgar', 'Leonardo', 'Víctor Manuel', 'Jaime'
+            'Guillermo', 'Fabio Nelson', 'Edgar', 'Leonardo', 'Víctor Manuel', 'Jaime',
         ];
 
         $nombresMujeres = [
@@ -92,7 +92,7 @@ class TestDataSeeder extends Seeder
             'Claudia Patricia', 'Sandra Milena', 'Luz Marina', 'Gloria Inés', 'Mónica',
             'Adriana', 'Esperanza', 'Angélica', 'Liliana', 'Paola Andrea', 'Bibiana',
             'Maritza', 'Ximena', 'Juliana', 'Marcela', 'Estefanía', 'Vanessa',
-            'Ingrid Johana', 'Yuliana', 'Lorena', 'Silvia Juliana', 'Angela María'
+            'Ingrid Johana', 'Yuliana', 'Lorena', 'Silvia Juliana', 'Angela María',
         ];
 
         $apellidos = [
@@ -101,7 +101,7 @@ class TestDataSeeder extends Seeder
             'Morales', 'Ríos', 'Osorio', 'Restrepo', 'Jaramillo', 'Zuluaga', 'Montoya',
             'Castrillón', 'Gaviria', 'Echeverri', 'Duque', 'Castaño', 'Henao', 'Bedoya',
             'Salazar', 'Valencia', 'Gutiérrez', 'Mendoza', 'Cardona', 'Mejía', 'Botero',
-            'Ceballos', 'Quintero', 'Arango', 'Villegas', 'Blandón', 'Saldarriaga'
+            'Ceballos', 'Quintero', 'Arango', 'Villegas', 'Blandón', 'Saldarriaga',
         ];
 
         $ubicaciones = [
@@ -120,22 +120,24 @@ class TestDataSeeder extends Seeder
             ['Valle del Cauca', 'Cartago'],
         ];
 
-        $generarDireccion = function () use ($ubicaciones) {
+        $generarDireccion = function () {
             $vias = ['Carrera', 'Calle', 'Avenida', 'Diagonal', 'Transversal'];
             $via = $vias[array_rand($vias)];
             $n1 = rand(3, 98);
             $n2 = rand(1, 85);
             $n3 = rand(2, 95);
-            $extra = rand(0, 1) ? ' Apto ' . rand(101, 804) : (rand(0, 1) ? ' Oficina ' . rand(201, 508) : ' Local ' . rand(1, 15));
+            $extra = rand(0, 1) ? ' Apto '.rand(101, 804) : (rand(0, 1) ? ' Oficina '.rand(201, 508) : ' Local '.rand(1, 15));
+
             return "{$via} {$n1} # {$n2}-{$n3}{$extra}";
         };
 
         $generarTelefono = function ($tipo = 'movil') {
             if ($tipo === 'fijo') {
-                return '(606) 3' . rand(10, 99) . '-' . rand(1000, 9999);
+                return '(606) 3'.rand(10, 99).'-'.rand(1000, 9999);
             }
             $prefijos = ['310', '311', '312', '313', '314', '315', '316', '317', '318', '320', '321', '322', '300', '301'];
-            return $prefijos[array_rand($prefijos)] . rand(1000000, 9999999);
+
+            return $prefijos[array_rand($prefijos)].rand(1000000, 9999999);
         };
 
         // ════════════════════════════════════════════════════════════════
@@ -156,7 +158,7 @@ class TestDataSeeder extends Seeder
             'Almacén Mayorista de Fuentes y Baterías', 'Cables y Accesorios Ópticos de Occidente',
             'Servicios y Tarjetas Madres del Café S.A.S.', 'Comercializadora Hardware Colombia S.A.',
             'Tecnología Integrada de los Andes S.A.S.', 'Redes y Servidores de Risaralda S.A.S.',
-            'Periféricos y Gamers Mayoristas del Eje'
+            'Periféricos y Gamers Mayoristas del Eje',
         ];
 
         $proveedores = [];
@@ -167,31 +169,31 @@ class TestDataSeeder extends Seeder
             $mpio = $ub[1];
 
             $nombreContacto = ($i % 2 === 0 ? $nombresHombres[array_rand($nombresHombres)] : $nombresMujeres[array_rand($nombresMujeres)])
-                . ' ' . $apellidos[array_rand($apellidos)] . ' ' . $apellidos[array_rand($apellidos)];
+                .' '.$apellidos[array_rand($apellidos)].' '.$apellidos[array_rand($apellidos)];
 
             if ($esEmpresa) {
-                $nombreRazonSocial = $empresasTech[($i - 1) % count($empresasTech)] . ($i > count($empresasTech) ? " Sucursal {$i}" : '');
+                $nombreRazonSocial = $empresasTech[($i - 1) % count($empresasTech)].($i > count($empresasTech) ? " Sucursal {$i}" : '');
                 $tipoEntidad = 'empresa';
                 $tipoId = 'nit';
                 $nitBase = 900000000 + ($i * 12345) % 99999999;
                 $dv = rand(0, 9);
-                $identificacion = number_format($nitBase, 0, '', '.') . "-{$dv}";
+                $identificacion = number_format($nitBase, 0, '', '.')."-{$dv}";
                 $telefonoPrincipal = $generarTelefono('fijo');
-                $email = 'ventas.sucursal' . $i . '@' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', substr($nombreRazonSocial, 0, 15))) . '.com.co';
+                $email = 'ventas.sucursal'.$i.'@'.strtolower(preg_replace('/[^a-zA-Z0-9]/', '', substr($nombreRazonSocial, 0, 15))).'.com.co';
             } else {
                 $nombreRazonSocial = ($i % 2 === 0 ? $nombresHombres[array_rand($nombresHombres)] : $nombresMujeres[array_rand($nombresMujeres)])
-                    . ' ' . $apellidos[array_rand($apellidos)] . ' ' . $apellidos[array_rand($apellidos)];
+                    .' '.$apellidos[array_rand($apellidos)].' '.$apellidos[array_rand($apellidos)];
                 $tipoEntidad = 'persona';
                 $tipoId = ($i % 5 === 0) ? 'rut' : 'cedula_ciudadania';
                 $identificacion = (string) (1088000000 + $i * 371);
                 $telefonoPrincipal = $generarTelefono('movil');
-                $email = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', substr($nombreRazonSocial, 0, 12))) . $i . '@gmail.com';
+                $email = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', substr($nombreRazonSocial, 0, 12))).$i.'@gmail.com';
             }
 
             // REQUERIMIENTO EXPLÍCITO DEL USUARIO: telefono2 (Número alterno) y contacto_nombre (Contacto Principal) DEBEN ESTAR SIEMPRE LLENOS
             $telefonoAlterno = $generarTelefono('movil');
 
-            $notas = "Proveedor homologado categoría " . chr(65 + ($i % 4)) . ". Tiempo de entrega promedio " . rand(24, 72) . "h. Condiciones de crédito: " . (rand(0, 1) ? 'Contado comercial' : '30 días netos') . ". Contacto técnico asignado: {$nombreContacto}.";
+            $notas = 'Proveedor homologado categoría '.chr(65 + ($i % 4)).'. Tiempo de entrega promedio '.rand(24, 72).'h. Condiciones de crédito: '.(rand(0, 1) ? 'Contado comercial' : '30 días netos').". Contacto técnico asignado: {$nombreContacto}.";
 
             // 85% activos, 15% inactivos/anulados para probar filtros
             $activo = ($i <= 85);
@@ -232,11 +234,11 @@ class TestDataSeeder extends Seeder
 
             $tipoId = ($i % 15 === 0) ? 'nit' : (($i % 25 === 0) ? 'cedula_extranjeria' : 'cedula_ciudadania');
             $identificacion = ($tipoId === 'nit')
-                ? (901000000 + $i * 543) . '-' . rand(0, 9)
+                ? (901000000 + $i * 543).'-'.rand(0, 9)
                 : (string) (1053000000 + $i * 482);
 
             $movil = $generarTelefono('movil');
-            $email = strtolower(str_replace(' ', '.', $nombre)) . '.' . strtolower($ap1) . $i . '@' . ($i % 3 === 0 ? 'hotmail.com' : 'gmail.com');
+            $email = strtolower(str_replace(' ', '.', $nombre)).'.'.strtolower($ap1).$i.'@'.($i % 3 === 0 ? 'hotmail.com' : 'gmail.com');
 
             // 88% activos, 12% inactivos
             $activo = ($i <= 88);
@@ -271,17 +273,17 @@ class TestDataSeeder extends Seeder
             'Reparación de Monitores, Displays LED y Fuentes Conmutadas',
             'Impresoras Multifuncionales, Inyección Térmica y Láser',
             'Consolas de Videojuegos y Hardware de Alto Rendimiento Gamer',
-            'Electrónica de Potencia, UPS e Inversores Solares'
+            'Electrónica de Potencia, UPS e Inversores Solares',
         ];
 
         $tecnicos = [];
         for ($i = 1; $i <= 100; $i++) {
             $esHombre = ($i % 4 !== 0);
             $nombre = ($esHombre ? $nombresHombres[array_rand($nombresHombres)] : $nombresMujeres[array_rand($nombresMujeres)])
-                . ' ' . $apellidos[array_rand($apellidos)] . ' ' . $apellidos[array_rand($apellidos)];
+                .' '.$apellidos[array_rand($apellidos)].' '.$apellidos[array_rand($apellidos)];
             $identificacion = (string) (1088300000 + $i * 219);
             $movil = $generarTelefono('movil');
-            $email = 'tecnico.' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', substr($nombre, 0, 10))) . $i . '@tecnisystemas.com';
+            $email = 'tecnico.'.strtolower(preg_replace('/[^a-zA-Z0-9]/', '', substr($nombre, 0, 10))).$i.'@tecnisystemas.com';
             $activo = ($i <= 90);
 
             $tecnicos[] = Tecnico::create([
@@ -343,14 +345,14 @@ class TestDataSeeder extends Seeder
             $bajaUserId = $estaDadoDeBaja ? $userIds[array_rand($userIds)] : null;
             $active = ! $estaDadoDeBaja;
 
-            $serie = strtoupper(substr($cat[1], 0, 3)) . '-' . (2025 + ($i % 2)) . '-' . str_pad($i, 5, '0', STR_PAD_LEFT);
+            $serie = strtoupper(substr($cat[1], 0, 3)).'-'.(2025 + ($i % 2)).'-'.str_pad($i, 5, '0', STR_PAD_LEFT);
 
             $equipos[] = Equipo::create([
                 'nombre' => $cat[0],
                 'marca' => $cat[1],
                 'modelo' => $cat[2],
                 'serie' => $serie,
-                'observacion' => $cat[3] . ". Registrado en recepción para trazabilidad técnica.",
+                'observacion' => $cat[3].'. Registrado en recepción para trazabilidad técnica.',
                 'user_id' => $userIds[array_rand($userIds)],
                 'cliente_id' => $clienteId,
                 'proveedor_id' => $proveedorId,
@@ -406,8 +408,8 @@ class TestDataSeeder extends Seeder
             $item = $stockCatalogo[($i - 1) % count($stockCatalogo)];
             $proveedor = $proveedores[array_rand($proveedores)];
 
-            $codigo = 'STK-' . (1000 + $i);
-            $nombreProd = $item[0] . ($i > count($stockCatalogo) ? ' Rev.' . ceil($i / count($stockCatalogo)) : '');
+            $codigo = 'STK-'.(1000 + $i);
+            $nombreProd = $item[0].($i > count($stockCatalogo) ? ' Rev.'.ceil($i / count($stockCatalogo)) : '');
             $precioCompra = $item[3] + rand(-5, 10) * 1000;
             $utilidad = $item[4];
             $precioVenta = round($precioCompra * (1 + $utilidad / 100), -2);
@@ -469,7 +471,7 @@ class TestDataSeeder extends Seeder
                 'precio_compra_unitario' => $costoUnitario,
                 'costo_total_perdida' => $perdidaTotal,
                 'motivo' => $motivo,
-                'observacion' => $obsBajasStock[array_rand($obsBajasStock)] . " (Auditoría #{$i})",
+                'observacion' => $obsBajasStock[array_rand($obsBajasStock)]." (Auditoría #{$i})",
                 'created_at' => Carbon::now()->subDays(rand(1, 90))->subHours(rand(1, 12)),
             ]);
         }
@@ -494,7 +496,7 @@ class TestDataSeeder extends Seeder
             $equipo = $equipos[($i - 1) % count($equipos)];
             $tecnico = $tecnicos[array_rand($tecnicos)];
             $user = $userIds[array_rand($userIds)];
-            $idOrden = 'MANT-' . str_pad($i, 4, '0', STR_PAD_LEFT);
+            $idOrden = 'MANT-'.str_pad($i, 4, '0', STR_PAD_LEFT);
             $tipo = ($i % 3 === 0) ? 'preventivo' : 'correctivo';
             $reparacion = ($i % 2 === 0) ? 'software' : 'hardware';
             $costo = rand(8, 55) * 5000; // COP 40.000 a COP 275.000
@@ -579,7 +581,7 @@ class TestDataSeeder extends Seeder
                     'tipo_pago' => $ab1->tipo_pago,
                     'monto' => $abono1Monto,
                     'monto_total' => $costo,
-                    'descripcion' => "Abono #1 a Orden MANT #{$idOrden} - " . ($equipo->cliente?->nombre ?? 'Cliente'),
+                    'descripcion' => "Abono #1 a Orden MANT #{$idOrden} - ".($equipo->cliente?->nombre ?? 'Cliente'),
                     'estado' => 'activo',
                     'anulado' => false,
                     'user_id' => $user,
@@ -607,7 +609,7 @@ class TestDataSeeder extends Seeder
                         'tipo_pago' => 'efectivo',
                         'monto' => $abono2Monto,
                         'monto_total' => $costo,
-                        'descripcion' => "Abono final saldo Orden MANT #{$idOrden} - " . ($equipo->cliente?->nombre ?? 'Cliente'),
+                        'descripcion' => "Abono final saldo Orden MANT #{$idOrden} - ".($equipo->cliente?->nombre ?? 'Cliente'),
                         'estado' => 'activo',
                         'anulado' => false,
                         'user_id' => $user,
@@ -636,7 +638,7 @@ class TestDataSeeder extends Seeder
                     'tipo_pago' => 'efectivo',
                     'monto' => $montoParcial,
                     'monto_total' => $costo,
-                    'descripcion' => "Abono parcial Orden MANT #{$idOrden} - Saldo pendiente: $" . number_format($costo - $montoParcial, 0, ',', '.'),
+                    'descripcion' => "Abono parcial Orden MANT #{$idOrden} - Saldo pendiente: $".number_format($costo - $montoParcial, 0, ',', '.'),
                     'estado' => 'activo',
                     'anulado' => false,
                     'user_id' => $user,
@@ -665,7 +667,7 @@ class TestDataSeeder extends Seeder
             $equipo = $equipos[($i + 5) % count($equipos)];
             $tecnico = $tecnicos[array_rand($tecnicos)];
             $user = $userIds[array_rand($userIds)];
-            $idOrden = 'ELC-' . str_pad($i, 4, '0', STR_PAD_LEFT);
+            $idOrden = 'ELC-'.str_pad($i, 4, '0', STR_PAD_LEFT);
             $costo = rand(15, 80) * 5000; // COP 75.000 a COP 400.000
             $diasAtras = rand(1, 80);
             $fechaEntrada = Carbon::now()->subDays($diasAtras);
@@ -744,7 +746,7 @@ class TestDataSeeder extends Seeder
                     'tipo_pago' => 'consignacion',
                     'monto' => $costo,
                     'monto_total' => $costo,
-                    'descripcion' => "Abono total a Electrónica ELC #{$idOrden} - " . ($equipo->cliente?->nombre ?? 'Cliente'),
+                    'descripcion' => "Abono total a Electrónica ELC #{$idOrden} - ".($equipo->cliente?->nombre ?? 'Cliente'),
                     'estado' => 'activo',
                     'anulado' => false,
                     'user_id' => $user,
@@ -771,7 +773,7 @@ class TestDataSeeder extends Seeder
                     'tipo_pago' => 'efectivo',
                     'monto' => $montoParcial,
                     'monto_total' => $costo,
-                    'descripcion' => "Abono parcial Electrónica ELC #{$idOrden} - Saldo pendiente: $" . number_format($costo - $montoParcial, 0, ',', '.'),
+                    'descripcion' => "Abono parcial Electrónica ELC #{$idOrden} - Saldo pendiente: $".number_format($costo - $montoParcial, 0, ',', '.'),
                     'estado' => 'activo',
                     'anulado' => false,
                     'user_id' => $user,
@@ -786,7 +788,7 @@ class TestDataSeeder extends Seeder
         $this->command?->info('Sembrando 100 Facturas comerciales (ventas y compras con ítems y movimientos)...');
 
         for ($i = 1; $i <= 100; $i++) {
-            $numFactura = 'F-' . str_pad($i, 4, '0', STR_PAD_LEFT);
+            $numFactura = 'F-'.str_pad($i, 4, '0', STR_PAD_LEFT);
             $esVenta = ($i <= 60); // 60 ventas, 40 compras
             $tipoMovimiento = $esVenta ? 'venta' : 'compra';
             $user = $userIds[array_rand($userIds)];
@@ -845,7 +847,7 @@ class TestDataSeeder extends Seeder
             } elseif ($i <= 55) {
                 $estado = 'emitida';
                 $totalPagado = $totalDoc;
-                $obs = "Factura cancelada en su totalidad. Documento cerrado.";
+                $obs = 'Factura cancelada en su totalidad. Documento cerrado.';
 
                 // Generar movimiento de caja vinculado
                 MovimientoCaja::create([
@@ -867,7 +869,7 @@ class TestDataSeeder extends Seeder
                 $estado = 'pendiente_pago';
                 $totalPagado = round($totalDoc * (rand(30, 65) / 100), -2);
                 $saldo = $totalDoc - $totalPagado;
-                $obs = "Pago parcial registrado. ⚠️ SALDO PENDIENTE: $" . number_format($saldo, 0, ',', '.');
+                $obs = 'Pago parcial registrado. ⚠️ SALDO PENDIENTE: $'.number_format($saldo, 0, ',', '.');
 
                 // Generar movimiento parcial de caja
                 MovimientoCaja::create([
@@ -879,7 +881,7 @@ class TestDataSeeder extends Seeder
                     'tipo_pago' => 'efectivo',
                     'monto' => $totalPagado,
                     'monto_total' => $totalDoc,
-                    'descripcion' => "Abono a factura #{$numFactura} - Saldo restante: $" . number_format($saldo, 0, ',', '.'),
+                    'descripcion' => "Abono a factura #{$numFactura} - Saldo restante: $".number_format($saldo, 0, ',', '.'),
                     'estado' => 'activo',
                     'anulado' => false,
                     'user_id' => $user,
@@ -888,7 +890,7 @@ class TestDataSeeder extends Seeder
             } else {
                 $estado = 'pendiente_pago';
                 $totalPagado = 0;
-                $obs = "Factura emitida a crédito comercial. ⚠️ SALDO PENDIENTE: $" . number_format($totalDoc, 0, ',', '.');
+                $obs = 'Factura emitida a crédito comercial. ⚠️ SALDO PENDIENTE: $'.number_format($totalDoc, 0, ',', '.');
             }
 
             $factura->update([
@@ -907,7 +909,7 @@ class TestDataSeeder extends Seeder
         $estadosCot = ['aprobada', 'pendiente', 'rechazada', 'vencida'];
 
         for ($i = 1; $i <= 100; $i++) {
-            $codigo = 'COT-' . str_pad($i, 4, '0', STR_PAD_LEFT);
+            $codigo = 'COT-'.str_pad($i, 4, '0', STR_PAD_LEFT);
             $esCliente = ($i <= 75); // 75 clientes, 25 proveedores
             $clienteId = $esCliente ? $clientes[array_rand($clientes)]->id : null;
             $proveedorId = ! $esCliente ? $proveedores[array_rand($proveedores)]->id : null;
@@ -928,7 +930,7 @@ class TestDataSeeder extends Seeder
                 'total' => 0,
                 'estado' => $estado,
                 'anulado' => $anulado,
-                'notas' => "Cotización comercial sujeta a disponibilidad de inventario. Precios en COP no incluyen retenciones adicionales.",
+                'notas' => 'Cotización comercial sujeta a disponibilidad de inventario. Precios en COP no incluyen retenciones adicionales.',
                 'user_id' => $user,
             ]);
 
@@ -986,7 +988,7 @@ class TestDataSeeder extends Seeder
                 'tipo_pago' => $tipoPago,
                 'monto' => $gasto[3],
                 'monto_total' => $gasto[3],
-                'descripcion' => $gasto[0] . " (Ref. OP-{$i})",
+                'descripcion' => $gasto[0]." (Ref. OP-{$i})",
                 'estado' => 'activo',
                 'anulado' => ($i === 28), // 1 anulado para prueba
                 'user_id' => $userIds[array_rand($userIds)],

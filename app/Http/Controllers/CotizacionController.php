@@ -341,18 +341,36 @@ class CotizacionController extends Controller
             $tipoMovimiento = $esProveedor ? 'compra' : 'venta';
             $prefijoFactura = $esProveedor ? 'CMP-' : 'VT-';
 
-            // Validar y bloquear stock disponible para ventas a clientes
-            if (! $esProveedor) {
-                // Ordenar ítems por item_id para prevenir deadlocks en transacciones concurrentes
-                $stockItems = $cotizacion->items->filter(fn ($it) => $it->tipo === 'stock' && $it->item_id)->sortBy('item_id');
-                foreach ($stockItems as $item) {
+            // Validar y bloquear stock en orden canónico (item_id ASC) para prevenir deadlocks
+            $stockItems = $cotizacion->items->filter(fn ($it) => $it->tipo === 'stock' && $it->item_id)->sortBy('item_id');
+            $lockedStocks = [];
+
+            // 1. Bloquear filas de stock en orden ascendente estricto
+            foreach ($stockItems as $item) {
+                if (! isset($lockedStocks[$item->item_id])) {
                     $stock = Stock::where('id', $item->item_id)->lockForUpdate()->first();
-                    if (! $stock || ! $stock->tieneDisponible((int) $item->cantidad)) {
-                        $prodNombre = $stock ? $stock->producto : $item->descripcion;
-                        $disp = $stock ? $stock->cantidad : 0;
+                    if (! $stock) {
                         DB::rollBack();
 
-                        return back()->with('error', "Stock insuficiente para '{$prodNombre}'. Disponible: {$disp}, requerido: {$item->cantidad}.");
+                        return back()->with('error', "El artículo '{$item->descripcion}' ya no existe en el inventario.");
+                    }
+                    $lockedStocks[$item->item_id] = $stock;
+                }
+            }
+
+            // 2. Si es venta a cliente, verificar disponibilidad total requerida
+            if (! $esProveedor) {
+                $cantidadesRequeridas = [];
+                foreach ($stockItems as $item) {
+                    $cantidadesRequeridas[$item->item_id] = ($cantidadesRequeridas[$item->item_id] ?? 0) + (int) $item->cantidad;
+                }
+
+                foreach ($cantidadesRequeridas as $stockId => $totalRequerido) {
+                    $stock = $lockedStocks[$stockId];
+                    if (! $stock->tieneDisponible($totalRequerido)) {
+                        DB::rollBack();
+
+                        return back()->with('error', "Stock insuficiente para '{$stock->producto}'. Disponible: {$stock->cantidad}, requerido: {$totalRequerido}.");
                     }
                 }
             }
@@ -378,7 +396,7 @@ class CotizacionController extends Controller
                 'user_id' => auth()->id(),
             ]);
 
-            // 3. Crear FacturaItems y ajustar inventario según corresponda
+            // 3. Crear FacturaItems y ajustar inventario según corresponda reutilizando modelos bloqueados
             foreach ($cotizacion->items as $item) {
                 FacturaItem::create([
                     'factura_id' => $factura->id,
@@ -388,14 +406,12 @@ class CotizacionController extends Controller
                     'precio_unitario' => $item->precio_unitario,
                 ]);
 
-                if ($item->tipo === 'stock' && $item->item_id) {
-                    $stock = Stock::find($item->item_id);
-                    if ($stock) {
-                        if ($esProveedor) {
-                            $stock->incrementarStock((int) $item->cantidad);
-                        } else {
-                            $stock->decrementarStock((int) $item->cantidad);
-                        }
+                if ($item->tipo === 'stock' && $item->item_id && isset($lockedStocks[$item->item_id])) {
+                    $stock = $lockedStocks[$item->item_id];
+                    if ($esProveedor) {
+                        $stock->incrementarStock((int) $item->cantidad);
+                    } else {
+                        $stock->decrementarStock((int) $item->cantidad);
                     }
                 }
             }

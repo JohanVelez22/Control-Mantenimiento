@@ -22,32 +22,35 @@ trait HandlesStockAttach
 
         try {
             DB::transaction(function () use ($model, $validated, &$successMsg) {
+                // Bloquear el modelo (Mantenimiento o Electronica) para serializar modificaciones concurrentes
+                $lockedModel = get_class($model)::where('id', $model->id)->lockForUpdate()->firstOrFail();
+
                 $stock = Stock::findOrFail($validated['stock_id']);
 
                 // Salida atómica del stock (bloquea la fila y evita saldo negativo).
                 $stock = app(StockService::class)->salida($stock, $validated['cantidad']);
 
                 // Determinar precio según tipo de cliente (técnico o normal)
-                $cliente = $model->equipo?->cliente;
+                $cliente = $lockedModel->equipo?->cliente;
                 $esTecnico = $cliente && $cliente->tipo_cliente === 'tecnico';
                 $precioUnitario = ($esTecnico && $stock->precio_tecnico > 0)
                     ? (float) $stock->precio_tecnico
                     : (float) $stock->precio_venta;
 
                 // Agregar al modelo (suma si ya existía, sino attach).
-                $existing = $model->stocks()->where('stock_id', $stock->id)->first();
+                $existing = $lockedModel->stocks()->where('stock_id', $stock->id)->first();
                 if ($existing) {
                     $newCantidad = $existing->pivot->cantidad + $validated['cantidad'];
                     $totalPrevio = (float) $existing->pivot->cantidad * (float) $existing->pivot->precio_unitario;
                     $totalNuevo = (float) $validated['cantidad'] * $precioUnitario;
                     $nuevoPrecioUnitario = round(($totalPrevio + $totalNuevo) / $newCantidad, 2);
-                    $model->stocks()->updateExistingPivot($stock->id, [
+                    $lockedModel->stocks()->updateExistingPivot($stock->id, [
                         'cantidad' => $newCantidad,
                         'precio_unitario' => $nuevoPrecioUnitario,
                     ]);
                     $successMsg = "Se sumaron {$validated['cantidad']} unidad(es) a '{$stock->producto}' (total actual: {$newCantidad} uds).";
                 } else {
-                    $model->stocks()->attach($stock->id, [
+                    $lockedModel->stocks()->attach($stock->id, [
                         'cantidad' => $validated['cantidad'],
                         'precio_unitario' => $precioUnitario,
                     ]);
@@ -55,7 +58,7 @@ trait HandlesStockAttach
                 }
 
                 // Sumar al costo del modelo
-                $model->increment('costo', $precioUnitario * $validated['cantidad']);
+                $lockedModel->increment('costo', $precioUnitario * $validated['cantidad']);
             });
 
             return redirect()->back()->with('success', $successMsg);
@@ -86,14 +89,16 @@ trait HandlesStockAttach
             return redirect()->back()->with('error', 'No se pueden eliminar repuestos de un registro anulado.');
         }
 
-        $repuesto = $model->stocks()->where('stock_id', $stock_id)->first();
-
-        if (! $repuesto) {
-            return redirect()->back()->with('error', 'El repuesto no existe en este registro.');
-        }
-
         try {
-            DB::transaction(function () use ($model, $repuesto, $stock_id) {
+            DB::transaction(function () use ($model, $stock_id) {
+                // Bloquear el modelo para serializar modificaciones concurrentes
+                $lockedModel = get_class($model)::where('id', $model->id)->lockForUpdate()->firstOrFail();
+                $repuesto = $lockedModel->stocks()->where('stock_id', $stock_id)->first();
+
+                if (! $repuesto) {
+                    throw new \DomainException('El repuesto no existe en este registro.');
+                }
+
                 $cantidad = $repuesto->pivot->cantidad;
                 $precio = $repuesto->pivot->precio_unitario;
 
@@ -101,13 +106,15 @@ trait HandlesStockAttach
                 app(StockService::class)->entrada($stock_id, $cantidad);
 
                 // Restar costo del modelo
-                $model->decrement('costo', $precio * $cantidad);
+                $lockedModel->decrement('costo', $precio * $cantidad);
 
                 // Desvincular
-                $model->stocks()->detach($stock_id);
+                $lockedModel->stocks()->detach($stock_id);
             });
 
             return redirect()->back()->with('success', $successMsg);
+        } catch (\DomainException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         } catch (\Exception $e) {
             Log::error('Error eliminando repuesto: '.$e->getMessage());
 

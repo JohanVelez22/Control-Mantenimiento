@@ -92,6 +92,24 @@ class MovimientoInventarioController extends Controller
             $saldo = $totalDocumento - $totalPagado;
             $estado = $saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida';
 
+            // Ordenar y agrupar stock_id en orden ascendente canónico para prevenir deadlocks
+            $cantidadesPorStock = [];
+            foreach ($request->items as $item) {
+                $sid = (int) $item['stock_id'];
+                $cantidadesPorStock[$sid] = ($cantidadesPorStock[$sid] ?? 0) + (int) $item['cantidad'];
+            }
+            ksort($cantidadesPorStock);
+
+            // Bloquear filas de stock en orden ascendente estricto
+            $lockedStocks = [];
+            foreach (array_keys($cantidadesPorStock) as $stockId) {
+                $stock = Stock::where('id', $stockId)->lockForUpdate()->first();
+                if (! $stock) {
+                    throw new \DomainException("El artículo con ID {$stockId} no existe.");
+                }
+                $lockedStocks[$stockId] = $stock;
+            }
+
             // 1. Crear la factura
             $factura = Factura::create([
                 'numero_factura' => Factura::siguienteNumero('CP-'),
@@ -106,9 +124,9 @@ class MovimientoInventarioController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            // 2. Registrar ítems e incrementar stock
+            // 2. Registrar ítems e incrementar stock utilizando los modelos bloqueados
             foreach ($request->items as $item) {
-                $stock = Stock::findOrFail($item['stock_id']);
+                $stock = $lockedStocks[(int) $item['stock_id']];
 
                 FacturaItem::create([
                     'factura_id' => $factura->id,
@@ -231,14 +249,27 @@ class MovimientoInventarioController extends Controller
             $saldo = $totalDocumento - $totalPagado;
             $estado = $saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida';
 
-            // 1. Pre-validar disponibilidad de TODOS los ítems antes de modificar BD
+            // Ordenar y agrupar stock_id en orden ascendente canónico para prevención de deadlocks
+            $cantidadesPorStock = [];
             foreach ($request->items as $item) {
-                $stock = Stock::findOrFail($item['stock_id']);
-                if (! $stock->tieneDisponible((int) $item['cantidad'])) {
+                $sid = (int) $item['stock_id'];
+                $cantidadesPorStock[$sid] = ($cantidadesPorStock[$sid] ?? 0) + (int) $item['cantidad'];
+            }
+            ksort($cantidadesPorStock);
+
+            // 1. Bloquear y validar disponibilidad de TODOS los ítems bajo lockForUpdate en orden estricto
+            $lockedStocks = [];
+            foreach ($cantidadesPorStock as $stockId => $totalRequerido) {
+                $stock = Stock::where('id', $stockId)->lockForUpdate()->first();
+                if (! $stock) {
+                    throw new \DomainException("El artículo con ID {$stockId} no existe.");
+                }
+                if (! $stock->tieneDisponible($totalRequerido)) {
                     throw new \DomainException(
-                        "Stock insuficiente para '{$stock->producto}'. Disponible: {$stock->cantidad}."
+                        "Stock insuficiente para '{$stock->producto}'. Disponible: {$stock->cantidad}, requerido: {$totalRequerido}."
                     );
                 }
+                $lockedStocks[$stockId] = $stock;
             }
 
             // 2. Crear la factura
@@ -255,9 +286,9 @@ class MovimientoInventarioController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            // 3. Registrar ítems y descontar stock
+            // 3. Registrar ítems y descontar stock reutilizando modelos ya bloqueados
             foreach ($request->items as $item) {
-                $stock = Stock::findOrFail($item['stock_id']);
+                $stock = $lockedStocks[(int) $item['stock_id']];
 
                 FacturaItem::create([
                     'factura_id' => $factura->id,

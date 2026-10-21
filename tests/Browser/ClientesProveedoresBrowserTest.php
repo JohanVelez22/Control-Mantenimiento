@@ -77,17 +77,17 @@ class ClientesProveedoresBrowserTest extends DuskTestCase
                 ->screenshot('proveedores_directorio_filtro');
 
             // 3. Módulo Proveedores: Ver detalle con abreviatura (C.C.) y teléfono alternativo
-            $browser->visit('/proveedores/' . $proveedor->id)
-                ->assertPathIs('/proveedores/' . $proveedor->id)
+            $browser->visit('/proveedores/'.$proveedor->id)
+                ->assertPathIs('/proveedores/'.$proveedor->id)
                 ->assertSee('(C.C.)')
                 ->assertSee('Alt:')
                 ->assertSee('6060606')
                 ->screenshot('proveedor_detalle_abreviado')
-                ->visit('/proveedores/' . $proveedor->id)
+                ->visit('/proveedores/'.$proveedor->id)
                 ->assertSee('Artículos Suministrados')
                 ->assertSee('Historial de Compras')
                 ->screenshot('proveedor_1_tablas')
-                ->script("window.scrollTo(0, 600);");
+                ->script('window.scrollTo(0, 600);');
             $browser->pause(200)
                 ->screenshot('proveedor_1_historial_compras')
                 ->visit('/stocks/1')
@@ -106,5 +106,3 @@ class ClientesProveedoresBrowserTest extends DuskTestCase
         });
     }
 }
-
-
