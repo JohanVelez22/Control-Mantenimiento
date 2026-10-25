@@ -46,10 +46,11 @@ class MovimientoInventarioController extends Controller
         }
         if ($request->has('items') && is_array($request->items)) {
             $items = $request->items;
-            foreach ($items as &$item) {
+            foreach ($items as $k => $item) {
                 if (isset($item['precio_unitario'])) {
                     $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
                 }
+                $items[$k] = $item;
             }
             $request->merge(['items' => $items]);
         }
@@ -203,10 +204,11 @@ class MovimientoInventarioController extends Controller
         }
         if ($request->has('items') && is_array($request->items)) {
             $items = $request->items;
-            foreach ($items as &$item) {
+            foreach ($items as $k => $item) {
                 if (isset($item['precio_unitario'])) {
                     $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
                 }
+                $items[$k] = $item;
             }
             $request->merge(['items' => $items]);
         }
@@ -605,25 +607,27 @@ class MovimientoInventarioController extends Controller
         }
         if ($request->has('existing_items') && is_array($request->existing_items)) {
             $items = $request->existing_items;
-            foreach ($items as &$item) {
+            foreach ($items as $k => $item) {
                 if (array_key_exists('stock_id', $item) && empty($item['stock_id'])) {
                     $item['stock_id'] = null;
                 }
                 if (isset($item['precio_unitario'])) {
                     $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
                 }
+                $items[$k] = $item;
             }
             $request->merge(['existing_items' => $items]);
         }
         if ($request->has('new_items') && is_array($request->new_items)) {
             $items = $request->new_items;
-            foreach ($items as &$item) {
+            foreach ($items as $k => $item) {
                 if (array_key_exists('stock_id', $item) && empty($item['stock_id'])) {
                     $item['stock_id'] = null;
                 }
                 if (isset($item['precio_unitario'])) {
                     $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
                 }
+                $items[$k] = $item;
             }
             $request->merge(['new_items' => $items]);
         }
