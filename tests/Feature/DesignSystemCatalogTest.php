@@ -46,6 +46,8 @@ class DesignSystemCatalogTest extends TestCase
         $response->assertSee('Iconografía Vectorial SVG');
         $response->assertSee('demo-table');
         $response->assertSee('demo-ds-modal');
+        $response->assertSee('https://wa.me/573001234567');
+        $response->assertSee('Imprimir Catálogo');
     }
 
     public function test_tecnico_can_access_design_system_catalog(): void

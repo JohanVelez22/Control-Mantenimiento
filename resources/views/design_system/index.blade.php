@@ -246,6 +246,45 @@
             </button>
         </div>
     </div>
+
+    <!-- 7. Componente x-whatsapp-link -->
+    <div class="glass p-6 md:p-8 rounded-2xl border border-white/20 dark:border-white/5 space-y-4">
+        <div class="border-b border-gray-200/40 dark:border-white/5 pb-3">
+            <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                <x-icon name="tools" class="w-5 h-5 text-emerald-500" />
+                7. Enlaces de Comunicación Directa (Componente <code>x-whatsapp-link</code>)
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Normalización de números telefónicos y enlace instantáneo a chat de WhatsApp Web / App.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-6 pt-2 text-sm">
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-500">Móvil con código país:</span>
+                <x-whatsapp-link telefono="+57 300 123 4567" />
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-500">Móvil estándar:</span>
+                <x-whatsapp-link telefono="3129876543" />
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-500">Fallback sin número:</span>
+                <x-whatsapp-link :telefono="null" fallback="Sin teléfono" />
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. Componente x-print-dropdown -->
+    <div class="glass p-6 md:p-8 rounded-2xl border border-white/20 dark:border-white/5 space-y-4">
+        <div class="border-b border-gray-200/40 dark:border-white/5 pb-3">
+            <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                <x-icon name="clipboard" class="w-5 h-5 text-blue-500" />
+                8. Impresión Dual A4 / POS (Componente <code>x-print-dropdown</code>)
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Selector de formato de impresión compatible con tirilla térmica POS (80mm) y factura estándar A4.</p>
+        </div>
+        <div class="pt-2">
+            <x-print-dropdown url="{{ route('design-system') }}" label="Imprimir Catálogo" />
+        </div>
+    </div>
 </div>
 
 <!-- Modal Demostrativa -->
