@@ -50,3 +50,9 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - **Manuales Operativos:** Redacción de `docs/MANUAL_OPERACIONES_Y_MANTENIMIENTO.md` y `docs/ARQUITECTURA_Y_MODELO_DATOS.md`.
 - **Checklist de Producción:** Actualización de `DEPLOY_CHECKLIST.md` con guías paso a paso para entornos Linux y Windows.
 - **Actualización de Seguridad:** Renovación de `SECURITY_DEBT.md` documentando la resolución completa de hallazgos críticos.
+- **Bloque 0 de Seguridad y Control de Técnicos (`commit f14a4a2`):** Autorización administrativa obligatoria vía hash Bcrypt para técnicos que intenten anular o desvincular artículos, repuestos o movimientos de caja. Suite `SecurityBloque0AuditTest.php` con 13 tests.
+- **Parches Críticos de Dependencias y PHP 8.4 (`commit 007cea1`):** Actualización de `laravel/framework` a `v13.38.0`, `dompdf` a `v3.1.6`, `guzzle` a `v8.3.0` (resolviendo CVE-2026-114509 / PKSA-b41t-wbzk-9q51), y eliminación de recursión de referencias en `MovimientoInventarioController`.
+- **Arquitectura Modular Liquid Glass (`commit 42b3e09`):** División del monolito `glass.css` en 11 submódulos en `resources/css/glass/` y redacción de `docs/GUIA_ARQUITECTURA_CSS_MODULAR.md` como estándar de diseño pionero.
+- **Iconografía Vectorial SVG (`commit 1fbf6f2`):** Creación del componente `<x-icon>` con 15 iconos SVG reemplazando emojis de SO en el sidebar.
+- **Living Styleguide y Activación de Componentes Blade (`commits c37fc5a, 91dea33`):** Creación de `/design-system` con catálogo interactivo que activa y documenta los 5 componentes del sistema (`<x-icon>`, `<x-table>`, `<x-modal>`, `<x-whatsapp-link>`, `<x-print-dropdown>`), respaldado por `DesignSystemCatalogTest.php`.
+- **Línea Base Final:** 565 pruebas aprobadas (1,828 aserciones) con 100% de éxito y cero regresiones.

@@ -7,10 +7,11 @@ Este documento certifica el estado de seguridad, mitigación de vulnerabilidades
 ## 🛡️ Estado de Seguridad del Proyecto (Fases 1 a 6 Completadas)
 
 ### Métrica de Verificación Automatizada
-- **Tests Automatizados:** 554 pruebas aprobadas (100% verde).
-- **Aserciones de Verificación:** 1,784 aserciones independientes.
+- **Tests Automatizados:** 565 pruebas aprobadas (100% verde).
+- **Aserciones de Verificación:** 1,828 aserciones independientes.
 - **Análisis Estático (Laravel Pint):** Sin violaciones de estándares PSR-12 / Laravel.
-- **Compilación de Activos (Vite):** Producción verificada sin errores de manifiesto.
+- **Compilación de Activos (Vite):** Producción verificada sin errores de manifiesto (1.77s build).
+- **Auditoría de Dependencias (Composer):** 0 advisories (`composer audit` limpio).
 
 ---
 
@@ -22,12 +23,15 @@ Este documento certifica el estado de seguridad, mitigación de vulnerabilidades
 | **P0-2** | Fuga de Datos | Inclusión involuntaria de `.env` o credenciales en backups ZIP. | Exclusión estricta de `.env`, credenciales y logs en `BackupDatabase` y `BackupController`. | `BackupManagementTest` |
 | **P0-3** | Entorno | Rutas de Laravel Dusk potencialmente expuestas en producción. | Guarda estricta de entorno en `AppServiceProvider` / `CheckRole` y denegación en web server. | `RouteListTest`, `AUDITORIA_EXHAUSTIVA.md` |
 | **P0-4** | Backups | Vulnerabilidad potencial a Path Traversal y Zip Slip en restauración. | Validación de nombres de archivo mediante regex estricto y escaneo previo de cabeceras ZIP rechazando rutas relativas (`..`). | `SecurityHardeningAuditTest::test_backup_zip_slip_is_blocked_safely` |
+| **P0-5** | Autorización | Técnicos podían desvincular o anular repuestos/stock sin clave administrativa. | Verificación de contraseña administrativa mediante `Hash::check()` en anulación y desvinculación de repuestos. | `SecurityBloque0AuditTest` (13 tests) |
+| **P0-6** | Dependencias | Vulnerabilidad de denegación de servicio / recursión PHP 8.4 (CVE-2026-114509). | Actualización a Laravel 13.38.0, Dompdf 3.1.6, Guzzle 8.3.0 y eliminación de referencias huérfanas en arrays. | `composer audit`, `InventarioTest` |
 | **P1-1** | Finanzas | Mutabilidad arbitraria en cajas cerradas y recálculo de efectivo. | Cierres de caja inmutables, saldo anterior acumulado y validación de abonos contra fecha de cierre. | `CierreCajaConciliacionTest`, `FinancialIntegrityTest` |
 | **P1-2** | Concurrencia | Colisiones en numeración de documentos (`MAX+1`). | Implementación de tabla `secuencias_documento` con incremento atómico bajo transacción. | `DocumentSequenceTest`, `CotizacionConversionConcurrencyTest` |
 | **P1-3** | Inventario | Condiciones de carrera en deducción de existencias. | Deducción transaccional con `lockForUpdate()`, validación de stock disponible y registro de bajas auditables. | `StockConcurrencyTest`, `StockControllerTest` |
 | **P1-4** | Base de Datos | Consultas con `whereDate()` que invalidaban índices y redundancia. | Reemplazo por comparaciones directas de fecha, creación de índices compuestos y eliminación de pares inversos. | `DatabaseOptimizationTest` |
 | **P1-5** | Frontend | Sintaxis CSS huérfana en `glass.css`, accesibilidad deficiente en modales y uso de `innerHTML`. | Corrección de sintaxis en `@media print`, roles y atributos ARIA (`role="dialog"`, `aria-modal="true"`), y sanitización con `replaceChildren()`. | `FrontendAccessibilityAndSecurityTest` |
 | **P1-6** | Sesiones | `remember_token` estático al cambiar contraseña y subprocesos host en testing. | Rotación automática de `remember_token` con `Str::random(60)` y bypass seguro sin spawns de shell en testing. | `SecurityHardeningAuditTest::test_user_password_change_rotates_remember_token` |
+| **P1-7** | Design System | Monolito de CSS de difícil mantenimiento y componentes Blade huérfanos (§57). | Modularización en 11 submódulos en `resources/css/glass/`, creación de `<x-icon>` SVG y catálogo `/design-system`. | `DesignSystemCatalogTest` (4 tests) |
 
 ---
 
