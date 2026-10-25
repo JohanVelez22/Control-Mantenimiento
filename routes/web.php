@@ -85,6 +85,9 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::get('/electronicas-reportes', [ElectronicaController::class, 'reportes'])->name('electronicas.reportes');
         Route::get('/stocks-reportes', [StockController::class, 'reportes'])->name('stocks.reportes');
         Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
+        Route::get('/design-system', function () {
+            return view('design_system.index');
+        })->name('design-system');
 
         // Reportes Financieros
         Route::prefix('reportes-financieros')->name('reportes.financiero.')->group(function () {
