@@ -58,20 +58,30 @@ class Configuracion extends Model
      */
     public static function getGlobal(): self
     {
-        return Cache::rememberForever('configuracion_global', function () {
-            return static::firstOrCreate(
-                ['id' => 1],
-                [
-                    'nombre' => 'Tecni Systemas',
-                    'nit' => '900.000.000-1',
-                    'telefono' => '300 000 0000',
-                    'direccion' => 'Calle Principal # 1-1',
-                    'correo' => 'contacto@tecnisystemas.com',
-                    'pie_pagina_factura' => 'Gracias por su preferencia.',
-                    'formato_factura' => 'estandar',
-                ]
-            );
-        });
+        $cached = Cache::get('configuracion_global');
+
+        if ($cached instanceof self) {
+            return $cached;
+        }
+
+        Cache::forget('configuracion_global');
+
+        $config = static::firstOrCreate(
+            ['id' => 1],
+            [
+                'nombre' => 'Tecni Systemas',
+                'nit' => '900.000.000-1',
+                'telefono' => '300 000 0000',
+                'direccion' => 'Calle Principal # 1-1',
+                'correo' => 'contacto@tecnisystemas.com',
+                'pie_pagina_factura' => 'Gracias por su preferencia.',
+                'formato_factura' => 'estandar',
+            ]
+        );
+
+        Cache::forever('configuracion_global', $config);
+
+        return $config;
     }
 
     public function getNombreAttribute($value)
