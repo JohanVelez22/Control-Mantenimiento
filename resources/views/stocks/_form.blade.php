@@ -48,9 +48,6 @@
 
         <div>
             <label for="cantidad" class="field-label">{{ $st ? 'Cantidad Actual' : 'Cantidad Inicial' }} <span class="text-red-500 font-bold">*</span></label>
-            @if($st)
-                <input type="hidden" name="cantidad_original" value="{{ $st->cantidad }}">
-            @endif
             <input type="number" name="cantidad" id="cantidad"
                    value="{{ old('cantidad', $st?->cantidad ?? 0) }}"
                    required min="0" class="glass-input font-bold dark:[color-scheme:dark]">

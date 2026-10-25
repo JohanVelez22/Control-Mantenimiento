@@ -325,6 +325,16 @@
             </div>
         @endif
 
+        @if(auth()->check() && auth()->user()->isTecnico())
+        <div class="mb-4 p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 max-w-md ml-auto">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-center">
+                🔒 Autorización Requerida — Contraseña de Administrador:
+            </label>
+            <input type="password" name="password_confirm" required placeholder="Contraseña de Administrador..." 
+                class="glass-input text-center tracking-widest text-base w-full focus:ring-orange-500">
+        </div>
+        @endif
+
         <div class="flex flex-col sm:flex-row items-center justify-end gap-3 mt-0 pt-0">
             <a href="{{ route('inventario.facturas') }}" class="btn-cancel w-full sm:w-auto justify-center text-center"><span>✕</span><span>Cancelar</span></a>
             <button type="submit" class="btn-save w-full sm:w-auto justify-center">💾 Guardar Cambios</button>

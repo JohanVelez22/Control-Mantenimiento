@@ -156,14 +156,24 @@ class StockController extends Controller
                 $lockedStock = Stock::where('id', $stock->id)->lockForUpdate()->firstOrFail();
 
                 $nuevaCantidad = (int) $validated['cantidad'];
+                $cantidadActual = (int) $lockedStock->cantidad;
 
+                // Detección de colisión concurrente: si el cliente cargó la vista con un saldo previo
+                // y solicitó una reducción mayor a la disponible actualmente en la base de datos
                 if ($request->filled('cantidad_original')) {
                     $cantidadOriginal = (int) $request->input('cantidad_original');
-                    $diff = $nuevaCantidad - $cantidadOriginal;
-                } else {
-                    $cantidadActual = (int) $lockedStock->cantidad;
-                    $diff = $nuevaCantidad - $cantidadActual;
+                    if ($nuevaCantidad < $cantidadOriginal) {
+                        $reduccionIntentada = $cantidadOriginal - $nuevaCantidad;
+                        if ($reduccionIntentada > $cantidadActual) {
+                            throw new \DomainException("El stock disponible cambió concurrentemente a {$cantidadActual} unidad(es). No es posible reducir {$reduccionIntentada} unidades.");
+                        }
+                    }
                 }
+
+                // La diferencia real aplicada al inventario SIEMPRE tiene como base la cantidad actual en BD (A3),
+                // asegurando que la cantidad final en el inventario sea exactamente $nuevaCantidad y nunca se
+                // sumen existencias fantasma por campos manipulados.
+                $diff = $nuevaCantidad - $cantidadActual;
 
                 // Actualizar atributos generales excluyendo cantidad si varió para procesarla vía StockService
                 $attrs = $validated;

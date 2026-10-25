@@ -293,6 +293,10 @@ class MovimientoCajaController extends Controller
 
     public function update(Request $request, MovimientoCaja $movimiento)
     {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
+        }
+
         if ($movimiento->anulado || $movimiento->estado === 'anulado') {
             return redirect()->route('caja.index')->with('error', 'Por seguridad, no se puede editar un movimiento de caja que se encuentra anulado.');
         }

@@ -345,6 +345,17 @@
                               class="glass-input text-xs"></textarea>
                 </div>
 
+                {{-- Autorización Requerida para Técnico --}}
+                @if(auth()->check() && auth()->user()->isTecnico())
+                <div class="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 max-w-md ml-auto">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-center">
+                        🔒 Autorización Requerida — Contraseña de Administrador:
+                    </label>
+                    <input type="password" name="password_confirm" required placeholder="Contraseña de Administrador..." 
+                        class="glass-input text-center tracking-widest text-base w-full focus:ring-orange-500">
+                </div>
+                @endif
+
                 {{-- Botón de Cierre --}}
                 <div class="flex flex-col sm:flex-row justify-end items-center gap-3 mt-6 md:mt-8">
                     <button type="submit" id="btn-submit-cierre" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">

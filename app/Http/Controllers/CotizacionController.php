@@ -257,6 +257,10 @@ class CotizacionController extends Controller
             return back()->with('error', $error)->withInput();
         }
 
+        if ($cotizacion->estado === 'convertida') {
+            return back()->with('error', 'No se puede anular una cotización que ya ha sido convertida en factura.')->withInput();
+        }
+
         try {
             DB::beginTransaction();
 

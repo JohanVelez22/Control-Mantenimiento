@@ -592,6 +592,10 @@ class MovimientoInventarioController extends Controller
 
     public function updateFactura(Request $request, Factura $factura): RedirectResponse
     {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
+        }
+
         if ($factura->estado === 'anulada') {
             return redirect()->route('inventario.facturas.show', $factura)->with('error', 'Por seguridad, no se puede editar una factura que se encuentra anulada.');
         }
@@ -841,6 +845,12 @@ class MovimientoInventarioController extends Controller
                     ->where('anulado', false)
                     ->where('estado', 'activo')
                     ->sum('monto');
+
+                if ($totalPagado < $abonosExistentes - Factura::EPSILON) {
+                    DB::rollBack();
+
+                    return back()->with('error', 'El total pagado no puede ser menor a los abonos ya registrados en caja ($'.number_format($abonosExistentes, 0, ',', '.').').')->withInput();
+                }
 
                 $montoBaseAjustado = max(0, $totalPagado - $abonosExistentes);
 

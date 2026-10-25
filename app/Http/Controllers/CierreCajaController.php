@@ -30,6 +30,10 @@ class CierreCajaController extends Controller
     /** Realiza el cierre del día indicado con opción de conciliación física */
     public function store(Request $request)
     {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return back()->with('error', $error)->withInput();
+        }
+
         $fecha = Carbon::parse($request->fecha)->toDateString();
         $request->merge(['fecha' => $fecha]);
 
@@ -161,6 +165,10 @@ class CierreCajaController extends Controller
     /** Actualizar observaciones y motivo de diferencia del cierre */
     public function update(Request $request, CierreCaja $cierre)
     {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return back()->with('error', $error)->withInput();
+        }
+
         $request->validate([
             'observaciones' => 'nullable|string|max:1000',
             'motivo_diferencia' => 'nullable|string|max:1000',
