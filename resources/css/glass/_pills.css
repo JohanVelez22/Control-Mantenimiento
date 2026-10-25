@@ -1,0 +1,142 @@
+/* ================================================================
+   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: INSIGNIAS Y PILLS DE ESTADO (BADGES & PILLS)
+   ================================================================ */
+
+/* --- PILLS DE ESTADO -------------------------------------------------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.pill-pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: #B45309;
+  border: 1px solid rgba(245, 158, 11, 0.30);
+}
+
+.pill-done {
+  background: rgba(16, 185, 129, 0.12);
+  color: #065F46;
+  border: 1px solid rgba(16, 185, 129, 0.30);
+}
+
+.pill-anulado {
+  background: rgba(239, 68, 68, 0.10);
+  color: #991B1B;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.pill-ingreso {
+  background: rgba(16, 185, 129, 0.12);
+  color: #065F46;
+  border: 1px solid rgba(16, 185, 129, 0.30);
+}
+
+.pill-egreso {
+  background: rgba(239, 68, 68, 0.10);
+  color: #991B1B;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.pill-efectivo {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1D4ED8;
+  border: 1px solid rgba(37, 99, 235, 0.30);
+}
+
+.pill-banco {
+  background: rgba(147, 51, 234, 0.12);
+  color: #7E22CE;
+  border: 1px solid rgba(147, 51, 234, 0.30);
+}
+
+.pill-correctivo {
+  background: rgba(249, 115, 22, 0.12);
+  color: #C2410C;
+  border: 1px solid rgba(249, 115, 22, 0.30);
+}
+
+.pill-preventivo {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1D4ED8;
+  border: 1px solid rgba(37, 99, 235, 0.30);
+}
+
+.pill-especialidad {
+  background: rgba(99, 102, 241, 0.12);
+  color: #4338CA;
+  border: 1px solid rgba(99, 102, 241, 0.30);
+}
+
+html.dark .pill-pending {
+  color: #FCD34D;
+  border-color: rgba(245, 158, 11, 0.40);
+  background: rgba(245, 158, 11, 0.15);
+}
+
+html.dark .pill-done {
+  color: #6EE7B7;
+  border-color: rgba(16, 185, 129, 0.40);
+  background: rgba(16, 185, 129, 0.15);
+}
+
+html.dark .pill-anulado {
+  color: #FCA5A5;
+  border-color: rgba(239, 68, 68, 0.40);
+  background: rgba(239, 68, 68, 0.15);
+}
+
+html.dark .pill-ingreso {
+  color: #6EE7B7;
+  border-color: rgba(16, 185, 129, 0.40);
+  background: rgba(16, 185, 129, 0.15);
+}
+
+html.dark .pill-egreso {
+  color: #FCA5A5;
+  border-color: rgba(239, 68, 68, 0.40);
+  background: rgba(239, 68, 68, 0.15);
+}
+
+html.dark .pill-efectivo {
+  color: #93C5FD;
+  border-color: rgba(37, 99, 235, 0.40);
+  background: rgba(37, 99, 235, 0.15);
+}
+
+html.dark .pill-banco {
+  color: #D8B4FE;
+  border-color: rgba(147, 51, 234, 0.40);
+  background: rgba(147, 51, 234, 0.15);
+}
+
+html.dark .pill-correctivo {
+  color: #FDBA74;
+  border-color: rgba(249, 115, 22, 0.40);
+  background: rgba(249, 115, 22, 0.15);
+}
+
+html.dark .pill-preventivo {
+  color: #93C5FD;
+  border-color: rgba(37, 99, 235, 0.40);
+  background: rgba(37, 99, 235, 0.15);
+}
+
+html.dark .pill-especialidad {
+  color: #A5B4FC;
+  border-color: rgba(99, 102, 241, 0.40);
+  background: rgba(99, 102, 241, 0.15);
+}
+
+/* ================================================================
+   Print
+   ================================================================ */
+@media print {
+

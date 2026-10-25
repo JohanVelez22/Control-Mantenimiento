@@ -1,0 +1,44 @@
+/* ================================================================
+   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: BARRA SUPERIOR (TOPBAR)
+   ================================================================ */
+
+/* --- BARRA SUPERIOR (TOPBAR) -------------------------------------------------- */
+#ts-topbar {
+  background: rgba(255, 255, 255, 0.60);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.50);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 1px 12px rgba(37, 99, 235, 0.07);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+html.dark #ts-topbar {
+  background: rgba(8, 16, 36, 0.70);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.30);
+}
+
+/* --- BOTÓN GLOBAL CONFIGURACIÓN DE HORIZONTALIDAD Y NO WRAP --- */
+.btn-primary,
+.btn-clean,
+.btn-add,
+.btn-today,
+.btn-backup,
+.btn-save,
+.btn-cancel,
+.btn-close-modal,
+.btn-save-print,
+.btn-concepts,
+.btn-venta,
+.btn-compra,
+.btn-purple,
+.btn-secondary,
+.btn-ghost,
+.btn-danger,
+.btn-success {
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
+

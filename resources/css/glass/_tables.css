@@ -1,0 +1,549 @@
+/* ================================================================
+   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: TABLAS DE DATOS LIQUID GLASS (TABLES)
+   ================================================================ */
+
+/* --- TABLA DE DATOS ULTRA-PREMIUM (Liquid Glass) ------------------------- */
+.ts-table,
+.glass-table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border-radius: 18px !important;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  transition: none !important;
+}
+
+html.dark .ts-table,
+html.dark .glass-table {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(10, 18, 36, 0.82) 100%);
+  box-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.ts-table thead th,
+.glass-table thead th,
+.table-dense thead th,
+.table-compact thead th,
+table thead th {
+  padding: 8px 12px !important;
+  text-align: center;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px !important;
+  line-height: 1.3 !important;
+  height: 35px !important;
+  box-sizing: border-box !important;
+  text-transform: uppercase !important;
+  color: #1E293B;
+  background: rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.80);
+  position: sticky;
+  top: 0;
+  white-space: nowrap !important;
+  transition: none !important;
+}
+
+html.dark .ts-table thead th,
+html.dark .glass-table thead th,
+html.dark .table-dense thead th,
+html.dark .table-compact thead th,
+html.dark table thead th {
+  color: #F8FAFC !important;
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ts-table thead th:first-child,
+.glass-table thead th:first-child {
+  border-top-left-radius: 16px !important;
+}
+
+.ts-table thead th:last-child,
+.glass-table thead th:last-child {
+  border-top-right-radius: 16px !important;
+}
+
+.ts-table tbody tr,
+.glass-table tbody tr {
+  transition: transform 0.1s ease;
+}
+
+/* Hover effect for tables */
+.ts-table tbody tr:hover,
+.glass-table tbody tr:hover {
+  background: rgba(37, 99, 235, 0.12) !important;
+  box-shadow: inset 3px 0 0 #2563EB;
+}
+
+html.dark .ts-table tbody tr:hover,
+html.dark .glass-table tbody tr:hover {
+  background: rgba(37, 99, 235, 0.15) !important;
+  box-shadow: inset 3px 0 0 #60A5FA;
+}
+
+/* Hover variante purpura para tablas de electronica */
+.ts-table.table-electronica tbody tr:hover {
+  background: rgba(168, 85, 247, 0.12) !important;
+  box-shadow: inset 3px 0 0 #9333EA;
+}
+
+html.dark .ts-table.table-electronica tbody tr:hover {
+  background: rgba(168, 85, 247, 0.15) !important;
+  box-shadow: inset 3px 0 0 #C084FC;
+}
+
+.ts-table tbody td,
+.glass-table tbody td {
+  padding: 16px;
+  font-size: 13px;
+  text-align: center;
+  color: #1E293B;
+  line-height: 1.5;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.60);
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.ts-table tbody tr:last-child td,
+.ts-table tfoot tr:last-child td,
+.glass-table tbody tr:last-child td,
+.glass-table tfoot tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Desactivar hover en filas vacías de datos (@empty con colspan) */
+.ts-table tbody tr:has(td[colspan]):hover,
+.glass-table tbody tr:has(td[colspan]):hover,
+html.dark .ts-table tbody tr:has(td[colspan]):hover,
+html.dark .glass-table tbody tr:has(td[colspan]):hover {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Desactivar efecto hover en pie de tabla (totales) */
+.ts-table tfoot tr:hover,
+.glass-table tfoot tr:hover,
+html.dark .ts-table tfoot tr:hover,
+html.dark .glass-table tfoot tr:hover {
+  background: inherit !important;
+  box-shadow: none !important;
+}
+
+/* Esquinas inferiores perfectamente ovaladas/redondeadas en la última fila del cuerpo y pie de tabla */
+.ts-table tbody tr:last-child,
+.ts-table tfoot tr:last-child,
+.glass-table tbody tr:last-child,
+.glass-table tfoot tr:last-child {
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+.ts-table tbody tr:last-child td:first-child,
+.ts-table tfoot tr:last-child td:first-child,
+.glass-table tbody tr:last-child td:first-child,
+.glass-table tfoot tr:last-child td:first-child {
+  border-bottom-left-radius: 16px !important;
+}
+
+.ts-table tbody tr:last-child td:last-child,
+.ts-table tfoot tr:last-child td:last-child,
+.glass-table tbody tr:last-child td:last-child,
+.glass-table tfoot tr:last-child td:last-child {
+  border-bottom-right-radius: 16px !important;
+}
+
+/* Para filas con celda única (ej. @empty con colspan) */
+.ts-table tbody tr:last-child td[colspan],
+.glass-table tbody tr:last-child td[colspan] {
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+/* Preservar bordes redondeados al hacer hover sobre la última fila */
+.ts-table tbody tr:last-child:hover,
+.glass-table tbody tr:last-child:hover {
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+.ts-table tbody tr:last-child:hover td:first-child,
+.glass-table tbody tr:last-child:hover td:first-child {
+  border-bottom-left-radius: 16px !important;
+}
+
+.ts-table tbody tr:last-child:hover td:last-child,
+.glass-table tbody tr:last-child:hover td:last-child {
+  border-bottom-right-radius: 16px !important;
+}
+
+/* En tablas CON tfoot: el tbody NO debe tener esquinas redondeadas inferiores ni borde que corte antes del total */
+.ts-table:has(tfoot) tbody tr:last-child,
+.ts-table:has(tfoot) tbody tr:last-child td,
+.ts-table:has(tfoot) tbody tr:last-child td:first-child,
+.ts-table:has(tfoot) tbody tr:last-child td:last-child,
+.ts-table:has(tfoot) tbody tr:last-child td[colspan],
+.glass-table:has(tfoot) tbody tr:last-child,
+.glass-table:has(tfoot) tbody tr:last-child td,
+.glass-table:has(tfoot) tbody tr:last-child td:first-child,
+.glass-table:has(tfoot) tbody tr:last-child td:last-child,
+.glass-table:has(tfoot) tbody tr:last-child td[colspan],
+.ts-table:has(tfoot) tbody tr:last-child:hover,
+.ts-table:has(tfoot) tbody tr:last-child:hover td,
+.ts-table:has(tfoot) tbody tr:last-child:hover td:first-child,
+.ts-table:has(tfoot) tbody tr:last-child:hover td:last-child,
+.ts-table:has(tfoot) tbody tr:last-child:hover td[colspan],
+.glass-table:has(tfoot) tbody tr:last-child:hover,
+.glass-table:has(tfoot) tbody tr:last-child:hover td,
+.glass-table:has(tfoot) tbody tr:last-child:hover td:first-child,
+.glass-table:has(tfoot) tbody tr:last-child:hover td:last-child,
+.glass-table:has(tfoot) tbody tr:last-child:hover td[colspan] {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* En tablas CON tfoot: las esquinas inferiores ovaladas corresponden exclusivamente a la última fila de tfoot */
+.ts-table tfoot tr:last-child,
+.glass-table tfoot tr:last-child {
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+.ts-table tfoot tr:last-child td:first-child,
+.glass-table tfoot tr:last-child td:first-child {
+  border-bottom-left-radius: 16px !important;
+}
+
+.ts-table tfoot tr:last-child td:last-child,
+.glass-table tfoot tr:last-child td:last-child {
+  border-bottom-right-radius: 16px !important;
+}
+
+.ts-table tfoot tr:last-child td[colspan]:only-child,
+.glass-table tfoot tr:last-child td[colspan]:only-child {
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+/* Pie de tabla completamente integrado al marco de la tabla */
+.ts-table tfoot tr,
+.glass-table tfoot tr {
+  border-top: none !important;
+}
+
+.ts-table tfoot td,
+.glass-table tfoot td {
+  border-bottom: none !important;
+}
+
+/* Margen inferior en tarjetas contenedoras de tablas (simétrico y homogéneo al espacio superior del título) */
+.glass-card:has(.ts-table):not(:has(.table-footer-btn)):not(:has(nav[role="navigation"])):not(:has(.table-pagination-wrapper)),
+.glass-card:has(.glass-table):not(:has(.table-footer-btn)):not(:has(nav[role="navigation"])):not(:has(.table-pagination-wrapper)),
+.glass-card:has(table):not(.backup-files-wrapper):not(:has(.backup-table)):not(:has(.table-footer-btn)):not(:has(nav[role="navigation"])):not(:has(.table-pagination-wrapper)) {
+  padding-bottom: 32px !important;
+}
+
+/* Contenedor responsivo redondeado para tablas (elimina sombras cuadradas / cortes en punta) */
+.overflow-x-auto:has(.ts-table):not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.overflow-x-auto:has(.glass-table):not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.overflow-x-auto:has(table):not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.glass-card .overflow-x-auto:not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.card-operacion-header .overflow-x-auto:not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.card-operacion-pago .overflow-x-auto:not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+[class*="card"] .overflow-x-auto:not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]),
+.table-wrapper:not(.overflow-y-auto):not([class*="overflow-y-auto"]):not([class*="max-h-"]) {
+  border-radius: 16px !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+/* Permitir scroll vertical suave y visualmente estilizado en tablas con max-height o overflow-y-auto */
+.overflow-x-auto.overflow-y-auto,
+.overflow-x-auto[class*="overflow-y-auto"],
+.overflow-x-auto[class*="max-h-"],
+.glass-card .overflow-x-auto.overflow-y-auto,
+.glass-card .overflow-x-auto[class*="overflow-y-auto"],
+.glass-card .overflow-x-auto[class*="max-h-"],
+.table-wrapper.overflow-y-auto,
+.cotizacion-table-scroll {
+  border-radius: 16px !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  scroll-behavior: smooth !important;
+}
+
+.overflow-x-auto.overflow-y-auto::-webkit-scrollbar,
+.overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar,
+.overflow-x-auto[class*="max-h-"]::-webkit-scrollbar,
+.cotizacion-table-scroll::-webkit-scrollbar {
+  width: 7px !important;
+  height: 7px !important;
+}
+
+.overflow-x-auto.overflow-y-auto::-webkit-scrollbar-track,
+.overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar-track,
+.overflow-x-auto[class*="max-h-"]::-webkit-scrollbar-track,
+.cotizacion-table-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-radius: 8px !important;
+}
+
+.overflow-x-auto.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar-thumb,
+.overflow-x-auto[class*="max-h-"]::-webkit-scrollbar-thumb,
+.cotizacion-table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.45) !important;
+  border-radius: 8px !important;
+}
+
+.overflow-x-auto.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar-thumb:hover,
+.overflow-x-auto[class*="max-h-"]::-webkit-scrollbar-thumb:hover,
+.cotizacion-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7) !important;
+}
+
+html.dark .overflow-x-auto.overflow-y-auto::-webkit-scrollbar-thumb,
+html.dark .overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar-thumb,
+html.dark .overflow-x-auto[class*="max-h-"]::-webkit-scrollbar-thumb,
+html.dark .cotizacion-table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+html.dark .overflow-x-auto.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+html.dark .overflow-x-auto[class*="overflow-y-auto"]::-webkit-scrollbar-thumb:hover,
+html.dark .overflow-x-auto[class*="max-h-"]::-webkit-scrollbar-thumb:hover,
+html.dark .cotizacion-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* Evitar que selectores de productos no inicializados ensanchen la tabla y causen parpadeo horizontal */
+.ts-table select.stock-select,
+#items-table select.stock-select,
+#factura-items-table select.stock-select {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Espacio vertical simétrico y perfectamente centrado para botones de pie de tabla y paginadores */
+.glass-card:has(.table-footer-btn),
+.glass-card:has(div.table-footer-btn),
+.glass-card:has(table):has(.table-footer-btn),
+.glass-card:has(nav[role="navigation"]),
+.glass-card:has(.table-pagination-wrapper) {
+  padding-bottom: 20px !important;
+}
+
+.glass-card .table-footer-btn,
+.glass-card div:has(> nav[role="navigation"]),
+.glass-card .table-pagination-wrapper {
+  margin-top: 20px !important;
+  margin-bottom: 0 !important;
+}
+
+/* Cuando el pie de tabla/formulario tiene un divisor horizontal superior */
+.glass-card .table-footer-btn.border-t,
+.glass-card .table-footer-btn[class*="border-t"] {
+  margin-top: 14px !important;
+  padding-top: 14px !important;
+}
+
+/* Ocultar contenedores de paginación vacíos para evitar huecos innecesarios */
+.glass-card div:has(> nav:empty),
+.glass-card .flex:empty {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ---- Contenedor de Logo de Empresa (Tamaño profesional equilibrado UI/UX) ---- */
+.logo-upload-container {
+  width: 200px !important;
+  height: 200px !important;
+  max-width: 200px !important;
+  max-height: 200px !important;
+  border-radius: 20px !important;
+  border: 2px dashed rgba(148, 163, 184, 0.45) !important;
+  background: rgba(255, 255, 255, 0.35) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+}
+
+html.dark .logo-upload-container {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  background: rgba(15, 23, 42, 0.4) !important;
+}
+
+.logo-upload-container:hover {
+  border-color: #3B82F6 !important;
+  background: rgba(59, 130, 246, 0.04) !important;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15) !important;
+}
+
+.logo-camera-badge {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.20) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+
+.logo-camera-badge svg {
+  width: 18px !important;
+  height: 18px !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #FFFFFF !important;
+}
+
+html.dark .ts-table tbody td {
+  color: #F1F5F9;
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+html.dark .ts-table tbody td.text-amber-400,
+html.dark .ts-table tbody td.dark\:text-amber-400,
+html.dark .ts-table tbody td.text-amber-500 {
+  color: #fbbf24 !important;
+}
+
+.ts-table tbody td.text-amber-600 {
+  color: #d97706 !important;
+}
+
+html.dark .ts-table tbody td.text-red-400,
+html.dark .ts-table tbody td.dark\:text-red-400,
+html.dark .ts-table tbody td.text-red-600 {
+  color: #f87171 !important;
+}
+
+.ts-table tbody td.text-red-600 {
+  color: #dc2626 !important;
+}
+
+html.dark .ts-table tbody td.text-emerald-400,
+html.dark .ts-table tbody td.dark\:text-emerald-400,
+html.dark .ts-table tbody td.text-emerald-600 {
+  color: #34d399 !important;
+}
+
+.ts-table tbody td.text-emerald-600 {
+  color: #059669 !important;
+}
+
+/* Row state: anulado */
+.ts-table tbody tr.row-anulado {
+  opacity: 0.60;
+}
+
+.ts-table tbody tr.row-anulado td,
+.ts-table tbody tr.row-anulado td *:not(.pill):not(.pill *) {
+  text-decoration: none !important;
+  color: #94a3b8 !important;
+}
+
+/* --- TABLAS DENSAS (Mantenimientos, Electrónica - 12 Columnas) --- */
+@media screen and (min-width: 768px) {
+
+  .ts-table.table-dense,
+  #tabla-mantenimientos,
+  #tabla-electronicas {
+    width: 100% !important;
+  }
+
+  .ts-table thead th,
+  .glass-table thead th,
+  .ts-table.table-dense thead th,
+  #tabla-mantenimientos thead th,
+  #tabla-electronicas thead th,
+  .ts-table.table-compact-header thead th,
+  .table-compact-header thead th {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1.3 !important;
+    height: 35px !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+  }
+
+  .ts-table.table-dense tbody td,
+  #tabla-mantenimientos tbody td,
+  #tabla-electronicas tbody td {
+    padding: 11px 12px !important;
+    font-size: 12px !important;
+  }
+
+  /* Columna Orden con mayor espacio horizontal */
+  .ts-table.table-dense .col-orden,
+  #tabla-mantenimientos .col-orden,
+  #tabla-electronicas .col-orden {
+    width: 4.5rem !important;
+    min-width: 4.5rem !important;
+    max-width: 5.25rem !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  /* Columna Acciones con espaciado horizontal protegido y holgado */
+  .ts-table.table-dense .col-acciones,
+  #tabla-mantenimientos .col-acciones,
+  #tabla-electronicas .col-acciones {
+    width: 5.75rem !important;
+    min-width: 5.5rem !important;
+    max-width: 6rem !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  /* Columna Observación con lectura completa vertical y ancho balanceado */
+  .ts-table.table-dense .col-observacion,
+  #tabla-mantenimientos .col-observacion,
+  #tabla-electronicas .col-observacion {
+    min-width: 180px !important;
+    max-width: 260px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    vertical-align: middle !important;
+  }
+
+  @media (min-width: 1440px) {
+
+    .ts-table.table-dense .col-observacion,
+    #tabla-mantenimientos .col-observacion,
+    #tabla-electronicas .col-observacion {
+      min-width: 200px !important;
+      max-width: 300px !important;
+    }
+  }
+}
+

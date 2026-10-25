@@ -1,0 +1,338 @@
+/* ================================================================
+   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: BARRA LATERAL DE NAVEGACIÓN (SIDEBAR)
+   ================================================================ */
+
+/* --- SIDEBAR VIDRIO LIQUIDO -------------------------------------------------- */
+#ts-sidebar {
+  width: var(--sidebar-w);
+  background: rgba(255, 255, 255, 0.55);
+  border-right: 1px solid rgba(255, 255, 255, 0.50);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  box-shadow: 4px 0 20px rgba(37, 99, 235, 0.08);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+html.dark #ts-sidebar {
+  background: rgba(8, 16, 36, 0.75);
+  border-right-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.50);
+}
+
+#ts-sidebar:hover,
+#ts-sidebar.expanded {
+  width: var(--sidebar-expanded);
+}
+
+#main-wrapper {
+  margin-left: var(--sidebar-w) !important;
+  transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#ts-sidebar:hover~#main-wrapper,
+#ts-sidebar.expanded~#main-wrapper {
+  margin-left: var(--sidebar-expanded) !important;
+}
+
+/* --- REGLAS RESPONSIVAS DE SIDEBAR EN MÓVIL Y ZOOM ALTO (< 1024px) --- */
+@media (max-width: 1023px) {
+
+  #main-wrapper,
+  #ts-sidebar:hover~#main-wrapper,
+  #ts-sidebar.expanded~#main-wrapper {
+    margin-left: 0 !important;
+  }
+
+  #ts-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    height: 100dvh !important;
+    width: 280px !important;
+    max-width: 85vw !important;
+    z-index: 50 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, box-shadow 0.3s ease !important;
+    box-shadow: none !important;
+  }
+
+  #ts-sidebar.mobile-open {
+    transform: translateX(0) !important;
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  /* Los elementos dentro del cajón móvil se muestran inmediatamente sin retardo */
+  #ts-sidebar.mobile-open .nav-item {
+    width: 100% !important;
+    padding: 10px 14px !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    font-size: 13.5px !important;
+    opacity: 1 !important;
+  }
+
+  #ts-sidebar.mobile-open .nav-label {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    font-size: 13.5px !important;
+    transition: none !important;
+  }
+
+  #ts-sidebar.mobile-open .sidebar-brand-text {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: none !important;
+  }
+}
+
+#ts-topbar {
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+}
+
+/* --- ELEMENTOS NAVEGACIÓN SIDEBAR -------------------------------------------------- */
+.brand-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 18px;
+  color: #1E293B;
+  transition: color 0.4s ease;
+}
+
+html.dark .brand-text {
+  color: #F8FAFC;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #475569;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  position: relative;
+  min-width: 0;
+}
+
+html.dark .nav-item {
+  color: #94A3B8;
+}
+
+/* ---- Sidebar colapsado (Desktop): centrar iconos cuando no está expandido ni abierto en móvil ---- */
+#ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .nav-item {
+  padding-left: 0;
+  padding-right: 0;
+  justify-content: center;
+  gap: 0;
+  font-size: 0;
+}
+
+#ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .nav-label {
+  display: none !important;
+}
+
+/* --- BRAND HEADER EN SIDEBAR (Adaptativo al Zoom) --- */
+.sidebar-logo-title {
+  display: none !important;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 2px;
+}
+
+.sidebar-brand-text {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: #06B6D4;
+  line-height: 1;
+}
+
+/* Cuando el sidebar está colapsado en desktop: ocultar todo el texto de marca */
+#ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .sidebar-brand-text,
+#ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .sidebar-logo-title {
+  opacity: 0 !important;
+  display: none !important;
+}
+
+/* Modo Normal (Zoom < 150%): NAVEGACIÓN solo en el centro */
+#ts-sidebar:not(.show-sidebar-brand):hover .sidebar-brand-text,
+#ts-sidebar:not(.show-sidebar-brand).expanded .sidebar-brand-text {
+  opacity: 1;
+  display: inline-block !important;
+}
+
+/* Modo Zoom >= 150% o Móvil: TECNI SYSTEMAS encima de NAVEGACIÓN */
+#ts-sidebar.show-sidebar-brand:hover .sidebar-logo-title,
+#ts-sidebar.show-sidebar-brand.expanded .sidebar-logo-title,
+#ts-sidebar.show-sidebar-brand.mobile-open .sidebar-logo-title {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+#ts-sidebar.show-sidebar-brand:hover .sidebar-brand-text,
+#ts-sidebar.show-sidebar-brand.expanded .sidebar-brand-text,
+#ts-sidebar.show-sidebar-brand.mobile-open .sidebar-brand-text {
+  display: inline-block !important;
+  opacity: 1 !important;
+  font-size: 9px !important;
+  letter-spacing: 0.2em !important;
+  font-weight: 700 !important;
+  margin-top: 1px !important;
+}
+
+.nav-item .nav-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 15px;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+html.dark .nav-item .nav-icon {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-item:hover {
+  color: #1D4ED8;
+  background: rgba(37, 99, 235, 0.15);
+}
+
+html.dark .nav-item:hover {
+  color: #93C5FD;
+  background: rgba(37, 99, 235, 0.20);
+}
+
+.nav-item:hover .nav-icon {
+  background: rgba(37, 99, 235, 0.20);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.30);
+}
+
+/* ---- Estado activo navegación ---- */
+.nav-item.active {
+  color: #1D4ED8;
+  background: rgba(37, 99, 235, 0.10);
+}
+
+html.dark .nav-item.active {
+  color: #93C5FD;
+  background: rgba(37, 99, 235, 0.18);
+}
+
+.nav-item.active .nav-icon {
+  background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.40);
+}
+
+/* ---- Línea acento elemento activo ---- */
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 24px;
+  background: linear-gradient(180deg, #2563EB, #06B6D4);
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-label {
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.22s ease, transform 0.22s ease, color 0.4s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#ts-sidebar:hover .nav-label,
+#ts-sidebar.expanded .nav-label,
+#ts-sidebar.mobile-open .nav-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ---- Separador grupos navegación ---- */
+.nav-group-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #94A3B8;
+  padding: 6px 12px 3px;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  white-space: nowrap;
+}
+
+html.dark .nav-group-label {
+  color: #475569;
+}
+
+#ts-sidebar:hover .nav-group-label,
+#ts-sidebar.expanded .nav-group-label,
+#ts-sidebar.mobile-open .nav-group-label {
+  opacity: 1;
+}
+
+/* ---- Badge notificaciones pendientes ---- */
+.nav-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 10px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #F59E0B, #EF4444);
+  color: white;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.50);
+  animation: pulse-badge 2s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+
+  0%,
+  100% {
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.50);
+  }
+
+  50% {
+    box-shadow: 0 2px 14px rgba(239, 68, 68, 0.70);
+  }
+}
+

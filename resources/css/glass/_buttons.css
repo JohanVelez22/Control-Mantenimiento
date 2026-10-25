@@ -1,0 +1,3401 @@
+/* ================================================================
+   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: BOTONES Y CONTROLES INTERACTIVOS (BUTTONS)
+   ================================================================ */
+
+/* --- BOTÓN PRIMARIO VIDRIO LIQUIDO (Dimensiones idénticas a btn-purple: 38px) --- */
+.btn-primary {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: white !important;
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+/* --- LEVE BRILLO ELEGANTE EN BOTONES SÓLIDOS (Reflejo especular sutil Liquid Glass) --- */
+.btn-primary::before,
+.btn-today::before,
+.btn-clean::before,
+.btn-print::before,
+.btn-excel::before,
+.btn-pdf::before,
+.btn-save::before,
+.btn-cancel::before,
+.btn-close-modal::before,
+.btn-save-print::before,
+.btn-add::before,
+.btn-purple::before,
+.btn-backup::before,
+.btn-concepts::before,
+.btn-venta::before,
+.btn-compra::before,
+.btn-success::before,
+#btn-save-schedule::before,
+#btn-execute-backup::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 48% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.06) 70%, transparent 100%) !important;
+  border-radius: 12px 12px 0 0 !important;
+  pointer-events: none !important;
+  transition: all 0.22s ease !important;
+}
+
+.btn-primary:hover::before,
+.btn-primary:focus::before,
+.btn-primary:focus-visible::before,
+.btn-today:hover::before,
+.btn-clean:hover::before,
+.btn-print:hover::before,
+.btn-excel:hover::before,
+.btn-pdf:hover::before,
+.btn-save:hover::before,
+.btn-save:focus::before,
+.btn-save:focus-visible::before,
+.btn-cancel:hover::before,
+.btn-cancel:focus::before,
+.btn-cancel:focus-visible::before,
+.btn-close-modal:hover::before,
+.btn-close-modal:focus::before,
+.btn-close-modal:focus-visible::before,
+.btn-save-print:hover::before,
+.btn-save-print:focus::before,
+.btn-save-print:focus-visible::before,
+.btn-add:hover::before,
+.btn-add:focus::before,
+.btn-add:focus-visible::before,
+.btn-purple:hover::before,
+.btn-backup:hover::before,
+.btn-concepts:hover::before,
+.btn-venta:hover::before,
+.btn-compra:hover::before,
+.btn-success:hover::before,
+#btn-save-schedule:hover::before,
+#btn-execute-backup:hover::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.50) 0%, rgba(255, 255, 255, 0.12) 70%, transparent 100%) !important;
+}
+
+.btn-danger::before,
+.btn-action-anular::before,
+[title*="Anular"]::before,
+[title*="anular"]::before,
+label[for*="photo"]::before,
+label[for*="image"]::before,
+label.btn-blue::before,
+.btn-blue::before {
+  content: none !important;
+  display: none !important;
+}
+
+
+
+.btn-primary:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: white !important;
+}
+
+.btn-primary:active {}
+
+/* Calibración milimétrica para Guardar Programación */
+#btn-save-schedule {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  line-height: 1 !important;
+  padding: 0 22px !important;
+  font-weight: 800 !important;
+  font-size: 13.5px !important;
+  color: white !important;
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%) !important;
+  border-radius: 12px !important;
+  border: none !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  transition: all 0.25s ease !important;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+}
+
+#btn-save-schedule:hover {
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  color: white !important;
+}
+
+#btn-save-schedule:active {}
+
+#btn-save-schedule span {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  font-size: 14px !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+}
+
+/* Calibración milimétrica para Iniciar Respaldo Ahora (Tab 1) */
+#btn-execute-backup {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  line-height: 1 !important;
+  padding: 0 22px !important;
+  font-weight: 800 !important;
+  font-size: 13.5px !important;
+  color: white !important;
+  border-radius: 12px !important;
+  border: none !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: all 0.25s ease !important;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+}
+
+#btn-execute-backup:hover {}
+
+#btn-execute-backup:active {}
+
+#btn-execute-backup span {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  font-size: 14px !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+}
+
+/* ---- Botón Limpiar / Reset (Liquid Glass Violeta Orquídea / Idéntico a btn-purple / Ver Reporte Electrónica) ---- */
+.btn-clean {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+html.dark .btn-clean {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+}
+
+.btn-clean:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+html.dark .btn-clean:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+.btn-clean:active {
+  transform: none !important;
+}
+
+/* ---- Botón Agregar Línea / Artículo (Liquid Glass Esmeralda Constructivo) ---- */
+.btn-add {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+html.dark .btn-add {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+}
+
+.btn-add:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+html.dark .btn-add:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+.btn-add:active {
+  transform: none !important;
+}
+
+/* ---- Botón Hoy (Sólido Cian / Idéntico comportamiento a Ver Día) ---- */
+.btn-today {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+}
+
+.btn-today:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+.btn-today:active {
+  transform: none !important;
+}
+
+/* ---- Botón Respaldos / Seguridad (Liquid Glass Teal Tecnológico / Petróleo Blindado) ---- */
+.btn-backup {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.42) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.btn-backup:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+.btn-backup:active {
+  transform: none !important;
+}
+
+/* Variantes dinámicas de color para el botón de ejecución según la opción seleccionada */
+.btn-backup.btn-backup-db {
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+
+.btn-backup.btn-backup-db:hover {
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+.btn-backup.btn-backup-files {
+  background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+
+.btn-backup.btn-backup-files:hover {
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+.btn-backup.btn-backup-all {
+  background: linear-gradient(135deg, #A855F7 0%, #9333EA 100%) !important;
+  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+
+.btn-backup.btn-backup-all:hover {
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+/* ================================================================
+   Modal de Respaldos y Copias de Seguridad (Liquid Glass Pro)
+   ================================================================ */
+
+.backup-modal-card {
+  width: 95vw !important;
+  max-width: 860px !important;
+  max-height: 88vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+  border-radius: 1.5rem !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.75) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.16) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.dark .backup-modal-card,
+html.dark .backup-modal-card {
+  background: rgba(11, 18, 33, 0.96) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Encabezado fijo del modal */
+.backup-modal-header {
+  padding: 1.25rem 1.75rem !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  flex-shrink: 0 !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .backup-modal-header,
+html.dark .backup-modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+}
+
+/* Barra de pestañas segmentadas */
+.backup-modal-tabs {
+  padding: 0.75rem 1.75rem !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  flex-shrink: 0 !important;
+  background: rgba(248, 250, 252, 0.55) !important;
+}
+
+.dark .backup-modal-tabs,
+html.dark .backup-modal-tabs {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+}
+
+/* Botones de pestaña con identidad cromática individual inspirada en reportes financieros (diario, acumulado, operaciones) */
+.backup-tab-btn {
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  border-radius: 12px !important;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+}
+
+/* 1. Pestaña 1: Respaldo Inmediato (Ámbar / Oro Solar) */
+.backup-tab-manual {
+  color: #B45309 !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+  border: 1px solid rgba(245, 158, 11, 0.28) !important;
+}
+
+.backup-tab-manual:hover {
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  color: #92400E !important;
+}
+
+.dark .backup-tab-manual,
+html.dark .backup-tab-manual {
+  color: #FCD34D !important;
+  background: rgba(245, 158, 11, 0.14) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+.dark .backup-tab-manual:hover,
+html.dark .backup-tab-manual:hover {
+  background: rgba(245, 158, 11, 0.25) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+  color: #FEF3C7 !important;
+}
+
+.backup-tab-manual.is-active,
+.dark .backup-tab-manual.is-active,
+html.dark .backup-tab-manual.is-active {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  border-color: #D97706 !important;
+  box-shadow: none !important;
+}
+
+/* 2. Pestaña 2: Programación Automática (Púrpura / Violeta Cósmico) */
+.backup-tab-schedule {
+  color: #7C3AED !important;
+  background: rgba(139, 92, 246, 0.12) !important;
+  border: 1px solid rgba(139, 92, 246, 0.28) !important;
+}
+
+.backup-tab-schedule:hover {
+  background: rgba(139, 92, 246, 0.22) !important;
+  border-color: rgba(139, 92, 246, 0.45) !important;
+  color: #6D28D9 !important;
+}
+
+.dark .backup-tab-schedule,
+html.dark .backup-tab-schedule {
+  color: #C084FC !important;
+  background: rgba(139, 92, 246, 0.14) !important;
+  border-color: rgba(139, 92, 246, 0.3) !important;
+}
+
+.dark .backup-tab-schedule:hover,
+html.dark .backup-tab-schedule:hover {
+  background: rgba(139, 92, 246, 0.25) !important;
+  border-color: rgba(139, 92, 246, 0.5) !important;
+  color: #F3E8FF !important;
+}
+
+.backup-tab-schedule.is-active,
+.dark .backup-tab-schedule.is-active,
+html.dark .backup-tab-schedule.is-active {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
+  border-color: #7C3AED !important;
+  box-shadow: none !important;
+}
+
+/* 3. Pestaña 3: Ubicación y Archivos (Teal / Cian Blindado) */
+.backup-tab-files {
+  color: #0F766E !important;
+  background: rgba(13, 148, 136, 0.12) !important;
+  border: 1px solid rgba(13, 148, 136, 0.28) !important;
+}
+
+.backup-tab-files:hover {
+  background: rgba(13, 148, 136, 0.22) !important;
+  border-color: rgba(13, 148, 136, 0.45) !important;
+  color: #115E59 !important;
+}
+
+.dark .backup-tab-files,
+html.dark .backup-tab-files {
+  color: #2DD4BF !important;
+  background: rgba(13, 148, 136, 0.14) !important;
+  border-color: rgba(13, 148, 136, 0.3) !important;
+}
+
+.dark .backup-tab-files:hover,
+html.dark .backup-tab-files:hover {
+  background: rgba(13, 148, 136, 0.25) !important;
+  border-color: rgba(13, 148, 136, 0.5) !important;
+  color: #CCFBF1 !important;
+}
+
+.backup-tab-files.is-active,
+.dark .backup-tab-files.is-active,
+html.dark .backup-tab-files.is-active {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  border-color: #0F766E !important;
+  box-shadow: none !important;
+}
+
+/* Badge de contador en pestaña */
+.backup-tab-badge {
+  padding: 2px 7px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  border-radius: 9999px !important;
+  background: rgba(13, 148, 136, 0.22) !important;
+  color: #0F766E !important;
+  transition: all 0.2s ease !important;
+}
+
+.dark .backup-tab-badge,
+html.dark .backup-tab-badge {
+  background: rgba(45, 212, 191, 0.25) !important;
+  color: #2DD4BF !important;
+}
+
+.backup-tab-files.is-active .backup-tab-badge,
+.dark .backup-tab-files.is-active .backup-tab-badge,
+html.dark .backup-tab-files.is-active .backup-tab-badge {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #FFFFFF !important;
+}
+
+/* Cuerpo con scroll independiente */
+.backup-modal-body {
+  padding: 1.25rem 1.75rem 1.25rem !important;
+  overflow-y: auto !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+}
+
+#tab-content-manual,
+#tab-content-schedule,
+#tab-content-files {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.backup-modal-body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.backup-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.backup-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+
+.dark .backup-modal-body::-webkit-scrollbar-thumb,
+html.dark .backup-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.dark .backup-modal-body::-webkit-scrollbar-thumb:hover,
+html.dark .backup-modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* Pie fijo del modal */
+.backup-modal-footer {
+  padding: 14px 1.75rem !important;
+  min-height: 66px !important;
+  border-top: 1px solid rgba(226, 232, 240, 0.9) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  flex-shrink: 0 !important;
+  background: rgba(248, 250, 252, 0.55) !important;
+  box-sizing: border-box !important;
+}
+
+.dark .backup-modal-footer,
+html.dark .backup-modal-footer {
+  border-top-color: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(15, 23, 42, 0.75) !important;
+}
+
+/* Tarjetas de opciones en Tab 1 con identidad cromática diferenciada e integradas en el sistema Liquid Glass */
+.backup-option-card {
+  border-radius: 20px !important;
+  padding: 1.15rem 1.25rem !important;
+  cursor: pointer !important;
+  position: relative !important;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+.backup-option-card:hover {
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.dark .backup-option-card,
+html.dark .backup-option-card {
+  background: rgba(30, 41, 59, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+.dark .backup-option-card:hover,
+html.dark .backup-option-card:hover {
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 1. Variante DB - Teal / Cian */
+.backup-option-card.card-type-db.is-selected {
+  border-color: #0D9488 !important;
+  background: rgba(13, 148, 136, 0.08) !important;
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .backup-option-card.card-type-db.is-selected,
+html.dark .backup-option-card.card-type-db.is-selected {
+  border-color: #2DD4BF !important;
+  background: rgba(45, 212, 191, 0.12) !important;
+  box-shadow: 0 0 20px rgba(45, 212, 191, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 2. Variante Files - Indigo / Azul Eléctrico */
+.backup-option-card.card-type-files.is-selected {
+  border-color: #6366F1 !important;
+  background: rgba(99, 102, 241, 0.08) !important;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .backup-option-card.card-type-files.is-selected,
+html.dark .backup-option-card.card-type-files.is-selected {
+  border-color: #818CF8 !important;
+  background: rgba(129, 140, 248, 0.12) !important;
+  box-shadow: 0 0 20px rgba(129, 140, 248, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 3. Variante All - Púrpura / Violeta */
+.backup-option-card.card-type-all.is-selected {
+  border-color: #A855F7 !important;
+  background: rgba(168, 85, 247, 0.08) !important;
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .backup-option-card.card-type-all.is-selected,
+html.dark .backup-option-card.card-type-all.is-selected {
+  border-color: #C084FC !important;
+  background: rgba(192, 132, 252, 0.12) !important;
+  box-shadow: 0 0 20px rgba(192, 132, 252, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Tarjeta informativa general (Tab 1 último respaldo, Tab 2 scheduler, Tab 3 path) */
+.backup-info-card {
+  border-radius: 20px !important;
+  padding: 1.15rem 1.25rem !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  transition: all 0.25s ease !important;
+}
+
+.dark .backup-info-card,
+html.dark .backup-info-card {
+  background: rgba(30, 41, 59, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Tarjeta de rotación / cupo teal */
+.backup-quota-card {
+  border-radius: 20px !important;
+  padding: 1.2rem 1.35rem !important;
+  background: rgba(236, 253, 245, 0.65) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  transition: all 0.25s ease !important;
+}
+
+.dark .backup-quota-card,
+html.dark .backup-quota-card {
+  background: rgba(16, 185, 129, 0.08) !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+/* ---- Switch / Toggle Apple Liquid Glass ---- */
+.ts-switch {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  width: 48px !important;
+  height: 26px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  flex-shrink: 0 !important;
+}
+
+.ts-switch input {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  margin: 0 !important;
+}
+
+.ts-switch-slider {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: #cbd5e1 !important;
+  border-radius: 9999px !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+}
+
+.dark .ts-switch-slider,
+html.dark .ts-switch-slider {
+  background-color: #334155 !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+.ts-switch-slider:before {
+  position: absolute !important;
+  content: "" !important;
+  height: 20px !important;
+  width: 20px !important;
+  left: 3px !important;
+  bottom: 3px !important;
+  background-color: #ffffff !important;
+  border-radius: 50% !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) !important;
+}
+
+.ts-switch input:checked+.ts-switch-slider {
+  background-color: #7C3AED !important;
+  box-shadow: none !important;
+}
+
+.dark .ts-switch input:checked+.ts-switch-slider,
+html.dark .ts-switch input:checked+.ts-switch-slider {
+  background-color: #8B5CF6 !important;
+  box-shadow: none !important;
+}
+
+.ts-switch input:checked+.ts-switch-slider:before {
+  transform: translateX(22px) !important;
+}
+
+/* Métricas en Grid Responsivo 3 Columnas */
+.backup-metrics-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.875rem !important;
+}
+
+@media (max-width: 580px) {
+  .backup-metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.backup-metric-card {
+  border-radius: 20px !important;
+  padding: 1.15rem 1rem !important;
+  text-align: center !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.backup-metric-card:hover {
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.dark .backup-metric-card,
+html.dark .backup-metric-card {
+  background: rgba(30, 41, 59, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+.dark .backup-metric-card:hover,
+html.dark .backup-metric-card:hover {
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+.backup-metric-label {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: #64748B !important;
+  display: block !important;
+}
+
+.dark .backup-metric-label,
+html.dark .backup-metric-label {
+  color: #94A3B8 !important;
+}
+
+.backup-metric-val {
+  font-size: 1.5rem !important;
+  font-weight: 900 !important;
+  color: #0F172A !important;
+  margin-top: 0.25rem !important;
+  display: block !important;
+}
+
+.dark .backup-metric-val,
+html.dark .backup-metric-val {
+  color: #FFFFFF !important;
+}
+
+.backup-metric-val.val-teal {
+  color: #0D9488 !important;
+}
+
+.dark .backup-metric-val.val-teal,
+html.dark .backup-metric-val.val-teal {
+  color: #2DD4BF !important;
+}
+
+/* Botones de acción rápida: Copiar Ruta (Índigo Glass) y Abrir Carpeta (Teal Pro) */
+.btn-copy-path {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  line-height: 1 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  padding: 0 14px !important;
+  margin: 0 !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: rgba(79, 70, 229, 0.1) !important;
+  border: 1px solid rgba(79, 70, 229, 0.3) !important;
+  color: #4338CA !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+}
+
+.btn-copy-path:hover {
+  background: rgba(79, 70, 229, 0.2) !important;
+  border-color: rgba(79, 70, 229, 0.45) !important;
+  color: #3730A3 !important;
+}
+
+.dark .btn-copy-path,
+html.dark .btn-copy-path {
+  background: rgba(99, 102, 241, 0.18) !important;
+  border: 1px solid rgba(129, 140, 248, 0.35) !important;
+  color: #A5B4FC !important;
+}
+
+.dark .btn-copy-path:hover,
+html.dark .btn-copy-path:hover {
+  background: rgba(99, 102, 241, 0.28) !important;
+  border-color: rgba(129, 140, 248, 0.6) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-open-folder {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  line-height: 1 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  padding: 0 14px !important;
+  margin: 0 !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: rgba(13, 148, 136, 0.1) !important;
+  border: 1px solid rgba(13, 148, 136, 0.3) !important;
+  color: #0F766E !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+}
+
+.btn-open-folder:hover {
+  background: rgba(13, 148, 136, 0.2) !important;
+  border-color: rgba(13, 148, 136, 0.45) !important;
+  color: #0D9488 !important;
+  box-shadow: none !important;
+}
+
+.dark .btn-open-folder,
+html.dark .btn-open-folder {
+  background: rgba(45, 212, 191, 0.16) !important;
+  border: 1px solid rgba(45, 212, 191, 0.35) !important;
+  color: #5EEAD4 !important;
+  box-shadow: none !important;
+}
+
+.dark .btn-open-folder:hover,
+html.dark .btn-open-folder:hover {
+  background: rgba(45, 212, 191, 0.26) !important;
+  border-color: rgba(45, 212, 191, 0.6) !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+}
+
+.btn-copy-path span,
+.btn-open-folder span {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  font-size: 13px !important;
+  vertical-align: middle !important;
+}
+
+/* Banner de Ubicación física con espaciado vertical perfectamente simétrico */
+.backup-storage-banner {
+  padding: 14px 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+.backup-storage-banner>* {
+  margin: 0 !important;
+}
+
+/* Código de ruta física */
+.backup-path-code {
+  display: block !important;
+  margin: 0 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 11.5px !important;
+  padding: 0.65rem 0.85rem !important;
+  border-radius: 0.625rem !important;
+  word-break: break-all !important;
+  user-select: all !important;
+  background: rgba(241, 245, 249, 0.9) !important;
+  color: #0F172A !important;
+  border: 1px solid rgba(203, 213, 225, 0.8) !important;
+}
+
+.dark .backup-path-code,
+html.dark .backup-path-code {
+  background: rgba(2, 6, 23, 0.7) !important;
+  color: #38BDF8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Contenedor y tabla de archivos integrados con Liquid Glass */
+.backup-files-wrapper,
+.glass-card.backup-files-wrapper,
+.glass-card:has(.backup-table) {
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  padding: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.dark .backup-files-wrapper,
+html.dark .backup-files-wrapper {
+  background: rgba(30, 41, 59, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+#backup-files-container {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#backup-files-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+#backup-files-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#backup-files-container::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+
+.dark #backup-files-container::-webkit-scrollbar-thumb,
+html.dark #backup-files-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.dark #backup-files-container::-webkit-scrollbar-thumb:hover,
+html.dark #backup-files-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.backup-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  text-align: left !important;
+  font-size: 12px !important;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.backup-table th {
+  padding: 11px 16px !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  text-align: center !important;
+  color: #64748B !important;
+  background: rgba(241, 245, 249, 0.6) !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7) !important;
+}
+
+.dark .backup-table th,
+html.dark .backup-table th {
+  color: #94A3B8 !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.backup-table td {
+  padding: 11px 14px !important;
+  vertical-align: middle !important;
+}
+
+.backup-file-row {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6) !important;
+  transition: background 0.15s ease !important;
+}
+
+.backup-file-row:last-child {
+  border-bottom: none !important;
+}
+
+.backup-file-row:hover {
+  background: rgba(13, 148, 136, 0.04) !important;
+}
+
+.dark .backup-file-row,
+html.dark .backup-file-row {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.dark .backup-file-row:last-child,
+html.dark .backup-file-row:last-child {
+  border-bottom: none !important;
+}
+
+.dark .backup-file-row:hover,
+html.dark .backup-file-row:hover {
+  background: rgba(45, 212, 191, 0.06) !important;
+}
+
+.backup-file-name {
+  font-family: ui-monospace, SFMono-Regular, monospace !important;
+  font-weight: 700 !important;
+  color: #0F172A !important;
+}
+
+.dark .backup-file-name,
+html.dark .backup-file-name {
+  color: #FFFFFF !important;
+}
+
+.backup-file-date {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+.dark .backup-file-date,
+html.dark .backup-file-date {
+  color: #CBD5E1 !important;
+}
+
+.backup-file-rel {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  color: #64748B !important;
+}
+
+.dark .backup-file-rel,
+html.dark .backup-file-rel {
+  color: #94A3B8 !important;
+}
+
+.backup-file-size {
+  font-family: ui-monospace, SFMono-Regular, monospace !important;
+  font-weight: 800 !important;
+  color: #0D9488 !important;
+}
+
+.dark .backup-file-size,
+html.dark .backup-file-size {
+  color: #2DD4BF !important;
+}
+
+/* Botones de acción en tabla de copias de seguridad (perfectamente cuadrados) */
+.btn-backup-download,
+.btn-backup-restore,
+.btn-backup-update,
+.btn-backup-delete {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-backup-download {
+  text-decoration: none !important;
+  background: rgba(13, 148, 136, 0.12) !important;
+  color: #0F766E !important;
+  border: 1px solid rgba(13, 148, 136, 0.25) !important;
+}
+
+.btn-backup-download:hover {
+  background: rgba(13, 148, 136, 0.22) !important;
+}
+
+.dark .btn-backup-download,
+html.dark .btn-backup-download {
+  background: rgba(45, 212, 191, 0.15) !important;
+  color: #2DD4BF !important;
+  border-color: rgba(45, 212, 191, 0.3) !important;
+}
+
+.dark .btn-backup-download:hover,
+html.dark .btn-backup-download:hover {
+  background: rgba(45, 212, 191, 0.25) !important;
+}
+
+.btn-backup-restore {
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+  cursor: pointer !important;
+  background: rgba(59, 130, 246, 0.12) !important;
+  color: #2563EB !important;
+}
+
+.btn-backup-restore:hover {
+  background: rgba(59, 130, 246, 0.22) !important;
+}
+
+.dark .btn-backup-restore,
+html.dark .btn-backup-restore {
+  background: rgba(96, 165, 250, 0.15) !important;
+  color: #60A5FA !important;
+  border-color: rgba(96, 165, 250, 0.3) !important;
+}
+
+.dark .btn-backup-restore:hover,
+html.dark .btn-backup-restore:hover {
+  background: rgba(96, 165, 250, 0.25) !important;
+}
+
+.btn-backup-update {
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+  cursor: pointer !important;
+  background: rgba(59, 130, 246, 0.12) !important;
+  color: #2563EB !important;
+}
+
+.btn-backup-update:hover {
+  background: rgba(59, 130, 246, 0.22) !important;
+  border-color: rgba(59, 130, 246, 0.45) !important;
+}
+
+.dark .btn-backup-update,
+html.dark .btn-backup-update {
+  background: rgba(96, 165, 250, 0.15) !important;
+  color: #60A5FA !important;
+  border-color: rgba(96, 165, 250, 0.3) !important;
+}
+
+.dark .btn-backup-update:hover,
+html.dark .btn-backup-update:hover {
+  background: rgba(96, 165, 250, 0.25) !important;
+}
+
+.btn-backup-delete {
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+  cursor: pointer !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #DC2626 !important;
+}
+
+.btn-backup-delete:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+}
+
+.dark .btn-backup-delete,
+html.dark .btn-backup-delete {
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #F87171 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.dark .btn-backup-delete:hover,
+html.dark .btn-backup-delete:hover {
+  background: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Campo de nombre de archivo de respaldo: sin barra horizontal, misma dimensión, desplazamiento natural como campo de descripción */
+.backup-filename-input {
+  width: 100% !important;
+  min-width: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  color: inherit !important;
+  cursor: text !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.backup-filename-input::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.backup-filename-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.backup-filename-scroll {
+  overflow-x: auto !important;
+  white-space: nowrap !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.backup-filename-scroll::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Preset buttons en scheduler */
+.btn-preset-time {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 4px 9px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: #F1F5F9 !important;
+  color: #334155 !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+.btn-preset-time:hover {
+  background: rgba(13, 148, 136, 0.15) !important;
+  color: #0F766E !important;
+  border-color: rgba(13, 148, 136, 0.35) !important;
+}
+
+.dark .btn-preset-time,
+html.dark .btn-preset-time {
+  background: rgba(30, 41, 59, 0.8) !important;
+  color: #CBD5E1 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.dark .btn-preset-time:hover,
+html.dark .btn-preset-time:hover {
+  background: rgba(45, 212, 191, 0.2) !important;
+  color: #2DD4BF !important;
+  border-color: rgba(45, 212, 191, 0.45) !important;
+}
+
+.btn-preset-time.is-active {
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  color: #FFFFFF !important;
+  border-color: #0F766E !important;
+}
+
+html.dark .btn-preset-time.is-active {
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  color: #FFFFFF !important;
+  border-color: #14B8A6 !important;
+}
+
+.time-picker-custom-input {
+  width: 100% !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  padding: 0 6px 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-radius: 12px !important;
+  box-sizing: border-box !important;
+  transition: all 0.22s ease !important;
+}
+
+.time-picker-custom-input:focus,
+.time-picker-custom-input:focus-within {
+  border-color: rgba(37, 99, 235, 0.60) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+  outline: none !important;
+}
+
+html.dark .time-picker-custom-input:focus,
+html.dark .time-picker-custom-input:focus-within {
+  border-color: rgba(96, 165, 250, 0.50) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.20) !important;
+  outline: none !important;
+}
+
+#sched-hora-manual,
+#sched-hora-manual:focus,
+#sched-hora-manual:focus-visible {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.tp-ampm-btn {
+  padding: 3px 9px !important;
+  font-size: 11px !important;
+  line-height: 16px !important;
+  font-weight: 800 !important;
+  border-radius: 6px !important;
+  border: 1px solid transparent !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  color: #64748B !important;
+  background: transparent !important;
+}
+
+.tp-ampm-btn.is-active {
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  color: #FFFFFF !important;
+}
+
+html.dark .tp-ampm-btn {
+  color: #94A3B8 !important;
+}
+
+html.dark .tp-ampm-btn.is-active {
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  color: #FFFFFF !important;
+}
+
+/* Stepper buttons (- y +) */
+.btn-stepper {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 900 !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  background: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+.btn-stepper:hover {
+  background: #F1F5F9 !important;
+}
+
+.dark .btn-stepper,
+html.dark .btn-stepper {
+  background: rgba(30, 41, 59, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #FFFFFF !important;
+}
+
+.dark .btn-stepper:hover,
+html.dark .btn-stepper:hover {
+  background: rgba(51, 65, 85, 0.9) !important;
+}
+
+/* Ocultar flechas / spinners en inputs numéricos y centrar texto */
+input[type="number"].no-spinners::-webkit-outer-spin-button,
+input[type="number"].no-spinners::-webkit-inner-spin-button,
+.no-spinners::-webkit-outer-spin-button,
+.no-spinners::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+input[type="number"].no-spinners,
+.no-spinners {
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
+  text-align: center !important;
+}
+
+
+
+/* Helper responsivo exclusivo para filtros y navegación de reportes financieros */
+@media (min-width: 641px) {
+  .reportes-filter-form {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+  }
+
+  .reportes-filter-date-range {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+
+  .reportes-date-field,
+  .reportes-filter-date {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+
+  .reportes-date-label {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+  }
+
+  .reportes-date-input {
+    width: 8.5rem !important;
+    /* Compacto: se ajusta al texto dd/mm/yyyy sin espacio sobrante */
+  }
+}
+
+/* Selector de tipo de operación horizontal y compacto */
+.reportes-filter-select {
+  min-width: 215px;
+  flex-shrink: 0;
+}
+
+.reportes-filter-select select,
+.reportes-filter-select .ts-wrapper {
+  min-width: 215px !important;
+  width: 100% !important;
+}
+
+.reportes-filter-select .ts-control,
+.reportes-filter-select .ts-control .item,
+.reportes-filter-select .ts-item-display {
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  line-height: normal !important;
+}
+
+@media (min-width: 1280px) {
+  .reportes-filter-form {
+    flex-wrap: nowrap !important;
+  }
+}
+
+@media (max-width: 640px) {
+
+  /* Tabs superiores: Segmented Control equilibrado en 3 columnas iguales */
+  .reportes-nav-tabs {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.375rem !important;
+    padding: 0.5rem !important;
+  }
+
+  .reportes-nav-tabs>a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.25rem !important;
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+    padding-top: 0.625rem !important;
+    padding-bottom: 0.625rem !important;
+    font-size: clamp(0.72rem, 2.5vw, 0.8125rem) !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    border-radius: 10px !important;
+  }
+
+  .reportes-filter-form {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.875rem !important;
+  }
+
+  /* Rango de fecha en móvil: 1 campo por fila (verticalmente apilados al 100% de ancho) */
+  .reportes-filter-date-range {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+  }
+
+  .reportes-date-field {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.25rem !important;
+    min-width: 0 !important;
+  }
+
+  .reportes-date-label {
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    color: #64748B !important;
+  }
+
+  html.dark .reportes-date-label {
+    color: #94A3B8 !important;
+  }
+
+  .reportes-date-input,
+  .reportes-date-field .flatpickr-input {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 42px !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  .reportes-date-input::-webkit-date-and-time-value {
+    text-align: center !important;
+  }
+
+  /* Fecha única en móvil (Diario) */
+  .reportes-filter-date {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.25rem !important;
+  }
+
+  .reportes-filter-date .reportes-date-input {
+    width: 100% !important;
+    height: 42px !important;
+    text-align: center !important;
+    font-size: 0.875rem !important;
+  }
+
+  /* Selector de tipo en operaciones móvil */
+  .reportes-filter-select {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .reportes-filter-select select,
+  .reportes-filter-select .ts-wrapper {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 42px !important;
+  }
+
+  /* Acciones de consulta en móvil (Ver Período / Ver Día + Limpiar / Hoy) */
+  .reportes-filter-actions {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.625rem !important;
+  }
+
+  .reportes-filter-actions>* {
+    width: 100% !important;
+    height: 42px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0 0.75rem !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Botones de exportación en móvil (Imprimir, Excel, PDF) */
+  .reportes-filter-export {
+    width: 100% !important;
+    margin-left: 0 !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.5rem !important;
+  }
+
+  .reportes-filter-export>* {
+    width: 100% !important;
+    height: 38px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0 0.25rem !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  .reportes-cards-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .reportes-cards-grid {
+    display: grid !important;
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ---- Botón guardar formularios (grande) ---- */
+.btn-save {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  line-height: 1 !important;
+  padding: 0 32px !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+  font-weight: 800;
+  font-size: 15px;
+  color: white !important;
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%) !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: none !important;
+  text-decoration: none;
+}
+
+
+
+.btn-save:hover {
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  color: white !important;
+}
+
+.btn-save:active {}
+
+/* ---- Botón cancelar formularios (Opción 3: Coral Ahumado / Rosa Viejo elegante) ---- */
+.btn-cancel {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  line-height: 1 !important;
+  padding: 0 32px !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+  font-weight: 800;
+  font-size: 15px;
+  color: white !important;
+  background: linear-gradient(135deg, #E05263 0%, #B82C40 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: none !important;
+  text-decoration: none;
+}
+
+
+
+.btn-cancel:hover {
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  color: white !important;
+}
+
+.btn-cancel:active {}
+
+/* ---- Botón Cerrar en modales (Mismo color y acabado que Cancelar: Rojo Opaco / Coral Ahumado) ---- */
+.btn-close-modal {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  line-height: 1 !important;
+  padding: 0 24px !important;
+  margin: 0 !important;
+  font-weight: 800 !important;
+  font-size: 13.5px !important;
+  color: white !important;
+  background: linear-gradient(135deg, #E05263 0%, #B82C40 100%) !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform: none !important;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+}
+
+
+
+.btn-close-modal:hover {
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55) !important;
+  color: white !important;
+}
+
+.btn-close-modal:active {}
+
+/* ---- Botón guardar e imprimir ---- */
+.btn-save-print {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  line-height: 1 !important;
+  padding: 0 32px !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+  font-weight: 800;
+  font-size: 15px;
+  color: white !important;
+  background: linear-gradient(135deg, #64748B 0%, #334155 100%) !important;
+  border-radius: 14px;
+  border: none !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+
+
+.btn-save-print:hover {
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.55);
+  color: white !important;
+}
+
+.btn-save-print:active {}
+
+/* ---- Botón conceptos (Dimensiones idénticas a btn-primary: 38px) ---- */
+.btn-concepts {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: white !important;
+  background: linear-gradient(135deg, #2DD4BF 0%, #0F766E 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.btn-concepts:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: white !important;
+}
+
+.btn-concepts:active {
+  transform: none !important;
+}
+
+/* ---- Botón venta (verde esmeralda vibrante - Dimensiones idénticas a btn-primary: 38px) ---- */
+.btn-venta {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: white !important;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.btn-venta:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: white !important;
+}
+
+.btn-venta:active {
+  transform: none !important;
+}
+
+/* ---- Botón compra (naranja - Dimensiones idénticas a btn-primary: 38px) ---- */
+.btn-compra {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: white !important;
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.btn-compra:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: white !important;
+}
+
+.btn-compra:active {
+  transform: none !important;
+}
+
+/* Cuando btn-venta o btn-compra actúan como botón de acción de formulario final (igual que btn-cancel y btn-save) */
+form button.btn-venta[type="submit"],
+form button.btn-compra[type="submit"],
+button.btn-venta[type="submit"],
+button.btn-compra[type="submit"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  line-height: 1 !important;
+  padding: 0 32px !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+  font-weight: 800 !important;
+  font-size: 15px !important;
+}
+
+.btn-cancel:active,
+.btn-venta:active,
+.btn-compra:active {}
+
+/* ---- Botón púrpura/violeta (Sólido Liquid Glass Violeta / Idéntico a btn-primary) ---- */
+.btn-purple {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+html.dark .btn-purple {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.38), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+}
+
+.btn-purple:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+html.dark .btn-purple:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: none !important;
+}
+
+.btn-purple:active {
+  transform: none !important;
+}
+
+/* ---- Botón imprimir (gris - Dimensiones idénticas a btn-primary: 38px) ---- */
+.btn-print {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: white !important;
+  background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.btn-print:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: white !important;
+}
+
+.btn-print:active {
+  transform: none !important;
+}
+
+/* ---- Botón Excel (verde - Dimensiones idénticas a btn-primary: 38px) ---- */
+.btn-excel {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: white !important;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.btn-excel:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: white !important;
+}
+
+.btn-excel:active {
+  transform: none !important;
+}
+
+/* ---- Botón Liquid Glass Universal (redondeado suave 13px, no ovalado) ---- */
+.btn-glass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  box-sizing: border-box;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.25;
+  border-radius: 13px;
+  text-decoration: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.60);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  color: #1E293B;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.dark .btn-glass {
+  color: #F8FAFC;
+  background: rgba(15, 23, 42, 0.60);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 6px 18px -3px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.90);
+  border-color: rgba(37, 99, 235, 0.40);
+  box-shadow: 0 6px 20px -2px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255, 255, 255, 1);
+  color: #1D4ED8;
+}
+
+html.dark .btn-glass:hover {
+  background: rgba(30, 41, 59, 0.80);
+  border-color: rgba(96, 165, 250, 0.50);
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.60), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: #93C5FD;
+}
+
+.btn-glass:active {}
+
+/* ---- Botón Excel Liquid Glass (opción cristalina redondeada) ---- */
+.btn-excel-glass,
+.btn-glass-excel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  box-sizing: border-box;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.25;
+  border-radius: 13px;
+  text-decoration: none;
+  cursor: pointer;
+  background: rgba(16, 185, 129, 0.12) !important;
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: #059669 !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.dark .btn-excel-glass,
+html.dark .btn-glass-excel {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(52, 211, 153, 0.40) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  color: #6EE7B7 !important;
+}
+
+.btn-excel-glass:hover,
+.btn-glass-excel:hover {
+  background: rgba(16, 185, 129, 0.24) !important;
+  border-color: rgba(52, 211, 153, 0.65) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  color: #047857 !important;
+}
+
+html.dark .btn-excel-glass:hover,
+html.dark .btn-glass-excel:hover {
+  background: rgba(16, 185, 129, 0.28) !important;
+  border-color: rgba(110, 231, 183, 0.70) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: #A7F3D0 !important;
+}
+
+.btn-excel-glass:active,
+.btn-glass-excel:active {}
+
+/* ---- Botón PDF (rojo - Dimensiones idénticas a btn-primary: 38px) ---- */
+.btn-pdf {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: white !important;
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.btn-pdf:hover {
+  box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  color: white !important;
+}
+
+.btn-pdf:active {
+  transform: none !important;
+}
+
+/* --- BOTONES SECUNDARIOS / GHOST -------------------------------------------------- */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.25;
+  color: #334155;
+  border-radius: 12px;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(203, 213, 225, 0.75);
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  transform: none !important;
+}
+
+html.dark .btn-ghost {
+  color: #E2E8F0;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  color: #1D4ED8;
+}
+
+html.dark .btn-ghost:hover {
+  background: rgba(30, 41, 59, 0.75);
+  border-color: rgba(96, 165, 250, 0.45);
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  color: #93C5FD;
+}
+
+.btn-ghost:active {}
+
+/* ---- Botón Volver universal del sistema (⬅️) ---- */
+.btn-ghost.text-xl,
+a.btn-ghost[title*="Volver" i],
+a.btn-ghost[title*="volver" i],
+a.btn-ghost[title*="búsqueda" i],
+a.btn-ghost[title*="busqueda" i] {
+  font-size: 1.25rem !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  max-width: 38px !important;
+  max-height: 38px !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 12px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+/* ---- Botones de acción cuadrados uniformes (💾 Guardar, 🗑️ Eliminar, 👁️ Ver) ---- */
+.btn-action-square,
+.btn-icon-square,
+.btn-ghost.btn-action-square,
+.btn-danger.btn-action-square,
+button.btn-ghost[title*="Guardar" i],
+button.btn-danger[title*="Eliminar clasificación" i],
+button.btn-danger[title*="Eliminar concepto" i],
+button.btn-danger[title*="Eliminar y devolver" i],
+button.btn-danger[title*="Anular abono" i],
+a.btn-ghost[title*="Ver movimiento en Caja" i] {
+  font-size: 15px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  max-width: 38px !important;
+  max-height: 38px !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 12px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn-action-square:hover,
+.btn-icon-square:hover,
+button.btn-ghost[title*="Guardar" i]:hover,
+button.btn-danger[title*="Eliminar clasificación" i]:hover,
+button.btn-danger[title*="Eliminar concepto" i]:hover,
+button.btn-danger[title*="Eliminar y devolver" i]:hover,
+button.btn-danger[title*="Anular abono" i]:hover,
+a.btn-ghost[title*="Ver movimiento en Caja" i]:hover {
+  transform: translateY(-1px) scale(1.04);
+}
+
+.btn-action-square:active,
+.btn-icon-square:active,
+button.btn-ghost[title*="Guardar" i]:active,
+button.btn-danger[title*="Eliminar clasificación" i]:active,
+button.btn-danger[title*="Eliminar concepto" i]:active,
+button.btn-danger[title*="Eliminar y devolver" i]:active,
+button.btn-danger[title*="Anular abono" i]:active,
+a.btn-ghost[title*="Ver movimiento en Caja" i]:active {
+  transform: translateY(0) scale(0.98);
+}
+
+
+/* ================================================================
+   Botones de Acción Superior (TopBar & Header: Notif, Tema, Logout)
+   ================================================================ */
+.topbar-btn,
+.theme-toggle-btn,
+.notif-toggle-btn,
+.logout-toggle-btn {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+  font-size: 1.125rem !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease !important;
+}
+
+.topbar-btn:active,
+.theme-toggle-btn:active,
+.notif-toggle-btn:active,
+.logout-toggle-btn:active {
+  transform: scale(0.96) !important;
+}
+
+.topbar-btn:focus,
+.topbar-btn:focus-visible,
+.theme-toggle-btn:focus,
+.theme-toggle-btn:focus-visible,
+.notif-toggle-btn:focus,
+.notif-toggle-btn:focus-visible,
+.logout-toggle-btn:focus,
+.logout-toggle-btn:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* --- Botón de Tema (☀️ / 🌙) --- */
+.theme-toggle-btn {
+  background: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.10) !important;
+  color: #334155 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .theme-toggle-btn:hover {
+    background: rgba(148, 163, 184, 0.16) !important;
+    border-color: rgba(148, 163, 184, 0.35) !important;
+  }
+}
+
+.theme-toggle-btn:focus,
+.theme-toggle-btn:focus-visible,
+.theme-toggle-btn:active {
+  background: transparent !important;
+  border-color: rgba(0, 0, 0, 0.10) !important;
+}
+
+.dark .theme-toggle-btn,
+html.dark .theme-toggle-btn {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #F1F5F9 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+  .dark .theme-toggle-btn:hover,
+  html.dark .theme-toggle-btn:hover {
+    background: rgba(226, 232, 240, 0.16) !important;
+    border-color: rgba(226, 232, 240, 0.35) !important;
+  }
+}
+
+.dark .theme-toggle-btn:focus,
+.dark .theme-toggle-btn:focus-visible,
+.dark .theme-toggle-btn:active,
+html.dark .theme-toggle-btn:focus,
+html.dark .theme-toggle-btn:focus-visible,
+html.dark .theme-toggle-btn:active {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* --- Botón de Notificaciones (🔔) --- */
+.notif-toggle-btn {
+  background: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.10) !important;
+  color: #334155 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .notif-toggle-btn:hover {
+    background: rgba(245, 158, 11, 0.12) !important;
+    border-color: rgba(245, 158, 11, 0.35) !important;
+  }
+}
+
+.notif-toggle-btn:focus,
+.notif-toggle-btn:focus-visible,
+.notif-toggle-btn:active {
+  background: transparent !important;
+  border-color: rgba(0, 0, 0, 0.10) !important;
+}
+
+.dark .notif-toggle-btn,
+html.dark .notif-toggle-btn {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #F1F5F9 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+  .dark .notif-toggle-btn:hover,
+  html.dark .notif-toggle-btn:hover {
+    background: rgba(245, 158, 11, 0.16) !important;
+    border-color: rgba(245, 158, 11, 0.40) !important;
+  }
+}
+
+.dark .notif-toggle-btn:focus,
+.dark .notif-toggle-btn:focus-visible,
+.dark .notif-toggle-btn:active,
+html.dark .notif-toggle-btn:focus,
+html.dark .notif-toggle-btn:focus-visible,
+html.dark .notif-toggle-btn:active {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* --- Botón de Cerrar Sesión (🚪) --- */
+.logout-toggle-btn {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border: 1px solid rgba(239, 68, 68, 0.20) !important;
+  color: #ef4444 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .logout-toggle-btn:hover {
+    background: rgba(239, 68, 68, 0.20) !important;
+    border-color: rgba(239, 68, 68, 0.40) !important;
+  }
+}
+
+.logout-toggle-btn:focus,
+.logout-toggle-btn:focus-visible,
+.logout-toggle-btn:active {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.20) !important;
+}
+
+.dark .logout-toggle-btn,
+html.dark .logout-toggle-btn {
+  background: rgba(239, 68, 68, 0.10) !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+  color: #f87171 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+  .dark .logout-toggle-btn:hover,
+  html.dark .logout-toggle-btn:hover {
+    background: rgba(239, 68, 68, 0.22) !important;
+    border-color: rgba(239, 68, 68, 0.45) !important;
+  }
+}
+
+.dark .logout-toggle-btn:focus,
+.dark .logout-toggle-btn:focus-visible,
+.dark .logout-toggle-btn:active,
+html.dark .logout-toggle-btn:focus,
+html.dark .logout-toggle-btn:focus-visible,
+html.dark .logout-toggle-btn:active {
+  background: rgba(239, 68, 68, 0.10) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+}
+
+/* ================================================================
+   Modal de Notificaciones (Responsive: móvil separado, web junto)
+   ================================================================ */
+@media (max-width: 639px) {
+  .notif-item .notif-item-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 640px) {
+  .notif-item .notif-item-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 0.5rem !important;
+    width: auto !important;
+  }
+}
+
+/* ---- BOTONES GHOST CON COLOR: EFECTO LIQUID GLASS TIPO TARJETA ---- */
+/* Muestran su tono en reposo y se intensifican con resplandor en hover, con altura homogénea de 38px */
+:not(.actions-grid)>.btn-ghost-amber,
+:not(.actions-grid)>.btn-ghost-red,
+:not(.actions-grid)>.btn-ghost-emerald,
+:not(.actions-grid)>.btn-ghost-purple,
+:not(.actions-grid)>.btn-ghost-violet,
+:not(.actions-grid)>.btn-ghost-blue,
+:not(.actions-grid)>.btn-ghost-indigo,
+:not(.actions-grid)>.btn-ghost-orange,
+.btn-ghost:not(.actions-grid *):not([class*="w-8"]):not([class*="btn-action-"]):not(.print-dropdown-box):not([class*="print-dropdown"]):not(.text-xl):not([title*="Volver"]):not([title*="volver"])[class*="text-"],
+.btn-ghost:not(.actions-grid *):not([class*="w-8"]):not([class*="btn-action-"]):not(.print-dropdown-box):not([class*="print-dropdown"]):not(.text-xl):not([title*="Volver"]):not([title*="volver"])[class*="border-"] {
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+
+html.dark .btn-ghost-amber,
+html.dark .btn-ghost-red,
+html.dark .btn-ghost-emerald,
+html.dark .btn-ghost-purple,
+html.dark .btn-ghost-violet,
+html.dark .btn-ghost-blue,
+html.dark .btn-ghost-indigo,
+html.dark .btn-ghost-orange,
+html.dark .btn-ghost[class*="text-"],
+html.dark .btn-ghost[class*="border-"] {
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+.btn-ghost-amber:hover,
+.btn-ghost-red:hover,
+.btn-ghost-emerald:hover,
+.btn-ghost-purple:hover,
+.btn-ghost-violet:hover,
+.btn-ghost-blue:hover,
+.btn-ghost-indigo:hover,
+.btn-ghost-orange:hover,
+.btn-ghost[class*="text-"]:hover,
+.btn-ghost[class*="border-"]:hover {}
+
+.btn-ghost-amber:active,
+.btn-ghost-red:active,
+.btn-ghost-emerald:active,
+.btn-ghost-purple:active,
+.btn-ghost-violet:active,
+.btn-ghost-blue:active,
+.btn-ghost-indigo:active,
+.btn-ghost-orange:active,
+.btn-ghost[class*="text-"]:active,
+.btn-ghost[class*="border-"]:active {}
+
+/* 1. Índigo / Azul Violeta (ej. Ver Factura) */
+.btn-ghost[class*="text-indigo"],
+.btn-ghost[class*="border-indigo"],
+.btn-ghost-indigo {
+  color: #4F46E5 !important;
+  background: rgba(99, 102, 241, 0.10) !important;
+  border: 1px solid rgba(99, 102, 241, 0.28) !important;
+}
+
+.btn-ghost[class*="text-indigo"]:hover,
+.btn-ghost[class*="border-indigo"]:hover,
+.btn-ghost-indigo:hover {
+  color: #4338CA !important;
+  background: rgba(99, 102, 241, 0.22) !important;
+  border-color: rgba(99, 102, 241, 0.55) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .btn-ghost[class*="text-indigo"],
+html.dark .btn-ghost[class*="border-indigo"],
+html.dark .btn-ghost-indigo {
+  color: #A5B4FC !important;
+  background: rgba(99, 102, 241, 0.15) !important;
+  border-color: rgba(129, 140, 248, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-indigo"]:hover,
+html.dark .btn-ghost[class*="border-indigo"]:hover,
+html.dark .btn-ghost-indigo:hover {
+  color: #C7D2FE !important;
+  background: rgba(99, 102, 241, 0.28) !important;
+  border-color: rgba(165, 180, 252, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 2. Azul (ej. Imprimir dropdown, acciones neutras/banco) */
+.btn-ghost[class*="text-blue"],
+.btn-ghost[class*="border-blue"],
+.btn-ghost-blue {
+  color: #2563EB !important;
+  background: rgba(37, 99, 235, 0.10) !important;
+  border: 1px solid rgba(37, 99, 235, 0.28) !important;
+}
+
+.btn-ghost[class*="text-blue"]:hover,
+.btn-ghost[class*="border-blue"]:hover,
+.btn-ghost-blue:hover {
+  color: #1D4ED8 !important;
+  background: rgba(37, 99, 235, 0.22) !important;
+  border-color: rgba(37, 99, 235, 0.55) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .btn-ghost[class*="text-blue"],
+html.dark .btn-ghost[class*="border-blue"],
+html.dark .btn-ghost-blue {
+  color: #93C5FD !important;
+  background: rgba(37, 99, 235, 0.15) !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-blue"]:hover,
+html.dark .btn-ghost[class*="border-blue"]:hover,
+html.dark .btn-ghost-blue:hover {
+  color: #BFDBFE !important;
+  background: rgba(37, 99, 235, 0.28) !important;
+  border-color: rgba(147, 197, 253, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 3. Ámbar / Amarillo (ej. Editar, Cancelar en modales) */
+.btn-ghost[class*="text-yellow"],
+.btn-ghost[class*="border-yellow"],
+.btn-ghost[class*="text-amber"],
+.btn-ghost[class*="border-amber"],
+.btn-ghost-amber {
+  color: #D97706 !important;
+  background: rgba(245, 158, 11, 0.10) !important;
+  border: 1px solid rgba(245, 158, 11, 0.30) !important;
+}
+
+.btn-ghost[class*="text-yellow"]:hover,
+.btn-ghost[class*="border-yellow"]:hover,
+.btn-ghost[class*="text-amber"]:hover,
+.btn-ghost[class*="border-amber"]:hover,
+.btn-ghost-amber:hover {
+  color: #D97706 !important;
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: rgba(245, 158, 11, 0.58) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .btn-ghost[class*="text-yellow"],
+html.dark .btn-ghost[class*="border-yellow"],
+html.dark .btn-ghost[class*="text-amber"],
+html.dark .btn-ghost[class*="border-amber"],
+html.dark .btn-ghost-amber {
+  color: #FBBF24 !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-yellow"]:hover,
+html.dark .btn-ghost[class*="border-yellow"]:hover,
+html.dark .btn-ghost[class*="text-amber"]:hover,
+html.dark .btn-ghost[class*="border-amber"]:hover,
+html.dark .btn-ghost-amber:hover {
+  color: #FBBF24 !important;
+  background: rgba(245, 158, 11, 0.28) !important;
+  border-color: rgba(252, 211, 77, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 4. Esmeralda / Verde (ej. Reactivar, Ver en Caja, Confirmar) */
+.btn-ghost[class*="text-emerald"],
+.btn-ghost[class*="border-emerald"],
+.btn-ghost[class*="text-green"],
+.btn-ghost[class*="border-green"],
+.btn-ghost-emerald {
+  color: #059669 !important;
+  background: rgba(16, 185, 129, 0.10) !important;
+  border: 1px solid rgba(16, 185, 129, 0.30) !important;
+}
+
+.btn-ghost[class*="text-emerald"]:hover,
+.btn-ghost[class*="border-emerald"]:hover,
+.btn-ghost[class*="text-green"]:hover,
+.btn-ghost[class*="border-green"]:hover,
+.btn-ghost-emerald:hover {
+  color: #059669 !important;
+  background: rgba(16, 185, 129, 0.22) !important;
+  border-color: rgba(16, 185, 129, 0.60) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .btn-ghost[class*="text-emerald"],
+html.dark .btn-ghost[class*="border-emerald"],
+html.dark .btn-ghost[class*="text-green"],
+html.dark .btn-ghost[class*="border-green"],
+html.dark .btn-ghost-emerald {
+  color: #6EE7B7 !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-emerald"]:hover,
+html.dark .btn-ghost[class*="border-emerald"]:hover,
+html.dark .btn-ghost[class*="text-green"]:hover,
+html.dark .btn-ghost[class*="border-green"]:hover,
+html.dark .btn-ghost-emerald:hover {
+  color: #6EE7B7 !important;
+  background: rgba(16, 185, 129, 0.28) !important;
+  border-color: rgba(110, 231, 183, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 5. Rojo / Carmesí (Ghost Red) */
+.btn-ghost[class*="text-red"],
+.btn-ghost[class*="border-red"],
+.btn-ghost-red {
+  color: #DC2626 !important;
+  background: rgba(239, 68, 68, 0.10) !important;
+  border: 1px solid rgba(239, 68, 68, 0.30) !important;
+}
+
+.btn-ghost[class*="text-red"]:hover,
+.btn-ghost[class*="border-red"]:hover,
+.btn-ghost-red:hover {
+  color: #DC2626 !important;
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(239, 68, 68, 0.60) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .btn-ghost[class*="text-red"],
+html.dark .btn-ghost[class*="border-red"],
+html.dark .btn-ghost-red {
+  color: #F87171 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(248, 113, 113, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-red"]:hover,
+html.dark .btn-ghost[class*="border-red"]:hover,
+html.dark .btn-ghost-red:hover {
+  color: #F87171 !important;
+  background: rgba(239, 68, 68, 0.28) !important;
+  border-color: rgba(252, 165, 165, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 6. Púrpura / Violeta */
+.btn-ghost[class*="text-purple"],
+.btn-ghost[class*="border-purple"],
+.btn-ghost-purple,
+.btn-ghost-violet {
+  color: #9333EA !important;
+  background: rgba(168, 85, 247, 0.10) !important;
+  border: 1px solid rgba(168, 85, 247, 0.30) !important;
+}
+
+.btn-ghost[class*="text-purple"]:hover,
+.btn-ghost[class*="border-purple"]:hover,
+.btn-ghost-purple:hover,
+.btn-ghost-violet:hover {
+  color: #7E22CE !important;
+  background: rgba(168, 85, 247, 0.22) !important;
+  border-color: rgba(168, 85, 247, 0.60) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .btn-ghost[class*="text-purple"],
+html.dark .btn-ghost[class*="border-purple"],
+html.dark .btn-ghost-purple,
+html.dark .btn-ghost-violet {
+  color: #D8B4FE !important;
+  background: rgba(168, 85, 247, 0.15) !important;
+  border-color: rgba(192, 132, 252, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-purple"]:hover,
+html.dark .btn-ghost[class*="border-purple"]:hover,
+html.dark .btn-ghost-purple:hover,
+html.dark .btn-ghost-violet:hover {
+  color: #F3E8FF !important;
+  background: rgba(168, 85, 247, 0.28) !important;
+  border-color: rgba(216, 180, 254, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 7. Naranja */
+.btn-ghost[class*="text-orange"],
+.btn-ghost[class*="border-orange"],
+.btn-ghost-orange {
+  color: #EA580C !important;
+  background: rgba(249, 115, 22, 0.10) !important;
+  border: 1px solid rgba(249, 115, 22, 0.30) !important;
+}
+
+.btn-ghost[class*="text-orange"]:hover,
+.btn-ghost[class*="border-orange"]:hover,
+.btn-ghost-orange:hover {
+  color: #C2410C !important;
+  background: rgba(249, 115, 22, 0.22) !important;
+  border-color: rgba(249, 115, 22, 0.60) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .btn-ghost[class*="text-orange"],
+html.dark .btn-ghost[class*="border-orange"],
+html.dark .btn-ghost-orange {
+  color: #FDBA74 !important;
+  background: rgba(249, 115, 22, 0.15) !important;
+  border-color: rgba(251, 146, 60, 0.35) !important;
+}
+
+html.dark .btn-ghost[class*="text-orange"]:hover,
+html.dark .btn-ghost[class*="border-orange"]:hover,
+html.dark .btn-ghost-orange:hover {
+  color: #FED7AA !important;
+  background: rgba(249, 115, 22, 0.28) !important;
+  border-color: rgba(253, 186, 116, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* ---- BOTONES EN MODALES: CALIBRACIÓN HOMOGÉNEA Y LIQUID GLASS TIPO TARJETA ---- */
+.ts-modal-card .btn-ghost,
+.ts-modal-card .btn-ghost-amber,
+.ts-modal-card .btn-ghost-red,
+.ts-modal-card .btn-ghost-emerald,
+.ts-modal-card .btn-ghost-purple,
+.ts-modal-card .btn-ghost-violet,
+.ts-modal-card .btn-ghost-blue,
+.ts-modal-card .btn-ghost-indigo,
+.ts-modal-card .btn-ghost-orange,
+.ts-modal-card .btn-danger,
+.ts-modal-card .btn-blue,
+.ts-modal-card .btn-cancel,
+.ts-modal-overlay .btn-ghost,
+.ts-modal-overlay .btn-ghost-amber,
+.ts-modal-overlay .btn-ghost-red,
+.ts-modal-overlay .btn-ghost-blue,
+.ts-modal-overlay .btn-danger {
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  padding: 0 18px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: geometricPrecision !important;
+  transform: none !important;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+
+/* 1. Modal Ámbar (ej. Cancelar modal, Volver) */
+.ts-modal-card .btn-ghost-amber,
+.ts-modal-card .btn-ghost[class*="text-amber"],
+.ts-modal-card .btn-ghost[class*="border-amber"],
+.ts-modal-card .btn-ghost[class*="text-yellow"],
+.ts-modal-card .btn-ghost[class*="border-yellow"],
+.ts-modal-overlay .btn-ghost-amber {
+  color: #D97706 !important;
+  background: rgba(245, 158, 11, 0.10) !important;
+  border: 1px solid rgba(245, 158, 11, 0.30) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.ts-modal-card .btn-ghost-amber:hover,
+.ts-modal-card .btn-ghost[class*="text-amber"]:hover,
+.ts-modal-card .btn-ghost[class*="border-amber"]:hover,
+.ts-modal-card .btn-ghost[class*="text-yellow"]:hover,
+.ts-modal-card .btn-ghost[class*="border-yellow"]:hover,
+.ts-modal-overlay .btn-ghost-amber:hover {
+  color: #D97706 !important;
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: rgba(245, 158, 11, 0.58) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-amber,
+html.dark .ts-modal-card .btn-ghost[class*="text-amber"],
+html.dark .ts-modal-card .btn-ghost[class*="border-amber"],
+html.dark .ts-modal-card .btn-ghost[class*="text-yellow"],
+html.dark .ts-modal-card .btn-ghost[class*="border-yellow"],
+html.dark .ts-modal-overlay .btn-ghost-amber {
+  color: #FBBF24 !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-amber:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-amber"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-amber"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-yellow"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-yellow"]:hover,
+html.dark .ts-modal-overlay .btn-ghost-amber:hover {
+  color: #FBBF24 !important;
+  background: rgba(245, 158, 11, 0.28) !important;
+  border-color: rgba(252, 211, 77, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 2. Modal Rojo / Danger (ej. Anular, Confirmar eliminación) */
+.ts-modal-card .btn-danger,
+.ts-modal-card .btn-ghost-red,
+.ts-modal-card .btn-ghost[class*="text-red"],
+.ts-modal-card .btn-ghost[class*="border-red"],
+.ts-modal-overlay .btn-danger,
+.ts-modal-overlay .btn-ghost-red {
+  color: #DC2626 !important;
+  background: rgba(239, 68, 68, 0.10) !important;
+  border: 1px solid rgba(239, 68, 68, 0.30) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.ts-modal-card .btn-danger:hover,
+.ts-modal-card .btn-ghost-red:hover,
+.ts-modal-card .btn-ghost[class*="text-red"]:hover,
+.ts-modal-card .btn-ghost[class*="border-red"]:hover,
+.ts-modal-overlay .btn-danger:hover,
+.ts-modal-overlay .btn-ghost-red:hover {
+  color: #DC2626 !important;
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(239, 68, 68, 0.60) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .ts-modal-card .btn-danger,
+html.dark .ts-modal-card .btn-ghost-red,
+html.dark .ts-modal-card .btn-ghost[class*="text-red"],
+html.dark .ts-modal-card .btn-ghost[class*="border-red"],
+html.dark .ts-modal-overlay .btn-danger,
+html.dark .ts-modal-overlay .btn-ghost-red {
+  color: #F87171 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(248, 113, 113, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .ts-modal-card .btn-danger:hover,
+html.dark .ts-modal-card .btn-ghost-red:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-red"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-red"]:hover,
+html.dark .ts-modal-overlay .btn-danger:hover,
+html.dark .ts-modal-overlay .btn-ghost-red:hover {
+  color: #F87171 !important;
+  background: rgba(239, 68, 68, 0.28) !important;
+  border-color: rgba(252, 165, 165, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 3. Modal Azul (ej. Confirmar baja) */
+.ts-modal-card .btn-ghost-blue,
+.ts-modal-card .btn-blue,
+.ts-modal-card .btn-ghost[class*="text-blue"],
+.ts-modal-card .btn-ghost[class*="border-blue"],
+.ts-modal-overlay .btn-ghost-blue {
+  color: #2563EB !important;
+  background: rgba(37, 99, 235, 0.10) !important;
+  border: 1px solid rgba(37, 99, 235, 0.28) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.ts-modal-card .btn-ghost-blue:hover,
+.ts-modal-card .btn-blue:hover,
+.ts-modal-card .btn-ghost[class*="text-blue"]:hover,
+.ts-modal-card .btn-ghost[class*="border-blue"]:hover,
+.ts-modal-overlay .btn-ghost-blue:hover {
+  color: #1D4ED8 !important;
+  background: rgba(37, 99, 235, 0.22) !important;
+  border-color: rgba(37, 99, 235, 0.55) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-blue,
+html.dark .ts-modal-card .btn-blue,
+html.dark .ts-modal-card .btn-ghost[class*="text-blue"],
+html.dark .ts-modal-card .btn-ghost[class*="border-blue"],
+html.dark .ts-modal-overlay .btn-ghost-blue {
+  color: #93C5FD !important;
+  background: rgba(37, 99, 235, 0.15) !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-blue:hover,
+html.dark .ts-modal-card .btn-blue:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-blue"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-blue"]:hover,
+html.dark .ts-modal-overlay .btn-ghost-blue:hover {
+  color: #BFDBFE !important;
+  background: rgba(37, 99, 235, 0.28) !important;
+  border-color: rgba(147, 197, 253, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 4. Modal Esmeralda / Verde */
+.ts-modal-card .btn-ghost-emerald,
+.ts-modal-card .btn-ghost[class*="text-emerald"],
+.ts-modal-card .btn-ghost[class*="border-emerald"],
+.ts-modal-card .btn-ghost[class*="text-green"],
+.ts-modal-card .btn-ghost[class*="border-green"],
+.ts-modal-overlay .btn-ghost-emerald {
+  color: #059669 !important;
+  background: rgba(16, 185, 129, 0.10) !important;
+  border: 1px solid rgba(16, 185, 129, 0.30) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.ts-modal-card .btn-ghost-emerald:hover,
+.ts-modal-card .btn-ghost[class*="text-emerald"]:hover,
+.ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
+.ts-modal-card .btn-ghost[class*="text-green"]:hover,
+.ts-modal-card .btn-ghost[class*="border-green"]:hover,
+.ts-modal-overlay .btn-ghost-emerald:hover {
+  color: #059669 !important;
+  background: rgba(16, 185, 129, 0.22) !important;
+  border-color: rgba(16, 185, 129, 0.60) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-emerald,
+html.dark .ts-modal-card .btn-ghost[class*="text-emerald"],
+html.dark .ts-modal-card .btn-ghost[class*="border-emerald"],
+html.dark .ts-modal-card .btn-ghost[class*="text-green"],
+html.dark .ts-modal-card .btn-ghost[class*="border-green"],
+html.dark .ts-modal-overlay .btn-ghost-emerald {
+  color: #6EE7B7 !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-emerald:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-emerald"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-emerald"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-green"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-green"]:hover,
+html.dark .ts-modal-overlay .btn-ghost-emerald:hover {
+  color: #6EE7B7 !important;
+  background: rgba(16, 185, 129, 0.28) !important;
+  border-color: rgba(110, 231, 183, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+/* 5. Modal Púrpura / Violeta */
+.ts-modal-card .btn-ghost-purple,
+.ts-modal-card .btn-ghost-violet,
+.ts-modal-card .btn-ghost[class*="text-purple"],
+.ts-modal-card .btn-ghost[class*="border-purple"],
+.ts-modal-card .btn-ghost[class*="text-violet"],
+.ts-modal-card .btn-ghost[class*="border-violet"],
+.ts-modal-overlay .btn-ghost-purple,
+.ts-modal-overlay .btn-ghost-violet {
+  color: #9333EA !important;
+  background: rgba(168, 85, 247, 0.10) !important;
+  border: 1px solid rgba(168, 85, 247, 0.30) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.ts-modal-card .btn-ghost-purple:hover,
+.ts-modal-card .btn-ghost-violet:hover,
+.ts-modal-card .btn-ghost[class*="text-purple"]:hover,
+.ts-modal-card .btn-ghost[class*="border-purple"]:hover,
+.ts-modal-card .btn-ghost[class*="text-violet"]:hover,
+.ts-modal-card .btn-ghost[class*="border-violet"]:hover,
+.ts-modal-overlay .btn-ghost-purple:hover,
+.ts-modal-overlay .btn-ghost-violet:hover {
+  color: #7E22CE !important;
+  background: rgba(168, 85, 247, 0.22) !important;
+  border-color: rgba(168, 85, 247, 0.60) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-purple,
+html.dark .ts-modal-card .btn-ghost-violet,
+html.dark .ts-modal-card .btn-ghost[class*="text-purple"],
+html.dark .ts-modal-card .btn-ghost[class*="border-purple"],
+html.dark .ts-modal-card .btn-ghost[class*="text-violet"],
+html.dark .ts-modal-card .btn-ghost[class*="border-violet"],
+html.dark .ts-modal-overlay .btn-ghost-purple,
+html.dark .ts-modal-overlay .btn-ghost-violet {
+  color: #D8B4FE !important;
+  background: rgba(168, 85, 247, 0.15) !important;
+  border-color: rgba(192, 132, 252, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .ts-modal-card .btn-ghost-purple:hover,
+html.dark .ts-modal-card .btn-ghost-violet:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-purple"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-purple"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="text-violet"]:hover,
+html.dark .ts-modal-card .btn-ghost[class*="border-violet"]:hover,
+html.dark .ts-modal-overlay .btn-ghost-purple:hover,
+html.dark .ts-modal-overlay .btn-ghost-violet:hover {
+  color: #F3E8FF !important;
+  background: rgba(168, 85, 247, 0.28) !important;
+  border-color: rgba(216, 180, 254, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+.modal-divider {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.dark .modal-divider {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.btn-danger {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #DC2626 !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  background: rgba(239, 68, 68, 0.10) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  border: 1px solid rgba(239, 68, 68, 0.30) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease !important;
+  transform: none !important;
+}
+
+.btn-danger:hover {
+  color: #DC2626 !important;
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(239, 68, 68, 0.60) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+.btn-danger:active {}
+
+.btn-danger.btn-icon,
+.btn-icon-danger {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  padding: 0 !important;
+  font-size: 13px !important;
+  color: #DC2626 !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  background: rgba(239, 68, 68, 0.10) !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+  transition: all 0.22s ease !important;
+  box-sizing: border-box !important;
+}
+
+.btn-danger.btn-icon:hover,
+.btn-icon-danger:hover {
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(239, 68, 68, 0.50) !important;
+  transform: scale(1.05) !important;
+}
+
+.btn-blue {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #2563EB !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  background: rgba(37, 99, 235, 0.10) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  border: 1px solid rgba(37, 99, 235, 0.28) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  transition: all 0.22s ease !important;
+}
+
+.btn-blue:hover {
+  color: #1D4ED8 !important;
+  background: rgba(37, 99, 235, 0.22) !important;
+  border-color: rgba(37, 99, 235, 0.55) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+html.dark .btn-danger {
+  color: #F87171 !important;
+  background: rgba(239, 68, 68, 0.14) !important;
+  border-color: rgba(248, 113, 113, 0.30) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .btn-danger:hover {
+  color: #F87171 !important;
+  background: rgba(239, 68, 68, 0.26) !important;
+  border-color: rgba(252, 165, 165, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+html.dark .btn-blue {
+  color: #93C5FD !important;
+  background: rgba(37, 99, 235, 0.15) !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.dark .btn-blue:hover {
+  color: #BFDBFE !important;
+  background: rgba(37, 99, 235, 0.28) !important;
+  border-color: rgba(147, 197, 253, 0.65) !important;
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+

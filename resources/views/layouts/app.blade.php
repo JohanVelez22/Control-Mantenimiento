@@ -166,6 +166,7 @@
                 </p>
                 <form id="global-anular-form" method="POST" class="space-y-4">
                     @csrf
+                    <input type="hidden" name="_method" id="global-anular-method" value="POST">
                     @if(auth()->check() && auth()->user()->isTecnico())
                     <div>
                         <input type="password" name="password_confirm" id="global-anular-input" required
@@ -361,12 +362,13 @@
         // ─── MODAL GLOBAL DE ANULACIÓN ───────────────────────────────────
         const isTecnicoGlobal = {{ (auth()->check() && auth()->user()->isTecnico()) ? 'true' : 'false' }};
 
-        function openAnularModal(actionUrl, isReactivation = false) {
+        function openAnularModal(actionUrl, isReactivation = false, customMethod = 'POST', customTitle = null, customMsg = null) {
             recordFocus();
             const modal = document.getElementById('global-anular-modal');
             const card  = document.getElementById('global-anular-card');
             const form  = document.getElementById('global-anular-form');
             const input = document.getElementById('global-anular-input');
+            const methodInput = document.getElementById('global-anular-method');
             const iconContainer = document.getElementById('global-anular-icon-container');
             const icon = document.getElementById('global-anular-icon');
             const title = document.getElementById('global-anular-title');
@@ -375,9 +377,24 @@
             const cancelBtn = document.getElementById('global-anular-cancel');
 
             form.action  = actionUrl;
+            if (methodInput) methodInput.value = customMethod || 'POST';
             if (input) input.value  = '';
 
-            if (isReactivation) {
+            if (customMethod === 'DELETE' || customTitle) {
+                // Modo Eliminación directa (p. ej. repuestos)
+                title.textContent = customTitle || 'Confirmar Eliminación';
+                msg.textContent = customMsg || (isTecnicoGlobal 
+                    ? 'Ingresa la contraseña de un administrador para eliminar este registro.' 
+                    : '¿Estás seguro de eliminar este registro?');
+                icon.textContent = '🗑️';
+                iconContainer.className = 'w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4';
+                submitBtn.innerHTML = 'Eliminar';
+                submitBtn.className = 'flex-1 btn-danger justify-center font-bold py-2.5 rounded-xl';
+                if (cancelBtn) {
+                    cancelBtn.className = 'flex-1 btn-ghost-amber';
+                }
+                if (input) input.className = 'glass-input text-center tracking-widest text-lg focus:ring-red-500';
+            } else if (isReactivation) {
                 // Modo Activación
                 title.textContent = 'Confirmar Activación';
                 msg.textContent = isTecnicoGlobal 
@@ -426,10 +443,12 @@
         function closeAnularModal() {
             const modal = document.getElementById('global-anular-modal');
             const card  = document.getElementById('global-anular-card');
+            const methodInput = document.getElementById('global-anular-method');
             modal.classList.add('opacity-0');
             card.classList.add('opacity-0');
             setTimeout(() => {
                 modal.classList.add('hidden');
+                if (methodInput) methodInput.value = 'POST';
                 restoreFocus();
             }, 200);
         }

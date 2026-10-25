@@ -1,0 +1,138 @@
+/* ================================================================
+   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: MODALES, DIÁLOGOS Y VENTANAS EMERGENTES (MODALS)
+   ================================================================ */
+
+/* --- TOGGLE ENTIDAD (PERSONA / EMPRESA) -------------------------------------------------- */
+.entity-toggle {
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 14px;
+}
+
+html.dark .entity-toggle {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.entity-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  border: none;
+  color: #64748B;
+  background: transparent;
+}
+
+html.dark .entity-tab {
+  color: #94A3B8;
+}
+
+.entity-tab.active,
+html.dark .entity-tab.active {
+  color: white !important;
+  background: linear-gradient(135deg, #2563EB, #06B6D4) !important;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
+}
+
+/* --- MODAL VIDRIO -------------------------------------------------- */
+.ts-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.50);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.ts-modal-overlay.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  display: flex !important;
+}
+
+.ts-modal-card {
+  background: rgba(255, 255, 255, 0.80);
+  border: 1px solid rgba(255, 255, 255, 0.60);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.70);
+  border-radius: 24px;
+  max-width: 460px;
+  width: 100%;
+  max-height: 90dvh;
+  overflow-y: auto;
+  transform: none !important;
+  transition: opacity 0.2s ease !important;
+}
+
+html.dark .ts-modal-card {
+  background: rgba(10, 20, 45, 0.85);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* --- BARRA DE PROGRESO NAVEGACIÓN -------------------------------------------------- */
+#nav-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #2563EB, #06B6D4, #8B5CF6);
+  z-index: 9999;
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.60);
+  transition: width 0.15s ease;
+  pointer-events: none;
+}
+
+/* --- ANIMACIONES -------------------------------------------------- */
+@keyframes fadeSlideIn {
+
+  /* ---- Sin opacity: elementos nunca invisibles al reiniciar animación ---- */
+  from {
+    transform: translateY(8px);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: fadeSlideIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ================================================================
+   Pricing Panel: siempre visible, sin animaciones
+   ================================================================ */
+/* NOTA: sin transform:none para respetar translate de Tailwind en hijos */
+.pricing-panel,
+.pricing-panel * {
+  opacity: 1 !important;
+  visibility: visible !important;
+  animation: none !important;
+}
+
+/* --- ACCESIBILIDAD: FOCO VISIBLE -------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+

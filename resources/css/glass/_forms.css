@@ -1,0 +1,436 @@
+/* ================================================================
+   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: CAMPOS DE FORMULARIO, INPUTS Y SELECTS (FORMS)
+   ================================================================ */
+
+/* --- INPUT VIDRIO -------------------------------------------------- */
+.glass-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: #0F172A;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 0.8);
+  outline: none;
+  transition: all 0.22s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+html.dark .glass-input {
+  color: #F1F5F9;
+  background: rgba(15, 23, 42, 0.72);
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  color-scheme: dark;
+}
+
+.glass-input:focus,
+.ts-wrapper.glass-input.focus {
+  border-color: rgba(37, 99, 235, 0.60) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+  outline: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+}
+
+html.dark .glass-input:focus,
+html.dark .ts-wrapper.glass-input.focus {
+  border-color: rgba(96, 165, 250, 0.50) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.20) !important;
+  outline: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+}
+
+/* Quitar borde/anillo azul nativo en input interno de utilidad */
+#utilidad,
+#utilidad:focus,
+#utilidad:focus-visible,
+#utilidad:active {
+  outline: none !important;
+  outline-style: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  border: none !important;
+}
+
+.glass-input:has(#utilidad:focus) {
+  border-color: rgba(37, 99, 235, 0.60) !important;
+}
+
+html.dark .glass-input:has(#utilidad:focus) {
+  border-color: rgba(96, 165, 250, 0.50) !important;
+}
+
+.glass-input::placeholder {
+  color: #94A3B8;
+}
+
+#efectivo_real_visual {
+  font-size: 1.875rem !important;
+  font-weight: 900 !important;
+  line-height: 2.25rem !important;
+}
+
+#efectivo_real_visual::placeholder {
+  font-size: 1.875rem !important;
+  font-weight: 900 !important;
+  line-height: 2.25rem !important;
+  color: #94A3B8 !important;
+}
+
+#efectivo_real_visual::-webkit-input-placeholder {
+  font-size: 1.875rem !important;
+  font-weight: 900 !important;
+  line-height: 2.25rem !important;
+  color: #94A3B8 !important;
+}
+
+#efectivo_real_visual::-moz-placeholder {
+  font-size: 1.875rem !important;
+  font-weight: 900 !important;
+  line-height: 2.25rem !important;
+  color: #94A3B8 !important;
+}
+
+@media (max-width: 768px) {
+  #efectivo_real_visual {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  #efectivo_real_visual::placeholder {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  #efectivo_real_visual::-webkit-input-placeholder {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  #efectivo_real_visual::-moz-placeholder {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+}
+
+/* Ocultar placeholder inmediatamente al hacer clic / enfocar en cualquier input o textarea */
+input:focus::placeholder,
+textarea:focus::placeholder,
+.glass-input:focus::placeholder,
+.glass-input:focus::-webkit-input-placeholder,
+.glass-input:focus::-moz-placeholder,
+.glass-input:focus:-ms-input-placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+
+/* Quitar recuadro o anillo de foco persistente en checkboxes y radios al hacer clic */
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+}
+
+.glass-input.border-red-500 {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
+}
+
+/* ==========================================================================
+   PASSWORD REVEAL TOGGLE (OJITO UNIVERSAL MÓVIL Y WEB)
+   ========================================================================== */
+
+/* Ocultar el ojito nativo de Edge/IE en Windows para evitar duplicados en escritorio */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.ts-password-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.ts-password-wrapper>input {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.ts-password-input {
+  padding-right: 44px !important;
+}
+
+.ts-password-input-center {
+  padding-left: 44px !important;
+  padding-right: 44px !important;
+}
+
+.ts-password-toggle {
+  position: absolute !important;
+  right: 10px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  color: #94A3B8 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: color 0.15s ease, opacity 0.15s ease !important;
+  z-index: 10 !important;
+  line-height: 1 !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  user-select: none !important;
+}
+
+/* El icono del ojo permanece neutral, sin iluminarse ni cambiar de color */
+.ts-password-toggle,
+.ts-password-toggle:hover,
+.ts-password-toggle:focus,
+.ts-password-toggle:focus-visible,
+.ts-password-toggle:active {
+  color: #94A3B8 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transform: translateY(-50%) !important;
+}
+
+html.dark .ts-password-toggle,
+html.dark .ts-password-toggle:hover,
+html.dark .ts-password-toggle:focus,
+html.dark .ts-password-toggle:focus-visible,
+html.dark .ts-password-toggle:active {
+  color: #94A3B8 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transform: translateY(-50%) !important;
+}
+
+.ts-password-toggle:active {
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html.dark .ts-password-toggle:active {
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.ts-password-toggle svg {
+  width: 20px !important;
+  height: 20px !important;
+  display: block !important;
+  pointer-events: none !important;
+  transform: none !important;
+}
+
+.ts-password-wrapper>input:disabled~.ts-password-toggle {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+/* --- INPUT VIDRIO -------------------------------------------------- */
+/* ---- Espaciado spinners inputs numéricos ---- */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+select.glass-input+.ts-wrapper {
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.ts-wrapper.dropdown-active {
+  z-index: 50 !important;
+}
+
+select.glass-input+.ts-wrapper .ts-control {
+  padding: 10px 14px !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  outline: none !important;
+  color: #0F172A !important;
+  transition: all 0.22s ease !important;
+  height: 42px !important;
+}
+
+html.dark select.glass-input+.ts-wrapper .ts-control {
+  background: rgba(15, 23, 42, 0.60) !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.20) !important;
+  color: #E2E8F0 !important;
+}
+
+.ts-control>input {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.ts-control>input:focus,
+.ts-control>input:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+select.glass-input+.ts-wrapper.focus .ts-control,
+select.glass-input+.ts-wrapper .ts-control:focus {
+  border-color: rgba(37, 99, 235, 0.60) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+  outline: none !important;
+}
+
+html.dark select.glass-input+.ts-wrapper.focus .ts-control,
+html.dark select.glass-input+.ts-wrapper .ts-control:focus {
+  border-color: rgba(96, 165, 250, 0.50) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.20) !important;
+  outline: none !important;
+}
+
+/* ================================================================
+   PERSONALIZACIÓN SELECT Y SELECTORES DE FECHA
+   ================================================================ */
+select.glass-input option {
+  background-color: #ffffff;
+  color: #0F172A;
+  font-weight: 500;
+}
+
+html.dark select.glass-input option {
+  background-color: #1E293B;
+  color: #F8FAFC;
+}
+
+/* Custom Native Style for tipo-select in Cotizaciones */
+select.tipo-select {
+  height: 42px !important;
+  width: 100% !important;
+  padding: 0 32px 0 12px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.60) !important;
+  background-color: rgba(255, 255, 255, 0.65) !important;
+  color: #0F172A !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2394A3B8%22%20stroke-width%3D%221.75%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  background-size: 18px 18px !important;
+  cursor: pointer !important;
+  outline: none !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+  color-scheme: light !important;
+}
+
+html.dark select.tipo-select {
+  border-color: rgba(255, 255, 255, 0.10) !important;
+  background-color: rgba(15, 23, 42, 0.60) !important;
+  color: #E2E8F0 !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.20) !important;
+  color-scheme: dark !important;
+}
+
+select.tipo-select:focus {
+  border-color: rgba(37, 99, 235, 0.60) !important;
+}
+
+html.dark select.tipo-select:focus {
+  border-color: rgba(96, 165, 250, 0.50) !important;
+}
+
+select.tipo-select option {
+  background-color: #ffffff !important;
+  color: #0F172A !important;
+  font-weight: 600 !important;
+}
+
+html.dark select.tipo-select option {
+  background-color: #0F172A !important;
+  color: #F8FAFC !important;
+  font-weight: 600 !important;
+}
+
+input[type="date"].glass-input::-webkit-calendar-picker-indicator,
+input[type="datetime-local"].glass-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: 0.2s;
+}
+
+input[type="date"].glass-input::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"].glass-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+html.dark input[type="date"].glass-input::-webkit-calendar-picker-indicator,
+html.dark input[type="datetime-local"].glass-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.8;
+}
+
+/* --- ETIQUETA VIDRIO -------------------------------------------------- */
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #374151;
+  margin-bottom: 5px;
+}
+
+html.dark .field-label {
+  color: #CBD5E1;
+}
+
+

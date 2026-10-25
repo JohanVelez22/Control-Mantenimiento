@@ -1,0 +1,16 @@
+/* ================================================================
+   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM (ARQUITECTURA MODULAR)
+   Pionero de diseño para proyectos Laravel de alta fidelidad visual.
+   ================================================================ */
+
+@import './_tokens.css';
+@import './_base.css';
+@import './_cards.css';
+@import './_sidebar.css';
+@import './_topbar.css';
+@import './_buttons.css';
+@import './_forms.css';
+@import './_tables.css';
+@import './_modals.css';
+@import './_pills.css';
+@import './_print.css';
