@@ -1,0 +1,4097 @@
+/* --- CORRECCIÓN AUTOCOMPLETADO NAVEGADOR -------------------------------------------------- */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.9) inset !important;
+  -webkit-text-fill-color: #1e293b !important;
+  /* text-slate-800 */
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+html.dark input:-webkit-autofill,
+html.dark input:-webkit-autofill:hover,
+html.dark input:-webkit-autofill:focus,
+html.dark input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px rgba(15, 23, 42, 0.9) inset !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  /* text-slate-50 */
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* ================================================================
+   Modal Overlay (Liquid Glass)
+   ================================================================ */
+.ts-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: opacity 0.3s ease;
+}
+
+.ts-modal-overlay.hidden {
+  pointer-events: none;
+}
+
+.ts-modal-card {
+  width: 100%;
+  max-width: 460px;
+  margin: 1rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.80);
+  border: 1px solid rgba(255, 255, 255, 0.60);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  transform: none !important;
+  transition: opacity 0.2s ease !important;
+}
+
+/* Modificadores de ancho para modales Liquid Glass */
+.ts-modal-card.max-w-sm {
+  max-width: 24rem !important;
+}
+
+.ts-modal-card.max-w-md {
+  max-width: 28rem !important;
+}
+
+.ts-modal-card.max-w-lg {
+  max-width: 32rem !important;
+}
+
+.ts-modal-card.max-w-xl {
+  max-width: 36rem !important;
+}
+
+.ts-modal-card.max-w-2xl {
+  max-width: 42rem !important;
+}
+
+.ts-modal-card.max-w-3xl {
+  max-width: 48rem !important;
+}
+
+.ts-modal-card.max-w-4xl {
+  max-width: 56rem !important;
+}
+
+.ts-modal-card.max-w-5xl {
+  max-width: 64rem !important;
+}
+
+.ts-modal-card.max-w-6xl {
+  max-width: 72rem !important;
+}
+
+.ts-modal-card.max-w-7xl {
+  max-width: 80rem !important;
+}
+
+.ts-modal-card.max-w-full {
+  max-width: 100% !important;
+}
+
+html.dark .ts-modal-card,
+.dark .ts-modal-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================================
+   TOMSELECT LIQUID GLASS INTEGRATION (NO DOUBLE BORDERS)
+   ========================================================================== */
+.ts-wrapper.glass-input {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.ts-wrapper.glass-input .ts-control {
+  width: 100% !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+  color: #0F172A !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.60) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.22s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 42px !important;
+  height: auto !important;
+}
+
+html.dark .ts-wrapper.glass-input .ts-control {
+  color: #E2E8F0 !important;
+  background: rgba(15, 23, 42, 0.60) !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.20) !important;
+}
+
+.ts-wrapper.glass-input.focus .ts-control,
+.ts-wrapper.glass-input.dropdown-active .ts-control {
+  border-color: rgba(37, 99, 235, 0.60) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.dark .ts-wrapper.glass-input.focus .ts-control,
+html.dark .ts-wrapper.glass-input.dropdown-active .ts-control {
+  border-color: rgba(96, 165, 250, 0.50) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.20) !important;
+}
+
+.ts-wrapper.glass-input .ts-control>input {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: inherit !important;
+}
+
+.ts-wrapper.glass-input .ts-control .item,
+.ts-wrapper.glass-input .ts-control .ts-item-display {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+}
+
+/* Glass Backdrop for Lightbox */
+.glass-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2vh 2vw;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+html.dark .glass-backdrop {
+  background: rgba(15, 23, 42, 0.2);
+}
+
+/* --- Estilos extraidos de app.blade.php --- */
+
+/* Ajuste de placeholder para TomSelect nativo */
+.ts-control input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+  font-weight: 500 !important;
+  transition: color 0.2s ease;
+}
+
+/* Hacer que el placeholder desaparezca inmediatamente al hacer clic / enfocar en cualquier select, igual que en los demás campos */
+.ts-wrapper .ts-control.focus input::placeholder,
+.ts-wrapper .ts-control input:focus::placeholder,
+.ts-wrapper.focus .ts-control input::placeholder,
+.ts-wrapper.dropdown-active .ts-control input::placeholder,
+.ts-wrapper.input-active .ts-control input::placeholder,
+.ts-control input:focus::-webkit-input-placeholder,
+.ts-control input:focus::-moz-placeholder,
+.ts-control input:focus:-ms-input-placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+
+/* Evitar Flash of Unstyled Content (FOUC) en los selects nativos:
+           Usamos visibility:hidden (no color) para no afectar elementos hijos */
+select.glass-input:not(.tomselected):not(.no-tomselect) {
+  visibility: hidden !important;
+}
+
+select.glass-input.no-tomselect {
+  visibility: visible !important;
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+}
+
+/* Evitar expansión horizontal o vertical cuando se seleccionan textos muy largos en TomSelect */
+.ts-wrapper.single .ts-control {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  padding-right: 35px !important;
+  /* Espacio para el botón X */
+  position: relative !important;
+  box-shadow: none !important;
+  /* Eliminar sombra nativa para evitar doble borde */
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.ts-control>.item,
+.ts-control .ts-item-display,
+.stock-select-wrapper .ts-control>.item {
+  width: auto !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  max-width: calc(100% - 20px) !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: break-word !important;
+  line-height: 1.35 !important;
+  display: block !important;
+  pointer-events: none;
+  text-align: left !important;
+}
+
+/* Ancho estático para la columna Tipo en tablas de ítems que garantiza 'Servicio / Libre' y 'Producto Stock' completos sin recortar */
+#items-table th.col-tipo,
+#items-table td.col-tipo {
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 205px !important;
+}
+
+/* Bloqueo estático absoluto para que la celda de descripción y TomSelect se extiendan al 100% de borde a borde y alineados a la izquierda */
+.ts-table .desc-cell {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+  text-align: left !important;
+}
+
+.ts-table .desc-cell .desc-input,
+.ts-table .desc-cell .ts-wrapper,
+.stock-select-wrapper {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  text-align: left !important;
+}
+
+.ts-table .desc-cell .ts-control,
+.stock-select-wrapper .ts-control {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  min-height: 40px !important;
+  height: auto !important;
+  box-sizing: border-box !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+  overflow: visible !important;
+}
+
+.desc-cell .ts-item-display,
+.stock-select-wrapper .ts-item-display,
+.stock-select-wrapper .item {
+  text-align: left !important;
+}
+
+/* Altura calibrada a exactamente 5 opciones completas sin cortes horizontales */
+.ts-dropdown-content {
+  max-height: 180px !important;
+  overflow-y: auto !important;
+  scroll-behavior: smooth !important;
+  overscroll-behavior: contain !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(37, 99, 235, 0.25) transparent !important;
+}
+
+/* Desplegables de stock a altura para productos de dos líneas */
+.stock-select-dropdown .ts-dropdown-content {
+  max-height: 200px !important;
+}
+
+.stock-select-dropdown .option {
+  height: auto !important;
+  min-height: 48px !important;
+  max-height: none !important;
+  padding: 8px 12px !important;
+}
+
+
+.ts-dropdown-content::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+.ts-dropdown-content::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.ts-dropdown-content::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.25) !important;
+  border-radius: 10px !important;
+  transition: background 0.2s ease !important;
+}
+
+.ts-dropdown-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 0.45) !important;
+}
+
+/* Contención estática estricta de la celda de descripción para evitar desbordamientos horizontales */
+.ts-table .desc-cell {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+.ts-table .desc-cell .ts-wrapper,
+.ts-table .desc-cell .ts-control,
+.stock-select-wrapper,
+.stock-select-wrapper .ts-control {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.desc-cell .ts-item-display,
+.stock-select-wrapper .ts-item-display {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: break-word !important;
+  line-height: 1.35 !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* Botón de limpiar siempre a la derecha */
+.ts-control .clear-button {
+  position: absolute !important;
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 10;
+}
+
+/* Ocultar el cursor vertical parpadeante solo para selects no-search */
+.ts-wrapper.no-search .ts-control input,
+.ts-control.no-search input {
+  caret-color: transparent !important;
+  cursor: pointer !important;
+}
+
+/* En selects con búsqueda interactiva (como cliente o proveedor), mostrar cursor de texto y permitir escribir */
+.ts-wrapper:not(.no-search) .ts-control input {
+  caret-color: auto !important;
+  cursor: text !important;
+}
+
+/* Eliminar cualquier subrayado de texto en las opciones del desplegable */
+.ts-dropdown .highlight,
+.ts-dropdown mark,
+.ts-dropdown .ts-option-item,
+.ts-dropdown .option,
+.ts-dropdown [data-selectable] {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+/* Si hay un ítem seleccionado y el dropdown está cerrado, ocultar el input de búsqueda */
+.ts-wrapper.single.has-items:not(.dropdown-active) .ts-control>input {
+  display: none !important;
+}
+
+/* En selects con búsqueda, ocultar el ítem ÚNICAMENTE mientras el menú desplegable esté abierto */
+.ts-wrapper.single.has-items:not(.no-search).dropdown-active .ts-control>.item {
+  display: none !important;
+}
+
+.ts-wrapper.single.has-items:not(.no-search).dropdown-active .ts-control>input {
+  display: inline-block !important;
+  width: 100% !important;
+}
+
+/* Cuando el dropdown está cerrado, el ítem seleccionado SIEMPRE debe mostrarse visible, incluso si el wrapper conserva el foco */
+.ts-wrapper.single.has-items:not(.dropdown-active) .ts-control>.item {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* NOTA: NO ocultamos .item al abrir dropdown para selects sin búsqueda.
+           TomSelect con controlInput:null no necesita esto y causa el flash. */
+.ts-wrapper.no-search .ts-control>.item,
+.ts-wrapper.no-search.focus .ts-control>.item,
+.ts-wrapper.no-search.dropdown-active .ts-control>.item,
+.ts-wrapper.no-search.input-active .ts-control>.item,
+.ts-wrapper.no-search .ts-control .ts-item-display,
+.ts-wrapper.no-search.focus .ts-control .ts-item-display,
+.ts-wrapper.no-search.dropdown-active .ts-control .ts-item-display,
+.ts-wrapper.no-search.input-active .ts-control .ts-item-display {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* ==========================================================================
+   CABECERA FORMULARIO COTIZACIÓN (Cliente/Proveedor, Fecha, Validez)
+   ========================================================================== */
+.cotizacion-header-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 8.5rem 130px !important;
+  gap: 1.25rem !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+}
+
+.cotizacion-header-grid>div {
+  min-width: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .cotizacion-header-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Columnas compactas (N° Factura y Fecha) para cabeceras de Operaciones y Facturas */
+.col-factura-header {
+  width: 7rem !important;
+  min-width: 7rem !important;
+  max-width: 7rem !important;
+  flex: 0 0 7rem !important;
+}
+
+.col-factura-header input {
+  width: 7rem !important;
+  min-width: 7rem !important;
+  max-width: 7rem !important;
+  text-align: left !important;
+  padding-left: 0.75rem !important;
+  box-sizing: border-box !important;
+}
+
+.col-fecha-header {
+  width: 8.5rem !important;
+  min-width: 8.5rem !important;
+  max-width: 8.5rem !important;
+  flex: 0 0 8.5rem !important;
+}
+
+.col-fecha-header input {
+  width: 8.5rem !important;
+  min-width: 8.5rem !important;
+  max-width: 8.5rem !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+
+  .col-factura-header,
+  .col-fecha-header {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+
+  .col-factura-header input,
+  .col-fecha-header input {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+#items-table tfoot tr,
+#factura-items-table tfoot tr,
+.table-factura-edit tfoot tr {
+  border: none !important;
+  border-top: none !important;
+  background-color: rgba(31, 41, 55, 0.45) !important;
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+}
+
+html:not(.dark) #items-table tfoot tr,
+html:not(.dark) #factura-items-table tfoot tr,
+html:not(.dark) .table-factura-edit tfoot tr {
+  background-color: rgba(243, 244, 246, 0.6) !important;
+}
+
+#items-table tfoot td,
+#factura-items-table tfoot td,
+.table-factura-edit tfoot td {
+  border: none !important;
+  border-top: none !important;
+  background-color: transparent !important;
+}
+
+#items-table tfoot tr td:first-child,
+#factura-items-table tfoot tr td:first-child,
+.table-factura-edit tfoot tr td:first-child {
+  border-bottom-left-radius: 16px !important;
+}
+
+#items-table tfoot tr td:last-child,
+#factura-items-table tfoot tr td:last-child,
+.table-factura-edit tfoot tr td:last-child {
+  border-bottom-right-radius: 16px !important;
+}
+
+/* Badge de alerta 'Menor al costo' posicionado abajo sin aumentar la altura de la fila */
+.alerta-costo-badge,
+.alerta-costo-badge span,
+.alerta-costo-badge .costo-ref {
+  font-size: 10px !important;
+  text-transform: uppercase !important;
+}
+
+.alerta-costo-badge {
+  position: absolute !important;
+  right: 4px !important;
+  top: 100% !important;
+  margin-top: 2px !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  font-size: 10px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+  line-height: normal !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* ==========================================================================
+   TABLA DE ÍTEMS DE COTIZACIÓN (#items-table) - Diseño Balanceado y Simétrico
+   ========================================================================== */
+.cotizacion-table-scroll {
+  min-height: 165px !important;
+}
+
+#items-table {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+#items-table thead th {
+  transition: none !important;
+}
+
+/* Columna 1: Tipo (Encabezado centrado, celdas alineadas con ancho óptimo) */
+#items-table th.col-tipo {
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 205px !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+  text-align: center !important;
+}
+
+#items-table td.col-tipo {
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 205px !important;
+  padding-left: 10px !important;
+  padding-right: 6px !important;
+  text-align: left !important;
+}
+
+#items-table .tipo-select,
+.tipo-select {
+  width: 100% !important;
+  padding: 8px 8px 8px 10px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  letter-spacing: -0.2px !important;
+}
+
+/* Columna 2: Descripción (Flexible, ocupa el ancho dinámico restante de borde a borde) */
+#items-table th.col-descripcion,
+#items-table td.desc-cell {
+  width: auto !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
+
+/* Columna 3: Cantidad (Optimizada horizontalmente con espacio para 1000+) */
+#items-table th.col-cantidad,
+#items-table td.col-cantidad {
+  width: 100px !important;
+  min-width: 95px !important;
+  max-width: 110px !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+  text-align: center !important;
+}
+
+.cantidad-input,
+#items-table .cantidad-input {
+  text-align: center !important;
+  padding: 8px 6px !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
+  letter-spacing: normal !important;
+}
+
+#items-table .cantidad-input {
+  width: 100% !important;
+}
+
+/* Conservar spinners nativos en cantidad con buen espaciado */
+.cantidad-input::-webkit-outer-spin-button,
+.cantidad-input::-webkit-inner-spin-button,
+#items-table .cantidad-input::-webkit-outer-spin-button,
+#items-table .cantidad-input::-webkit-inner-spin-button {
+  -webkit-appearance: inner-spin-button !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+  margin-left: 4px !important;
+}
+
+.cantidad-input,
+#items-table .cantidad-input {
+  -moz-appearance: number-input !important;
+}
+
+/* Columna 4: Precio Unitario (Espacioso para valores grandes con separadores de miles sin recortar dígitos) */
+#items-table th.col-precio,
+#items-table td.col-precio {
+  width: 175px !important;
+  min-width: 175px !important;
+  max-width: 175px !important;
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
+
+#items-table .precio-input {
+  width: 100% !important;
+  padding: 8px 10px !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
+  text-align: right !important;
+}
+
+/* Columna 5: Subtotal (Alineación derecha holgada sin saltos, cortes ni elipsis) */
+#items-table th.col-subtotal,
+#items-table td.col-subtotal {
+  width: 220px !important;
+  min-width: 220px !important;
+  max-width: 220px !important;
+  padding-left: 5px !important;
+  padding-right: 8px !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.subtotal-cell,
+#items-table .subtotal-cell {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Columna 6: Acción / Eliminar (Centrado, espacioso y siempre al frente) */
+#items-table th.col-accion,
+#items-table td.col-accion {
+  width: 58px !important;
+  min-width: 58px !important;
+  max-width: 58px !important;
+  padding-left: 2px !important;
+  padding-right: 2px !important;
+  text-align: center !important;
+}
+
+#items-table td:last-child .btn-danger,
+#items-table td:last-child .btn-icon-danger,
+#items-table td.col-accion .btn-danger,
+#items-table td.col-accion .btn-icon-danger {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 10px !important;
+}
+
+/* Sincronizar tfoot para respetar espaciado y alineación */
+#items-table tfoot td {
+  padding-left: 10px !important;
+  padding-right: 18px !important;
+}
+
+#items-table #total-display {
+  font-size: 1.35rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* ==========================================================================
+   MODO COMPACTO Y RESPONSIVO PARA TABLAS DE ÍTEMS EN MÓVIL (< 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* Contenedores con scroll táctil suave y min-width protegido */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+    scroll-behavior: smooth !important;
+  }
+
+  #items-table {
+    min-width: 740px !important;
+  }
+
+  /* Encabezados y celdas compactas */
+  #items-table th {
+    font-size: 11px !important;
+    padding: 8px 4px !important;
+  }
+
+  #items-table td {
+    font-size: 12px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  /* Columna Tipo: Reducida a 140px en móvil para ahorrar espacio con título centrado */
+  #items-table th.col-tipo {
+    width: 140px !important;
+    min-width: 140px !important;
+    max-width: 145px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    text-align: center !important;
+  }
+
+  #items-table td.col-tipo {
+    width: 140px !important;
+    min-width: 140px !important;
+    max-width: 145px !important;
+    padding-left: 8px !important;
+    padding-right: 4px !important;
+    text-align: left !important;
+  }
+
+  #items-table .tipo-select,
+  .tipo-select {
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 12px !important;
+    padding: 4px 6px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Inputs generales dentro de la tabla de ítems */
+  #items-table td.desc-cell,
+  #items-table th.col-descripcion {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  #items-table .desc-cell input,
+  #items-table .desc-cell select,
+  #items-table select.stock-select,
+  #items-table input.glass-input,
+  #items-table select.glass-input {
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 12px !important;
+    padding: 4px 6px !important;
+  }
+
+  /* TomSelect dentro de tabla de ítems en móvil */
+  #items-table .ts-wrapper .ts-control,
+  #items-table .ts-control {
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 2px 6px !important;
+    font-size: 12px !important;
+  }
+
+  #items-table .ts-control>input {
+    height: 24px !important;
+    min-height: 24px !important;
+    font-size: 12px !important;
+  }
+
+  #items-table .ts-dropdown .option {
+    padding: 6px 8px !important;
+    font-size: 12px !important;
+  }
+
+  /* Columna Cantidad: Compacta con altura de 32px */
+  #items-table th.col-cantidad,
+  #items-table td.col-cantidad {
+    width: 76px !important;
+    min-width: 76px !important;
+    max-width: 80px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+  }
+
+  .cantidad-input,
+  #items-table .cantidad-input {
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 4px 2px 4px 6px !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Columna Precio: Compacta con altura de 32px */
+  #items-table th.col-precio,
+  #items-table td.col-precio {
+    width: 145px !important;
+    min-width: 140px !important;
+    max-width: 155px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  #items-table .precio-input {
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 4px 6px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Columna Subtotal */
+  #items-table th.col-subtotal,
+  #items-table td.col-subtotal,
+  #items-table td.subtotal-cell,
+  #items-table td.subtotal-display {
+    width: 145px !important;
+    min-width: 140px !important;
+    max-width: 155px !important;
+    font-size: 12.5px !important;
+    padding-right: 6px !important;
+  }
+
+  /* Columna Acción / Botón eliminar compacto 30x30 */
+  #items-table th.col-accion,
+  #items-table td.col-accion {
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 46px !important;
+    padding-left: 2px !important;
+    padding-right: 6px !important;
+  }
+
+  #items-table td:last-child .btn-danger,
+  #items-table td:last-child .btn-icon-danger,
+  #items-table td.col-accion .btn-danger,
+  #items-table td.col-accion .btn-icon-danger {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    max-width: 30px !important;
+    max-height: 30px !important;
+    font-size: 13px !important;
+    border-radius: 8px !important;
+  }
+
+  #items-table .alerta-costo-badge {
+    font-size: 10px !important;
+    right: 4px !important;
+    margin-top: 2px !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Tfoot Total display en móvil */
+  #items-table tfoot td {
+    padding: 10px 12px !important;
+  }
+
+  #items-table tfoot #total-display {
+    font-size: 1.25rem !important;
+  }
+}
+
+
+/* Ocultar el icono de calendario nativo de Chrome para evitar salto visual */
+input[type="date"]:not(.flatpickr-input)::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+}
+
+input[type="date"]:not(.flatpickr-input)::-webkit-datetime-edit,
+input[type="date"]:not(.flatpickr-input)::-webkit-datetime-edit-fields-wrapper {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+
+.flatpickr-calendar {
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5) inset !important;
+  padding: 10px !important;
+  font-family: inherit !important;
+  width: 310px !important;
+  /* Ancho fijo suficiente para 7 columnas */
+}
+
+.dark .flatpickr-calendar {
+  background: rgba(15, 23, 42, 0.65) !important;
+  border: 1px solid rgba(100, 116, 139, 0.4) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset !important;
+}
+
+/* Cabecera del mes */
+.flatpickr-months {
+  padding: 4px 0 8px !important;
+  align-items: center !important;
+}
+
+.flatpickr-month {
+  height: 36px !important;
+}
+
+.flatpickr-current-month {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  color: #1e293b !important;
+  padding-top: 4px !important;
+}
+
+.dark .flatpickr-current-month {
+  color: #e2e8f0 !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  font-weight: 800 !important;
+  background: transparent !important;
+  font-size: 15px !important;
+  color: #1e293b !important;
+  cursor: pointer;
+}
+
+.dark .flatpickr-current-month .flatpickr-monthDropdown-months {
+  color: #e2e8f0 !important;
+}
+
+.flatpickr-current-month .numInputWrapper {
+  width: 7.5ch !important;
+  margin-left: 2px !important;
+}
+
+.flatpickr-current-month input.cur-year {
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  color: #000000 !important;
+  /* Negro absoluto en fondo claro */
+  padding-right: 22px !important;
+  /* Crea el espacio entre el número y las flechas */
+  box-sizing: border-box !important;
+}
+
+.dark .flatpickr-current-month input.cur-year {
+  color: #ffffff !important;
+}
+
+/* Flechas de navegación de mes */
+.flatpickr-prev-month,
+.flatpickr-next-month {
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  transition: background 0.2s !important;
+  top: 8px !important;
+  padding: 6px !important;
+}
+
+.flatpickr-prev-month:hover,
+.flatpickr-next-month:hover {
+  background: rgba(59, 130, 246, 0.15) !important;
+}
+
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.flatpickr-prev-month svg path,
+.flatpickr-next-month svg path {
+  fill: #2563eb !important;
+}
+
+.dark .flatpickr-prev-month svg path,
+.dark .flatpickr-next-month svg path {
+  fill: #60a5fa !important;
+}
+
+/* Flechas de año (arriba/abajo) */
+.flatpickr-current-month .arrowUp,
+.flatpickr-current-month .arrowDown {
+  border: none !important;
+  padding: 2px 5px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: background 0.15s !important;
+  right: 0 !important;
+  /* Alineado a la derecha del wrapper */
+}
+
+.flatpickr-current-month .arrowUp:after {
+  border-bottom-color: #334155 !important;
+  /* Gris oscuro en vez de azul */
+  border-width: 0 4px 5px !important;
+}
+
+.flatpickr-current-month .arrowDown:after {
+  border-top-color: #334155 !important;
+  /* Gris oscuro en vez de azul */
+  border-width: 5px 4px 0 !important;
+}
+
+.dark .flatpickr-current-month .arrowUp:after {
+  border-bottom-color: #60a5fa !important;
+}
+
+.dark .flatpickr-current-month .arrowDown:after {
+  border-top-color: #60a5fa !important;
+}
+
+.flatpickr-current-month .numInputWrapper:hover .arrowUp,
+.flatpickr-current-month .numInputWrapper:hover .arrowDown,
+.flatpickr-current-month .numInputWrapper span:hover {
+  background: rgba(59, 130, 246, 0.15) !important;
+}
+
+/* Días de la semana */
+.flatpickr-weekdays {
+  padding: 4px 0 !important;
+}
+
+.flatpickr-weekday {
+  color: #64748b !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+}
+
+.dark .flatpickr-weekday {
+  color: #94a3b8 !important;
+}
+
+/* Días del mes */
+.flatpickr-days,
+.dayContainer {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.flatpickr-day {
+  border-radius: 8px !important;
+  color: #334155 !important;
+  font-weight: 600 !important;
+  transition: all 0.15s !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  max-width: 38px !important;
+  margin: 0 auto !important;
+  /* El margin causaba el wrap de los días */
+}
+
+.dark .flatpickr-day {
+  color: #cbd5e1 !important;
+}
+
+.flatpickr-day:hover {
+  background: rgba(59, 130, 246, 0.12) !important;
+  border-color: transparent !important;
+  color: #2563eb !important;
+}
+
+.dark .flatpickr-day:hover {
+  background: rgba(96, 165, 250, 0.15) !important;
+  color: #93c5fd !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  border-color: #2563eb !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+  font-weight: 800 !important;
+}
+
+.flatpickr-day.today {
+  border-color: #3b82f6 !important;
+  font-weight: 800 !important;
+}
+
+.dark .flatpickr-day.today {
+  border-color: #60a5fa !important;
+}
+
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+  opacity: 0.3 !important;
+}
+
+/* Ocultar la 6ta fila si solo contiene días del mes siguiente */
+.flatpickr-day.nextMonthDay:nth-child(n+36) {
+  display: none !important;
+}
+
+/* Input alternativo (el que se muestra con altInput: true) */
+.flatpickr-input.flatpickr-mobile,
+input.flatpickr-input.form-control {
+  display: none !important;
+}
+
+/* Cursores correctos para TomSelect */
+.ts-control {
+  cursor: pointer !important;
+}
+
+.ts-control input {
+  cursor: text !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+/* Centrado del logo en el topbar con animación suave y ocultamiento en zoom >= 150% */
+.topbar-logo-container {
+  position: absolute !important;
+  left: calc(50vw - var(--sidebar-w)) !important;
+  transform: translate(-50%, -50%) !important;
+  top: 50% !important;
+  transition: left 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.22s ease !important;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  will-change: opacity, transform;
+  z-index: 20;
+}
+
+#ts-sidebar:hover~#main-wrapper .topbar-logo-container:not(.logo-zoom-hidden),
+#ts-sidebar.expanded~#main-wrapper .topbar-logo-container:not(.logo-zoom-hidden) {
+  left: calc(50vw - var(--sidebar-expanded)) !important;
+}
+
+@media (max-width: 1023px) {
+  .topbar-logo-container {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+/* Clase dinámica aplicada cuando el zoom alcanza o supera el 150% */
+.topbar-logo-container.logo-zoom-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translate(-50%, -58%) scale(0.95) !important;
+}
+
+#ts-sidebar:hover~#main-wrapper .topbar-logo-container.logo-zoom-hidden,
+#ts-sidebar.expanded~#main-wrapper .topbar-logo-container.logo-zoom-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* ─── PRINT MEDIA QUERIES ─── */
+.hidden-screen {
+  display: none !important;
+}
+
+@media print {
+
+  .no-print,
+  header,
+  aside,
+  nav,
+  .btn,
+  button,
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger,
+  .btn-ghost,
+  a[href*="export"],
+  .filters-section,
+  .filter-container,
+  .search-bar,
+  form,
+  .ts-dropdown,
+  .ts-wrapper,
+  .ts-control,
+  .pagination,
+  .breadcrumbs,
+  .actions,
+  #toast-container,
+  #ts-modal,
+  #global-anular-modal,
+  #ts-notif-modal {
+    display: none !important;
+  }
+
+  .hidden-screen {
+    display: block !important;
+  }
+
+  @page {
+    margin: 10mm 8mm 15mm 8mm;
+  }
+
+  html {
+    counter-reset: page 0;
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  /* Deshabilita diseños flexbox durante la impresión para evitar escalado del viewport de escritorio y recorte lateral derecho */
+  .flex.min-h-screen,
+  #main-wrapper {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  #ts-main,
+  main {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 8mm 6mm !important;
+    /* Force physical margins even if browser margin is set to None */
+    box-sizing: border-box !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  span.pill,
+  .badge,
+  .pill,
+  .pill-pending,
+  .pill-done,
+  .pill-preventivo,
+  .pill-especialidad,
+  .pill-efectivo,
+  .pill-anulado,
+  table td span,
+  .ts-table td span,
+  .reportes-tabla-imprimir td span {
+    display: inline !important;
+    border: none !important;
+    background: none !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #000000 !important;
+    font-weight: normal !important;
+    text-transform: uppercase !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .no-print-emoji,
+  table td span.no-print-emoji,
+  .ts-table td span.no-print-emoji,
+  .reportes-tabla-imprimir td span.no-print-emoji,
+  .grid p span,
+  .ts-table td span.mr-2,
+  .reportes-tabla-imprimir td span.mr-2,
+  span.text-lg {
+    display: none !important;
+  }
+
+  /* Forzar visualización de tablas completas */
+  table,
+  .ts-table,
+  th,
+  td,
+  tfoot td,
+  thead th:first-child,
+  thead th:last-child,
+  tbody tr:last-child td:first-child,
+  tbody tr:last-child td:last-child,
+  tfoot tr:last-child td:first-child,
+  tfoot tr:last-child td:last-child {
+    border-radius: 0 !important;
+  }
+
+  table,
+  .ts-table {
+    display: table !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 15px !important;
+    font-size: 8pt !important;
+    box-shadow: none !important;
+    filter: none !important;
+    border: none !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tbody {
+    display: table-row-group !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
+  }
+
+  tr {
+    display: table-row !important;
+  }
+
+  table,
+  .ts-table,
+  th,
+  td {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  table th,
+  .ts-table th,
+  table td,
+  .ts-table td,
+  tfoot td,
+  .tfoot td {
+    display: table-cell !important;
+    border: none !important;
+    padding: 5px 6px !important;
+    font-size: 8pt !important;
+    vertical-align: middle !important;
+  }
+
+  table tbody td,
+  .ts-table tbody td {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  table th,
+  .ts-table th,
+  table thead th {
+    background-color: #2d3748 !important;
+    color: #ffffff !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+  }
+
+  table tfoot td,
+  .ts-table tfoot td,
+  table .tfoot td,
+  .ts-table .tfoot td {
+    background-color: #2d3748 !important;
+    color: #ffffff !important;
+    font-weight: bold !important;
+    font-size: 8pt !important;
+    border: none !important;
+  }
+
+  tfoot td *,
+  .tfoot td *,
+  tfoot td span,
+  .tfoot td span,
+  tfoot td div,
+  .tfoot td div,
+  tfoot td strong,
+  .tfoot td strong {
+    display: inline !important;
+    color: #ffffff !important;
+    font-size: inherit !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  table tbody tr:nth-child(even) td,
+  .ts-table tbody tr:nth-child(even) td {
+    background-color: #f7fafc !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+  }
+
+  .print-header,
+  .print-header table,
+  .print-header tr,
+  .print-header td {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  .print-header table {
+    border-bottom: none !important;
+  }
+
+  /* Convertir glass-cards en contenedores limpios */
+  .glass-card {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Ocultar sombras e inputs */
+  input,
+  select,
+  textarea {
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* Footer de impresión */
+  .print-footer {
+    display: block !important;
+    position: fixed !important;
+    bottom: 8mm !important;
+    left: 8mm !important;
+    right: 8mm !important;
+    height: 30px !important;
+    border-top: 1px solid #cbd5e0 !important;
+    padding-top: 8px !important;
+    font-size: 8pt !important;
+    color: #4a5568 !important;
+    background-color: #ffffff !important;
+    z-index: 9999 !important;
+  }
+
+  .print-page-number::after {
+    counter-increment: page;
+    content: counter(page) !important;
+  }
+}
+
+/* Grilla de Acciones: Disposición en bloques de a dos (2 columnas) con centrado automático horizontal para botones impares o únicos */
+.actions-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0.375rem !important;
+  /* 6px */
+  width: 4.625rem !important;
+  /* 74px: caben exactamente dos bloques de 32px + 6px de gap */
+  min-width: 4.625rem !important;
+  max-width: 4.625rem !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+}
+
+.actions-grid>*,
+.actions-grid>a,
+.actions-grid>button,
+.actions-grid>form,
+.actions-grid>span,
+.actions-grid .btn-ghost,
+.actions-grid [class*="btn-"] {
+  width: 2rem !important;
+  height: 2rem !important;
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+  max-width: 2rem !important;
+  max-height: 2rem !important;
+  aspect-ratio: 1 / 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  border-radius: 0.625rem !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 0.8125rem !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+}
+
+.actions-grid>form {
+  display: inline-flex !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.actions-grid>form>button {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0.625rem !important;
+  transform: none !important;
+}
+
+/* Modal Detalle de Usuario: Estilos Homogéneos Claro/Oscuro */
+.user-detail-box {
+  background: rgba(248, 250, 252, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 0.875rem;
+  padding: 0.875rem 1rem;
+  transition: all 0.2s ease;
+}
+
+html.dark .user-detail-box {
+  background: rgba(15, 23, 42, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.user-detail-divider {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+html.dark .user-detail-divider {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.user-detail-avatar-box {
+  width: 5rem;
+  height: 5rem;
+  min-width: 5rem;
+  min-height: 5rem;
+  aspect-ratio: 1 / 1;
+  margin: 0.35rem auto 1rem auto;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(241, 245, 249, 0.8);
+  border: 2px solid rgba(99, 102, 241, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+html.dark .user-detail-avatar-box {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* --- TARJETAS SELECTOR DE FORMATO POS / ESTÁNDAR --- */
+.format-card {
+  border: 1.5px solid rgba(226, 232, 240, 0.8);
+  background: rgba(248, 250, 252, 0.6);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  display: block;
+  user-select: none;
+  position: relative;
+  box-sizing: border-box;
+}
+
+html.dark .format-card {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.format-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-1px);
+}
+
+.format-card.is-active {
+  border-color: #6366f1 !important;
+  background: rgba(99, 102, 241, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.12);
+}
+
+html.dark .format-card.is-active {
+  border-color: #818cf8 !important;
+  background: rgba(99, 102, 241, 0.16) !important;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.20);
+}
+
+.pill-neutral {
+  background: rgba(148, 163, 184, 0.12);
+  color: #64748b;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+html.dark .pill-neutral {
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Adaptar tom-select al glassmorphism */
+.ts-control {
+  background-color: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.6rem !important;
+  color: #334155 !important;
+}
+
+.dark .ts-control {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #e2e8f0 !important;
+}
+
+/* --- Correcciones para utilidades de ancho de Tailwind --- */
+/* Restaura los anchos explícitos que son sobrescritos por el width: 100% de .glass-input */
+.glass-input.w-24 {
+  width: 6rem !important;
+}
+
+.glass-input.w-32 {
+  width: 8rem !important;
+}
+
+.glass-input.w-36 {
+  width: 9rem !important;
+}
+
+.glass-input.w-40 {
+  width: 10rem !important;
+}
+
+.glass-input.w-44 {
+  width: 11rem !important;
+}
+
+.glass-input.w-48,
+.ts-wrapper.w-48 {
+  width: 12rem !important;
+}
+
+.glass-input.w-52,
+.ts-wrapper.w-52,
+.w-52 {
+  width: 13rem !important;
+}
+
+.glass-input.w-56,
+.ts-wrapper.w-56,
+.w-56 {
+  width: 14rem !important;
+}
+
+.glass-input.w-60,
+.ts-wrapper.w-60,
+.w-60 {
+  width: 15rem !important;
+}
+
+.glass-input.w-64,
+.ts-wrapper.w-64 {
+  width: 16rem !important;
+}
+
+.glass-input.w-72 {
+  width: 18rem !important;
+}
+
+.glass-input.w-full {
+  width: 100% !important;
+}
+
+/* Restaura los paddings explícitos (ej. para íconos dentro del input) */
+.glass-input.pl-9 {
+  padding-left: 2.25rem !important;
+}
+
+.glass-input.pr-10 {
+  padding-right: 2.5rem !important;
+}
+
+.glass-input.pl-10 {
+  padding-left: 2.5rem !important;
+}
+
+@media (min-width: 640px) {
+  .glass-input.sm\:w-48 {
+    width: 12rem !important;
+  }
+
+  .glass-input.sm\:w-64 {
+    width: 16rem !important;
+  }
+}
+
+/* Scrollbar Hiding Utility */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- UNIFIED ROW TARGET HIGHLIGHTING --- */
+/* Resaltado controlado por JS via clase .active-target */
+/* Permanece visible ~2s y luego se desvanece suavemente (Fade-out) */
+tr {
+  transition: background-color 0.5s ease, border-left-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+tr.active-target {
+  background-color: rgba(37, 99, 235, 0.12) !important;
+  border-left: 4px solid #2563EB !important;
+  box-shadow: inset 4px 0 12px -4px rgba(37, 99, 235, 0.25);
+  animation: highlight-pulse-fade 2.5s ease-out forwards;
+}
+
+html.dark tr.active-target {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  border-left: 4px solid #3B82F6 !important;
+  box-shadow: inset 4px 0 12px -4px rgba(59, 130, 246, 0.35);
+  animation: highlight-pulse-dark-fade 2.5s ease-out forwards;
+}
+
+/* Pulso inicial brillante, permanece visible 2s y se desvanece suavemente */
+@keyframes highlight-pulse-fade {
+  0% {
+    background-color: rgba(37, 99, 235, 0.35) !important;
+    border-left: 4px solid #2563EB !important;
+    box-shadow: inset 4px 0 20px -4px rgba(37, 99, 235, 0.50), 0 0 16px rgba(37, 99, 235, 0.12);
+  }
+
+  25% {
+    background-color: rgba(37, 99, 235, 0.16) !important;
+    border-left: 4px solid #2563EB !important;
+    box-shadow: inset 4px 0 12px -4px rgba(37, 99, 235, 0.25);
+  }
+
+  75% {
+    background-color: rgba(37, 99, 235, 0.14) !important;
+    border-left: 4px solid #2563EB !important;
+    box-shadow: inset 4px 0 12px -4px rgba(37, 99, 235, 0.25);
+  }
+
+  100% {
+    background-color: transparent !important;
+    border-left: 4px solid transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+@keyframes highlight-pulse-dark-fade {
+  0% {
+    background-color: rgba(59, 130, 246, 0.40) !important;
+    border-left: 4px solid #3B82F6 !important;
+    box-shadow: inset 4px 0 20px -4px rgba(59, 130, 246, 0.55), 0 0 16px rgba(59, 130, 246, 0.15);
+  }
+
+  25% {
+    background-color: rgba(59, 130, 246, 0.18) !important;
+    border-left: 4px solid #3B82F6 !important;
+    box-shadow: inset 4px 0 12px -4px rgba(59, 130, 246, 0.35);
+  }
+
+  75% {
+    background-color: rgba(59, 130, 246, 0.16) !important;
+    border-left: 4px solid #3B82F6 !important;
+    box-shadow: inset 4px 0 12px -4px rgba(59, 130, 246, 0.35);
+  }
+
+  100% {
+    background-color: transparent !important;
+    border-left: 4px solid transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+/* --- VARIANTE VIOLETA: Filas de Electrónica --- */
+tr[id^="electronica-"].active-target {
+  background-color: rgba(139, 92, 246, 0.12) !important;
+  border-left: 4px solid #8B5CF6 !important;
+  box-shadow: inset 4px 0 12px -4px rgba(139, 92, 246, 0.25);
+  animation: highlight-pulse-purple-fade 2.5s ease-out forwards;
+}
+
+html.dark tr[id^="electronica-"].active-target {
+  background-color: rgba(167, 139, 250, 0.15) !important;
+  border-left: 4px solid #A78BFA !important;
+  box-shadow: inset 4px 0 12px -4px rgba(167, 139, 250, 0.35);
+  animation: highlight-pulse-purple-dark-fade 2.5s ease-out forwards;
+}
+
+@keyframes highlight-pulse-purple-fade {
+  0% {
+    background-color: rgba(139, 92, 246, 0.35) !important;
+    border-left: 4px solid #8B5CF6 !important;
+    box-shadow: inset 4px 0 20px -4px rgba(139, 92, 246, 0.50), 0 0 16px rgba(139, 92, 246, 0.12);
+  }
+
+  25% {
+    background-color: rgba(139, 92, 246, 0.16) !important;
+    border-left: 4px solid #8B5CF6 !important;
+    box-shadow: inset 4px 0 12px -4px rgba(139, 92, 246, 0.25);
+  }
+
+  75% {
+    background-color: rgba(139, 92, 246, 0.14) !important;
+    border-left: 4px solid #8B5CF6 !important;
+    box-shadow: inset 4px 0 12px -4px rgba(139, 92, 246, 0.25);
+  }
+
+  100% {
+    background-color: transparent !important;
+    border-left: 4px solid transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+@keyframes highlight-pulse-purple-dark-fade {
+  0% {
+    background-color: rgba(167, 139, 250, 0.40) !important;
+    border-left: 4px solid #A78BFA !important;
+    box-shadow: inset 4px 0 20px -4px rgba(167, 139, 250, 0.55), 0 0 16px rgba(167, 139, 250, 0.15);
+  }
+
+  25% {
+    background-color: rgba(167, 139, 250, 0.18) !important;
+    border-left: 4px solid #A78BFA !important;
+    box-shadow: inset 4px 0 12px -4px rgba(167, 139, 250, 0.35);
+  }
+
+  75% {
+    background-color: rgba(167, 139, 250, 0.16) !important;
+    border-left: 4px solid #A78BFA !important;
+    box-shadow: inset 4px 0 12px -4px rgba(167, 139, 250, 0.35);
+  }
+
+  100% {
+    background-color: transparent !important;
+    border-left: 4px solid transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ---- Botón contenedor Dropdown Imprimir: Mismas dimensiones exactas que .btn-ghost y .btn-danger (38px de altura, márgenes horizontales balanceados) ---- */
+.print-dropdown-box,
+div.print-dropdown-box,
+.btn-ghost.print-dropdown-box {
+  padding: 0 !important;
+  gap: 0 !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: stretch !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  transform: none !important;
+}
+
+.print-dropdown-box>a.print-main-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  height: 100% !important;
+  padding: 0 4px 0 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  color: inherit !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+}
+
+.print-dropdown-box>.print-divider {
+  display: none !important;
+}
+
+.print-dropdown-box>button.print-arrow-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+  padding: 0 10px 0 3px !important;
+  color: inherit !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+}
+
+.print-dropdown-box>button.print-arrow-btn svg {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+
+/* ---- Desplegable homogéneo al sistema (mismo tono que calendarios y selectores) ---- */
+.ts-dropdown-solid {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(226, 232, 240, 0.80) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+  opacity: 1 !important;
+  border-radius: 12px !important;
+  z-index: 99999 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.ts-dropdown-solid .option {
+  color: #1E293B !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  padding: 10px 14px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  border-radius: 0 !important;
+  opacity: 1 !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+
+.ts-dropdown-solid .option * {
+  opacity: 1 !important;
+}
+
+.ts-dropdown-solid .option:hover,
+.ts-dropdown-solid .option.active {
+  background: rgba(37, 99, 235, 0.18) !important;
+  color: #2563EB !important;
+  font-weight: 500 !important;
+}
+
+.ts-dropdown-solid .option.selected {
+  background: rgba(37, 99, 235, 0.22) !important;
+  color: #1D4ED8 !important;
+  font-weight: 700 !important;
+}
+
+html.dark .ts-dropdown-solid {
+  background: rgba(15, 23, 42, 0.90) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark .ts-dropdown-solid .option {
+  color: #E2E8F0 !important;
+}
+
+html.dark .ts-dropdown-solid .option:hover,
+html.dark .ts-dropdown-solid .option.active {
+  background: rgba(96, 165, 250, 0.14) !important;
+  color: #60A5FA !important;
+}
+
+html.dark .ts-dropdown-solid .option.selected {
+  background: rgba(96, 165, 250, 0.20) !important;
+  color: #93C5FD !important;
+  font-weight: 700 !important;
+}
+
+/* Insignia Activo en formato de impresión (un solo espacio sutil y limpio) */
+.print-active-badge {
+  color: #10B981 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  margin-left: 5px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  vertical-align: middle !important;
+}
+
+html.dark .print-active-badge {
+  color: #34D399 !important;
+}
+
+/* Soporte homogéneo para optgroups en TomSelect y selects nativos sin franjas blancas */
+.ts-dropdown .optgroup-header,
+.ts-dropdown-solid .optgroup-header,
+optgroup {
+  background: transparent !important;
+  color: #64748B !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 6px 12px !important;
+}
+
+html.dark .ts-dropdown .optgroup-header,
+html.dark .ts-dropdown-solid .optgroup-header,
+html.dark optgroup {
+  background: rgba(15, 23, 42, 0.6) !important;
+  color: #94A3B8 !important;
+}
+
+/* ==========================================================================
+   SISTEMA DE ACCIONES GLOBALES (Ver, Imprimir, Editar, Dar de Baja, Anular, Reactivar)
+   Ver: Índigo | Imprimir: Azul | Editar: Amarillo | Dar de Baja: Violeta | Anular: Rojo | Reactivar: Verde
+   ========================================================================== */
+.btn-action-view,
+.btn-action-print,
+.btn-action-edit,
+.btn-action-anular,
+.btn-action-reactivar,
+.btn-action-baja,
+.btn-action-revertir,
+.btn-ghost.w-8,
+.btn-ghost[class*="w-8"],
+.btn-ghost[class*="h-8"],
+.actions-grid span.btn-ghost,
+.actions-grid button,
+.actions-grid a,
+button[title*="Revertir" i],
+button[title*="revertir" i],
+a[title*="Revertir" i],
+a[title*="revertir" i] {
+  width: 2rem !important;
+  height: 2rem !important;
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+  max-width: 2rem !important;
+  max-height: 2rem !important;
+  aspect-ratio: 1 / 1 !important;
+  padding: 0 !important;
+  border-radius: 0.625rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+.btn-action-view,
+.actions-grid a[title*="Ver"],
+.actions-grid a[title*="ver"],
+.actions-grid a[title*="Detalle"],
+.actions-grid a[title*="detalle"],
+.actions-grid button[title*="Ver"],
+.actions-grid button[title*="ver"],
+.actions-grid button[title*="Diagnóstico"] {
+  color: #4F46E5 !important;
+  /* Índigo */
+  padding-top: 1px !important;
+  /* Calibración métrica vertical para emoji del ojo 50/50 */
+}
+
+
+.btn-action-view:hover,
+.actions-grid a[title*="Ver"]:hover,
+.actions-grid a[title*="ver"]:hover,
+.actions-grid a[title*="Detalle"]:hover,
+.actions-grid a[title*="detalle"]:hover,
+.actions-grid button[title*="Ver"]:hover,
+.actions-grid button[title*="ver"]:hover,
+.actions-grid button[title*="Diagnóstico"]:hover {
+  background: rgba(79, 70, 229, 0.12) !important;
+  color: #4338CA !important;
+}
+
+html.dark .btn-action-view,
+html.dark .actions-grid a[title*="Ver"],
+html.dark .actions-grid a[title*="ver"],
+html.dark .actions-grid a[title*="Detalle"],
+html.dark .actions-grid a[title*="detalle"],
+html.dark .actions-grid button[title*="Ver"],
+html.dark .actions-grid button[title*="ver"],
+html.dark .actions-grid button[title*="Diagnóstico"] {
+  color: #818CF8 !important;
+  /* Índigo en modo oscuro */
+}
+
+.btn-action-print,
+.actions-grid a[title*="Imprimir"],
+.actions-grid a[title*="imprimir"],
+.actions-grid a[title*="Factura"],
+.actions-grid a[title*="PDF"],
+.actions-grid button[title*="Imprimir"],
+.actions-grid button[title*="imprimir"] {
+  color: #2563EB !important;
+  /* Azul */
+}
+
+.btn-action-print:hover,
+.actions-grid a[title*="Imprimir"]:hover,
+.actions-grid a[title*="imprimir"]:hover,
+.actions-grid a[title*="Factura"]:hover,
+.actions-grid a[title*="PDF"]:hover,
+.actions-grid button[title*="Imprimir"]:hover,
+.actions-grid button[title*="imprimir"]:hover {
+  background: rgba(37, 99, 235, 0.12) !important;
+  color: #1D4ED8 !important;
+}
+
+html.dark .btn-action-print,
+html.dark .actions-grid a[title*="Imprimir"],
+html.dark .actions-grid a[title*="imprimir"],
+html.dark .actions-grid a[title*="Factura"],
+html.dark .actions-grid a[title*="PDF"],
+html.dark .actions-grid button[title*="Imprimir"],
+html.dark .actions-grid button[title*="imprimir"] {
+  color: #60A5FA !important;
+  /* Azul en modo oscuro */
+}
+
+.btn-action-edit,
+.actions-grid a[title*="Editar"],
+.actions-grid a[title*="editar"],
+.actions-grid button[title*="Editar"],
+.actions-grid button[title*="editar"] {
+  color: #D97706 !important;
+  /* Amarillo / Ámbar */
+}
+
+.btn-action-edit:hover,
+.actions-grid a[title*="Editar"]:hover,
+.actions-grid a[title*="editar"]:hover,
+.actions-grid button[title*="Editar"]:hover,
+.actions-grid button[title*="editar"]:hover {
+  background: rgba(245, 158, 11, 0.12) !important;
+  color: #B45309 !important;
+}
+
+html.dark .btn-action-edit,
+html.dark .actions-grid a[title*="Editar"],
+html.dark .actions-grid a[title*="editar"],
+html.dark .actions-grid button[title*="Editar"],
+html.dark .actions-grid button[title*="editar"] {
+  color: #FBBF24 !important;
+  /* Amarillo en modo oscuro */
+}
+
+.btn-action-baja,
+.actions-grid button[title*="baja"],
+.actions-grid button[title*="Baja"],
+.actions-grid button[title*="merma"],
+.actions-grid button[title*="Merma"],
+.actions-grid a[title*="baja"],
+.actions-grid a[title*="Baja"] {
+  color: #9333EA !important;
+  /* Violeta */
+}
+
+.btn-action-baja:hover,
+.actions-grid button[title*="baja"]:hover,
+.actions-grid button[title*="Baja"]:hover,
+.actions-grid button[title*="merma"]:hover,
+.actions-grid button[title*="Merma"]:hover,
+.actions-grid a[title*="baja"]:hover,
+.actions-grid a[title*="Baja"]:hover {
+  background: rgba(147, 51, 234, 0.12) !important;
+  color: #7E22CE !important;
+}
+
+html.dark .btn-action-baja,
+html.dark .actions-grid button[title*="baja"],
+html.dark .actions-grid button[title*="Baja"],
+html.dark .actions-grid button[title*="merma"],
+html.dark .actions-grid button[title*="Merma"],
+html.dark .actions-grid a[title*="baja"],
+html.dark .actions-grid a[title*="Baja"] {
+  color: #C084FC !important;
+  /* Violeta en modo oscuro */
+}
+
+.btn-action-anular,
+.actions-grid button[title*="Anular"],
+.actions-grid button[title*="anular"],
+.actions-grid button[title*="Eliminar"],
+.actions-grid a[title*="Anular"],
+.actions-grid a[title*="anular"] {
+  color: #DC2626 !important;
+  /* Rojo */
+}
+
+.btn-action-anular:hover,
+.actions-grid button[title*="Anular"]:hover,
+.actions-grid button[title*="anular"]:hover,
+.actions-grid button[title*="Eliminar"]:hover,
+.actions-grid a[title*="Anular"]:hover,
+.actions-grid a[title*="anular"]:hover {
+  background: rgba(220, 38, 38, 0.12) !important;
+  color: #B91C1C !important;
+}
+
+html.dark .btn-action-anular,
+html.dark .actions-grid button[title*="Anular"],
+html.dark .actions-grid button[title*="anular"],
+html.dark .actions-grid button[title*="Eliminar"],
+html.dark .actions-grid a[title*="Anular"],
+html.dark .actions-grid a[title*="anular"] {
+  color: #F87171 !important;
+  /* Rojo en modo oscuro */
+}
+
+/* Excepción para botones de Reactivar y Revertir Baja (icono verde / esmeralda) */
+.btn-action-revertir,
+.actions-grid button[title*="Reactivar"],
+.actions-grid button[title*="reactivar"],
+.actions-grid a[title*="Reactivar"],
+.actions-grid a[title*="reactivar"],
+.actions-grid button[title*="Revertir"],
+.actions-grid button[title*="revertir"],
+.actions-grid a[title*="Revertir"],
+.actions-grid a[title*="revertir"],
+button[title*="Revertir" i],
+button[title*="revertir" i],
+a[title*="Revertir" i],
+a[title*="revertir" i] {
+  color: #059669 !important;
+}
+
+.btn-action-revertir:hover,
+.actions-grid button[title*="Reactivar"]:hover,
+.actions-grid a[title*="Reactivar"]:hover,
+.actions-grid button[title*="Revertir"]:hover,
+.actions-grid a[title*="Revertir"]:hover,
+button[title*="Revertir" i]:hover,
+a[title*="Revertir" i]:hover {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #047857 !important;
+}
+
+html.dark .btn-action-revertir,
+html.dark .actions-grid button[title*="Reactivar"],
+html.dark .actions-grid a[title*="Reactivar"],
+html.dark .actions-grid button[title*="Revertir"],
+html.dark .actions-grid a[title*="Revertir"],
+html.dark button[title*="Revertir" i],
+html.dark a[title*="Revertir" i] {
+  color: #34D399 !important;
+}
+
+/* Botones de acción deshabilitados en actions-grid */
+.actions-grid .cursor-not-allowed,
+.actions-grid [disabled],
+.actions-grid .opacity-40,
+.actions-grid .opacity-50 {
+  color: #94A3B8 !important;
+  background: transparent !important;
+  cursor: not-allowed !important;
+}
+
+/* Espaciado del título TECNI SYSTEMAS exclusivamente en móviles para no colisionar con el botón de tema */
+@media (max-width: 639px) {
+  .login-brand-title {
+    margin-top: 3.5rem !important;
+  }
+}
+
+/* ================================================================
+   Badges de Auditoría / Eventos (Liquid Glass)
+   ================================================================ */
+.badge-evento {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 0.625rem;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-width: 1px;
+  width: 6.25rem;
+  line-height: 1.2;
+  transition: all 0.2s ease;
+}
+
+/* Backup (💾) - Cyan Eléctrico / Tecnológico */
+.badge-evento-backup {
+  background: rgba(6, 182, 212, 0.12) !important;
+  color: #0e7490 !important;
+  border-color: rgba(6, 182, 212, 0.3) !important;
+}
+
+.dark .badge-evento-backup,
+html.dark .badge-evento-backup {
+  background: rgba(8, 145, 178, 0.25) !important;
+  color: #22d3ee !important;
+  border-color: rgba(34, 211, 238, 0.45) !important;
+}
+
+/* Backup Restaurado (🔄) - Teal / Esmeralda Tecnológico */
+.badge-evento-backup-restaurado,
+.badge-evento-backup_restaurado {
+  background: rgba(20, 184, 166, 0.12) !important;
+  color: #0f766e !important;
+  border-color: rgba(20, 184, 166, 0.35) !important;
+}
+
+.dark .badge-evento-backup-restaurado,
+.dark .badge-evento-backup_restaurado,
+html.dark .badge-evento-backup-restaurado,
+html.dark .badge-evento-backup_restaurado {
+  background: rgba(13, 148, 136, 0.25) !important;
+  color: #2dd4bf !important;
+  border-color: rgba(45, 212, 191, 0.45) !important;
+}
+
+/* Creado (✨) - Esmeralda */
+.badge-evento-creado {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #065f46 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+.dark .badge-evento-creado,
+html.dark .badge-evento-creado {
+  background: rgba(6, 95, 70, 0.25) !important;
+  color: #6ee7b7 !important;
+  border-color: rgba(52, 211, 153, 0.4) !important;
+}
+
+/* Actualizado (✏️) - Azul */
+.badge-evento-actualizado {
+  background: rgba(59, 130, 246, 0.12) !important;
+  color: #1e40af !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark .badge-evento-actualizado,
+html.dark .badge-evento-actualizado {
+  background: rgba(30, 64, 175, 0.25) !important;
+  color: #93c5fd !important;
+  border-color: rgba(96, 165, 250, 0.4) !important;
+}
+
+/* Eliminado (🗑️) - Rojo */
+.badge-evento-eliminado {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #991b1b !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.dark .badge-evento-eliminado,
+html.dark .badge-evento-eliminado {
+  background: rgba(153, 27, 27, 0.25) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(248, 113, 113, 0.4) !important;
+}
+
+/* Anulado (🚫) - Naranja */
+.badge-evento-anulado {
+  background: rgba(249, 115, 22, 0.12) !important;
+  color: #9a3412 !important;
+  border-color: rgba(249, 115, 22, 0.3) !important;
+}
+
+.dark .badge-evento-anulado,
+html.dark .badge-evento-anulado {
+  background: rgba(154, 52, 18, 0.25) !important;
+  color: #fdba74 !important;
+  border-color: rgba(251, 146, 60, 0.4) !important;
+}
+
+/* Login (🔑) - Púrpura */
+.badge-evento-login {
+  background: rgba(168, 85, 247, 0.12) !important;
+  color: #6b21a8 !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+}
+
+.dark .badge-evento-login,
+html.dark .badge-evento-login {
+  background: rgba(107, 33, 168, 0.25) !important;
+  color: #d8b4fe !important;
+  border-color: rgba(192, 132, 252, 0.4) !important;
+}
+
+/* Login con Alerta / Intentos Errados (Base Púrpura afín al Login original con borde y acento Rojo / Carmesí) */
+.badge-evento-login-warning {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(239, 68, 68, 0.15)) !important;
+  color: #be123c !important;
+  border: 1px solid #ef4444 !important;
+}
+
+.dark .badge-evento-login-warning,
+html.dark .badge-evento-login-warning {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.28), rgba(225, 29, 72, 0.30)) !important;
+  color: #fca5a5 !important;
+  border: 1px solid #f87171 !important;
+}
+
+/* Backup con Alerta / Fallido o Eliminado (Base Cyan afín al Backup original con borde y acento Rojo / Carmesí) */
+.badge-evento-backup-warning {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(239, 68, 68, 0.15)) !important;
+  color: #be123c !important;
+  border: 1px solid #ef4444 !important;
+}
+
+.dark .badge-evento-backup-warning,
+html.dark .badge-evento-backup-warning {
+  background: linear-gradient(135deg, rgba(8, 145, 178, 0.28), rgba(225, 29, 72, 0.30)) !important;
+  color: #fca5a5 !important;
+  border: 1px solid #f87171 !important;
+}
+
+/* Logout (🚪) - Pizarra / Gris */
+.badge-evento-logout {
+  background: rgba(148, 163, 184, 0.15) !important;
+  color: #334155 !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+.dark .badge-evento-logout,
+html.dark .badge-evento-logout {
+  background: rgba(51, 65, 85, 0.3) !important;
+  color: #cbd5e1 !important;
+  border-color: rgba(148, 163, 184, 0.4) !important;
+}
+
+/* Fallback genérico */
+.badge-evento-default {
+  background: rgba(148, 163, 184, 0.15) !important;
+  color: #475569 !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+.dark .badge-evento-default,
+html.dark .badge-evento-default {
+  background: rgba(51, 65, 85, 0.3) !important;
+  color: #94a3b8 !important;
+  border-color: rgba(100, 116, 139, 0.4) !important;
+}
+
+/* ================================================================
+   Modal de Detalles de Eventos / Auditoría (Liquid Glass Pro)
+   ================================================================ */
+.event-modal-card {
+  width: 95vw !important;
+  max-width: 920px !important;
+  max-height: 88vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+  border-radius: 1.5rem !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.70) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.16) !important;
+}
+
+.dark .event-modal-card,
+html.dark .event-modal-card {
+  background: rgba(11, 18, 33, 0.96) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Encabezado fijo del modal */
+.event-modal-header {
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.dark .event-modal-header,
+html.dark .event-modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+}
+
+#detalle-icon-wrap,
+.event-modal-header #detalle-icon-wrap {
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
+/* Cuerpo con scroll interno */
+.event-modal-body {
+  padding: 1.25rem 1.75rem;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Scrollbar refinado estilo Liquid Glass */
+.event-modal-body::-webkit-scrollbar,
+.event-col-content::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.event-modal-body::-webkit-scrollbar-track,
+.event-col-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.event-modal-body::-webkit-scrollbar-thumb,
+.event-col-content::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+
+.dark .event-modal-body::-webkit-scrollbar-thumb,
+html.dark .event-modal-body::-webkit-scrollbar-thumb,
+.dark .event-col-content::-webkit-scrollbar-thumb,
+html.dark .event-col-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.dark .event-modal-body::-webkit-scrollbar-thumb:hover,
+html.dark .event-modal-body::-webkit-scrollbar-thumb:hover,
+.dark .event-col-content::-webkit-scrollbar-thumb:hover,
+html.dark .event-col-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* Pie fijo del modal */
+.event-modal-footer {
+  padding: 1rem 1.75rem;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  background: rgba(248, 250, 252, 0.6);
+}
+
+.dark .event-modal-footer,
+html.dark .event-modal-footer {
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+}
+
+/* Columnas contenedoras */
+.event-col-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-width: 1px;
+  border-style: solid;
+  transition: all 0.2s ease;
+}
+
+.event-col-header {
+  padding: 0.85rem 1.125rem;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+}
+
+.event-col-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.event-col-emoji {
+  font-size: 14px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.event-col-content {
+  padding: 0.875rem;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  overflow-y: auto;
+}
+
+/* 1. Variante Rose / Roja (Valores Anteriores en CRUD) */
+.event-col-rose {
+  background: rgba(255, 241, 242, 0.4);
+  border-color: rgba(244, 63, 94, 0.25);
+}
+
+.event-col-rose .event-col-header {
+  background: rgba(254, 226, 226, 0.7);
+  border-bottom-color: rgba(244, 63, 94, 0.25);
+  color: #9f1239;
+}
+
+.dark .event-col-rose,
+html.dark .event-col-rose {
+  background: rgba(225, 29, 72, 0.05) !important;
+  border-color: rgba(244, 63, 94, 0.2) !important;
+}
+
+.dark .event-col-rose .event-col-header,
+html.dark .event-col-rose .event-col-header {
+  background: rgba(225, 29, 72, 0.15) !important;
+  border-bottom-color: rgba(244, 63, 94, 0.25) !important;
+  color: #fda4af !important;
+}
+
+/* 2. Variante Esmeralda (Valores Nuevos / Éxito) */
+.event-col-emerald {
+  background: rgba(236, 253, 245, 0.4);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.event-col-emerald .event-col-header {
+  background: rgba(209, 250, 229, 0.7);
+  border-bottom-color: rgba(16, 185, 129, 0.25);
+  color: #065f46;
+}
+
+.dark .event-col-emerald,
+html.dark .event-col-emerald {
+  background: rgba(16, 185, 129, 0.05) !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+.dark .event-col-emerald .event-col-header,
+html.dark .event-col-emerald .event-col-header {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-bottom-color: rgba(16, 185, 129, 0.25) !important;
+  color: #6ee7b7 !important;
+}
+
+/* 3. Variante Cyan (Backup - Archivos y Almacenamiento) */
+.event-col-cyan {
+  background: rgba(236, 254, 255, 0.4);
+  border-color: rgba(6, 182, 212, 0.25);
+}
+
+.event-col-cyan .event-col-header {
+  background: rgba(207, 250, 254, 0.7);
+  border-bottom-color: rgba(6, 182, 212, 0.25);
+  color: #155e75;
+}
+
+.dark .event-col-cyan,
+html.dark .event-col-cyan {
+  background: rgba(6, 182, 212, 0.05) !important;
+  border-color: rgba(6, 182, 212, 0.2) !important;
+}
+
+.dark .event-col-cyan .event-col-header,
+html.dark .event-col-cyan .event-col-header {
+  background: rgba(6, 182, 212, 0.15) !important;
+  border-bottom-color: rgba(6, 182, 212, 0.25) !important;
+  color: #22d3ee !important;
+}
+
+/* 4. Variante Ámbar (Login - Intentos Previos) */
+.event-col-amber {
+  background: rgba(255, 251, 235, 0.4);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.event-col-amber .event-col-header {
+  background: rgba(254, 243, 199, 0.7);
+  border-bottom-color: rgba(245, 158, 11, 0.25);
+  color: #92400e;
+}
+
+.dark .event-col-amber,
+html.dark .event-col-amber {
+  background: rgba(245, 158, 11, 0.05) !important;
+  border-color: rgba(245, 158, 11, 0.2) !important;
+}
+
+.dark .event-col-amber .event-col-header,
+html.dark .event-col-amber .event-col-header {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-bottom-color: rgba(245, 158, 11, 0.25) !important;
+  color: #fcd34d !important;
+}
+
+/* Filas / Tarjetas de Propiedades Individuales */
+.event-prop-item {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  cursor: default;
+}
+
+.dark .event-prop-item,
+html.dark .event-prop-item {
+  background: rgba(15, 23, 42, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+}
+
+.event-prop-item:hover,
+.dark .event-prop-item:hover,
+html.dark .event-prop-item:hover {
+  background: inherit;
+  border-color: inherit;
+  box-shadow: none !important;
+}
+
+.event-prop-key {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  user-select: none;
+  pointer-events: none;
+}
+
+.event-prop-key-icon {
+  font-size: 12px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
+  pointer-events: none;
+}
+
+.dark .event-prop-key,
+html.dark .event-prop-key {
+  color: #94a3b8 !important;
+}
+
+.event-prop-val {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  word-break: break-word;
+  user-select: text;
+  color: #1e293b;
+}
+
+.dark .event-prop-val,
+html.dark .event-prop-val {
+  color: #f1f5f9 !important;
+}
+
+/* Cápsula para Rutas / Directorios / Nombres de archivo */
+.event-prop-path {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 11px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  word-break: break-all;
+  hyphens: none;
+  -webkit-hyphens: none;
+  user-select: text;
+  background: rgba(241, 245, 249, 0.9);
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  color: #0f172a;
+}
+
+.dark .event-prop-path,
+html.dark .event-prop-path {
+  background: rgba(2, 6, 23, 0.7) !important;
+  border-color: rgba(56, 189, 248, 0.2) !important;
+  color: #38bdf8 !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Badges de Éxito / Error */
+.event-prop-success {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.625rem;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.12);
+  color: #065f46;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.dark .event-prop-success,
+html.dark .event-prop-success {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #6ee7b7 !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+.event-prop-error {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.625rem;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(239, 68, 68, 0.12);
+  color: #991b1b;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.dark .event-prop-error,
+html.dark .event-prop-error {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+
+/* Estado Vacío de Columna (Sutil, transparente en Dark Mode) */
+.event-empty-box {
+  height: 100%;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 1.25rem;
+  border-radius: 0.875rem;
+  background: rgba(248, 250, 252, 0.5);
+  border: 1px dashed rgba(203, 213, 225, 0.8);
+}
+
+.dark .event-empty-box,
+html.dark .event-empty-box {
+  background: rgba(15, 23, 42, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.event-empty-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  background: rgba(241, 245, 249, 0.9);
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.dark .event-empty-icon,
+html.dark .event-empty-icon {
+  background: rgba(30, 41, 59, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.event-empty-title {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #475569;
+}
+
+.dark .event-empty-title,
+html.dark .event-empty-title {
+  color: #cbd5e1 !important;
+}
+
+.event-empty-desc {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 0.35rem;
+  max-width: 260px;
+  line-height: 1.45;
+}
+
+.dark .event-empty-desc,
+html.dark .event-empty-desc {
+  color: #94a3b8 !important;
+}
+
+/* --- RESPONSIVE EVENTOS: Expansión de fechas EXCLUSIVAMENTE en modo móvil (<= 640px) --- */
+@media (max-width: 640px) {
+  .eventos-filter-date {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .eventos-filter-date label {
+    width: 50px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .eventos-filter-date .glass-input,
+  .eventos-filter-date .flatpickr-input {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+}
+
+/* ==========================================================================
+   CONSULTA DE SERVICIOS (GUEST PORTAL) - TABS Y BOTONES DINÁMICOS
+   ========================================================================== */
+.guest-tabs-container {
+  background: rgba(226, 232, 240, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dark .guest-tabs-container {
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.guest-tab-option {
+  text-align: center;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  cursor: pointer;
+  background: transparent;
+}
+
+.dark .guest-tab-option {
+  color: #94a3b8;
+}
+
+.guest-tab-option:hover:not(.active-tab-mantenimiento):not(.active-tab-electronica) {
+  color: #1e293b;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.dark .guest-tab-option:hover:not(.active-tab-mantenimiento):not(.active-tab-electronica) {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Tab Activo: Mantenimientos (Azul Vibrante) */
+.guest-tab-option.active-tab-mantenimiento {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-0.5px);
+}
+
+/* Tab Activo: Electrónica (Violeta / Púrpura Vibrante) */
+.guest-tab-option.active-tab-electronica {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-0.5px);
+}
+
+/* Botón Consultar Principal */
+.guest-submit-btn {
+  width: 100%;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  font-weight: 700;
+  padding: 0.65rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+@media (min-width: 640px) {
+  .guest-submit-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+  }
+}
+
+.guest-submit-btn:hover {
+  transform: scale(1.01);
+}
+
+.guest-submit-btn:active {
+  transform: scale(0.98) translateY(1px);
+}
+
+/* Botón Mantenimiento (Azul) */
+.guest-submit-btn.btn-theme-mantenimiento {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+.guest-submit-btn.btn-theme-mantenimiento:hover {
+  background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%) !important;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Botón Electrónica (Violeta) */
+.guest-submit-btn.btn-theme-electronica {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%) !important;
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+.guest-submit-btn.btn-theme-electronica:hover {
+  background: linear-gradient(135deg, #9333EA 0%, #7C3AED 100%) !important;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Focus Ring dinámico según tipo seleccionado */
+.theme-mantenimiento-inputs .glass-input:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.35) !important;
+}
+
+.theme-electronica-inputs .glass-input:focus {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.35) !important;
+}
+
+/* ==========================================================================
+   Liquid Glass Radio Select Cards & Indicator System (.ts-select-card)
+   Homogeneous, Modern, and Aesthetic Selector Buttons
+   ========================================================================== */
+
+/* Accent utilities fallback */
+.accent-emerald-600,
+#tipo_ingreso,
+input[type="radio"].accent-emerald-600 {
+  accent-color: #059669 !important;
+}
+
+.accent-orange-600,
+input[type="radio"].accent-orange-600,
+input[type="radio"][value="correctivo"] {
+  accent-color: #ea580c !important;
+}
+
+/* Base Selector Card - Authentic Liquid Glass (No-Jump Geometry Locked) */
+.ts-select-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0 1.15rem;
+  height: 44px;
+  min-height: 44px;
+  box-sizing: border-box !important;
+  border-radius: 0.875rem;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #475569;
+
+  /* Liquid Glass Translucent Surface & Crisp Edge */
+  background: rgba(255, 255, 255, 0.45);
+  border: 1.5px solid rgba(0, 0, 0, 0.10) !important;
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.dark .ts-select-card,
+.dark .ts-select-card {
+  /* Liquid glass puro: fondo translúcido cristalino que deja fluir el fondo azul marino en vez del gris opaco */
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.10) !important;
+  color: #cbd5e1 !important;
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Micro-interaction Hover (Liquid Glass Refraction) */
+.ts-select-card:hover {
+  border-color: rgba(0, 0, 0, 0.18) !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  color: #1e293b !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.90), 0 4px 12px -2px rgba(0, 0, 0, 0.06);
+}
+
+html.dark .ts-select-card:hover,
+.dark .ts-select-card:hover {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 4px 12px -2px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Vector Radio Dot Indicator */
+.ts-radio-dot {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(0, 0, 0, 0.18);
+  background-color: rgba(255, 255, 255, 0.90);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  margin: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+html.dark .ts-radio-dot,
+.dark .ts-radio-dot {
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+.ts-select-card:hover .ts-radio-dot {
+  border-color: rgba(0, 0, 0, 0.28);
+  background-color: #ffffff;
+}
+
+html.dark .ts-select-card:hover .ts-radio-dot,
+.dark .ts-select-card:hover .ts-radio-dot {
+  border-color: rgba(255, 255, 255, 0.38);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================================================
+   Color-specific subtle hover states for unselected options
+   Thin colored border + soft translucent tint (sin efecto neón)
+   ========================================================================== */
+
+/* --- EMERALD HOVER (Ingreso / Preventivo) --- */
+.ts-select-card.hover-emerald:not(.active-emerald):hover,
+.ts-select-card:has(input[value="ingreso"]:not(:checked)):hover,
+.ts-select-card:has(input[value="preventivo"]:not(:checked)):hover {
+  border-color: #34d399 !important;
+  background: rgba(16, 185, 129, 0.05) !important;
+  color: #065f46 !important;
+}
+
+.ts-select-card.hover-emerald:not(.active-emerald):hover .ts-radio-dot,
+.ts-select-card:has(input[value="ingreso"]:not(:checked)):hover .ts-radio-dot,
+.ts-select-card:has(input[value="preventivo"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #10b981 !important;
+}
+
+.dark .ts-select-card.hover-emerald:not(.active-emerald):hover,
+.dark .ts-select-card:has(input[value="ingreso"]:not(:checked)):hover,
+.dark .ts-select-card:has(input[value="preventivo"]:not(:checked)):hover {
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  color: #34d399 !important;
+}
+
+.dark .ts-select-card.hover-emerald:not(.active-emerald):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="ingreso"]:not(:checked)):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="preventivo"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #34d399 !important;
+}
+
+/* --- ORANGE HOVER (Correctivo / Técnico) --- */
+.ts-select-card.hover-orange:not(.active-orange):hover,
+.ts-select-card:has(input[value="correctivo"]:not(:checked)):hover,
+.ts-select-card:has(input[value="tecnico"]:not(:checked)):hover {
+  border-color: #fb923c !important;
+  background: rgba(249, 115, 22, 0.05) !important;
+  color: #9a3412 !important;
+}
+
+.ts-select-card.hover-orange:not(.active-orange):hover .ts-radio-dot,
+.ts-select-card:has(input[value="correctivo"]:not(:checked)):hover .ts-radio-dot,
+.ts-select-card:has(input[value="tecnico"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #f97316 !important;
+}
+
+.dark .ts-select-card.hover-orange:not(.active-orange):hover,
+.dark .ts-select-card:has(input[value="correctivo"]:not(:checked)):hover,
+.dark .ts-select-card:has(input[value="tecnico"]:not(:checked)):hover {
+  border-color: rgba(249, 115, 22, 0.5) !important;
+  background: rgba(249, 115, 22, 0.08) !important;
+  color: #fb923c !important;
+}
+
+.dark .ts-select-card.hover-orange:not(.active-orange):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="correctivo"]:not(:checked)):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="tecnico"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #fb923c !important;
+}
+
+/* --- RED HOVER (Egreso) --- */
+.ts-select-card.hover-red:not(.active-red):hover,
+.ts-select-card:has(input[value="egreso"]:not(:checked)):hover {
+  border-color: #f87171 !important;
+  background: rgba(239, 68, 68, 0.05) !important;
+  color: #991b1b !important;
+}
+
+.ts-select-card.hover-red:not(.active-red):hover .ts-radio-dot,
+.ts-select-card:has(input[value="egreso"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #ef4444 !important;
+}
+
+.dark .ts-select-card.hover-red:not(.active-red):hover,
+.dark .ts-select-card:has(input[value="egreso"]:checked):hover,
+.dark .ts-select-card:has(input[value="egreso"]:not(:checked)):hover {
+  border-color: rgba(239, 68, 68, 0.5) !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+  color: #f87171 !important;
+}
+
+.dark .ts-select-card.hover-red:not(.active-red):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="egreso"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #f87171 !important;
+}
+
+/* --- BLUE HOVER (Efectivo / Cliente) --- */
+.ts-select-card.hover-blue:not(.active-blue):hover,
+.ts-select-card:has(input[value="efectivo"]:not(:checked)):hover,
+.ts-select-card:has(input[value="cliente"]:not(:checked)):hover {
+  border-color: #60a5fa !important;
+  background: rgba(59, 130, 246, 0.05) !important;
+  color: #1e40af !important;
+}
+
+.ts-select-card.hover-blue:not(.active-blue):hover .ts-radio-dot,
+.ts-select-card:has(input[value="efectivo"]:not(:checked)):hover .ts-radio-dot,
+.ts-select-card:has(input[value="cliente"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #3b82f6 !important;
+}
+
+.dark .ts-select-card.hover-blue:not(.active-blue):hover,
+.dark .ts-select-card:has(input[value="efectivo"]:not(:checked)):hover,
+.dark .ts-select-card:has(input[value="cliente"]:not(:checked)):hover {
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  background: rgba(59, 130, 246, 0.08) !important;
+  color: #60a5fa !important;
+}
+
+.dark .ts-select-card.hover-blue:not(.active-blue):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="efectivo"]:not(:checked)):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="cliente"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #60a5fa !important;
+}
+
+/* --- PURPLE HOVER (Banco / Consignación) --- */
+.ts-select-card.hover-purple:not(.active-purple):hover,
+.ts-select-card:has(input[value="consignacion"]:not(:checked)):hover,
+.ts-select-card:has(input[value="banco"]:not(:checked)):hover {
+  border-color: #c084fc !important;
+  background: rgba(168, 85, 247, 0.05) !important;
+  color: #6b21a8 !important;
+}
+
+.ts-select-card.hover-purple:not(.active-purple):hover .ts-radio-dot,
+.ts-select-card:has(input[value="consignacion"]:not(:checked)):hover .ts-radio-dot,
+.ts-select-card:has(input[value="banco"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #a855f7 !important;
+}
+
+.dark .ts-select-card.hover-purple:not(.active-purple):hover,
+.dark .ts-select-card:has(input[value="consignacion"]:not(:checked)):hover,
+.dark .ts-select-card:has(input[value="banco"]:not(:checked)):hover {
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  background: rgba(168, 85, 247, 0.08) !important;
+  color: #c084fc !important;
+}
+
+.dark .ts-select-card.hover-purple:not(.active-purple):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="consignacion"]:not(:checked)):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="banco"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #c084fc !important;
+}
+
+/* --- INDIGO HOVER (Software) --- */
+.ts-select-card.hover-indigo:not(.active-indigo):hover,
+.ts-select-card:has(input[value="software"]:not(:checked)):hover {
+  border-color: #818cf8 !important;
+  background: rgba(99, 102, 241, 0.05) !important;
+  color: #3730a3 !important;
+}
+
+.ts-select-card.hover-indigo:not(.active-indigo):hover .ts-radio-dot,
+.ts-select-card:has(input[value="software"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #6366f1 !important;
+}
+
+.dark .ts-select-card.hover-indigo:not(.active-indigo):hover,
+.dark .ts-select-card:has(input[value="software"]:not(:checked)):hover {
+  border-color: rgba(99, 102, 241, 0.5) !important;
+  background: rgba(99, 102, 241, 0.08) !important;
+  color: #818cf8 !important;
+}
+
+.dark .ts-select-card.hover-indigo:not(.active-indigo):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="software"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #818cf8 !important;
+}
+
+/* --- ROSE HOVER (Hardware) --- */
+.ts-select-card.hover-rose:not(.active-rose):hover,
+.ts-select-card:has(input[value="hardware"]:not(:checked)):hover {
+  border-color: #fb7185 !important;
+  background: rgba(244, 63, 94, 0.05) !important;
+  color: #9f1239 !important;
+}
+
+.ts-select-card.hover-rose:not(.active-rose):hover .ts-radio-dot,
+.ts-select-card:has(input[value="hardware"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #f43f5e !important;
+}
+
+.dark .ts-select-card.hover-rose:not(.active-rose):hover,
+.dark .ts-select-card:has(input[value="hardware"]:not(:checked)):hover {
+  border-color: rgba(244, 63, 94, 0.5) !important;
+  background: rgba(244, 63, 94, 0.08) !important;
+  color: #fb7185 !important;
+}
+
+.dark .ts-select-card.hover-rose:not(.active-rose):hover .ts-radio-dot,
+.dark .ts-select-card:has(input[value="hardware"]:not(:checked)):hover .ts-radio-dot {
+  border-color: #fb7185 !important;
+}
+
+/* --- EMERALD: Ingreso / Preventivo (Sin efecto neón) --- */
+.ts-select-card.active-emerald,
+.ts-select-card:has(input[value="ingreso"]:checked),
+.ts-select-card:has(input[value="preventivo"]:checked) {
+  border: 2px solid #059669 !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  color: #065f46 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark .ts-select-card.active-emerald,
+.dark .ts-select-card:has(input[value="ingreso"]:checked),
+.dark .ts-select-card:has(input[value="preventivo"]:checked) {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.14) !important;
+  color: #34d399 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.ts-select-card.active-emerald .ts-radio-dot,
+.ts-select-card:has(input[value="ingreso"]:checked) .ts-radio-dot,
+.ts-select-card:has(input[value="preventivo"]:checked) .ts-radio-dot,
+.ts-radio-dot[value="ingreso"]:checked,
+.ts-radio-dot[value="preventivo"]:checked {
+  border: 2px solid #059669 !important;
+  background-color: #059669 !important;
+  box-shadow: inset 0 0 0 3px #ffffff !important;
+}
+
+.dark .ts-select-card.active-emerald .ts-radio-dot,
+.dark .ts-select-card:has(input[value="ingreso"]:checked) .ts-radio-dot,
+.dark .ts-select-card:has(input[value="preventivo"]:checked) .ts-radio-dot,
+.dark .ts-radio-dot[value="ingreso"]:checked,
+.dark .ts-radio-dot[value="preventivo"]:checked {
+  border-color: #10b981 !important;
+  background-color: #10b981 !important;
+  box-shadow: inset 0 0 0 3px #0f172a !important;
+}
+
+/* --- ORANGE: Correctivo / Técnico (Sin efecto neón) --- */
+.ts-select-card.active-orange,
+.ts-select-card:has(input[value="correctivo"]:checked),
+.ts-select-card:has(input[value="tecnico"]:checked) {
+  border: 2px solid #ea580c !important;
+  background: rgba(249, 115, 22, 0.08) !important;
+  color: #9a3412 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark .ts-select-card.active-orange,
+.dark .ts-select-card:has(input[value="correctivo"]:checked),
+.dark .ts-select-card:has(input[value="tecnico"]:checked) {
+  border-color: #f97316 !important;
+  background: rgba(249, 115, 22, 0.14) !important;
+  color: #fb923c !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.ts-select-card.active-orange .ts-radio-dot,
+.ts-select-card:has(input[value="correctivo"]:checked) .ts-radio-dot,
+.ts-select-card:has(input[value="tecnico"]:checked) .ts-radio-dot,
+.ts-radio-dot[value="correctivo"]:checked,
+.ts-radio-dot[value="tecnico"]:checked {
+  border: 2px solid #ea580c !important;
+  background-color: #ea580c !important;
+  box-shadow: inset 0 0 0 3px #ffffff !important;
+}
+
+.dark .ts-select-card.active-orange .ts-radio-dot,
+.dark .ts-select-card:has(input[value="correctivo"]:checked) .ts-radio-dot,
+.dark .ts-select-card:has(input[value="tecnico"]:checked) .ts-radio-dot,
+.dark .ts-radio-dot[value="correctivo"]:checked,
+.dark .ts-radio-dot[value="tecnico"]:checked {
+  border-color: #f97316 !important;
+  background-color: #f97316 !important;
+  box-shadow: inset 0 0 0 3px #0f172a !important;
+}
+
+/* --- RED: Egreso (Sin efecto neón) --- */
+.ts-select-card.active-red,
+.ts-select-card:has(input[value="egreso"]:checked) {
+  border: 2px solid #dc2626 !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+  color: #991b1b !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark .ts-select-card.active-red,
+.dark .ts-select-card:has(input[value="egreso"]:checked) {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.14) !important;
+  color: #f87171 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.ts-select-card.active-red .ts-radio-dot,
+.ts-select-card:has(input[value="egreso"]:checked) .ts-radio-dot,
+.ts-radio-dot[value="egreso"]:checked {
+  border: 2px solid #dc2626 !important;
+  background-color: #dc2626 !important;
+  box-shadow: inset 0 0 0 3px #ffffff !important;
+}
+
+.dark .ts-select-card.active-red .ts-radio-dot,
+.dark .ts-select-card:has(input[value="egreso"]:checked) .ts-radio-dot,
+.dark .ts-radio-dot[value="egreso"]:checked {
+  border-color: #ef4444 !important;
+  background-color: #ef4444 !important;
+  box-shadow: inset 0 0 0 3px #0f172a !important;
+}
+
+/* --- BLUE: Efectivo / Cliente (Sin efecto neón) --- */
+.ts-select-card.active-blue,
+.ts-select-card:has(input[value="efectivo"]:checked),
+.ts-select-card:has(input[value="cliente"]:checked) {
+  border: 2px solid #2563eb !important;
+  background: rgba(59, 130, 246, 0.08) !important;
+  color: #1e40af !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark .ts-select-card.active-blue,
+.dark .ts-select-card:has(input[value="efectivo"]:checked),
+.dark .ts-select-card:has(input[value="cliente"]:checked) {
+  border-color: #3b82f6 !important;
+  background: rgba(59, 130, 246, 0.14) !important;
+  color: #60a5fa !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.ts-select-card.active-blue .ts-radio-dot,
+.ts-select-card:has(input[value="efectivo"]:checked) .ts-radio-dot,
+.ts-select-card:has(input[value="cliente"]:checked) .ts-radio-dot,
+.ts-radio-dot[value="efectivo"]:checked,
+.ts-radio-dot[value="cliente"]:checked {
+  border: 2px solid #2563eb !important;
+  background-color: #2563eb !important;
+  box-shadow: inset 0 0 0 3px #ffffff !important;
+}
+
+.dark .ts-select-card.active-blue .ts-radio-dot,
+.dark .ts-select-card:has(input[value="efectivo"]:checked) .ts-radio-dot,
+.dark .ts-select-card:has(input[value="cliente"]:checked) .ts-radio-dot,
+.dark .ts-radio-dot[value="efectivo"]:checked,
+.dark .ts-radio-dot[value="cliente"]:checked {
+  border-color: #3b82f6 !important;
+  background-color: #3b82f6 !important;
+  box-shadow: inset 0 0 0 3px #0f172a !important;
+}
+
+/* --- PURPLE: Banco / Consignación (Sin efecto neón) --- */
+.ts-select-card.active-purple,
+.ts-select-card:has(input[value="consignacion"]:checked),
+.ts-select-card:has(input[value="banco"]:checked) {
+  border: 2px solid #9333ea !important;
+  background: rgba(168, 85, 247, 0.08) !important;
+  color: #6b21a8 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark .ts-select-card.active-purple,
+.dark .ts-select-card:has(input[value="consignacion"]:checked),
+.dark .ts-select-card:has(input[value="banco"]:checked) {
+  border-color: #a855f7 !important;
+  background: rgba(168, 85, 247, 0.14) !important;
+  color: #c084fc !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.ts-select-card.active-purple .ts-radio-dot,
+.ts-select-card:has(input[value="consignacion"]:checked) .ts-radio-dot,
+.ts-select-card:has(input[value="banco"]:checked) .ts-radio-dot,
+.ts-radio-dot[value="consignacion"]:checked,
+.ts-radio-dot[value="banco"]:checked {
+  border: 2px solid #9333ea !important;
+  background-color: #9333ea !important;
+  box-shadow: inset 0 0 0 3px #ffffff !important;
+}
+
+.dark .ts-select-card.active-purple .ts-radio-dot,
+.dark .ts-select-card:has(input[value="consignacion"]:checked) .ts-radio-dot,
+.dark .ts-select-card:has(input[value="banco"]:checked) .ts-radio-dot,
+.dark .ts-radio-dot[value="consignacion"]:checked,
+.dark .ts-radio-dot[value="banco"]:checked {
+  border-color: #a855f7 !important;
+  background-color: #a855f7 !important;
+  box-shadow: inset 0 0 0 3px #0f172a !important;
+}
+
+/* --- INDIGO: Software (Sin efecto neón) --- */
+.ts-select-card.active-indigo,
+.ts-select-card:has(input[value="software"]:checked) {
+  border: 2px solid #4f46e5 !important;
+  background: rgba(99, 102, 241, 0.08) !important;
+  color: #3730a3 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark .ts-select-card.active-indigo,
+.dark .ts-select-card:has(input[value="software"]:checked) {
+  border-color: #6366f1 !important;
+  background: rgba(99, 102, 241, 0.14) !important;
+  color: #818cf8 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.ts-select-card.active-indigo .ts-radio-dot,
+.ts-select-card:has(input[value="software"]:checked) .ts-radio-dot,
+.ts-radio-dot[value="software"]:checked {
+  border: 2px solid #4f46e5 !important;
+  background-color: #4f46e5 !important;
+  box-shadow: inset 0 0 0 3px #ffffff !important;
+}
+
+.dark .ts-select-card.active-indigo .ts-radio-dot,
+.dark .ts-select-card:has(input[value="software"]:checked) .ts-radio-dot,
+.dark .ts-radio-dot[value="software"]:checked {
+  border-color: #6366f1 !important;
+  background-color: #6366f1 !important;
+  box-shadow: inset 0 0 0 3px #0f172a !important;
+}
+
+/* --- ROSE: Hardware (Sin efecto neón) --- */
+.ts-select-card.active-rose,
+.ts-select-card:has(input[value="hardware"]:checked) {
+  border: 2px solid #e11d48 !important;
+  background: rgba(244, 63, 94, 0.08) !important;
+  color: #9f1239 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark .ts-select-card.active-rose,
+.dark .ts-select-card:has(input[value="hardware"]:checked) {
+  border-color: #f43f5e !important;
+  background: rgba(244, 63, 94, 0.14) !important;
+  color: #fb7185 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.ts-select-card.active-rose .ts-radio-dot,
+.ts-select-card:has(input[value="hardware"]:checked) .ts-radio-dot,
+.ts-radio-dot[value="hardware"]:checked {
+  border: 2px solid #e11d48 !important;
+  background-color: #e11d48 !important;
+  box-shadow: inset 0 0 0 3px #ffffff !important;
+}
+
+.dark .ts-select-card.active-rose .ts-radio-dot,
+.dark .ts-select-card:has(input[value="hardware"]:checked) .ts-radio-dot,
+.dark .ts-radio-dot[value="hardware"]:checked {
+  border-color: #f43f5e !important;
+  background-color: #f43f5e !important;
+  box-shadow: inset 0 0 0 3px #0f172a !important;
+}
+
+/* Posicionamiento del contenedor de Toasts hacia el borde derecho horizontal */
+#toast-container {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  pointer-events: none !important;
+  width: 100% !important;
+  max-width: min(380px, calc(100vw - 24px)) !important;
+  z-index: 100000 !important;
+}
+
+/* --- SELECTOR TIPO CLASIFICACIÓN (CATEGORÍA / SUBCATEGORÍA) --- */
+.categoria-tipo-wrap {
+  width: 175px !important;
+  min-width: 175px !important;
+  max-width: 175px !important;
+  flex: 0 0 175px !important;
+  flex-shrink: 0 !important;
+}
+
+.categoria-tipo-wrap select.glass-input {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  box-sizing: border-box !important;
+}
+
+.categoria-tipo-wrap .ts-wrapper {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.categoria-tipo-wrap .ts-control {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  padding: 8px 12px !important;
+  min-height: 38px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  box-sizing: border-box !important;
+}
+
+.categoria-tipo-wrap .ts-control .item,
+.categoria-tipo-wrap .ts-control .ts-item-display {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Tablas secundarias y de abonos compactas, equilibradas y estandarizadas en todo el proyecto */
+#tabla-abonos-relacionados th,
+#tabla-abonos-caja-edit th,
+#tabla-abonos-facturas th,
+.table-dense th,
+.table-compact th,
+.table-compact-header th,
+.ts-table.table-compact-header thead th {
+  padding: 8px 12px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px !important;
+  line-height: 1.3 !important;
+  height: 35px !important;
+  box-sizing: border-box !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+/* ================================================================
+   Protección de moneda ($) y valores numéricos en tablas:
+   Evita que el signo $ se parta o quede encima de los números.
+   Permite que las columnas de texto (equipo, cliente, técnico, etc.)
+   se ajusten y envuelvan libremente sin forzar scroll horizontal.
+   ================================================================ */
+.ts-table th,
+.glass-table th,
+.table-dense th,
+.table-compact th,
+.table-compact-header th {
+  white-space: nowrap !important;
+}
+
+/* Solo celdas de valores monetarios o numéricos permanecen en una línea */
+.ts-table td.whitespace-nowrap,
+.glass-table td.whitespace-nowrap,
+.table-dense td.whitespace-nowrap,
+.table-compact td.whitespace-nowrap,
+.responsive-table td.whitespace-nowrap,
+.whitespace-nowrap,
+.price-value,
+.currency-value,
+td[class*="price"],
+td[class*="precio"],
+td[class*="subtotal"],
+td[class*="total"],
+td[class*="costo"],
+td[class*="monto"],
+td[class*="valor"] {
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Permitir que columnas de texto descriptivo se adapten y envuelvan */
+.ts-table td.col-equipo,
+.ts-table td.col-cliente,
+.ts-table td.col-tecnico,
+.ts-table td.col-observacion,
+.ts-table td.break-words,
+.glass-table td.break-words {
+  white-space: normal !important;
+}
+
+/* Badge de Motivo en Historial de Bajas y Mermas (idéntico en bordes y estética a 'Total descartado') */
+.badge-motivo-baja {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 8px !important;
+  /* rounded-lg idéntico a Total descartado */
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap !important;
+  background: rgba(245, 158, 11, 0.10);
+  color: #d97706;
+  /* text-amber-600 */
+  border: 1px solid rgba(245, 158, 11, 0.20);
+  /* border-amber-500/20 */
+}
+
+html.dark .badge-motivo-baja {
+  background: rgba(245, 158, 11, 0.10) !important;
+  color: #fbbf24 !important;
+  /* dark:text-amber-400 */
+  border: 1px solid rgba(245, 158, 11, 0.20) !important;
+}
+
+#tabla-abonos-relacionados td,
+#tabla-abonos-caja-edit td,
+#tabla-abonos-facturas td,
+.table-dense td,
+.table-compact td {
+  padding: 6px 12px !important;
+  font-size: 12.5px !important;
+  vertical-align: middle !important;
+}
+
+/* Evitar línea horizontal sobrante en la última fila de tablas densas/compactas */
+#tabla-abonos-relacionados tbody tr:last-child td,
+#tabla-abonos-caja-edit tbody tr:last-child td,
+#tabla-abonos-facturas tbody tr:last-child td,
+.table-dense tbody tr:last-child td,
+.table-compact tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* ==========================================================================
+   ELIMINACIÓN UNIVERSAL DE SALTO EN BOTONES
+   Ningún botón en el sistema cambia de posición o se desplaza en hover o active
+   ========================================================================== */
+button,
+.btn,
+.btn-primary,
+.btn-ghost,
+.btn-save,
+.btn-cancel,
+.btn-danger,
+.btn-blue,
+.btn-excel,
+.btn-pdf,
+.btn-print,
+.btn-add,
+.btn-clean,
+.btn-today,
+.btn-backup,
+.btn-concepts,
+.btn-venta,
+.btn-compra,
+.btn-purple,
+[class*="btn-"],
+.actions-grid a,
+.actions-grid button,
+.actions-grid>* {
+  transform: none !important;
+}
+
+button:hover,
+.btn:hover,
+.btn-primary:hover,
+.btn-ghost:hover,
+.btn-save:hover,
+.btn-cancel:hover,
+.btn-danger:hover,
+.btn-blue:hover,
+.btn-excel:hover,
+.btn-pdf:hover,
+.btn-print:hover,
+.btn-add:hover,
+.btn-clean:hover,
+.btn-today:hover,
+.btn-backup:hover,
+.btn-concepts:hover,
+.btn-venta:hover,
+.btn-compra:hover,
+.btn-purple:hover,
+[class*="btn-"]:hover,
+.actions-grid a:hover,
+.actions-grid button:hover,
+.actions-grid>*:hover,
+.print-dropdown-box:hover,
+.print-dropdown-box a:hover,
+.print-dropdown-box button:hover {
+  transform: none !important;
+}
+
+button:active,
+.btn:active,
+.btn-primary:active,
+.btn-ghost:active,
+.btn-save:active,
+.btn-cancel:active,
+[class*="btn-"]:active,
+.actions-grid a:active,
+.actions-grid button:active,
+.actions-grid>*:active,
+.print-dropdown-box:active {
+  transform: none !important;
+}
+
+/* Encabezado de vistas de detalle: simetría vertical exacta entre borde superior del card y línea horizontal */
+.detail-header,
+.caja-detail-header {
+  padding-bottom: 2rem !important;
+  /* 32px: exactamente simétrico a los 32px superiores (md:p-8) */
+}
+
+/* --- SUBTABS & NAV REPORTES: LIQUID GLASS CON FRANJA PREVIEW AL HOVER --- */
+.reportes-nav-tabs a,
+.reportes-nav-principal a {
+  position: relative;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.40);
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+  border-right: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.60);
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.dark .reportes-nav-tabs a,
+html.dark .reportes-nav-principal a {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 3px 10px -2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.reportes-nav-tabs a:hover,
+.reportes-nav-principal a:hover {
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+html.dark .reportes-nav-tabs a:hover,
+html.dark .reportes-nav-principal a:hover {
+  box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* --- DATOS OPERATIVOS CIERRE (Distribución horizontal simétrica: Fecha izquierda, Cerrado Por centro, Cantidad derecha) --- */
+.cierre-operativo-bar {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 1.25rem !important;
+  width: 100% !important;
+  margin-bottom: 2rem !important;
+}
+
+@media (min-width: 768px) {
+  .cierre-operativo-bar {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 1rem !important;
+    align-items: start !important;
+  }
+}
+
+.cierre-operativo-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  min-width: 0 !important;
+}
+
+@media (min-width: 768px) {
+  .cierre-operativo-item.item-left {
+    justify-self: start !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .cierre-operativo-item.item-center {
+    justify-self: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .cierre-operativo-item.item-right {
+    justify-self: end !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+}
+
+@media print {
+  .cierre-operativo-bar {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .cierre-operativo-item.item-left {
+    justify-self: start !important;
+  }
+
+  .cierre-operativo-item.item-center {
+    justify-self: center !important;
+  }
+
+  .cierre-operativo-item.item-right {
+    justify-self: end !important;
+  }
+}
+
+/* --- PREVENIR DESBORDAMIENTO EN CAMPOS DE TEXTO / OBSERVACIONES --- */
+.whitespace-pre-line,
+.observaciones-box,
+[class*="observacion"] {
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+
+/* --- TÍTULO DE ARTÍCULO EN VER STOCK (CALIBRADO Y COHERENTE) --- */
+.stock-detail-title {
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.25 !important;
+}
+
+@media (min-width: 640px) {
+  .stock-detail-title {
+    font-size: 1.5rem !important;
+    /* 24px: perfectamente calibrado, visible y coherente con el espacio */
+  }
+}
+
+/* --- SOLO EN MODO MÓVIL (< 640px / pantallas de celular): Evitar que los botones de acción compriman el título --- */
+@media (max-width: 639px) {
+  .detail-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+  .detail-header > div:first-child {
+    width: 100% !important;
+  }
+  .detail-header .stock-detail-actions {
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+}

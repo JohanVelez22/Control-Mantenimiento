@@ -1,7 +1,3 @@
-/* ================================================================
-   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: CAMPOS DE FORMULARIO, INPUTS Y SELECTS (FORMS)
-   ================================================================ */
-
 /* --- INPUT VIDRIO -------------------------------------------------- */
 .glass-input {
   width: 100%;
@@ -432,5 +428,4 @@ html.dark input[type="datetime-local"].glass-input::-webkit-calendar-picker-indi
 html.dark .field-label {
   color: #CBD5E1;
 }
-
 

@@ -1,7 +1,3 @@
-/* ================================================================
-   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: BARRA LATERAL DE NAVEGACIÓN (SIDEBAR)
-   ================================================================ */
-
 /* --- SIDEBAR VIDRIO LIQUIDO -------------------------------------------------- */
 #ts-sidebar {
   width: var(--sidebar-w);
@@ -335,4 +331,3 @@ html.dark .nav-group-label {
     box-shadow: 0 2px 14px rgba(239, 68, 68, 0.70);
   }
 }
-

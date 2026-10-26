@@ -1,7 +1,3 @@
-/* ================================================================
-   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: TARJETAS Y PANELES (CARDS)
-   ================================================================ */
-
 /* --- TARJETA VIDRIO (REDONDEADA) -------------------------------------------------- */
 .glass-card {
   background: rgba(255, 255, 255, 0.65);
@@ -220,4 +216,3 @@ html.dark .glass-card-rose {
 html.dark .glass-card-gray {
   --card-accent: 100, 116, 139;
 }
-

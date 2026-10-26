@@ -10,8 +10,7 @@
 
     {{-- Fuentes y Tailwind --}}
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ @filemtime(public_path('css/glass.css')) ?: '1.4' }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/glass/glass.css', 'resources/js/app.js'])
     <script>
         // Aplicar modo oscuro si está guardado en localStorage o si prefiere oscuro
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {

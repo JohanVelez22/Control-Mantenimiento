@@ -1,6 +1,7 @@
 /* ================================================================
-   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: FORMATO Y REGLAS DE IMPRESIÓN (PRINT)
+   Print
    ================================================================ */
+@media print {
 
   /* --- 1. Tamano y margenes de pagina -------------------------------------------------- */
   @page {
@@ -126,4 +127,3 @@
     print-color-adjust: exact !important;
   }
 }
-

@@ -19,18 +19,22 @@ Para facilitar el mantenimiento, la escalabilidad y permitir que este proyecto s
 
 ```
 resources/css/glass/
-├── _tokens.css     # Design Tokens: Paleta, fuentes (Inter/Michroma/Orbitron), sombras y blur
-├── _base.css       # Reset global, scrollbars personalizados y gradiente radial de fondo (.ts-bg)
-├── _cards.css      # Paneles .glass, contenedores .glass-card, estados hover y variantes de color
-├── _sidebar.css    # Barra lateral de navegación: colapsada, expandida, estado móvil y marcas
-├── _topbar.css     # Barra de encabezado superior, buscador, panel de usuario y notificaciones
-├── _buttons.css    # Botones .btn-primary, .btn-danger, .btn-ghost-* y animaciones de brillo
-├── _forms.css      # Entradas .glass-input, selects, etiquetas y estilos para TomSelect / Flatpickr
-├── _tables.css     # Tablas de datos de alta densidad, scroll horizontal seguro y rayado zebra
-├── _modals.css     # Overlays translúcidos, diálogos accesibles (ARIA) y lightbox de imágenes
-├── _pills.css      # Insignias de estado (Pendiente, Entregado, Anulado, Cotizado)
-├── _print.css      # Optimización para exportación e impresión térmica / hojas A4 (@media print)
-└── glass.css       # Manifiesto maestro que orquesta e importa todos los submódulos
+├── _tokens.css       # Design Tokens: Paleta, fuentes (Inter/Michroma/Orbitron), scrollbars y variables
+├── _cards.css        # Paneles .glass, contenedores .glass-card, estados hover y variantes de color
+├── _sidebar.css      # Barra lateral de navegación: colapsada, expandida, estado móvil y marcas
+├── _topbar.css       # Barra de encabezado superior, buscador, panel de usuario y notificaciones
+├── _buttons.css      # Botones .btn-primary, .btn-danger, .btn-ghost-* y animaciones de brillo líquido
+├── _forms.css        # Entradas .glass-input, spinners numéricos, selects y etiquetas de formulario
+├── _tables.css       # Tablas de datos de alta densidad, scroll horizontal seguro y rayado zebra
+├── _pills.css        # Insignias de estado (Pendiente, Entregado, Anulado, Cotizado)
+├── _print.css        # Optimización para exportación e impresión térmica POS / hojas A4 (@media print)
+├── _modals.css       # Overlays translúcidos, diálogos accesibles (ARIA) y lightbox de imágenes
+├── _animations.css   # Keyframes globales, accesibilidad de foco visible y transiciones
+├── _responsive.css   # Protección para zoom 150-200% y adaptación de toolbars en pantallas compactas
+├── _tomselect.css    # Personalización Liquid Glass para el selector inteligente TomSelect
+├── _flatpickr.css    # Personalización Liquid Glass para el calendario interactivo Flatpickr
+├── _utilities.css    # Utilidades complementarias, reportes, cierres y componentes específicos
+└── glass.css         # Manifiesto maestro compilado por Vite hacia producción
 ```
 
 ---

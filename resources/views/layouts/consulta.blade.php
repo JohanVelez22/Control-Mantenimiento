@@ -20,8 +20,8 @@
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     
-    {{-- CSS Propio --}}
-    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ @filemtime(public_path('css/glass.css')) ?: '1.4' }}">
+    {{-- CSS Propio (Vite) --}}
+    @vite('resources/css/glass/glass.css')
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     {{-- Lógica de Tema Temprana --}}

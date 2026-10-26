@@ -1,7 +1,3 @@
-/* ================================================================
-   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM: TABLAS DE DATOS LIQUID GLASS (TABLES)
-   ================================================================ */
-
 /* --- TABLA DE DATOS ULTRA-PREMIUM (Liquid Glass) ------------------------- */
 .ts-table,
 .glass-table {
@@ -546,4 +542,3 @@ html.dark .ts-table tbody td.text-emerald-600 {
     }
   }
 }
-

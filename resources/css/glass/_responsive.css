@@ -1,0 +1,142 @@
+/* --- ESTILOS DE IMPRESIÓN -------------------------------------------------- */
+@media print {
+
+  #ts-sidebar,
+  #ts-topbar,
+  #nav-progress,
+  .no-print {
+    display: none !important;
+  }
+
+  #ts-main {
+    margin-left: 0 !important;
+  }
+
+  .glass-card {
+    border: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+}
+
+/* --- TABLAS RESPONSIVAS PROTEGIDAS Y SCROLL SEGURO (MÓVIL / ZOOM 150%-200%) --- */
+.overflow-x-auto {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-x: contain !important;
+}
+
+/* Tablas base del sistema: preservar estructura tabular limpia y esquinas redondeadas */
+.ts-table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+/* Ancho mínimo de seguridad para tablas en pantallas compactas / zoom alto (evita aplastamiento de celdas) */
+@media screen and (max-width: 1023px) {
+  .ts-table {
+    min-width: 680px;
+  }
+
+  .table-dense,
+  #tabla-mantenimientos,
+  #tabla-electronicas,
+  #tabla-cotizaciones,
+  #tabla-stocks,
+  #tabla-caja,
+  #tabla-inventario,
+  #tabla-facturas,
+  #tabla-clientes,
+  #tabla-equipos,
+  #tabla-proveedores {
+    min-width: 820px;
+  }
+}
+
+/* --- ADAPTACIÓN DE TARJETAS Y TOOLBARS EN PANTALLAS COMPACTAS (< 640px / ZOOM 200%) --- */
+@media screen and (max-width: 640px) {
+  .glass-card {
+    padding: 1rem !important;
+    border-radius: 16px !important;
+  }
+
+  .glass-card>div:first-child .glass-input.w-48,
+  .glass-card>div:first-child .glass-input.sm\:w-64 {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .glass-card>div:first-child .relative:has(input[type="text"]) {
+    width: 100% !important;
+    flex-grow: 1 !important;
+  }
+}
+
+/* Modo Tarjetas: solo cuando se especifique explícitamente .responsive-cards */
+@media screen and (max-width: 767px) {
+
+  .responsive-cards,
+  .responsive-cards tbody,
+  .responsive-cards tr,
+  .responsive-cards td {
+    display: block;
+    width: 100%;
+  }
+
+  .responsive-cards thead {
+    display: none;
+  }
+
+  .responsive-cards tr {
+    margin-bottom: 12px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.60);
+    border: 1px solid rgba(226, 232, 240, 0.70);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
+
+  html.dark .responsive-cards tr {
+    background: rgba(15, 23, 42, 0.60);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .responsive-cards td {
+    display: grid;
+    grid-template-columns: minmax(100px, 35%) 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 14px !important;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.40);
+  }
+
+  html.dark .responsive-cards td {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .responsive-cards td:last-child {
+    border-bottom: none;
+  }
+
+  .responsive-cards td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    font-size: 11px;
+    color: #64748B;
+  }
+
+  html.dark .responsive-cards td::before {
+    color: #94A3B8;
+  }
+}
+
+/* --- PRELOAD: BLOQUEAR TRANSICIONES INICIALES -------------------------------------------------- */
+.preload * {
+  transition: none !important;
+}
+

@@ -1,0 +1,34 @@
+/* --- ANIMACIONES -------------------------------------------------- */
+@keyframes fadeSlideIn {
+
+  /* ---- Sin opacity: elementos nunca invisibles al reiniciar animación ---- */
+  from {
+    transform: translateY(8px);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: fadeSlideIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ================================================================
+   Pricing Panel: siempre visible, sin animaciones
+   ================================================================ */
+/* NOTA: sin transform:none para respetar translate de Tailwind en hijos */
+.pricing-panel,
+.pricing-panel * {
+  opacity: 1 !important;
+  visibility: visible !important;
+  animation: none !important;
+}
+
+/* --- ACCESIBILIDAD: FOCO VISIBLE -------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
