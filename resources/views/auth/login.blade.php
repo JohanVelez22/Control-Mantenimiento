@@ -23,9 +23,9 @@
  </div>
 
  {{-- Header --}}
- <div class="text-center mb-2">
- <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-slate-900/90 dark:bg-slate-950/90 p-2 shadow-2xl shadow-cyan-500/25 border border-cyan-500/40 mb-4 hover:scale-105 hover:border-cyan-400 hover:shadow-cyan-400/40 transition-all duration-300 overflow-hidden">
-     <img src="{{ asset('images/wolfguard.png') }}" alt="Wolf Guard" class="w-full h-full object-contain rounded-xl filter drop-shadow-[0_0_10px_rgba(6,182,212,0.6)]">
+ <div class="text-center mb-3">
+ <div class="inline-flex items-center justify-center w-28 h-28 mb-3 hover:scale-105 transition-transform duration-300">
+     <img src="{{ asset('images/wolfguard.png') }}" alt="Wolf Guard" class="w-full h-full object-contain filter drop-shadow-[0_0_16px_rgba(6,182,212,0.55)]">
  </div>
  <h1 class="text-xl font-black text-gray-900 dark:text-white">Iniciar Sesión</h1>
  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa tus credenciales para acceder al sistema</p>
