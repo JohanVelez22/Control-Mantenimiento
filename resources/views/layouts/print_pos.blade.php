@@ -192,7 +192,7 @@
         {{-- Pie de página y garantía --}}
         <div class="footer-pos">
             <p class="font-bold">{{ $empresa->pie_pagina_factura ?? '¡Gracias por su compra / preferencia!' }}</p>
-            <p style="font-size: 6.5pt; color: #555;">Software Tecni-Systemas</p>
+            <p style="font-size: 6.5pt; color: #555;">Software Wolf Guard</p>
         </div>
     </div>
 </body>

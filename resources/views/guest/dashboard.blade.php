@@ -1,6 +1,6 @@
 @extends('layouts.guest')
 
-@section('title', 'Tecni Systemas')
+@section('title', 'Wolf Guard — Portal de Seguimiento')
 
 @section('content')
 <div class="min-h-screen relative overflow-hidden flex items-center justify-center p-4 sm:p-8">
@@ -32,16 +32,18 @@
 
     <div class="w-full {{ ($cliente || (isset($searched) && ($mantenimientos->isNotEmpty() || $electronicas->isNotEmpty()))) ? 'max-w-2xl' : 'max-w-md' }} z-10 flex flex-col items-center pb-10 transition-all">
         
-        <!-- Logo TECNI SYSTEMAS (Fuera del recuadro) -->
-        <div class="text-center mt-0 login-brand-title flex flex-col items-center">
-            <div class="flex justify-center">
-                <div class="text-[24px] font-black tracking-widest font-logo flex items-center gap-2">
-                    <span class="text-[#2563EB] dark:text-[#3B82F6]">TECNI</span>
-                    <span class="text-slate-800 dark:text-white">SYSTEMAS</span>
-                </div>
+        {{-- Logo WOLF GUARD (Fuera del recuadro) --}}
+        <div class="flex justify-center mb-4 login-brand-title">
+            <div class="text-[26px] font-black tracking-widest font-logo flex items-center gap-2">
+                <span class="text-[#2563EB] dark:text-[#3B82F6]">WOLF</span>
+                <span class="text-slate-800 dark:text-white">GUARD</span>
             </div>
-            <div class="flex items-center justify-center leading-none mt-2.5 mb-4">
-                <span style="font-size: 80px;" class="drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] text-slate-800 dark:text-white leading-none inline-block">💼</span>
+        </div>
+
+        {{-- Encabezado con insignia oficial de Wolf Guard --}}
+        <div class="text-center mb-3">
+            <div class="inline-flex items-center justify-center w-20 h-20 mb-2 hover:scale-105 transition-transform duration-300">
+                <img src="{{ asset('images/wolfguard.png') }}" alt="Wolf Guard" class="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
             </div>
         </div>
 

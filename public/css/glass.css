@@ -1,5 +1,5 @@
 /* ================================================================
-   TECNI SYSTEMAS - LIQUID GLASS DESIGN SYSTEM
+   WOLF GUARD - LIQUID GLASS DESIGN SYSTEM
    Paleta: Azul Eléctrico #2563EB, Azul Oscuro #0F172A, Blanco #FFFFFF
    ================================================================ */
 
@@ -601,7 +601,7 @@ html.dark .nav-item {
   display: inline-block !important;
 }
 
-/* Modo Zoom >= 150% o Móvil: TECNI SYSTEMAS encima de NAVEGACIÓN */
+/* Modo Zoom >= 150% o Móvil: WOLF GUARD encima de NAVEGACIÓN */
 #ts-sidebar.show-sidebar-brand:hover .sidebar-logo-title,
 #ts-sidebar.show-sidebar-brand.expanded .sidebar-logo-title,
 #ts-sidebar.show-sidebar-brand.mobile-open .sidebar-logo-title {
@@ -8434,7 +8434,7 @@ html.dark a[title*="Revertir" i] {
   cursor: not-allowed !important;
 }
 
-/* Espaciado del título TECNI SYSTEMAS exclusivamente en móviles para no colisionar con el botón de tema */
+/* Espaciado del título WOLF GUARD exclusivamente en móviles para no colisionar con el botón de tema */
 @media (max-width: 639px) {
   .login-brand-title {
     margin-top: 3.5rem !important;

@@ -1,6 +1,6 @@
-# 🛠️ TECNI SYSTEMAS - Sistema de Control de Mantenimiento, Taller e Integridad Financiera
+# 🛡️ WOLF GUARD - Sistema de Control de Mantenimiento, Taller e Integridad Financiera
 
-![TECNI SYSTEMAS Banner](public/favicon.svg)
+![Wolf Guard Banner](public/images/wolfguard.png)
 
 [![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.3%20%7C%208.4-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)

@@ -2353,7 +2353,7 @@ html.dark a[title*="Revertir" i] {
   cursor: not-allowed !important;
 }
 
-/* Espaciado del título TECNI SYSTEMAS exclusivamente en móviles para no colisionar con el botón de tema */
+/* Espaciado del título WOLF GUARD exclusivamente en móviles para no colisionar con el botón de tema */
 @media (max-width: 639px) {
   .login-brand-title {
     margin-top: 3.5rem !important;
