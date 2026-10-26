@@ -42,16 +42,17 @@
     </script>
 </head>
 <body class="ts-bg text-gray-800 dark:text-gray-100 min-h-screen">
-    {{-- Header mínimo solo logo y logout --}}
+    {{-- Header mínimo con logo Wolf Guard y cerrar sesión --}}
     <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-white/10 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             @php
                 $isElecHeader = request()->routeIs('consulta.electronicas') || request()->routeIs('electronicas.*');
                 $headerHome = $isElecHeader ? route('consulta.electronicas') : route('consulta.mantenimientos');
             @endphp
-            <a href="{{ $headerHome }}" class="flex items-center gap-2">
-                <span class="text-[#2563EB] dark:text-[#3B82F6] font-logo font-black text-xl">TECNI</span>
-                <span class="text-slate-800 dark:text-white font-logo font-black text-xl">SYSTEMAS</span>
+            <a href="{{ $headerHome }}" class="flex items-center gap-2.5 hover:scale-105 transition-transform duration-200">
+                <img src="{{ asset('images/wolfguard.png') }}" alt="Wolf Guard" class="w-7 h-7 object-contain">
+                <span class="text-[#2563EB] dark:text-[#3B82F6] font-logo font-black text-xl">WOLF</span>
+                <span class="text-slate-800 dark:text-white font-logo font-black text-xl">GUARD</span>
                 <span class="ml-2 px-2 py-0.5 text-[10px] font-bold {{ $isElecHeader ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' }} rounded">CONSULTA</span>
             </a>
             <form method="POST" action="{{ route('logout') }}" class="m-0">
@@ -65,7 +66,7 @@
         </div>
     </header>
 
-    <main class="min-h-[calc(100vh-80px)]">
+    <main class="min-h-[calc(100dvh-64px)] flex flex-col justify-center items-center p-4 py-6 md:py-10">
         @yield('content')
     </main>
 </body>
