@@ -22,7 +22,7 @@
      </div>
  </div>
 
- {{-- Header --}}
+ {{-- Encabezado con insignia oficial de Wolf Guard --}}
  <div class="text-center mb-3">
  <div class="inline-flex items-center justify-center w-28 h-28 mb-3 hover:scale-105 transition-transform duration-300">
      <img src="{{ asset('images/wolfguard.png') }}" alt="Wolf Guard" class="w-full h-full object-contain filter drop-shadow-[0_0_16px_rgba(6,182,212,0.55)]">
