@@ -12,7 +12,7 @@
                 <!-- Centro: Único Logo Centrado (visible en desktop, oculto en móvil/tablets para no colisionar) -->
                 <div class="topbar-logo-container hidden lg:flex justify-center items-center">
                     <a href="{{ route('dashboard') }}" class="text-[20px] font-black tracking-widest hover:scale-105 transition-transform duration-300 font-logo flex items-center gap-2.5">
-                        <img src="{{ asset('favicon.svg') }}" alt="Wolf Guard" class="w-6 h-6 object-contain filter drop-shadow">
+                        <img src="{{ asset('images/wolfguard.png') }}" alt="Wolf Guard" class="w-6 h-6 object-contain rounded filter drop-shadow-[0_0_6px_rgba(6,182,212,0.4)]">
                         <span class="text-[#2563EB] dark:text-[#3B82F6]">WOLF</span>
                         <span class="text-slate-800 dark:text-white">GUARD</span>
                     </a>
