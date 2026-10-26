@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Consulta — WolfCore Systema</title>
+    <title>Consulta — WolfCore Technology</title>
     
-    <!-- Favicon (Isotipo e Insignia WolfCore Systema con invalidación de caché) -->
+    <!-- Favicon (Isotipo e Insignia WolfCore Technology con invalidación de caché) -->
     <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v={{ filemtime(public_path('favicon-48x48.png')) }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v={{ filemtime(public_path('favicon-32x32.png')) }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v={{ filemtime(public_path('favicon-16x16.png')) }}">
@@ -42,7 +42,7 @@
     </script>
 </head>
 <body class="ts-bg text-gray-800 dark:text-gray-100 min-h-screen">
-    {{-- Header mínimo con logo Wolf Guard y cerrar sesión --}}
+    {{-- Header mínimo con logo WolfCore Technology y cerrar sesión --}}
     <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-white/10 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             @php
@@ -50,9 +50,9 @@
                 $headerHome = $isElecHeader ? route('consulta.electronicas') : route('consulta.mantenimientos');
             @endphp
             <a href="{{ $headerHome }}" class="flex items-center gap-2.5 hover:scale-105 transition-transform duration-200">
-                <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore Systema" class="w-7 h-7 object-contain">
+                <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore Technology" class="w-7 h-7 object-contain">
                 <span class="text-[#2563EB] dark:text-[#3B82F6] font-logo font-black text-xl">WOLFCORE</span>
-                <span class="text-slate-800 dark:text-white font-logo font-black text-xl">SYSTEMA</span>
+                <span class="text-slate-800 dark:text-white font-logo font-black text-xl">TECHNOLOGY</span>
                 <span class="ml-2 px-2 py-0.5 text-[10px] font-bold {{ $isElecHeader ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' }} rounded">CONSULTA</span>
             </a>
             <form method="POST" action="{{ route('logout') }}" class="m-0">

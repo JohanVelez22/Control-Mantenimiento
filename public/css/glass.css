@@ -1,5 +1,11 @@
 /* ================================================================
-   WOLFCORE SYSTEMA - LIQUID GLASS DESIGN SYSTEM
+   WOLFCORE TECHNOLOGY - LIQUID GLASS DESIGN SYSTEM
+   Generado automáticamente desde arquitectura modular en resources/css/glass/
+   ================================================================ */
+
+/* --- MODULE: _tokens.css --- */
+/* ================================================================
+   WOLFCORE TECHNOLOGY - LIQUID GLASS DESIGN SYSTEM
    Paleta: Azul Eléctrico #2563EB, Azul Oscuro #0F172A, Blanco #FFFFFF
    ================================================================ */
 
@@ -201,6 +207,8 @@ html.dark .glass {
   border-color: var(--glass-dark-border);
   box-shadow: var(--glass-dark-shadow);
 }
+
+/* --- MODULE: _cards.css --- */
 /* --- TARJETA VIDRIO (REDONDEADA) -------------------------------------------------- */
 .glass-card {
   background: rgba(255, 255, 255, 0.65);
@@ -420,6 +428,8 @@ html.dark .glass-card-gray {
   --card-accent: 100, 116, 139;
 }
 
+
+/* --- MODULE: _sidebar.css --- */
 /* --- SIDEBAR VIDRIO LIQUIDO -------------------------------------------------- */
 #ts-sidebar {
   width: var(--sidebar-w);
@@ -600,7 +610,7 @@ html.dark .nav-item {
   display: inline-block !important;
 }
 
-/* Modo Zoom >= 150% o Móvil: WOLFCORE SYSTEMA encima de NAVEGACIÓN */
+/* Modo Zoom >= 150% o Móvil: WOLFCORE TECHNOLOGY encima de NAVEGACIÓN */
 #ts-sidebar.show-sidebar-brand:hover .sidebar-logo-title,
 #ts-sidebar.show-sidebar-brand.expanded .sidebar-logo-title,
 #ts-sidebar.show-sidebar-brand.mobile-open .sidebar-logo-title {
@@ -753,6 +763,8 @@ html.dark .nav-group-label {
     box-shadow: 0 2px 14px rgba(239, 68, 68, 0.70);
   }
 }
+
+/* --- MODULE: _topbar.css --- */
 /* --- BARRA SUPERIOR (TOPBAR) -------------------------------------------------- */
 #ts-topbar {
   background: rgba(255, 255, 255, 0.60);
@@ -793,6 +805,8 @@ html.dark #ts-topbar {
   flex-shrink: 0;
 }
 
+
+/* --- MODULE: _buttons.css --- */
 /* --- BOTÓN PRIMARIO VIDRIO LIQUIDO (Dimensiones idénticas a btn-purple: 38px) --- */
 .btn-primary {
   display: inline-flex !important;
@@ -4190,6 +4204,8 @@ html.dark .btn-blue:hover {
   box-shadow: 0 5px 16px -2px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
+
+/* --- MODULE: _forms.css --- */
 /* --- INPUT VIDRIO -------------------------------------------------- */
 .glass-input {
   width: 100%;
@@ -4622,6 +4638,8 @@ html.dark .field-label {
 }
 
 
+
+/* --- MODULE: _tables.css --- */
 /* --- TABLA DE DATOS ULTRA-PREMIUM (Liquid Glass) ------------------------- */
 .ts-table,
 .glass-table {
@@ -5166,6 +5184,8 @@ html.dark .ts-table tbody td.text-emerald-600 {
     }
   }
 }
+
+/* --- MODULE: _pills.css --- */
 /* --- PILLS DE ESTADO -------------------------------------------------- */
 .pill {
   display: inline-flex;
@@ -5299,6 +5319,8 @@ html.dark .pill-especialidad {
   background: rgba(99, 102, 241, 0.15);
 }
 
+
+/* --- MODULE: _print.css --- */
 /* ================================================================
    Print
    ================================================================ */
@@ -5429,6 +5451,8 @@ html.dark .pill-especialidad {
   }
 }
 
+
+/* --- MODULE: _modals.css --- */
 /* --- TOGGLE ENTIDAD (PERSONA / EMPRESA) -------------------------------------------------- */
 .entity-toggle {
   display: flex;
@@ -5527,6 +5551,8 @@ html.dark .ts-modal-card {
   transition: width 0.15s ease;
   pointer-events: none;
 }
+
+/* --- MODULE: _animations.css --- */
 /* --- ANIMACIONES -------------------------------------------------- */
 @keyframes fadeSlideIn {
 
@@ -5562,6 +5588,8 @@ html.dark .ts-modal-card {
   border-radius: 6px;
 }
 
+
+/* --- MODULE: _responsive.css --- */
 /* --- ESTILOS DE IMPRESIÓN -------------------------------------------------- */
 @media print {
 
@@ -5705,6 +5733,8 @@ html.dark .ts-modal-card {
 }
 
 
+
+/* --- MODULE: _tomselect.css --- */
 /* --- GLASSMORPHISM: TOM-SELECT -------------------------------------------------- */
 
 /* ---- Wrapper: eliminar fondo/borde evitar cuadro en cuadro ---- */
@@ -5883,6 +5913,8 @@ html.dark .ts-wrapper.is-invalid .ts-control {
 
 
 
+
+/* --- MODULE: _flatpickr.css --- */
 /* --- GLASSMORPHISM: FLATPICKR CALENDAR -------------------------------------------------- */
 .flatpickr-calendar {
   background: rgba(255, 255, 255, 0.70) !important;
@@ -6075,6 +6107,8 @@ html.dark .flatpickr-day.flatpickr-disabled {
 }
 
 
+
+/* --- MODULE: _utilities.css --- */
 /* --- CORRECCIÓN AUTOCOMPLETADO NAVEGADOR -------------------------------------------------- */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -8430,7 +8464,7 @@ html.dark a[title*="Revertir" i] {
   cursor: not-allowed !important;
 }
 
-/* Espaciado del título WOLFCORE SYSTEMA exclusivamente en móviles para no colisionar con el botón de tema */
+/* Espaciado del título WOLFCORE TECHNOLOGY exclusivamente en móviles para no colisionar con el botón de tema */
 @media (max-width: 639px) {
   .login-brand-title {
     margin-top: 3.5rem !important;
@@ -10174,3 +10208,4 @@ html.dark .reportes-nav-principal a:hover {
     gap: 0.5rem !important;
   }
 }
+

@@ -14,18 +14,18 @@
 
 <div class="w-full max-w-md px-6 pb-16">
 
- {{-- Logo WOLFCORE SYSTEMA --}}
+ {{-- Logo WOLFCORE TECHNOLOGY --}}
  <div class="flex justify-center mb-4 login-brand-title">
      <div class="text-[26px] font-black tracking-widest font-logo flex items-center gap-2">
          <span class="text-[#2563EB] dark:text-[#3B82F6]">WOLFCORE</span>
-         <span class="text-slate-800 dark:text-white">SYSTEMA</span>
+         <span class="text-slate-800 dark:text-white">TECHNOLOGY</span>
      </div>
  </div>
 
- {{-- Encabezado con insignia oficial de WolfCore Systema --}}
+ {{-- Encabezado con insignia oficial de WolfCore Technology --}}
  <div class="text-center mb-3">
  <div class="inline-flex items-center justify-center w-20 h-20 mb-2 hover:scale-105 transition-transform duration-300">
-     <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore Systema" class="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
+     <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore Technology" class="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
  </div>
  <h1 class="text-xl font-black text-gray-900 dark:text-white">Iniciar Sesión</h1>
  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa tus credenciales para acceder al sistema</p>

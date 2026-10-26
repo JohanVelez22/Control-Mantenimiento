@@ -12,9 +12,9 @@
                 <!-- Centro: Único Logo Centrado (visible en desktop, oculto en móvil/tablets para no colisionar) -->
                 <div class="topbar-logo-container hidden lg:flex justify-center items-center">
                     <a href="{{ route('dashboard') }}" class="text-[20px] font-black tracking-widest hover:scale-105 transition-transform duration-300 font-logo flex items-center gap-2.5">
-                        <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore Systema" class="w-7 h-7 object-contain">
+                        <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore Technology" class="w-7 h-7 object-contain">
                         <span class="text-[#2563EB] dark:text-[#3B82F6]">WOLFCORE</span>
-                        <span class="text-slate-800 dark:text-white">SYSTEMA</span>
+                        <span class="text-slate-800 dark:text-white">TECHNOLOGY</span>
                     </a>
                 </div>
 

@@ -16,7 +16,7 @@
                 </h1>
             </div>
             <p class="text-sm md:text-base text-slate-600 dark:text-slate-400 mt-2 max-w-3xl">
-                Catálogo maestro y guía viva de estilos para <strong>WolfCore Systema</strong> (cliente piloto: Tecni-Systemas). Base y arquitectura pionera para desarrollos Laravel de alta fidelidad estética.
+                Catálogo maestro y guía viva de estilos para <strong>WolfCore Technology</strong> (cliente piloto: Tecni-Systemas). Base y arquitectura pionera para desarrollos Laravel de alta fidelidad estética.
             </p>
         </div>
         <div class="flex items-center gap-2 shrink-0">

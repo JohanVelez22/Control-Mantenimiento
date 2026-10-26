@@ -19,9 +19,9 @@
     <meta name="description" content="Sistema de Control de Mantenimiento y Gestión de Equipos. Solución integral para talleres y gestión de garantías.">
     <meta name="keywords" content="Mantenimiento, Talleres, Gestión de Inventario, Cotizaciones, Electrónica">
     
-    <title>@yield('title', 'WolfCore Systema')</title>
+    <title>@yield('title', 'WolfCore Technology')</title>
     
-    <!-- Favicon (Isotipo e Insignia WolfCore Systema con invalidación de caché) -->
+    <!-- Favicon (Isotipo e Insignia WolfCore Technology con invalidación de caché) -->
     <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v={{ filemtime(public_path('favicon-48x48.png')) }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v={{ filemtime(public_path('favicon-32x32.png')) }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v={{ filemtime(public_path('favicon-16x16.png')) }}">
