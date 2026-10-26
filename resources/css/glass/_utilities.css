@@ -2353,7 +2353,7 @@ html.dark a[title*="Revertir" i] {
   cursor: not-allowed !important;
 }
 
-/* Espaciado del título WOLF GUARD exclusivamente en móviles para no colisionar con el botón de tema */
+/* Espaciado del título WOLFCORE SYSTEMA exclusivamente en móviles para no colisionar con el botón de tema */
 @media (max-width: 639px) {
   .login-brand-title {
     margin-top: 3.5rem !important;
@@ -4085,13 +4085,15 @@ html.dark .reportes-nav-principal a:hover {
     align-items: flex-start !important;
     gap: 1rem !important;
   }
-  .detail-header > div:first-child {
+
+  .detail-header>div:first-child {
     width: 100% !important;
   }
+
   .detail-header .stock-detail-actions {
     width: 100% !important;
     display: flex !important;
     flex-wrap: wrap !important;
     gap: 0.5rem !important;
   }
-}
+}

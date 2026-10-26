@@ -1,5 +1,5 @@
 /* ================================================================
-   WOLF GUARD - LIQUID GLASS DESIGN SYSTEM
+   WOLFCORE SYSTEMA - LIQUID GLASS DESIGN SYSTEM
    Paleta: Azul Eléctrico #2563EB, Azul Oscuro #0F172A, Blanco #FFFFFF
    ================================================================ */
 
@@ -201,7 +201,6 @@ html.dark .glass {
   border-color: var(--glass-dark-border);
   box-shadow: var(--glass-dark-shadow);
 }
-
 /* --- TARJETA VIDRIO (REDONDEADA) -------------------------------------------------- */
 .glass-card {
   background: rgba(255, 255, 255, 0.65);
@@ -601,7 +600,7 @@ html.dark .nav-item {
   display: inline-block !important;
 }
 
-/* Modo Zoom >= 150% o Móvil: WOLF GUARD encima de NAVEGACIÓN */
+/* Modo Zoom >= 150% o Móvil: WOLFCORE SYSTEMA encima de NAVEGACIÓN */
 #ts-sidebar.show-sidebar-brand:hover .sidebar-logo-title,
 #ts-sidebar.show-sidebar-brand.expanded .sidebar-logo-title,
 #ts-sidebar.show-sidebar-brand.mobile-open .sidebar-logo-title {
@@ -754,7 +753,6 @@ html.dark .nav-group-label {
     box-shadow: 0 2px 14px rgba(239, 68, 68, 0.70);
   }
 }
-
 /* --- BARRA SUPERIOR (TOPBAR) -------------------------------------------------- */
 #ts-topbar {
   background: rgba(255, 255, 255, 0.60);
@@ -5168,7 +5166,6 @@ html.dark .ts-table tbody td.text-emerald-600 {
     }
   }
 }
-
 /* --- PILLS DE ESTADO -------------------------------------------------- */
 .pill {
   display: inline-flex;
@@ -5530,7 +5527,6 @@ html.dark .ts-modal-card {
   transition: width 0.15s ease;
   pointer-events: none;
 }
-
 /* --- ANIMACIONES -------------------------------------------------- */
 @keyframes fadeSlideIn {
 
@@ -8434,7 +8430,7 @@ html.dark a[title*="Revertir" i] {
   cursor: not-allowed !important;
 }
 
-/* Espaciado del título WOLF GUARD exclusivamente en móviles para no colisionar con el botón de tema */
+/* Espaciado del título WOLFCORE SYSTEMA exclusivamente en móviles para no colisionar con el botón de tema */
 @media (max-width: 639px) {
   .login-brand-title {
     margin-top: 3.5rem !important;
@@ -10166,13 +10162,15 @@ html.dark .reportes-nav-principal a:hover {
     align-items: flex-start !important;
     gap: 1rem !important;
   }
-  .detail-header > div:first-child {
+
+  .detail-header>div:first-child {
     width: 100% !important;
   }
+
   .detail-header .stock-detail-actions {
     width: 100% !important;
     display: flex !important;
     flex-wrap: wrap !important;
     gap: 0.5rem !important;
   }
-}
+}

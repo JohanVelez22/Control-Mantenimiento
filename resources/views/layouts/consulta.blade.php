@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Consulta — Wolf Guard</title>
+    <title>Consulta — WolfCore Systema</title>
     
-    <!-- Favicon (Isotipo e Insignia Wolf Guard con invalidación de caché) -->
+    <!-- Favicon (Isotipo e Insignia WolfCore Systema con invalidación de caché) -->
     <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v={{ filemtime(public_path('favicon-48x48.png')) }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v={{ filemtime(public_path('favicon-32x32.png')) }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v={{ filemtime(public_path('favicon-16x16.png')) }}">
@@ -50,9 +50,9 @@
                 $headerHome = $isElecHeader ? route('consulta.electronicas') : route('consulta.mantenimientos');
             @endphp
             <a href="{{ $headerHome }}" class="flex items-center gap-2.5 hover:scale-105 transition-transform duration-200">
-                <img src="{{ asset('images/wolfguard.png') }}" alt="Wolf Guard" class="w-7 h-7 object-contain">
-                <span class="text-[#2563EB] dark:text-[#3B82F6] font-logo font-black text-xl">WOLF</span>
-                <span class="text-slate-800 dark:text-white font-logo font-black text-xl">GUARD</span>
+                <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore Systema" class="w-7 h-7 object-contain">
+                <span class="text-[#2563EB] dark:text-[#3B82F6] font-logo font-black text-xl">WOLFCORE</span>
+                <span class="text-slate-800 dark:text-white font-logo font-black text-xl">SYSTEMA</span>
                 <span class="ml-2 px-2 py-0.5 text-[10px] font-bold {{ $isElecHeader ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' }} rounded">CONSULTA</span>
             </a>
             <form method="POST" action="{{ route('logout') }}" class="m-0">

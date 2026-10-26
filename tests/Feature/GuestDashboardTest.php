@@ -92,11 +92,11 @@ class GuestDashboardTest extends TestCase
         $response->assertSee('Consulta de Servicios');
         $response->assertSee('Mantenimientos');
         $response->assertSee('Electrónica');
-        $response->assertSee('WOLF');
-        $response->assertSee('GUARD');
-        $response->assertSee('wolfguard.png');
+        $response->assertSee('WOLFCORE');
+        $response->assertSee('SYSTEMA');
+        $response->assertSee('wolfcore.png');
         $response->assertDontSee('TECNI SYSTEMAS');
-        $response->assertSee('Wolf Guard — Portal de Seguimiento');
+        $response->assertSee('WolfCore Systema — Portal de Seguimiento');
     }
 
     public function test_guest_can_search_mantenimientos(): void

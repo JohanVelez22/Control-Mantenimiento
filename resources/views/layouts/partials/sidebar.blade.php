@@ -2,10 +2,10 @@
         <aside id="ts-sidebar" class="no-print group hover:expanded flex flex-col">
             <!-- Brand / Logo -->
             <div class="h-16 flex flex-col items-center justify-center border-b border-gray-200/40 dark:border-white/5 shrink-0 px-4 relative transition-all duration-150">
-                <!-- Título WOLF GUARD: Aparece sobre NAVEGACIÓN únicamente cuando se oculta en el topbar (zoom >= 150% o móvil) -->
+                <!-- Título WOLFCORE SYSTEMA: Aparece sobre NAVEGACIÓN únicamente cuando se oculta en el topbar (zoom >= 150% o móvil) -->
                 <div class="sidebar-logo-title flex items-center justify-center gap-1.5 font-logo text-[13px] font-black leading-tight tracking-wider transition-all duration-200 select-none">
-                    <span class="text-[#2563EB] dark:text-[#3B82F6]">WOLF</span>
-                    <span class="text-slate-800 dark:text-white">GUARD</span>
+                    <span class="text-[#2563EB] dark:text-[#3B82F6]">WOLFCORE</span>
+                    <span class="text-slate-800 dark:text-white">SYSTEMA</span>
                 </div>
 
                 <!-- NAVEGACIÓN -->
