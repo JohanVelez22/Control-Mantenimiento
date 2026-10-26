@@ -19,7 +19,7 @@
     <meta name="description" content="Sistema de Control de Mantenimiento y Gestión de Equipos. Solución integral para talleres y gestión de garantías.">
     <meta name="keywords" content="Mantenimiento, Talleres, Gestión de Inventario, Cotizaciones, Electrónica">
     
-    <title>@yield('title', 'Tecni Systemas')</title>
+    <title>@yield('title', 'Wolf Guard')</title>
     
     <!-- Favicon (Apple Liquid Glass) -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=1.5">

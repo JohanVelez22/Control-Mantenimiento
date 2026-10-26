@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Consulta - Tecni Systemas</title>
+    <title>Consulta — Wolf Guard</title>
     
     <!-- Favicon (Apple Liquid Glass) -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=1.5">
