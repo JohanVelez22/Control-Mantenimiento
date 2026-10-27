@@ -3314,17 +3314,19 @@ a.btn-ghost[title*="Ver movimiento en Caja" i]:active {
 
 .dark .theme-toggle-btn,
 html.dark .theme-toggle-btn {
-  background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
   color: #F1F5F9 !important;
+  border-radius: 13px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 2px 6px rgba(0, 0, 0, 0.25) !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
 
   .dark .theme-toggle-btn:hover,
   html.dark .theme-toggle-btn:hover {
-    background: rgba(226, 232, 240, 0.16) !important;
-    border-color: rgba(226, 232, 240, 0.35) !important;
+    background: rgba(30, 41, 59, 0.75) !important;
+    border-color: rgba(148, 163, 184, 0.50) !important;
   }
 }
 
@@ -3334,44 +3336,47 @@ html.dark .theme-toggle-btn {
 html.dark .theme-toggle-btn:focus,
 html.dark .theme-toggle-btn:focus-visible,
 html.dark .theme-toggle-btn:active {
-  background: transparent !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
 }
 
 /* --- Botón de Notificaciones (🔔) --- */
 .notif-toggle-btn {
-  background: transparent !important;
-  border: 1px solid rgba(0, 0, 0, 0.10) !important;
-  color: #334155 !important;
+  background: rgba(254, 243, 199, 0.40) !important;
+  border: 1px solid rgba(245, 158, 11, 0.30) !important;
+  color: #d97706 !important;
+  border-radius: 13px !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .notif-toggle-btn:hover {
-    background: rgba(245, 158, 11, 0.12) !important;
-    border-color: rgba(245, 158, 11, 0.35) !important;
+    background: rgba(245, 158, 11, 0.16) !important;
+    border-color: rgba(245, 158, 11, 0.50) !important;
   }
 }
 
 .notif-toggle-btn:focus,
 .notif-toggle-btn:focus-visible,
 .notif-toggle-btn:active {
-  background: transparent !important;
-  border-color: rgba(0, 0, 0, 0.10) !important;
+  background: rgba(254, 243, 199, 0.40) !important;
+  border-color: rgba(245, 158, 11, 0.30) !important;
 }
 
 .dark .notif-toggle-btn,
 html.dark .notif-toggle-btn {
-  background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  border: 1px solid rgba(245, 158, 11, 0.40) !important;
   color: #F1F5F9 !important;
+  border-radius: 13px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 2px 6px rgba(0, 0, 0, 0.25) !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
 
   .dark .notif-toggle-btn:hover,
   html.dark .notif-toggle-btn:hover {
-    background: rgba(245, 158, 11, 0.16) !important;
-    border-color: rgba(245, 158, 11, 0.40) !important;
+    background: rgba(245, 158, 11, 0.14) !important;
+    border-color: rgba(245, 158, 11, 0.60) !important;
   }
 }
 
@@ -3381,44 +3386,47 @@ html.dark .notif-toggle-btn {
 html.dark .notif-toggle-btn:focus,
 html.dark .notif-toggle-btn:focus-visible,
 html.dark .notif-toggle-btn:active {
-  background: transparent !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  border-color: rgba(245, 158, 11, 0.40) !important;
 }
 
 /* --- Botón de Cerrar Sesión (🚪) --- */
 .logout-toggle-btn {
-  background: rgba(239, 68, 68, 0.08) !important;
-  border: 1px solid rgba(239, 68, 68, 0.20) !important;
+  background: rgba(254, 226, 226, 0.40) !important;
+  border: 1px solid rgba(239, 68, 68, 0.30) !important;
   color: #ef4444 !important;
+  border-radius: 13px !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .logout-toggle-btn:hover {
-    background: rgba(239, 68, 68, 0.20) !important;
-    border-color: rgba(239, 68, 68, 0.40) !important;
+    background: rgba(239, 68, 68, 0.16) !important;
+    border-color: rgba(239, 68, 68, 0.50) !important;
   }
 }
 
 .logout-toggle-btn:focus,
 .logout-toggle-btn:focus-visible,
 .logout-toggle-btn:active {
-  background: rgba(239, 68, 68, 0.08) !important;
-  border-color: rgba(239, 68, 68, 0.20) !important;
+  background: rgba(254, 226, 226, 0.40) !important;
+  border-color: rgba(239, 68, 68, 0.30) !important;
 }
 
 .dark .logout-toggle-btn,
 html.dark .logout-toggle-btn {
-  background: rgba(239, 68, 68, 0.10) !important;
-  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  border: 1px solid rgba(239, 68, 68, 0.35) !important;
   color: #f87171 !important;
+  border-radius: 13px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 2px 6px rgba(0, 0, 0, 0.25) !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
 
   .dark .logout-toggle-btn:hover,
   html.dark .logout-toggle-btn:hover {
-    background: rgba(239, 68, 68, 0.22) !important;
-    border-color: rgba(239, 68, 68, 0.45) !important;
+    background: rgba(239, 68, 68, 0.16) !important;
+    border-color: rgba(239, 68, 68, 0.55) !important;
   }
 }
 
@@ -3428,8 +3436,8 @@ html.dark .logout-toggle-btn {
 html.dark .logout-toggle-btn:focus,
 html.dark .logout-toggle-btn:focus-visible,
 html.dark .logout-toggle-btn:active {
-  background: rgba(239, 68, 68, 0.10) !important;
-  border-color: rgba(239, 68, 68, 0.25) !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
 }
 
 /* ================================================================
