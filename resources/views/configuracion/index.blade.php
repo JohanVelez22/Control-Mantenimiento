@@ -830,7 +830,7 @@ async function submitConfiguracion(event) {
         {{-- Pie del Modal --}}
         <div class="backup-modal-footer">
             <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-1.5 leading-none">
-                <span class="text-sm shrink-0 flex items-center">🛡️</span> Sistema de Auditoría y Respaldo WolfCore Technology
+                <span class="text-sm shrink-0 flex items-center">🛡️</span> Sistema de Auditoría y Respaldo WolfCore System
             </span>
             <button type="button" onclick="closeBackupModal()" class="btn-close-modal">
                 Cerrar

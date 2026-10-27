@@ -3,18 +3,18 @@
 @section('content')
 <div class="w-full max-w-xl mx-auto">
 
-    {{-- Título de Marca WolfCore Technology --}}
+    {{-- Título de Marca WolfCore System --}}
     <div class="flex justify-center mb-3">
         <div class="text-[26px] font-black tracking-widest font-logo flex items-center gap-2">
             <span class="text-[#2563EB] dark:text-[#3B82F6]">WOLFCORE</span>
-            <span class="text-slate-800 dark:text-white">TECHNOLOGY</span>
+            <span class="text-slate-800 dark:text-white">SYSTEM</span>
         </div>
     </div>
 
-    {{-- Encabezado con insignia oficial de WolfCore Technology --}}
+    {{-- Encabezado con insignia oficial de WolfCore System --}}
     <div class="text-center mb-3">
         <div class="inline-flex items-center justify-center w-20 h-20 mb-2 hover:scale-105 transition-transform duration-300">
-            <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore Technology" class="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
+            <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore System" class="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
         </div>
         <h1 class="text-xl font-black text-slate-800 dark:text-white">Consulta de Mantenimientos</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa la cédula del cliente y el número de orden (ej: ORD-001)</p>

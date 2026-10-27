@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'WolfCore Technology — Portal de Seguimiento')</title>
+    <title>@yield('title', 'WolfCore System — Portal de Seguimiento')</title>
 
     <!-- Favicon (Isotipo e Insignia WolfCore con invalidación de caché) -->
     <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v={{ filemtime(public_path('favicon-48x48.png')) }}">

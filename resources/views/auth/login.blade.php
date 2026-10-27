@@ -14,21 +14,20 @@
 
 <div class="w-full max-w-md px-6 pb-16">
 
- {{-- Logo WOLFCORE TECHNOLOGY --}}
+ {{-- Logo WOLFCORE SYSTEM --}}
  <div class="flex justify-center mb-4 login-brand-title">
      <div class="text-[26px] font-black tracking-widest font-logo flex items-center gap-2">
          <span class="text-[#2563EB] dark:text-[#3B82F6]">WOLFCORE</span>
-         <span class="text-slate-800 dark:text-white">TECHNOLOGY</span>
+         <span class="text-slate-800 dark:text-white">SYSTEM</span>
      </div>
  </div>
 
- {{-- Encabezado con insignia oficial de WolfCore Technology --}}
+ {{-- Encabezado con insignia oficial de WolfCore System --}}
  <div class="text-center mb-3">
  <div class="inline-flex items-center justify-center w-20 h-20 mb-2 hover:scale-105 transition-transform duration-300">
-     <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore Technology" class="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
+     <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore System" class="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
  </div>
  <h1 class="text-xl font-black text-gray-900 dark:text-white">Iniciar Sesión</h1>
- <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa tus credenciales para acceder al sistema</p>
  </div>
 
 @php
@@ -59,9 +58,11 @@
  <span class="flex-shrink-0">🔑</span>
  <span>Contraseña</span>
  </label>
- <input type="password" id="password" name="password"
- required placeholder="••••••••"
- class="glass-input w-full text-base py-3 px-4 focus:placeholder-transparent {{ $initialLockout > 0 ? 'opacity-60 cursor-not-allowed' : '' }}" {{ $initialLockout > 0 ? 'disabled' : '' }}>
+ <div class="ts-password-wrapper w-full login-password-wrapper" id="login-password-wrapper">
+     <input type="password" id="password" name="password"
+     required placeholder="••••••••"
+     class="glass-input w-full text-base py-3 px-4 focus:placeholder-transparent {{ $initialLockout > 0 ? 'opacity-60 cursor-not-allowed' : '' }}" {{ $initialLockout > 0 ? 'disabled' : '' }}>
+ </div>
  @error('password') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
  <div id="caps-lock-warning" class="hidden text-amber-600 dark:text-amber-400 text-xs font-bold mt-1 flex items-center gap-1 select-none" role="alert">
      <span class="select-none text-sm leading-none">⚠️</span>
@@ -97,6 +98,23 @@
 #remember:focus {
   outline: none !important;
   box-shadow: none !important;
+}
+/* Ocultar el icono del ojo en el login inicialmente hasta hacer clic o interactuar con el campo */
+.login-password-wrapper .ts-password-toggle {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(-50%) scale(0.85) !important;
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s ease !important;
+}
+
+.login-password-wrapper:focus-within .ts-password-toggle,
+.login-password-wrapper.has-value .ts-password-toggle,
+.login-password-wrapper.is-active .ts-password-toggle {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(-50%) scale(1) !important;
 }
 @media (max-width: 639px) {
   .login-brand-title {
@@ -183,6 +201,45 @@
 
     passwordInput.addEventListener('blur', function() {
       setCapsWarningVisible(false);
+    });
+  }
+
+  // Control de visibilidad del icono del ojo: no aparece hasta hacer clic / interactuar en el campo
+  var loginPwdInput = document.getElementById('password');
+  var loginPwdWrapper = document.getElementById('login-password-wrapper');
+  if (loginPwdInput && loginPwdWrapper) {
+    function syncEyeToggle() {
+      if (loginPwdInput.value && loginPwdInput.value.length > 0) {
+        loginPwdWrapper.classList.add('has-value');
+      } else {
+        loginPwdWrapper.classList.remove('has-value');
+      }
+    }
+
+    function activateEyeToggle() {
+      loginPwdWrapper.classList.add('is-active');
+      syncEyeToggle();
+    }
+
+    loginPwdInput.addEventListener('focus', activateEyeToggle);
+    loginPwdInput.addEventListener('click', activateEyeToggle);
+    loginPwdInput.addEventListener('mousedown', activateEyeToggle);
+    loginPwdInput.addEventListener('input', syncEyeToggle);
+    loginPwdInput.addEventListener('change', syncEyeToggle);
+
+    loginPwdInput.addEventListener('blur', function() {
+      syncEyeToggle();
+      if (!loginPwdInput.value || loginPwdInput.value.length === 0) {
+        loginPwdWrapper.classList.remove('is-active');
+      }
+    });
+
+    // Asegurar que al interactuar con el botón del ojo no se pierda el foco ni se oculte
+    loginPwdWrapper.addEventListener('mousedown', function(e) {
+      if (e.target.closest('.ts-password-toggle')) {
+        e.preventDefault();
+        loginPwdWrapper.classList.add('is-active');
+      }
     });
   }
 

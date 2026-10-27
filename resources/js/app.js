@@ -96,6 +96,9 @@ export function initPasswordToggles(root) {
             }
         }
 
+        btn.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+        });
         btn.addEventListener('click', togglePassword);
         btn.addEventListener('touchend', togglePassword);
 
