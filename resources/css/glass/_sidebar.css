@@ -134,17 +134,45 @@ html.dark .nav-item {
   color: #94A3B8;
 }
 
-/* ---- Sidebar colapsado (Desktop): centrar iconos cuando no está expandido ni abierto en móvil ---- */
+/* ---- Sidebar colapsado (Desktop): recuadro de selección simétrico exacto (1:1 de 40px x 40px) ---- */
 #ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .nav-item {
-  padding-left: 0;
-  padding-right: 0;
-  justify-content: center;
-  gap: 0;
-  font-size: 0;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 10px !important;
+  gap: 0 !important;
+  font-size: 0 !important;
 }
 
 #ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .nav-label {
   display: none !important;
+}
+
+#ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .nav-item.active::before {
+  left: -8px;
+  height: 20px;
+}
+
+/* ---- Sidebar expandido (Hover / Desktop Expand): fluir horizontalmente ---- */
+#ts-sidebar:hover .nav-item,
+#ts-sidebar.expanded .nav-item {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 38px !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 7px 10px !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  font-size: 13.5px !important;
 }
 
 /* --- BRAND HEADER EN SIDEBAR (Adaptativo al Zoom) --- */

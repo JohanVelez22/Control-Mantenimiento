@@ -149,6 +149,8 @@
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
             <path d="m9 12 2 2 4-4"/>
         </svg>
+        @break
+
     @case('edit')
     @case('pencil')
         <svg class="{{ $classAttr }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="{{ $strokeWidth }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

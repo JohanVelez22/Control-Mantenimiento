@@ -680,7 +680,7 @@
             const backdrop = document.getElementById('ts-sidebar-backdrop');
             if (!sb || !wrapper) return;
 
-            const W_COLLAPSED = '72px';
+            const W_COLLAPSED = '64px';
             const W_EXPANDED  = '210px';
 
             function isDesktop() {
