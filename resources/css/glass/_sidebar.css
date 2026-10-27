@@ -155,10 +155,6 @@ html.dark .nav-item {
   display: none !important;
 }
 
-#ts-sidebar:not(:hover):not(.expanded):not(.mobile-open) .nav-item.active::before {
-  left: -8px;
-  height: 20px;
-}
 
 /* ---- Sidebar expandido (Hover / Desktop Expand): fluir horizontalmente ---- */
 #ts-sidebar:hover .nav-item,
@@ -275,18 +271,6 @@ html.dark .nav-item.active {
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.40);
 }
 
-/* ---- Línea acento elemento activo ---- */
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: -12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 24px;
-  background: linear-gradient(180deg, #2563EB, #06B6D4);
-  border-radius: 0 3px 3px 0;
-}
 
 .nav-label {
   font-size: 15px;

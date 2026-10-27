@@ -1008,7 +1008,7 @@
                     <div class="pl-2 sm:pl-3 min-w-0 flex-1">
                         <div class="notif-item-header flex items-center justify-between sm:justify-start gap-2 mb-0.5">
                             <span class="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Mantenimiento</span>
-                            <span class="text-xs font-bold text-blue-500 dark:text-blue-300">{{ $mOrden }}</span>
+                            <span class="text-xs font-bold text-blue-600 dark:text-blue-400">{{ $mOrden }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $mEquipo }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $mCliente }}</p>
@@ -1034,7 +1034,7 @@
                     <div class="pl-2 sm:pl-3 min-w-0 flex-1">
                         <div class="notif-item-header flex items-center justify-between sm:justify-start gap-2 mb-0.5">
                             <span class="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Electrónica</span>
-                            <span class="text-xs font-bold text-purple-500 dark:text-purple-300">{{ $eOrden }}</span>
+                            <span class="text-xs font-bold text-purple-600 dark:text-purple-400">{{ $eOrden }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $eEquipo }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $eCliente }}</p>

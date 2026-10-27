@@ -55,7 +55,7 @@
   </td>
   
   <td data-label="Equipo:" class="{{ $dim }}">
-  <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de equipos">
+  <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="group block" title="Ver en tabla de equipos">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
   {{ $e->equipo->nombre ?? '-' }}
   </div>
@@ -70,7 +70,7 @@
   
   <td data-label="Propietario:" class="{{ $dim }}">
   @if($e->equipo?->proveedor)
-  <a href="{{ route('proveedores.index') }}#proveedor-{{ $e->equipo->proveedor_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $e->equipo->proveedor_id }}" class="group block" title="Ver en tabla de proveedores">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
   🏢 {{ $e->equipo->proveedor->nombre_razon_social }}
   </div>
@@ -79,7 +79,7 @@
   </div>
   </a>
   @elseif($e->equipo?->cliente)
-  <a href="{{ route('clientes.index') }}#cliente-{{ $e->equipo->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <a href="{{ route('clientes.index') }}#cliente-{{ $e->equipo->cliente_id }}" class="group block" title="Ver en tabla de clientes">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-tight">
   👤 {{ $e->equipo->cliente->nombre }}
   </div>

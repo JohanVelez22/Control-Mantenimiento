@@ -49,7 +49,7 @@
  <td class="uppercase text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $equipo->serie }}</td>
  <td class="{{ $dim }}">
   @if($equipo->cliente)
-  <a href="{{ route('clientes.index') }}#cliente-{{ $equipo->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <a href="{{ route('clientes.index') }}#cliente-{{ $equipo->cliente_id }}" class="group block" title="Ver en tabla de clientes">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   👤 {{ $equipo->cliente->nombre }}
   </div>
@@ -60,7 +60,7 @@
   @endif
   </a>
   @elseif($equipo->proveedor)
-  <a href="{{ route('proveedores.index') }}#proveedor-{{ $equipo->proveedor_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $equipo->proveedor_id }}" class="group block" title="Ver en tabla de proveedores">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   🏢 {{ $equipo->proveedor->nombre_razon_social }}
   </div>

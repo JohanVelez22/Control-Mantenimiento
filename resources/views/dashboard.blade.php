@@ -204,8 +204,8 @@
  </td>
  
  <td class="text-center {{ $dim }}">
- <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
- <span class="font-bold text-slate-800 dark:text-white whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+ <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 group no-print-link" title="Ver en tabla de equipos">
+ <span class="font-bold text-slate-800 dark:text-white whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
  {{ $m->equipo->nombre ?? '-' }}
  </span>
  <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
@@ -299,7 +299,7 @@
  </td>
 
  <td class="text-center {{ $dim }}">
- <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="flex items-baseline justify-center gap-1 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
+ <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="flex items-baseline justify-center gap-1 group no-print-link" title="Ver en tabla de equipos">
  <span class="font-bold text-slate-800 dark:text-white whitespace-nowrap group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
  {{ $e->equipo->nombre ?? '-' }}
  </span>

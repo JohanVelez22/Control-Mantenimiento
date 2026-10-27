@@ -60,7 +60,7 @@
                     <td data-label="Descripción" class="text-gray-600 dark:text-gray-300 text-xs font-medium max-w-[200px] truncate" title="{{ $descStr }}">{{ $descStr }}</td>
                     <td data-label="Destinatario">
                         @if($cot->proveedor)
-                            <a href="{{ route('proveedores.index') }}#proveedor-{{ $cot->proveedor_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+                            <a href="{{ route('proveedores.index') }}#proveedor-{{ $cot->proveedor_id }}" class="group block" title="Ver en tabla de proveedores">
                                 <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                                     🏢 {{ $cot->proveedor->nombre_razon_social }}
                                 </div>
@@ -69,7 +69,7 @@
                                 </div>
                             </a>
                         @elseif($cot->cliente)
-                            <a href="{{ route('clientes.index') }}#cliente-{{ $cot->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+                            <a href="{{ route('clientes.index') }}#cliente-{{ $cot->cliente_id }}" class="group block" title="Ver en tabla de clientes">
                                 <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                                     👤 {{ $cot->cliente->nombre }}
                                 </div>

@@ -542,3 +542,54 @@ html.dark .ts-table tbody td.text-emerald-600 {
     }
   }
 }
+
+/* --- VÍNCULOS EN TABLAS: AZUL (#2563EB) Y VIOLETA (#9333EA) CON CONTRASTE SÓLIDO --- */
+.ts-table a.text-blue-600,
+.glass-table a.text-blue-600,
+#tabla-mantenimientos .col-orden a {
+  color: #2563EB !important;
+  font-weight: 700 !important;
+}
+
+.ts-table a.text-blue-600:hover,
+.glass-table a.text-blue-600:hover,
+#tabla-mantenimientos .col-orden a:hover {
+  color: #1D4ED8 !important;
+}
+
+html.dark .ts-table a.dark\:text-blue-400,
+html.dark .glass-table a.dark\:text-blue-400,
+html.dark #tabla-mantenimientos .col-orden a {
+  color: #60A5FA !important;
+}
+
+html.dark .ts-table a.dark\:text-blue-400:hover,
+html.dark .glass-table a.dark\:text-blue-400:hover,
+html.dark #tabla-mantenimientos .col-orden a:hover {
+  color: #93C5FD !important;
+}
+
+.ts-table a.text-purple-600,
+.glass-table a.text-purple-600,
+#tabla-electronicas .col-orden a {
+  color: #9333EA !important;
+  font-weight: 700 !important;
+}
+
+.ts-table a.text-purple-600:hover,
+.glass-table a.text-purple-600:hover,
+#tabla-electronicas .col-orden a:hover {
+  color: #7E22CE !important;
+}
+
+html.dark .ts-table a.dark\:text-purple-400,
+html.dark .glass-table a.dark\:text-purple-400,
+html.dark #tabla-electronicas .col-orden a {
+  color: #C084FC !important;
+}
+
+html.dark .ts-table a.dark\:text-purple-400:hover,
+html.dark .glass-table a.dark\:text-purple-400:hover,
+html.dark #tabla-electronicas .col-orden a:hover {
+  color: #E9D5FF !important;
+}

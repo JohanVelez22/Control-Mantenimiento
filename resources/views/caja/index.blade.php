@@ -109,7 +109,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
 <td data-label="Fecha:" class="text-center font-medium {{ $dim }}">{{ $m->fecha->format('d/m/Y') }}</td>
  <td data-label="Entidad:" class="{{ $dim }}">
  @if($m->cliente)
- <a href="{{ route('clientes.index') }}#cliente-{{ $m->cliente->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+ <a href="{{ route('clientes.index') }}#cliente-{{ $m->cliente->id }}" class="group block" title="Ver en tabla de clientes">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          👤 {{ $m->cliente->nombre }}
      </div>
@@ -120,7 +120,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
      @endif
  </a>
  @elseif($m->persona)
- <a href="{{ route('clientes.index', ['search' => $m->persona]) }}" class="group block hover:opacity-75 transition-opacity" title="Buscar en Clientes">
+ <a href="{{ route('clientes.index', ['search' => $m->persona]) }}" class="group block" title="Buscar en Clientes">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          👤 {{ $m->persona }}
      </div>
@@ -129,7 +129,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
      </div>
  </a>
  @elseif($m->proveedor)
- <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->proveedor->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+ <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->proveedor->id }}" class="group block" title="Ver en tabla de proveedores">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          🏢 {{ $m->proveedor->nombre_razon_social }}
      </div>
@@ -140,7 +140,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
      @endif
  </a>
  @elseif($m->empresa)
- <a href="{{ route('proveedores.index', ['search' => $m->empresa]) }}" class="group block hover:opacity-75 transition-opacity" title="Buscar en Proveedores">
+ <a href="{{ route('proveedores.index', ['search' => $m->empresa]) }}" class="group block" title="Buscar en Proveedores">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          🏢 {{ $m->empresa }}
      </div>

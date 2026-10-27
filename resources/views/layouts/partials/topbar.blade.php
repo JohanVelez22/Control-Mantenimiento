@@ -21,22 +21,22 @@
                 <!-- Derecha: Perfil e Iconos -->
                 <div class="flex items-center gap-3">
                     
-                    <!-- Avatar de Usuario (Clickeable hacia Usuarios o Perfil propio con efecto escala interactivo) -->
+                    <!-- Avatar de Usuario (Clickeable hacia Usuarios o Perfil propio con efecto escala interactivo sin tinte azul) -->
                     <a href="{{ auth()->check() && auth()->user()->isAdmin() ? route('usuarios.index') : (auth()->check() ? route('usuarios.edit', auth()->user()) : '#') }}" 
                        class="group flex items-center gap-2 pr-4 border-r border-gray-200 dark:border-white/10 hover:scale-105 transition-transform duration-300 mr-2 cursor-pointer"
                        title="{{ auth()->check() && auth()->user()->isAdmin() ? 'Gestionar Usuarios' : 'Mi Perfil' }}">
                         @if(auth()->check() && auth()->user()->photo)
-                            <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Avatar" class="w-10 h-10 rounded-xl object-cover border-2 border-gray-200 dark:border-white/10 group-hover:border-blue-500/50 group-hover:shadow-md transition-all duration-300" onerror="this.style.display='none'; var fb=document.getElementById('topbar-avatar-fallback'); if(fb) fb.classList.remove('hidden');">
-                            <div id="topbar-avatar-fallback" class="hidden w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
+                            <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Avatar" class="w-10 h-10 rounded-xl object-cover border-2 border-gray-200 dark:border-white/10 group-hover:shadow-md transition-all duration-300" onerror="this.style.display='none'; var fb=document.getElementById('topbar-avatar-fallback'); if(fb) fb.classList.remove('hidden');">
+                            <div id="topbar-avatar-fallback" class="hidden w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg transition-all duration-300">
                                 {{ substr(auth()->user()->name, 0, 1) }}
                             </div>
                         @elseif(auth()->check())
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg transition-all duration-300">
                                 {{ substr(auth()->user()->name, 0, 1) }}
                             </div>
                         @endif
                         <div class="hidden md:flex flex-col text-left ml-2">
-                            <span class="text-sm font-bold text-slate-800 dark:text-white leading-none group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">{{ auth()->check() ? auth()->user()->name : 'Invitado' }}</span>
+                            <span class="text-sm font-bold text-slate-800 dark:text-white leading-none">{{ auth()->check() ? auth()->user()->name : 'Invitado' }}</span>
                             <span class="text-[10px] text-[#06B6D4] uppercase font-bold mt-1 tracking-wider">{{ auth()->check() ? auth()->user()->role ?? 'Admin' : 'Invitado' }}</span>
                         </div>
                     </a>
