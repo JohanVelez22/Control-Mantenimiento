@@ -149,6 +149,45 @@
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
             <path d="m9 12 2 2 4-4"/>
         </svg>
+    @case('edit')
+    @case('pencil')
+        <svg class="{{ $classAttr }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="{{ $strokeWidth }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+            <path d="m15 5 4 4"/>
+        </svg>
+        @break
+
+    @case('ban')
+    @case('anular')
+    @case('trash')
+        <svg class="{{ $classAttr }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="{{ $strokeWidth }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="m4.9 4.9 14.2 14.2"/>
+        </svg>
+        @break
+
+    @case('check')
+    @case('reactivar')
+    @case('success')
+        <svg class="{{ $classAttr }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="{{ $strokeWidth }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        @break
+
+    @case('eye')
+    @case('view')
+    @case('ver')
+        <svg class="{{ $classAttr }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="{{ $strokeWidth }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+            <circle cx="12" cy="12" r="3"/>
+        </svg>
+        @break
+
+    @case('plus')
+    @case('add')
+        <svg class="{{ $classAttr }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="{{ $strokeWidth }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M12 5v14"/>
+        </svg>
         @break
 
     @default

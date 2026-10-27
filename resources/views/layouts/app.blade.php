@@ -681,7 +681,7 @@
             if (!sb || !wrapper) return;
 
             const W_COLLAPSED = '72px';
-            const W_EXPANDED  = '260px';
+            const W_EXPANDED  = '210px';
 
             function isDesktop() {
                 return window.innerWidth >= 1024;

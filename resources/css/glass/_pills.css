@@ -11,19 +11,22 @@
   transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
-.pill-pending {
+.pill-pending,
+.pill-warning {
   background: rgba(245, 158, 11, 0.12);
   color: #B45309;
   border: 1px solid rgba(245, 158, 11, 0.30);
 }
 
-.pill-done {
+.pill-done,
+.pill-success {
   background: rgba(16, 185, 129, 0.12);
   color: #065F46;
   border: 1px solid rgba(16, 185, 129, 0.30);
 }
 
-.pill-anulado {
+.pill-anulado,
+.pill-danger {
   background: rgba(239, 68, 68, 0.10);
   color: #991B1B;
   border: 1px solid rgba(239, 68, 68, 0.25);
@@ -41,7 +44,8 @@
   border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
-.pill-efectivo {
+.pill-efectivo,
+.pill-info {
   background: rgba(37, 99, 235, 0.12);
   color: #1D4ED8;
   border: 1px solid rgba(37, 99, 235, 0.30);
@@ -71,19 +75,22 @@
   border: 1px solid rgba(99, 102, 241, 0.30);
 }
 
-html.dark .pill-pending {
+html.dark .pill-pending,
+html.dark .pill-warning {
   color: #FCD34D;
   border-color: rgba(245, 158, 11, 0.40);
   background: rgba(245, 158, 11, 0.15);
 }
 
-html.dark .pill-done {
+html.dark .pill-done,
+html.dark .pill-success {
   color: #6EE7B7;
   border-color: rgba(16, 185, 129, 0.40);
   background: rgba(16, 185, 129, 0.15);
 }
 
-html.dark .pill-anulado {
+html.dark .pill-anulado,
+html.dark .pill-danger {
   color: #FCA5A5;
   border-color: rgba(239, 68, 68, 0.40);
   background: rgba(239, 68, 68, 0.15);
@@ -101,7 +108,8 @@ html.dark .pill-egreso {
   background: rgba(239, 68, 68, 0.15);
 }
 
-html.dark .pill-efectivo {
+html.dark .pill-efectivo,
+html.dark .pill-info {
   color: #93C5FD;
   border-color: rgba(37, 99, 235, 0.40);
   background: rgba(37, 99, 235, 0.15);
