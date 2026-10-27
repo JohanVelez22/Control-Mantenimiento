@@ -59,7 +59,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
-            'active' => $request->boolean('active'), // Captura correctamente el estado
+            'active' => $request->boolean('active', true), // Activo por defecto al crear usuario
         ];
 
         if ($request->hasFile('photo')) {

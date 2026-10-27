@@ -4486,6 +4486,28 @@ html.dark .ts-password-toggle:active {
   pointer-events: none !important;
 }
 
+/* Ocultar el icono del ojo en login y usuarios inicialmente hasta interactuar o tener valor */
+.user-password-wrapper .ts-password-toggle,
+.login-password-wrapper .ts-password-toggle {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(-50%) scale(0.85) !important;
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s ease !important;
+}
+
+.user-password-wrapper:focus-within .ts-password-toggle,
+.user-password-wrapper.has-value .ts-password-toggle,
+.user-password-wrapper.is-active .ts-password-toggle,
+.login-password-wrapper:focus-within .ts-password-toggle,
+.login-password-wrapper.has-value .ts-password-toggle,
+.login-password-wrapper.is-active .ts-password-toggle {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(-50%) scale(1) !important;
+}
+
 /* --- INPUT VIDRIO -------------------------------------------------- */
 /* ---- Espaciado spinners inputs numéricos ---- */
 input[type="number"]::-webkit-inner-spin-button,
