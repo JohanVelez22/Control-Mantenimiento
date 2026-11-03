@@ -131,7 +131,7 @@
                 <p class="text-3xl font-black text-slate-800 dark:text-white" id="calc-total">$ 0</p>
             </div>
             <div class="mt-4 flex gap-3">
-                <button type="button" onclick="resetCalc()" class="btn-cancel flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Limpiar</button>
+                <button type="button" onclick="resetCalc()" class="btn-clean flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">🧹 Limpiar</button>
                 <button type="button" onclick="closeCalc(true)" class="btn-primary flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Aplicar al Cierre</button>
             </div>
         </div>
