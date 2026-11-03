@@ -40,14 +40,14 @@
             
             <div class="flex flex-wrap items-center gap-3 shrink-0">
                 @php
-                    $facturaRef = null;
-                    if ($movimiento->descripcion && preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $movimiento->descripcion, $mf)) {
+                    $facturaRef = $movimiento->factura;
+                    if (!$facturaRef && $movimiento->descripcion && preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $movimiento->descripcion, $mf)) {
                         $facturaRef = \App\Models\Factura::where('numero_factura', $mf[1])->first();
                     }
                 @endphp
                 @if($facturaRef)
-                <a href="{{ route('inventario.facturas.show', $facturaRef->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30" title="Ver factura {{ $facturaRef->numero_factura }}">
-                    📄 Ver Factura
+                <a href="{{ route('inventario.facturas.show', $facturaRef->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-semibold" title="Ver factura {{ $facturaRef->numero_factura }}">
+                    📄 Ver Factura ({{ $facturaRef->numero_factura }})
                 </a>
                 @endif
 

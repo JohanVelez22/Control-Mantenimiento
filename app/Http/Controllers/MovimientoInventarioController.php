@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class MovimientoInventarioController extends Controller
@@ -45,10 +46,11 @@ class MovimientoInventarioController extends Controller
         }
         if ($request->has('items') && is_array($request->items)) {
             $items = $request->items;
-            foreach ($items as &$item) {
+            foreach ($items as $k => $item) {
                 if (isset($item['precio_unitario'])) {
                     $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
                 }
+                $items[$k] = $item;
             }
             $request->merge(['items' => $items]);
         }
@@ -91,6 +93,24 @@ class MovimientoInventarioController extends Controller
             $saldo = $totalDocumento - $totalPagado;
             $estado = $saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida';
 
+            // Ordenar y agrupar stock_id en orden ascendente canónico para prevenir deadlocks
+            $cantidadesPorStock = [];
+            foreach ($request->items as $item) {
+                $sid = (int) $item['stock_id'];
+                $cantidadesPorStock[$sid] = ($cantidadesPorStock[$sid] ?? 0) + (int) $item['cantidad'];
+            }
+            ksort($cantidadesPorStock);
+
+            // Bloquear filas de stock en orden ascendente estricto
+            $lockedStocks = [];
+            foreach (array_keys($cantidadesPorStock) as $stockId) {
+                $stock = Stock::where('id', $stockId)->lockForUpdate()->first();
+                if (! $stock) {
+                    throw new \DomainException("El artículo con ID {$stockId} no existe.");
+                }
+                $lockedStocks[$stockId] = $stock;
+            }
+
             // 1. Crear la factura
             $factura = Factura::create([
                 'numero_factura' => Factura::siguienteNumero('CP-'),
@@ -105,9 +125,9 @@ class MovimientoInventarioController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            // 2. Registrar ítems e incrementar stock
+            // 2. Registrar ítems e incrementar stock utilizando los modelos bloqueados
             foreach ($request->items as $item) {
-                $stock = Stock::findOrFail($item['stock_id']);
+                $stock = $lockedStocks[(int) $item['stock_id']];
 
                 FacturaItem::create([
                     'factura_id' => $factura->id,
@@ -184,10 +204,11 @@ class MovimientoInventarioController extends Controller
         }
         if ($request->has('items') && is_array($request->items)) {
             $items = $request->items;
-            foreach ($items as &$item) {
+            foreach ($items as $k => $item) {
                 if (isset($item['precio_unitario'])) {
                     $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
                 }
+                $items[$k] = $item;
             }
             $request->merge(['items' => $items]);
         }
@@ -230,14 +251,27 @@ class MovimientoInventarioController extends Controller
             $saldo = $totalDocumento - $totalPagado;
             $estado = $saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida';
 
-            // 1. Pre-validar disponibilidad de TODOS los ítems antes de modificar BD
+            // Ordenar y agrupar stock_id en orden ascendente canónico para prevención de deadlocks
+            $cantidadesPorStock = [];
             foreach ($request->items as $item) {
-                $stock = Stock::findOrFail($item['stock_id']);
-                if (! $stock->tieneDisponible((int) $item['cantidad'])) {
+                $sid = (int) $item['stock_id'];
+                $cantidadesPorStock[$sid] = ($cantidadesPorStock[$sid] ?? 0) + (int) $item['cantidad'];
+            }
+            ksort($cantidadesPorStock);
+
+            // 1. Bloquear y validar disponibilidad de TODOS los ítems bajo lockForUpdate en orden estricto
+            $lockedStocks = [];
+            foreach ($cantidadesPorStock as $stockId => $totalRequerido) {
+                $stock = Stock::where('id', $stockId)->lockForUpdate()->first();
+                if (! $stock) {
+                    throw new \DomainException("El artículo con ID {$stockId} no existe.");
+                }
+                if (! $stock->tieneDisponible($totalRequerido)) {
                     throw new \DomainException(
-                        "Stock insuficiente para '{$stock->producto}'. Disponible: {$stock->cantidad}."
+                        "Stock insuficiente para '{$stock->producto}'. Disponible: {$stock->cantidad}, requerido: {$totalRequerido}."
                     );
                 }
+                $lockedStocks[$stockId] = $stock;
             }
 
             // 2. Crear la factura
@@ -254,9 +288,9 @@ class MovimientoInventarioController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            // 3. Registrar ítems y descontar stock
+            // 3. Registrar ítems y descontar stock reutilizando modelos ya bloqueados
             foreach ($request->items as $item) {
-                $stock = Stock::findOrFail($item['stock_id']);
+                $stock = $lockedStocks[(int) $item['stock_id']];
 
                 FacturaItem::create([
                     'factura_id' => $factura->id,
@@ -322,7 +356,7 @@ class MovimientoInventarioController extends Controller
             'fecha_hasta' => $fecha_hasta,
         ]);
 
-        $query = Factura::with(['facturable', 'user', 'items.stock'])
+        $query = Factura::with(['facturable', 'user', 'items.stock', 'cotizacion'])
             ->orderBy('fecha', 'desc')
             ->orderBy('id', 'desc');
 
@@ -347,7 +381,7 @@ class MovimientoInventarioController extends Controller
 
     public function showFactura(Factura $factura): View
     {
-        $factura->load(['facturable', 'items.stock', 'user']);
+        $factura->load(['facturable', 'items.stock', 'user', 'cotizacion']);
 
         $movimientoPadre = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
@@ -560,6 +594,10 @@ class MovimientoInventarioController extends Controller
 
     public function updateFactura(Request $request, Factura $factura): RedirectResponse
     {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
+        }
+
         if ($factura->estado === 'anulada') {
             return redirect()->route('inventario.facturas.show', $factura)->with('error', 'Por seguridad, no se puede editar una factura que se encuentra anulada.');
         }
@@ -569,25 +607,27 @@ class MovimientoInventarioController extends Controller
         }
         if ($request->has('existing_items') && is_array($request->existing_items)) {
             $items = $request->existing_items;
-            foreach ($items as &$item) {
+            foreach ($items as $k => $item) {
                 if (array_key_exists('stock_id', $item) && empty($item['stock_id'])) {
                     $item['stock_id'] = null;
                 }
                 if (isset($item['precio_unitario'])) {
                     $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
                 }
+                $items[$k] = $item;
             }
             $request->merge(['existing_items' => $items]);
         }
         if ($request->has('new_items') && is_array($request->new_items)) {
             $items = $request->new_items;
-            foreach ($items as &$item) {
+            foreach ($items as $k => $item) {
                 if (array_key_exists('stock_id', $item) && empty($item['stock_id'])) {
                     $item['stock_id'] = null;
                 }
                 if (isset($item['precio_unitario'])) {
                     $item['precio_unitario'] = $this->cleanAmount($item['precio_unitario']);
                 }
+                $items[$k] = $item;
             }
             $request->merge(['new_items' => $items]);
         }
@@ -598,7 +638,11 @@ class MovimientoInventarioController extends Controller
             'observaciones' => 'nullable|string',
             'facturable_global' => 'required|string',
             'existing_items' => 'nullable|array',
-            'existing_items.*.id' => 'required|exists:factura_items,id',
+            'existing_items.*.id' => [
+                'required',
+                'distinct',
+                Rule::exists('factura_items', 'id')->where('factura_id', $factura->id),
+            ],
             'existing_items.*.stock_id' => 'nullable|exists:stocks,id',
             'existing_items.*.descripcion' => 'nullable|string',
             'existing_items.*.cantidad' => 'required|integer|min:1',
@@ -665,7 +709,7 @@ class MovimientoInventarioController extends Controller
             // 2. Ajustar stock por modificación de cantidad o artículo de los ítems existentes
             if (isset($request->existing_items) && is_array($request->existing_items) && ! $shouldBeAnulada) {
                 foreach ($request->existing_items as $itemData) {
-                    $item = FacturaItem::findOrFail($itemData['id']);
+                    $item = $factura->items()->findOrFail($itemData['id']);
                     $oldStock = $item->stock;
                     $oldQty = (int) $item->cantidad;
 
@@ -805,6 +849,12 @@ class MovimientoInventarioController extends Controller
                     ->where('anulado', false)
                     ->where('estado', 'activo')
                     ->sum('monto');
+
+                if ($totalPagado < $abonosExistentes - Factura::EPSILON) {
+                    DB::rollBack();
+
+                    return back()->with('error', 'El total pagado no puede ser menor a los abonos ya registrados en caja ($'.number_format($abonosExistentes, 0, ',', '.').').')->withInput();
+                }
 
                 $montoBaseAjustado = max(0, $totalPagado - $abonosExistentes);
 

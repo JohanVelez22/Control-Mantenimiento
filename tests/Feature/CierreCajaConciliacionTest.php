@@ -293,4 +293,53 @@ class CierreCajaConciliacionTest extends TestCase
         $this->assertEquals(0, (float) $cierre->diferencia);
         $this->assertSame('cuadrado', $cierre->estado_diferencia);
     }
+
+    /**
+     * P1-1: El arqueo debe conciliar contra el dinero acumulado en el cajón (saldo anterior + flujo del día).
+     * Si la caja tenía $5.000.000 previos y hoy ingresaron $200.000, contar $5.200.000 debe quedar CUADRADO (dif = 0).
+     */
+    public function test_cierre_concilia_correctamente_con_saldo_acumulado_previo(): void
+    {
+        // 1. Fondo fijo registrado en fecha anterior (2026-09-30)
+        MovimientoCaja::create([
+            'fecha' => '2026-09-30',
+            'persona' => 'Fondo Base',
+            'concepto_id' => $this->concepto->id,
+            'tipo_movimiento' => 'ingreso',
+            'tipo_pago' => 'efectivo',
+            'monto' => 5000000,
+            'estado' => 'activo',
+            'user_id' => $this->admin->id,
+        ]);
+
+        // 2. Movimiento del día del cierre (2026-10-01)
+        MovimientoCaja::create([
+            'fecha' => '2026-10-01',
+            'persona' => 'Venta Día',
+            'concepto_id' => $this->concepto->id,
+            'tipo_movimiento' => 'ingreso',
+            'tipo_pago' => 'efectivo',
+            'monto' => 200000,
+            'estado' => 'activo',
+            'user_id' => $this->admin->id,
+        ]);
+
+        // 3. Conteo físico de $5.200.000 (todo el dinero en el cajón)
+        $response = $this->actingAs($this->admin)->post(route('cierre.store'), [
+            'fecha' => '2026-10-01',
+            'efectivo_real_contado' => 5200000,
+            'motivo_diferencia' => '',
+        ]);
+
+        $response->assertRedirect(route('cierre.index'));
+
+        $cierre = CierreCaja::whereDate('fecha', '2026-10-01')->first();
+        $this->assertNotNull($cierre);
+        $this->assertEquals(5200000, (float) $cierre->efectivo_real_contado);
+        $this->assertEquals(0, (float) $cierre->diferencia, 'No debe existir descuadre falso de $5.000.000');
+        $this->assertSame('cuadrado', $cierre->estado_diferencia);
+        $this->assertEquals(5000000, $cierre->saldo_inicial_dia);
+        $this->assertEquals(200000, $cierre->flujo_dia);
+        $this->assertEquals(5200000, $cierre->efectivo_esperado);
+    }
 }

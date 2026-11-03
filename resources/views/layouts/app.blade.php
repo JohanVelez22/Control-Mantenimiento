@@ -1,5 +1,5 @@
 @php
-    $empresa = \App\Models\Configuracion::first() ?? new \App\Models\Configuracion();
+    $empresa = \App\Models\Configuracion::getGlobal();
     $logoBase64 = \Illuminate\Support\Facades\Cache::remember('empresa_logo_base64', 3600, function () use ($empresa) {
         if ($empresa->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($empresa->logo_path)) {
             $type = strtolower(pathinfo($empresa->logo_path, PATHINFO_EXTENSION));
@@ -19,10 +19,15 @@
     <meta name="description" content="Sistema de Control de Mantenimiento y Gestión de Equipos. Solución integral para talleres y gestión de garantías.">
     <meta name="keywords" content="Mantenimiento, Talleres, Gestión de Inventario, Cotizaciones, Electrónica">
     
-    <title>@yield('title', 'Tecni Systemas')</title>
+    <title>@yield('title', 'WolfCore System')</title>
     
-    <!-- Favicon (Apple Liquid Glass) -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=1.5">
+    <!-- Favicon (Isotipo e Insignia WolfCore System con invalidación de caché) -->
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v={{ filemtime(public_path('favicon-48x48.png')) }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v={{ filemtime(public_path('favicon-32x32.png')) }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v={{ filemtime(public_path('favicon-16x16.png')) }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v={{ filemtime(public_path('favicon.svg')) }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v={{ filemtime(public_path('favicon.ico')) }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v={{ filemtime(public_path('apple-touch-icon.png')) }}">
     
     <!-- Vite (Tailwind CSS compilado + JS) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -37,7 +42,9 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     
     <!-- CSS Propio (Liquid Glass) - va DESPUÉS para sobreescribir estilos base -->
-    <link rel="stylesheet" href="{{ asset('css/glass.css') }}?v={{ @filemtime(public_path('css/glass.css')) ?: '1.4' }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    @vite('resources/css/glass/glass.css')
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     
@@ -124,7 +131,7 @@
     <div id="toast-container" class="fixed bottom-5 right-3 flex flex-col gap-2.5 pointer-events-none w-full max-w-sm" style="z-index: 100000 !important;"></div>
 
     <!-- MODAL DE CONFIRMACIÓN DE ALERTA/ELIMINACIÓN (Liquid Glass) -->
-    <div id="ts-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" style="z-index: 50000 !important;" onclick="if(event.target === this) closeTsModal()">
+    <div id="ts-modal" role="dialog" aria-modal="true" aria-labelledby="ts-modal-title" aria-describedby="ts-modal-msg" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" style="z-index: 50000 !important;" onclick="if(event.target === this) closeTsModal()">
         <div class="ts-modal-card opacity-0" id="ts-modal-card">
             <div class="p-6">
                 <div id="ts-modal-icon-box" class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
@@ -148,7 +155,7 @@
     </div>
 
     <!-- MODAL GLOBAL DE ANULACIÓN (fuera del main-wrapper para centrado correcto) -->
-    <div id="global-anular-modal" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
+    <div id="global-anular-modal" role="dialog" aria-modal="true" aria-labelledby="global-anular-title" aria-describedby="global-anular-msg" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
         <div class="ts-modal-card opacity-0" id="global-anular-card">
             <div class="p-6">
                 <div id="global-anular-icon-container" class="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-4">
@@ -164,6 +171,7 @@
                 </p>
                 <form id="global-anular-form" method="POST" class="space-y-4">
                     @csrf
+                    <input type="hidden" name="_method" id="global-anular-method" value="POST">
                     @if(auth()->check() && auth()->user()->isTecnico())
                     <div>
                         <input type="password" name="password_confirm" id="global-anular-input" required
@@ -181,14 +189,14 @@
     </div>
 
     <!-- MODAL GLOBAL DE RECHAZAR COTIZACIÓN (Sí/No sin contraseña) -->
-    <div id="global-rechazar-modal" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
+    <div id="global-rechazar-modal" role="dialog" aria-modal="true" aria-labelledby="global-rechazar-title" aria-describedby="global-rechazar-msg" class="ts-modal-overlay hidden opacity-0 animate-fade-in">
         <div class="ts-modal-card opacity-0" id="global-rechazar-card">
             <div class="p-6">
                 <div class="w-16 h-16 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 flex items-center justify-center text-3xl mx-auto mb-4">
                     <span>⚠️</span>
                 </div>
-                <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Rechazo</h3>
-                <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
+                <h3 id="global-rechazar-title" class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Confirmar Rechazo</h3>
+                <p id="global-rechazar-msg" class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
                     ¿Estás seguro de rechazar esta cotización? Cambiará su estado a "Rechazada".
                 </p>
                 <form id="global-rechazar-form" method="POST" class="space-y-4">
@@ -204,17 +212,43 @@
 
     <!-- SCRIPTS CORE -->
     <script>
-        // ─── TEMA CLARO/OSCURO ──────────────────────────────────────────
+        // ─── TEMA CLARO/OSCURO (Cross-fade sedoso View Transitions API + Cero destello de bordes) ─────
+        window.toggleWolfcoreTheme = function(btnEl) {
+            const htmlEl = document.documentElement;
+            const applySwitch = () => {
+                htmlEl.classList.add('preload');
+                htmlEl.classList.toggle('dark');
+                localStorage.setItem('color-theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+                if (typeof window.applyNotifDropdownTheme === 'function') {
+                    window.applyNotifDropdownTheme();
+                }
+                void htmlEl.offsetHeight;
+            };
+
+            const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (typeof document.startViewTransition === 'function' && !prefersReducedMotion) {
+                const vt = document.startViewTransition(applySwitch);
+                vt.ready.then(() => {
+                    requestAnimationFrame(() => htmlEl.classList.remove('preload'));
+                }).catch(() => {
+                    htmlEl.classList.remove('preload');
+                });
+            } else {
+                htmlEl.classList.add('theme-transition');
+                htmlEl.classList.toggle('dark');
+                localStorage.setItem('color-theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+                if (typeof window.applyNotifDropdownTheme === 'function') {
+                    window.applyNotifDropdownTheme();
+                }
+                setTimeout(() => htmlEl.classList.remove('theme-transition'), 280);
+            }
+            if (btnEl && typeof btnEl.blur === 'function') btnEl.blur();
+        };
+
         const themeToggleBtn = document.getElementById('theme-toggle');
         if (themeToggleBtn) {
             themeToggleBtn.addEventListener('click', () => {
-                document.documentElement.classList.toggle('dark');
-                if (document.documentElement.classList.contains('dark')) {
-                    localStorage.setItem('color-theme', 'dark');
-                } else {
-                    localStorage.setItem('color-theme', 'light');
-                }
-                themeToggleBtn.blur();
+                window.toggleWolfcoreTheme(themeToggleBtn);
             });
         }
 
@@ -230,10 +264,13 @@
                 : 'bg-emerald-500/90 dark:bg-emerald-900/80 border-emerald-500/50';
             const icon = isError ? '⚠️' : '✅';
 
+            const safeMessage = String(message ?? '').replace(/[&<>"']/g, function(m) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m];
+            });
             toast.className = `flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl text-white transform transition-all duration-400 translate-y-12 opacity-0 pointer-events-auto ${bgStr}`;
             toast.innerHTML = `
                 <span class="text-2xl drop-shadow-md">${icon}</span>
-                <p class="text-sm font-bold leading-tight flex-1">${message}</p>
+                <p class="text-sm font-bold leading-tight flex-1">${safeMessage}</p>
                 <button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white transition-colors text-lg focus:outline-none">&times;</button>
             `;
 
@@ -252,15 +289,31 @@
         }
 
         // Leer sesiones de Laravel
-        @if(session('success')) showToast("{{ session('success') }}", 'success'); @endif
-        @if(session('error')) showToast("{{ session('error') }}", 'error'); @endif
+        @if(session('success')) showToast(@json(session('success')), 'success'); @endif
+        @if(session('error')) showToast(@json(session('error')), 'error'); @endif
         @if(isset($errors) && $errors->any()) showToast("Verifica los campos obligatorios del formulario.", 'error'); @endif
+
+        // ─── ACCESIBILIDAD Y GESTIÓN DE FOCO EN MODALES (WCAG 2.1) ────────
+        let _lastFocusedElement = null;
+
+        function recordFocus() {
+            _lastFocusedElement = document.activeElement;
+        }
+
+        function restoreFocus() {
+            if (_lastFocusedElement && typeof _lastFocusedElement.focus === 'function') {
+                try { _lastFocusedElement.focus(); } catch (err) {}
+                _lastFocusedElement = null;
+            }
+        }
 
         // ─── MODAL GLOBAL DE CONFIRMACIÓN ─────────────────────────────
         let _pendingForm = null;
 
         function confirmDelete(form, message) {
+            recordFocus();
             _pendingForm = form;
+            window._pendingForm = form;
             const modal = document.getElementById('ts-modal');
             const card = document.getElementById('ts-modal-card');
             const confirmBtn = document.getElementById('ts-modal-confirm');
@@ -314,6 +367,7 @@
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 card.classList.remove('opacity-0');
+                if (cancelBtn) cancelBtn.focus();
             }, 10);
         }
 
@@ -327,6 +381,7 @@
             setTimeout(() => {
                 modal.classList.add('hidden');
                 _pendingForm = null;
+                window._pendingForm = null;
                 // Restaurar estado por defecto
                 const confirmBtn = document.getElementById('ts-modal-confirm');
                 const cancelBtn = document.getElementById('ts-modal-cancel');
@@ -336,17 +391,22 @@
                 if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4';
                 if (cancelBtn) cancelBtn.className = 'flex-1 btn-ghost-amber';
                 if (confirmBtn) confirmBtn.className = 'flex-1 btn-danger justify-center font-bold';
+                restoreFocus();
             }, 300);
         }
+        window.confirmDelete = confirmDelete;
+        window.closeTsModal = closeTsModal;
 
         // ─── MODAL GLOBAL DE ANULACIÓN ───────────────────────────────────
         const isTecnicoGlobal = {{ (auth()->check() && auth()->user()->isTecnico()) ? 'true' : 'false' }};
 
-        function openAnularModal(actionUrl, isReactivation = false) {
+        function openAnularModal(actionUrl, isReactivation = false, customMethod = 'POST', customTitle = null, customMsg = null) {
+            recordFocus();
             const modal = document.getElementById('global-anular-modal');
             const card  = document.getElementById('global-anular-card');
             const form  = document.getElementById('global-anular-form');
             const input = document.getElementById('global-anular-input');
+            const methodInput = document.getElementById('global-anular-method');
             const iconContainer = document.getElementById('global-anular-icon-container');
             const icon = document.getElementById('global-anular-icon');
             const title = document.getElementById('global-anular-title');
@@ -355,9 +415,24 @@
             const cancelBtn = document.getElementById('global-anular-cancel');
 
             form.action  = actionUrl;
+            if (methodInput) methodInput.value = customMethod || 'POST';
             if (input) input.value  = '';
 
-            if (isReactivation) {
+            if (customMethod === 'DELETE' || customTitle) {
+                // Modo Eliminación directa (p. ej. repuestos)
+                title.textContent = customTitle || 'Confirmar Eliminación';
+                msg.textContent = customMsg || (isTecnicoGlobal 
+                    ? 'Ingresa la contraseña de un administrador para eliminar este registro.' 
+                    : '¿Estás seguro de eliminar este registro?');
+                icon.textContent = '🗑️';
+                iconContainer.className = 'w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4';
+                submitBtn.innerHTML = 'Eliminar';
+                submitBtn.className = 'flex-1 btn-danger justify-center font-bold py-2.5 rounded-xl';
+                if (cancelBtn) {
+                    cancelBtn.className = 'flex-1 btn-ghost-amber';
+                }
+                if (input) input.className = 'glass-input text-center tracking-widest text-lg focus:ring-red-500';
+            } else if (isReactivation) {
                 // Modo Activación
                 title.textContent = 'Confirmar Activación';
                 msg.textContent = isTecnicoGlobal 
@@ -399,19 +474,26 @@
                 modal.classList.remove('opacity-0');
                 card.classList.remove('opacity-0');
                 if (input) input.focus();
+                else if (cancelBtn) cancelBtn.focus();
             }, 10);
         }
 
         function closeAnularModal() {
             const modal = document.getElementById('global-anular-modal');
             const card  = document.getElementById('global-anular-card');
+            const methodInput = document.getElementById('global-anular-method');
             modal.classList.add('opacity-0');
             card.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 200);
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                if (methodInput) methodInput.value = 'POST';
+                restoreFocus();
+            }, 200);
         }
 
         // ─── MODAL GLOBAL DE RECHAZAR COTIZACIÓN ─────────────────────────────
         function openRechazarModal(actionUrl) {
+            recordFocus();
             const modal = document.getElementById('global-rechazar-modal');
             const card  = document.getElementById('global-rechazar-card');
             const form  = document.getElementById('global-rechazar-form');
@@ -422,6 +504,8 @@
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 card.classList.remove('opacity-0');
+                const cancelBtn = modal.querySelector('button[type="button"]');
+                if (cancelBtn) cancelBtn.focus();
             }, 10);
         }
 
@@ -430,11 +514,41 @@
             const card  = document.getElementById('global-rechazar-card');
             modal.classList.add('opacity-0');
             card.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 200);
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                restoreFocus();
+            }, 200);
         }
 
+        // Manejador global de la tecla Escape para todos los modales
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeAnularModal();
+            if (e.key === 'Escape') {
+                const tsModal = document.getElementById('ts-modal');
+                const anularModal = document.getElementById('global-anular-modal');
+                const rechazarModal = document.getElementById('global-rechazar-modal');
+                if (tsModal && !tsModal.classList.contains('hidden')) {
+                    closeTsModal();
+                } else if (anularModal && !anularModal.classList.contains('hidden')) {
+                    closeAnularModal();
+                } else if (rechazarModal && !rechazarModal.classList.contains('hidden')) {
+                    closeRechazarModal();
+                } else if (typeof lightboxOpen !== 'undefined' && lightboxOpen) {
+                    closeImageLightbox();
+                }
+            }
+        });
+
+        // Delegación de eventos para apertura de lightbox desde atributos data-*
+        document.addEventListener('click', e => {
+            const trigger = e.target.closest('[data-lightbox-src]');
+            if (trigger) {
+                e.preventDefault();
+                openImageLightbox(
+                    trigger.getAttribute('data-lightbox-src'),
+                    trigger.getAttribute('data-lightbox-alt') || '',
+                    trigger
+                );
+            }
         });
 
         // ─── PANELES DINÁMICOS ASÍNCRONOS (ZERO-FLASH) ───────────────
@@ -541,10 +655,10 @@
         window.submitDynamicForm = submitDynamicForm;
 
         document.getElementById('ts-modal-confirm')?.addEventListener('click', () => {
-            if (_pendingForm) {
-                const dynamicPanel = _pendingForm.closest('#mantenimiento-dynamic-panel, #electronica-dynamic-panel');
+            const formToSubmit = _pendingForm || window._pendingForm;
+            if (formToSubmit) {
+                const dynamicPanel = formToSubmit.closest('#mantenimiento-dynamic-panel, #electronica-dynamic-panel');
                 if (dynamicPanel) {
-                    const formToSubmit = _pendingForm;
                     closeTsModal();
                     submitDynamicForm(formToSubmit, dynamicPanel);
                     return;
@@ -552,8 +666,8 @@
                 try {
                     sessionStorage.setItem('ts_scroll_pos_' + window.location.pathname, window.scrollY);
                 } catch(e) {}
-                _pendingForm.setAttribute('data-confirmed', 'true');
-                _pendingForm.submit();
+                formToSubmit.setAttribute('data-confirmed', 'true');
+                formToSubmit.submit();
             }
         });
 
@@ -599,8 +713,8 @@
             const backdrop = document.getElementById('ts-sidebar-backdrop');
             if (!sb || !wrapper) return;
 
-            const W_COLLAPSED = '72px';
-            const W_EXPANDED  = '260px';
+            const W_COLLAPSED = '64px';
+            const W_EXPANDED  = '210px';
 
             function isDesktop() {
                 return window.innerWidth >= 1024;
@@ -837,12 +951,87 @@
             });
         }
 
-        // Cierra el dropdown de notificaciones al hacer clic fuera
-        document.addEventListener('click', function(event) {
-            const bell = document.getElementById('notification-bell');
-            const dropdown = document.getElementById('notif-dropdown');
-            if (bell && dropdown && !bell.contains(event.target)) {
-                dropdown.classList.add('hidden');
+        // Reposicionar el dropdown de notificaciones portalándolo a document.body
+        // para romper el contexto de aislamiento de backdrop-filter generado por #ts-topbar
+        function positionNotifDropdown() {
+            const btn = document.querySelector('.notif-toggle-btn');
+            const d = document.getElementById('notif-dropdown');
+            if (!btn || !d) return;
+
+            if (d.parentElement !== document.body) {
+                document.body.appendChild(d);
+            }
+
+            const rect = btn.getBoundingClientRect();
+            const dropdownWidth = 260;
+            let left = rect.left + (rect.width / 2) - (dropdownWidth / 2);
+            left = Math.max(12, Math.min(window.innerWidth - dropdownWidth - 12, left));
+
+            d.style.position = 'fixed';
+            d.style.top = (rect.bottom + 8) + 'px';
+            d.style.left = left + 'px';
+            d.style.right = 'auto';
+            d.style.bottom = 'auto';
+            d.style.margin = '0';
+            d.style.width = dropdownWidth + 'px';
+            d.style.zIndex = '99999';
+
+            const arrow = document.getElementById('notif-arrow');
+            if (arrow) {
+                const bellCenter = rect.left + (rect.width / 2);
+                const arrowLeft = bellCenter - left - 6; // 6px = mitad del ancho de la flecha (12px)
+                const clampedArrowLeft = Math.max(16, Math.min(dropdownWidth - 28, arrowLeft));
+                arrow.style.marginLeft = clampedArrowLeft + 'px';
+            }
+        }
+
+        // Alternar y cerrar el dropdown de notificaciones (disponible siempre, incluso con 0 pendientes)
+        function toggleNotifDropdown() {
+            const d = document.getElementById('notif-dropdown');
+            if (!d) return;
+            if (d.classList.contains('hidden')) {
+                if (typeof applyNotifDropdownTheme === 'function') applyNotifDropdownTheme();
+                positionNotifDropdown();
+                d.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    d.classList.remove('opacity-0', 'scale-95');
+                });
+                setTimeout(() => {
+                    const clickHandler = function(e) {
+                        if (!d.contains(e.target) && !e.target.closest('.notif-toggle-btn') && !e.target.closest('[onclick*="toggleNotifDropdown"]')) {
+                            d.classList.add('opacity-0', 'scale-95');
+                            setTimeout(() => d.classList.add('hidden'), 200);
+                            document.removeEventListener('click', clickHandler);
+                        }
+                    };
+                    document.addEventListener('click', clickHandler);
+                }, 50);
+            } else {
+                d.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => d.classList.add('hidden'), 200);
+            }
+        }
+
+        // Mantener posición del dropdown al redimensionar o hacer scroll si está abierto
+        window.addEventListener('resize', () => {
+            const d = document.getElementById('notif-dropdown');
+            if (d && !d.classList.contains('hidden')) {
+                positionNotifDropdown();
+            }
+        }, { passive: true });
+
+        window.addEventListener('scroll', () => {
+            const d = document.getElementById('notif-dropdown');
+            if (d && !d.classList.contains('hidden')) {
+                positionNotifDropdown();
+            }
+        }, { passive: true });
+
+        // Portalar al body de forma proactiva al cargar el DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            const d = document.getElementById('notif-dropdown');
+            if (d && d.parentElement !== document.body) {
+                document.body.appendChild(d);
             }
         });
 
@@ -927,7 +1116,7 @@
                     <div class="pl-2 sm:pl-3 min-w-0 flex-1">
                         <div class="notif-item-header flex items-center justify-between sm:justify-start gap-2 mb-0.5">
                             <span class="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Mantenimiento</span>
-                            <span class="text-xs font-bold text-blue-500 dark:text-blue-300">{{ $mOrden }}</span>
+                            <span class="text-xs font-bold text-blue-600 dark:text-blue-400">{{ $mOrden }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $mEquipo }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $mCliente }}</p>
@@ -953,7 +1142,7 @@
                     <div class="pl-2 sm:pl-3 min-w-0 flex-1">
                         <div class="notif-item-header flex items-center justify-between sm:justify-start gap-2 mb-0.5">
                             <span class="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Electrónica</span>
-                            <span class="text-xs font-bold text-purple-500 dark:text-purple-300">{{ $eOrden }}</span>
+                            <span class="text-xs font-bold text-purple-600 dark:text-purple-400">{{ $eOrden }}</span>
                         </div>
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-100 truncate">{{ $eEquipo }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $eCliente }}</p>
@@ -1109,27 +1298,6 @@
             });
         }
 
-        function toggleNotifDropdown() {
-            const d = document.getElementById('notif-dropdown');
-            if (d.classList.contains('hidden')) {
-                d.classList.remove('hidden');
-                setTimeout(() => { d.classList.remove('opacity-0', 'scale-95'); }, 10);
-                // Cierra al hacer clic fuera
-                setTimeout(() => {
-                    document.addEventListener('click', function handler(e) {
-                        if (!d.contains(e.target) && !e.target.closest('[onclick="toggleNotifDropdown()"]')) {
-                            d.classList.add('opacity-0', 'scale-95');
-                            setTimeout(() => d.classList.add('hidden'), 200);
-                            document.removeEventListener('click', handler);
-                        }
-                    });
-                }, 50);
-            } else {
-                d.classList.add('opacity-0', 'scale-95');
-                setTimeout(() => d.classList.add('hidden'), 200);
-            }
-        }
-
         function openNotifModal(tab) {
             const modal = document.getElementById('ts-notif-modal');
             const card  = document.getElementById('ts-notif-card');
@@ -1278,7 +1446,7 @@
                             return '<div class="ts-item-display">' + escape(data.text) + '</div>';
                         },
                         no_results: function(data, escape) {
-                            return '<div class="no-results font-bold" style="padding: 8px 12px; color: #475569; font-size: 13px;">No se encontraron resultados para "<span class="text-blue-600">' + escape(data.input) + '</span>"</div>';
+                            return '<div class="no-results font-bold text-slate-600 dark:text-slate-300" style="padding: 8px 12px; font-size: 13px;">No se encontraron resultados para "<span class="text-blue-600 dark:text-blue-400">' + escape(data.input) + '</span>"</div>';
                         },
                         option_create: function(data, escape) {
                             return '<div class="create py-2 px-3 text-blue-600 dark:text-blue-400 font-bold cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/30">➕ Usar como producto personalizado: "<strong>' + escape(data.input) + '</strong>"</div>';
@@ -1727,7 +1895,7 @@
     </div>
 
     {{-- Visor de imagen minimalista - sin fondo, tamaño moderado --}}
-    <div id="image-lightbox" onclick="closeImageLightbox()" style="display:none; position:fixed; inset:0; z-index:9999; background:transparent; align-items:center; justify-content:center; padding:2vh 2vw; opacity:0; visibility:hidden; transition:opacity 0.25s ease;">
+    <div id="image-lightbox" role="dialog" aria-modal="true" aria-label="Vista previa de imagen" onclick="closeImageLightbox()" style="display:none; position:fixed; inset:0; z-index:9999; background:transparent; align-items:center; justify-content:center; padding:2vh 2vw; opacity:0; visibility:hidden; transition:opacity 0.25s ease;">
         <div style="position:relative; display:inline-flex; flex-direction:column; align-items:center;">
             <img id="image-lightbox-img" src="" alt="" style="max-width:70vw; max-height:65vh; width:auto; height:auto; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04); object-fit:contain; transform:scale(0.95); opacity:0; transition:transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.2s ease; cursor:pointer;">
         </div>
@@ -1737,6 +1905,7 @@
         let lightboxOrigin = null;
         
         function openImageLightbox(src, alt = '', originEl = null) {
+            recordFocus();
             const box = document.getElementById('image-lightbox');
             const img = document.getElementById('image-lightbox-img');
             
@@ -1814,15 +1983,12 @@
                 box.style.display = 'none';
                 box.style.visibility = 'hidden';
                 img.style.transition = 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.2s ease';
+                restoreFocus();
             }, 350);
             
             lightboxOpen = false;
             lightboxOrigin = null;
         }
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && lightboxOpen) closeImageLightbox();
-        });
 
         // Global Hash Target Row Highlighter
         // (Unificado con activateHashTarget — ya no se necesita un handler separado)
@@ -1952,6 +2118,9 @@
                     }
                 }
 
+                btn.addEventListener('mousedown', function (e) {
+                    e.preventDefault();
+                });
                 btn.addEventListener('click', togglePassword);
                 btn.addEventListener('touchend', togglePassword);
 
@@ -2003,5 +2172,6 @@
     </script>
 
     @stack('modals')
+    @stack('scripts')
 </body>
 </html>

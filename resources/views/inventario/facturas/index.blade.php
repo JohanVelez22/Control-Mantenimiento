@@ -82,7 +82,7 @@
   <td data-label="Entidad:" class="{{ $dim }}">
   @if($f->facturable)
   @if(class_basename($f->facturable) === 'Cliente')
-  <a href="{{ route('clientes.index') }}#cliente-{{ $f->facturable->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <a href="{{ route('clientes.index') }}#cliente-{{ $f->facturable->id }}" class="group block" title="Ver en tabla de clientes">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   👤 {{ $f->facturable->nombre }}
   </div>
@@ -91,7 +91,7 @@
   </div>
   </a>
   @else
-  <a href="{{ route('proveedores.index') }}#proveedor-{{ $f->facturable->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $f->facturable->id }}" class="group block" title="Ver en tabla de proveedores">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   🏢 {{ $f->facturable->nombre_razon_social }}
   </div>
@@ -152,6 +152,9 @@
   <div class="actions-grid">
   <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Detalles">👁️</a>
   <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir">🖨️</a>
+  @if($f->cotizacion_origen)
+  <a href="{{ route('cotizaciones.show', $f->cotizacion_origen->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Cotización de origen: {{ $f->cotizacion_origen->codigo }}">📝</a>
+  @endif
   
   @if(!auth()->user()->isInvitado())
   @if($f->estado !== 'anulada')

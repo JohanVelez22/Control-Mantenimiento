@@ -382,6 +382,63 @@ class BackupManagementTest extends TestCase
         $response->assertStatus(400);
     }
 
+    public function test_zip_slip_inside_archive_is_blocked_on_restore(): void
+    {
+        $zipFile = 'malicious_zip_slip.zip';
+        $zipPath = $this->backupDir.DIRECTORY_SEPARATOR.$zipFile;
+
+        $zip = new ZipArchive;
+        $this->assertTrue($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE));
+        $zip->addFromString('database.sql', "SELECT 1;\n");
+        $zip->addFromString('../../evil.txt', 'evil content');
+        $zip->close();
+
+        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFile]));
+
+        $response->assertStatus(400);
+        $this->assertStringContainsString('Zip Slip', $response->json('message'));
+
+        if (File::exists($zipPath)) {
+            File::delete($zipPath);
+        }
+    }
+
+    public function test_executable_files_in_zip_are_not_copied_to_public_storage(): void
+    {
+        $zipFile = 'test_executable_media.zip';
+        $zipPath = $this->backupDir.DIRECTORY_SEPARATOR.$zipFile;
+
+        $zip = new ZipArchive;
+        $this->assertTrue($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE));
+        $zip->addFromString('database.sql', "SELECT 1;\n");
+        $zip->addFromString('archivos_publicos/valid_logo.png', 'PNG DATA');
+        $zip->addFromString('archivos_publicos/webshell.php', '<?php echo "pwned";');
+        $zip->close();
+
+        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFile]));
+
+        $response->assertStatus(200);
+
+        // El archivo PNG permitido sí debe existir
+        $pngPath = storage_path('app/public/valid_logo.png');
+        $this->assertTrue(File::exists($pngPath));
+
+        // El archivo PHP malicioso NO debe haber sido copiado
+        $phpPath = storage_path('app/public/webshell.php');
+        $this->assertFalse(File::exists($phpPath), 'Archivos ejecutables .php jamás deben copiarse al storage público.');
+
+        // Limpiar
+        if (File::exists($pngPath)) {
+            File::delete($pngPath);
+        }
+        if (File::exists($phpPath)) {
+            File::delete($phpPath);
+        }
+        if (File::exists($zipPath)) {
+            File::delete($zipPath);
+        }
+    }
+
     public function test_restore_fails_when_file_does_not_exist()
     {
         $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => 'no_existe.sql']));

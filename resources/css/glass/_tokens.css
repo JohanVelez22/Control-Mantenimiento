@@ -1,0 +1,259 @@
+/* ================================================================
+   WOLFCORE SYSTEM - LIQUID GLASS DESIGN SYSTEM
+   Paleta: Azul Eléctrico #2563EB, Azul Oscuro #0F172A, Blanco #FFFFFF
+   ================================================================ */
+
+/* --- FUENTE GOOGLE: INTER -------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* --- SCROLLBAR GLOBAL PERSONALIZADO -------------------------------------------------- */
+/* Estilo unificado con los desplegables TomSelect del proyecto */
+html,
+body,
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(37, 99, 235, 0.25) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.25) !important;
+  border-radius: 10px !important;
+  transition: background 0.2s ease !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 0.45) !important;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.25) !important;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 0.45) !important;
+}
+
+/* --- SCROLLBAR PARA PANELES ESPECÍFICOS (NOTIFICACIONES, MAIN CONTENT) -------- */
+/* Asegura que el dropdown de notificaciones y el contenido principal usen el mismo estilo azul */
+#notif-panel::-webkit-scrollbar,
+#ts-main::-webkit-scrollbar,
+.main-content::-webkit-scrollbar,
+.content-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+#notif-panel::-webkit-scrollbar-track,
+#ts-main::-webkit-scrollbar-track,
+.main-content::-webkit-scrollbar-track,
+.content-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#notif-panel::-webkit-scrollbar-thumb,
+#ts-main::-webkit-scrollbar-thumb,
+.main-content::-webkit-scrollbar-thumb,
+.content-scroll::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.25);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+#notif-panel::-webkit-scrollbar-thumb:hover,
+#ts-main::-webkit-scrollbar-thumb:hover,
+.main-content::-webkit-scrollbar-thumb:hover,
+.content-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 0.45);
+}
+
+html.dark #notif-panel::-webkit-scrollbar-thumb,
+html.dark #ts-main::-webkit-scrollbar-thumb,
+html.dark .main-content::-webkit-scrollbar-thumb,
+html.dark .content-scroll::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.25);
+}
+
+html.dark #notif-panel::-webkit-scrollbar-thumb:hover,
+html.dark #ts-main::-webkit-scrollbar-thumb:hover,
+html.dark .main-content::-webkit-scrollbar-thumb:hover,
+html.dark .content-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 0.45);
+}
+
+/* --- TOKENS DE DISEÑO UNIFICADOS (VARIABLES CSS - DESIGN SYSTEM) ----------------- */
+:root {
+  /* --- PALETA DE MARCA & IDENTIDAD WOLFCORE --- */
+  --ts-blue: #2563EB;
+  --ts-blue-dark: #1D4ED8;
+  --ts-cyan: #06B6D4;
+  --ts-slate: #0F172A;
+  --ts-white: #FFFFFF;
+
+  --color-primary: #2563EB;
+  --color-primary-hover: #1D4ED8;
+  --color-accent: #06B6D4;
+  --color-purple: #9333EA;
+  --color-purple-hover: #7E22CE;
+
+  /* --- SEMÁNTICA EMPRESARIAL --- */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-info: #3B82F6;
+
+  /* --- TEXTO SEMÁNTICO --- */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --text-inverse: #FFFFFF;
+
+  /* --- RADIOS DE BORDE UNIFICADOS --- */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+  --radius-pill: 9999px;
+
+  /* --- JERARQUÍA DE SOMBRAS LIQUID GLASS --- */
+  --shadow-sm: 0 2px 8px -1px rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 10px 30px -5px rgba(37, 99, 235, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.25), 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-float: 0 20px 50px -15px rgba(37, 99, 235, 0.20);
+
+  /* --- BLUR ESCALONADO & TEXTURA MICRO-GRANO (ACRÍLICO MATE) --- */
+  --blur-sm: 18px;
+  --blur-md: 28px;
+  --blur-lg: 36px;
+  --acrylic-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
+
+  /* ---- Tokens: Modo Claro (Acrílico Mate Light - Efecto Vidrio Líquido Refractivo) ---- */
+  --glass-bg: var(--acrylic-noise), linear-gradient(135deg, rgba(238, 245, 254, 0.68) 0%, rgba(224, 236, 252, 0.58) 50%, rgba(234, 242, 253, 0.64) 100%);
+  --glass-border: rgba(148, 163, 184, 0.38);
+  --glass-shadow: 0 14px 34px -8px rgba(15, 23, 42, 0.08),
+    0 4px 12px rgba(15, 23, 42, 0.04),
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 0.98),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.70);
+  --glass-blur: 28px;
+
+  /* ---- Tokens: Modo Oscuro (Acrílico Mate Dark - Efecto Vidrio Medianoche Refractivo) ---- */
+  --glass-dark-bg: var(--acrylic-noise), linear-gradient(135deg, rgba(20, 32, 60, 0.70) 0%, rgba(11, 18, 38, 0.76) 100%);
+  --glass-dark-border: rgba(255, 255, 255, 0.13);
+  --glass-dark-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.55),
+    0 4px 16px rgba(0, 0, 0, 0.30),
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 0.18),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  /* ---- Tokens: Sidebar ---- */
+  --sidebar-w: 64px;
+  --sidebar-expanded: 210px;
+
+  --font-logo: 'Michroma', sans-serif;
+  --font-display: 'Orbitron', sans-serif;
+}
+
+/* ---- View Transitions API: Cross-fade sedoso y atómico entre Tema Claro y Oscuro ---- */
+::view-transition-group(root) {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  mix-blend-mode: normal;
+}
+
+/* ---- Helper Fallback: Transición sincronizada para navegadores sin View Transitions ---- */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow !important;
+  transition-duration: 260ms !important;
+  transition-delay: 0s !important;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* --- CLASES DE TIPOGRAFÍA -------------------------------------------------- */
+.font-logo {
+  font-family: var(--font-logo) !important;
+}
+
+.font-display {
+  font-family: var(--font-display) !important;
+}
+
+/* --- RESET BASE -------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* --- GRADIENTE DE FONDO AMBIENTAL (MESH PARA DIFUSIÓN ACRÍLICO MATE) ------ */
+.ts-bg {
+  background-color: #DDE7F5;
+  background-image:
+    radial-gradient(ellipse at 14% 12%, rgba(37, 99, 235, 0.22) 0%, transparent 52%),
+    radial-gradient(ellipse at 86% 16%, rgba(6, 182, 212, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 48%, rgba(59, 130, 246, 0.14) 0%, transparent 58%),
+    radial-gradient(ellipse at 82% 85%, rgba(14, 165, 233, 0.19) 0%, transparent 55%),
+    radial-gradient(ellipse at 20% 82%, rgba(99, 102, 241, 0.14) 0%, transparent 50%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  min-height: 100vh;
+}
+
+html.dark .ts-bg {
+  background-color: #060D1A;
+  background-image:
+    radial-gradient(ellipse at 12% 12%, rgba(37, 99, 235, 0.34) 0%, transparent 55%),
+    radial-gradient(ellipse at 88% 16%, rgba(6, 182, 212, 0.22) 0%, transparent 50%),
+    radial-gradient(ellipse at 48% 50%, rgba(30, 64, 175, 0.24) 0%, transparent 60%),
+    radial-gradient(ellipse at 86% 88%, rgba(6, 182, 212, 0.24) 0%, transparent 55%),
+    radial-gradient(ellipse at 18% 85%, rgba(79, 70, 229, 0.18) 0%, transparent 52%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+/* --- PANEL ACRÍLICO MATE BASE -------------------------------------------------- */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(165%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(165%);
+  box-shadow: var(--glass-shadow);
+  transition: box-shadow 0.25s ease;
+}
+
+html.dark .glass {
+  background: var(--glass-dark-bg);
+  border-color: var(--glass-dark-border);
+  box-shadow: var(--glass-dark-shadow);
+}

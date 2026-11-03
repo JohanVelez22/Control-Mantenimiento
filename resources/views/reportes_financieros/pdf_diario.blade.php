@@ -248,8 +248,10 @@
         <tfoot>
             <tr>
                 @php
-                    $neto = collect($movimientos)->where('anulado', false)->whereIn('tipo', ['ingreso','venta','mantenimiento','electronica'])->sum('monto')
-                          - collect($movimientos)->where('anulado', false)->whereIn('tipo', ['egreso','compra'])->sum('monto');
+                    $neto = isset($resumen['balance_neto'])
+                        ? (float) $resumen['balance_neto']
+                        : collect($movimientos)->where('anulado', false)->where('tipo', 'ingreso')->sum('monto')
+                          - collect($movimientos)->where('anulado', false)->where('tipo', 'egreso')->sum('monto');
                 @endphp
                 <td colspan="6" style="text-align:left; border:none !important; padding: 5px 6px; font-size:9px;">
                     <span style="float:left; font-weight:700; color:#ffffff;">TOTAL: {{ count($movimientos) }} REGISTROS</span>

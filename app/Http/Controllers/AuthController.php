@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    /**
+     * Hash Bcrypt válido de 60 caracteres utilizado para mitigar timing attacks
+     * cuando se consulta un usuario inexistente, garantizando latencia uniforme.
+     */
+    private const DUMMY_HASH = '$2y$12$e80y9m5wV6qK.lQz2rOqMeH3wK2yD6bF8gL1sJ4nR7vU0cN3rT5y.';
+
     // Muestra la vista de login
     public function showLogin(Request $request)
     {
@@ -47,15 +53,17 @@ class AuthController extends Controller
         );
         $inputPassword = (string) $request->password;
 
-        // Claves de control de intentos y penalización progresiva
+        // Claves de control de intentos y penalización progresiva (por IP+Cuenta y global por Cuenta)
         $throttleKey = 'login_attempts:'.sha1($inputNormalized.'|'.$request->ip());
         $historyKey = 'login_history:'.sha1($inputNormalized.'|'.$request->ip());
         $lockoutUntilKey = 'login_locked_until:'.sha1($inputNormalized.'|'.$request->ip());
         $lockoutLevelKey = 'login_lockout_level:'.sha1($inputNormalized.'|'.$request->ip());
         $ipLockoutKey = 'login_ip_locked_until:'.sha1($request->ip());
+        $accountThrottleKey = 'login_account_attempts:'.sha1($inputNormalized);
+        $accountLockoutKey = 'login_account_locked_until:'.sha1($inputNormalized);
 
         // Verificar si se encuentra en periodo de bloqueo activo
-        $activeLockout = Cache::get($lockoutUntilKey) ?: Cache::get($ipLockoutKey);
+        $activeLockout = Cache::get($lockoutUntilKey) ?: Cache::get($ipLockoutKey) ?: Cache::get($accountLockoutKey);
         if ($activeLockout && now()->timestamp < $activeLockout) {
             $secondsRemaining = max(1, $activeLockout - now()->timestamp);
 
@@ -96,37 +104,46 @@ class AuthController extends Controller
 
         // Si no se encontró de forma directa, intentar búsqueda tolerante de nombre (sin tildes)
         if (! $user) {
-            $user = User::all()->first(function ($u) use ($inputNormalized) {
-                $nameNorm = str_replace(
-                    ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ'],
-                    ['a', 'e', 'i', 'o', 'u', 'u', 'n'],
-                    mb_strtolower($u->name, 'UTF-8')
-                );
+            $user = User::select('id', 'name', 'email', 'password', 'role', 'active')
+                ->limit(50)
+                ->get()
+                ->first(function ($u) use ($inputNormalized) {
+                    $nameNorm = str_replace(
+                        ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ'],
+                        ['a', 'e', 'i', 'o', 'u', 'u', 'n'],
+                        mb_strtolower($u->name, 'UTF-8')
+                    );
 
-                return $nameNorm === $inputNormalized;
-            });
+                    return $nameNorm === $inputNormalized;
+                });
         }
 
         if ($user) {
             // Validar si la contraseña coincide estrictamente contra su hash en BD
             $passwordValid = Hash::check($inputPassword, $user->password);
+        } else {
+            // Mitigación de timing attack: ejecutar siempre Hash::check con hash Bcrypt válido de 60 caracteres
+            Hash::check($inputPassword, self::DUMMY_HASH);
+            $passwordValid = false;
+        }
 
-            if ($passwordValid) {
-                // Si el usuario fue desactivado por el administrador, denegar acceso y NO reactivar
-                if (! $user->active) {
-                    return back()->withErrors([
-                        'email' => 'Tu cuenta ha sido desactivada por el administrador.',
-                    ])->onlyInput('email');
-                }
-
-                // Guardar historial de intentos fallidos para trazabilidad en auditoría
-                $history = Cache::get($historyKey, []);
-                session()->put('login_attempts_history', $history);
-                Cache::forget($historyKey);
-
-                Auth::login($user, $request->filled('remember'));
-                goto authenticated_user;
+        if ($user && $passwordValid) {
+            // Si el usuario fue desactivado por el administrador, denegar acceso y NO reactivar
+            if (! $user->active) {
+                return back()->withErrors([
+                    'email' => 'Tu cuenta ha sido desactivada por el administrador.',
+                ])->onlyInput('email');
             }
+
+            // Guardar historial de intentos fallidos para trazabilidad en auditoría
+            $history = Cache::get($historyKey, []);
+            session()->put('login_attempts_history', $history);
+            Cache::forget($historyKey);
+
+            // Prevenir Session Fixation regenerando el ID de sesión antes de autenticar al usuario
+            $request->session()->regenerate();
+            Auth::login($user, $request->filled('remember'));
+            goto authenticated_user;
         }
 
         // Nivel de penalización acumulado previamente
@@ -138,6 +155,13 @@ class AuthController extends Controller
 
         $attempts = (int) Cache::get($throttleKey, 0) + 1;
         Cache::put($throttleKey, $attempts, now()->addMinutes(15));
+
+        // Registro de intentos por cuenta (mitiga evasión por rotación de IP)
+        $accountAttempts = (int) Cache::get($accountThrottleKey, 0) + 1;
+        Cache::put($accountThrottleKey, $accountAttempts, now()->addMinutes(15));
+        if ($accountAttempts >= 10) {
+            Cache::put($accountLockoutKey, now()->timestamp + 300, now()->addMinutes(5));
+        }
 
         // Registrar intento en historial de trazabilidad de acceso
         $history = Cache::get($historyKey, []);
@@ -207,8 +231,9 @@ class AuthController extends Controller
         Cache::forget($lockoutUntilKey);
         Cache::forget($lockoutLevelKey);
         Cache::forget($ipLockoutKey);
+        Cache::forget($accountThrottleKey);
+        Cache::forget($accountLockoutKey);
 
-        $request->session()->regenerate();
         $user = Auth::user();
 
         // 5. Construir alertas de tareas pendientes (Top 50 más antiguas + Totales para trazabilidad)

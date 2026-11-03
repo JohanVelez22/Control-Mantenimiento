@@ -110,7 +110,7 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>$&nbsp;{{ number_format($m->costo, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" @if($isAnulado) style="color: #dd6b20 !important;" @endif>$&nbsp;{{ number_format($m->costo, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
@@ -159,7 +159,7 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>$&nbsp;{{ number_format($e->costo, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" @if($isAnulado) style="color: #dd6b20 !important;" @endif>$&nbsp;{{ number_format($e->costo, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
@@ -208,7 +208,7 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>$&nbsp;{{ number_format($c->monto, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" @if($isAnulado) style="color: #dd6b20 !important;" @endif>$&nbsp;{{ number_format($c->monto, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
@@ -258,7 +258,7 @@
   {{ $label }}
   </span>
   </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>$&nbsp;{{ number_format($f->total_documento, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" @if($isAnulado) style="color: #dd6b20 !important;" @endif>$&nbsp;{{ number_format($f->total_documento, 0, ',', '.') }}</td>
   </tr>
   @endforeach
   </tbody>

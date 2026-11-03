@@ -22,10 +22,13 @@ class ReportesFinancierosExport implements FromCollection, ShouldAutoSize, WithE
 {
     protected $transacciones;
 
-    public function __construct($transacciones)
+    protected ?array $resumen;
+
+    public function __construct($transacciones, ?array $resumen = null)
     {
         // Ensure it's a Laravel Collection
         $this->transacciones = collect($transacciones);
+        $this->resumen = $resumen;
     }
 
     public function registerEvents(): array
@@ -48,21 +51,25 @@ class ReportesFinancierosExport implements FromCollection, ShouldAutoSize, WithE
                 $lastRow = $sheet->getHighestRow();
                 $footerRow = $lastRow + 2;
 
-                $ingresos = $this->transacciones->filter(function ($tx) {
-                    $tipo = is_array($tx) ? ($tx['tipo'] ?? '') : ($tx->tipo_movimiento ?? '');
-                    $anulado = is_array($tx) ? ! empty($tx['anulado']) : $tx->anulado;
+                if ($this->resumen && isset($this->resumen['balance_neto'])) {
+                    $total = (float) $this->resumen['balance_neto'];
+                } else {
+                    $ingresos = $this->transacciones->filter(function ($tx) {
+                        $tipo = is_array($tx) ? ($tx['tipo'] ?? '') : ($tx->tipo_movimiento ?? '');
+                        $anulado = is_array($tx) ? ! empty($tx['anulado']) : $tx->anulado;
 
-                    return ! $anulado && in_array($tipo, ['ingreso', 'venta', 'mantenimiento', 'electronica']);
-                })->sum(fn ($tx) => is_array($tx) ? ($tx['monto'] ?? 0) : ($tx->monto ?? $tx->total_documento ?? 0));
+                        return ! $anulado && $tipo === 'ingreso';
+                    })->sum(fn ($tx) => is_array($tx) ? ($tx['monto'] ?? 0) : ($tx->monto ?? 0));
 
-                $egresos = $this->transacciones->filter(function ($tx) {
-                    $tipo = is_array($tx) ? ($tx['tipo'] ?? '') : ($tx->tipo_movimiento ?? '');
-                    $anulado = is_array($tx) ? ! empty($tx['anulado']) : $tx->anulado;
+                    $egresos = $this->transacciones->filter(function ($tx) {
+                        $tipo = is_array($tx) ? ($tx['tipo'] ?? '') : ($tx->tipo_movimiento ?? '');
+                        $anulado = is_array($tx) ? ! empty($tx['anulado']) : $tx->anulado;
 
-                    return ! $anulado && in_array($tipo, ['egreso', 'compra']);
-                })->sum(fn ($tx) => is_array($tx) ? ($tx['monto'] ?? 0) : ($tx->monto ?? $tx->total_documento ?? 0));
+                        return ! $anulado && $tipo === 'egreso';
+                    })->sum(fn ($tx) => is_array($tx) ? ($tx['monto'] ?? 0) : ($tx->monto ?? 0));
 
-                $total = $ingresos - $egresos;
+                    $total = $ingresos - $egresos;
+                }
 
                 // Aplicar formato de miles a la columna E (Costo)
                 $sheet->getStyle("E5:E{$lastRow}")->getNumberFormat()->setFormatCode('"$ "#,##0');

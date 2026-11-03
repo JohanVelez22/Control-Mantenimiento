@@ -177,6 +177,7 @@ class UserControllerTest extends TestCase
             'email' => 'password@test.com',
             'password' => Hash::make('OldPassword123!'),
             'role' => 'tecnico',
+            'remember_token' => 'old_remember_token_123',
         ]);
 
         $response = $this->actingAs($this->admin)->put(route('usuarios.update', $user), [
@@ -190,6 +191,8 @@ class UserControllerTest extends TestCase
         $response->assertRedirect(route('usuarios.index'));
         $user->refresh();
         $this->assertTrue(Hash::check('NewPassword123!', $user->password));
+        $this->assertNotEquals('old_remember_token_123', $user->remember_token);
+        $this->assertNotEmpty($user->remember_token);
     }
 
     public function test_admin_can_anular_user(): void

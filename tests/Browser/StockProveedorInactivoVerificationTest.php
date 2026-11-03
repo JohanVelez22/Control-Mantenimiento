@@ -20,8 +20,8 @@ class StockProveedorInactivoVerificationTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($admin, $stockInactivo, $proveedorInactivo, $proveedorActivo) {
             // 1. Stock Inactivo: Validar que NO existe el banner grande y que SI está el badge INACTIVO y botón Reactivar
             $browser->loginAs($admin)
-                ->visit('/stocks/' . $stockInactivo->id)
-                ->assertPathIs('/stocks/' . $stockInactivo->id)
+                ->visit('/stocks/'.$stockInactivo->id)
+                ->assertPathIs('/stocks/'.$stockInactivo->id)
                 ->assertDontSee('PRODUCTO ANULADO / INACTIVO')
                 ->assertDontSee('Este producto no está disponible para nuevas operaciones')
                 ->assertSee('INACTIVO')
@@ -29,15 +29,15 @@ class StockProveedorInactivoVerificationTest extends DuskTestCase
                 ->screenshot('stock_inactivo_sin_banner');
 
             // 2. Proveedor Inactivo: Validar que tiene el badge INACTIVO y el botón Reactivar
-            $browser->visit('/proveedores/' . $proveedorInactivo->id)
-                ->assertPathIs('/proveedores/' . $proveedorInactivo->id)
+            $browser->visit('/proveedores/'.$proveedorInactivo->id)
+                ->assertPathIs('/proveedores/'.$proveedorInactivo->id)
                 ->assertSee('INACTIVO')
                 ->assertSee('Reactivar')
                 ->screenshot('proveedor_inactivo_con_reactivar');
 
             // 3. Proveedor Activo: Validar que tiene el badge ACTIVO y el botón Anular
-            $browser->visit('/proveedores/' . $proveedorActivo->id)
-                ->assertPathIs('/proveedores/' . $proveedorActivo->id)
+            $browser->visit('/proveedores/'.$proveedorActivo->id)
+                ->assertPathIs('/proveedores/'.$proveedorActivo->id)
                 ->assertSee('ACTIVO')
                 ->assertSee('Anular')
                 ->screenshot('proveedor_activo_con_anular');
@@ -200,5 +200,3 @@ class StockProveedorInactivoVerificationTest extends DuskTestCase
         });
     }
 }
-
-

@@ -17,7 +17,7 @@ class CierreCajaController extends Controller
 
         // Pre-calcular datos del día actual (aún no cerrado)
         $hoy = now()->toDateString();
-        $yaExiste = CierreCaja::whereDate('fecha', $hoy)->exists();
+        $yaExiste = CierreCaja::where('fecha', $hoy)->exists();
 
         $preview = null;
         if (! $yaExiste) {
@@ -30,6 +30,10 @@ class CierreCajaController extends Controller
     /** Realiza el cierre del día indicado con opción de conciliación física */
     public function store(Request $request)
     {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return back()->with('error', $error)->withInput();
+        }
+
         $fecha = Carbon::parse($request->fecha)->toDateString();
         $request->merge(['fecha' => $fecha]);
 
@@ -57,7 +61,7 @@ class CierreCajaController extends Controller
                 'required',
                 'date',
                 function ($attribute, $value, $fail) use ($fecha) {
-                    if (CierreCaja::whereDate('fecha', $fecha)->exists()) {
+                    if (CierreCaja::where('fecha', $fecha)->exists()) {
                         $fail('Ya existe un cierre registrado para esta fecha.');
                     }
                 },
@@ -68,8 +72,8 @@ class CierreCajaController extends Controller
         ]);
 
         return DB::transaction(function () use ($request, $fecha) {
-            // Protección contra race condition con bloqueo pesimista
-            $yaExiste = CierreCaja::whereDate('fecha', $fecha)->lockForUpdate()->exists();
+            // Protección contra race condition con bloqueo pesimista en índice único directo (F-24)
+            $yaExiste = CierreCaja::where('fecha', $fecha)->lockForUpdate()->exists();
             if ($yaExiste) {
                 return back()->with('error', 'Ya existe un cierre registrado para la fecha seleccionada.')->withInput();
             }
@@ -80,13 +84,13 @@ class CierreCajaController extends Controller
             // `efectivo_real_contado` queda NULL y el modelo lo reporta como
             // 'sin_conciliar'. Nunca se infiere el contado desde el valor
             // teórico del sistema: eso afirmaría un cuadre no verificado.
-            $efectivoSistema = (float) $datos['efectivo'];
+            $efectivoEsperado = (float) ($datos['efectivo_esperado'] ?? $datos['efectivo']);
             $conteoRegistrado = $request->filled('efectivo_real_contado')
                 && is_numeric($request->efectivo_real_contado);
 
             if ($conteoRegistrado) {
                 $efectivoReal = round((float) $request->efectivo_real_contado, 2);
-                $diferencia = round($efectivoReal - $efectivoSistema, 2);
+                $diferencia = round($efectivoReal - $efectivoEsperado, 2);
             } else {
                 $efectivoReal = null;
                 $diferencia = 0;
@@ -139,10 +143,15 @@ class CierreCajaController extends Controller
         $cierre->load('user');
         $fecha = $cierre->fecha->toDateString();
 
-        $movimientos = MovimientoCaja::with(['user', 'concepto'])
-            ->whereDate('fecha', $fecha)
-            ->orderBy('id', 'desc')
-            ->get();
+        $movQuery = MovimientoCaja::with(['user', 'concepto']);
+        if (DB::connection()->getDriverName() === 'mysql') {
+            $movQuery->where('fecha', $fecha);
+        } else {
+            $movQuery->where(function ($q) use ($fecha) {
+                $q->where('fecha', $fecha)->orWhereDate('fecha', $fecha);
+            });
+        }
+        $movimientos = $movQuery->orderBy('id', 'desc')->get();
 
         return view('cierre.show', compact('cierre', 'movimientos'));
     }
@@ -156,6 +165,10 @@ class CierreCajaController extends Controller
     /** Actualizar observaciones y motivo de diferencia del cierre */
     public function update(Request $request, CierreCaja $cierre)
     {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return back()->with('error', $error)->withInput();
+        }
+
         $request->validate([
             'observaciones' => 'nullable|string|max:1000',
             'motivo_diferencia' => 'nullable|string|max:1000',
@@ -174,7 +187,15 @@ class CierreCajaController extends Controller
     /** Helper: calcula totales de movimientos de un día dado excluyendo los anulados */
     private function calcularDia(string $fecha): array
     {
-        $movs = MovimientoCaja::whereDate('fecha', $fecha)->where('estado', 'activo')->where('anulado', false)->get();
+        $movQuery = MovimientoCaja::query();
+        if (DB::connection()->getDriverName() === 'mysql') {
+            $movQuery->where('fecha', $fecha);
+        } else {
+            $movQuery->where(function ($q) use ($fecha) {
+                $q->where('fecha', $fecha)->orWhereDate('fecha', $fecha);
+            });
+        }
+        $movs = $movQuery->where('estado', 'activo')->where('anulado', false)->get();
 
         $ingresos = (float) $movs->where('tipo_movimiento', 'ingreso')->sum('monto');
         $egresos = (float) $movs->where('tipo_movimiento', 'egreso')->sum('monto');
@@ -187,9 +208,35 @@ class CierreCajaController extends Controller
         $consignacionEgresos = (float) $movs->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto');
         $consignacionNeto = $consignacionIngresos - $consignacionEgresos;
 
+        // Saldo anterior acumulado en efectivo previo a esta fecha
+        $ultimoCierre = CierreCaja::where('fecha', '<', $fecha)->orderBy('fecha', 'desc')->first();
+        if ($ultimoCierre && $ultimoCierre->efectivo_real_contado !== null) {
+            $base = (float) $ultimoCierre->efectivo_real_contado;
+            $intermedio = (float) MovimientoCaja::where('fecha', '>', $ultimoCierre->fecha)
+                ->where('fecha', '<', $fecha)
+                ->where('estado', 'activo')
+                ->where('anulado', false)
+                ->where('tipo_pago', 'efectivo')
+                ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
+                ->value('total') ?? 0;
+            $saldoAnterior = $base + $intermedio;
+        } else {
+            $saldoAnterior = (float) MovimientoCaja::where('fecha', '<', $fecha)
+                ->where('estado', 'activo')
+                ->where('anulado', false)
+                ->where('tipo_pago', 'efectivo')
+                ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
+                ->value('total') ?? 0;
+        }
+
+        $efectivoEsperado = $saldoAnterior + $efectivoNeto;
+
         return [
             'total_ingresos' => $ingresos,
             'total_egresos' => $egresos,
+            'saldo_anterior' => $saldoAnterior,
+            'flujo_dia' => $efectivoNeto,
+            'efectivo_esperado' => $efectivoEsperado,
             'efectivo' => $efectivoNeto,
             'consignacion' => $consignacionNeto,
             'saldo_final' => $ingresos - $egresos,

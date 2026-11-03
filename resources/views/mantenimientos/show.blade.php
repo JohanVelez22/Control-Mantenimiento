@@ -174,14 +174,22 @@
                         <p class="font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</p>
                     </div>
                     
-                    @if(auth()->user()->role === 'admin' && !$mantenimiento->anulado)
-                    <form action="{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}" method="POST" class="inline-block"
-                        data-confirm-delete="¿Eliminar este repuesto ({{ $repuesto->producto }})? Se descontará del costo de la orden y volverá al inventario.">
-                        @csrf @method('DELETE')
-                        <button type="submit" class="btn-danger btn-action-square" title="Eliminar y devolver al stock">
+                    @if(!$mantenimiento->anulado)
+                        @if(auth()->user()->role === 'admin')
+                        <form action="{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}" method="POST" class="inline-block"
+                            data-confirm-delete="¿Eliminar este repuesto ({{ $repuesto->producto }})? Se descontará del costo de la orden y volverá al inventario.">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="btn-danger btn-action-square" title="Eliminar y devolver al stock">
+                                🗑️
+                            </button>
+                        </form>
+                        @elseif(auth()->user()->isTecnico())
+                        <button type="button" 
+                            onclick="openAnularModal('{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}', false, 'DELETE', 'Eliminar Repuesto', 'Ingresa la contraseña de un administrador para retirar este repuesto ({{ addslashes($repuesto->producto) }}) de la orden y devolverlo al inventario.')"
+                            class="btn-danger btn-action-square" title="Eliminar y devolver al stock">
                             🗑️
                         </button>
-                    </form>
+                        @endif
                     @endif
                 </div>
             </div>

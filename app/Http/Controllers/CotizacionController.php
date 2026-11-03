@@ -24,7 +24,7 @@ class CotizacionController extends Controller
 {
     public function index()
     {
-        $cotizaciones = Cotizacion::with(['cliente', 'proveedor', 'user', 'items'])->orderBy('id', 'desc')->paginate(15);
+        $cotizaciones = Cotizacion::with(['cliente', 'proveedor', 'user', 'items', 'factura'])->orderBy('id', 'desc')->paginate(15);
 
         return view('cotizaciones.index', compact('cotizaciones'));
     }
@@ -115,8 +115,11 @@ class CotizacionController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al crear cotización: '.$e->getMessage());
 
-            return back()->with('error', 'Error al crear la cotización: '.$e->getMessage())->withInput();
+            $msg = config('app.debug') ? 'Error al crear la cotización: '.$e->getMessage() : 'Error inesperado al crear la cotización.';
+
+            return back()->with('error', $msg)->withInput();
         }
     }
 
@@ -229,14 +232,17 @@ class CotizacionController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error("Error al actualizar cotización #{$cotizacion->id}: ".$e->getMessage());
 
-            return back()->with('error', 'Error al actualizar: '.$e->getMessage())->withInput();
+            $msg = config('app.debug') ? 'Error al actualizar: '.$e->getMessage() : 'Error inesperado al actualizar la cotización.';
+
+            return back()->with('error', $msg)->withInput();
         }
     }
 
     public function show(Cotizacion $cotizacion)
     {
-        $cotizacion->load('cliente', 'proveedor', 'items.stock', 'user');
+        $cotizacion->load('cliente', 'proveedor', 'items.stock', 'user', 'factura');
 
         return view('cotizaciones.show', ['cotizacion' => $cotizacion]);
     }
@@ -255,6 +261,10 @@ class CotizacionController extends Controller
     {
         if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return back()->with('error', $error)->withInput();
+        }
+
+        if ($cotizacion->estado === 'convertida') {
+            return back()->with('error', 'No se puede anular una cotización que ya ha sido convertida en factura.')->withInput();
         }
 
         try {
@@ -337,42 +347,69 @@ class CotizacionController extends Controller
 
             $cotizacion->load('items');
 
-            // Validar y bloquear stock disponible para todos los ítems de tipo 'stock'
-            foreach ($cotizacion->items as $item) {
-                if ($item->tipo === 'stock' && $item->item_id) {
+            $esProveedor = ! empty($cotizacion->proveedor_id);
+            $tipoMovimiento = $esProveedor ? 'compra' : 'venta';
+            $prefijoFactura = $esProveedor ? 'CP-' : 'VT-';
+
+            // Validar y bloquear stock en orden canónico (item_id ASC) para prevenir deadlocks
+            $stockItems = $cotizacion->items->filter(fn ($it) => $it->tipo === 'stock' && $it->item_id)->sortBy('item_id');
+            $lockedStocks = [];
+
+            // 1. Bloquear filas de stock en orden ascendente estricto
+            foreach ($stockItems as $item) {
+                if (! isset($lockedStocks[$item->item_id])) {
                     $stock = Stock::where('id', $item->item_id)->lockForUpdate()->first();
-                    if (! $stock || ! $stock->tieneDisponible((int) $item->cantidad)) {
-                        $prodNombre = $stock ? $stock->producto : $item->descripcion;
-                        $disp = $stock ? $stock->cantidad : 0;
+                    if (! $stock) {
                         DB::rollBack();
 
-                        return back()->with('error', "Stock insuficiente para '{$prodNombre}'. Disponible: {$disp}, requerido: {$item->cantidad}.");
+                        return back()->with('error', "El artículo '{$item->descripcion}' ya no existe en el inventario.");
+                    }
+                    $lockedStocks[$item->item_id] = $stock;
+                }
+            }
+
+            // 2. Si es venta a cliente, verificar disponibilidad total requerida
+            if (! $esProveedor) {
+                $cantidadesRequeridas = [];
+                foreach ($stockItems as $item) {
+                    $cantidadesRequeridas[$item->item_id] = ($cantidadesRequeridas[$item->item_id] ?? 0) + (int) $item->cantidad;
+                }
+
+                foreach ($cantidadesRequeridas as $stockId => $totalRequerido) {
+                    $stock = $lockedStocks[$stockId];
+                    if (! $stock->tieneDisponible($totalRequerido)) {
+                        DB::rollBack();
+
+                        return back()->with('error', "Stock insuficiente para '{$stock->producto}'. Disponible: {$stock->cantidad}, requerido: {$totalRequerido}.");
                     }
                 }
             }
 
-            // 1. Marcar cotización como aprobada
-            $cotizacion->update(['estado' => 'aprobada']);
-
             $facturableId = $cotizacion->proveedor_id ?: $cotizacion->cliente_id;
-            $facturableType = $cotizacion->proveedor_id ? Proveedor::class : Cliente::class;
+            $facturableType = $esProveedor ? Proveedor::class : Cliente::class;
             $destinatarioNombre = $cotizacion->destinatario_nombre;
 
-            // 2. Crear Factura de Venta
+            // 1. Crear Factura correspondiente (Compra a Proveedor o Venta a Cliente)
             $factura = Factura::create([
-                'numero_factura' => Factura::siguienteNumero('VT-'),
-                'tipo_movimiento' => 'venta',
+                'numero_factura' => Factura::siguienteNumero($prefijoFactura),
+                'tipo_movimiento' => $tipoMovimiento,
                 'estado' => 'pendiente_pago',
                 'facturable_id' => $facturableId,
                 'facturable_type' => $facturableType,
                 'total_documento' => $cotizacion->total,
                 'total_pagado' => 0,
-                'observaciones' => "Venta generada automáticamente desde Cotización #{$cotizacion->codigo}".($cotizacion->notas ? "\nNotas: {$cotizacion->notas}" : ''),
+                'observaciones' => ($esProveedor ? 'Compra' : 'Venta')." generada automáticamente desde Cotización #{$cotizacion->codigo}".($cotizacion->notas ? "\nNotas: {$cotizacion->notas}" : ''),
                 'fecha' => $hoy,
                 'user_id' => auth()->id(),
             ]);
 
-            // 3. Crear FacturaItems y descontar stock cuando aplique
+            // 2. Marcar cotización como aprobada y asociar la factura generada
+            $cotizacion->update([
+                'estado' => 'aprobada',
+                'factura_id' => $factura->id,
+            ]);
+
+            // 3. Crear FacturaItems y ajustar inventario según corresponda reutilizando modelos bloqueados
             foreach ($cotizacion->items as $item) {
                 FacturaItem::create([
                     'factura_id' => $factura->id,
@@ -382,25 +419,30 @@ class CotizacionController extends Controller
                     'precio_unitario' => $item->precio_unitario,
                 ]);
 
-                if ($item->tipo === 'stock' && $item->item_id) {
-                    $stock = Stock::find($item->item_id);
-                    if ($stock) {
+                if ($item->tipo === 'stock' && $item->item_id && isset($lockedStocks[$item->item_id])) {
+                    $stock = $lockedStocks[$item->item_id];
+                    if ($esProveedor) {
+                        $stock->incrementarStock((int) $item->cantidad);
+                    } else {
                         $stock->decrementarStock((int) $item->cantidad);
                     }
                 }
             }
 
             // 4. Registrar movimiento raíz en Caja para seguimiento de saldos
-            $conceptoVenta = ConceptoCaja::firstOrCreate(['nombre' => 'Venta de Inventario']);
+            $nombreConcepto = $esProveedor ? 'Compra de Inventario' : 'Venta de Inventario';
+            $conceptoCaja = ConceptoCaja::firstOrCreate(['nombre' => $nombreConcepto]);
+            $tipoMovCaja = $esProveedor ? 'egreso' : 'ingreso';
+            $descCaja = $esProveedor ? "Pago compra #{$factura->numero_factura}" : "Cobro venta #{$factura->numero_factura}";
 
             MovimientoCaja::create([
-                'tipo_movimiento' => 'ingreso',
+                'tipo_movimiento' => $tipoMovCaja,
                 'tipo_pago' => 'efectivo',
                 'monto' => 0,
                 'monto_total' => (float) $cotizacion->total,
-                'persona' => $destinatarioNombre ?: 'Cliente / Proveedor',
-                'concepto_id' => $conceptoVenta->id,
-                'descripcion' => "Cobro venta #{$factura->numero_factura}",
+                'persona' => $destinatarioNombre ?: ($esProveedor ? 'Proveedor' : 'Cliente'),
+                'concepto_id' => $conceptoCaja->id,
+                'descripcion' => $descCaja,
                 'fecha' => $hoy,
                 'estado' => 'activo',
                 'user_id' => auth()->id(),
@@ -409,8 +451,10 @@ class CotizacionController extends Controller
 
             DB::commit();
 
+            $labelOperacion = $esProveedor ? 'Compra' : 'Venta';
+
             return redirect()->route('inventario.facturas.show', $factura->id)
-                ->with('success', "Cotización {$cotizacion->codigo} aprobada y convertida en Venta #{$factura->numero_factura} exitosamente.");
+                ->with('success', "Cotización {$cotizacion->codigo} aprobada y convertida en {$labelOperacion} #{$factura->numero_factura} exitosamente.");
 
         } catch (\Exception $e) {
             DB::rollBack();

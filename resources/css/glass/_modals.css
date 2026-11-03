@@ -1,0 +1,156 @@
+/* --- TOGGLE ENTIDAD (PERSONA / EMPRESA) -------------------------------------------------- */
+.entity-toggle {
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 14px;
+}
+
+html.dark .entity-toggle {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.entity-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  border: none;
+  color: #64748B;
+  background: transparent;
+}
+
+html.dark .entity-tab {
+  color: #94A3B8;
+}
+
+.entity-tab.active,
+html.dark .entity-tab.active {
+  color: white !important;
+  background: linear-gradient(135deg, #2563EB, #06B6D4) !important;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
+}
+
+/* --- MODAL ACRÍLICO MATE (Frosted Acrylic Modal) ------------------- */
+.ts-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.50);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.ts-modal-overlay.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  display: flex !important;
+}
+
+.ts-modal-card {
+  background-image: var(--acrylic-noise), linear-gradient(145deg, rgba(248, 251, 255, 0.74) 0%, rgba(235, 243, 252, 0.68) 100%);
+  background-color: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.40);
+  -webkit-backdrop-filter: blur(32px) saturate(185%);
+  backdrop-filter: blur(32px) saturate(185%);
+  box-shadow:
+    0 24px 50px -12px rgba(15, 23, 42, 0.20),
+    0 0 0 1px rgba(15, 23, 42, 0.04),
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 0.98),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.60);
+  border-radius: 24px;
+  max-width: 460px;
+  width: 100%;
+  max-height: 90dvh;
+  overflow-y: auto;
+  transform: none !important;
+  transition: opacity 0.2s ease !important;
+}
+
+html.dark .ts-modal-card,
+.dark .ts-modal-card {
+  background-image: var(--acrylic-noise), linear-gradient(145deg, rgba(22, 34, 62, 0.74) 0%, rgba(12, 20, 42, 0.80) 100%);
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(32px) saturate(185%);
+  backdrop-filter: blur(32px) saturate(185%);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.65),
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 0.18),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Variantes de tamaño modal estandarizadas */
+.ts-modal-card.modal-sm {
+  max-width: 400px;
+}
+
+.ts-modal-card.modal-md {
+  max-width: 520px;
+}
+
+.ts-modal-card.modal-lg {
+  max-width: 680px;
+}
+
+.ts-modal-card.modal-xl {
+  max-width: 860px;
+}
+
+.ts-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.60);
+}
+
+html.dark .ts-modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.ts-modal-body {
+  padding: 24px;
+}
+
+.ts-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid rgba(226, 232, 240, 0.60);
+}
+
+html.dark .ts-modal-footer {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+/* --- BARRA DE PROGRESO NAVEGACIÓN -------------------------------------------------- */
+#nav-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #2563EB, #06B6D4, #8B5CF6);
+  z-index: 9999;
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.60);
+  transition: width 0.15s ease;
+  pointer-events: none;
+}

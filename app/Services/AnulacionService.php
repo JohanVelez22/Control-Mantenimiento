@@ -138,6 +138,7 @@ class AnulacionService
                     if ($concepto) {
                         $this->marcarMovimientosCaja($abono, $concepto, $documento->id_orden, $prefijosDescripcion, $esAnulacion);
                     }
+                    $abono->update(['anulado' => $esAnulacion]);
                 }
             }
         });

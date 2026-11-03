@@ -270,4 +270,3 @@ class ClienteControllerTest extends TestCase
         $this->assertEquals('Cra 15 # 20-30 Oficina 504', $cliente->direccion);
     }
 }
-

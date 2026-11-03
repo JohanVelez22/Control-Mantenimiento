@@ -174,9 +174,13 @@ class BackupController extends Controller
                 'message' => 'Ocurrió un error al ejecutar el comando de respaldo.',
             ], 500);
         } catch (\Throwable $e) {
+            Log::error('Excepción al generar respaldo manual: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Excepción al generar respaldo: '.$e->getMessage(),
+                'message' => config('app.debug')
+                    ? 'Excepción al generar respaldo: '.$e->getMessage()
+                    : 'No se pudo generar la copia de seguridad. Verifique los registros del sistema.',
             ], 500);
         }
     }
@@ -351,11 +355,20 @@ class BackupController extends Controller
             return $resp;
         }
 
+        if (! app()->environment('local', 'testing')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Esta operación solo está disponible en entorno local.',
+            ], 403);
+        }
+
         $backupDir = $this->getBackupDir();
         $isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
         $opened = false;
 
-        if ($isWindows) {
+        if (app()->runningUnitTests()) {
+            $opened = true;
+        } elseif ($isWindows) {
             try {
                 $folderLeaf = basename($backupDir);
                 // Usamos explorer.exe /separate para abrir una ventana nueva e independiente centrada,
@@ -445,11 +458,11 @@ class BackupController extends Controller
         }
 
         $mysqlBinary = $this->resolveMysqlBinary();
-        $database = env('DB_DATABASE', config('database.connections.mysql.database', 'tecni_systemas'));
-        $username = env('DB_USERNAME', config('database.connections.mysql.username', 'root'));
-        $password = env('DB_PASSWORD', config('database.connections.mysql.password', ''));
-        $host = env('DB_HOST', config('database.connections.mysql.host', '127.0.0.1'));
-        $port = env('DB_PORT', config('database.connections.mysql.port', '3306'));
+        $database = config('database.connections.mysql.database', env('DB_DATABASE', 'tecni_systemas'));
+        $username = config('database.connections.mysql.username', env('DB_USERNAME', 'root'));
+        $password = config('database.connections.mysql.password', env('DB_PASSWORD', ''));
+        $host = config('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
+        $port = config('database.connections.mysql.port', env('DB_PORT', '3306'));
 
         if ($mysqlBinary && File::exists($mysqlBinary)) {
             putenv("MYSQL_PWD={$password}");
@@ -557,6 +570,24 @@ class BackupController extends Controller
 
                 $tempExtractDir = $dir.DIRECTORY_SEPARATOR.'temp_restore_'.uniqid();
                 File::makeDirectory($tempExtractDir, 0755, true);
+
+                // Prevenir Zip Slip: validar cada entrada antes de extraer
+                for ($i = 0; $i < $zip->numFiles; $i++) {
+                    $entryName = $zip->getNameIndex($i);
+                    if ($entryName === false) {
+                        continue;
+                    }
+                    if (str_contains($entryName, '..') || str_starts_with($entryName, '/') || str_starts_with($entryName, '\\') || str_contains($entryName, "\0") || str_contains($entryName, ':')) {
+                        $zip->close();
+                        File::deleteDirectory($tempExtractDir);
+
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'El paquete de respaldo contiene rutas de archivo no permitidas (Zip Slip detectado).',
+                        ], 400);
+                    }
+                }
+
                 $zip->extractTo($tempExtractDir);
                 $zip->close();
 
@@ -574,15 +605,32 @@ class BackupController extends Controller
                     throw new \Exception('No se encontró archivo de base de datos (database.sql) dentro del paquete ZIP.');
                 }
 
-                // 2. Restaurar Archivos Públicos Multimedia (storage/app/public)
+                // 2. Restaurar Archivos Públicos Multimedia (storage/app/public) con lista blanca estricta
                 $publicMediaDir = $tempExtractDir.DIRECTORY_SEPARATOR.'archivos_publicos';
                 if (File::isDirectory($publicMediaDir)) {
                     $targetPublicDir = storage_path('app/public');
                     if (! File::exists($targetPublicDir)) {
                         File::makeDirectory($targetPublicDir, 0755, true);
                     }
-                    File::copyDirectory($publicMediaDir, $targetPublicDir);
-                    $archivosRestauradosCount = count(File::allFiles($targetPublicDir));
+
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'txt'];
+                    $mediaFiles = File::allFiles($publicMediaDir);
+                    $archivosRestauradosCount = 0;
+
+                    foreach ($mediaFiles as $mediaFile) {
+                        $ext = strtolower($mediaFile->getExtension());
+                        if (! in_array($ext, $allowedExtensions)) {
+                            Log::warning('Archivo ignorado en restauración por extensión peligrosa o no permitida: '.$mediaFile->getFilename());
+
+                            continue;
+                        }
+
+                        $relPath = $mediaFile->getRelativePathname();
+                        $destinationPath = $targetPublicDir.DIRECTORY_SEPARATOR.$relPath;
+                        File::ensureDirectoryExists(dirname($destinationPath));
+                        File::copy($mediaFile->getRealPath(), $destinationPath);
+                        $archivosRestauradosCount++;
+                    }
                 }
 
                 // Determinar etiqueta descriptiva
@@ -676,7 +724,9 @@ class BackupController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error al restaurar la copia de seguridad: '.$e->getMessage(),
+                'message' => config('app.debug')
+                    ? 'Error al restaurar la copia de seguridad: '.$e->getMessage()
+                    : 'Error al restaurar la copia de seguridad. Verifique el archivo e intente nuevamente.',
             ], 500);
 
         } finally {
@@ -731,7 +781,7 @@ class BackupController extends Controller
             // 1. Probar conectividad con GitHub mediante git fetch
             $fetchOutput = [];
             $fetchCode = -1;
-            exec('git -C '.escapeshellarg($basePath).' fetch origin 2>&1', $fetchOutput, $fetchCode);
+            exec('git -c safe.directory=* -C '.escapeshellarg($basePath).' fetch origin 2>&1', $fetchOutput, $fetchCode);
 
             if ($fetchCode !== 0) {
                 Log::warning('Git fetch falló: '.implode(' | ', $fetchOutput));
@@ -746,7 +796,7 @@ class BackupController extends Controller
             // 2. Ejecutar git pull
             $pullOutput = [];
             $pullCode = -1;
-            exec('git -C '.escapeshellarg($basePath).' pull 2>&1', $pullOutput, $pullCode);
+            exec('git -c safe.directory=* -C '.escapeshellarg($basePath).' pull 2>&1', $pullOutput, $pullCode);
             $outputText = implode("\n", $pullOutput);
 
             if ($pullCode !== 0) {

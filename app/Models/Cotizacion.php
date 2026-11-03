@@ -23,6 +23,7 @@ class Cotizacion extends Model
         'anulado',
         'notas',
         'user_id',
+        'factura_id',
     ];
 
     protected function casts(): array
@@ -40,6 +41,23 @@ class Cotizacion extends Model
     public function proveedor()
     {
         return $this->belongsTo(Proveedor::class);
+    }
+
+    public function factura()
+    {
+        return $this->belongsTo(Factura::class, 'factura_id');
+    }
+
+    public function getFacturaCreadaAttribute()
+    {
+        if ($this->factura_id && $this->relationLoaded('factura')) {
+            return $this->factura;
+        }
+        if ($this->factura_id) {
+            return $this->factura;
+        }
+
+        return Factura::where('observaciones', 'like', "%Cotización #{$this->codigo}%")->first();
     }
 
     public function getDestinatarioAttribute()

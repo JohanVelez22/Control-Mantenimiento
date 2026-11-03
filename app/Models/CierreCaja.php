@@ -27,6 +27,54 @@ class CierreCaja extends Model
     }
 
     /**
+     * Saldo inicial acumulado en efectivo al inicio del día del cierre.
+     */
+    public function getSaldoInicialDiaAttribute(): float
+    {
+        $fecha = $this->fecha ? $this->fecha->toDateString() : null;
+        if (! $fecha) {
+            return 0.0;
+        }
+
+        $ultimoCierre = static::where('fecha', '<', $fecha)->orderBy('fecha', 'desc')->first();
+        if ($ultimoCierre && $ultimoCierre->efectivo_real_contado !== null) {
+            $base = (float) $ultimoCierre->efectivo_real_contado;
+            $intermedio = (float) MovimientoCaja::where('fecha', '>', $ultimoCierre->fecha)
+                ->where('fecha', '<', $fecha)
+                ->where('estado', 'activo')
+                ->where('anulado', false)
+                ->where('tipo_pago', 'efectivo')
+                ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
+                ->value('total') ?? 0;
+
+            return $base + $intermedio;
+        }
+
+        return (float) MovimientoCaja::where('fecha', '<', $fecha)
+            ->where('estado', 'activo')
+            ->where('anulado', false)
+            ->where('tipo_pago', 'efectivo')
+            ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
+            ->value('total') ?? 0;
+    }
+
+    /**
+     * Flujo neto del día en efectivo.
+     */
+    public function getFlujoDiaAttribute(): float
+    {
+        return (float) $this->efectivo;
+    }
+
+    /**
+     * Efectivo total esperado en caja al momento del arqueo (saldo inicial + flujo del día).
+     */
+    public function getEfectivoEsperadoAttribute(): float
+    {
+        return $this->saldo_inicial_dia + $this->flujo_dia;
+    }
+
+    /**
      * Estado de la conciliación: 'cuadrado', 'faltante', 'sobrante', o 'sin_conciliar'
      */
     public function getEstadoDiferenciaAttribute(): string

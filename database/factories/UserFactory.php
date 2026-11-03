@@ -34,7 +34,7 @@ class UserFactory extends Factory
 
         // Generar un email basado en el nombre sin acentos (ej: esteban.vargas@example.com)
         $emailName = Str::ascii($firstName.'.'.$lastName);
-        $email = strtolower($emailName).$faker->numberBetween(10, 99).'@example.com';
+        $email = strtolower($emailName).$faker->numberBetween(10, 99).'.'.strtolower(Str::random(5)).'@example.com';
 
         return [
             'name' => $fullName,

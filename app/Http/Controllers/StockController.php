@@ -12,6 +12,7 @@ use App\Services\AnulacionService;
 use App\Services\StockService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -149,9 +150,47 @@ class StockController extends Controller
             $validated['precio_tecnico'] = 0;
         }
 
-        $stock->update($validated);
+        try {
+            DB::transaction(function () use ($stock, $validated, $request) {
+                /** @var Stock $lockedStock */
+                $lockedStock = Stock::where('id', $stock->id)->lockForUpdate()->firstOrFail();
 
-        return redirect()->route('stocks.index')->with('success', 'Producto actualizado exitosamente.');
+                $nuevaCantidad = (int) $validated['cantidad'];
+                $cantidadActual = (int) $lockedStock->cantidad;
+
+                // Detección de colisión concurrente: si el cliente cargó la vista con un saldo previo
+                // y solicitó una reducción mayor a la disponible actualmente en la base de datos
+                if ($request->filled('cantidad_original')) {
+                    $cantidadOriginal = (int) $request->input('cantidad_original');
+                    if ($nuevaCantidad < $cantidadOriginal) {
+                        $reduccionIntentada = $cantidadOriginal - $nuevaCantidad;
+                        if ($reduccionIntentada > $cantidadActual) {
+                            throw new \DomainException("El stock disponible cambió concurrentemente a {$cantidadActual} unidad(es). No es posible reducir {$reduccionIntentada} unidades.");
+                        }
+                    }
+                }
+
+                // La diferencia real aplicada al inventario SIEMPRE tiene como base la cantidad actual en BD (A3),
+                // asegurando que la cantidad final en el inventario sea exactamente $nuevaCantidad y nunca se
+                // sumen existencias fantasma por campos manipulados.
+                $diff = $nuevaCantidad - $cantidadActual;
+
+                // Actualizar atributos generales excluyendo cantidad si varió para procesarla vía StockService
+                $attrs = $validated;
+                unset($attrs['cantidad']);
+                $lockedStock->update($attrs);
+
+                if ($diff > 0) {
+                    app(StockService::class)->entrada($lockedStock, $diff);
+                } elseif ($diff < 0) {
+                    app(StockService::class)->salida($lockedStock, abs($diff));
+                }
+            });
+
+            return redirect()->route('stocks.index')->with('success', 'Producto actualizado exitosamente.');
+        } catch (\DomainException $e) {
+            return back()->with('error', $e->getMessage())->withInput();
+        }
     }
 
     public function reportes(Request $request)

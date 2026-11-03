@@ -41,7 +41,7 @@ function getStockOptions() {
 function agregarFila(itemData = null) {
     const tbody = document.getElementById('items-body');
     const tr = document.createElement('tr');
-    tr.className = 'item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-white/10 hover:bg-white/50 dark:hover:bg-slate-900/30 transition-colors';
+    tr.className = 'item-row bg-transparent';
     
     let isStock = itemData ? itemData.tipo === 'stock' : false;
     let cant = itemData ? itemData.cantidad : 1;
@@ -81,7 +81,7 @@ function agregarFila(itemData = null) {
     recalcular();
 
     // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
-    tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const scrollBox = tbody.closest('.overflow-y-auto, .cotizacion-table-scroll'); if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) { scrollBox.scrollTop = scrollBox.scrollHeight; }
 }
 
 function bindFilaCotizacion(tr) {

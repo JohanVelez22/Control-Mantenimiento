@@ -109,7 +109,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
 <td data-label="Fecha:" class="text-center font-medium {{ $dim }}">{{ $m->fecha->format('d/m/Y') }}</td>
  <td data-label="Entidad:" class="{{ $dim }}">
  @if($m->cliente)
- <a href="{{ route('clientes.index') }}#cliente-{{ $m->cliente->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+ <a href="{{ route('clientes.index') }}#cliente-{{ $m->cliente->id }}" class="group block" title="Ver en tabla de clientes">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          👤 {{ $m->cliente->nombre }}
      </div>
@@ -120,7 +120,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
      @endif
  </a>
  @elseif($m->persona)
- <a href="{{ route('clientes.index', ['search' => $m->persona]) }}" class="group block hover:opacity-75 transition-opacity" title="Buscar en Clientes">
+ <a href="{{ route('clientes.index', ['search' => $m->persona]) }}" class="group block" title="Buscar en Clientes">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          👤 {{ $m->persona }}
      </div>
@@ -129,7 +129,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
      </div>
  </a>
  @elseif($m->proveedor)
- <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->proveedor->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+ <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->proveedor->id }}" class="group block" title="Ver en tabla de proveedores">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          🏢 {{ $m->proveedor->nombre_razon_social }}
      </div>
@@ -140,7 +140,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
      @endif
  </a>
  @elseif($m->empresa)
- <a href="{{ route('proveedores.index', ['search' => $m->empresa]) }}" class="group block hover:opacity-75 transition-opacity" title="Buscar en Proveedores">
+ <a href="{{ route('proveedores.index', ['search' => $m->empresa]) }}" class="group block" title="Buscar en Proveedores">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          🏢 {{ $m->empresa }}
      </div>
@@ -195,6 +195,9 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
   <div class="actions-grid">
   <a href="{{ route('caja.show', $m->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver detalle">👁️</a>
   <a href="{{ route('caja.print', $m->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir">🖨️</a>
+  @if($m->factura_id)
+  <a href="{{ route('inventario.facturas.show', $m->factura_id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Ver Factura {{ $m->factura?->numero_factura ?? '' }}">📄</a>
+  @endif
   @if(!auth()->user()->isInvitado())
   @if(!$m->anulado && $m->estado !== 'anulado')
   <a href="{{ route('caja.edit', $m->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>

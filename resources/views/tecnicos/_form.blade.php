@@ -55,7 +55,7 @@
         @if($t?->photo)
             <div id="existing-photo-container" class="mb-3 flex items-center gap-4">
                 <div class="p-1 rounded-2xl bg-white/40 dark:bg-slate-900/40 border border-white/50 dark:border-white/10 backdrop-blur-sm shadow-sm shrink-0">
-                    <img src="{{ asset('storage/' . $t->photo) }}" width="100" height="100" class="w-20 h-20 rounded-xl object-cover shadow-sm cursor-pointer hover:opacity-80 transition block" onclick="openImageLightbox('{{ asset('storage/' . $t->photo) }}', '{{ addslashes($t->nombre) }}', this)">
+                    <img src="{{ asset('storage/' . $t->photo) }}" width="100" height="100" class="w-20 h-20 rounded-xl object-cover shadow-sm cursor-pointer hover:opacity-80 transition block" data-lightbox-src="{{ asset('storage/' . $t->photo) }}" data-lightbox-alt="{{ $t->nombre }}">
                 </div>
                 <div class="space-y-1.5">
                     <span class="text-xs font-bold text-slate-700 dark:text-slate-300 block">Foto actual del técnico</span>

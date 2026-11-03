@@ -231,4 +231,3 @@ class ProveedorControllerTest extends TestCase
         $this->assertEquals('Cra 100 # 15-20 Bogotá D.C.', $proveedor->direccion);
     }
 }
-

@@ -292,7 +292,11 @@ async function ejecutarEliminacionLogo() {
 
     if (btnRemove) {
         btnRemove.disabled = true;
-        btnRemove.innerHTML = '<span>⏳</span><span>Eliminando...</span>';
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '⏳';
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'Eliminando...';
+        btnRemove.replaceChildren(iconSpan, textSpan);
     }
 
     const form = document.getElementById('form-configuracion');
@@ -342,7 +346,11 @@ async function ejecutarEliminacionLogo() {
     } finally {
         if (btnRemove) {
             btnRemove.disabled = false;
-            btnRemove.innerHTML = '<span>🗑️</span><span>Quitar logo</span>';
+            const iconSpan = document.createElement('span');
+            iconSpan.textContent = '🗑️';
+            const textSpan = document.createElement('span');
+            textSpan.textContent = 'Quitar logo';
+            btnRemove.replaceChildren(iconSpan, textSpan);
         }
     }
 }
@@ -822,7 +830,7 @@ async function submitConfiguracion(event) {
         {{-- Pie del Modal --}}
         <div class="backup-modal-footer">
             <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-1.5 leading-none">
-                <span class="text-sm shrink-0 flex items-center">🛡️</span> Sistema de Auditoría y Respaldo Tecni-Systemas
+                <span class="text-sm shrink-0 flex items-center">🛡️</span> Sistema de Auditoría y Respaldo WolfCore System
             </span>
             <button type="button" onclick="closeBackupModal()" class="btn-close-modal">
                 Cerrar
@@ -1742,11 +1750,11 @@ async function ejecutarActualizacionGit() {
         const data = await res.json();
         if (data.status === 'updated') {
             if (typeof showToast === 'function') {
-                showToast(data.message || 'Se actualizó correctamente.', 'success');
+                showToast(data.message || 'Código fuente actualizado exitosamente desde GitHub.', 'success');
             }
         } else if (data.status === 'up_to_date') {
             if (typeof showToast === 'function') {
-                showToast(data.message || 'Nada por hacer.', 'success');
+                showToast('El sistema ya se encuentra en su versión más reciente (al día con GitHub).', 'info');
             }
         } else {
             if (typeof showToast === 'function') {

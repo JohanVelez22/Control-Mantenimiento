@@ -5,6 +5,7 @@ namespace Tests\Browser;
 use App\Models\Cliente;
 use App\Models\Equipo;
 use App\Models\Mantenimiento;
+use App\Models\Tecnico;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
@@ -50,7 +51,7 @@ class MantenimientosBrowserTest extends DuskTestCase
             ]
         );
 
-        $tecnico = \App\Models\Tecnico::firstOrCreate(
+        $tecnico = Tecnico::firstOrCreate(
             ['identificacion' => 'TEC-DUSK-01'],
             [
                 'nombre' => 'Tecnico Dusk',

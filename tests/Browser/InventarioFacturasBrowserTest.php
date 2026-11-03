@@ -3,7 +3,6 @@
 namespace Tests\Browser;
 
 use App\Models\Cliente;
-use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;

@@ -70,7 +70,8 @@ class ReporteController extends Controller
             'egresos' => $egresos_mes,
             'saldo' => $saldo_mes,
             'facturado_total' => $facturado_total,
-            'utilidad_neta' => $saldo_mes, // La utilidad en caja es simplemente ingresos - egresos. Lo facturado es independiente.
+            'flujo_caja_mes' => $saldo_mes,
+            'utilidad_neta' => $saldo_mes, // Flujo neto de caja: ingresos - egresos.
             'inventario_costo' => $costo_inventario,
             'inventario_utilidad_esperada' => $utilidad_esperada,
         ];

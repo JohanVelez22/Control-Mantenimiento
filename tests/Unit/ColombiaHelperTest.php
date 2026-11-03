@@ -84,4 +84,3 @@ class ColombiaHelperTest extends TestCase
         $this->assertEquals('', ColombiaHelper::formatTitleCase('   '));
     }
 }
-

@@ -136,8 +136,14 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💻</span> Efectivo Teórico</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($cierre->efectivo, 0, ',', '.') }}</p>
-                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium z-10">Calculado por ingresos y egresos</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format(abs($cierre->saldo_inicial_dia) > 0.01 ? $cierre->efectivo_esperado : $cierre->efectivo, 0, ',', '.') }}</p>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium z-10">
+                    @if(abs($cierre->saldo_inicial_dia) > 0.01)
+                        Base/Anterior: ${{ number_format($cierre->saldo_inicial_dia, 0, ',', '.') }} | Flujo hoy: ${{ number_format($cierre->flujo_dia, 0, ',', '.') }}
+                    @else
+                        Calculado por ingresos y egresos
+                    @endif
+                </p>
             </div>
 
             <div class="glass-card hover-glow glass-card-gray p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
