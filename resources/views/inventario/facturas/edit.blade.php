@@ -271,7 +271,7 @@
                             @endforeach
                         </tbody>
                         <tfoot>
-                            <tr class="border-0 bg-gray-50/50 dark:bg-gray-800/50">
+                            <tr class="border-0 bg-transparent">
                                 <td colspan="3" class="py-4 text-right pr-2 align-middle border-0">
                                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                                 </td>
@@ -375,7 +375,7 @@ function agregarFila() {
         <td class="col-art py-2.5" style="vertical-align: top !important;">
             <div class="flex flex-col gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto / Stock</span>
-                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 {{ $ringColor }} w-full" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)" style="display: none;">
+                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 {{ $ringColor }} w-full" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
                     ${optionsHtml}
                 </select>
             </div>
@@ -433,7 +433,7 @@ function agregarFila() {
     }
 
     // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
-    tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const scrollBox = tr.closest('.overflow-y-auto'); if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) { scrollBox.scrollTop = scrollBox.scrollHeight; }
 }
 
 let _pendingRowToDelete = null;

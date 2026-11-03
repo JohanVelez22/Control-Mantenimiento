@@ -1,24 +1,44 @@
-/* --- TABLA DE DATOS ULTRA-PREMIUM (Liquid Glass) ------------------------- */
+/* --- TABLA DE DATOS ULTRA-PREMIUM (Acrílico Mate con Contraste Esculpido en Claro y Oscuro) --- */
 .ts-table,
 .glass-table {
   width: 100%;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(28px) saturate(200%);
-  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(250, 252, 255, 0.94) 100%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
   border-radius: 18px !important;
   overflow: hidden;
-  box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 10px 26px -6px rgba(15, 23, 42, 0.08),
+    0 2px 6px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+  border: 1px solid #CBD5E1;
   transition: none !important;
 }
 
 html.dark .ts-table,
 html.dark .glass-table {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(10, 18, 36, 0.82) 100%);
-  box-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+  background: linear-gradient(180deg, rgba(14, 22, 43, 0.88) 0%, rgba(9, 15, 32, 0.92) 100%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+  box-shadow:
+    0 18px 45px -10px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
   border: 1px solid rgba(255, 255, 255, 0.10);
+  transition: none !important;
+}
+
+/* Evitar doble capa de backdrop-filter dentro de tarjetas que ya tienen desenfoque Acrílico Mate (previene parpadeo GPU de bordes 1px al insertar filas) */
+.glass-card .ts-table,
+.glass-card .glass-table,
+.ts-table .glass-input,
+.glass-table .glass-input,
+.ts-table .ts-wrapper.glass-input .ts-control,
+.glass-table .ts-wrapper.glass-input .ts-control {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transition: none !important;
 }
 
 .ts-table thead th,
@@ -35,11 +55,13 @@ table thead th {
   height: 35px !important;
   box-sizing: border-box !important;
   text-transform: uppercase !important;
-  color: #1E293B;
-  background: rgba(255, 255, 255, 0.55);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.80);
+  color: #0F172A;
+  background: linear-gradient(180deg, #E6EDF6 0%, #DCE5F0 100%) !important;
+  border-bottom: 1px solid #CBD5E1;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
   position: sticky;
   top: 0;
+  z-index: 5;
   white-space: nowrap !important;
   transition: none !important;
 }
@@ -50,8 +72,10 @@ html.dark .table-dense thead th,
 html.dark .table-compact thead th,
 html.dark table thead th {
   color: #F8FAFC !important;
-  background: rgba(15, 23, 42, 0.85) !important;
-  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(11, 18, 36, 0.96) 100%) !important;
+  border-bottom-color: #1E293B !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: none !important;
 }
 
 .ts-table thead th:first-child,
@@ -65,8 +89,11 @@ html.dark table thead th {
 }
 
 .ts-table tbody tr,
-.glass-table tbody tr {
-  transition: transform 0.1s ease;
+.glass-table tbody tr,
+.ts-table tfoot tr,
+.glass-table tfoot tr {
+  background: transparent !important;
+  transition: none !important;
 }
 
 /* Hover effect for tables */
@@ -101,13 +128,13 @@ html.dark .ts-table.table-electronica tbody tr:hover {
   color: #1E293B;
   line-height: 1.5;
   vertical-align: middle;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.60);
-  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  border-bottom: 1px solid #E5E7EB;
+  transition: none !important;
 }
 
-.ts-table tbody tr:last-child td,
+.ts-table:not(:has(tfoot)) tbody tr:last-child td,
 .ts-table tfoot tr:last-child td,
-.glass-table tbody tr:last-child td,
+.glass-table:not(:has(tfoot)) tbody tr:last-child td,
 .glass-table tfoot tr:last-child td {
   border-bottom: none !important;
 }
@@ -229,11 +256,13 @@ html.dark .glass-table tfoot tr:hover {
 .ts-table tfoot tr,
 .glass-table tfoot tr {
   border-top: none !important;
+  transition: none !important;
 }
 
 .ts-table tfoot td,
 .glass-table tfoot td {
   border-bottom: none !important;
+  transition: none !important;
 }
 
 /* Margen inferior en tarjetas contenedoras de tablas (simétrico y homogéneo al espacio superior del título) */
@@ -259,7 +288,7 @@ html.dark .glass-table tfoot tr:hover {
   overflow-y: hidden !important;
 }
 
-/* Permitir scroll vertical suave y visualmente estilizado en tablas con max-height o overflow-y-auto */
+/* Permitir scroll vertical estable y visualmente estilizado en tablas con max-height o overflow-y-auto */
 .overflow-x-auto.overflow-y-auto,
 .overflow-x-auto[class*="overflow-y-auto"],
 .overflow-x-auto[class*="max-h-"],
@@ -273,7 +302,7 @@ html.dark .glass-table tfoot tr:hover {
   margin-bottom: 0 !important;
   overflow-x: auto !important;
   overflow-y: auto !important;
-  scroll-behavior: smooth !important;
+  scroll-behavior: auto !important;
 }
 
 .overflow-x-auto.overflow-y-auto::-webkit-scrollbar,
@@ -400,8 +429,8 @@ html.dark .logo-upload-container {
   align-items: center !important;
   justify-content: center !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
-  backdrop-filter: blur(4px) !important;
   -webkit-backdrop-filter: blur(4px) !important;
+  backdrop-filter: blur(4px) !important;
 }
 
 .logo-camera-badge svg {
@@ -413,9 +442,10 @@ html.dark .logo-upload-container {
   color: #FFFFFF !important;
 }
 
-html.dark .ts-table tbody td {
+html.dark .ts-table tbody td,
+html.dark .glass-table tbody td {
   color: #F1F5F9;
-  border-bottom-color: rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid #1E293B !important;
 }
 
 html.dark .ts-table tbody td.text-amber-400,

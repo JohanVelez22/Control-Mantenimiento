@@ -212,17 +212,43 @@
 
     <!-- SCRIPTS CORE -->
     <script>
-        // ─── TEMA CLARO/OSCURO ──────────────────────────────────────────
+        // ─── TEMA CLARO/OSCURO (Cross-fade sedoso View Transitions API + Cero destello de bordes) ─────
+        window.toggleWolfcoreTheme = function(btnEl) {
+            const htmlEl = document.documentElement;
+            const applySwitch = () => {
+                htmlEl.classList.add('preload');
+                htmlEl.classList.toggle('dark');
+                localStorage.setItem('color-theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+                if (typeof window.applyNotifDropdownTheme === 'function') {
+                    window.applyNotifDropdownTheme();
+                }
+                void htmlEl.offsetHeight;
+            };
+
+            const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (typeof document.startViewTransition === 'function' && !prefersReducedMotion) {
+                const vt = document.startViewTransition(applySwitch);
+                vt.ready.then(() => {
+                    requestAnimationFrame(() => htmlEl.classList.remove('preload'));
+                }).catch(() => {
+                    htmlEl.classList.remove('preload');
+                });
+            } else {
+                htmlEl.classList.add('theme-transition');
+                htmlEl.classList.toggle('dark');
+                localStorage.setItem('color-theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+                if (typeof window.applyNotifDropdownTheme === 'function') {
+                    window.applyNotifDropdownTheme();
+                }
+                setTimeout(() => htmlEl.classList.remove('theme-transition'), 280);
+            }
+            if (btnEl && typeof btnEl.blur === 'function') btnEl.blur();
+        };
+
         const themeToggleBtn = document.getElementById('theme-toggle');
         if (themeToggleBtn) {
             themeToggleBtn.addEventListener('click', () => {
-                document.documentElement.classList.toggle('dark');
-                if (document.documentElement.classList.contains('dark')) {
-                    localStorage.setItem('color-theme', 'dark');
-                } else {
-                    localStorage.setItem('color-theme', 'light');
-                }
-                themeToggleBtn.blur();
+                window.toggleWolfcoreTheme(themeToggleBtn);
             });
         }
 
@@ -238,10 +264,13 @@
                 : 'bg-emerald-500/90 dark:bg-emerald-900/80 border-emerald-500/50';
             const icon = isError ? '⚠️' : '✅';
 
+            const safeMessage = String(message ?? '').replace(/[&<>"']/g, function(m) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m];
+            });
             toast.className = `flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl text-white transform transition-all duration-400 translate-y-12 opacity-0 pointer-events-auto ${bgStr}`;
             toast.innerHTML = `
                 <span class="text-2xl drop-shadow-md">${icon}</span>
-                <p class="text-sm font-bold leading-tight flex-1">${message}</p>
+                <p class="text-sm font-bold leading-tight flex-1">${safeMessage}</p>
                 <button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white transition-colors text-lg focus:outline-none">&times;</button>
             `;
 
@@ -260,8 +289,8 @@
         }
 
         // Leer sesiones de Laravel
-        @if(session('success')) showToast("{{ session('success') }}", 'success'); @endif
-        @if(session('error')) showToast("{{ session('error') }}", 'error'); @endif
+        @if(session('success')) showToast(@json(session('success')), 'success'); @endif
+        @if(session('error')) showToast(@json(session('error')), 'error'); @endif
         @if(isset($errors) && $errors->any()) showToast("Verifica los campos obligatorios del formulario.", 'error'); @endif
 
         // ─── ACCESIBILIDAD Y GESTIÓN DE FOCO EN MODALES (WCAG 2.1) ────────
@@ -284,6 +313,7 @@
         function confirmDelete(form, message) {
             recordFocus();
             _pendingForm = form;
+            window._pendingForm = form;
             const modal = document.getElementById('ts-modal');
             const card = document.getElementById('ts-modal-card');
             const confirmBtn = document.getElementById('ts-modal-confirm');
@@ -351,6 +381,7 @@
             setTimeout(() => {
                 modal.classList.add('hidden');
                 _pendingForm = null;
+                window._pendingForm = null;
                 // Restaurar estado por defecto
                 const confirmBtn = document.getElementById('ts-modal-confirm');
                 const cancelBtn = document.getElementById('ts-modal-cancel');
@@ -363,6 +394,8 @@
                 restoreFocus();
             }, 300);
         }
+        window.confirmDelete = confirmDelete;
+        window.closeTsModal = closeTsModal;
 
         // ─── MODAL GLOBAL DE ANULACIÓN ───────────────────────────────────
         const isTecnicoGlobal = {{ (auth()->check() && auth()->user()->isTecnico()) ? 'true' : 'false' }};
@@ -622,10 +655,10 @@
         window.submitDynamicForm = submitDynamicForm;
 
         document.getElementById('ts-modal-confirm')?.addEventListener('click', () => {
-            if (_pendingForm) {
-                const dynamicPanel = _pendingForm.closest('#mantenimiento-dynamic-panel, #electronica-dynamic-panel');
+            const formToSubmit = _pendingForm || window._pendingForm;
+            if (formToSubmit) {
+                const dynamicPanel = formToSubmit.closest('#mantenimiento-dynamic-panel, #electronica-dynamic-panel');
                 if (dynamicPanel) {
-                    const formToSubmit = _pendingForm;
                     closeTsModal();
                     submitDynamicForm(formToSubmit, dynamicPanel);
                     return;
@@ -633,8 +666,8 @@
                 try {
                     sessionStorage.setItem('ts_scroll_pos_' + window.location.pathname, window.scrollY);
                 } catch(e) {}
-                _pendingForm.setAttribute('data-confirmed', 'true');
-                _pendingForm.submit();
+                formToSubmit.setAttribute('data-confirmed', 'true');
+                formToSubmit.submit();
             }
         });
 
@@ -918,12 +951,87 @@
             });
         }
 
-        // Cierra el dropdown de notificaciones al hacer clic fuera
-        document.addEventListener('click', function(event) {
-            const bell = document.getElementById('notification-bell');
-            const dropdown = document.getElementById('notif-dropdown');
-            if (bell && dropdown && !bell.contains(event.target)) {
-                dropdown.classList.add('hidden');
+        // Reposicionar el dropdown de notificaciones portalándolo a document.body
+        // para romper el contexto de aislamiento de backdrop-filter generado por #ts-topbar
+        function positionNotifDropdown() {
+            const btn = document.querySelector('.notif-toggle-btn');
+            const d = document.getElementById('notif-dropdown');
+            if (!btn || !d) return;
+
+            if (d.parentElement !== document.body) {
+                document.body.appendChild(d);
+            }
+
+            const rect = btn.getBoundingClientRect();
+            const dropdownWidth = 260;
+            let left = rect.left + (rect.width / 2) - (dropdownWidth / 2);
+            left = Math.max(12, Math.min(window.innerWidth - dropdownWidth - 12, left));
+
+            d.style.position = 'fixed';
+            d.style.top = (rect.bottom + 8) + 'px';
+            d.style.left = left + 'px';
+            d.style.right = 'auto';
+            d.style.bottom = 'auto';
+            d.style.margin = '0';
+            d.style.width = dropdownWidth + 'px';
+            d.style.zIndex = '99999';
+
+            const arrow = document.getElementById('notif-arrow');
+            if (arrow) {
+                const bellCenter = rect.left + (rect.width / 2);
+                const arrowLeft = bellCenter - left - 6; // 6px = mitad del ancho de la flecha (12px)
+                const clampedArrowLeft = Math.max(16, Math.min(dropdownWidth - 28, arrowLeft));
+                arrow.style.marginLeft = clampedArrowLeft + 'px';
+            }
+        }
+
+        // Alternar y cerrar el dropdown de notificaciones (disponible siempre, incluso con 0 pendientes)
+        function toggleNotifDropdown() {
+            const d = document.getElementById('notif-dropdown');
+            if (!d) return;
+            if (d.classList.contains('hidden')) {
+                if (typeof applyNotifDropdownTheme === 'function') applyNotifDropdownTheme();
+                positionNotifDropdown();
+                d.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    d.classList.remove('opacity-0', 'scale-95');
+                });
+                setTimeout(() => {
+                    const clickHandler = function(e) {
+                        if (!d.contains(e.target) && !e.target.closest('.notif-toggle-btn') && !e.target.closest('[onclick*="toggleNotifDropdown"]')) {
+                            d.classList.add('opacity-0', 'scale-95');
+                            setTimeout(() => d.classList.add('hidden'), 200);
+                            document.removeEventListener('click', clickHandler);
+                        }
+                    };
+                    document.addEventListener('click', clickHandler);
+                }, 50);
+            } else {
+                d.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => d.classList.add('hidden'), 200);
+            }
+        }
+
+        // Mantener posición del dropdown al redimensionar o hacer scroll si está abierto
+        window.addEventListener('resize', () => {
+            const d = document.getElementById('notif-dropdown');
+            if (d && !d.classList.contains('hidden')) {
+                positionNotifDropdown();
+            }
+        }, { passive: true });
+
+        window.addEventListener('scroll', () => {
+            const d = document.getElementById('notif-dropdown');
+            if (d && !d.classList.contains('hidden')) {
+                positionNotifDropdown();
+            }
+        }, { passive: true });
+
+        // Portalar al body de forma proactiva al cargar el DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            const d = document.getElementById('notif-dropdown');
+            if (d && d.parentElement !== document.body) {
+                document.body.appendChild(d);
             }
         });
 
@@ -1190,27 +1298,6 @@
             });
         }
 
-        function toggleNotifDropdown() {
-            const d = document.getElementById('notif-dropdown');
-            if (d.classList.contains('hidden')) {
-                d.classList.remove('hidden');
-                setTimeout(() => { d.classList.remove('opacity-0', 'scale-95'); }, 10);
-                // Cierra al hacer clic fuera
-                setTimeout(() => {
-                    document.addEventListener('click', function handler(e) {
-                        if (!d.contains(e.target) && !e.target.closest('[onclick="toggleNotifDropdown()"]')) {
-                            d.classList.add('opacity-0', 'scale-95');
-                            setTimeout(() => d.classList.add('hidden'), 200);
-                            document.removeEventListener('click', handler);
-                        }
-                    });
-                }, 50);
-            } else {
-                d.classList.add('opacity-0', 'scale-95');
-                setTimeout(() => d.classList.add('hidden'), 200);
-            }
-        }
-
         function openNotifModal(tab) {
             const modal = document.getElementById('ts-notif-modal');
             const card  = document.getElementById('ts-notif-card');
@@ -1359,7 +1446,7 @@
                             return '<div class="ts-item-display">' + escape(data.text) + '</div>';
                         },
                         no_results: function(data, escape) {
-                            return '<div class="no-results font-bold" style="padding: 8px 12px; color: #475569; font-size: 13px;">No se encontraron resultados para "<span class="text-blue-600">' + escape(data.input) + '</span>"</div>';
+                            return '<div class="no-results font-bold text-slate-600 dark:text-slate-300" style="padding: 8px 12px; font-size: 13px;">No se encontraron resultados para "<span class="text-blue-600 dark:text-blue-400">' + escape(data.input) + '</span>"</div>';
                         },
                         option_create: function(data, escape) {
                             return '<div class="create py-2 px-3 text-blue-600 dark:text-blue-400 font-bold cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/30">➕ Usar como producto personalizado: "<strong>' + escape(data.input) + '</strong>"</div>';

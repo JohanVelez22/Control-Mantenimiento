@@ -24,7 +24,7 @@
  </div>
 
  <div class="overflow-x-auto pb-2">
- <table id="tabla-equipos" class="ts-table responsive-table">
+ <table id="tabla-equipos" class="ts-table responsive-table w-full">
  <thead>
  <tr>
  <th class="w-16 text-center">ID</th>

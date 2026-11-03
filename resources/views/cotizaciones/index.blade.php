@@ -105,6 +105,11 @@
                             
                             @if($cot->estado === 'aprobada')
                                 <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir PDF">🖨️</a>
+                                @if($cot->factura_creada)
+                                    <a href="{{ route('inventario.facturas.show', $cot->factura_creada->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Ver movimiento: {{ $cot->factura_creada->numero_factura }}">
+                                        {{ $cot->factura_creada->tipo_movimiento === 'compra' ? '📦' : '🛒' }}
+                                    </a>
+                                @endif
                             @else
                                 <span class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs opacity-40 cursor-not-allowed" title="Requiere estar aprobada para imprimir PDF">🖨️</span>
                             @endif

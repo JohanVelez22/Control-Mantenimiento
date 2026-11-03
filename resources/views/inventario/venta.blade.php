@@ -97,7 +97,7 @@
             </tr>
         </tbody>
         <tfoot>
-            <tr class="border-0 bg-gray-50/50 dark:bg-gray-800/50">
+            <tr class="border-0 bg-transparent">
                 <td colspan="3" class="py-4 text-right pr-2 border-0">
                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                 </td>
@@ -208,7 +208,7 @@ function agregarFila() {
   tr.className = 'item-row bg-transparent';
   tr.innerHTML = `
   <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-   <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500 w-full" data-placeholder="Seleccionar producto..." style="display: none;">
+   <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500 w-full" data-placeholder="Seleccionar producto...">
    <option value="">Seleccionar producto...</option>
   ${stockSelectOptions()}
   </select>
@@ -240,7 +240,7 @@ function agregarFila() {
   }
 
   // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
-  tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const scrollBox = tbody.closest('.overflow-y-auto'); if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) { scrollBox.scrollTop = scrollBox.scrollHeight; }
 }
 
 function eliminarFila(btn) {

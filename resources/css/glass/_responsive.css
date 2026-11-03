@@ -53,7 +53,9 @@
   #tabla-facturas,
   #tabla-clientes,
   #tabla-equipos,
-  #tabla-proveedores {
+  #tabla-proveedores,
+  #tabla-usuarios,
+  #tabla-tecnicos {
     min-width: 820px;
   }
 }
@@ -135,8 +137,12 @@
   }
 }
 
-/* --- PRELOAD: BLOQUEAR TRANSICIONES INICIALES -------------------------------------------------- */
-.preload * {
+/* --- PRELOAD: BLOQUEAR TRANSICIONES INICIALES Y AL CAMBIAR DE TEMA -------------------------------------------------- */
+.preload,
+.preload *,
+.preload *::before,
+.preload *::after {
   transition: none !important;
+  animation-duration: 0s !important;
 }
 

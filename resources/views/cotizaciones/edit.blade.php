@@ -89,7 +89,7 @@
                                     $precio = (float)$item->precio_unitario;
                                     $subtotal = $cant * $precio;
                                 @endphp
-                                <tr class="item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-white/10 hover:bg-white/50 dark:hover:bg-slate-900/30 transition-colors">
+                                <tr class="item-row bg-transparent">
                                     <td class="col-tipo align-middle">
                                         <select name="items[{{ $idx }}][tipo]" class="tipo-select glass-input py-1.5 px-2 font-bold w-full whitespace-nowrap">
                                             <option value="libre" {{ !$isStock ? 'selected' : '' }}>🛠️ Servicio / Libre</option>
@@ -128,7 +128,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr class="item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-white/10 hover:bg-white/50 dark:hover:bg-slate-900/30 transition-colors">
+                                <tr class="item-row bg-transparent">
                                     <td class="col-tipo align-middle">
                                         <select name="items[0][tipo]" class="tipo-select glass-input py-1.5 px-2 font-bold w-full whitespace-nowrap">
                                             <option value="libre" selected>🛠️ Servicio / Libre</option>
@@ -156,7 +156,7 @@
                             @endforelse
                         </tbody>
                         <tfoot>
-                            <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
+                            <tr class="border-0 bg-transparent">
                                 <td colspan="3" class="py-4"></td>
                                 <td class="col-precio py-4 text-center align-middle">
                                     <span class="font-bold text-slate-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Cotización:</span>

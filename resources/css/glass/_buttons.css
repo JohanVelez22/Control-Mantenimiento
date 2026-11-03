@@ -25,8 +25,57 @@
   transform: none !important;
 }
 
+/* --- BOTÓN SECUNDARIO ACRÍLICO MATE --- */
+.btn-secondary {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  padding: 0 18px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  color: #0F172A !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.86) 0%, rgba(241, 245, 249, 0.78) 100%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(155%) !important;
+  backdrop-filter: blur(16px) saturate(155%) !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 6px -1px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+html.dark .btn-secondary {
+  color: #F1F5F9 !important;
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.82) 0%, rgba(15, 23, 42, 0.88) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.13) !important;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.90) !important;
+  border-color: rgba(37, 99, 235, 0.30) !important;
+  color: #2563EB !important;
+}
+
+html.dark .btn-secondary:hover {
+  background: rgba(51, 65, 85, 0.85) !important;
+  border-color: rgba(96, 165, 250, 0.40) !important;
+  color: #93C5FD !important;
+}
+
 /* --- LEVE BRILLO ELEGANTE EN BOTONES SÓLIDOS (Reflejo especular sutil Liquid Glass) --- */
 .btn-primary::before,
+.btn-secondary::before,
 .btn-today::before,
 .btn-clean::before,
 .btn-print::before,
@@ -417,19 +466,23 @@ html.dark .btn-add:hover {
   padding: 0 !important;
   border-radius: 1.5rem !important;
   overflow: hidden !important;
-  background: rgba(255, 255, 255, 0.94) !important;
-  backdrop-filter: blur(28px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.75) !important;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.16) !important;
+  background-image: var(--acrylic-noise), linear-gradient(145deg, rgba(248, 251, 255, 0.74) 0%, rgba(235, 243, 252, 0.68) 100%) !important;
+  background-color: transparent !important;
+  -webkit-backdrop-filter: blur(32px) saturate(185%) !important;
+  backdrop-filter: blur(32px) saturate(185%) !important;
+  border: 1px solid rgba(148, 163, 184, 0.40) !important;
+  box-shadow: 0 24px 50px -12px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04), inset 0 1.5px 0 rgba(255, 255, 255, 0.95) !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .dark .backup-modal-card,
 html.dark .backup-modal-card {
-  background: rgba(11, 18, 33, 0.96) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  background-image: var(--acrylic-noise), linear-gradient(145deg, rgba(22, 34, 62, 0.74) 0%, rgba(12, 20, 42, 0.80) 100%) !important;
+  background-color: transparent !important;
+  -webkit-backdrop-filter: blur(32px) saturate(185%) !important;
+  backdrop-filter: blur(32px) saturate(185%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
 }
 
 /* Encabezado fijo del modal */
@@ -671,35 +724,35 @@ html.dark .backup-modal-footer {
   background: rgba(15, 23, 42, 0.75) !important;
 }
 
-/* Tarjetas de opciones en Tab 1 con identidad cromática diferenciada e integradas en el sistema Liquid Glass */
+/* Tarjetas de opciones en Tab 1 con identidad cromática diferenciada e integradas en el sistema Acrílico Mate */
 .backup-option-card {
   border-radius: 20px !important;
   padding: 1.15rem 1.25rem !important;
   cursor: pointer !important;
   position: relative !important;
-  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
-  background: rgba(255, 255, 255, 0.45) !important;
-  border: 1px solid rgba(255, 255, 255, 0.55) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.84) 0%, rgba(248, 250, 252, 0.76) 100%) !important;
+  border: 1px solid rgba(15, 23, 42, 0.09) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(165%) !important;
+  backdrop-filter: blur(20px) saturate(165%) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
 }
 
 .backup-option-card:hover {
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
 }
 
 .dark .backup-option-card,
 html.dark .backup-option-card {
-  background: rgba(30, 41, 59, 0.45) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  background: linear-gradient(145deg, rgba(24, 36, 64, 0.82) 0%, rgba(13, 21, 42, 0.86) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.11) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
 }
 
 .dark .backup-option-card:hover,
 html.dark .backup-option-card:hover {
-  border-color: rgba(255, 255, 255, 0.16) !important;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
 }
 
 /* 1. Variante DB - Teal / Cian */
@@ -748,19 +801,19 @@ html.dark .backup-option-card.card-type-all.is-selected {
 .backup-info-card {
   border-radius: 20px !important;
   padding: 1.15rem 1.25rem !important;
-  background: rgba(255, 255, 255, 0.45) !important;
-  border: 1px solid rgba(255, 255, 255, 0.55) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
-  transition: all 0.25s ease !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.84) 0%, rgba(248, 250, 252, 0.76) 100%) !important;
+  border: 1px solid rgba(15, 23, 42, 0.09) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(165%) !important;
+  backdrop-filter: blur(20px) saturate(165%) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+  transition: box-shadow 0.25s ease !important;
 }
 
 .dark .backup-info-card,
 html.dark .backup-info-card {
-  background: rgba(30, 41, 59, 0.45) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  background: linear-gradient(145deg, rgba(24, 36, 64, 0.82) 0%, rgba(13, 21, 42, 0.86) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.11) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
 }
 
 /* Tarjeta de rotación / cupo teal */
@@ -769,8 +822,8 @@ html.dark .backup-info-card {
   padding: 1.2rem 1.35rem !important;
   background: rgba(236, 253, 245, 0.65) !important;
   border: 1px solid rgba(16, 185, 129, 0.35) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
   box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
   transition: all 0.25s ease !important;
 }
@@ -865,23 +918,23 @@ html.dark .ts-switch input:checked+.ts-switch-slider {
   border-radius: 20px !important;
   padding: 1.15rem 1rem !important;
   text-align: center !important;
-  background: rgba(255, 255, 255, 0.45) !important;
-  border: 1px solid rgba(255, 255, 255, 0.55) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
-  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.84) 0%, rgba(248, 250, 252, 0.76) 100%) !important;
+  border: 1px solid rgba(15, 23, 42, 0.09) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(165%) !important;
+  backdrop-filter: blur(20px) saturate(165%) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease !important;
 }
 
 .backup-metric-card:hover {
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
 }
 
 .dark .backup-metric-card,
 html.dark .backup-metric-card {
-  background: rgba(30, 41, 59, 0.45) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  background: linear-gradient(145deg, rgba(24, 36, 64, 0.82) 0%, rgba(13, 21, 42, 0.86) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.11) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
 }
 
 .dark .backup-metric-card:hover,
@@ -1060,17 +1113,17 @@ html.dark .backup-path-code {
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Contenedor y tabla de archivos integrados con Liquid Glass */
+/* Contenedor y tabla de archivos integrados con Acrílico Mate */
 .backup-files-wrapper,
 .glass-card.backup-files-wrapper,
 .glass-card:has(.backup-table) {
   border-radius: 20px !important;
   overflow: hidden !important;
-  background: rgba(255, 255, 255, 0.45) !important;
-  border: 1px solid rgba(255, 255, 255, 0.55) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.84) 0%, rgba(248, 250, 252, 0.76) 100%) !important;
+  border: 1px solid rgba(15, 23, 42, 0.09) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(165%) !important;
+  backdrop-filter: blur(20px) saturate(165%) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
   padding: 0 !important;
   padding-bottom: 0 !important;
   margin-bottom: 0 !important;
@@ -1078,9 +1131,9 @@ html.dark .backup-path-code {
 
 .dark .backup-files-wrapper,
 html.dark .backup-files-wrapper {
-  background: rgba(30, 41, 59, 0.45) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  background: linear-gradient(145deg, rgba(24, 36, 64, 0.82) 0%, rgba(13, 21, 42, 0.86) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.11) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
 }
 
 #backup-files-container {
@@ -2167,7 +2220,7 @@ html.dark .btn-purple:hover {
   transform: none !important;
 }
 
-/* ---- Botón Liquid Glass Universal (redondeado suave 13px, no ovalado) ---- */
+/* ---- Botón Acrílico Mate Universal (redondeado suave 13px, no ovalado) ---- */
 .btn-glass {
   display: inline-flex;
   align-items: center;
@@ -2184,20 +2237,20 @@ html.dark .btn-purple:hover {
   border-radius: 13px;
   text-decoration: none;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.60);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(203, 213, 225, 0.85);
-  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.86) 0%, rgba(241, 245, 249, 0.78) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   color: #1E293B;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 
 html.dark .btn-glass {
   color: #F8FAFC;
-  background: rgba(15, 23, 42, 0.60);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 6px 18px -3px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.82) 0%, rgba(15, 23, 42, 0.88) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 6px 18px -3px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .btn-glass:hover {
@@ -2235,8 +2288,8 @@ html.dark .btn-glass:hover {
   text-decoration: none;
   cursor: pointer;
   background: rgba(16, 185, 129, 0.12) !important;
-  backdrop-filter: blur(14px) saturate(180%);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
   border: 1px solid rgba(16, 185, 129, 0.35) !important;
   box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   color: #059669 !important;
@@ -2306,7 +2359,7 @@ html.dark .btn-glass-excel:hover {
   transform: none !important;
 }
 
-/* --- BOTONES SECUNDARIOS / GHOST -------------------------------------------------- */
+/* --- BOTONES SECUNDARIOS / GHOST (Acrílico Mate) -------------------------------------------------- */
 .btn-ghost {
   display: inline-flex;
   align-items: center;
@@ -2322,22 +2375,22 @@ html.dark .btn-glass-excel:hover {
   color: #334155;
   border-radius: 12px;
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-  border: 1px solid rgba(203, 213, 225, 0.75);
-  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.86) 0%, rgba(241, 245, 249, 0.78) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 2px 6px -1px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
   white-space: nowrap;
   transform: none !important;
 }
 
 html.dark .btn-ghost {
   color: #E2E8F0;
-  background: rgba(15, 23, 42, 0.55);
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.82) 0%, rgba(15, 23, 42, 0.88) 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .btn-ghost:hover {
@@ -2459,8 +2512,8 @@ a.btn-ghost[title*="Ver movimiento en Caja" i]:active {
   outline: none !important;
   position: relative !important;
   text-decoration: none !important;
-  backdrop-filter: blur(14px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
   -webkit-tap-highlight-color: transparent !important;
   user-select: none !important;
@@ -2502,13 +2555,13 @@ html:not(.dark) .topbar-btn,
 html:not(.dark) .theme-toggle-btn,
 html:not(.dark) .notif-toggle-btn,
 html:not(.dark) .logout-toggle-btn {
-  background: rgba(255, 255, 255, 0.65) !important;
-  border: 1px solid rgba(203, 213, 225, 0.80) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.88) 0%, rgba(241, 245, 249, 0.80) 100%) !important;
+  border: 1px solid rgba(15, 23, 42, 0.11) !important;
   box-shadow: 
-    0 2px 8px -1px rgba(0, 0, 0, 0.07),
-    0 1px 3px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.05) !important;
+    0 2px 8px -1px rgba(15, 23, 42, 0.06),
+    0 1px 3px rgba(15, 23, 42, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    inset 0 -1px 0 rgba(15, 23, 42, 0.04) !important;
 }
 
 /* Hover común modo claro */
@@ -2590,8 +2643,8 @@ html.dark .theme-toggle-btn,
 html.dark .notif-toggle-btn,
 .dark .logout-toggle-btn,
 html.dark .logout-toggle-btn {
-  background: rgba(15, 23, 42, 0.65) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.84) 0%, rgba(15, 23, 42, 0.90) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
   box-shadow: 
     0 4px 14px -1px rgba(0, 0, 0, 0.50),
     0 1px 3px rgba(0, 0, 0, 0.40),
@@ -2721,8 +2774,8 @@ html.dark .logout-toggle-btn {
   font-size: 13px !important;
   line-height: 1.25 !important;
   border-radius: 12px !important;
-  backdrop-filter: blur(14px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
   box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
   display: inline-flex !important;
@@ -3065,8 +3118,8 @@ html.dark .btn-ghost-orange:hover {
   justify-content: center !important;
   gap: 8px !important;
   box-sizing: border-box !important;
-  backdrop-filter: blur(14px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
   text-rendering: geometricPrecision !important;
@@ -3351,8 +3404,8 @@ html.dark .modal-divider {
   text-decoration: none !important;
   white-space: nowrap !important;
   background: rgba(239, 68, 68, 0.10) !important;
-  backdrop-filter: blur(14px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
   border: 1px solid rgba(239, 68, 68, 0.30) !important;
   box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
   transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease !important;
@@ -3414,8 +3467,8 @@ html.dark .modal-divider {
   cursor: pointer !important;
   text-decoration: none !important;
   background: rgba(37, 99, 235, 0.10) !important;
-  backdrop-filter: blur(14px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
   border: 1px solid rgba(37, 99, 235, 0.28) !important;
   box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
   transition: all 0.22s ease !important;

@@ -53,7 +53,13 @@
   </div>
   </div>
  
- <div class="flex items-center gap-3 shrink-0">
+ <div class="flex flex-wrap items-center gap-3 shrink-0">
+ @if($factura->cotizacion_origen)
+  <a href="{{ route('cotizaciones.show', $factura->cotizacion_origen->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-semibold" title="Ver cotización de origen: {{ $factura->cotizacion_origen->codigo }}">
+      📝 Ver Cotización ({{ $factura->cotizacion_origen->codigo }})
+  </a>
+ @endif
+
  @if($factura->estado !== 'anulada' && !auth()->user()->isInvitado() && $movimientoPadre)
   <a href="{{ route('caja.show', $movimientoPadre->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" title="Ver detalle del movimiento en el módulo de Caja">💵 Ver en Caja</a>
  @endif

@@ -57,6 +57,27 @@ class Factura extends Model
         return $this->belongsTo(User::class);
     }
 
+    /** Cotización de origen si fue convertida */
+    public function cotizacion()
+    {
+        return $this->hasOne(Cotizacion::class, 'factura_id');
+    }
+
+    public function getCotizacionOrigenAttribute(): ?Cotizacion
+    {
+        if ($this->relationLoaded('cotizacion') && $this->cotizacion) {
+            return $this->cotizacion;
+        }
+        $cot = $this->cotizacion()->first();
+        if ($cot) {
+            return $cot;
+        }
+        if (!empty($this->observaciones) && preg_match('/Cotización #([A-Za-z0-9-]+)/', $this->observaciones, $m)) {
+            return Cotizacion::where('codigo', $m[1])->first();
+        }
+        return null;
+    }
+
     /** Saldo pendiente (lo que aún se debe). Columna generada en BD con fallback en memoria */
     public function getSaldoPendienteAttribute(): float
     {

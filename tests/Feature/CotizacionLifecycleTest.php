@@ -170,4 +170,58 @@ class CotizacionLifecycleTest extends TestCase
         $response->assertStatus(200);
         $this->assertEquals('application/pdf', $response->headers->get('content-type'));
     }
+
+    public function test_cotizacion_aprobada_renders_link_to_created_factura(): void
+    {
+        $cotizacion = Cotizacion::create([
+            'codigo' => 'COT-TEST-CONV',
+            'cliente_id' => $this->cliente->id,
+            'fecha' => Carbon::today(),
+            'validez_dias' => 15,
+            'total' => 25000,
+            'estado' => 'pendiente',
+            'user_id' => $this->admin->id,
+            'anulado' => false,
+        ]);
+
+        $cotizacion->items()->create([
+            'tipo' => 'stock',
+            'item_id' => $this->stock->id,
+            'descripcion' => $this->stock->producto,
+            'cantidad' => 1,
+            'precio_unitario' => 25000,
+            'subtotal' => 25000,
+        ]);
+
+        // Convertir cotización a venta
+        $convertResponse = $this->actingAs($this->admin)->post(route('cotizaciones.convertir', $cotizacion));
+        $convertResponse->assertRedirect();
+
+        $cotizacion->refresh();
+        $this->assertEquals('aprobada', $cotizacion->estado);
+        $this->assertNotNull($cotizacion->factura_id);
+        $this->assertNotNull($cotizacion->factura_creada);
+
+        // Verificar vista show
+        $showResponse = $this->actingAs($this->admin)->get(route('cotizaciones.show', $cotizacion));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee(route('inventario.facturas.show', $cotizacion->factura_creada->id));
+        $showResponse->assertSee($cotizacion->factura_creada->numero_factura);
+
+        // Verificar vista index de cotizaciones
+        $indexResponse = $this->actingAs($this->admin)->get(route('cotizaciones.index'));
+        $indexResponse->assertStatus(200);
+        $indexResponse->assertSee(route('inventario.facturas.show', $cotizacion->factura_creada->id));
+
+        // Verificar que la factura enlazada muestra el enlace de vuelta a la cotización
+        $factura = $cotizacion->factura_creada;
+        $facturaShowResponse = $this->actingAs($this->admin)->get(route('inventario.facturas.show', $factura->id));
+        $facturaShowResponse->assertStatus(200);
+        $facturaShowResponse->assertSee(route('cotizaciones.show', $cotizacion->id));
+        $facturaShowResponse->assertSee($cotizacion->codigo);
+
+        $facturasIndexResponse = $this->actingAs($this->admin)->get(route('inventario.facturas'));
+        $facturasIndexResponse->assertStatus(200);
+        $facturasIndexResponse->assertSee(route('cotizaciones.show', $cotizacion->id));
+    }
 }

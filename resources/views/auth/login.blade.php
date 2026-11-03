@@ -149,14 +149,26 @@
  e.preventDefault();
  if (isToggling) return;
  isToggling = true;
- setTimeout(function() { isToggling = false; }, 300);
- 
- if (document.documentElement.classList.contains('dark')) {
- document.documentElement.classList.remove('dark');
- localStorage.setItem('color-theme', 'light');
+ setTimeout(function() { isToggling = false; }, 320);
+ var htmlEl = document.documentElement;
+ var applySwitch = function() {
+   htmlEl.classList.add('preload');
+   htmlEl.classList.toggle('dark');
+   localStorage.setItem('color-theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+   void htmlEl.offsetHeight;
+ };
+ if (typeof document.startViewTransition === 'function' && (!window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+   var vt = document.startViewTransition(applySwitch);
+   vt.ready.then(function() {
+     requestAnimationFrame(function() { htmlEl.classList.remove('preload'); });
+   }).catch(function() {
+     htmlEl.classList.remove('preload');
+   });
  } else {
- document.documentElement.classList.add('dark');
- localStorage.setItem('color-theme', 'dark');
+   htmlEl.classList.add('theme-transition');
+   htmlEl.classList.toggle('dark');
+   localStorage.setItem('color-theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+   setTimeout(function() { htmlEl.classList.remove('theme-transition'); }, 280);
  }
  btn.blur();
  });

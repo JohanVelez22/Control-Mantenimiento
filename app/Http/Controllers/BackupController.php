@@ -174,9 +174,13 @@ class BackupController extends Controller
                 'message' => 'Ocurrió un error al ejecutar el comando de respaldo.',
             ], 500);
         } catch (\Throwable $e) {
+            Log::error('Excepción al generar respaldo manual: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Excepción al generar respaldo: '.$e->getMessage(),
+                'message' => config('app.debug')
+                    ? 'Excepción al generar respaldo: '.$e->getMessage()
+                    : 'No se pudo generar la copia de seguridad. Verifique los registros del sistema.',
             ], 500);
         }
     }
@@ -720,7 +724,9 @@ class BackupController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error al restaurar la copia de seguridad: '.$e->getMessage(),
+                'message' => config('app.debug')
+                    ? 'Error al restaurar la copia de seguridad: '.$e->getMessage()
+                    : 'Error al restaurar la copia de seguridad. Verifique el archivo e intente nuevamente.',
             ], 500);
 
         } finally {
@@ -775,7 +781,7 @@ class BackupController extends Controller
             // 1. Probar conectividad con GitHub mediante git fetch
             $fetchOutput = [];
             $fetchCode = -1;
-            exec('git -C '.escapeshellarg($basePath).' fetch origin 2>&1', $fetchOutput, $fetchCode);
+            exec('git -c safe.directory=* -C '.escapeshellarg($basePath).' fetch origin 2>&1', $fetchOutput, $fetchCode);
 
             if ($fetchCode !== 0) {
                 Log::warning('Git fetch falló: '.implode(' | ', $fetchOutput));
@@ -790,7 +796,7 @@ class BackupController extends Controller
             // 2. Ejecutar git pull
             $pullOutput = [];
             $pullCode = -1;
-            exec('git -C '.escapeshellarg($basePath).' pull 2>&1', $pullOutput, $pullCode);
+            exec('git -c safe.directory=* -C '.escapeshellarg($basePath).' pull 2>&1', $pullOutput, $pullCode);
             $outputText = implode("\n", $pullOutput);
 
             if ($pullCode !== 0) {

@@ -24,10 +24,16 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-3 shrink-0">
+            <div class="flex flex-wrap items-center gap-3 shrink-0">
                 <a href="{{ route('cotizaciones.pdf', $cotizacion) }}" target="_blank" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30">
                     📄 Ver PDF
                 </a>
+                
+                @if($cotizacion->factura_creada)
+                    <a href="{{ route('inventario.facturas.show', $cotizacion->factura_creada->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 font-semibold" title="Ver {{ $cotizacion->factura_creada->tipo_movimiento === 'compra' ? 'Compra' : 'Venta' }} generada: {{ $cotizacion->factura_creada->numero_factura }}">
+                        {{ $cotizacion->factura_creada->tipo_movimiento === 'compra' ? '📦 Ver Compra' : '🛒 Ver Venta' }} ({{ $cotizacion->factura_creada->numero_factura }})
+                    </a>
+                @endif
                 
                 @if(!$cotizacion->anulado)
                     @if($cotizacion->estado === 'pendiente')
@@ -143,36 +149,12 @@
 
 <script>
 function openAprobarCotizacionModal() {
-    const modal = document.getElementById('ts-modal');
-    const card = document.getElementById('ts-modal-card');
-    const confirmBtn = document.getElementById('ts-modal-confirm');
-    const cancelBtn = document.getElementById('ts-modal-cancel');
-    const iconBox = document.getElementById('ts-modal-icon-box');
-    const icon = document.getElementById('ts-modal-icon');
-    const titleEl = document.getElementById('ts-modal-title');
-    const msgEl = document.getElementById('ts-modal-msg');
-
-    window._pendingForm = document.getElementById('form-convertir-cotizacion');
-
-    if (titleEl) titleEl.innerText = '¿Estás seguro?';
-    if (msgEl) msgEl.innerText = 'Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?';
-    if (icon) icon.innerText = '✅';
-    if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center text-3xl mx-auto mb-4';
-    if (cancelBtn) {
-        cancelBtn.className = 'flex-1 btn-ghost-red';
-        cancelBtn.textContent = 'Cancelar';
-    }
-    if (confirmBtn) {
-        confirmBtn.className = 'flex-1 btn-ghost-emerald';
-        confirmBtn.textContent = 'Confirmar';
-    }
-
-    if (modal) {
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            if (card) card.classList.remove('scale-95', 'opacity-0');
-        }, 10);
+    const form = document.getElementById('form-convertir-cotizacion');
+    if (!form) return;
+    if (typeof confirmDelete === 'function') {
+        confirmDelete(form, 'Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?');
+    } else {
+        form.submit();
     }
 }
 </script>

@@ -5482,8 +5482,7 @@ html.dark .pill-especialidad {
   /* ================================================================
    10. Colores forzados en encabezados de tabla
    ================================================================ */
-  th,
-  td {
+  th, td {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }

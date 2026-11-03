@@ -24,7 +24,7 @@ class CotizacionController extends Controller
 {
     public function index()
     {
-        $cotizaciones = Cotizacion::with(['cliente', 'proveedor', 'user', 'items'])->orderBy('id', 'desc')->paginate(15);
+        $cotizaciones = Cotizacion::with(['cliente', 'proveedor', 'user', 'items', 'factura'])->orderBy('id', 'desc')->paginate(15);
 
         return view('cotizaciones.index', compact('cotizaciones'));
     }
@@ -115,8 +115,11 @@ class CotizacionController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error al crear cotización: '.$e->getMessage());
 
-            return back()->with('error', 'Error al crear la cotización: '.$e->getMessage())->withInput();
+            $msg = config('app.debug') ? 'Error al crear la cotización: '.$e->getMessage() : 'Error inesperado al crear la cotización.';
+
+            return back()->with('error', $msg)->withInput();
         }
     }
 
@@ -229,14 +232,17 @@ class CotizacionController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error("Error al actualizar cotización #{$cotizacion->id}: ".$e->getMessage());
 
-            return back()->with('error', 'Error al actualizar: '.$e->getMessage())->withInput();
+            $msg = config('app.debug') ? 'Error al actualizar: '.$e->getMessage() : 'Error inesperado al actualizar la cotización.';
+
+            return back()->with('error', $msg)->withInput();
         }
     }
 
     public function show(Cotizacion $cotizacion)
     {
-        $cotizacion->load('cliente', 'proveedor', 'items.stock', 'user');
+        $cotizacion->load('cliente', 'proveedor', 'items.stock', 'user', 'factura');
 
         return view('cotizaciones.show', ['cotizacion' => $cotizacion]);
     }
@@ -343,7 +349,7 @@ class CotizacionController extends Controller
 
             $esProveedor = ! empty($cotizacion->proveedor_id);
             $tipoMovimiento = $esProveedor ? 'compra' : 'venta';
-            $prefijoFactura = $esProveedor ? 'CMP-' : 'VT-';
+            $prefijoFactura = $esProveedor ? 'CP-' : 'VT-';
 
             // Validar y bloquear stock en orden canónico (item_id ASC) para prevenir deadlocks
             $stockItems = $cotizacion->items->filter(fn ($it) => $it->tipo === 'stock' && $it->item_id)->sortBy('item_id');
@@ -379,14 +385,11 @@ class CotizacionController extends Controller
                 }
             }
 
-            // 1. Marcar cotización como aprobada
-            $cotizacion->update(['estado' => 'aprobada']);
-
             $facturableId = $cotizacion->proveedor_id ?: $cotizacion->cliente_id;
             $facturableType = $esProveedor ? Proveedor::class : Cliente::class;
             $destinatarioNombre = $cotizacion->destinatario_nombre;
 
-            // 2. Crear Factura correspondiente (Compra a Proveedor o Venta a Cliente)
+            // 1. Crear Factura correspondiente (Compra a Proveedor o Venta a Cliente)
             $factura = Factura::create([
                 'numero_factura' => Factura::siguienteNumero($prefijoFactura),
                 'tipo_movimiento' => $tipoMovimiento,
@@ -398,6 +401,12 @@ class CotizacionController extends Controller
                 'observaciones' => ($esProveedor ? 'Compra' : 'Venta')." generada automáticamente desde Cotización #{$cotizacion->codigo}".($cotizacion->notas ? "\nNotas: {$cotizacion->notas}" : ''),
                 'fecha' => $hoy,
                 'user_id' => auth()->id(),
+            ]);
+
+            // 2. Marcar cotización como aprobada y asociar la factura generada
+            $cotizacion->update([
+                'estado' => 'aprobada',
+                'factura_id' => $factura->id,
             ]);
 
             // 3. Crear FacturaItems y ajustar inventario según corresponda reutilizando modelos bloqueados

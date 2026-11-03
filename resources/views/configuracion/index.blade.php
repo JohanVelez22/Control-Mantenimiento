@@ -1750,11 +1750,11 @@ async function ejecutarActualizacionGit() {
         const data = await res.json();
         if (data.status === 'updated') {
             if (typeof showToast === 'function') {
-                showToast(data.message || 'Se actualizó correctamente.', 'success');
+                showToast(data.message || 'Código fuente actualizado exitosamente desde GitHub.', 'success');
             }
         } else if (data.status === 'up_to_date') {
             if (typeof showToast === 'function') {
-                showToast(data.message || 'Nada por hacer.', 'success');
+                showToast('El sistema ya se encuentra en su versión más reciente (al día con GitHub).', 'info');
             }
         } else {
             if (typeof showToast === 'function') {

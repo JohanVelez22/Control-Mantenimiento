@@ -356,7 +356,7 @@ class MovimientoInventarioController extends Controller
             'fecha_hasta' => $fecha_hasta,
         ]);
 
-        $query = Factura::with(['facturable', 'user', 'items.stock'])
+        $query = Factura::with(['facturable', 'user', 'items.stock', 'cotizacion'])
             ->orderBy('fecha', 'desc')
             ->orderBy('id', 'desc');
 
@@ -381,7 +381,7 @@ class MovimientoInventarioController extends Controller
 
     public function showFactura(Factura $factura): View
     {
-        $factura->load(['facturable', 'items.stock', 'user']);
+        $factura->load(['facturable', 'items.stock', 'user', 'cotizacion']);
 
         $movimientoPadre = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)

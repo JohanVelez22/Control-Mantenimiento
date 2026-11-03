@@ -31,7 +31,7 @@ class MovimientoCajaController extends Controller
             'fecha_hasta' => $fecha_hasta,
         ]);
 
-        $query = MovimientoCaja::with('concepto', 'user', 'childPayments', 'parent.childPayments');
+        $query = MovimientoCaja::with('concepto', 'user', 'childPayments', 'parent.childPayments', 'factura');
 
         if ($request->filled('tipo_movimiento') && $request->tipo_movimiento !== 'todos') {
             $query->where('tipo_movimiento', $request->tipo_movimiento);
