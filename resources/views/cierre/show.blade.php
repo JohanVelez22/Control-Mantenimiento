@@ -7,13 +7,13 @@
         
         {{-- Modal de contraseña para eliminar cierre --}}
         @push('modals')
-        <div id="pwd-cierre-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+        <div id="pwd-cierre-modal" role="dialog" aria-modal="true" aria-labelledby="pwd-cierre-title-show" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
             <div class="ts-modal-card scale-95 opacity-0" id="pwd-cierre-card">
                 <div class="p-6">
                     <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
                         🔓
                     </div>
-                    <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar / Desbloquear Cierre</h3>
+                    <h3 id="pwd-cierre-title-show" class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar / Desbloquear Cierre</h3>
                     <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
                         @if(auth()->check() && auth()->user()->isTecnico())
                             Esta acción desbloqueará el día {{ $cierre->fecha->format('d/m/Y') }}. Ingresa la contraseña de un administrador.
@@ -41,7 +41,7 @@
         {{-- Encabezado --}}
         <div class="detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 no-print">
             <div class="flex items-center gap-4">
-                <a href="{{ route('cierre.index') }}" class="btn-ghost text-xl" title="Volver a la lista de cierres">⬅️</a>
+                <a href="{{ route('cierre.index') }}" class="btn-ghost text-xl" title="Volver a la lista de cierres" aria-label="Volver a la lista de cierres">⬅️</a>
                 <div>
                     <div class="flex flex-wrap items-center gap-3">
                         <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight">

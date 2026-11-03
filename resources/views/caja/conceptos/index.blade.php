@@ -4,13 +4,13 @@
 
 @push('modals')
 {{-- Modal de contraseña para eliminar (Liquid Glass) --}}
-<div id="pwd-delete-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-50">
+<div id="pwd-delete-modal" role="dialog" aria-modal="true" aria-labelledby="pwd-delete-title" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-50">
     <div class="ts-modal-card scale-95 opacity-0" id="pwd-delete-card">
         <div class="p-6">
             <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
                 🔓
             </div>
-            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Concepto</h3>
+            <h3 id="pwd-delete-title" class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Concepto</h3>
             <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
                 @if(auth()->check() && auth()->user()->isTecnico())
                     Ingresa la contraseña de un administrador para confirmar la eliminación.
@@ -69,7 +69,7 @@
 <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between mb-8">
         <div class="flex items-center gap-3">
-            <a href="{{ route('caja.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
+            <a href="{{ route('caja.index') }}" class="btn-ghost text-xl" title="Volver" aria-label="Volver a caja">⬅️</a>
             <div>
                 <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                     🏷️ Conceptos de Caja

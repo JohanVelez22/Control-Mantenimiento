@@ -52,13 +52,13 @@
 
 @push('modals')
 {{-- Modal de contraseña para eliminar cierre (Liquid Glass) --}}
-<div id="pwd-cierre-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+<div id="pwd-cierre-modal" role="dialog" aria-modal="true" aria-labelledby="pwd-cierre-title" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
     <div class="ts-modal-card scale-95 opacity-0" id="pwd-cierre-card">
         <div class="p-6">
             <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
                 🔓
             </div>
-            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Cierre</h3>
+            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2" id="pwd-cierre-title">Eliminar Cierre</h3>
             <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
                 @if(auth()->check() && auth()->user()->isTecnico())
                     Esta acción desbloquea el día. Ingresa la contraseña de un administrador.
@@ -83,11 +83,11 @@
 </div>
 
 {{-- Modal Calculadora de Billetes --}}
-<div id="calc-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+<div id="calc-modal" role="dialog" aria-modal="true" aria-labelledby="calc-title" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
     <div class="ts-modal-card scale-95 opacity-0 max-w-md w-full" id="calc-card">
         <div class="p-6">
             <div class="mb-4">
-                <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🧮 Calculadora de Dinero en Mano</h3>
+                <h3 id="calc-title" class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🧮 Calculadora de Dinero en Mano</h3>
                 <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">Ingresa el valor de billetes y monedas correspondiente.</p>
             </div>
             <div class="space-y-3">
@@ -131,8 +131,8 @@
                 <p class="text-3xl font-black text-slate-800 dark:text-white" id="calc-total">$ 0</p>
             </div>
             <div class="mt-4 flex gap-3">
-                <button type="button" onclick="resetCalc()" class="btn-clean flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">🧹 Limpiar</button>
-                <button type="button" onclick="closeCalc(true)" class="btn-primary flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Aplicar al Cierre</button>
+                <button type="button" onclick="resetCalc()" class="btn-clean flex-1 justify-center font-bold" aria-label="Limpiar calculadora">🧹 Limpiar</button>
+                <button type="button" onclick="closeCalc(true)" class="btn-primary flex-1 justify-center font-bold" aria-label="Aplicar al cierre">Aplicar al Cierre</button>
             </div>
         </div>
     </div>

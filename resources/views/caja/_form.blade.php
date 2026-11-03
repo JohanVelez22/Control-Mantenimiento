@@ -188,7 +188,7 @@
             <div class="flex gap-2 items-center">
                 <input type="text" id="nuevo_concepto_input" name="nuevo_concepto" placeholder="Nombre del nuevo concepto..." class="glass-input flex-1 h-[42px]">
                 <button type="button" onclick="crearConcepto()" class="btn-primary h-[42px] flex items-center justify-center">Agregar</button>
-                <button type="button" onclick="cancelarNuevoConcepto()" class="btn-ghost px-3 h-[42px] flex items-center justify-center">✕</button>
+                <button type="button" onclick="cancelarNuevoConcepto()" class="btn-ghost px-3 h-[42px] flex items-center justify-center" aria-label="Cancelar nuevo concepto">✕</button>
             </div>
             <p id="concepto-status" class="text-xs mt-2 font-medium"></p>
         </div>

@@ -151,14 +151,14 @@
 </div>
 
 <!-- MODAL DAR DE BAJA UNIDADES (Simétrico al Modal de Notificaciones) -->
-<div id="baja-stock-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+<div id="baja-stock-modal" role="dialog" aria-modal="true" aria-labelledby="baja-stock-title" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
     <div id="baja-stock-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px;">
         
         {{-- Header simétrico a notificaciones --}}
         <div class="flex items-center gap-3 mb-4">
             <span class="text-3xl shrink-0 select-none">📉</span>
             <div>
-                <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">Dar de Baja Unidades</h3>
+                <h3 id="baja-stock-title" class="text-lg font-black text-slate-800 dark:text-white leading-tight">Dar de Baja Unidades</h3>
                 <p class="text-xs text-gray-500 dark:text-gray-400">Merma de inventario por daño o defecto</p>
             </div>
         </div>

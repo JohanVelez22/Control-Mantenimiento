@@ -2,15 +2,25 @@
 
 namespace App\Providers;
 
+use App\Models\CierreCaja;
+use App\Models\Cliente;
 use App\Models\Cotizacion;
 use App\Models\Electronica;
 use App\Models\Evento;
 use App\Models\Factura;
 use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
+use App\Models\Stock;
 use App\Models\User;
+use App\Policies\CierreCajaPolicy;
+use App\Policies\ClientePolicy;
+use App\Policies\CotizacionPolicy;
 use App\Policies\ElectronicaPolicy;
+use App\Policies\FacturaPolicy;
 use App\Policies\MantenimientoPolicy;
+use App\Policies\MovimientoCajaPolicy;
+use App\Policies\StockPolicy;
+use App\Policies\UserPolicy;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -74,9 +84,22 @@ class AppServiceProvider extends ServiceProvider
         // ─────────────────────────────────────────────────────────────────
         Gate::define('promote-admin', fn (User $u) => $u->role === 'admin');
         Gate::define('promote-tecnico', fn (User $u) => $u->role === 'admin');
+        Gate::define('manage-caja', fn (User $u) => ! $u->isInvitado());
+        Gate::define('close-caja', fn (User $u) => ! $u->isInvitado());
+        Gate::define('anular-operacion', fn (User $u) => $u->isAdmin());
+        Gate::define('manage-users', fn (User $u) => $u->isAdmin());
+        Gate::define('view-financial-reports', fn (User $u) => $u->isAdmin());
+        Gate::define('manage-backups', fn (User $u) => $u->isAdmin());
 
         Gate::policy(Mantenimiento::class, MantenimientoPolicy::class);
         Gate::policy(Electronica::class, ElectronicaPolicy::class);
+        Gate::policy(Factura::class, FacturaPolicy::class);
+        Gate::policy(Cotizacion::class, CotizacionPolicy::class);
+        Gate::policy(CierreCaja::class, CierreCajaPolicy::class);
+        Gate::policy(MovimientoCaja::class, MovimientoCajaPolicy::class);
+        Gate::policy(Stock::class, StockPolicy::class);
+        Gate::policy(Cliente::class, ClientePolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
 
         View::composer('layouts.app', function ($view) {
             if (! Auth::check()) {

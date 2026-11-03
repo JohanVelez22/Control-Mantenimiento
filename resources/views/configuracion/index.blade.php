@@ -504,7 +504,7 @@ async function submitConfiguracion(event) {
 @push('modals')
 @if(auth()->user()->role === 'admin')
 {{-- Modal de Gestión y Programación de Respaldos (Liquid Glass) --}}
-<div id="backup-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-[200]" onclick="if(event.target === this) closeBackupModal()">
+<div id="backup-modal" role="dialog" aria-modal="true" aria-labelledby="backup-modal-title" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-[200]" onclick="if(event.target === this) closeBackupModal()">
     <div class="backup-modal-card scale-95 opacity-0 mx-auto shadow-2xl relative" id="backup-modal-card">
         
         {{-- Encabezado del Modal con Identidad Liquid Glass --}}
@@ -514,7 +514,7 @@ async function submitConfiguracion(event) {
                     <span>🛡️</span>
                 </div>
                 <div class="min-w-0">
-                    <h3 class="text-base sm:text-lg font-black text-slate-800 dark:text-white tracking-tight leading-snug truncate">
+                    <h3 id="backup-modal-title" class="text-base sm:text-lg font-black text-slate-800 dark:text-white tracking-tight leading-snug truncate">
                         Respaldos y Copias de Seguridad
                     </h3>
                     <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5 truncate">

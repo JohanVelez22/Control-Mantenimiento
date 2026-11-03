@@ -110,11 +110,11 @@
 </div>
 
 {{-- Modal Detalle de Usuario (Homogéneo Claro / Oscuro) --}}
-<div id="modal-user-detail" onclick="if(event.target === this) closeUserDetailModal()" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+<div id="modal-user-detail" role="dialog" aria-modal="true" aria-labelledby="modal-user-detail-title" onclick="if(event.target === this) closeUserDetailModal()" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
     <div id="modal-user-detail-card" class="ts-modal-card scale-95 opacity-0 p-6 w-full max-w-md mx-4 relative transition-all duration-300 shadow-2xl">
         {{-- Header con línea divisoria sutil --}}
         <div class="user-detail-divider">
-            <h3 class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
+            <h3 id="modal-user-detail-title" class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
                 <span>👁️</span> Detalle del Usuario
             </h3>
         </div>

@@ -235,7 +235,7 @@
 
 @if($factura->saldo_pendiente > 0 && $movimientoPadre)
 {{-- Modal interactivo para registrar abono directamente en la factura --}}
-<div id="abono-factura-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+<div id="abono-factura-modal" role="dialog" aria-modal="true" aria-labelledby="abono-factura-title" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
     <div id="abono-factura-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4 max-w-md">
         <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200/50 dark:border-white/10">
             <div class="flex items-center gap-3">
@@ -243,11 +243,11 @@
                     💵
                 </div>
                 <div>
-                    <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">Registrar Abono</h3>
+                    <h3 id="abono-factura-title" class="text-lg font-black text-slate-800 dark:text-white leading-tight">Registrar Abono</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Factura #{{ $factura->numero_factura }}</p>
                 </div>
             </div>
-            <button type="button" onclick="closeAbonoFacturaModal()" class="btn-ghost p-2 text-gray-400 hover:text-gray-600">✕</button>
+            <button type="button" onclick="closeAbonoFacturaModal()" class="btn-ghost p-2 text-gray-400 hover:text-gray-600" aria-label="Cerrar modal de abono">✕</button>
         </div>
 
         <div class="mb-4 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 flex justify-between items-center text-sm">

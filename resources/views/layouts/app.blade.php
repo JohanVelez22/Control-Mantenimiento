@@ -1065,7 +1065,7 @@
 
     <!-- Modal de Notificaciones Pendientes (siempre disponible, abierto desde campana o al iniciar sesión) -->
     @if(isset($totalPendientes) && $totalPendientes > 0)
-    <div id="ts-notif-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+    <div id="ts-notif-modal" role="dialog" aria-modal="true" aria-labelledby="ts-notif-title" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
         <div id="ts-notif-card" class="ts-modal-card opacity-0 p-4 sm:p-6 flex flex-col w-full mx-3 sm:mx-4" style="max-width: 550px;">
 
             {{-- Header --}}
@@ -1074,7 +1074,7 @@
                     <span class="text-2xl">🔔</span>
                 </div>
                 <div>
-                    <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">¡Tienes tareas pendientes!</h3>
+                    <h3 id="ts-notif-title" class="text-lg font-black text-slate-800 dark:text-white leading-tight">¡Tienes tareas pendientes!</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400">{{ $totalPendientes }} elemento(s) requieren atención</p>
                 </div>
             </div>

@@ -8,7 +8,7 @@
         {{-- Encabezado unificado: Flecha Volver + Imagen + Título con Auto-Redimensión + Botones de Acción --}}
         <div class="detail-header flex items-center justify-between gap-3 sm:gap-4 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8">
             <div class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                <a href="{{ route('stocks.index') }}" class="btn-ghost text-xl shrink-0" title="Volver">⬅️</a>
+                <a href="{{ route('stocks.index') }}" class="btn-ghost text-xl shrink-0" title="Volver" aria-label="Volver a inventario">⬅️</a>
 
                 @if($stock->photo)
                     <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
@@ -333,14 +333,14 @@
 </div>
 
 <!-- MODAL DAR DE BAJA UNIDADES (Simétrico al Modal de Notificaciones) -->
-<div id="baja-stock-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+<div id="baja-stock-modal" role="dialog" aria-modal="true" aria-labelledby="baja-stock-title-show" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
     <div id="baja-stock-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px;">
         
         {{-- Header simétrico a notificaciones --}}
         <div class="flex items-center gap-3 mb-4">
             <span class="text-3xl shrink-0 select-none">📉</span>
             <div>
-                <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">Dar de Baja Unidades</h3>
+                <h3 id="baja-stock-title-show" class="text-lg font-black text-slate-800 dark:text-white leading-tight">Dar de Baja Unidades</h3>
                 <p class="text-xs text-gray-500 dark:text-gray-400">Merma de inventario por daño o defecto</p>
             </div>
         </div>
@@ -409,14 +409,14 @@
 </div>
 
 <!-- MODAL REVERTIR BAJA DE UNIDADES (Simétrico al Modal de Notificaciones) -->
-<div id="revertir-baja-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+<div id="revertir-baja-modal" role="dialog" aria-modal="true" aria-labelledby="revertir-baja-title-show" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
     <div id="revertir-baja-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px;">
         
         {{-- Header simétrico a notificaciones --}}
         <div class="flex items-center gap-3 mb-4">
             <span class="text-3xl shrink-0 select-none">↩️</span>
             <div>
-                <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">Revertir Baja de Unidades</h3>
+                <h3 id="revertir-baja-title-show" class="text-lg font-black text-slate-800 dark:text-white leading-tight">Revertir Baja de Unidades</h3>
                 <p class="text-xs text-gray-500 dark:text-gray-400">Reintegrar unidades al inventario activo y retirar la pérdida</p>
             </div>
         </div>
