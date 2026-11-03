@@ -445,9 +445,9 @@
                 submitBtn.innerHTML = 'Activar';
                 submitBtn.className = 'flex-1 btn-ghost-emerald';
                 
-                // Botón Cancelar en reactivar: estilo ghost rojo (no azul)
+                // Botón Cancelar en reactivar: estilo secundario neutro
                 if (cancelBtn) {
-                    cancelBtn.className = 'flex-1 btn-ghost-red';
+                    cancelBtn.className = 'flex-1 btn-ghost-amber';
                 }
 
                 if (input) input.className = 'glass-input text-center tracking-widest text-lg focus:ring-emerald-500';

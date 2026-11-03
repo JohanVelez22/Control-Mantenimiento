@@ -88,8 +88,8 @@ html.dark table thead th {
   border-top-right-radius: 16px !important;
 }
 
-.ts-table tbody tr,
-.glass-table tbody tr,
+.ts-table tbody tr:not(.active-target),
+.glass-table tbody tr:not(.active-target),
 .ts-table tfoot tr,
 .glass-table tfoot tr {
   background: transparent !important;
