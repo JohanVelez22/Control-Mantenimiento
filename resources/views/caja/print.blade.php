@@ -107,24 +107,24 @@
         @if($effectiveMontoTotal > 0)
             <tr>
                 <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">TOTAL DEUDA:</td>
-                <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">${{ number_format($effectiveMontoTotal, 0, ',', '.') }}</td>
+                <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">$ {{ number_format($effectiveMontoTotal, 0, ',', '.') }}</td>
             </tr>
         @endif
         <tr>
             <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">PAGADO EN ESTE COMPROBANTE:</td>
-            <td class="val" style="font-size: 7.5pt; padding: 1px 3px; font-weight: bold;">${{ number_format($movimiento->monto, 0, ',', '.') }}</td>
+            <td class="val" style="font-size: 7.5pt; padding: 1px 3px; font-weight: bold;">$ {{ number_format($movimiento->monto, 0, ',', '.') }}</td>
         </tr>
         @if($hasHistory)
             <tr>
                 <td class="lbl" style="font-size: 7.5pt; padding: 1px 3px;">TOTAL ACUMULADO PAGADO:</td>
-                <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">${{ number_format($totalAcumulado, 0, ',', '.') }}</td>
+                <td class="val" style="font-size: 7.5pt; padding: 1px 3px;">$ {{ number_format($totalAcumulado, 0, ',', '.') }}</td>
             </tr>
         @endif
         @if($effectiveMontoTotal > 0)
             <tr class="grand-total">
                 <td class="lbl" style="font-size: 8pt; padding: 1px 3px;">SALDO PENDIENTE:</td>
                 <td class="val" style="font-size: 8pt; padding: 1px 3px;">
-                    ${{ number_format($saldoPendiente, 0, ',', '.') }}
+                    $ {{ number_format($saldoPendiente, 0, ',', '.') }}
                 </td>
             </tr>
         @endif
@@ -152,7 +152,7 @@
                         <td style="padding: 1px 3px; font-size: 6.5pt;">{{ Str::upper($pagoItem->tipo_pago) }}</td>
                         <td style="padding: 1px 3px; font-size: 6.5pt;">{{ $pagoItem->descripcion ?: 'Abono / Pago' }} {{ $pagoItem->id === $movimiento->id ? '(*Este recibo)' : '' }}</td>
                         <td style="padding: 1px 3px; font-size: 6.5pt;">{{ $pagoItem->user->name ?? 'Sistema' }}</td>
-                        <td style="padding: 1px 3px; font-size: 6.5pt;">${{ number_format($pagoItem->monto, 0, ',', '.') }}</td>
+                        <td style="padding: 1px 3px; font-size: 6.5pt;">$ {{ number_format($pagoItem->monto, 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
             </tbody>

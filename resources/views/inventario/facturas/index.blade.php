@@ -5,7 +5,7 @@
 
 
 <div class="glass-card p-6">
- <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+ <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
  <div>
  <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
  <span class="text-3xl">🧾</span> Facturas de Inventario
@@ -82,7 +82,7 @@
   <td data-label="Entidad:" class="{{ $dim }}">
   @if($f->facturable)
   @if(class_basename($f->facturable) === 'Cliente')
-  <a href="{{ route('clientes.index') }}#cliente-{{ $f->facturable->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <a href="{{ route('clientes.index') }}#cliente-{{ $f->facturable->id }}" class="group block" title="Ver en tabla de clientes">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   👤 {{ $f->facturable->nombre }}
   </div>
@@ -91,7 +91,7 @@
   </div>
   </a>
   @else
-  <a href="{{ route('proveedores.index') }}#proveedor-{{ $f->facturable->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $f->facturable->id }}" class="group block" title="Ver en tabla de proveedores">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   🏢 {{ $f->facturable->nombre_razon_social }}
   </div>
@@ -106,14 +106,14 @@
   </td>
   <td data-label="Fecha:" class="text-center font-medium {{ $dim }}">{{ $f->fecha->format('d/m/Y') }}</td>
   <td data-label="Total:" class="text-right font-black text-slate-800 dark:text-white text-base {{ $dim }}">
-  ${{ number_format($f->total_documento, 0, ',', '.') }}
+  $ {{ number_format($f->total_documento, 0, ',', '.') }}
   </td>
   <td data-label="Pagado:" class="text-right {{ $dim }}">
   <span class="font-bold text-sm {{ $f->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }}">
-  ${{ number_format($f->total_pagado, 0, ',', '.') }}
+  $ {{ number_format($f->total_pagado, 0, ',', '.') }}
   </span>
   @if($f->saldo_pendiente > 0 && $f->estado !== 'anulada')
-  <div class="text-[10px] text-red-500 uppercase tracking-tight mt-0.5 font-bold">Saldo: ${{ number_format($f->saldo_pendiente, 0, ',', '.') }}</div>
+  <div class="text-[10px] text-red-500 uppercase tracking-tight mt-0.5 font-bold">Saldo: $ {{ number_format($f->saldo_pendiente, 0, ',', '.') }}</div>
   @endif
   </td>
   <td data-label="Util / Pérd:" class="text-center {{ $dim }}">
@@ -121,15 +121,15 @@
       <span class="text-gray-400 text-xs font-semibold">—</span>
   @elseif($f->tipo_movimiento === 'venta')
       @if($f->utilidad > 0)
-          <span class="inline-flex items-center gap-1 font-bold text-xs px-2.5 py-1 rounded-lg whitespace-nowrap shadow-sm" style="background: rgba(16, 185, 129, 0.15) !important; color: #10b981 !important; border: 1px solid rgba(16, 185, 129, 0.35) !important;" title="Utilidad estimada: +${{ number_format($f->utilidad, 0, ',', '.') }}">
-              + ${{ number_format($f->utilidad, 0, ',', '.') }}
+          <span class="inline-flex items-center gap-1 font-bold text-xs px-2.5 py-1 rounded-lg whitespace-nowrap shadow-sm" style="background: rgba(16, 185, 129, 0.15) !important; color: #10b981 !important; border: 1px solid rgba(16, 185, 129, 0.35) !important;" title="Utilidad estimada: +$ {{ number_format($f->utilidad, 0, ',', '.') }}">
+              + $ {{ number_format($f->utilidad, 0, ',', '.') }}
           </span>
       @elseif($f->utilidad < 0)
-          <span class="inline-flex items-center gap-1 font-bold text-xs px-2.5 py-1 rounded-lg whitespace-nowrap shadow-sm" style="background: rgba(239, 68, 68, 0.18) !important; color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.40) !important;" title="Pérdida en la venta (Margen negativo): -${{ number_format(abs($f->utilidad), 0, ',', '.') }}">
-            - ${{ number_format(abs($f->utilidad), 0, ',', '.') }}
+          <span class="inline-flex items-center gap-1 font-bold text-xs px-2.5 py-1 rounded-lg whitespace-nowrap shadow-sm" style="background: rgba(239, 68, 68, 0.18) !important; color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.40) !important;" title="Pérdida en la venta (Margen negativo): -$ {{ number_format(abs($f->utilidad), 0, ',', '.') }}">
+            - $ {{ number_format(abs($f->utilidad), 0, ',', '.') }}
           </span>
       @else
-          <span class="text-xs text-gray-400 font-semibold">$0</span>
+          <span class="text-xs text-gray-400 font-semibold">$ 0</span>
       @endif
   @else
       <span class="text-gray-400 text-xs font-semibold" title="No aplica para compras de inventario">—</span>
@@ -152,9 +152,14 @@
   <div class="actions-grid">
   <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Detalles">👁️</a>
   <a href="{{ route('inventario.facturas.print', $f->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir">🖨️</a>
+  @if($f->cotizacion_origen)
+  <a href="{{ route('cotizaciones.show', $f->cotizacion_origen->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Cotización de origen: {{ $f->cotizacion_origen->codigo }}">📝</a>
+  @endif
   
   @if(!auth()->user()->isInvitado())
+  @if($f->estado !== 'anulada')
   <a href="{{ route('inventario.facturas.edit', $f->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+  @endif
   
   <button type="button" onclick="openAnularModal('{{ route('inventario.facturas.anular', $f->id) }}', {{ $f->estado === 'anulada' ? 'true' : 'false' }})" class="btn-ghost {{ $f->estado === 'anulada' ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $f->estado === 'anulada' ? 'Reactivar Factura' : 'Anular Factura' }}">
   {{ $f->estado === 'anulada' ? '✅' : '🚫' }}

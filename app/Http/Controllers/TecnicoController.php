@@ -53,12 +53,18 @@ class TecnicoController extends Controller
 
     public function edit(Tecnico $tecnico)
     {
+        if (! $tecnico->active) {
+            return redirect()->route('tecnicos.index')->with('error', 'Por seguridad, no se puede editar un técnico que se encuentra anulado (inactivo).');
+        }
 
         return view('tecnicos.edit', compact('tecnico'));
     }
 
     public function update(Request $request, Tecnico $tecnico)
     {
+        if (! $tecnico->active) {
+            return redirect()->route('tecnicos.index')->with('error', 'Por seguridad, no se puede editar un técnico que se encuentra anulado (inactivo).');
+        }
 
         $validated = $request->validate([
             'nombre' => 'required|string|regex:/^[\pL\s\.\-]+$/u|max:80',

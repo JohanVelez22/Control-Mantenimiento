@@ -29,7 +29,7 @@
             onclick="togglePrintMenu('{{ $id }}', event)" 
             class="print-arrow-btn hover:opacity-80 transition-opacity"
             title="Elegir formato de impresión">
-        <svg id="{{ $id }}-arrow" style="width: 9.5px; height: 9.5px; opacity: 0.7; pointer-events: none; transition: transform 0.2s ease;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="{{ $id }}-arrow" style="width: 8px; height: 8px; opacity: 0.7; pointer-events: none; transition: transform 0.2s ease;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
         </svg>
     </button>

@@ -22,7 +22,7 @@
  </div>
 
  <div class="overflow-x-auto pb-2">
- <table id="tabla-usuarios" class="ts-table responsive-table">
+ <table id="tabla-usuarios" class="ts-table responsive-table w-full">
  <thead>
  <tr>
  <th class="w-16 text-center">ID</th>
@@ -40,14 +40,14 @@
  @php $dim = !$u->active ? 'opacity-60 grayscale' : ''; @endphp
  <tr id="usuario-{{ $u->id }}" class="scroll-mt-[6.5rem]">
  <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $u->id }}</td>
- <td class="text-center {{ $dim }}">
+ <td class="text-center py-2 {{ $dim }}">
   @if($u->photo)
-    <img src="{{ asset('storage/' . $u->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $u->photo) }}', '{{ addslashes($u->name) }}', this)" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
-    <div class="hidden w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">
+    <img src="{{ asset('storage/' . $u->photo) }}" width="32" height="32" class="w-8 h-8 rounded-lg object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" data-lightbox-src="{{ asset('storage/' . $u->photo) }}" data-lightbox-alt="{{ $u->name }}" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+    <div class="hidden w-8 h-8 rounded-lg bg-gray-200 dark:bg-gray-700 items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">
       N/A
     </div>
   @else
-    <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">
+    <div class="w-8 h-8 rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">
       N/A
     </div>
   @endif
@@ -63,7 +63,7 @@
  <td class="text-gray-500 {{ $dim }}">{{ $u->created_at->format('d/m/Y') }}</td>
  <td data-label="Acciones:" class="text-center align-middle w-28 {{ $dim }}">
     <div class="actions-grid">
-    @if(auth()->user()->isAdmin() || auth()->id() === $u->id)
+    @if((auth()->user()->isAdmin() || auth()->id() === $u->id) && $u->active)
     <a href="{{ route('usuarios.edit', $u->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
     @else
     <button type="button" onclick="openUserDetailModal({{ json_encode([
@@ -110,11 +110,11 @@
 </div>
 
 {{-- Modal Detalle de Usuario (Homogéneo Claro / Oscuro) --}}
-<div id="modal-user-detail" onclick="if(event.target === this) closeUserDetailModal()" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+<div id="modal-user-detail" role="dialog" aria-modal="true" aria-labelledby="modal-user-detail-title" onclick="if(event.target === this) closeUserDetailModal()" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
     <div id="modal-user-detail-card" class="ts-modal-card scale-95 opacity-0 p-6 w-full max-w-md mx-4 relative transition-all duration-300 shadow-2xl">
         {{-- Header con línea divisoria sutil --}}
         <div class="user-detail-divider">
-            <h3 class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
+            <h3 id="modal-user-detail-title" class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
                 <span>👁️</span> Detalle del Usuario
             </h3>
         </div>

@@ -6,27 +6,27 @@
 <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
 <div class="glass-card hover-glow glass-card-emerald p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📈</span> Ingresos</p>
-<p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['ingresos'], 0, ',', '.') }}</p>
+<p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($totales['ingresos'], 0, ',', '.') }}</p>
 </div>
 
 <div class="glass-card hover-glow glass-card-red p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
 <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">📉</span> Egresos</p>
-<p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['egresos'], 0, ',', '.') }}</p>
+<p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($totales['egresos'], 0, ',', '.') }}</p>
 </div>
 
 <div class="glass-card hover-glow glass-card-blue p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Efectivo</p>
-<p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['efectivo'], 0, ',', '.') }}</p>
+<p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($totales['efectivo'], 0, ',', '.') }}</p>
 </div>
 
 <div class="glass-card hover-glow glass-card-purple p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center">
 <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">🏦</span> Banco/Consig.</p>
-<p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['consignacion'], 0, ',', '.') }}</p>
+<p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($totales['consignacion'], 0, ',', '.') }}</p>
 </div>
 
 <div class="glass-card hover-glow {{ $totales['saldo'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-5 flex flex-col justify-center items-center relative overflow-hidden group col-span-2 lg:col-span-1 text-center">
 <p class="text-xs font-bold {{ $totales['saldo'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">⚖️</span> Saldo General</p>
-<p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($totales['saldo'], 0, ',', '.') }}</p>
+<p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($totales['saldo'], 0, ',', '.') }}</p>
 </div>
 </div>
 
@@ -46,10 +46,10 @@
    </div>
   @if(!auth()->user()->isInvitado())
   <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 w-full sm:w-auto">
-  <a href="{{ route('conceptos.index') }}" class="btn-concepts flex items-center justify-center gap-2 w-full sm:w-auto text-center" style="padding: 9px 18px; font-size: 13px;">
+  <a href="{{ route('conceptos.index') }}" class="btn-concepts flex items-center justify-center gap-2 w-full sm:w-auto text-center">
   🏷️ <span>Gestionar Conceptos</span>
   </a>
-  <a href="{{ route('caja.create') }}" class="btn-primary flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30 w-full sm:w-auto text-center" style="padding: 9px 18px; font-size: 13px;">
+  <a href="{{ route('caja.create') }}" class="btn-primary flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30 w-full sm:w-auto text-center">
   <span>➕</span> <span>Nuevo Movimiento</span>
   </a>
   </div>
@@ -109,7 +109,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
 <td data-label="Fecha:" class="text-center font-medium {{ $dim }}">{{ $m->fecha->format('d/m/Y') }}</td>
  <td data-label="Entidad:" class="{{ $dim }}">
  @if($m->cliente)
- <a href="{{ route('clientes.index') }}#cliente-{{ $m->cliente->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+ <a href="{{ route('clientes.index') }}#cliente-{{ $m->cliente->id }}" class="group block" title="Ver en tabla de clientes">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          👤 {{ $m->cliente->nombre }}
      </div>
@@ -120,7 +120,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
      @endif
  </a>
  @elseif($m->persona)
- <a href="{{ route('clientes.index', ['search' => $m->persona]) }}" class="group block hover:opacity-75 transition-opacity" title="Buscar en Clientes">
+ <a href="{{ route('clientes.index', ['search' => $m->persona]) }}" class="group block" title="Buscar en Clientes">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          👤 {{ $m->persona }}
      </div>
@@ -129,7 +129,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
      </div>
  </a>
  @elseif($m->proveedor)
- <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->proveedor->id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+ <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->proveedor->id }}" class="group block" title="Ver en tabla de proveedores">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          🏢 {{ $m->proveedor->nombre_razon_social }}
      </div>
@@ -140,7 +140,7 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
      @endif
  </a>
  @elseif($m->empresa)
- <a href="{{ route('proveedores.index', ['search' => $m->empresa]) }}" class="group block hover:opacity-75 transition-opacity" title="Buscar en Proveedores">
+ <a href="{{ route('proveedores.index', ['search' => $m->empresa]) }}" class="group block" title="Buscar en Proveedores">
      <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
          🏢 {{ $m->empresa }}
      </div>
@@ -178,15 +178,15 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
  </span>
  </td>
  <td data-label="Monto:" class="text-right font-black text-lg {{ $m->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} {{ $dim }}">
-  ${{ number_format($m->monto, 0, ',', '.') }}
+  $ {{ number_format($m->monto, 0, ',', '.') }}
    @if($m->effective_monto_total > 0)
        @if($m->saldo_pendiente > 0)
            <div class="text-[10px] text-orange-600 dark:text-orange-400 font-bold uppercase mt-1">
-               Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }} <span class="text-gray-400 font-normal">(Total: ${{ number_format($m->effective_monto_total, 0, ',', '.') }})</span>
+               Saldo: $ {{ number_format($m->saldo_pendiente, 0, ',', '.') }} <span class="text-gray-400 font-normal">(Total: $ {{ number_format($m->effective_monto_total, 0, ',', '.') }})</span>
            </div>
        @elseif($m->effective_monto_total > $m->monto || $m->parent_id)
            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase mt-1">
-               ✅ Pagado (${{ number_format($m->effective_monto_total, 0, ',', '.') }})
+               ✅ Pagado ($ {{ number_format($m->effective_monto_total, 0, ',', '.') }})
            </div>
        @endif
    @endif
@@ -195,10 +195,15 @@ $dimLight = $m->anulado ? 'opacity-60' : '';
   <div class="actions-grid">
   <a href="{{ route('caja.show', $m->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver detalle">👁️</a>
   <a href="{{ route('caja.print', $m->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir">🖨️</a>
+  @if($m->factura_id)
+  <a href="{{ route('inventario.facturas.show', $m->factura_id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Ver Factura {{ $m->factura?->numero_factura ?? '' }}">📄</a>
+  @endif
   @if(!auth()->user()->isInvitado())
+  @if(!$m->anulado && $m->estado !== 'anulado')
   <a href="{{ route('caja.edit', $m->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+  @endif
 
-                         <button type="button" onclick="openAnularModal('{{ route('caja.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost {{ $m->anulado ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $m->anulado ? 'Reactivar movimiento' : 'Anular movimiento' }}">
+  <button type="button" onclick="openAnularModal('{{ route('caja.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost {{ $m->anulado ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $m->anulado ? 'Reactivar movimiento' : 'Anular movimiento' }}">
   {{ $m->anulado ? '✅' : '🚫' }}
   </button>
   @endif </div>

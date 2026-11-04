@@ -17,32 +17,32 @@
 <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-4">
   <div class="glass-card hover-glow glass-card-blue p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
   <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">💻</span> <span class="break-words">Equipos</span></div>
-  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalEquipos ?? 0 }}</div>
+  <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $totalEquipos ?? 0 }}</div>
   </div>
   
   <div class="glass-card hover-glow glass-card-emerald p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
   <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">🔧</span> <span class="break-words">Órdenes</span></div>
-  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $totalMantenimientos ?? 0 }}</div>
+  <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $totalMantenimientos ?? 0 }}</div>
   </div>
   
   <div class="glass-card hover-glow glass-card-amber p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
   <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">⏳</span> <span class="break-words">Mant. Pend.</span></div>
-  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['pendientes'] ?? 0 }}</div>
+  <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $stats['pendientes'] ?? 0 }}</div>
   </div>
   
   <div class="glass-card hover-glow glass-card-purple p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
   <div class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">⚡</span> <span class="break-words">Elec. Pend.</span></div>
-  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['electronica_pendientes'] ?? 0 }}</div>
+  <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $stats['electronica_pendientes'] ?? 0 }}</div>
   </div>
 
   <div class="glass-card hover-glow glass-card-red p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0 col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
   <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">📦</span> <span class="break-words">Stock Bajo (<5)</span></div>
-  <div class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
+  <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
   </div>
 </div>
 
 <!-- Carrusel de Gráficos -->
-<h3 class="text-lg font-bold mb-4 text-gray-700 dark:text-gray-300 flex items-center gap-2">
+<h3 class="text-lg font-bold mb-4 text-slate-800 dark:text-slate-100 flex items-center gap-2">
  <span class="text-xl leading-none shrink-0" aria-hidden="true">📆</span>
  Análisis Visual de Rendimiento
 </h3>
@@ -56,10 +56,10 @@
  <div class="w-1/4 px-6 md:px-8 pt-4 pb-6 flex flex-col bg-transparent" style="height: 420px;">
  <div class="flex justify-between items-center mb-10 px-4">
   <div>
-  <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight flex items-center gap-2">
+  <h4 class="text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
    <span class="text-xl leading-none">📊</span> Crecimiento Semanal
   </h4>
-  <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Comparativa de ingresos de equipos vs órdenes creadas</p>
+  <p class="text-sm font-medium text-slate-700 dark:text-slate-300 mt-0.5">Comparativa de ingresos de equipos vs órdenes creadas</p>
   </div>
   <span class="text-xs font-bold px-3 py-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 rounded-xl shadow-sm">Últimos 7 Días</span>
   </div>
@@ -72,10 +72,10 @@
  <div class="w-1/4 px-6 md:px-8 pt-4 pb-6 flex flex-col bg-transparent" style="height: 420px;">
  <div class="flex justify-between items-center mb-2 px-4">
  <div>
- <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight flex items-center gap-2">
+ <h4 class="text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
   <span class="text-xl leading-none">🌐</span> Distribución Global
  </h4>
- <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Estado actual de todos los mantenimientos históricos</p>
+ <p class="text-sm font-medium text-slate-700 dark:text-slate-300 mt-0.5">Estado actual de todos los mantenimientos históricos</p>
  </div>
  <span class="text-xs font-bold px-3 py-1.5 bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 rounded-xl shadow-sm">Tiempo Real</span>
  </div>
@@ -91,10 +91,10 @@
   <div class="w-1/4 px-6 md:px-8 pt-4 pb-6 flex flex-col bg-transparent" style="height: 420px;">
   <div class="flex justify-between items-center mb-10 px-4">
    <div>
-   <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight flex items-center gap-2">
+   <h4 class="text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
     <span class="text-xl leading-none">💵</span> Ingresos por día
    </h4>
-   <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Movimientos de caja reales: ingresos menos egresos por fecha</p>
+   <p class="text-sm font-medium text-slate-700 dark:text-slate-300 mt-0.5">Movimientos de caja reales: ingresos menos egresos por fecha</p>
    </div>
   <span class="text-xs font-bold px-3 py-1.5 bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-200 rounded-xl shadow-sm">Últimos 7 días</span>
   </div>
@@ -107,10 +107,10 @@
  <div class="w-1/4 px-6 md:px-8 pt-4 pb-6 flex flex-col bg-transparent" style="height: 420px;">
  <div class="flex justify-between items-center mb-2 px-4">
  <div>
- <h4 class="text-xl font-black text-gray-800 dark:text-white tracking-tight flex items-center gap-2">
+ <h4 class="text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
   <span class="text-xl leading-none">⚡</span> Electrónica
  </h4>
- <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Estado actual de órdenes de electrónica</p>
+ <p class="text-sm font-medium text-slate-700 dark:text-slate-300 mt-0.5">Estado actual de órdenes de electrónica</p>
  </div>
  <span class="text-xs font-bold px-3 py-1.5 bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 rounded-xl shadow-sm">Tiempo Real</span>
  </div>
@@ -124,10 +124,10 @@
  </div>
 
 <!-- Controles: fondo acrílico traslúcido -->
-  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/10 dark:border-white/5 bg-white/5 dark:bg-white/5 backdrop-blur-md text-slate-700/70 dark:text-white/60 opacity-50 hover:opacity-100 hover:bg-white/20 dark:hover:bg-white/15 hover:scale-105 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" style="top: 50%; left: 15px; transform: translateY(-50%); position: absolute;">
+  <button type="button" id="btnPrev" aria-label="Anterior" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-slate-300/80 dark:border-white/10 bg-white/75 dark:bg-white/5 backdrop-blur-md text-slate-800 dark:text-white/70 opacity-75 hover:opacity-100 hover:bg-white dark:hover:bg-white/15 hover:scale-105 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" style="top: 50%; left: 15px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
   </button>
-  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-white/10 dark:border-white/5 bg-white/5 dark:bg-white/5 backdrop-blur-md text-slate-700/70 dark:text-white/60 opacity-50 hover:opacity-100 hover:bg-white/20 dark:hover:bg-white/15 hover:scale-105 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" style="top: 50%; right: 15px; transform: translateY(-50%); position: absolute;">
+  <button type="button" id="btnNext" aria-label="Siguiente" class="absolute w-10 h-10 rounded-full flex items-center justify-center z-20 border border-slate-300/80 dark:border-white/10 bg-white/75 dark:bg-white/5 backdrop-blur-md text-slate-800 dark:text-white/70 opacity-75 hover:opacity-100 hover:bg-white dark:hover:bg-white/15 hover:scale-105 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" style="top: 50%; right: 15px; transform: translateY(-50%); position: absolute;">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
    </button>
  </div>
@@ -135,9 +135,9 @@
  <!-- Indicadores (fuera del glass-card para evitar overflow hidden) -->
  <div class="absolute bottom-6 left-0 right-0 flex justify-center gap-3 z-10 flex-wrap px-2" id="carouselIndicators">
  <button type="button" class="w-8 h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-md transition-all duration-500 backdrop-blur-sm"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-gray-300/60 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-gray-400/80 dark:hover:bg-gray-500/80"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-slate-400/75 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-slate-500 dark:hover:bg-gray-500/80"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-slate-400/75 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-slate-500 dark:hover:bg-gray-500/80"></button>
+ <button type="button" class="w-2.5 h-2.5 rounded-full bg-slate-400/75 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-slate-500 dark:hover:bg-gray-500/80"></button>
  </div>
 </div>
 
@@ -146,33 +146,33 @@
   @php $isSaldoNegativo = isset($cajaSaldoActual) && $cajaSaldoActual < 0; @endphp
   <div class="glass-card hover-glow {{ $isSaldoNegativo ? 'glass-card-red' : 'glass-card-emerald' }} p-4 flex flex-col justify-center relative overflow-hidden group items-center text-center">
   <div class="text-xs font-bold {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💰</span> Saldo en Caja (Histórico)</div>
-  <div class="text-2xl font-black {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoActual ?? 0), 0, ',', '.') }}</div>
+  <div class="text-2xl font-black {{ $isSaldoNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoNegativo ? '-' : '' }}$ {{ number_format(abs($cajaSaldoActual ?? 0), 0, ',', '.') }}</div>
   </div>
   @php $isSaldoDiaNegativo = isset($cajaSaldoDia) && $cajaSaldoDia < 0; @endphp
   <div class="glass-card hover-glow {{ $isSaldoDiaNegativo ? 'glass-card-red' : 'glass-card-blue' }} p-4 flex flex-col justify-center relative overflow-hidden group items-center text-center">
   <div class="text-xs font-bold {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg">💵</span> Balance Caja (Hoy)</div>
-  <div class="text-2xl font-black {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoDiaNegativo ? '-' : '' }}${{ number_format(abs($cajaSaldoDia ?? 0), 0, ',', '.') }}</div>
+  <div class="text-2xl font-black {{ $isSaldoDiaNegativo ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">{{ $isSaldoDiaNegativo ? '-' : '' }}$ {{ number_format(abs($cajaSaldoDia ?? 0), 0, ',', '.') }}</div>
   </div>
   </div>
 
 <div class="glass-card p-6 md:px-8">
 
- {{-- Tabs --}}
- <div class="flex items-center gap-1 mb-5 border-b border-gray-200 dark:border-gray-600">
- <button type="button" onclick="switchDashTab('mant')" id="tabBtnMant"
- class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] border-blue-600 text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20">
- 🔧 Mantenimientos
- </button>
- <button type="button" onclick="switchDashTab('elec')" id="tabBtnElec"
- class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all border-b-[3px] border-transparent text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10">
- ⚡ Electrónica
- </button>
- </div>
+  {{-- Tabs --}}
+   <div class="flex items-center gap-1 mb-5">
+  <button type="button" onclick="switchDashTab('mant')" id="tabBtnMant"
+  class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all border-b-[3px] border-blue-600 text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20">
+  🔧 Mantenimientos
+  </button>
+  <button type="button" onclick="switchDashTab('elec')" id="tabBtnElec"
+  class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all border-b-[3px] border-transparent text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10">
+  ⚡ Electrónica
+  </button>
+  </div>
 
  {{-- ═══════════════ TAB: Mantenimientos ═══════════════ --}}
- <div id="tabPanelMant">
- <div class="overflow-x-auto pb-2">
- <table class="ts-table responsive-table">
+  <div id="tabPanelMant">
+  <div class="overflow-x-auto pb-2">
+ <table class="ts-table responsive-table w-full">
  <thead>
  <tr>
  <th class="text-center">Orden</th>
@@ -204,8 +204,8 @@
  </td>
  
  <td class="text-center {{ $dim }}">
- <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
- <span class="font-bold text-slate-800 dark:text-white whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+ <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 group no-print-link" title="Ver en tabla de equipos">
+ <span class="font-bold text-slate-800 dark:text-white whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
  {{ $m->equipo->nombre ?? '-' }}
  </span>
  <span class="font-bold text-[13px] text-gray-400 italic whitespace-nowrap">
@@ -216,10 +216,10 @@
 
  <td class="text-center {{ $dim }}">
  <div class="flex flex-col items-center gap-1">
- <span class="font-bold text-gray-900 dark:text-white">${{ number_format($m->costo, 0, ',', '.') }}</span>
+ <span class="font-bold text-gray-900 dark:text-white">$ {{ number_format($m->costo, 0, ',', '.') }}</span>
  @if($m->total_abonado > 0)
- <span class="text-[11px] font-semibold text-green-600">Abonado: ${{ number_format($m->total_abonado, 0, ',', '.') }}</span>
- <span class="text-[11px] font-semibold text-red-500">Saldo: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }}</span>
+ <span class="text-[11px] font-semibold text-green-600">Abonado: $ {{ number_format($m->total_abonado, 0, ',', '.') }}</span>
+ <span class="text-[11px] font-semibold text-red-500">Saldo: $ {{ number_format($m->saldo_pendiente, 0, ',', '.') }}</span>
  @endif
  </div>
  </td>
@@ -257,17 +257,17 @@
  </tbody>
  </table>
  </div>
-    <div class="table-footer-btn flex justify-end">
-        <a href="{{ route('mantenimientos.reportes') }}" class="btn-primary">
-            📈 Ver reporte detallado →
-        </a>
-    </div>
+     <div class="table-footer-btn flex justify-end">
+         <a href="{{ route('mantenimientos.reportes') }}" class="btn-primary">
+             📈 Ver reporte detallado →
+         </a>
+     </div>
  </div>
 
  {{-- ═══════════════ TAB: Electrónica ═══════════════ --}}
- <div id="tabPanelElec" class="hidden">
- <div class="overflow-x-auto pb-2">
- <table class="ts-table table-electronica responsive-table">
+  <div id="tabPanelElec" class="hidden">
+  <div class="overflow-x-auto pb-2">
+ <table class="ts-table table-electronica responsive-table w-full">
  <thead>
  <tr>
  <th class="text-center">Orden</th>
@@ -299,7 +299,7 @@
  </td>
 
  <td class="text-center {{ $dim }}">
- <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="flex items-baseline justify-center gap-1 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
+ <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="flex items-baseline justify-center gap-1 group no-print-link" title="Ver en tabla de equipos">
  <span class="font-bold text-slate-800 dark:text-white whitespace-nowrap group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
  {{ $e->equipo->nombre ?? '-' }}
  </span>
@@ -310,7 +310,7 @@
  </td>
 
  <td class="text-center font-bold text-gray-900 dark:text-white {{ $dim }}">
- ${{ number_format($e->costo, 0, ',', '.') }}
+ $ {{ number_format($e->costo, 0, ',', '.') }}
  </td>
 
  <td class="text-center {{ $dimLight }}">
@@ -346,11 +346,11 @@
  </tbody>
  </table>
  </div>
-    <div class="table-footer-btn flex justify-end">
-        <a href="{{ route('electronicas.reportes') }}" class="btn-purple">
-            📈 Ver reporte detallado →
-        </a>
-    </div>
+     <div class="table-footer-btn flex justify-end">
+         <a href="{{ route('electronicas.reportes') }}" class="btn-purple">
+             📈 Ver reporte detallado →
+         </a>
+     </div>
  </div>
 
 </div>
@@ -358,23 +358,23 @@
 {{-- Script para cambio de tabs --}}
 <script>
 function switchDashTab(tab) {
- // Paneles
- document.getElementById('tabPanelMant').classList.toggle('hidden', tab !== 'mant');
- document.getElementById('tabPanelElec').classList.toggle('hidden', tab !== 'elec');
- // Botones
- const btnMant = document.getElementById('tabBtnMant');
- const btnElec = document.getElementById('tabBtnElec');
- const activeClasses = 'border-b-[3px] text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 border-blue-600';
- const activeClassesPurple = 'border-b-[3px] text-purple-700 dark:text-purple-300 bg-purple-50/60 dark:bg-purple-900/20 border-purple-600';
- const inactiveClasses = 'border-b-[3px] border-transparent text-gray-500 dark:text-gray-400';
+  // Paneles
+  document.getElementById('tabPanelMant').classList.toggle('hidden', tab !== 'mant');
+  document.getElementById('tabPanelElec').classList.toggle('hidden', tab !== 'elec');
+  // Botones
+  const btnMant = document.getElementById('tabBtnMant');
+  const btnElec = document.getElementById('tabBtnElec');
+   const activeClasses = 'border-b-[3px] text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 border-blue-600';
+   const activeClassesPurple = 'border-b-[3px] text-purple-700 dark:text-purple-300 bg-purple-50/60 dark:bg-purple-900/20 border-purple-600';
+   const inactiveClasses = 'border-b-[3px] border-transparent text-gray-500 dark:text-gray-400';
 
- if (tab === 'mant') {
- btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + activeClasses;
- btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + inactiveClasses + ' hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10';
- } else {
- btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + activeClassesPurple;
- btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-t-xl transition-all ' + inactiveClasses + ' hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50/40 dark:hover:bg-blue-900/10';
- }
+  if (tab === 'mant') {
+  btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all ' + activeClasses;
+  btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all ' + inactiveClasses + ' hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10';
+  } else {
+  btnElec.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all ' + activeClassesPurple;
+  btnMant.className = 'dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all ' + inactiveClasses + ' hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50/40 dark:hover:bg-blue-900/10';
+  }
 }
 </script>
 
@@ -397,11 +397,11 @@ function switchDashTab(tab) {
  for (let i = 0; i < totalSlides; i++) {
             const ind = indicators[i];
             if(ind) {
-                ind.classList.remove('w-8', 'w-2.5', 'h-3', 'h-2.5', 'bg-gradient-to-r', 'from-blue-500', 'to-cyan-400', 'shadow-md', 'bg-blue-600', 'dark:bg-blue-500', 'bg-gray-300', 'dark:bg-gray-600', 'bg-gray-300/60', 'dark:bg-gray-600/60', 'bg-blue-900', 'dark:bg-blue-400', 'bg-blue-900/30', 'dark:bg-blue-400/30', 'hover:bg-blue-900/60', 'dark:hover:bg-blue-400/60');
+                ind.classList.remove('w-8', 'w-2.5', 'h-3', 'h-2.5', 'bg-gradient-to-r', 'from-blue-500', 'to-cyan-400', 'shadow-md', 'bg-blue-600', 'dark:bg-blue-500', 'bg-gray-300', 'dark:bg-gray-600', 'bg-gray-300/60', 'bg-slate-400/75', 'dark:bg-gray-600/60', 'bg-blue-900', 'dark:bg-blue-400', 'bg-blue-900/30', 'dark:bg-blue-400/30', 'hover:bg-blue-900/60', 'dark:hover:bg-blue-400/60');
                 if (i === currentSlide) {
                     ind.classList.add('w-8', 'h-2.5', 'bg-gradient-to-r', 'from-blue-500', 'to-cyan-400', 'shadow-md');
                 } else {
-                    ind.classList.add('w-2.5', 'h-2.5', 'bg-gray-300/60', 'dark:bg-gray-600/60');
+                    ind.classList.add('w-2.5', 'h-2.5', 'bg-slate-400/75', 'dark:bg-gray-600/60');
                 }
             }
  }
@@ -441,8 +441,13 @@ function switchDashTab(tab) {
  updateSlide();
 
  // --- LÓGICA DE GRÁFICOS (CHART.JS) MEJORADA ---
+ const getChartLegendColor = () => document.documentElement.classList.contains('dark') ? '#E2E8F0' : '#0F172A';
+ const getChartAxisColor = () => document.documentElement.classList.contains('dark') ? '#CBD5E1' : '#1E293B';
+ const getChartGridColor = () => document.documentElement.classList.contains('dark') ? 'rgba(148, 163, 184, 0.16)' : 'rgba(100, 116, 139, 0.22)';
+ const dashboardCharts = [];
+
  Chart.defaults.font.family = "'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
- Chart.defaults.color = '#6B7280'; // gray-500
+ Chart.defaults.color = getChartAxisColor(); // adaptable claro/oscuro con alto contraste en tema claro
 
     const legendMarginPlugin = {
         id: 'legendMargin',
@@ -498,7 +503,7 @@ function switchDashTab(tab) {
 
  function formatMoneyEs(value) {
  const n = Number(value) || 0;
- return '$' + n.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+ return '$ ' + n.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
  }
 
  // Configurar gradientes para el gráfico de barras
@@ -513,7 +518,7 @@ function switchDashTab(tab) {
  gradientGreen.addColorStop(0, 'rgba(16, 185, 129, 0.9)'); // solid green
  gradientGreen.addColorStop(1, 'rgba(16, 185, 129, 0.1)'); // transparent green
 
- new Chart(ctxBar, {
+ const barChart = new Chart(ctxBar, {
  type: 'bar',
  data: {
  labels: chartData.labels,
@@ -552,7 +557,7 @@ function switchDashTab(tab) {
  plugins: { 
  legend: { 
  position: 'top',
- labels: { usePointStyle: true, padding: 20, font: { weight: 'bold' } }
+ labels: { usePointStyle: true, padding: 20, color: getChartLegendColor(), font: { weight: 'bold', size: 12.5 } }
  },
                 tooltip: {
                     backgroundColor: 'rgba(17, 24, 39, 0.9)',
@@ -568,16 +573,17 @@ function switchDashTab(tab) {
  scales: { 
  y: { 
  beginAtZero: true, 
- ticks: { precision: 0, padding: 10 },
- grid: { borderDash: [4, 4], color: 'rgba(156, 163, 175, 0.2)', drawBorder: false }
+ ticks: { precision: 0, padding: 10, color: getChartAxisColor(), font: { weight: '600' } },
+ grid: { borderDash: [4, 4], color: getChartGridColor(), drawBorder: false }
  },
  x: {
  grid: { display: false, drawBorder: false },
- ticks: { font: { weight: 'bold' }, padding: 10 }
+ ticks: { color: getChartLegendColor(), font: { weight: 'bold' }, padding: 10 }
  }
  }
  }
  });
+ dashboardCharts.push(barChart);
  }
 
  // Texto central de la dona: debe dibujarse DESPUÉS de los segmentos (no en beforeDraw) para que no quede tapado.
@@ -585,8 +591,6 @@ function switchDashTab(tab) {
  id: 'centerText',
  afterDraw: function(chart) {
  if (chart.config.type !== 'doughnut') return;
- const width = chart.width;
- const height = chart.height;
         const { ctx, chartArea } = chart;
         if (!chartArea) return;
         const centerX = (chartArea.left + chartArea.right) / 2;
@@ -600,13 +604,13 @@ function switchDashTab(tab) {
         const total = chart.config.data.datasets[0].data.reduce(function (a, b) { return a + b; }, 0);
 
         // Label arriba
-        ctx.font = '600 0.9em sans-serif';
-        ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
+        ctx.font = '700 0.92em sans-serif';
+        ctx.fillStyle = isDark ? '#CBD5E1' : '#334155';
         ctx.fillText('Total Órdenes', centerX, centerY - 22);
         
         // Número grande centrado
         ctx.font = 'bold 3em sans-serif';
-        ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
+        ctx.fillStyle = isDark ? '#F8FAFC' : '#0F172A';
         ctx.fillText(total, centerX, centerY + 18);
 
         ctx.restore();
@@ -653,16 +657,18 @@ function switchDashTab(tab) {
   labels: { 
       usePointStyle: true, 
       padding: 15, 
-      color: '#6b7280',
-      font: { weight: 'bold', size: 12 },
+      color: getChartLegendColor(),
+      font: { weight: 'bold', size: 12.5 },
       generateLabels: function(chart) {
           const data = chart.data;
+          const labelColor = getChartLegendColor();
           if (data.labels.length && data.datasets.length) {
               return data.labels.map((label, i) => ({
                   text: label,
                   fillStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
                   strokeStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
-                  fontColor: '#6b7280',
+                  fontColor: labelColor,
+                  color: labelColor,
                   lineWidth: 0,
                   hidden: !chart.getDataVisibility(i),
                   index: i
@@ -707,13 +713,7 @@ function switchDashTab(tab) {
             animation: { animateScale: true, animateRotate: true }
         }
  });
-
- // Al cambiar claro/oscuro el canvas no se redibuja solo: forzar actualización del gráfico circular
- if (typeof MutationObserver !== 'undefined') {
- new MutationObserver(function () {
- pieChart.update('none');
- }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
- }
+ dashboardCharts.push(pieChart);
  }
 
   const canvasIngresos = document.getElementById('ingresosChart');
@@ -740,7 +740,7 @@ function switchDashTab(tab) {
   const comprasData = (chartData && chartData.compras) ? chartData.compras : [];
   const egresosData = (chartData && chartData.egresos) ? chartData.egresos : [];
 
-  new Chart(ctxIng, {
+  const ingresosChart = new Chart(ctxIng, {
   type: 'bar',
   data: {
   labels: chartData.labels,
@@ -798,7 +798,7 @@ function switchDashTab(tab) {
  legend: {
  display: true,
  position: 'top',
- labels: { usePointStyle: true, padding: 15, font: { weight: 'bold' } }
+ labels: { usePointStyle: true, padding: 15, color: getChartLegendColor(), font: { weight: 'bold', size: 12.5 } }
  },
                 tooltip: {
                     backgroundColor: 'rgba(17, 24, 39, 0.9)',
@@ -818,17 +818,20 @@ function switchDashTab(tab) {
  beginAtZero: true,
  ticks: {
  precision: 0,
- callback: function(v) { return '$' + Number(v).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+ color: getChartAxisColor(),
+ font: { weight: '600' },
+ callback: function(v) { return '$ ' + Number(v).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
  },
- grid: { borderDash: [4, 4], color: 'rgba(156, 163, 175, 0.2)', drawBorder: false }
+ grid: { borderDash: [4, 4], color: getChartGridColor(), drawBorder: false }
  },
  x: {
  grid: { display: false, drawBorder: false },
- ticks: { font: { weight: 'bold' }, padding: 8 }
+ ticks: { color: getChartLegendColor(), font: { weight: 'bold' }, padding: 8 }
  }
  }
  }
  });
+ dashboardCharts.push(ingresosChart);
  }
 
  // Slide 4: Dona Electrónica (Pendientes vs Terminados)
@@ -856,12 +859,12 @@ function switchDashTab(tab) {
  ctx.textBaseline = 'middle';
  ctx.textAlign = 'center';
  // Label arriba
- ctx.font = '600 0.9em sans-serif';
- ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
+ ctx.font = '700 0.92em sans-serif';
+ ctx.fillStyle = isDark ? '#CBD5E1' : '#334155';
  ctx.fillText('Total Órdenes', centerX, centerY - 22);
  // Número grande centrado
  ctx.font = 'bold 3em sans-serif';
- ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
+ ctx.fillStyle = isDark ? '#F8FAFC' : '#0F172A';
  ctx.fillText(total, centerX, centerY + 18);
  ctx.restore();
  }
@@ -890,16 +893,18 @@ function switchDashTab(tab) {
   labels: { 
       usePointStyle: true, 
       padding: 14, 
-      color: '#6b7280',
-      font: { weight: 'bold', size: 12 },
+      color: getChartLegendColor(),
+      font: { weight: 'bold', size: 12.5 },
       generateLabels: function(chart) {
           const data = chart.data;
+          const labelColor = getChartLegendColor();
           if (data.labels.length && data.datasets.length) {
               return data.labels.map((label, i) => ({
                   text: label,
                   fillStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
                   strokeStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
-                  fontColor: '#6b7280',
+                  fontColor: labelColor,
+                  color: labelColor,
                   lineWidth: 0,
                   hidden: !chart.getDataVisibility(i),
                   index: i
@@ -942,10 +947,7 @@ function switchDashTab(tab) {
  animation: { animateScale: true, animateRotate: true }
  }
  });
- if (typeof MutationObserver !== 'undefined') {
- new MutationObserver(() => slideDonut.update('none'))
- .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
- }
+ dashboardCharts.push(slideDonut);
  }
 
  // Tab Electrónica: Dona Pendientes vs Terminados
@@ -970,10 +972,10 @@ function switchDashTab(tab) {
  ctx.font = 'bold 3em sans-serif';
  ctx.textBaseline = 'middle';
  ctx.textAlign = 'center';
- ctx.fillStyle = isDark ? '#f9fafb' : '#111827';
+ ctx.fillStyle = isDark ? '#F8FAFC' : '#0F172A';
  ctx.fillText(total, width / 2, height / 2 - 14);
- ctx.font = '600 0.9em sans-serif';
- ctx.fillStyle = isDark ? '#d1d5db' : '#6b7280';
+ ctx.font = '700 0.92em sans-serif';
+ ctx.fillStyle = isDark ? '#CBD5E1' : '#334155';
  ctx.fillText('Total Órdenes', width / 2, height / 2 + 22);
  ctx.restore();
  }
@@ -1002,16 +1004,18 @@ function switchDashTab(tab) {
   labels: { 
       usePointStyle: true, 
       padding: 8, 
-      color: '#6b7280',
-      font: { weight: 'bold', size: 11 },
+      color: getChartLegendColor(),
+      font: { weight: 'bold', size: 11.5 },
       generateLabels: function(chart) {
           const data = chart.data;
+          const labelColor = getChartLegendColor();
           if (data.labels.length && data.datasets.length) {
               return data.labels.map((label, i) => ({
                   text: label,
                   fillStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
                   strokeStyle: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)'][i],
-                  fontColor: '#6b7280',
+                  fontColor: labelColor,
+                  color: labelColor,
                   lineWidth: 0,
                   hidden: !chart.getDataVisibility(i),
                   index: i
@@ -1054,11 +1058,32 @@ function switchDashTab(tab) {
  animation: { animateScale: true, animateRotate: true }
  }
  });
- // Dark mode reactivity
- if (typeof MutationObserver !== 'undefined') {
- new MutationObserver(() => tabDonut.update('none'))
- .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+ dashboardCharts.push(tabDonut);
  }
+
+ // Reactividad inmediata de todos los gráficos del carrusel al alternar entre Tema Claro y Tema Oscuro
+ if (typeof MutationObserver !== 'undefined') {
+ new MutationObserver(() => {
+     const legendCol = getChartLegendColor();
+     const axisCol = getChartAxisColor();
+     const gridCol = getChartGridColor();
+     Chart.defaults.color = axisCol;
+     dashboardCharts.forEach(c => {
+         if (c.options?.plugins?.legend?.labels) {
+             c.options.plugins.legend.labels.color = legendCol;
+         }
+         if (c.options?.scales?.x?.ticks) {
+             c.options.scales.x.ticks.color = legendCol;
+         }
+         if (c.options?.scales?.y?.ticks) {
+             c.options.scales.y.ticks.color = axisCol;
+         }
+         if (c.options?.scales?.y?.grid) {
+             c.options.scales.y.grid.color = gridCol;
+         }
+         c.update('none');
+     });
+ }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
  }
 
  });

@@ -52,13 +52,13 @@
 
 @push('modals')
 {{-- Modal de contraseña para eliminar cierre (Liquid Glass) --}}
-<div id="pwd-cierre-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+<div id="pwd-cierre-modal" role="dialog" aria-modal="true" aria-labelledby="pwd-cierre-title" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
     <div class="ts-modal-card scale-95 opacity-0" id="pwd-cierre-card">
         <div class="p-6">
             <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
                 🔓
             </div>
-            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Cierre</h3>
+            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2" id="pwd-cierre-title">Eliminar Cierre</h3>
             <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
                 @if(auth()->check() && auth()->user()->isTecnico())
                     Esta acción desbloquea el día. Ingresa la contraseña de un administrador.
@@ -83,12 +83,12 @@
 </div>
 
 {{-- Modal Calculadora de Billetes --}}
-<div id="calc-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
+<div id="calc-modal" role="dialog" aria-modal="true" aria-labelledby="calc-title" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300">
     <div class="ts-modal-card scale-95 opacity-0 max-w-md w-full" id="calc-card">
         <div class="p-6">
             <div class="mb-4">
-                <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🧮 Calculadora de Dinero en Mano</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">Ingresa el conteo de billetes y monedas para sumar automáticamente.</p>
+                <h3 id="calc-title" class="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🧮 Calculadora de Dinero en Mano</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">Ingresa el valor de billetes y monedas correspondiente.</p>
             </div>
             <div class="space-y-3">
                 <div class="grid grid-cols-2 gap-3 items-center">
@@ -128,11 +128,11 @@
             
             <div class="mt-4 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700/30 text-center">
                 <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1">Total Físico Contado</p>
-                <p class="text-3xl font-black text-slate-800 dark:text-white" id="calc-total">$0</p>
+                <p class="text-3xl font-black text-slate-800 dark:text-white" id="calc-total">$ 0</p>
             </div>
             <div class="mt-4 flex gap-3">
-                <button type="button" onclick="resetCalc()" class="btn-cancel flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Limpiar</button>
-                <button type="button" onclick="closeCalc(true)" class="btn-primary flex-1 justify-center font-bold" style="padding: 9px 18px; font-size: 14px; font-weight: 700;">Aplicar al Cierre</button>
+                <button type="button" onclick="resetCalc()" class="btn-clean flex-1 justify-center font-bold" aria-label="Limpiar calculadora">🧹 Limpiar</button>
+                <button type="button" onclick="closeCalc(true)" class="btn-primary flex-1 justify-center font-bold" aria-label="Aplicar al cierre">Aplicar al Cierre</button>
             </div>
         </div>
     </div>
@@ -187,7 +187,7 @@
         }
 
         calcTotalValue = total;
-        document.getElementById('calc-total').innerText = '$' + new Intl.NumberFormat('es-CO').format(total);
+        document.getElementById('calc-total').innerText = '$ ' + new Intl.NumberFormat('es-CO').format(total);
     }
 
     function resetCalc() {
@@ -212,28 +212,28 @@
         <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
             <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📈</span> Ingresos</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_ingresos'], 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($preview['total_ingresos'], 0, ',', '.') }}</p>
             </div>
             <div class="glass-card hover-glow glass-card-red p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">📉</span> Egresos</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['total_egresos'], 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($preview['total_egresos'], 0, ',', '.') }}</p>
             </div>
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">💵</span> Efectivo Sistema</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['efectivo'], 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($preview['efectivo'], 0, ',', '.') }}</p>
             </div>
             <div class="glass-card hover-glow glass-card-purple p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                 <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">🏦</span> Consignación</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['consignacion'], 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($preview['consignacion'], 0, ',', '.') }}</p>
             </div>
             <div class="glass-card hover-glow {{ $preview['saldo_final'] >= 0 ? 'glass-card-teal' : 'glass-card-orange' }} p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0 col-span-2 lg:col-span-1">
                 <p class="text-xs font-bold {{ $preview['saldo_final'] >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }} uppercase tracking-widest mb-1 z-10 flex items-center gap-1.5 justify-center"><span class="text-lg no-print-emoji">⚖️</span> Saldo Teórico</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($preview['saldo_final'], 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($preview['saldo_final'], 0, ',', '.') }}</p>
             </div>
         </div>
 
         {{-- Tarjeta interactiva de Arqueo y Conciliación Física --}}
-        <div class="glass-card p-6 md:p-8 border border-blue-500/20 shadow-xl">
+        <div class="glass-card p-6 border border-blue-500/20 shadow-xl">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 md:mb-8">
                 <div>
                     <h2 class="text-xl md:text-2xl font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -243,7 +243,7 @@
                         {{ $preview['num_movimientos'] }} movimiento(s) registrados hoy. Cuenta el efectivo real en caja para conciliar el arqueo.
                     </p>
                 </div>
-                <button type="button" onclick="openCalc()" class="btn-clean flex items-center justify-center gap-2 self-stretch md:self-auto" style="padding: 9px 18px; font-size: 13px;">
+                <button type="button" onclick="openCalc()" class="btn-clean flex items-center justify-center gap-2 self-stretch md:self-auto">
                     <span>🧮</span> Calcular dinero
                 </button>
             </div>
@@ -251,21 +251,25 @@
             <form action="{{ route('cierre.store') }}" method="POST" id="form-cierre-caja" class="space-y-6">
                 @csrf
                 <input type="hidden" name="fecha" value="{{ $hoy }}">
-                <input type="hidden" id="efectivo_sistema_val" value="{{ $preview['efectivo'] }}">
+                <input type="hidden" id="efectivo_sistema_val" value="{{ $preview['efectivo_esperado'] ?? $preview['efectivo'] }}">
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
-                    {{-- Tarjeta Efectivo Teórico (Sistema) --}}
+                    {{-- Tarjeta Efectivo Esperado en Caja (Sistema) --}}
                     <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center relative overflow-hidden group text-center min-w-0">
                         <div>
                             <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">
-                                💻 Efectivo Teórico (Sistema)
+                                💻 Efectivo Esperado en Caja
                             </span>
                             <p class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white">
-                                ${{ number_format($preview['efectivo'], 0, ',', '.') }}
+                                $ {{ number_format($preview['efectivo_esperado'] ?? $preview['efectivo'], 0, ',', '.') }}
                             </p>
                         </div>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-2">
-                            Total calculado de entradas y salidas registradas en efectivo.
+                            @if(! empty($preview['saldo_anterior']) && abs($preview['saldo_anterior']) > 0.01)
+                                Base/Saldo anterior: ${{ number_format($preview['saldo_anterior'], 0, ',', '.') }} | Flujo hoy: ${{ number_format($preview['flujo_dia'] ?? $preview['efectivo'], 0, ',', '.') }}
+                            @else
+                                Total calculado de entradas y salidas registradas en efectivo.
+                            @endif
                         </p>
                     </div>
 
@@ -322,7 +326,7 @@
                     <input type="text" 
                            name="motivo_diferencia" 
                            id="motivo_diferencia" 
-                           placeholder="Opcional: Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)..." 
+                           placeholder="Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)..." 
                            class="glass-input text-xs sm:text-sm">
                     <p id="error-motivo-diferencia" class="hidden text-xs text-red-500 font-bold mt-1">
                         ⚠️ Existe una diferencia en caja. Debes indicar la justificación o causa del descuadre para poder cerrar el día.
@@ -341,9 +345,20 @@
                               class="glass-input text-xs"></textarea>
                 </div>
 
+                {{-- Autorización Requerida para Técnico --}}
+                @if(auth()->check() && auth()->user()->isTecnico())
+                <div class="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 max-w-md ml-auto">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-center">
+                        🔒 Autorización Requerida — Contraseña de Administrador:
+                    </label>
+                    <input type="password" name="password_confirm" required placeholder="Contraseña de Administrador..." 
+                        class="glass-input text-center tracking-widest text-base w-full focus:ring-orange-500">
+                </div>
+                @endif
+
                 {{-- Botón de Cierre --}}
                 <div class="flex flex-col sm:flex-row justify-end items-center gap-3 mt-6 md:mt-8">
-                    <button type="submit" id="btn-submit-cierre" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20" style="padding: 9px 18px; font-size: 13px;">
+                    <button type="submit" id="btn-submit-cierre" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
                         <span>🔒</span> Cerrar y bloquear dia
                     </button>
                 </div>
@@ -361,7 +376,7 @@
     @endif
 
     {{-- Historial de cierres --}}
-    <div class="glass-card p-6 md:p-8">
+    <div class="glass-card p-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
                 <h2 class="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -394,12 +409,12 @@
                     @forelse($cierres as $c)
                     <tr>
                         <td data-label="Fecha:" class="text-center font-bold">{{ $c->fecha->format('d/m/Y') }}</td>
-                        <td data-label="Ingresos:" class="text-right text-emerald-600 dark:text-emerald-400 font-bold">${{ number_format($c->total_ingresos, 0, ',', '.') }}</td>
-                        <td data-label="Egresos:" class="text-right text-red-600 dark:text-red-400 font-bold">${{ number_format($c->total_egresos, 0, ',', '.') }}</td>
-                        <td data-label="Efectivo Sist.:" class="text-right text-blue-600 dark:text-blue-400 font-semibold">${{ number_format($c->efectivo, 0, ',', '.') }}</td>
+                        <td data-label="Ingresos:" class="text-right text-emerald-600 dark:text-emerald-400 font-bold">$ {{ number_format($c->total_ingresos, 0, ',', '.') }}</td>
+                        <td data-label="Egresos:" class="text-right text-red-600 dark:text-red-400 font-bold">$ {{ number_format($c->total_egresos, 0, ',', '.') }}</td>
+                        <td data-label="Efectivo Sist.:" class="text-right text-blue-600 dark:text-blue-400 font-semibold">$ {{ number_format($c->efectivo, 0, ',', '.') }}</td>
                         <td data-label="Contado en Mano:" class="text-right font-black text-slate-800 dark:text-white">
                             @if($c->efectivo_real_contado !== null)
-                                ${{ number_format($c->efectivo_real_contado, 0, ',', '.') }}
+                                $ {{ number_format($c->efectivo_real_contado, 0, ',', '.') }}
                             @else
                                 <span class="text-gray-400 font-normal">—</span>
                             @endif
@@ -411,11 +426,11 @@
                                 </span>
                             @elseif($c->estado_diferencia === 'faltante')
                                 <span class="pill pill-anulado text-[11px] font-bold py-0.5 px-2" title="{{ $c->motivo_diferencia ?: 'Faltante de caja' }}">
-                                    🔴 Faltante ${{ number_format(abs($c->diferencia), 0, ',', '.') }}
+                                    🔴 Faltante $ {{ number_format(abs($c->diferencia), 0, ',', '.') }}
                                 </span>
                             @elseif($c->estado_diferencia === 'sobrante')
                                 <span class="pill pill-efectivo text-[11px] font-bold py-0.5 px-2" title="{{ $c->motivo_diferencia ?: 'Sobrante de caja' }}">
-                                    🔵 Sobrante ${{ number_format($c->diferencia, 0, ',', '.') }}
+                                    🔵 Sobrante $ {{ number_format($c->diferencia, 0, ',', '.') }}
                                 </span>
                             @else
                                 <span class="pill pill-done text-[11px] font-bold py-0.5 px-2 opacity-60" title="No se registró conteo físico del efectivo">
@@ -423,8 +438,8 @@
                                 </span>
                             @endif
                         </td>
-                        <td data-label="Consignación:" class="text-right text-purple-600 dark:text-purple-400 font-semibold">${{ number_format($c->consignacion, 0, ',', '.') }}</td>
-                        <td data-label="Saldo Final:" class="text-right font-black {{ $c->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }}">${{ number_format($c->saldo_final, 0, ',', '.') }}</td>
+                        <td data-label="Consignación:" class="text-right text-purple-600 dark:text-purple-400 font-semibold">$ {{ number_format($c->consignacion, 0, ',', '.') }}</td>
+                        <td data-label="Saldo Final:" class="text-right font-black {{ $c->saldo_final >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400' }}">$ {{ number_format($c->saldo_final, 0, ',', '.') }}</td>
                         <td data-label="Mov.:" class="text-center text-sm font-semibold text-gray-500">{{ $c->num_movimientos }}</td>
                         <td data-label="Registró:" class="text-xs text-gray-500 font-medium">{{ $c->user->name }}</td>
                         <td data-label="Acciones:" class="text-center w-28">
@@ -474,7 +489,7 @@
     }
 
     function formatearPesos(n) {
-        return '$' + new Intl.NumberFormat('es-CO').format(Math.round(n));
+        return '$ ' + new Intl.NumberFormat('es-CO').format(Math.round(n));
     }
 
     function actualizarDiferencia() {
@@ -506,7 +521,7 @@
             if (asteriscoEl) asteriscoEl.classList.add('hidden');
             if (motivoInput) {
                 motivoInput.removeAttribute('required');
-                motivoInput.placeholder = 'Opcional: Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)...';
+                motivoInput.placeholder = 'Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)...';
                 motivoInput.classList.remove('!border-red-500', '!ring-2', '!ring-red-500/40');
             }
             if (errorMotivoEl) errorMotivoEl.classList.add('hidden');

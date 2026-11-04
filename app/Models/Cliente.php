@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Helpers\ColombiaHelper;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
-    use \App\Traits\Auditable, HasFactory;
+    use Auditable, HasFactory;
 
     protected $fillable = [
         'nombres',
@@ -38,6 +40,36 @@ class Cliente extends Model
         $this->attributes['identificacion'] = $value ? strtoupper($value) : $value;
     }
 
+    public function getNombresAttribute($value)
+    {
+        return ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setNombresAttribute($value)
+    {
+        $this->attributes['nombres'] = ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function getApellidosAttribute($value)
+    {
+        return ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setApellidosAttribute($value)
+    {
+        $this->attributes['apellidos'] = ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function getDireccionAttribute($value)
+    {
+        return ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setDireccionAttribute($value)
+    {
+        $this->attributes['direccion'] = ColombiaHelper::formatTitleCase($value);
+    }
+
     /**
      * Retorna el nombre completo de forma dinámica.
      */
@@ -65,6 +97,12 @@ class Cliente extends Model
     public function getTipoClienteLabelAttribute(): string
     {
         return $this->tipo_cliente === 'tecnico' ? '🛠️ Técnico' : '👤 Cliente';
+    }
+
+    /** Abreviatura legible del tipo de identificación (ej. C.C., NIT, Pass, etc.) */
+    public function getTipoIdentificacionAbreviadoAttribute(): string
+    {
+        return ColombiaHelper::abreviaturaTipoIdentificacion($this->tipo_identificacion);
     }
 
     /** Relación: Un cliente tiene muchos equipos */

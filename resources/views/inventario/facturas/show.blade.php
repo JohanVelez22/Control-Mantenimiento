@@ -18,7 +18,7 @@
   <div class="flex flex-col md:flex-row items-center gap-4">
       <div class="text-center md:text-right">
           <p class="font-black text-yellow-700 dark:text-yellow-400 uppercase tracking-tight">Saldo Actual</p>
-          <p class="text-2xl font-black text-yellow-700 dark:text-yellow-400">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</p>
+          <p class="text-2xl font-black text-yellow-700 dark:text-yellow-400">$ {{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</p>
       </div>
 
       @if(!auth()->user()->isInvitado() && $movimientoPadre)
@@ -39,9 +39,9 @@
  @endif
 
  {{-- Encabezado --}}
- <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
+ <div class="detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
   <div class="flex items-center gap-3">
-  <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+  <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
   <div>
   <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
   {{ $factura->numero_factura }}
@@ -53,7 +53,13 @@
   </div>
   </div>
  
- <div class="flex items-center gap-3 shrink-0">
+ <div class="flex flex-wrap items-center gap-3 shrink-0">
+ @if($factura->cotizacion_origen)
+  <a href="{{ route('cotizaciones.show', $factura->cotizacion_origen->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-semibold" title="Ver cotización de origen: {{ $factura->cotizacion_origen->codigo }}">
+      📝 Ver Cotización ({{ $factura->cotizacion_origen->codigo }})
+  </a>
+ @endif
+
  @if($factura->estado !== 'anulada' && !auth()->user()->isInvitado() && $movimientoPadre)
   <a href="{{ route('caja.show', $movimientoPadre->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" title="Ver detalle del movimiento en el módulo de Caja">💵 Ver en Caja</a>
  @endif
@@ -77,8 +83,8 @@
  {{ $factura->tipo_movimiento === 'compra' ? '🏭' : '👤' }}
  </div>
  <div class="min-w-0">
- <p class="text-[11px] font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}</p>
- <p class="font-medium text-xl text-slate-800 dark:text-slate-200 leading-tight break-words">
+ <p class="text-base font-bold text-slate-900 dark:text-white tracking-wider uppercase mb-1">{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}</p>
+ <p class="font-medium text-base text-slate-800 dark:text-slate-200 leading-tight break-words">
  {{ $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? '—' }}
  </p>
             <p class="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1 break-words">
@@ -100,7 +106,7 @@
  <div class="mb-8">
  <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4">Detalle del Documento</h3>
  <div class="overflow-x-auto pb-2">
- <table class="ts-table">
+ <table class="ts-table table-dense">
  <thead>
  <tr>
  <th>Producto</th>
@@ -114,8 +120,8 @@
  <tr>
  <td class="font-bold text-slate-800 dark:text-white">{{ $item->stock->producto ?? $item->descripcion ?? 'Producto/Servicio' }}</td>
  <td class="text-center font-bold">{{ $item->cantidad }}</td>
- <td class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
- <td class="text-right font-black text-blue-600 dark:text-cyan-400">${{ number_format($item->subtotal, 0, ',', '.') }}</td>
+ <td class="text-right font-bold text-slate-800 dark:text-white">$ {{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+ <td class="text-right font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($item->subtotal, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
@@ -128,10 +134,10 @@
  {{-- Notas --}}
  <div class="w-full md:w-1/2">
  @if($factura->observaciones)
-  <div class="p-5 glass-card">
- <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Observaciones</p>
- <p class="text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-pre-line">{{ $factura->observaciones }}</p>
- </div>
+  <p class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-2">Observaciones</p>
+  <div class="py-2.5 px-4 glass-card rounded-xl overflow-hidden flex items-center min-h-[42px]">
+      <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line break-words my-auto" style="overflow-wrap: anywhere; word-break: break-word;">{{ $factura->observaciones }}</p>
+  </div>
  @endif
  </div>
  
@@ -139,32 +145,32 @@
  <div class="w-full md:w-1/2 glass-card p-5">
  <div class="flex justify-between items-center mb-3">
  <span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Total Documento</span>
- <span class="text-2xl font-black text-slate-800 dark:text-white">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>
+ <span class="text-2xl font-black text-slate-800 dark:text-white">$ {{ number_format($factura->total_documento, 0, ',', '.') }}</span>
  </div>
  
  <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
  <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400">Total Pagado</span>
- <span class="text-lg font-black text-emerald-600 dark:text-emerald-400">${{ number_format($factura->total_pagado, 0, ',', '.') }}</span>
+ <span class="text-lg font-black text-emerald-600 dark:text-emerald-400">$ {{ number_format($factura->total_pagado, 0, ',', '.') }}</span>
  </div>
  
   @if($factura->saldo_pendiente > 0)
   <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
   <span class="text-sm font-bold text-red-500">Saldo Pendiente</span>
-  <span class="text-lg font-black text-red-500">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
+  <span class="text-lg font-black text-red-500">$ {{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
   </div>
   @endif
 
   @if($factura->tipo_movimiento === 'venta' && $factura->estado !== 'anulada')
   <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
       <span class="text-sm font-bold text-gray-500 dark:text-gray-400">Costo Total Compra</span>
-      <span class="text-base font-black text-slate-700 dark:text-slate-300">${{ number_format($factura->costo_total, 0, ',', '.') }}</span>
+      <span class="text-base font-black text-slate-700 dark:text-slate-300">$ {{ number_format($factura->costo_total, 0, ',', '.') }}</span>
   </div>
   <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-white/10">
       <span class="text-sm font-bold {{ $factura->utilidad >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500' }}">
           {{ $factura->utilidad >= 0 ? 'Utilidad Generada' : 'Pérdida Generada' }}
       </span>
       <span class="text-base font-black {{ $factura->utilidad >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500' }}">
-          {{ $factura->utilidad >= 0 ? '+' : '-' }}${{ number_format(abs($factura->utilidad), 0, ',', '.') }}
+          {{ $factura->utilidad >= 0 ? '+' : '-' }}$ {{ number_format(abs($factura->utilidad), 0, ',', '.') }}
       </span>
   </div>
   @endif
@@ -173,21 +179,21 @@
 
  {{-- Historial de Pagos y Abonos --}}
  @if(isset($abonos) && $abonos->count() > 0)
- <div class="mb-8 pt-4 border-t border-gray-200/50 dark:border-white/10">
+ <div class="mb-8">
      <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
          💳 Historial de Pagos y Abonos en Caja ({{ $abonos->count() }})
      </h3>
      <div class="overflow-x-auto">
-         <table class="ts-table mb-0 w-full text-xs">
+         <table id="tabla-abonos-facturas" class="ts-table table-dense mb-0 w-full">
              <thead>
                  <tr>
-                     <th class="text-center whitespace-nowrap px-2" style="width: 50px;">Código</th>
-                     <th class="text-center whitespace-nowrap px-2" style="width: 85px;">Fecha</th>
-                     <th class="text-left px-2">Descripción</th>
-                     <th class="text-center whitespace-nowrap px-2" style="width: 100px;">Método Pago</th>
-                     <th class="text-center whitespace-nowrap px-2" style="width: 110px;">Registrado Por</th>
-                     <th class="text-right whitespace-nowrap px-2" style="width: 85px;">Monto</th>
-                     <th class="text-center whitespace-nowrap px-2" style="width: 45px;">Acciones</th>
+                     <th class="text-center whitespace-nowrap" style="width: 65px;">Código</th>
+                     <th class="text-center whitespace-nowrap" style="width: 95px;">Fecha</th>
+                     <th class="text-left">Descripción</th>
+                     <th class="text-center whitespace-nowrap" style="width: 120px;">Método Pago</th>
+                     <th class="text-center whitespace-nowrap" style="width: 130px;">Registrado Por</th>
+                     <th class="text-right whitespace-nowrap" style="width: 100px;">Monto</th>
+                     <th class="text-center whitespace-nowrap" style="width: 65px;">Acciones</th>
                  </tr>
              </thead>
              <tbody>
@@ -205,12 +211,12 @@
                          {{ $abono->user->name ?? 'Sistema' }}
                      </td>
                      <td class="text-right font-black text-emerald-600 dark:text-emerald-400 whitespace-nowrap px-2">
-                         ${{ number_format($abono->monto, 0, ',', '.') }}
+                         $ {{ number_format($abono->monto, 0, ',', '.') }}
                      </td>
-                     <td class="text-center whitespace-nowrap px-2">
-                         <a href="{{ route('caja.show', $abono->id) }}" class="btn-ghost px-1.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este pago #{{ $abono->id }}">
-                             👁️
-                         </a>
+                     <td class="text-center whitespace-nowrap">
+                         <div class="actions-grid">
+                             <a href="{{ route('caja.show', $abono->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este pago #{{ $abono->id }}">👁️</a>
+                         </div>
                      </td>
                  </tr>
                  @endforeach
@@ -220,7 +226,7 @@
  </div>
  @endif
 
- <div class="pt-4 border-t border-gray-200/50 dark:border-white/5 flex justify-between items-center text-xs font-semibold text-gray-400">
+ <div class="pt-4 flex justify-between items-center text-xs font-semibold text-gray-400">
  <span>Usuario: {{ $factura->user->name ?? '—' }}</span>
  <span>Registro: {{ $factura->created_at->format('d/m/Y H:i:s') }}</span>
  </div>
@@ -229,7 +235,7 @@
 
 @if($factura->saldo_pendiente > 0 && $movimientoPadre)
 {{-- Modal interactivo para registrar abono directamente en la factura --}}
-<div id="abono-factura-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+<div id="abono-factura-modal" role="dialog" aria-modal="true" aria-labelledby="abono-factura-title" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
     <div id="abono-factura-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4 max-w-md">
         <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200/50 dark:border-white/10">
             <div class="flex items-center gap-3">
@@ -237,16 +243,16 @@
                     💵
                 </div>
                 <div>
-                    <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">Registrar Abono</h3>
+                    <h3 id="abono-factura-title" class="text-lg font-black text-slate-800 dark:text-white leading-tight">Registrar Abono</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Factura #{{ $factura->numero_factura }}</p>
                 </div>
             </div>
-            <button type="button" onclick="closeAbonoFacturaModal()" class="btn-ghost p-2 text-gray-400 hover:text-gray-600">✕</button>
+            <button type="button" onclick="closeAbonoFacturaModal()" class="btn-ghost p-2 text-gray-400 hover:text-gray-600" aria-label="Cerrar modal de abono">✕</button>
         </div>
 
         <div class="mb-4 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 flex justify-between items-center text-sm">
             <span class="text-amber-800 dark:text-amber-300 font-semibold">Saldo Pendiente:</span>
-            <span class="text-lg font-black text-amber-600 dark:text-amber-400">${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
+            <span class="text-lg font-black text-amber-600 dark:text-amber-400">$ {{ number_format($factura->saldo_pendiente, 0, ',', '.') }}</span>
         </div>
 
         <form action="{{ route('caja.abonos.store', $movimientoPadre->id) }}" method="POST" class="space-y-4">
@@ -258,12 +264,12 @@
             </div>
 
             <div>
-                <label class="field-label">Fecha del Pago *</label>
+                <label class="field-label">Fecha del Pago <span class="text-red-500 font-bold">*</span></label>
                 <input type="date" name="fecha" required value="{{ date('Y-m-d') }}" class="glass-input">
             </div>
 
             <div>
-                <label class="field-label">Tipo de Pago *</label>
+                <label class="field-label">Tipo de Pago <span class="text-red-500 font-bold">*</span></label>
                 <select name="tipo_pago" required class="glass-input">
                     <option value="efectivo">💵 Efectivo</option>
                     <option value="consignacion">🏦 Banco / Transferencia</option>
@@ -276,7 +282,7 @@
             </div>
 
             <div class="flex gap-2 pt-3">
-                <button type="button" onclick="closeAbonoFacturaModal()" class="btn-cancel w-1/3 justify-center">✕<space>Cancelar</button>
+                <button type="button" onclick="closeAbonoFacturaModal()" class="btn-cancel w-1/3 justify-center"><span>✕</span><span>Cancelar</span></button>
                 <button type="submit" class="btn-primary w-2/3 justify-center shadow-lg shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700">💾 Guardar Abono</button>
             </div>
         </form>

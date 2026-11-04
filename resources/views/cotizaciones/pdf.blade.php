@@ -43,8 +43,8 @@
                     <br><span style="font-size: 6pt; color: #555;">Ref: {{ $item->stock->codigo }}</span>
                 @endif
             </td>
-            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
-            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($item->subtotal ?: ($item->cantidad * $item->precio_unitario), 0, ',', '.') }}</td>
+            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($item->subtotal ?: ($item->cantidad * $item->precio_unitario), 0, ',', '.') }}</td>
         </tr>
         @endforeach
     </tbody>
@@ -54,7 +54,7 @@
     <tr>
         <td colspan="3" style="width: 60%;"></td>
         <td style="width: 20%; text-align: right; font-weight: bold; font-size: 6.8pt; padding: 1px 4px; border-top: 1.5px solid #000;">TOTAL PRESUPUESTO:</td>
-        <td style="width: 20%; text-align: center; font-weight: bold; font-size: 6.8pt; padding: 1px 2px; border-top: 1.5px solid #000;">${{ number_format($cotizacion->total, 0, ',', '.') }}</td>
+        <td style="width: 20%; text-align: center; font-weight: bold; font-size: 6.8pt; padding: 1px 2px; border-top: 1.5px solid #000;">$ {{ number_format($cotizacion->total, 0, ',', '.') }}</td>
     </tr>
 </table>
 

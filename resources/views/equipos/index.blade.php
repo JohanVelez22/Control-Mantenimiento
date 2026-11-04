@@ -24,7 +24,7 @@
  </div>
 
  <div class="overflow-x-auto pb-2">
- <table id="tabla-equipos" class="ts-table responsive-table">
+ <table id="tabla-equipos" class="ts-table responsive-table w-full">
  <thead>
  <tr>
  <th class="w-16 text-center">ID</th>
@@ -49,7 +49,7 @@
  <td class="uppercase text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $equipo->serie }}</td>
  <td class="{{ $dim }}">
   @if($equipo->cliente)
-  <a href="{{ route('clientes.index') }}#cliente-{{ $equipo->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <a href="{{ route('clientes.index') }}#cliente-{{ $equipo->cliente_id }}" class="group block" title="Ver en tabla de clientes">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   👤 {{ $equipo->cliente->nombre }}
   </div>
@@ -60,7 +60,7 @@
   @endif
   </a>
   @elseif($equipo->proveedor)
-  <a href="{{ route('proveedores.index') }}#proveedor-{{ $equipo->proveedor_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $equipo->proveedor_id }}" class="group block" title="Ver en tabla de proveedores">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   🏢 {{ $equipo->proveedor->nombre_razon_social }}
   </div>
@@ -78,27 +78,9 @@
   <td class="whitespace-nowrap {{ $dim }}"><span class="font-medium text-slate-700 dark:text-slate-300">{{ $equipo->user->name ?? '-' }}</span></td>
   <td class="text-center">
    @if($equipo->estado === 'dado_de_baja')
-   @php
-       $detallePayload = [
-           'nombre' => $equipo->nombre,
-           'serie' => $equipo->serie ?: ($equipo->modelo ?: 'S/N'),
-           'propietario' => $equipo->propietario_label,
-           'motivo' => $equipo->motivo_baja_label,
-           'observacion' => $equipo->observacion_baja ?: 'Sin observaciones registradas',
-           'autor' => $equipo->bajaUser ? $equipo->bajaUser->name : ($equipo->user ? $equipo->user->name : 'Sistema'),
-           'fecha' => $equipo->fecha_baja ? $equipo->fecha_baja->format('d/m/Y h:i A') : 'No registrada'
-       ];
-   @endphp
-   <div class="inline-flex flex-col items-center">
-        <span class="pill pill-pending" title="{{ $equipo->motivo_baja_label }}">
-            ⚠️ Dado de Baja
-        </span>
-       <button type="button" 
-           onclick='openDetalleBajaModal(@json($detallePayload))'
-           class="mt-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline flex items-center gap-1 transition cursor-pointer">
-           <span>📋</span> Ver diagnóstico
-       </button>
-   </div>
+   <span class="pill pill-pending" title="{{ $equipo->motivo_baja_label }}">
+       ⚠️ Dado de Baja
+   </span>
    @else
    <span class="pill {{ $equipo->active ? 'pill-done' : 'pill-anulado' }}">
        {{ $equipo->active ? 'Activo' : 'Inactivo' }}
@@ -108,22 +90,36 @@
  <td data-label="Acciones:" class="text-center w-36 {{ $dim }}">
     <div class="actions-grid">
     @if(!auth()->user()->isInvitado())
+    @if($equipo->estado !== 'dado_de_baja' && $equipo->active)
     <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/10" title="Editar">✏️</a>
-    
-    @if($equipo->estado !== 'dado_de_baja')
     <button type="button" onclick="openBajaEquipoModal('{{ route('equipos.dar-de-baja', $equipo->id) }}', '{{ addslashes($equipo->nombre) }} ({{ addslashes($equipo->serie ?? $equipo->modelo ?? '') }})')" class="btn-ghost btn-action-baja w-8 h-8 flex items-center justify-center p-0 text-xs text-purple-600 dark:text-purple-400 hover:bg-purple-500/10" title="Dar de baja equipo (irreparable / desguace)">
         ⚠️
     </button>
-    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', {{ !$equipo->active ? 'true' : 'false' }})" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs {{ $equipo->active ? 'text-red-600 dark:text-red-400 hover:bg-red-500/10' : 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10' }}" title="{{ $equipo->active ? 'Anular Equipo' : 'Reactivar Equipo' }}">
-        {{ $equipo->active ? '🚫' : '✅' }}
+    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', false)" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs text-red-600 dark:text-red-400 hover:bg-red-500/10" title="Anular Equipo">
+        🚫
+    </button>
+    @elseif($equipo->estado !== 'dado_de_baja' && !$equipo->active)
+    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', true)" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Reactivar Equipo">
+        ✅
     </button>
     @else
+    @php
+        $detallePayload = [
+            'nombre' => $equipo->nombre,
+            'serie' => $equipo->serie ?: ($equipo->modelo ?: 'S/N'),
+            'propietario' => $equipo->propietario_label,
+            'motivo' => $equipo->motivo_baja_label,
+            'observacion' => $equipo->observacion_baja ?: 'Sin observaciones registradas',
+            'autor' => $equipo->bajaUser ? $equipo->bajaUser->name : ($equipo->user ? $equipo->user->name : 'Sistema'),
+            'fecha' => $equipo->fecha_baja ? $equipo->fecha_baja->format('d/m/Y h:i A') : 'No registrada'
+        ];
+    @endphp
      <button type="button" 
          onclick='openDetalleBajaModal(@json($detallePayload))'
          class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Diagnóstico y Motivo de Baja">
          📋
      </button>
-    <button type="button" onclick="openAnularModal('{{ route('equipos.reactivar', $equipo->id) }}', true)" class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Reactivar Equipo dado de baja">
+    <button type="button" onclick="openAnularModal('{{ route('equipos.reactivar', $equipo->id) }}', true)" class="btn-ghost btn-action-reactivar w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Reactivar Equipo dado de baja">
         ✅
     </button>
     @endif
@@ -172,8 +168,8 @@
 
         <form id="baja-equipo-form" method="POST" action="">
             @csrf
-            {{-- Contenedor Central al mismo ancho que el modal de notificaciones --}}
-            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1 pb-2">
+            {{-- Contenedor Central a ancho completo alineado con el borde horizontal --}}
+            <div class="w-full flex flex-col flex-1">
                 
                 {{-- Bloque resumen del equipo con barra de acento --}}
                 <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 relative overflow-hidden mb-4">
@@ -196,10 +192,10 @@
                         <select name="motivo_baja" id="baja-equipo-motivo" required class="glass-input text-sm w-full" data-placeholder="Seleccione el motivo de la baja...">
                             <option value="">Seleccione el motivo de la baja...</option>
                             <option value="irreparable" selected>❌ Daño irreparable / Falla crítica en placa</option>
-                            <option value="desguace_repuestos">⚙️ Desguace / Canibalización para repuestos</option>
+                            <option value="desguace_repuestos">⚙️ Desguace / Recuperación de repuestos</option>
                             <option value="chatarrizacion">🗑️ Chatarrización / Desecho definitivo</option>
                             <option value="siniestro">💥 Siniestro / Pérdida total</option>
-                            <option value="abandonado">📦 Equipo abandonado por cliente/propietario</option>
+                            <option value="abandonado">📦 Equipo abandonado por el cliente/propietario</option>
                             <option value="otro">📝 Otro motivo técnico</option>
                         </select>
                     </div>
@@ -220,11 +216,11 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 w-full modal-divider">
-                <button type="button" onclick="closeBajaEquipoModal()" class="flex-1 btn-ghost border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+            <div class="flex items-center gap-3 mt-4 w-full">
+                <button type="button" onclick="closeBajaEquipoModal()" class="flex-1 btn-ghost-red justify-center py-2.5 rounded-xl font-bold text-sm">
                     Cancelar
                 </button>
-                <button type="submit" class="flex-1 btn-ghost border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                <button type="submit" class="flex-1 btn-ghost-blue justify-center py-2.5 rounded-xl font-bold text-sm">
                     Confirmar Baja
                 </button>
             </div>
@@ -234,7 +230,7 @@
 
 <!-- MODAL DETALLE DE BAJA Y DIAGNÓSTICO (Simétrico al de notificaciones) -->
 <div id="detalle-baja-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
-    <div id="detalle-baja-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px;">
+    <div id="detalle-baja-card" class="ts-modal-card scale-95 opacity-0 px-6 pb-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px; padding-top: 19px;">
         
         {{-- Header simétrico a notificaciones --}}
         <div class="flex items-center gap-3 mb-4">
@@ -245,8 +241,8 @@
             </div>
         </div>
 
-        {{-- Contenedor Central al mismo ancho que el modal de notificaciones --}}
-        <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1 pb-2 space-y-3.5">
+        {{-- Contenedor Central a ancho completo alineado con el borde horizontal --}}
+        <div class="w-full flex flex-col flex-1 space-y-3.5">
             
             {{-- Bloque resumen del equipo con barra de acento --}}
             <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 relative overflow-hidden">
@@ -291,8 +287,8 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 w-full modal-divider">
-            <button type="button" onclick="closeDetalleBajaModal()" class="w-full btn-ghost border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 justify-center py-2.5 rounded-xl font-bold text-sm transition">
+        <div class="flex items-center gap-3 mt-6 w-full" style="margin-top: 23px;">
+            <button type="button" onclick="closeDetalleBajaModal()" class="w-full btn-ghost-red justify-center py-2.5 rounded-xl font-bold text-sm transition">
                 Cerrar
             </button>
         </div>

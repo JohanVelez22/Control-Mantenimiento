@@ -251,7 +251,7 @@
         <div class="summary-divider"></div>
         <div class="summary-item">
             <div class="summary-label">Costo Total</div>
-            <div class="summary-value" style="color:#000000; font-size:9px">${{ number_format($totalCosto, 0, '', '.') }}</div>
+            <div class="summary-value" style="color:#000000; font-size:9px">$ {{ number_format($totalCosto, 0, '', '.') }}</div>
         </div>
     </div>
 
@@ -305,7 +305,7 @@
                 </td>
                 <td class="col-center">{{ \Carbon\Carbon::parse($e->fecha_entrada)->format('d/m/Y') }}</td>
                 <td class="col-center">{{ $e->fecha_salida ? \Carbon\Carbon::parse($e->fecha_salida)->format('d/m/Y') : '—' }}</td>
-                <td class="col-right monto-cell">${{ number_format($e->costo, 0, '', '.') }}</td>
+                <td class="col-right monto-cell">$ {{ number_format($e->costo, 0, '', '.') }}</td>
             </tr>
             @empty
             <tr>
@@ -323,7 +323,7 @@
                     <span style="float:right; font-weight:700;">COSTO ACUMULADO:</span>
                 </td>
                 <td style="text-align:right; font-weight:800; padding: 5px 6px; border:none !important;">
-                    ${{ number_format($electronicas->sum('costo'), 0, '', '.') }}
+                    $ {{ number_format($electronicas->sum('costo'), 0, '', '.') }}
                 </td>
             </tr>
         </tfoot>

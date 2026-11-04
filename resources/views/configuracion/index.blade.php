@@ -74,7 +74,7 @@
             {{-- Columna Derecha: Datos --}}
             <div class="w-full md:w-2/3 space-y-4">
                 <div>
-                    <label class="field-label">Nombre de la Empresa o Negocio *</label>
+                    <label class="field-label">Nombre de la Empresa o Negocio <span class="text-red-500 font-bold">*</span></label>
                     <input type="text" name="nombre" value="{{ old('nombre', $configuracion->nombre) }}" required class="glass-input font-bold">
                 </div>
 
@@ -111,8 +111,8 @@
         </div>
 
         {{-- Sección: Formato de Impresión Predeterminado --}}
-        <div class="mt-6 pt-4 md:pt-5 border-t border-gray-200/50 dark:border-white/10">
-            <div class="mb-4">
+        <div class="mt-4">
+            <div class="mb-3">
                 <h3 class="text-base font-black text-slate-800 dark:text-white flex items-center gap-2">
                     <span>🖨️</span> Formato de Salida para Facturas y Recibos
                 </h3>
@@ -174,7 +174,7 @@
         </div>
 
         {{-- Botón Guardar --}}
-        <div class="table-footer-btn border-t border-gray-200/50 dark:border-white/10 flex justify-end">
+        <div class="flex justify-end items-center mt-5">
             <button type="submit" class="btn-save flex items-center gap-2">
                 <span>💾</span>
                 <span>Guardar Configuración</span>
@@ -292,7 +292,11 @@ async function ejecutarEliminacionLogo() {
 
     if (btnRemove) {
         btnRemove.disabled = true;
-        btnRemove.innerHTML = '<span>⏳</span><span>Eliminando...</span>';
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '⏳';
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'Eliminando...';
+        btnRemove.replaceChildren(iconSpan, textSpan);
     }
 
     const form = document.getElementById('form-configuracion');
@@ -342,12 +346,18 @@ async function ejecutarEliminacionLogo() {
     } finally {
         if (btnRemove) {
             btnRemove.disabled = false;
-            btnRemove.innerHTML = '<span>🗑️</span><span>Quitar logo</span>';
+            const iconSpan = document.createElement('span');
+            iconSpan.textContent = '🗑️';
+            const textSpan = document.createElement('span');
+            textSpan.textContent = 'Quitar logo';
+            btnRemove.replaceChildren(iconSpan, textSpan);
         }
     }
 }
 
 let _pendingBackupDeleteFilename = null;
+let _pendingBackupRestoreFilename = null;
+let _pendingGitUpdate = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ts-modal-confirm')?.addEventListener('click', async () => {
@@ -360,6 +370,15 @@ document.addEventListener('DOMContentLoaded', () => {
             _pendingBackupDeleteFilename = null;
             if (typeof closeTsModal === 'function') closeTsModal();
             await ejecutarEliminacionBackup(fname);
+        } else if (_pendingBackupRestoreFilename) {
+            const fname = _pendingBackupRestoreFilename;
+            _pendingBackupRestoreFilename = null;
+            if (typeof closeTsModal === 'function') closeTsModal();
+            await ejecutarRestauracionBackup(fname);
+        } else if (_pendingGitUpdate) {
+            _pendingGitUpdate = false;
+            if (typeof closeTsModal === 'function') closeTsModal();
+            await ejecutarActualizacionGit();
         }
     });
 });
@@ -485,7 +504,7 @@ async function submitConfiguracion(event) {
 @push('modals')
 @if(auth()->user()->role === 'admin')
 {{-- Modal de Gestión y Programación de Respaldos (Liquid Glass) --}}
-<div id="backup-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-[200]" onclick="if(event.target === this) closeBackupModal()">
+<div id="backup-modal" role="dialog" aria-modal="true" aria-labelledby="backup-modal-title" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-[200]" onclick="if(event.target === this) closeBackupModal()">
     <div class="backup-modal-card scale-95 opacity-0 mx-auto shadow-2xl relative" id="backup-modal-card">
         
         {{-- Encabezado del Modal con Identidad Liquid Glass --}}
@@ -495,7 +514,7 @@ async function submitConfiguracion(event) {
                     <span>🛡️</span>
                 </div>
                 <div class="min-w-0">
-                    <h3 class="text-base sm:text-lg font-black text-slate-800 dark:text-white tracking-tight leading-snug truncate">
+                    <h3 id="backup-modal-title" class="text-base sm:text-lg font-black text-slate-800 dark:text-white tracking-tight leading-snug truncate">
                         Respaldos y Copias de Seguridad
                     </h3>
                     <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5 truncate">
@@ -588,9 +607,9 @@ async function submitConfiguracion(event) {
                 </div>
 
                 {{-- Botón Ejecutar --}}
-                <div class="flex justify-end" style="margin-top: 1.5rem !important;">
-                    <button type="button" onclick="executeManualBackup()" id="btn-execute-backup" class="btn-backup btn-backup-db px-6 py-2.5 text-sm font-bold shadow-lg shadow-teal-500/25 flex items-center gap-2">
-                        <span id="btn-execute-backup-icon">⚡</span>
+                <div class="flex justify-end pt-1" style="margin-top: 1.25rem !important;">
+                    <button type="button" onclick="executeManualBackup()" id="btn-execute-backup" class="btn-backup btn-backup-db flex items-center gap-2">
+                        <span id="btn-execute-backup-icon" class="shrink-0 flex items-center">⚡</span>
                         <span id="btn-execute-backup-text">Iniciar Respaldo Ahora</span>
                     </button>
                 </div>
@@ -744,9 +763,9 @@ async function submitConfiguracion(event) {
                         </p>
                     </div>
 
-                    <div class="pt-2 flex justify-end">
-                        <button type="button" onclick="saveBackupSchedule()" id="btn-save-schedule" class="btn-primary px-6 py-2.5 text-sm font-bold shadow-md flex items-center gap-2">
-                            <span>💾</span> Guardar Programación
+                    <div class="flex justify-end pt-1">
+                        <button type="button" onclick="saveBackupSchedule()" id="btn-save-schedule" class="btn-primary flex items-center gap-2">
+                            <span class="shrink-0 flex items-center">💾</span> Guardar Programación
                         </button>
                     </div>
                 </div>
@@ -755,17 +774,17 @@ async function submitConfiguracion(event) {
             {{-- TAB 3: Ubicación y Archivos --}}
             <div id="tab-content-files" class="space-y-4 hidden">
                 {{-- Banner de Ubicación física en Servidor / PC --}}
-                <div class="glass-card backup-info-card space-y-2">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                            <span>📁</span> Ubicación Física de Almacenamiento:
+                <div class="glass-card backup-info-card backup-storage-banner">
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 leading-none">
+                            <span class="text-sm shrink-0 flex items-center">📁</span> Ubicación Física de Almacenamiento:
                         </span>
-                        <div class="flex items-center gap-1.5 self-start sm:self-auto">
+                        <div class="flex items-center gap-2 shrink-0">
                             <button type="button" onclick="copyBackupPath()" class="btn-copy-path">
-                                <span>📋</span> Copiar Ruta
+                                <span class="shrink-0 flex items-center">📋</span> Copiar Ruta
                             </button>
                             <button type="button" onclick="openBackupFolder()" class="btn-open-folder">
-                                <span>📂</span> Abrir Carpeta
+                                <span class="shrink-0 flex items-center">📂</span> Abrir Carpeta
                             </button>
                         </div>
                     </div>
@@ -810,8 +829,8 @@ async function submitConfiguracion(event) {
 
         {{-- Pie del Modal --}}
         <div class="backup-modal-footer">
-            <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                🛡️ Sistema de Auditoría y Respaldo Tecni-Systemas
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-1.5 leading-none">
+                <span class="text-sm shrink-0 flex items-center">🛡️</span> Sistema de Auditoría y Respaldo WolfCore System
             </span>
             <button type="button" onclick="closeBackupModal()" class="btn-close-modal">
                 Cerrar
@@ -1316,9 +1335,18 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
                 </td>
                 <td class="text-center whitespace-nowrap">
                     <div class="flex items-center justify-center gap-1.5">
-                        <a href="${downloadUrl}" class="btn-backup-download" title="Descargar al equipo">
-                            <span>⬇️</span> Descargar
+                        <a href="${downloadUrl}" onclick="notifyDownload('${f.name}')" class="btn-backup-download" title="Descargar copia de seguridad">
+                            <span>⬇️</span>
                         </a>
+                        ${f.name.startsWith('backup_integral') ? `
+                            <button type="button" onclick="updateSystemFromGit('${f.name}')" class="btn-backup-update" title="Actualizar sistema desde GitHub">
+                                <span>🚀</span>
+                            </button>
+                        ` : `
+                            <button type="button" onclick="restoreBackupFile('${f.name}')" class="btn-backup-restore" title="Restaurar copia de seguridad">
+                                <span>🔄</span>
+                            </button>
+                        `}
                         <button type="button" onclick="deleteBackupFile('${f.name}')" class="btn-backup-delete" title="Eliminar respaldo">
                             <span>🗑️</span>
                         </button>
@@ -1437,8 +1465,28 @@ async function saveBackupSchedule() {
     }
 }
 
+function notifyDownload(filename) {
+    if (typeof showToast === 'function') {
+        showToast(`Iniciando descarga de '${filename}'...`, 'success');
+    }
+}
+
 function deleteBackupFile(filename) {
     _pendingBackupDeleteFilename = filename;
+    _pendingBackupRestoreFilename = null;
+    _pendingGitUpdate = false;
+
+    let tipoTexto = 'Base de Datos (.sql)';
+    let iconEmoji = '💾';
+
+    if (filename.startsWith('backup_integral')) {
+        tipoTexto = 'Respaldo Integral del Sistema (.zip)';
+        iconEmoji = '📦';
+    } else if (filename.startsWith('backup_bd_multimedia') || filename.endsWith('.zip')) {
+        tipoTexto = 'Base de Datos + Archivos Multimedia (.zip)';
+        iconEmoji = '🗜️';
+    }
+
     const modal = document.getElementById('ts-modal');
     const card = document.getElementById('ts-modal-card');
     const titleEl = document.getElementById('ts-modal-title');
@@ -1448,16 +1496,51 @@ function deleteBackupFile(filename) {
     const iconBox = document.getElementById('ts-modal-icon-box');
     const icon = document.getElementById('ts-modal-icon');
 
-    if (titleEl) titleEl.innerText = '¿Eliminar archivo de respaldo?';
-    if (msgEl) msgEl.innerText = `Esta acción eliminará permanentemente la copia de seguridad "${filename}". No se puede deshacer.`;
+    if (titleEl) titleEl.innerText = '¿Eliminar copia de seguridad?';
+    if (msgEl) {
+        msgEl.innerHTML = `
+            <div class="text-left space-y-3.5 my-3 text-xs sm:text-sm">
+                <!-- Tipo de Respaldo: Sin bordes blancos, sin fondo gris -->
+                <div class="flex items-center gap-3 py-1 px-1">
+                    <span class="text-2xl shrink-0 p-2.5 rounded-2xl bg-red-500/15 text-red-400">${iconEmoji}</span>
+                    <div class="min-w-0 text-left">
+                        <div class="text-[10px] uppercase tracking-wider font-extrabold text-red-500 dark:text-red-400">Tipo de Respaldo</div>
+                        <div class="font-bold text-sm text-slate-900 dark:text-white truncate">${tipoTexto}</div>
+                    </div>
+                </div>
+
+                <!-- Nombre del archivo: ÚNICO campo con borde, sin barra horizontal y desplazamiento natural como campo de descripción -->
+                <div class="p-2.5 sm:p-3 rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-red-500/30 text-red-700 dark:text-red-300 font-mono text-[11px] sm:text-xs flex items-center gap-2.5 shadow-sm min-w-0 cursor-text" onclick="this.querySelector('input')?.focus()">
+                    <span class="text-sm shrink-0 select-none">📄</span>
+                    <input type="text" readonly value="${filename}" class="backup-filename-input text-slate-800 dark:text-slate-100 font-semibold" title="${filename}">
+                </div>
+
+                <!-- Descripción: Desplazada un poco más a la derecha horizontalmente -->
+                <div class="pl-2.5 sm:pl-3.5 pr-1 text-left">
+                    <p class="text-xs sm:text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                        Esta acción eliminará de forma permanente el archivo físico de respaldo del servidor. Esta operación no se puede deshacer y el archivo no podrá ser recuperado.
+                    </p>
+                </div>
+
+                <!-- Advertencia de seguridad y descargo de trazabilidad: Desplazada a la derecha horizontalmente -->
+                <div class="ml-1 sm:ml-2 p-3.5 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-3.5 leading-relaxed text-left">
+                    <span class="shrink-0 text-base mt-0.5">⚠️</span>
+                    <div class="min-w-0">
+                        <span class="font-bold text-amber-700 dark:text-amber-400">Descargo y trazabilidad de auditoría:</span>
+                        <span class="text-slate-600 dark:text-slate-300"> Esta eliminación física quedará registrada de forma permanente en el historial de eventos del sistema, conservando quién la ejecutó, la fecha, hora e IP para máxima trazabilidad y seguridad contable.</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
     if (icon) icon.innerText = '🗑️';
     if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4';
     if (confirmBtn) {
         confirmBtn.className = 'flex-1 btn-danger justify-center font-bold';
-        confirmBtn.textContent = 'Eliminar';
+        confirmBtn.textContent = 'Eliminar Ahora';
     }
     if (cancelBtn) {
-        cancelBtn.className = 'flex-1 btn-ghost-amber';
+        cancelBtn.className = 'flex-1 btn-ghost-amber justify-center font-bold';
         cancelBtn.textContent = 'Cancelar';
     }
 
@@ -1496,6 +1579,228 @@ async function ejecutarEliminacionBackup(filename) {
         console.error('Error al eliminar respaldo:', err);
         if (typeof showToast === 'function') {
             showToast('Error de conexión al eliminar el archivo.', 'error');
+        }
+    }
+}
+
+function restoreBackupFile(filename) {
+    _pendingBackupDeleteFilename = null;
+    _pendingBackupRestoreFilename = filename;
+    _pendingGitUpdate = false;
+    
+    let tipoTexto = 'Base de Datos (.sql)';
+    let detalleTexto = 'Se restaurarán todas las tablas y datos del sistema. La trazabilidad y eventos de auditoría se conservarán intactos.';
+    let iconEmoji = '🔄';
+
+    if (filename.startsWith('backup_bd_multimedia') || filename.endsWith('.zip')) {
+        tipoTexto = 'Base de Datos + Archivos Multimedia (.zip)';
+        detalleTexto = 'Se restaurarán todas las tablas de la base de datos y los archivos/fotos públicas (storage/app/public). Todos los eventos de auditoría se conservarán intactos.';
+        iconEmoji = '🗜️';
+    }
+
+    const modal = document.getElementById('ts-modal');
+    const card = document.getElementById('ts-modal-card');
+    const titleEl = document.getElementById('ts-modal-title');
+    const msgEl = document.getElementById('ts-modal-msg');
+    const confirmBtn = document.getElementById('ts-modal-confirm');
+    const cancelBtn = document.getElementById('ts-modal-cancel');
+    const iconBox = document.getElementById('ts-modal-icon-box');
+    const icon = document.getElementById('ts-modal-icon');
+
+    if (titleEl) titleEl.innerText = '¿Restaurar copia de seguridad?';
+    if (msgEl) {
+        msgEl.innerHTML = `
+            <div class="text-left space-y-3.5 my-3 text-xs sm:text-sm">
+                <!-- Tipo de Respaldo: Sin bordes blancos, sin bloque gris -->
+                <div class="flex items-center gap-3 py-1 px-1">
+                    <span class="text-2xl shrink-0 p-2.5 rounded-2xl bg-blue-500/15 text-blue-400">${iconEmoji}</span>
+                    <div class="min-w-0 text-left">
+                        <div class="text-[10px] uppercase tracking-wider font-extrabold text-blue-500 dark:text-blue-400">Tipo de Respaldo</div>
+                        <div class="font-bold text-sm text-slate-900 dark:text-white truncate">${tipoTexto}</div>
+                    </div>
+                </div>
+
+                <!-- Nombre del archivo: ÚNICO campo con borde, sin barra horizontal y desplazamiento natural como campo de descripción -->
+                <div class="p-2.5 sm:p-3 rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-blue-500/30 text-blue-700 dark:text-blue-300 font-mono text-[11px] sm:text-xs flex items-center gap-2.5 shadow-sm min-w-0 cursor-text" onclick="this.querySelector('input')?.focus()">
+                    <span class="text-sm shrink-0 select-none">📄</span>
+                    <input type="text" readonly value="${filename}" class="backup-filename-input text-slate-800 dark:text-slate-100 font-semibold" title="${filename}">
+                </div>
+
+                <!-- Descripción: Desplazada un poco más a la derecha horizontalmente -->
+                <div class="pl-2.5 sm:pl-3.5 pr-1 text-left">
+                    <p class="text-xs sm:text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                        ${detalleTexto}
+                    </p>
+                </div>
+
+                <!-- Advertencia: Desplazada a la derecha horizontalmente -->
+                <div class="ml-1 sm:ml-2 p-3.5 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-3.5 leading-relaxed text-left">
+                    <span class="shrink-0 text-base mt-0.5">⚠️</span>
+                    <div class="min-w-0">
+                        <span class="font-bold text-amber-700 dark:text-amber-400">Advertencia de seguridad:</span>
+                        <span class="text-slate-600 dark:text-slate-300"> Esta operación sobrescribirá los datos del sistema con el contenido del respaldo seleccionado. La trazabilidad histórica de auditoría será preservada de forma automática.</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    if (icon) icon.innerText = '🔄';
+    if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl mx-auto mb-4';
+    if (confirmBtn) {
+        confirmBtn.className = 'flex-1 btn-ghost-emerald justify-center font-bold';
+        confirmBtn.textContent = 'Restaurar Ahora';
+    }
+    if (cancelBtn) {
+        cancelBtn.className = 'flex-1 btn-ghost-red justify-center font-bold';
+        cancelBtn.textContent = 'Cancelar';
+    }
+
+    if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            if (card) card.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+    }
+}
+
+function updateSystemFromGit(filename) {
+    _pendingBackupDeleteFilename = null;
+    _pendingBackupRestoreFilename = null;
+    _pendingGitUpdate = true;
+
+    const modal = document.getElementById('ts-modal');
+    const card = document.getElementById('ts-modal-card');
+    const titleEl = document.getElementById('ts-modal-title');
+    const msgEl = document.getElementById('ts-modal-msg');
+    const confirmBtn = document.getElementById('ts-modal-confirm');
+    const cancelBtn = document.getElementById('ts-modal-cancel');
+    const iconBox = document.getElementById('ts-modal-icon-box');
+    const icon = document.getElementById('ts-modal-icon');
+
+    if (titleEl) titleEl.innerText = '¿Actualizar sistema desde GitHub?';
+    if (msgEl) {
+        msgEl.innerHTML = `
+            <div class="text-left space-y-3.5 my-3 text-xs sm:text-sm">
+                <!-- Tipo de Acción: Sin bordes blancos, sin grisaseo -->
+                <div class="flex items-center gap-3 py-1 px-1">
+                    <span class="text-2xl shrink-0 p-2.5 rounded-2xl bg-blue-500/15 text-blue-400">🚀</span>
+                    <div class="min-w-0 text-left">
+                        <div class="text-[10.5px] uppercase tracking-wider font-extrabold text-blue-500 dark:text-blue-400">Acción Integral</div>
+                        <div class="font-bold text-sm text-slate-900 dark:text-white truncate">Actualizar Código Fuente (Git Pull)</div>
+                    </div>
+                </div>
+
+                <!-- Nombre de la copia de respaldo: ÚNICO campo con borde, sin barra horizontal y desplazamiento natural como campo de descripción -->
+                <div class="p-2.5 sm:p-3 rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-blue-500/30 text-blue-700 dark:text-blue-300 font-mono text-[11px] sm:text-xs flex items-center gap-2.5 shadow-sm min-w-0 cursor-text" onclick="this.querySelector('input')?.focus()">
+                    <span class="text-sm shrink-0 select-none">📦</span>
+                    <input type="text" readonly value="${filename}" class="backup-filename-input text-slate-800 dark:text-slate-100 font-semibold" title="${filename}">
+                </div>
+
+                <!-- Descripción: Desplazada un poco más a la derecha horizontalmente -->
+                <div class="pl-2.5 sm:pl-3.5 pr-1 text-left">
+                    <p class="text-xs sm:text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                        Se sincronizarán los cambios desde el repositorio de GitHub (<span class="font-mono text-emerald-500 dark:text-emerald-400 font-semibold">origin/main</span>), se ejecutarán las migraciones pendientes de base de datos y se optimizará la caché.
+                    </p>
+                </div>
+
+                <!-- Aviso informativo: Desplazado a la derecha horizontalmente -->
+                <div class="ml-1 sm:ml-2 p-3.5 rounded-xl bg-blue-500/10 text-blue-700 dark:text-blue-300 text-xs flex items-start gap-3.5 leading-relaxed text-left">
+                    <span class="shrink-0 text-base mt-0.5">ℹ️</span>
+                    <div class="min-w-0">
+                        <span class="font-bold text-blue-600 dark:text-blue-400">Sincronización segura:</span>
+                        <span class="text-slate-600 dark:text-slate-300"> El sistema validará la conexión con GitHub antes de proceder. Si ya está al día o no hay acceso, se te notificará en pantalla.</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    if (icon) icon.innerText = '🚀';
+    if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl mx-auto mb-4';
+    if (confirmBtn) {
+        confirmBtn.className = 'flex-1 btn-ghost-emerald justify-center font-bold';
+        confirmBtn.textContent = 'Actualizar Ahora';
+    }
+    if (cancelBtn) {
+        cancelBtn.className = 'flex-1 btn-ghost-red justify-center font-bold';
+        cancelBtn.textContent = 'Cancelar';
+    }
+
+    if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            if (card) card.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+    }
+}
+
+async function ejecutarActualizacionGit() {
+    try {
+        const res = await fetch('{{ route('backups.git-update') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': BACKUP_CSRF,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        const data = await res.json();
+        if (data.status === 'updated') {
+            if (typeof showToast === 'function') {
+                showToast(data.message || 'Código fuente actualizado exitosamente desde GitHub.', 'success');
+            }
+        } else if (data.status === 'up_to_date') {
+            if (typeof showToast === 'function') {
+                showToast('El sistema ya se encuentra en su versión más reciente (al día con GitHub).', 'info');
+            }
+        } else {
+            if (typeof showToast === 'function') {
+                showToast(data.message || 'No se pudo establecer conexión con GitHub.', 'error');
+            }
+        }
+    } catch (err) {
+        console.error('Error al actualizar desde GitHub:', err);
+        if (typeof showToast === 'function') {
+            showToast('No se pudo establecer conexión con GitHub.', 'error');
+        }
+    }
+}
+
+async function ejecutarRestauracionBackup(filename) {
+    if (typeof showToast === 'function') {
+        showToast('Iniciando restauración de la copia de seguridad, por favor espera...', 'info');
+    }
+
+    try {
+        const res = await fetch('{{ url('/backups/restore') }}/' + encodeURIComponent(filename), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': BACKUP_CSRF,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            if (typeof showToast === 'function') {
+                showToast(data.message || 'Copia de seguridad restaurada exitosamente.', 'success');
+            }
+            if (data.files) {
+                renderBackupFiles(data.files || [], data.total_files || 0, data.total_size || '0 KB', document.getElementById('sched-max-copias')?.value || 10, data.files?.[0]);
+            }
+        } else {
+            if (typeof showToast === 'function') {
+                showToast(data.message || 'Error al restaurar la copia de seguridad.', 'error');
+            }
+        }
+    } catch (err) {
+        console.error('Error al restaurar respaldo:', err);
+        if (typeof showToast === 'function') {
+            showToast('Error de conexión o tiempo de espera al restaurar.', 'error');
         }
     }
 }

@@ -36,8 +36,8 @@
         <tr style="font-weight: bold;">
             <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">{{ $item->cantidad }}</td>
             <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">{{ $item->stock->producto ?? $item->descripcion ?? 'Producto Desconocido' }}</td>
-            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
-            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}</td>
+            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+            <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}</td>
         </tr>
         @endforeach
     </tbody>
@@ -52,16 +52,16 @@
     <table class="totals" style="width: 48%; float: right; margin-bottom: 0;">
         <tr>
             <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Total Documento:</td>
-            <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">${{ number_format($factura->total_documento, 0, ',', '.') }}</td>
+            <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">$ {{ number_format($factura->total_documento, 0, ',', '.') }}</td>
         </tr>
         <tr>
             <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Total Pagado:</td>
-            <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">${{ number_format($factura->total_pagado, 0, ',', '.') }}</td>
+            <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">$ {{ number_format($factura->total_pagado, 0, ',', '.') }}</td>
         </tr>
         <tr class="grand-total">
             <td class="lbl" style="font-size: 6.8pt; padding: 1px 2px;">SALDO PENDIENTE:</td>
             <td class="val" style="font-size: 6.8pt; padding: 1px 2px; font-weight: bold;">
-                ${{ number_format($factura->saldo_pendiente, 0, ',', '.') }}
+                $ {{ number_format($factura->saldo_pendiente, 0, ',', '.') }}
             </td>
         </tr>
     </table>
@@ -85,7 +85,7 @@
                 <td style="padding: 1px 3px; text-align: center; font-size: 6.5pt;">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }}</td>
                 <td style="padding: 1px 3px; text-align: center; font-size: 6.5pt;">{{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Banco / Transf.' }}</td>
                 <td style="padding: 1px 3px; text-align: center; font-size: 6.5pt;">{{ $abono->descripcion }}</td>
-                <td style="padding: 1px 3px; text-align: center; font-size: 6.5pt; font-weight: bold;">${{ number_format($abono->monto, 0, ',', '.') }}</td>
+                <td style="padding: 1px 3px; text-align: center; font-size: 6.5pt; font-weight: bold;">$ {{ number_format($abono->monto, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>

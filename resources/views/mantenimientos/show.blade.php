@@ -12,9 +12,9 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 w-full relative z-20">
         <div class="flex items-center gap-3">
         @if(!$esInvitado)
-        <a href="{{ route('mantenimientos.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+        <a href="{{ route('mantenimientos.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
         @else
-        <a href="{{ route('consulta.mantenimientos') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a búsqueda">⬅️</a>
+        <a href="{{ route('consulta.mantenimientos') }}" class="btn-ghost text-xl" title="Volver a búsqueda">⬅️</a>
         @endif
         <div>
         <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
@@ -40,7 +40,7 @@
                     id="print-mant-{{ $mantenimiento->id }}"
                 />
                 @endif
-                @if(!auth()->user()->isInvitado())
+                @if(!auth()->user()->isInvitado() && !$mantenimiento->anulado)
                 <a href="{{ route('mantenimientos.edit', $mantenimiento) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/30">✏️ Editar</a>
                 @endif
             </div>
@@ -48,38 +48,38 @@
 
  {{-- Datos del mantenimiento --}}
  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm p-5 glass-card mb-6">
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
-   {{ $mantenimiento->equipo?->propietario_tipo === 'proveedor' ? '🏢 Proveedor' : '👤 Cliente' }}
- </span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->equipo?->propietario_nombre ?? '-' }}</span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Equipo</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->equipo->marca }} {{ $mantenimiento->equipo->modelo }} <span class="text-sm text-gray-500 font-semibold">({{ $mantenimiento->equipo->nombre }})</span></span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Técnico</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 break-words">{{ $mantenimiento->tecnico->nombre }}</span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Tipo / Reparación</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200 capitalize break-words">{{ $mantenimiento->tipo }} / {{ $mantenimiento->reparacion }}</span>
- </div>
- <div class="min-w-0">
- <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Entrada</span>
- <span class="font-medium text-base text-slate-800 dark:text-slate-200">{{ $mantenimiento->fecha_entrada->format('d/m/Y') }}</span>
- </div>
-    <div class="min-w-0">
-        <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Salida</span>
-        <span class="font-medium text-base text-slate-800 dark:text-slate-200">{{ $mantenimiento->fecha_salida?->format('d/m/Y') ?? '—' }}</span>
-    </div>
-    @if($mantenimiento->descripcion)
-    <div class="md:col-span-2 min-w-0 mt-2 p-3.5 bg-white/20 dark:bg-slate-900/30 rounded-xl border border-white/40 dark:border-white/5">
-        <span class="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Descripción</span>
-        <span class="font-medium text-slate-800 dark:text-slate-200 break-words leading-relaxed">{{ $mantenimiento->descripcion }}</span>
-    </div>
-    @endif
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
+             {{ $mantenimiento->equipo?->propietario_tipo === 'proveedor' ? '🏢 Proveedor' : '👤 Cliente' }}
+         </span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200 break-words">{{ $mantenimiento->equipo?->propietario_nombre ?? '-' }}</span>
+     </div>
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Equipo</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200 break-words">{{ $mantenimiento->equipo->marca }} {{ $mantenimiento->equipo->modelo }} <span class="text-xs text-gray-500 font-semibold">({{ $mantenimiento->equipo->nombre }})</span></span>
+     </div>
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Técnico</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200 break-words">{{ $mantenimiento->tecnico->nombre }}</span>
+     </div>
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Tipo / Reparación</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200 capitalize break-words">{{ $mantenimiento->tipo }} / {{ $mantenimiento->reparacion }}</span>
+     </div>
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Entrada</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200">{{ $mantenimiento->fecha_entrada->format('d/m/Y') }}</span>
+     </div>
+     <div class="min-w-0">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Salida</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200">{{ $mantenimiento->fecha_salida?->format('d/m/Y') ?? '—' }}</span>
+     </div>
+     @if($mantenimiento->descripcion)
+     <div class="md:col-span-2 min-w-0 mt-2 p-3.5 bg-white/20 dark:bg-slate-900/30 rounded-xl border border-white/40 dark:border-white/5">
+         <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">Descripción</span>
+         <span class="font-medium text-sm text-slate-700 dark:text-slate-200 break-words leading-relaxed">{{ $mantenimiento->descripcion }}</span>
+     </div>
+     @endif
  </div>
     {{-- Contenedor Dinámico Asíncrono (Zero-Flash) --}}
     <div id="mantenimiento-dynamic-panel" class="transition-opacity duration-150">
@@ -88,17 +88,17 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">💰</span> Costo Total</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($mantenimiento->costo, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($mantenimiento->costo, 0, ',', '.') }}</p>
             </div>
             
             <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">💵</span> Total Abonado</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($mantenimiento->total_abonado, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($mantenimiento->total_abonado, 0, ',', '.') }}</p>
             </div>
             
             <div class="glass-card hover-glow {{ $mantenimiento->saldo_pendiente > 0 ? 'glass-card-red' : 'glass-card-teal' }} p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold {{ $mantenimiento->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-lg no-print-emoji">⚖️</span> Saldo Pendiente</p>
-                <p class="text-2xl font-black {{ $mantenimiento->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">${{ number_format($mantenimiento->saldo_pendiente, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black {{ $mantenimiento->saldo_pendiente > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-white' }} z-10">$ {{ number_format($mantenimiento->saldo_pendiente, 0, ',', '.') }}</p>
             </div>
         </div>
 
@@ -106,12 +106,13 @@
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 mt-8 flex items-center gap-2 border-t border-gray-200/50 dark:border-white/10 pt-6">📦 Repuestos / Insumos Utilizados</h3>
 
         @if(!auth()->user()->isInvitado() && !$mantenimiento->anulado)
-        <form action="{{ route('mantenimientos.stocks.store', $mantenimiento) }}" method="POST" class="p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl mb-6">
+        <form action="{{ route('mantenimientos.stocks.store', $mantenimiento) }}" method="POST" class="mb-6">
             @csrf
-            <h4 class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Añadir repuesto al mantenimiento</h4>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div class="md:col-span-2">
-                    <label class="field-label">Buscar repuesto en stock *</label>
+                    <label class="field-label flex items-center gap-1.5 font-bold mb-1.5">
+                        Buscar repuesto en stock <span class="text-red-500 font-bold">*</span>
+                    </label>
                     <select name="stock_id" required class="glass-input" data-placeholder="Seleccione un repuesto...">
                         <option value="">Seleccione un repuesto...</option>
                         @php
@@ -122,14 +123,16 @@
                                 $precioRep = ($esCliTecnico && $stock->precio_tecnico > 0) ? $stock->precio_tecnico : $stock->precio_venta;
                                 $tagRep = ($esCliTecnico && $stock->precio_tecnico > 0) ? '🔧 P. Técnico' : 'P. Venta';
                             @endphp
-                            <option value="{{ $stock->id }}">{{ $stock->producto }} (Disp: {{ $stock->cantidad }} | {{ $tagRep }}: ${{ number_format($precioRep, 0, ',', '.') }})</option>
+                            <option value="{{ $stock->id }}">{{ $stock->producto }} (Disp: {{ $stock->cantidad }} | {{ $tagRep }}: $ {{ number_format($precioRep, 0, ',', '.') }})</option>
                         @endforeach
                     </select>
                 </div>
                 <div>
-                    <label class="field-label">Cantidad *</label>
-                    <div class="flex gap-4">
-                        <input type="number" name="cantidad" required min="1" value="1" class="glass-input cantidad-input w-24">
+                    <label class="field-label flex items-center gap-1.5 font-bold mb-1.5">
+                        Cantidad <span class="text-red-500 font-bold">*</span>
+                    </label>
+                    <div class="flex gap-3">
+                        <input type="number" name="cantidad" required min="1" value="1" class="glass-input cantidad-input w-24 text-center font-bold">
                         <button type="submit" class="btn-add flex-1 justify-center whitespace-nowrap">
                             ➕ Añadir
                         </button>
@@ -160,7 +163,7 @@
                     <div>
                         <p class="font-bold text-slate-800 dark:text-white text-lg leading-tight">{{ $repuesto->producto }}</p>
                         <p class="text-xs font-semibold text-gray-500 mt-0.5">
-                            Cant: {{ $repuesto->pivot->cantidad }} <span class="text-gray-300 dark:text-gray-600 mx-1">|</span> Unit: ${{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }}
+                            Cant: {{ $repuesto->pivot->cantidad }} <span class="text-gray-300 dark:text-gray-600 mx-1">|</span> Unit: $ {{ number_format($repuesto->pivot->precio_unitario, 0, ',', '.') }}
                         </p>
                     </div>
                 </div>
@@ -168,17 +171,25 @@
                 <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
                     <div class="text-right">
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">Subtotal</p>
-                        <p class="font-black text-blue-600 dark:text-cyan-400">${{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</p>
+                        <p class="font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</p>
                     </div>
                     
-                    @if(auth()->user()->role === 'admin' && !$mantenimiento->anulado)
-                    <form action="{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}" method="POST" class="inline-block"
-                        data-confirm-delete="¿Eliminar este repuesto ({{ $repuesto->producto }})? Se descontará del costo de la orden y volverá al inventario.">
-                        @csrf @method('DELETE')
-                        <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Eliminar y devolver al stock">
+                    @if(!$mantenimiento->anulado)
+                        @if(auth()->user()->role === 'admin')
+                        <form action="{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}" method="POST" class="inline-block"
+                            data-confirm-delete="¿Eliminar este repuesto ({{ $repuesto->producto }})? Se descontará del costo de la orden y volverá al inventario.">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="btn-danger btn-action-square" title="Eliminar y devolver al stock">
+                                🗑️
+                            </button>
+                        </form>
+                        @elseif(auth()->user()->isTecnico())
+                        <button type="button" 
+                            onclick="openAnularModal('{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}', false, 'DELETE', 'Eliminar Repuesto', 'Ingresa la contraseña de un administrador para retirar este repuesto ({{ addslashes($repuesto->producto) }}) de la orden y devolverlo al inventario.')"
+                            class="btn-danger btn-action-square" title="Eliminar y devolver al stock">
                             🗑️
                         </button>
-                    </form>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -187,47 +198,67 @@
         @endif
 
         {{-- Panel de Abonos --}}
-        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 mt-8 flex items-center gap-2 border-t border-gray-200/50 dark:border-white/10 pt-6">💳 Abonos / Pagos Parciales</h3>
-
-        {{-- Formulario nuevo abono --}}
-        @if(!auth()->user()->isInvitado() && !$mantenimiento->anulado)
-        <form action="{{ route('abonos.store', $mantenimiento) }}" method="POST" class="p-4 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl mb-6 space-y-4">
-            @csrf
-            <h4 class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Registrar nuevo abono</h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                    <label class="field-label">Monto del Abono <span class="text-red-500 font-bold">*</span></label>
-                    <input type="text" id="abono_monto_visual" required placeholder="0" class="glass-input font-bold text-emerald-600 dark:text-emerald-400">
-                    <input type="hidden" name="monto" id="abono_monto_real">
-                </div>
-                <div>
-                    <label class="field-label">Fecha *</label>
-                    <input type="date" name="fecha" required value="{{ date('Y-m-d') }}" class="glass-input">
-                </div>
-                <div>
-                    <label class="field-label">Tipo de pago *</label>
-                    <select name="tipo_pago" class="glass-input">
-                        <option value="efectivo">💵 Efectivo</option>
-                        <option value="consignacion">🏦 Consignación</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="field-label">Descripción</label>
-                    <input type="text" name="descripcion" placeholder="Opcional..." class="glass-input">
-                </div>
+        <div class="border-t border-gray-200/50 dark:border-white/10 pt-6 mt-8">
+            {{-- Registrar Nuevo Abono --}}
+            @if(!auth()->user()->isInvitado() && !$mantenimiento->anulado)
+            <div class="mb-6">
+                <h4 class="font-bold text-base text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                    <span>💳</span> Registrar Nuevo Abono
+                </h4>
+                <form action="{{ route('abonos.store', $mantenimiento) }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="field-label flex items-center gap-1.5 font-bold" for="abono_monto_visual">
+                                <span>💵</span> Monto del Abono <span class="text-red-500 font-bold">*</span>
+                            </label>
+                            <div>
+                                <input type="text" id="abono_monto_visual" required placeholder="0" class="glass-input font-bold text-left py-2.5 text-emerald-600 dark:text-emerald-400">
+                                <input type="hidden" name="monto" id="abono_monto_real">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="field-label flex items-center gap-1.5 font-bold" for="abono_fecha">
+                                <span>📅</span> Fecha del Pago <span class="text-red-500 font-bold">*</span>
+                            </label>
+                            <input type="date" id="abono_fecha" name="fecha" required value="{{ date('Y-m-d') }}" class="glass-input py-2.5">
+                        </div>
+                        <div>
+                            <label class="field-label flex items-center gap-1.5 font-bold" for="abono_tipo_pago">
+                                <span>💳</span> Tipo de Pago <span class="text-red-500 font-bold">*</span>
+                            </label>
+                            <select id="abono_tipo_pago" name="tipo_pago" required class="glass-input py-2.5">
+                                <option value="efectivo">💵 Efectivo</option>
+                                <option value="consignacion">🏦 Banco / Transferencia</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="field-label !flex items-center gap-1.5 font-bold" for="abono_descripcion">
+                            <span class="flex items-center gap-1.5 font-bold">
+                                <span>📝</span> Descripción / Observaciones del Abono <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
+                            </span>
+                        </label>
+                        <input type="text" id="abono_descripcion" name="descripcion" placeholder="Detalles u observaciones de este abono..." class="glass-input text-xs py-2.5">
+                    </div>
+                    <div class="flex justify-end pt-2">
+                        <button type="submit" class="btn-primary py-2.5 px-6 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 font-bold">
+                            ➕ Registrar Abono
+                        </button>
+                    </div>
+                </form>
             </div>
-            <button type="submit" class="btn-primary w-full justify-center py-2.5">
-                ➕ Registrar Abono
-            </button>
-        </form>
-        @elseif($mantenimiento->anulado)
-        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-xl p-4 mb-6">
-            <p class="text-sm font-bold text-red-600 dark:text-red-400 flex items-center justify-center gap-2"><span>🚫</span> No se pueden agregar abonos a una orden anulada.</p>
-        </div>
-        @endif
+            @elseif($mantenimiento->anulado)
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-xl p-4 mb-6">
+                <p class="text-sm font-bold text-red-600 dark:text-red-400 flex items-center justify-center gap-2"><span>🚫</span> No se pueden agregar abonos a una orden anulada.</p>
+            </div>
+            @endif
 
-        {{-- Listado de abonos --}}
-        @if($mantenimiento->abonos->isEmpty())
+            {{-- Listado de abonos --}}
+            <h4 class="font-bold text-base text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+                <span>📜</span> Historial de Abonos Registrados ({{ $mantenimiento->abonos->where('anulado', false)->count() }})
+            </h4>
+            @if($mantenimiento->abonos->isEmpty())
         <div class="text-center p-8 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-white/10 dark:bg-slate-900/20 backdrop-blur-sm">
             <span class="text-4xl drop-shadow-md mb-2 inline-block opacity-50">💳</span>
             <p class="text-gray-500 font-medium">Sin abonos registrados aún.</p>
@@ -235,13 +266,20 @@
         @else
         <div class="space-y-3">
             @foreach($mantenimiento->abonos->sortByDesc('fecha') as $abono)
-            <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-white/20 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 rounded-xl backdrop-blur-md hover:bg-white/35 dark:hover:bg-slate-900/50 transition-all shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-4 p-4 {{ $abono->anulado ? 'bg-red-50/20 dark:bg-red-950/15 border-red-200/40 dark:border-red-900/20 opacity-70' : 'bg-white/20 dark:bg-slate-900/25 border-white/40 dark:border-white/5' }} border rounded-xl backdrop-blur-md hover:bg-white/35 dark:hover:bg-slate-900/50 transition-all shadow-sm">
                 <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-lg {{ $abono->tipo_pago === 'efectivo' ? 'bg-blue-500/10 text-blue-500' : 'bg-purple-500/10 text-purple-500' }} flex items-center justify-center text-xl shrink-0">
-                        {{ $abono->tipo_pago === 'efectivo' ? '💵' : '🏦' }}
+                    <div class="w-10 h-10 rounded-lg {{ $abono->anulado ? 'bg-red-500/10 text-red-500' : ($abono->tipo_pago === 'efectivo' ? 'bg-blue-500/10 text-blue-500' : 'bg-purple-500/10 text-purple-500') }} flex items-center justify-center text-xl shrink-0">
+                        {{ $abono->anulado ? '🚫' : ($abono->tipo_pago === 'efectivo' ? '💵' : '🏦') }}
                     </div>
                     <div>
-                        <p class="font-black text-lg text-emerald-600 dark:text-emerald-400 leading-tight">${{ number_format($abono->monto, 0, ',', '.') }}</p>
+                        <div class="flex items-center gap-2">
+                            <p class="font-black text-lg {{ $abono->anulado ? 'text-red-500/80 dark:text-red-400 line-through' : 'text-emerald-600 dark:text-emerald-400' }} leading-tight">
+                                $ {{ number_format($abono->monto, 0, ',', '.') }}
+                            </p>
+                            @if($abono->anulado)
+                                <span class="pill pill-anulado text-[10px] py-0.5 px-2 font-bold uppercase tracking-wider">🚫 Anulado</span>
+                            @endif
+                        </div>
                         <p class="text-[11px] font-semibold text-gray-500 mt-0.5">
                             {{ $abono->fecha->format('d/m/Y') }} <span class="text-gray-300 dark:text-gray-600 mx-1">•</span> {{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Consignación' }} <span class="text-gray-300 dark:text-gray-600 mx-1">•</span> Reg: {{ $abono->user->name }}
                         </p>
@@ -253,15 +291,13 @@
                 
                 <div class="flex items-center gap-2">
                     @if($abono->movimientoCaja)
-                    <a href="{{ route('caja.show', $abono->movimientoCaja->id) }}" class="btn-ghost px-2 py-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 flex items-center justify-center" title="Ver movimiento en Caja #{{ $abono->movimientoCaja->id }}">
-                        👁️
-                    </a>
+                    <a href="{{ route('caja.show', $abono->movimientoCaja->id) }}" class="btn-ghost btn-action-square font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver movimiento en Caja #{{ $abono->movimientoCaja->id }}">👁️</a>
                     @endif
 
-                    @if(auth()->user()->isAdmin())
-                    <form action="{{ route('abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de ${{ number_format($abono->monto, 0, ',', '.') }}?">
+                    @if(!$abono->anulado && auth()->user()->isAdmin())
+                    <form action="{{ route('abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de $ {{ number_format($abono->monto, 0, ',', '.') }}?">
                         @csrf @method('DELETE')
-                        <button type="submit" class="btn-danger px-2 py-1.5 text-xs" title="Eliminar abono">
+                        <button type="submit" class="btn-danger btn-action-square" title="Anular abono">
                             🗑️
                         </button>
                     </form>

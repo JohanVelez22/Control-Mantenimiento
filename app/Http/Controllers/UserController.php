@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
@@ -58,7 +59,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
-            'active' => $request->boolean('active'), // Captura correctamente el estado
+            'active' => $request->boolean('active', true), // Activo por defecto al crear usuario
         ];
 
         if ($request->hasFile('photo')) {
@@ -76,6 +77,10 @@ class UserController extends Controller
             return redirect()->route('usuarios.index')->with('error', 'Solo puedes editar tu propio perfil.');
         }
 
+        if (! $usuario->active) {
+            return redirect()->route('usuarios.index')->with('error', 'Por seguridad, no se puede editar un usuario que se encuentra anulado (inactivo).');
+        }
+
         return view('usuarios.edit', ['user' => $usuario]);
     }
 
@@ -83,6 +88,10 @@ class UserController extends Controller
     {
         if (auth()->user()->role !== 'admin' && auth()->id() !== $usuario->id) {
             return redirect()->route('usuarios.index')->with('error', 'Solo puedes editar tu propio perfil.');
+        }
+
+        if (! $usuario->active) {
+            return redirect()->route('usuarios.index')->with('error', 'Por seguridad, no se puede editar un usuario que se encuentra anulado (inactivo).');
         }
 
         $request->validate([
@@ -112,6 +121,7 @@ class UserController extends Controller
             }
             $request->validate($rules);
             $usuario->password = Hash::make($request->password);
+            $usuario->setRememberToken(Str::random(60));
         }
 
         if ($request->hasFile('photo')) {

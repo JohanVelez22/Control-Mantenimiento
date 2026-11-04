@@ -9,13 +9,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Limpiar la tabla para evitar problemas de FK con datos viejos sin equipo
-        DB::table('electronicas')->truncate();
+        if (! Schema::hasColumn('electronicas', 'equipo_id')) {
+            if (app()->environment('testing') || DB::table('electronicas')->count() === 0) {
+                DB::table('electronicas')->truncate();
+            }
 
-        Schema::table('electronicas', function (Blueprint $table) {
-            $table->dropColumn(['cliente', 'dispositivo', 'marca']);
-            $table->foreignId('equipo_id')->after('id_orden')->constrained('equipos')->onDelete('cascade');
-        });
+            Schema::table('electronicas', function (Blueprint $table) {
+                if (Schema::hasColumn('electronicas', 'cliente')) {
+                    $table->dropColumn(['cliente', 'dispositivo', 'marca']);
+                }
+                $table->foreignId('equipo_id')->after('id_orden')->constrained('equipos')->onDelete('cascade');
+            });
+        }
     }
 
     public function down(): void

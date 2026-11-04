@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <div class="glass-card p-6 md:p-8">
-        <div class="flex items-center gap-3 mb-8">
-            <a href="{{ route('cotizaciones.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+    <div class="glass-card p-6 md:p-6">
+        <div class="flex items-center gap-3 mb-6">
+            <a href="{{ route('cotizaciones.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
             <div>
                 <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">📝 Crear Nueva Cotización</h2>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Arma un presupuesto sin afectar el inventario o la caja</p>
@@ -13,9 +13,9 @@
         <form action="{{ route('cotizaciones.store') }}" method="POST" id="cotizacion-form" class="space-y-5">
             @csrf
 
-            <div class="cotizacion-header-grid p-5 glass-card">
+            <div class="cotizacion-header-grid">
                 <div>
-                    <label class="field-label">Cliente / Proveedor *</label>
+                    <label class="field-label">Cliente / Proveedor <span class="text-red-500 font-bold">*</span></label>
                     <select name="facturable_global" required class="glass-input focus:ring-blue-500" data-placeholder="Buscar cliente o proveedor...">
                         <option value="">Buscar cliente o proveedor...</option>
                         @foreach($clientes as $c)
@@ -35,12 +35,12 @@
                     @error('cliente_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="field-label">Fecha *</label>
+                    <label class="field-label">Fecha <span class="text-red-500 font-bold">*</span></label>
                     <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}" class="glass-input reportes-date-input focus:ring-blue-500" style="width: 8.5rem !important;">
                     @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="field-label">Validez (Días) *</label>
+                    <label class="field-label">Validez (Días) <span class="text-red-500 font-bold">*</span></label>
                     <input type="number" name="validez_dias" required min="1" value="{{ old('validez_dias', 15) }}" class="glass-input focus:ring-blue-500 text-center">
                     @error('validez_dias') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>
@@ -57,7 +57,7 @@
                     </button>
                 </div>
 
-                <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto cotizacion-table-scroll min-h-[165px]">
+                <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto cotizacion-table-scroll min-h-[165px]" style="overflow-y: auto !important;">
                     <table class="ts-table w-full table-fixed" id="items-table">
                         <thead>
                             <tr>
@@ -71,7 +71,7 @@
                         </thead>
                         <tbody id="items-body">
                             {{-- Fila base renderizada directamente desde el servidor (sin flash/salto visual) --}}
-                            <tr class="item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-white/10 hover:bg-white/50 dark:hover:bg-slate-900/30 transition-colors">
+                            <tr class="item-row bg-transparent">
                                 <td class="col-tipo align-middle">
                                     <select name="items[0][tipo]" class="tipo-select glass-input py-1.5 px-2 font-bold w-full whitespace-nowrap">
                                         <option value="libre" selected>🛠️ Servicio / Libre</option>
@@ -89,7 +89,7 @@
                                     <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
                                     <input type="text" id="precio_unitario_visual_0" value="0" placeholder="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); actualizarSubtotal(this.closest('tr'))" required class="precio-input glass-input py-1.5 px-2 text-right focus:ring-blue-500 font-bold text-slate-800 dark:text-white w-full">
                                 </td>
-                                <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$0</td>
+                                <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$ 0</td>
                                 <td class="col-accion align-middle text-right">
                                     <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">
                                         🗑️
@@ -98,13 +98,13 @@
                             </tr>
                         </tbody>
                         <tfoot>
-                            <tr class="border-t border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50">
+                            <tr class="border-0 bg-transparent">
                                 <td colspan="3" class="py-4"></td>
                                 <td class="col-precio py-4 text-center align-middle">
                                     <span class="font-bold text-slate-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Cotización:</span>
                                 </td>
                                 <td colspan="2" class="py-4 text-right pr-3 align-middle">
-                                    <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">$0</span>
+                                    <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">$ 0</span>
                                 </td>
                             </tr>
                         </tfoot>
@@ -117,11 +117,9 @@
                 <textarea name="notas" rows="3" class="glass-input resize-y focus:ring-blue-500" placeholder="Ej: Precios sujetos a cambio sin previo aviso. Tiempo estimado de entrega: 3 días hábiles."></textarea>
             </div>
 
-            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-                <a href="{{ route('cotizaciones.index') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">✕<space>Cancelar</a>
-                <button type="submit" class="btn-save w-full sm:w-auto justify-center">
-                    💾 Guardar Cotización
-                </button>
+            <div class="flex flex-col sm:flex-row items-center justify-end gap-3 mt-0 pt-0">
+                <a href="{{ route('cotizaciones.index') }}" class="btn-cancel w-full sm:w-auto justify-center text-center"><span>✕</span><span>Cancelar</span></a>
+                <button type="submit" class="btn-save w-full sm:w-auto justify-center">💾 Guardar Cotización</button>
             </div>
         </form>
     </div>

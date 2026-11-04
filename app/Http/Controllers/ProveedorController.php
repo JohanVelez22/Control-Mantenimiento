@@ -92,8 +92,12 @@ class ProveedorController extends Controller
         return view('proveedores.show', compact('proveedor', 'comprasTotales', 'comprasPagadas', 'saldoProveedor'));
     }
 
-    public function edit(Proveedor $proveedor): View
+    public function edit(Proveedor $proveedor): View|RedirectResponse
     {
+        if (! $proveedor->active) {
+            return redirect()->route('proveedores.index')->with('error', 'Por seguridad, no se puede editar un proveedor que se encuentra anulado (inactivo).');
+        }
+
         $departamentos = ColombiaHelper::departamentos();
         $tiposId = ColombiaHelper::tiposIdentificacion();
         $municipios = $proveedor->departamento
@@ -105,6 +109,10 @@ class ProveedorController extends Controller
 
     public function update(Request $request, Proveedor $proveedor): RedirectResponse
     {
+        if (! $proveedor->active) {
+            return redirect()->route('proveedores.index')->with('error', 'Por seguridad, no se puede editar un proveedor que se encuentra anulado (inactivo).');
+        }
+
         $validated = $request->validate([
             'tipo_entidad' => ['required', Rule::in(['persona', 'empresa'])],
             'tipo_identificacion' => ['required', Rule::in(array_keys(ColombiaHelper::tiposIdentificacion()))],

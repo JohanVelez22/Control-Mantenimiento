@@ -34,14 +34,14 @@ function getStockOptions() {
            stocksData.map(s => {
                const p = esTec ? (s.precio_tecnico > 0 ? s.precio_tecnico : s.precio_venta) : s.precio_venta;
                const labelTag = esTec ? '🔧 P.Técnico' : 'P.Venta';
-               return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-nombre="${escapeHtml(s.nombre)}" data-cantidad="${s.cantidad}">${escapeHtml(s.nombre)} (Disp: ${s.cantidad}) — ${labelTag}: $${formatNum(p)}</option>`;
+               return `<option value="${s.id}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-nombre="${escapeHtml(s.nombre)}" data-cantidad="${s.cantidad}">${escapeHtml(s.nombre)} (Disp: ${s.cantidad}) — ${labelTag}: $ ${formatNum(p)}</option>`;
            }).join('');
 }
 
 function agregarFila(itemData = null) {
     const tbody = document.getElementById('items-body');
     const tr = document.createElement('tr');
-    tr.className = 'item-row bg-white/20 dark:bg-slate-900/20 border-t border-slate-200/50 dark:border-white/10 hover:bg-white/50 dark:hover:bg-slate-900/30 transition-colors';
+    tr.className = 'item-row bg-transparent';
     
     let isStock = itemData ? itemData.tipo === 'stock' : false;
     let cant = itemData ? itemData.cantidad : 1;
@@ -79,6 +79,9 @@ function agregarFila(itemData = null) {
     window.cambiarTipo(newTipoSel, tr, newTipoSel.value, itemData);
     bindFilaCotizacion(tr);
     recalcular();
+
+    // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
+    const scrollBox = tbody.closest('.overflow-y-auto, .cotizacion-table-scroll'); if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) { scrollBox.scrollTop = scrollBox.scrollHeight; }
 }
 
 function bindFilaCotizacion(tr) {
@@ -161,7 +164,7 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
 
     if (val === 'stock') {
         tdDesc.innerHTML = `
-            <select class="stock-select glass-input py-1.5" required data-placeholder="Seleccionar producto del stock...">
+            <select class="stock-select glass-input py-1.5 w-full" required data-placeholder="Seleccionar producto del stock..." style="display: none;">
                 ${getStockOptions()}
             </select>
             <input type="hidden" name="items[${idx}][item_id]" class="stock-id-input">
@@ -390,7 +393,7 @@ function actualizarSubtotal(tr) {
     const subtotal = cant * precio;
     const subCell = tr.querySelector('.subtotal-cell');
     if (subCell) {
-        subCell.textContent = '$' + formatNum(subtotal);
+        subCell.textContent = '$ ' + formatNum(subtotal);
     }
     recalcular();
 }
@@ -404,13 +407,13 @@ function recalcular() {
         const subtotal = cant * precio;
         const subCell = tr.querySelector('.subtotal-cell');
         if (subCell) {
-            subCell.textContent = '$' + formatNum(subtotal);
+            subCell.textContent = '$ ' + formatNum(subtotal);
         }
         total += subtotal;
     });
     const totalDisplay = document.getElementById('total-display');
     if (totalDisplay) {
-        totalDisplay.textContent = '$' + formatNum(total);
+        totalDisplay.textContent = '$ ' + formatNum(total);
     }
 }
 

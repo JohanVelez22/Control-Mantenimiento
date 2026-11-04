@@ -64,7 +64,9 @@
   <div class="actions-grid">
   <a href="{{ route('proveedores.show', $p->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Detalles">👁️</a>
   @if(!auth()->user()->isInvitado())
+  @if($p->active)
   <a href="{{ route('proveedores.edit', $p->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+  @endif
                                     <button type="button" onclick="openAnularModal('{{ route('proveedores.anular', $p->id) }}', {{ !$p->active ? 'true' : 'false' }})" class="btn-ghost {{ $p->active ? 'btn-action-anular text-red-600 dark:text-red-400' : 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $p->active ? 'Anular Proveedor' : 'Reactivar Proveedor' }}">
   {{ $p->active ? '🚫' : '✅' }}
   </button>

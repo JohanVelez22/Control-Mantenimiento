@@ -31,12 +31,20 @@
                     'login' => '🔑',
                     'logout' => '🚪',
                     'backup' => '💾',
+                    'backup_restaurado' => '🔄',
                     default => '📌',
                 };
             @endphp
             <span class="badge-evento {{ $badgeClass }}">
                 <span class="badge-evento-icon">{{ $icon }}</span>
-                <span>{{ $evento->accion }}</span>
+                @if($evento->accion === 'backup_restaurado')
+                    <span class="inline-flex flex-col items-center leading-tight">
+                        <span>BACKUP</span>
+                        <span>RESTAURADO</span>
+                    </span>
+                @else
+                    <span>{{ $evento->accion }}</span>
+                @endif
             </span>
         </div>
     </div>
@@ -46,19 +54,19 @@
         {{-- Metadata Grid --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                <span class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 mb-1">
                     <span>👤</span> Usuario Responsable
                 </span>
-                <span class="text-sm font-bold text-slate-800 dark:text-slate-100">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">
                     {{ $evento->user->name ?? 'Sistema' }}
                 </span>
             </div>
 
             <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                <span class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 mb-1">
                     <span>📦</span> Módulo / Modelo
                 </span>
-                <span class="text-sm font-bold text-slate-800 dark:text-slate-100 font-mono">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 font-mono">
                     {{ class_basename($evento->modelo_tipo) ?: 'General / Sistema' }}
                     @if($evento->modelo_id)
                         #{{ $evento->modelo_id }}
@@ -67,19 +75,19 @@
             </div>
 
             <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                <span class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 mb-1">
                     <span>🌐</span> Dirección IP
                 </span>
-                <span class="text-sm font-bold text-slate-800 dark:text-slate-100 font-mono">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 font-mono">
                     {{ $evento->ip_direccion ?: '127.0.0.1' }}
                 </span>
             </div>
 
             <div class="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/60 dark:border-white/5">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+                <span class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 mb-1">
                     <span>🕒</span> Fecha y Hora
                 </span>
-                <span class="text-sm font-bold text-slate-800 dark:text-slate-100">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">
                     {{ $evento->created_at?->format('d/m/Y h:i:s A') }}
                 </span>
             </div>
@@ -97,14 +105,14 @@
 
         {{-- Grid Comparativo de Valores (Simétrico a Modal) --}}
         @php
-            $isBackup = $evento->accion === 'backup';
+            $isBackup = in_array($evento->accion, ['backup', 'backup_restaurado']);
             $isLogin = $evento->accion === 'login';
             
             $colAntEmoji = $isBackup ? '📦' : ($isLogin ? '⚠️' : '➖');
-            $colAntText = $isBackup ? 'Archivos y Almacenamiento' : ($isLogin ? 'Historial de Intentos Previos' : 'Valores Anteriores');
+            $colAntText = $evento->accion === 'backup_restaurado' ? 'Copia de Respaldo de Origen' : ($isBackup ? 'Archivos y Almacenamiento' : ($isLogin ? 'Historial de Intentos Previos' : 'Valores Anteriores'));
 
             $colNueEmoji = $isBackup ? '✅' : ($isLogin ? '✅' : '➕');
-            $colNueText = $isBackup ? 'Estado y Parámetros' : ($isLogin ? 'Acceso Logrado / Exitoso' : 'Valores Nuevos');
+            $colNueText = $evento->accion === 'backup_restaurado' ? 'Resultado de la Restauración' : ($isBackup ? 'Estado y Parámetros' : ($isLogin ? 'Acceso Logrado / Exitoso' : 'Valores Nuevos'));
 
             $colAntClass = $isBackup ? 'event-col-cyan' : ($isLogin ? 'event-col-amber' : 'event-col-rose');
             $colNueClass = 'event-col-emerald';

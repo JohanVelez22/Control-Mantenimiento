@@ -32,9 +32,9 @@ class SecurityCheck extends Command
         }
 
         // 3. Validar Contraseñas Críticas
-        $adminPass = env('ADMIN_DEFAULT_PASSWORD');
+        $adminPass = env('ADMIN_DEFAULT_PASSWORD') ?: env('ADMIN_REGISTRATION_PASSWORD');
         if (! $adminPass || $adminPass === 'Admin123*') {
-            $this->error('❌ ADMIN_DEFAULT_PASSWORD está ausente o usa un valor inseguro por defecto');
+            $this->error('❌ ADMIN_DEFAULT_PASSWORD / ADMIN_REGISTRATION_PASSWORD está ausente o usa un valor inseguro por defecto');
             $warnings++;
         } else {
             $this->info('✅ Contraseña de administrador segura detectada');

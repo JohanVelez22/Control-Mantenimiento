@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Cotizacion extends Model
 {
-    use \App\Traits\Auditable, HasFactory;
+    use Auditable, HasFactory;
 
     protected $table = 'cotizaciones';
 
@@ -22,6 +23,7 @@ class Cotizacion extends Model
         'anulado',
         'notas',
         'user_id',
+        'factura_id',
     ];
 
     protected function casts(): array
@@ -39,6 +41,23 @@ class Cotizacion extends Model
     public function proveedor()
     {
         return $this->belongsTo(Proveedor::class);
+    }
+
+    public function factura()
+    {
+        return $this->belongsTo(Factura::class, 'factura_id');
+    }
+
+    public function getFacturaCreadaAttribute()
+    {
+        if ($this->factura_id && $this->relationLoaded('factura')) {
+            return $this->factura;
+        }
+        if ($this->factura_id) {
+            return $this->factura;
+        }
+
+        return Factura::where('observaciones', 'like', "%Cotización #{$this->codigo}%")->first();
     }
 
     public function getDestinatarioAttribute()

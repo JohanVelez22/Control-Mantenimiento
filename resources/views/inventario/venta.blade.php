@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('content')
 <div class="max-w-7xl mx-auto">
- <div class="glass-card p-6 md:p-8">
+ <div class="glass-card p-6 md:p-6">
  <div class="flex items-center gap-3 mb-8">
- <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+ <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
  <div>
  <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">🛒 Registrar Venta de Inventario</h2>
  <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Vende productos, descuenta del stock y genera ingreso</p>
@@ -13,13 +13,13 @@
  <form action="{{ route('inventario.venta.store') }}" method="POST" id="venta-form" class="space-y-5">
  @csrf
 
- <div class="flex flex-col md:flex-row gap-5 p-5 glass-card">
+ <div class="flex flex-col md:flex-row gap-5">
  <div class="col-factura-header">
  <label class="field-label whitespace-nowrap">N° Factura</label>
  <input type="text" value="{{ $nextFactura ?? 'VT-...' }}" readonly class="glass-input font-mono font-bold bg-white/40 dark:bg-black/20 text-emerald-600 dark:text-emerald-400 text-left pl-3 cursor-not-allowed w-full" style="width: 7rem !important;">
  </div>
  <div class="w-full flex-1 min-w-0">
- <label class="field-label">Cliente / Proveedor *</label>
+ <label class="field-label">Cliente / Proveedor <span class="text-red-500 font-bold">*</span></label>
  <select name="facturable_global" required class="glass-input focus:ring-emerald-500" data-placeholder="Buscar cliente o proveedor...">
  <option value="">Buscar cliente o proveedor...</option>
  @foreach($clientes as $c)
@@ -36,7 +36,7 @@
  @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
  <div class="col-fecha-header">
- <label class="field-label">Fecha *</label>
+ <label class="field-label">Fecha <span class="text-red-500 font-bold">*</span></label>
  <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}" class="glass-input reportes-date-input focus:ring-emerald-500" style="width: 8.5rem !important;">
  @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
  </div>
@@ -53,7 +53,7 @@
  </button>
  </div>
 
- <div class="overflow-x-auto pb-2 max-h-[420px] overflow-y-auto">
+ <div class="overflow-x-auto pb-2 max-h-[420px] overflow-y-auto" style="overflow-y: auto !important;">
  <table class="ts-table w-full table-fixed" id="items-table">
         <thead>
             <tr>
@@ -71,7 +71,7 @@
                         <option value="">Seleccionar producto...</option>
                         @foreach($stocks as $s)
                             <option value="{{ $s->id }}" data-precio-compra="{{ $s->precio_compra }}" data-precio-venta="{{ $s->precio_venta }}" data-precio-tecnico="{{ $s->precio_tecnico > 0 ? $s->precio_tecnico : $s->precio_venta }}" data-stock="{{ $s->cantidad }}">
-                                {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: ${{ number_format($s->precio_venta, 0, ',', '.') }}
+                                {{ $s->producto }} (Disp: {{ $s->cantidad }}) — P.Venta: $ {{ number_format($s->precio_venta, 0, ',', '.') }}
                             </option>
                         @endforeach
                     </select>
@@ -84,12 +84,12 @@
                     <div class="relative">
                         <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
                         <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis absolute right-1 top-full pointer-events-none uppercase tracking-wider">
-                            <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$0</span>)</span>
+                            <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$ 0</span>)</span>
                         </div>
                     </div>
                 </td>
                 <td class="text-center font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell px-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">
-                    $0
+                    $ 0
                 </td>
                 <td class="col-accion text-center" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
                     <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
@@ -97,12 +97,12 @@
             </tr>
         </tbody>
         <tfoot>
-            <tr class="border-0 bg-gray-50/50 dark:bg-gray-800/50">
+            <tr class="border-0 bg-transparent">
                 <td colspan="3" class="py-4 text-right pr-2 border-0">
                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                 </td>
                 <td class="py-4 text-right pr-3 border-0">
-                    <span class="font-black text-2xl text-emerald-600 dark:text-emerald-400 whitespace-nowrap" id="total-display">$0</span>
+                    <span class="font-black text-2xl text-emerald-600 dark:text-emerald-400 whitespace-nowrap" id="total-display">$ 0</span>
                 </td>
                 <td class="py-4 border-0"></td>
             </tr>
@@ -112,7 +112,7 @@
  </div>
 
  {{-- Pago y observaciones --}}
- <div class="flex flex-col md:flex-row justify-center gap-5 p-5 glass-card">
+ <div class="flex flex-col md:flex-row justify-center gap-5">
 <div class="text-center w-full md:w-1/2">
   <label class="field-label text-center block">Total Recibido Ahora <span class="text-red-500 font-bold">*</span></label>
   <input type="text" name="total_pagado" id="total_pagado_real" value="0" required class="hidden">
@@ -122,7 +122,7 @@
 </div>
  <div id="saldo-preview" class="hidden w-full md:w-1/2 flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">
  <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 mb-1 tracking-wide uppercase">⚠️ Saldo por Cobrar</p>
- <p class="text-2xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$0</p>
+ <p class="text-2xl font-black text-yellow-600 dark:text-yellow-500" id="saldo-display">$ 0</p>
  </div>
  </div>
 
@@ -153,12 +153,10 @@
       </div>
   </div>
 
- <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
- <a href="{{ route('inventario.facturas') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">✕<space>Cancelar</a>
- <button type="submit" class="btn-venta w-full sm:w-auto justify-center">
- 🛒 Procesar Venta
- </button>
- </div>
+        <div class="flex flex-col sm:flex-row items-center justify-end gap-3 mt-0 pt-0">
+            <a href="{{ route('inventario.facturas') }}" class="btn-cancel w-full sm:w-auto justify-center text-center"><span>✕</span><span>Cancelar</span></a>
+            <button type="submit" class="btn-venta w-full sm:w-auto justify-center">🛒 Procesar Venta</button>
+        </div>
  </form>
  </div>
 </div>
@@ -200,17 +198,17 @@ function stockSelectOptions() {
     return stocksData.map(s => {
       const p = esTec ? s.precio_tecnico : s.precio_venta;
       const labelTag = esTec ? '🔧 P.Técnico' : 'P.Venta';
-      return `<option value="${s.id}" data-precio-compra="${s.precio_compra}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-stock="${s.cantidad}">${escapeHtml(s.nombre)} (Disp: ${s.cantidad}) — ${labelTag}: $${window.formatNumber(p)}</option>`;
+      return `<option value="${s.id}" data-precio-compra="${s.precio_compra}" data-precio-venta="${s.precio_venta}" data-precio-tecnico="${s.precio_tecnico}" data-stock="${s.cantidad}">${escapeHtml(s.nombre)} (Disp: ${s.cantidad}) — ${labelTag}: $ ${window.formatNumber(p)}</option>`;
     }).join('');
 }
 
 function agregarFila() {
   const tbody = document.getElementById('items-body');
   const tr = document.createElement('tr');
-  tr.className = 'item-row bg-transparent border-t border-gray-200/50 dark:border-white/10';
+  tr.className = 'item-row bg-transparent';
   tr.innerHTML = `
   <td style="vertical-align: top !important; padding-top: 10px; padding-bottom: 10px;">
-   <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500" data-placeholder="Seleccionar producto...">
+   <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-emerald-500 w-full" data-placeholder="Seleccionar producto...">
    <option value="">Seleccionar producto...</option>
   ${stockSelectOptions()}
   </select>
@@ -223,11 +221,11 @@ function agregarFila() {
   <div class="relative">
       <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-emerald-500 font-bold text-slate-800 dark:text-white transition-all">
       <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis absolute right-1 top-full pointer-events-none uppercase tracking-wider">
-          <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$0</span>)</span>
+          <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$ 0</span>)</span>
       </div>
   </div>
   </td>
-    <td class="text-center font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell px-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$0</td>
+    <td class="text-center font-black text-emerald-600 dark:text-emerald-400 text-base subtotal-cell px-3 whitespace-nowrap overflow-hidden text-ellipsis" style="vertical-align: top !important; padding-top: 18px; padding-bottom: 10px;">$ 0</td>
     <td class="col-accion text-center" style="vertical-align: top !important; padding-top: 12px; padding-bottom: 10px;">
         <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
     </td>`;
@@ -238,8 +236,11 @@ function agregarFila() {
   // Inicializar TomSelect en el nuevo select
   const newSelect = tr.querySelector('.stock-select');
   if (newSelect && typeof window.initGlassTomSelect === 'function') {
-  window.initGlassTomSelect(newSelect);
+    window.initGlassTomSelect(newSelect);
   }
+
+  // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
+  const scrollBox = tbody.closest('.overflow-y-auto'); if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) { scrollBox.scrollTop = scrollBox.scrollHeight; }
 }
 
 function eliminarFila(btn) {
@@ -276,7 +277,7 @@ function actualizarSubtotal(tr) {
   const cant = parseFloat(tr.querySelector('.cantidad-input').value) || 0;
   const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
   const precio = parseFloat(precioReal?.value || '0') || 0;
-  tr.querySelector('.subtotal-cell').textContent = '$' + window.formatNumber(cant * precio);
+  tr.querySelector('.subtotal-cell').textContent = '$ ' + window.formatNumber(cant * precio);
   recalcular();
 }
 
@@ -296,7 +297,7 @@ function verificarAlertaCosto(tr) {
 
   if (precioCompra > 0 && precioVenta > 0 && precioVenta < precioCompra) {
     if (badge) {
-      if (costoRef) costoRef.textContent = '$' + window.formatNumber(precioCompra);
+      if (costoRef) costoRef.textContent = '$ ' + window.formatNumber(precioCompra);
       badge.classList.remove('hidden');
       badge.classList.add('flex');
     }
@@ -320,14 +321,14 @@ function recalcular() {
     const subtotal = cant * precio;
     const subCell = tr.querySelector('.subtotal-cell');
     if (subCell) {
-      subCell.textContent = '$' + window.formatNumber(subtotal);
+      subCell.textContent = '$ ' + window.formatNumber(subtotal);
     }
     total += subtotal;
     if (verificarAlertaCosto(tr)) {
       hayBajoCosto = true;
     }
   });
-  document.getElementById('total-display').textContent = '$' + window.formatNumber(total);
+  document.getElementById('total-display').textContent = '$ ' + window.formatNumber(total);
 
   const banner = document.getElementById('banner-alerta-bajo-costo');
   if (banner) {
@@ -349,7 +350,7 @@ function calcularSaldo(total) {
   const saldo = total - pagado;
   const box = document.getElementById('saldo-preview');
   if (saldo > 0.01) {
-    document.getElementById('saldo-display').textContent = '$' + window.formatNumber(Math.max(0, saldo));
+    document.getElementById('saldo-display').textContent = '$ ' + window.formatNumber(Math.max(0, saldo));
     box.classList.remove('hidden');
     box.classList.add('flex');
   } else {

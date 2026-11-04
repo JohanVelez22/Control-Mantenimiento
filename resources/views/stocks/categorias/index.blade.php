@@ -4,13 +4,13 @@
 
 @push('modals')
 {{-- Modal de contraseña para eliminar (Liquid Glass) --}}
-<div id="pwd-delete-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-50">
+<div id="pwd-delete-modal" role="dialog" aria-modal="true" aria-labelledby="pwd-delete-title" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-50">
     <div class="ts-modal-card scale-95 opacity-0" id="pwd-delete-card">
         <div class="p-6">
             <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4">
                 🔓
             </div>
-            <h3 class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Registro</h3>
+            <h3 id="pwd-delete-title" class="text-xl font-black text-center text-slate-800 dark:text-white mb-2">Eliminar Registro</h3>
             <p class="text-center text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">
                 @if(auth()->check() && auth()->user()->isTecnico())
                     Ingresa la contraseña de un administrador para confirmar la eliminación.
@@ -69,7 +69,7 @@
 <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between mb-8">
         <div class="flex items-center gap-3">
-            <a href="{{ route('stocks.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+            <a href="{{ route('stocks.index') }}" class="btn-ghost text-xl" title="Volver" aria-label="Volver a inventario">⬅️</a>
             <div>
                 <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                     🏷️ Categorías de Inventario
@@ -85,18 +85,22 @@
                 @csrf
                 <h3 class="font-bold text-slate-800 dark:text-white mb-4">Nueva Clasificación</h3>
                 <div class="space-y-4">
-                    <div>
-                        <label class="field-label">Tipo de Clasificación</label>
-                        <select name="tipo" class="glass-input font-bold" required>
-                            <option value="categoria">🗂️ Categoría Principal</option>
-                            <option value="subcategoria">📂 Subcategoría</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="field-label">Nombre</label>
-                        <input type="text" name="nombre" required class="glass-input" placeholder="Ej: Pantallas, Accesorios...">
-                    </div>
-                    <button type="submit" class="btn-primary w-full justify-center">Crear Clasificación</button>
+                        <div>
+                            <label class="field-label">Tipo de Clasificación <span class="text-red-500 font-bold">*</span></label>
+                            <select name="tipo" class="glass-input font-bold" required>
+                                <option value="categoria">🗂️ Categoría</option>
+                                <option value="subcategoria">📂 Subcategoría</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="field-label">Nombre <span class="text-red-500 font-bold">*</span></label>
+                            <input type="text" name="nombre" required class="glass-input" placeholder="Ej: Pantallas, Accesorios...">
+                        </div>
+                    <div class="pt-2">
+                    <button type="submit" class="btn-primary w-full justify-center py-2.5 font-bold shadow-md shadow-indigo-500/20">
+                        ➕ Crear Clasificación
+                    </button>
+                </div>
                 </div>
             </form>
         </div>
@@ -105,24 +109,24 @@
             <div class="glass-card p-6">
                 <h3 class="font-bold text-slate-800 dark:text-white mb-4">Clasificaciones Existentes</h3>
                 
-                <ul class="space-y-3">
+                <ul class="space-y-3.5">
                     @forelse($categorias as $c)
-                    <li class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-white/20 dark:bg-slate-900/25 rounded-xl border border-white/40 dark:border-white/5 backdrop-blur-md shadow-sm gap-2">
-                        <form action="{{ route('stocks.categorias.update', $c->id) }}" method="POST" class="flex-1 w-full flex flex-wrap sm:flex-nowrap gap-2 items-center">
+                    <li class="flex items-center justify-between gap-2">
+                        <form action="{{ route('stocks.categorias.update', $c->id) }}" method="POST" class="flex-1 flex items-center gap-2">
                             @csrf @method('PUT')
-                            <select name="tipo" class="glass-input py-1.5 px-2 text-xs w-auto font-bold {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
-                                <option value="categoria" {{ $c->tipo == 'categoria' ? 'selected' : '' }}>🗂️ Categoría</option>
-                                <option value="subcategoria" {{ $c->tipo == 'subcategoria' ? 'selected' : '' }}>📂 Subcat</option>
-                            </select>
-                            <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-1.5 px-3 text-sm min-w-[120px]">
-                            <button type="submit" class="btn-ghost px-3 py-1.5 text-xs text-blue-600">💾</button>
+                            <div class="categoria-tipo-wrap">
+                                <select name="tipo" class="glass-input py-2 px-3 text-sm font-bold w-full {{ $c->tipo == 'categoria' ? 'text-blue-600 dark:text-blue-400' : 'text-purple-600 dark:text-purple-400' }}">
+                                    <option value="categoria" {{ $c->tipo == 'categoria' ? 'selected' : '' }}>🗂️ Categoría</option>
+                                    <option value="subcategoria" {{ $c->tipo == 'subcategoria' ? 'selected' : '' }}>📂 Subcategoría</option>
+                                </select>
+                            </div>
+                            <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-2 px-3 text-sm" placeholder="Nombre de la clasificación...">
+                            <button type="submit" class="btn-ghost btn-action-square text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Guardar clasificación">💾</button>
                         </form>
-                        <div class="ml-auto sm:ml-0 grid grid-cols-2 gap-1">
-                            <button type="button" onclick="openDeletePwd('{{ route('stocks.categorias.destroy', $c->id) }}')" class="btn-danger px-3 py-1.5 text-xs">🗑️</button>
-                        </div>
+                        <button type="button" onclick="openDeletePwd('{{ route('stocks.categorias.destroy', $c->id) }}')" class="btn-danger btn-action-square" title="Eliminar clasificación">🗑️</button>
                     </li>
                     @empty
-                    <li class="p-4 text-center text-gray-500">No hay clasificaciones registradas.</li>
+                    <li class="py-6 text-center text-gray-500 font-medium text-sm">No hay clasificaciones registradas.</li>
                     @endforelse
                 </ul>
             </div>

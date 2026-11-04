@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\OrdenService;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class Factura extends Model
 {
-    use \App\Traits\Auditable, SoftDeletes;
+    use Auditable, SoftDeletes;
 
     protected $fillable = [
         'numero_factura',
@@ -54,6 +55,27 @@ class Factura extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** Cotización de origen si fue convertida */
+    public function cotizacion()
+    {
+        return $this->hasOne(Cotizacion::class, 'factura_id');
+    }
+
+    public function getCotizacionOrigenAttribute(): ?Cotizacion
+    {
+        if ($this->relationLoaded('cotizacion') && $this->cotizacion) {
+            return $this->cotizacion;
+        }
+        $cot = $this->cotizacion()->first();
+        if ($cot) {
+            return $cot;
+        }
+        if (!empty($this->observaciones) && preg_match('/Cotización #([A-Za-z0-9-]+)/', $this->observaciones, $m)) {
+            return Cotizacion::where('codigo', $m[1])->first();
+        }
+        return null;
     }
 
     /** Saldo pendiente (lo que aún se debe). Columna generada en BD con fallback en memoria */
@@ -133,8 +155,15 @@ class Factura extends Model
             ->where(function ($q) {
                 $q->where('factura_id', $this->id)
                     ->orWhere(function ($legacy) {
+                        $num = $this->numero_factura;
                         $legacy->whereNull('factura_id')
-                            ->where('descripcion', 'like', "%#{$this->numero_factura}%");
+                            ->where(function ($sub) use ($num) {
+                                $sub->where('descripcion', 'like', "%#{$num}")
+                                    ->orWhere('descripcion', 'like', "%#{$num} %")
+                                    ->orWhere('descripcion', 'like', "%#{$num},%")
+                                    ->orWhere('descripcion', 'like', "%#{$num}.%")
+                                    ->orWhere('descripcion', 'like', "%#{$num}\n%");
+                            });
                     });
             })
             ->pluck('id');

@@ -1,0 +1,152 @@
+/* --- BARRA SUPERIOR (TOPBAR: Acrílico Mate / Frosted Matte Acrylic) ----------------- */
+#ts-topbar {
+  background-image: var(--acrylic-noise), linear-gradient(180deg, rgba(240, 246, 254, 0.70) 0%, rgba(226, 236, 250, 0.64) 100%);
+  background-color: transparent;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.38);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  box-shadow:
+    0 4px 16px -2px rgba(15, 23, 42, 0.05),
+    inset 0 -1.5px 0 rgba(255, 255, 255, 0.95);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+html.dark #ts-topbar {
+  background-image: var(--acrylic-noise), linear-gradient(180deg, rgba(20, 32, 60, 0.72) 0%, rgba(11, 18, 38, 0.78) 100%);
+  background-color: transparent;
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.35),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* --- DROPDOWN NOTIFICACIONES (Acrílico Mate Flotante / Liquid Glass) ----------------- */
+#notif-dropdown {
+  width: 260px !important;
+  max-width: calc(100vw - 24px) !important;
+}
+
+#notif-arrow {
+  width: 12px !important;
+  height: 12px !important;
+  transform: rotate(45deg) !important;
+  margin-bottom: -6px !important;
+  position: relative !important;
+  z-index: 2 !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-left: 1px solid rgba(148, 163, 184, 0.38) !important;
+  border-top: 1px solid rgba(148, 163, 184, 0.38) !important;
+  box-sizing: border-box !important;
+}
+
+html.dark #notif-arrow {
+  background: rgba(24, 38, 70, 0.68) !important;
+  border-left-color: rgba(255, 255, 255, 0.14) !important;
+  border-top-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+#notif-panel {
+  box-sizing: border-box !important;
+  background-image: var(--acrylic-noise), linear-gradient(145deg, rgba(255, 255, 255, 0.62) 0%, rgba(235, 244, 255, 0.54) 100%) !important;
+  background-color: transparent !important;
+  -webkit-backdrop-filter: blur(36px) saturate(190%) !important;
+  backdrop-filter: blur(36px) saturate(190%) !important;
+  border: 1px solid rgba(148, 163, 184, 0.38) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 24px 50px -10px rgba(15, 23, 42, 0.16),
+    0 6px 16px rgba(15, 23, 42, 0.06),
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 0.98),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.65) !important;
+  overflow: hidden !important;
+}
+
+html.dark #notif-panel {
+  background-image: var(--acrylic-noise), linear-gradient(145deg, rgba(24, 38, 70, 0.60) 0%, rgba(13, 21, 44, 0.66) 100%) !important;
+  background-color: transparent !important;
+  -webkit-backdrop-filter: blur(36px) saturate(190%) !important;
+  backdrop-filter: blur(36px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow:
+    0 24px 55px rgba(0, 0, 0, 0.65),
+    0 6px 18px rgba(0, 0, 0, 0.35),
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
+}
+
+#notif-header {
+  background: rgba(37, 99, 235, 0.06) !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.28) !important;
+}
+
+html.dark #notif-header {
+  background: rgba(37, 99, 235, 0.10) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.notif-row {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16) !important;
+  background: transparent !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.notif-row:hover {
+  background: rgba(37, 99, 235, 0.08) !important;
+}
+
+html.dark .notif-row {
+  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+html.dark .notif-row:hover {
+  background: rgba(96, 165, 250, 0.10) !important;
+}
+
+#notif-footer {
+  border-top: 1px solid rgba(148, 163, 184, 0.25) !important;
+  background: rgba(37, 99, 235, 0.06) !important;
+  color: #1D4ED8 !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+#notif-footer:hover {
+  background: rgba(37, 99, 235, 0.12) !important;
+  color: #2563EB !important;
+}
+
+html.dark #notif-footer {
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(37, 99, 235, 0.10) !important;
+  color: #60A5FA !important;
+}
+
+html.dark #notif-footer:hover {
+  background: rgba(37, 99, 235, 0.18) !important;
+  color: #93C5FD !important;
+}
+
+/* --- BOTÓN GLOBAL CONFIGURACIÓN DE HORIZONTALIDAD Y NO WRAP --- */
+.btn-primary,
+.btn-clean,
+.btn-add,
+.btn-today,
+.btn-backup,
+.btn-save,
+.btn-cancel,
+.btn-close-modal,
+.btn-save-print,
+.btn-concepts,
+.btn-venta,
+.btn-compra,
+.btn-purple,
+.btn-secondary,
+.btn-ghost,
+.btn-danger,
+.btn-success {
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}

@@ -48,8 +48,8 @@
             <tr style="font-weight: bold;">
                 <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">{{ $stock->pivot->cantidad }}</td>
                 <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">{{ $stock->producto }}</td>
-                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($stock->pivot->precio_unitario, 0, ',', '.') }}</td>
-                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">${{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($stock->pivot->precio_unitario, 0, ',', '.') }}</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -60,23 +60,23 @@
     <table class="totals" style="width: 45%; float: right; margin-bottom: 0;">
         <tr>
             <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Costo Total Estimado:</td>
-            <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">${{ number_format($mantenimiento->costo, 0, ',', '.') }}</td>
+            <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">$ {{ number_format($mantenimiento->costo, 0, ',', '.') }}</td>
         </tr>
         @if($mantenimiento->abonos->count() > 0)
             <tr>
                 <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Total Abonado:</td>
-                <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">- ${{ number_format($mantenimiento->total_abonado, 0, ',', '.') }}</td>
+                <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">- $ {{ number_format($mantenimiento->total_abonado, 0, ',', '.') }}</td>
             </tr>
             <tr class="grand-total">
                 <td class="lbl" style="font-size: 6.8pt; padding: 1px 2px;">SALDO PENDIENTE:</td>
                 <td class="val" style="font-size: 6.8pt; padding: 1px 2px; font-weight: bold;">
-                    ${{ number_format($mantenimiento->saldo_pendiente, 0, ',', '.') }}
+                    $ {{ number_format($mantenimiento->saldo_pendiente, 0, ',', '.') }}
                 </td>
             </tr>
         @else
             <tr class="grand-total">
                 <td class="lbl" style="font-size: 6.8pt; padding: 1px 2px;">SALDO PENDIENTE:</td>
-                <td class="val" style="font-size: 6.8pt; padding: 1px 2px; font-weight: bold;">${{ number_format($mantenimiento->costo, 0, ',', '.') }}</td>
+                <td class="val" style="font-size: 6.8pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($mantenimiento->costo, 0, ',', '.') }}</td>
             </tr>
         @endif
     </table>
@@ -104,7 +104,7 @@
                     <td style="padding: 1px 2px; text-align: center; font-size: 6.5pt; font-weight: bold;">{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/Y') }}</td>
                     <td style="padding: 1px 2px; text-align: center; font-size: 6.5pt; font-weight: bold;">{{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Banco / Transf.' }}</td>
                     <td style="padding: 1px 2px; text-align: center; font-size: 6.5pt; font-weight: bold;">{{ $abono->descripcion ?: 'Abono a cuenta' }}</td>
-                    <td style="padding: 1px 2px; text-align: center; font-size: 6.5pt; font-weight: bold;">${{ number_format($abono->monto, 0, ',', '.') }}</td>
+                    <td style="padding: 1px 2px; text-align: center; font-size: 6.5pt; font-weight: bold;">$ {{ number_format($abono->monto, 0, ',', '.') }}</td>
                 </tr>
                 @endforeach
             </tbody>

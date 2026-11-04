@@ -6,15 +6,15 @@
 
     {{-- N° Orden (Consecutivo automático / ID readonly) --}}
     <div class="md:col-span-2">
-        <label class="field-label flex items-center gap-2"><span>🔖</span> N° Orden</label>
+        <label class="field-label flex items-center gap-2">N° Orden</label>
         <input type="text" name="id_orden" value="{{ old('id_orden', $mantenimiento->id_orden ?? ($nextOrden ?? '')) }}" readonly
             class="glass-input mt-1 bg-gray-200/50 dark:bg-gray-800/50 cursor-not-allowed text-gray-500 dark:text-gray-400 font-bold font-mono"
             title="El consecutivo se genera automáticamente">
     </div>
 
     {{-- Equipo --}}
-    <div class="md:col-span-2 min-w-0 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
-        <label class="field-label flex items-center gap-2"><span>💻</span> Seleccionar Equipo *</label>
+    <div class="md:col-span-2 min-w-0">
+        <label class="field-label flex items-center gap-1.5 font-bold">Seleccionar Equipo <span class="text-red-500 font-bold">*</span></label>
         <select name="equipo_id" required class="glass-input text-sm font-bold mt-1" data-placeholder="Buscar equipo o cliente...">
             <option value="">Buscar equipo o cliente...</option>
             @foreach($equipos as $equipo)
@@ -27,11 +27,11 @@
 
     {{-- Técnico --}}
     <div class="min-w-0">
-        <label class="field-label flex items-center gap-2"><span>👨🏻‍🔧</span> Técnico Asignado *</label>
+        <label class="field-label flex items-center gap-2">Técnico Asignado <span class="text-red-500 font-bold">*</span></label>
         <select name="tecnico_id" required class="glass-input mt-1" data-placeholder="Seleccione un técnico...">
             <option value="">Seleccione un técnico...</option>
             @foreach($tecnicos as $tecnico)
-                <option value="{{ $tecnico->id }}" {{ (old('tecnico_id', $mantenimiento->tecnico_id ?? '') == $tecnico->id) ? 'selected' : '' }}>
+                <option value="{{ $tecnico->id }}" {{ (old('tecnico_id', $mantenimiento->equipo_id ?? '') == $tecnico->id) ? 'selected' : '' }}>
                     {{ $tecnico->nombre }} ({{ $tecnico->identificacion }})
                 </option>
             @endforeach
@@ -40,7 +40,7 @@
 
     {{-- Estado --}}
     <div>
-        <label class="field-label flex items-center gap-2"><span>🏷️</span> Estado Inicial *</label>
+        <label class="field-label flex items-center gap-2">Estado Inicial <span class="text-red-500 font-bold">*</span></label>
         <select name="estado" required class="glass-input mt-1 font-bold {{ old('estado', $mantenimiento->estado ?? 'pendiente') === 'terminado' ? 'text-emerald-600 dark:text-emerald-400' : 'text-yellow-600 dark:text-yellow-400' }}">
             <option value="pendiente" {{ old('estado', $mantenimiento->estado ?? 'pendiente') == 'pendiente' ? 'selected' : '' }} class="text-yellow-600">⏳ Pendiente</option>
             <option value="terminado" {{ old('estado', $mantenimiento->estado ?? '') == 'terminado' ? 'selected' : '' }} class="text-emerald-600">✅ Terminado</option>
@@ -50,7 +50,7 @@
     {{-- Fechas --}}
     <div class="grid grid-cols-2 gap-3 md:col-span-2">
         <div>
-            <label class="field-label">Fecha de Entrada *</label>
+            <label class="field-label">Fecha de Entrada <span class="text-red-500 font-bold">*</span></label>
             <input type="date" name="fecha_entrada" value="{{ old('fecha_entrada', isset($mantenimiento->fecha_entrada) ? \Carbon\Carbon::parse($mantenimiento->fecha_entrada)->format('Y-m-d') : date('Y-m-d')) }}" required class="glass-input mt-1">
         </div>
         <div>
@@ -64,61 +64,59 @@
 
     {{-- Tipo Mantenimiento --}}
     <div>
-        <label class="field-label">Tipo de Mantenimiento *</label>
+        <label class="field-label">Tipo de Mantenimiento <span class="text-red-500 font-bold">*</span></label>
         <div class="flex gap-3 mt-1">
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_prev">
-                <input type="radio" name="tipo" value="preventivo" {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
-                <span class="font-bold {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">Preventivo</span>
+            <label class="flex-1 ts-select-card hover-emerald {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'active-emerald' : '' }}" id="lbl_prev">
+                <input type="radio" name="tipo" value="preventivo" {{ old('tipo', $mantenimiento->tipo ?? 'preventivo') == 'preventivo' ? 'checked' : '' }} class="ts-radio-dot">
+                <span>🛡️ Preventivo</span>
             </label>
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_corr">
-                <input type="radio" name="tipo" value="correctivo" {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'checked' : '' }} class="accent-orange-500 w-4 h-4">
-                <span class="font-bold {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'text-orange-700 dark:text-orange-400' : 'text-slate-600 dark:text-slate-400' }}">Correctivo</span>
+            <label class="flex-1 ts-select-card hover-orange {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'active-orange' : '' }}" id="lbl_corr">
+                <input type="radio" name="tipo" value="correctivo" {{ old('tipo', $mantenimiento->tipo ?? '') == 'correctivo' ? 'checked' : '' }} class="ts-radio-dot">
+                <span>🛠️ Correctivo</span>
             </label>
         </div>
     </div>
 
     {{-- Tipo Reparación --}}
     <div>
-        <label class="field-label">Tipo de Reparación *</label>
+        <label class="field-label">Tipo de Reparación <span class="text-red-500 font-bold">*</span></label>
         <div class="flex gap-3 mt-1">
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_soft">
-                <input type="radio" name="reparacion" value="software" {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'checked' : '' }} class="accent-indigo-500 w-4 h-4">
-                <span class="font-bold {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400' }}">Software</span>
+            <label class="flex-1 ts-select-card hover-indigo {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'active-indigo' : '' }}" id="lbl_soft">
+                <input type="radio" name="reparacion" value="software" {{ old('reparacion', $mantenimiento->reparacion ?? 'software') == 'software' ? 'checked' : '' }} class="ts-radio-dot">
+                <span>💻 Software</span>
             </label>
-            <label class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-900/20' : 'border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}" id="lbl_hard">
-                <input type="radio" name="reparacion" value="hardware" {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'checked' : '' }} class="accent-rose-500 w-4 h-4">
-                <span class="font-bold {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'text-rose-700 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400' }}">Hardware</span>
+            <label class="flex-1 ts-select-card hover-rose {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'active-rose' : '' }}" id="lbl_hard">
+                <input type="radio" name="reparacion" value="hardware" {{ old('reparacion', $mantenimiento->reparacion ?? '') == 'hardware' ? 'checked' : '' }} class="ts-radio-dot">
+                <span>🔩 Hardware</span>
             </label>
         </div>
     </div>
 
     {{-- Descripción --}}
     <div class="md:col-span-2">
-        <label class="field-label">Descripción del problema / trabajo *</label>
+        <label class="field-label">Descripción del problema / trabajo <span class="text-red-500 font-bold">*</span></label>
         <textarea name="descripcion" required rows="3" placeholder="Detalla los síntomas o las tareas a realizar..." class="glass-input mt-1 resize-y @error('descripcion') border-red-500 @enderror">{{ old('descripcion', $mantenimiento->descripcion ?? '') }}</textarea>
         @error('descripcion') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
     </div>
 
     {{-- Costo --}}
-    <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm mt-2">
+    <div class="md:col-span-2 mt-2">
         <label class="field-label text-center mb-2 block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Costo Estimado / Final <span class="text-red-500 font-bold">*</span></label>
-        <input type="text" name="costo_visual" id="costo_visual" value="{{ isset($mantenimiento->costo) ? number_format(old('costo', $mantenimiento->costo), 0, ',', '.') : '' }}" placeholder="0" required class="glass-input bg-white/50 dark:bg-slate-900/60 border-gray-200/50 dark:border-white/5 text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20">
+        <input type="text" name="costo_visual" id="costo_visual" value="{{ isset($mantenimiento->costo) ? number_format(old('costo', $mantenimiento->costo), 0, ',', '.') : '' }}" placeholder="0" required class="glass-input text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20">
         <input type="hidden" name="costo" id="costo_real" value="{{ old('costo', $mantenimiento->costo ?? '') }}">
     </div>
 
     @if(isset($mantenimiento) && auth()->user()->isTecnico())
     <div class="md:col-span-2 mt-4">
-        <label class="field-label flex items-center gap-2"><span>🔐</span> Contraseña de Administrador *</label>
+        <label class="field-label flex items-center gap-2"><span>🔐</span> Contraseña de Administrador <span class="text-red-500 font-bold">*</span></label>
         <input type="password" name="admin_password" class="glass-input mt-1" placeholder="Requerida para guardar cambios" autocomplete="off">
         <p class="text-xs text-gray-400 mt-1">Como técnico, debes confirmar con la contraseña de un administrador para editar.</p>
     </div>
     @endif
 
-    <div class="md:col-span-2 flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-        <a href="{{ route('mantenimientos.index') }}" class="btn-cancel">✕<space>Cancelar</a>
-        <button type="submit" class="btn-save">
-            {{ isset($mantenimiento) ? '🔄 Actualizar Mantenimiento' : '💾 Guardar Mantenimiento' }}
-        </button>
+    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
+        <a href="{{ route('mantenimientos.index') }}" class="btn-cancel"><span>✕</span><span>Cancelar</span></a>
+        <button type="submit" class="btn-save">{{ isset($mantenimiento) ? '🔄 Actualizar Mantenimiento' : '💾 Guardar Mantenimiento' }}</button>
     </div>
 
 </div>
@@ -132,16 +130,13 @@
                 const lblCorr = document.getElementById('lbl_corr');
                 if(!lblPrev || !lblCorr) return;
                 
-                [lblPrev, lblCorr].forEach(lbl => {
-                    lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md';
-                    lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';
-                });
+                lblPrev.classList.remove('active-emerald');
+                lblCorr.classList.remove('active-orange');
+
                 if (this.value === 'preventivo') {
-                    lblPrev.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20';
-                    lblPrev.querySelector('span').className = 'font-bold text-emerald-700 dark:text-emerald-400';
+                    lblPrev.classList.add('active-emerald');
                 } else {
-                    lblCorr.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-orange-500 bg-orange-50/50 dark:bg-orange-900/20';
-                    lblCorr.querySelector('span').className = 'font-bold text-orange-700 dark:text-orange-400';
+                    lblCorr.classList.add('active-orange');
                 }
             });
         });
@@ -153,16 +148,13 @@
                 const lblHard = document.getElementById('lbl_hard');
                 if(!lblSoft || !lblHard) return;
 
-                [lblSoft, lblHard].forEach(lbl => {
-                    lbl.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md';
-                    lbl.querySelector('span').className = 'font-bold text-slate-600 dark:text-slate-400';
-                });
+                lblSoft.classList.remove('active-indigo');
+                lblHard.classList.remove('active-rose');
+
                 if (this.value === 'software') {
-                    lblSoft.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20';
-                    lblSoft.querySelector('span').className = 'font-bold text-indigo-700 dark:text-indigo-400';
+                    lblSoft.classList.add('active-indigo');
                 } else {
-                    lblHard.className = 'flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-rose-500 bg-rose-50/50 dark:bg-rose-900/20';
-                    lblHard.querySelector('span').className = 'font-bold text-rose-700 dark:text-rose-400';
+                    lblHard.classList.add('active-rose');
                 }
             });
         });

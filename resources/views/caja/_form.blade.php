@@ -7,11 +7,11 @@
     @endphp
 
     {{-- Buscar cliente o proveedor con desplegable interactivo --}}
-    <div class="md:col-span-2 p-4 bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md rounded-2xl shadow-sm">
-        <label class="field-label flex items-center justify-between mb-1.5" for="select_entidad_caja">
-            <span class="flex items-center gap-2"><span>🔍</span> Buscar Cliente / Proveedor</span>
+    <div class="md:col-span-2">
+        <label class="field-label flex items-center justify-between" for="select_entidad_caja">
+            <span class="flex items-center gap-1.5 font-bold">Cliente / Proveedor</span>
         </label>
-        <select id="select_entidad_caja" class="glass-input w-full" data-placeholder="Buscar cliente o proveedor...">
+        <select id="select_entidad_caja" class="glass-input w-full mt-1" data-placeholder="Buscar cliente o proveedor...">
             <option value="">Buscar cliente o proveedor...</option>
             @if(isset($todasEntidades))
                 @foreach($todasEntidades as $ent)
@@ -34,7 +34,7 @@
                 @endforeach
             @endif
         </select>
-        <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-2">Escribe para filtrar o despliega la lista. Al seleccionar uno se completan automáticamente los campos de abajo.</p>
+        <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-1.5">Escribe para filtrar o despliega la lista. Al seleccionar uno se completan automáticamente los campos de abajo.</p>
     </div>
 
     {{-- Empresa o Persona (uno de los dos) --}}
@@ -44,12 +44,12 @@
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-                <label class="field-label !flex items-center gap-1.5 font-bold"><span>🏢</span> Empresa <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
-                <input type="text" name="empresa" id="caja_empresa" value="{{ $valEmpresa }}" placeholder="Nombre de la empresa..." class="glass-input">
+                <label class="field-label !flex items-center gap-1.5 font-bold">Empresa <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
+                <input type="text" name="empresa" id="caja_empresa" value="{{ $valEmpresa }}" placeholder="Nombre de la empresa..." class="glass-input mt-1">
             </div>
             <div>
-                <label class="field-label !flex items-center gap-1.5 font-bold"><span>👤</span> Persona <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
-                <input type="text" name="persona" id="caja_persona" value="{{ $valPersona }}" placeholder="Nombre de quien paga/recibe..." class="glass-input">
+                <label class="field-label !flex items-center gap-1.5 font-bold">Persona <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span></label>
+                <input type="text" name="persona" id="caja_persona" value="{{ $valPersona }}" placeholder="Nombre de quien paga/recibe..." class="glass-input mt-1">
                 @error('persona') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
         </div>
@@ -58,7 +58,7 @@
     {{-- Fecha --}}
     <div>
         <label class="field-label flex items-center gap-1.5 font-bold">
-            <span>📅</span> Fecha <span class="text-red-500 font-bold">*</span>
+           Fecha <span class="text-red-500 font-bold">*</span>
         </label>
         <input type="date" name="fecha" required value="{{ old('fecha', isset($movimiento) ? $movimiento->fecha->format('Y-m-d') : date('Y-m-d')) }}" class="glass-input">
         @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
@@ -103,16 +103,16 @@
     {{-- Tipo de Movimiento --}}
     <div>
         <label class="field-label flex items-center gap-1.5 font-bold">
-            <span>📊</span> Tipo de Movimiento <span class="text-red-500 font-bold">*</span>
+            Tipo de Movimiento <span class="text-red-500 font-bold">*</span>
         </label>
         <div class="flex gap-3 mt-1">
-            <label id="label_ingreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'ingreso' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
-                <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ $tipoMov === 'ingreso' ? 'checked' : '' }} class="accent-emerald-500 w-4 h-4">
-                <span id="text_ingreso" class="font-bold {{ $tipoMov === 'ingreso' ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400' }}">📈 Ingreso</span>
+            <label id="label_ingreso" class="flex-1 ts-select-card hover-emerald {{ $tipoMov === 'ingreso' ? 'active-emerald' : '' }}">
+                <input type="radio" name="tipo_movimiento" value="ingreso" required id="tipo_ingreso" {{ $tipoMov === 'ingreso' ? 'checked' : '' }} class="ts-radio-dot">
+                <span id="text_ingreso">📈 Ingreso</span>
             </label>
-            <label id="label_egreso" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoMov === 'egreso' ? 'border-red-500 bg-red-50/50 dark:bg-red-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
-                <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso" {{ $tipoMov === 'egreso' ? 'checked' : '' }} class="accent-red-500 w-4 h-4">
-                <span id="text_egreso" class="font-bold {{ $tipoMov === 'egreso' ? 'text-red-700 dark:text-red-400' : 'text-slate-600 dark:text-slate-400' }}">📉 Egreso</span>
+            <label id="label_egreso" class="flex-1 ts-select-card hover-red {{ $tipoMov === 'egreso' ? 'active-red' : '' }}">
+                <input type="radio" name="tipo_movimiento" value="egreso" id="tipo_egreso" {{ $tipoMov === 'egreso' ? 'checked' : '' }} class="ts-radio-dot">
+                <span id="text_egreso">📉 Egreso</span>
             </label>
         </div>
         @error('tipo_movimiento') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
@@ -121,16 +121,16 @@
     {{-- Tipo de Pago --}}
     <div>
         <label class="field-label flex items-center gap-1.5 font-bold">
-            <span>💳</span> Tipo de Pago <span class="text-red-500 font-bold">*</span>
+            Tipo de Pago <span class="text-red-500 font-bold">*</span>
         </label>
         <div class="flex gap-3 mt-1">
-            <label id="label_efectivo" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'efectivo' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
-                <input type="radio" name="tipo_pago" value="efectivo" required id="tipo_efectivo" {{ $tipoPago === 'efectivo' ? 'checked' : '' }} class="accent-blue-500 w-4 h-4">
-                <span id="text_efectivo" class="font-bold {{ $tipoPago === 'efectivo' ? 'text-blue-700 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400' }}">💵 Efectivo</span>
+            <label id="label_efectivo" class="flex-1 ts-select-card hover-blue {{ $tipoPago === 'efectivo' ? 'active-blue' : '' }}">
+                <input type="radio" name="tipo_pago" value="efectivo" required id="tipo_efectivo" {{ $tipoPago === 'efectivo' ? 'checked' : '' }} class="ts-radio-dot">
+                <span id="text_efectivo">💵 Efectivo</span>
             </label>
-            <label id="label_banco" class="flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all {{ $tipoPago === 'consignacion' ? 'border-purple-500 bg-purple-50/50 dark:bg-purple-900/20' : 'border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md' }}">
-                <input type="radio" name="tipo_pago" value="consignacion" id="tipo_banco" {{ $tipoPago === 'consignacion' ? 'checked' : '' }} class="accent-purple-500 w-4 h-4">
-                <span id="text_banco" class="font-bold {{ $tipoPago === 'consignacion' ? 'text-purple-700 dark:text-purple-400' : 'text-slate-600 dark:text-slate-400' }}">🏦 Banco</span>
+            <label id="label_banco" class="flex-1 ts-select-card hover-purple {{ $tipoPago === 'consignacion' ? 'active-purple' : '' }}">
+                <input type="radio" name="tipo_pago" value="consignacion" id="tipo_banco" {{ $tipoPago === 'consignacion' ? 'checked' : '' }} class="ts-radio-dot">
+                <span id="text_banco">🏦 Banco</span>
             </label>
         </div>
         @error('tipo_pago') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
@@ -140,7 +140,7 @@
     <div>
         <label class="field-label !flex items-center gap-1.5 font-bold" for="monto_total_visual">
 
-            <span>💰</span> Monto Total <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
+            Monto Total <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
 
 
         </label>
@@ -156,7 +156,7 @@
     <div>
         <label class="field-label flex items-center justify-between" for="monto_visual">
             <span class="flex items-center gap-1.5 font-bold">
-                <span>💵</span> Monto Pagado Hoy <span class="text-red-500 font-bold">*</span>
+                Monto Pagado Hoy <span class="text-red-500 font-bold">*</span>
             </span>
         </label>
         <div>
@@ -169,7 +169,7 @@
     {{-- Concepto --}}
     <div class="md:col-span-2">
         <label class="field-label flex items-center gap-1.5 font-bold" for="concepto_select">
-            <span>🏷️</span> Concepto <span class="text-red-500 font-bold">*</span>
+            Concepto <span class="text-red-500 font-bold">*</span>
         </label>
         <div class="flex gap-2 min-w-0">
             <select name="concepto_id" id="concepto_select" class="glass-input flex-1">
@@ -183,12 +183,12 @@
             </select>
         </div>
         {{-- Campo oculto para nuevo concepto --}}
-        <div id="nuevo-concepto-box" class="mt-3 hidden p-4 rounded-xl bg-white/20 dark:bg-slate-900/35 border border-white/50 dark:border-white/5 backdrop-blur-md shadow-sm">
-            <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 block">Crear Nuevo Concepto</label>
+        <div id="nuevo-concepto-box" class="mt-3 hidden">
+            <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 block">Crear Nuevo Concepto</label>
             <div class="flex gap-2 items-center">
                 <input type="text" id="nuevo_concepto_input" name="nuevo_concepto" placeholder="Nombre del nuevo concepto..." class="glass-input flex-1 h-[42px]">
                 <button type="button" onclick="crearConcepto()" class="btn-primary h-[42px] flex items-center justify-center">Agregar</button>
-                <button type="button" onclick="cancelarNuevoConcepto()" class="btn-ghost px-3 h-[42px] flex items-center justify-center">✕</button>
+                <button type="button" onclick="cancelarNuevoConcepto()" class="btn-ghost px-3 h-[42px] flex items-center justify-center" aria-label="Cancelar nuevo concepto">✕</button>
             </div>
             <p id="concepto-status" class="text-xs mt-2 font-medium"></p>
         </div>
@@ -199,7 +199,7 @@
     <div class="md:col-span-2">
         <label class="field-label !flex items-center gap-1.5 font-bold">
             <span class="flex items-center gap-1.5 font-bold">
-                <span>📝</span> Descripción / Observaciones <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
+                Descripción / Observaciones <span class="text-xs font-normal text-gray-400 dark:text-slate-400 normal-case">(Opcional)</span>
             </span>
 
         </label>
@@ -263,50 +263,33 @@
  } else {
  inputVisual.classList.remove('text-emerald-600', 'dark:text-emerald-400', 'text-red-600', 'dark:text-red-400');
  }
- 
- const labelIngreso = document.getElementById('label_ingreso');
- const labelEgreso = document.getElementById('label_egreso');
- const textIngreso = document.getElementById('text_ingreso');
- const textEgreso = document.getElementById('text_egreso');
- 
- labelIngreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md";
- textIngreso.className = "font-bold text-slate-600 dark:text-slate-400";
- 
- labelEgreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-red-300 dark:hover:border-red-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md";
- textEgreso.className = "font-bold text-slate-600 dark:text-slate-400";
- 
- if (isIngreso) {
- labelIngreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20";
- textIngreso.className = "font-bold text-emerald-700 dark:text-emerald-400";
- } else if (isEgreso) {
- labelEgreso.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-red-500 bg-red-50/50 dark:bg-red-900/20";
- textEgreso.className = "font-bold text-red-700 dark:text-red-400";
- }
- 
- const isEfectivo = document.getElementById('tipo_efectivo')?.checked;
- const isBanco = document.getElementById('tipo_banco')?.checked;
- 
- const labelEfectivo = document.getElementById('label_efectivo');
- const labelBanco = document.getElementById('label_banco');
- const textEfectivo = document.getElementById('text_efectivo');
- const textBanco = document.getElementById('text_banco');
- 
- if(labelEfectivo && labelBanco) {
-     labelEfectivo.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md";
-     textEfectivo.className = "font-bold text-slate-600 dark:text-slate-400";
-     
-     labelBanco.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-gray-200/50 dark:border-white/10 hover:border-purple-300 dark:hover:border-purple-700 bg-white/20 dark:bg-slate-900/30 backdrop-blur-md";
-     textBanco.className = "font-bold text-slate-600 dark:text-slate-400";
-     
-     if (isEfectivo) {
-         labelEfectivo.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-blue-500 bg-blue-50/50 dark:bg-blue-900/20";
-         textEfectivo.className = "font-bold text-blue-700 dark:text-blue-400";
-     } else if (isBanco) {
-         labelBanco.className = "flex-1 flex justify-center items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all border-purple-500 bg-purple-50/50 dark:bg-purple-900/20";
-         textBanco.className = "font-bold text-purple-700 dark:text-purple-400";
-     }
- }
- }
+        const labelIngreso = document.getElementById('label_ingreso');
+        const labelEgreso = document.getElementById('label_egreso');
+        if (labelIngreso && labelEgreso) {
+            labelIngreso.classList.remove('active-emerald');
+            labelEgreso.classList.remove('active-red');
+            if (isIngreso) {
+                labelIngreso.classList.add('active-emerald');
+            } else if (isEgreso) {
+                labelEgreso.classList.add('active-red');
+            }
+        }
+
+        const isEfectivo = document.getElementById('tipo_efectivo')?.checked;
+        const isBanco = document.getElementById('tipo_banco')?.checked;
+        const labelEfectivo = document.getElementById('label_efectivo');
+        const labelBanco = document.getElementById('label_banco');
+
+        if (labelEfectivo && labelBanco) {
+            labelEfectivo.classList.remove('active-blue');
+            labelBanco.classList.remove('active-purple');
+            if (isEfectivo) {
+                labelEfectivo.classList.add('active-blue');
+            } else if (isBanco) {
+                labelBanco.classList.add('active-purple');
+            }
+        }
+    }
  
 // Ejecuta inicial
   updateAmountColor();

@@ -2,15 +2,25 @@
 
 namespace App\Providers;
 
+use App\Models\CierreCaja;
+use App\Models\Cliente;
 use App\Models\Cotizacion;
 use App\Models\Electronica;
 use App\Models\Evento;
 use App\Models\Factura;
 use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
+use App\Models\Stock;
 use App\Models\User;
+use App\Policies\CierreCajaPolicy;
+use App\Policies\ClientePolicy;
+use App\Policies\CotizacionPolicy;
 use App\Policies\ElectronicaPolicy;
+use App\Policies\FacturaPolicy;
 use App\Policies\MantenimientoPolicy;
+use App\Policies\MovimientoCajaPolicy;
+use App\Policies\StockPolicy;
+use App\Policies\UserPolicy;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -24,6 +34,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Dusk\DuskServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,7 +43,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        if (filter_var(env('DUSK_ENABLED', false), FILTER_VALIDATE_BOOLEAN)) {
+            $this->app->register(DuskServiceProvider::class);
+        }
     }
 
     /**
@@ -47,9 +60,9 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        // Directiva Blade para formato de moneda uniforme ($1.000.000)
+        // Directiva Blade para formato de moneda uniforme ($ 1.000.000)
         Blade::directive('money', function ($expression) {
-            return "<?php echo '$' . number_format(($expression) ?? 0, 0, ',', '.'); ?>";
+            return "<?php echo '$ ' . number_format(($expression) ?? 0, 0, ',', '.'); ?>";
         });
 
         // Garantizar existencia de formato_factura en configuraciones (Riesgo Cero)
@@ -71,9 +84,22 @@ class AppServiceProvider extends ServiceProvider
         // ─────────────────────────────────────────────────────────────────
         Gate::define('promote-admin', fn (User $u) => $u->role === 'admin');
         Gate::define('promote-tecnico', fn (User $u) => $u->role === 'admin');
+        Gate::define('manage-caja', fn (User $u) => ! $u->isInvitado());
+        Gate::define('close-caja', fn (User $u) => ! $u->isInvitado());
+        Gate::define('anular-operacion', fn (User $u) => $u->isAdmin());
+        Gate::define('manage-users', fn (User $u) => $u->isAdmin());
+        Gate::define('view-financial-reports', fn (User $u) => $u->isAdmin());
+        Gate::define('manage-backups', fn (User $u) => $u->isAdmin());
 
         Gate::policy(Mantenimiento::class, MantenimientoPolicy::class);
         Gate::policy(Electronica::class, ElectronicaPolicy::class);
+        Gate::policy(Factura::class, FacturaPolicy::class);
+        Gate::policy(Cotizacion::class, CotizacionPolicy::class);
+        Gate::policy(CierreCaja::class, CierreCajaPolicy::class);
+        Gate::policy(MovimientoCaja::class, MovimientoCajaPolicy::class);
+        Gate::policy(Stock::class, StockPolicy::class);
+        Gate::policy(Cliente::class, ClientePolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
 
         View::composer('layouts.app', function ($view) {
             if (! Auth::check()) {
@@ -141,21 +167,35 @@ class AppServiceProvider extends ServiceProvider
                     ->limit(50)
                     ->get();
 
-                // Extraer números de factura pendientes para búsqueda en lote (evita N+1 queries)
+                // Extraer IDs y números de factura pendientes para búsqueda en lote (evita N+1 queries)
+                $facturaIds = $cajaFacturas->pluck('id')->filter()->values()->toArray();
                 $facturasNumeros = $cajaFacturas->pluck('numero_factura')->filter()->values()->toArray();
 
-                // Movimientos de caja relacionados en lote
-                $movimientosRel = empty($facturasNumeros) ? collect() : MovimientoCaja::whereNull('parent_id')
-                    ->where(function ($q) use ($facturasNumeros) {
-                        foreach ($facturasNumeros as $num) {
-                            $q->orWhere('descripcion', 'like', "%#{$num}%");
+                // Movimientos de caja relacionados en lote vinculados por factura_id (con fallback de compatibilidad)
+                $movimientosRel = empty($facturaIds) ? collect() : MovimientoCaja::whereNull('parent_id')
+                    ->where(function ($q) use ($facturaIds, $facturasNumeros) {
+                        $q->whereIn('factura_id', $facturaIds);
+                        if (! empty($facturasNumeros)) {
+                            $q->orWhere(function ($sub) use ($facturasNumeros) {
+                                $sub->whereNull('factura_id')
+                                    ->where(function ($legacy) use ($facturasNumeros) {
+                                        foreach ($facturasNumeros as $num) {
+                                            $legacy->orWhere('descripcion', 'like', "%#{$num} %")
+                                                ->orWhere('descripcion', 'like', "%#{$num}");
+                                        }
+                                    });
+                            });
                         }
                     })
-                    ->select('id', 'descripcion')
+                    ->select('id', 'factura_id', 'descripcion')
                     ->get();
 
                 $cajaList = $cajaFacturas->map(function ($f) use ($movimientosRel) {
                     $matched = $movimientosRel->first(function ($m) use ($f) {
+                        if ($m->factura_id) {
+                            return (int) $m->factura_id === (int) $f->id;
+                        }
+
                         return str_contains($m->descripcion ?? '', "#{$f->numero_factura}");
                     });
                     $movCajaId = $matched?->id;
@@ -178,6 +218,7 @@ class AppServiceProvider extends ServiceProvider
                     ->whereNull('parent_id')
                     ->whereNotNull('monto_total')
                     ->where('monto_total', '>', 0)
+                    ->whereNull('factura_id')
                     ->when(! empty($facturasNumeros), function ($query) use ($facturasNumeros) {
                         $query->where(function ($q) use ($facturasNumeros) {
                             foreach ($facturasNumeros as $num) {

@@ -21,7 +21,7 @@
  </div>
 
  <div class="overflow-x-auto pb-2">
- <table id="tabla-tecnicos" class="ts-table responsive-table">
+ <table id="tabla-tecnicos" class="ts-table responsive-table w-full">
  <thead>
  <tr>
  <th class="w-16 text-center">ID</th>
@@ -40,12 +40,12 @@
  @php $dim = !$tecnico->active ? 'opacity-60 grayscale' : ''; @endphp
  <tr id="tecnico-{{ $tecnico->id }}" class="scroll-mt-[6.5rem]">
  <td class="text-center font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $tecnico->id }}</td>
- <td class="text-center {{ $dim }}">
+ <td class="text-center py-2 {{ $dim }}">
   @if($tecnico->photo)
-    <img src="{{ asset('storage/' . $tecnico->photo) }}" width="40" height="40" class="rounded-xl object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" onclick="openImageLightbox('{{ asset('storage/' . $tecnico->photo) }}', '{{ addslashes($tecnico->nombre) }}', this)" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
-    <div class="hidden w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">N/A</div>
+    <img src="{{ asset('storage/' . $tecnico->photo) }}" width="32" height="32" class="w-8 h-8 rounded-lg object-cover mx-auto shadow-sm cursor-pointer hover:opacity-80 transition" data-lightbox-src="{{ asset('storage/' . $tecnico->photo) }}" data-lightbox-alt="{{ $tecnico->nombre }}" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+    <div class="hidden w-8 h-8 rounded-lg bg-gray-200 dark:bg-gray-700 items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">N/A</div>
   @else
-    <div class="w-10 h-10 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">N/A</div>
+    <div class="w-8 h-8 rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 mx-auto text-xs font-bold shadow-sm">N/A</div>
   @endif
  </td>
  <td class="font-bold text-slate-800 dark:text-white {{ $dim }}">{{ $tecnico->nombre }}</td>
@@ -71,7 +71,9 @@
 <td data-label="Acciones:" class="text-center w-28 {{ $dim }}">
   <div class="actions-grid">
   @if(!auth()->user()->isInvitado())
+  @if($tecnico->active)
   <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+  @endif
                              <button type="button" onclick="openAnularModal('{{ route('tecnicos.anular', $tecnico->id) }}', {{ !$tecnico->active ? 'true' : 'false' }})" class="btn-ghost {{ !$tecnico->active ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $tecnico->active ? 'Anular Técnico' : 'Reactivar Técnico' }}">
   {{ $tecnico->active ? '🚫' : '✅' }}
   </button>

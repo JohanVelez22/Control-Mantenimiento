@@ -2,12 +2,7 @@
 @section('title', 'Informes y Reportes')
 
 @section('content')
-<div class="flex gap-4 mb-6 no-print overflow-x-auto pb-2">
- <a href="{{ route('reportes.financiero.diario') }}" class="px-4 py-2 rounded-xl font-bold shadow-lg transition-all bg-amber-500 text-white whitespace-nowrap">💵 Informes Financieros</a>
- <a href="{{ route('mantenimientos.reportes') }}" class="px-4 py-2 rounded-xl font-bold shadow-sm transition-all bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20 whitespace-nowrap">⚙️ Reporte de Mantenimientos</a>
- <a href="{{ route('electronicas.reportes') }}" class="px-4 py-2 rounded-xl font-bold shadow-sm transition-all bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-500/20 whitespace-nowrap">⚡ Reporte de Electrónica</a>
- <a href="{{ route('stocks.reportes') }}" class="px-4 py-2 rounded-xl font-bold shadow-sm transition-all bg-orange-500/10 text-orange-700 dark:text-orange-300 hover:bg-orange-500/20 whitespace-nowrap">📦 Informe Inventario</a>
-</div>
+@include('reportes._nav_principal')
 
 <div class="mb-6 pb-4 border-b border-gray-200/50 dark:border-white/10 flex flex-col gap-4 no-print">
  <div>
@@ -18,20 +13,7 @@
  </div>
 </div>
 
-<div class="glass-card p-4 mb-6 reportes-nav-tabs flex flex-wrap items-center gap-2 no-print">
- <a href="{{ route('reportes.financiero.diario') }}"
- class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-blue-500/10 text-blue-700 dark:text-blue-300 hover:bg-blue-500/20">
- 📅 Diario
- </a>
- <a href="{{ route('reportes.financiero.acumulado') }}"
- class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-500/20">
- 📈 Acumulado
- </a>
- <a href="{{ route('reportes.financiero.operaciones') }}"
- class="px-4 py-2 rounded-xl font-semibold text-sm transition-all bg-teal-500 text-white shadow-lg ">
- 📋 Operaciones
- </a>
-</div>
+@include('reportes_financieros._nav_subtabs')
 
 <div class="glass-card py-3 px-4 sm:py-3.5 sm:px-5 mb-4 no-print relative z-50">
  <form id="filtros-operaciones" method="GET" class="reportes-filter-form flex flex-wrap items-center gap-3">
@@ -128,7 +110,7 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($m->costo, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" @if($isAnulado) style="color: #dd6b20 !important;" @endif>$&nbsp;{{ number_format($m->costo, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
@@ -136,7 +118,7 @@
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
         <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
         <td colspan="6" class="text-right uppercase text-xs">Total Costos Mantenimientos:</td>
-        <td class="text-center font-bold text-xs">${{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>
@@ -177,7 +159,7 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($e->costo, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" @if($isAnulado) style="color: #dd6b20 !important;" @endif>$&nbsp;{{ number_format($e->costo, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
@@ -185,7 +167,7 @@
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
         <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
         <td colspan="6" class="text-right uppercase text-xs">Total Costos Electrónica:</td>
-        <td class="text-center font-bold text-xs">${{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>
@@ -226,7 +208,7 @@
  {{ $isAnulado ? 'Anulado' : 'Activo' }}
  </span>
  </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($c->monto, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" @if($isAnulado) style="color: #dd6b20 !important;" @endif>$&nbsp;{{ number_format($c->monto, 0, ',', '.') }}</td>
  </tr>
  @endforeach
  </tbody>
@@ -234,7 +216,7 @@
      <tr class="bg-gray-100 dark:bg-gray-800">
          <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
          <td colspan="6" class="text-right uppercase text-xs font-bold">TOTAL MONTO:</td>
-         <td class="text-center font-bold text-xs">${{ number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.') }}</td>
+         <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.') }}</td>
      </tr>
  </tfoot>
  </table>
@@ -267,16 +249,16 @@
     if($f->estado === 'pendiente_pago') $label = 'Pendiente';
   @endphp
   <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-  <td class="p-2 font-mono font-bold {{ $dim }}">{{ $f->numero_factura }}</td>
-  <td class="p-2 {{ $dim }}">{{ $f->fecha->format('d/m/Y') }}</td>
+  <td class="p-2 font-mono font-bold whitespace-nowrap {{ $dim }}">{{ $f->numero_factura }}</td>
+  <td class="p-2 whitespace-nowrap {{ $dim }}">{{ $f->fecha->format('d/m/Y') }}</td>
   <td class="p-2 text-left {{ $dim }}">{{ $f->facturable->nombre ?? $f->facturable->nombre_razon_social ?? '—' }}</td>
-  <td class="p-2 font-semibold text-gray-900 dark:text-gray-100 {{ $dim }}">${{ number_format($f->total_pagado, 0, ',', '.') }}</td>
-  <td class="p-2">
+  <td class="p-2 font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}">$&nbsp;{{ number_format($f->total_pagado, 0, ',', '.') }}</td>
+  <td class="p-2 whitespace-nowrap">
   <span class="pill {{ $stClass }}">
   {{ $label }}
   </span>
   </td>
- <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 {{ $dim }}" {!! $isAnulado ? 'style="color: #dd6b20 !important;"' : '' !!}>${{ number_format($f->total_documento, 0, ',', '.') }}</td>
+ <td class="p-2 text-center font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap {{ $dim }}" @if($isAnulado) style="color: #dd6b20 !important;" @endif>$&nbsp;{{ number_format($f->total_documento, 0, ',', '.') }}</td>
   </tr>
   @endforeach
   </tbody>
@@ -284,7 +266,7 @@
     <tr class="bg-gray-100 dark:bg-gray-800">
         <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
         <td colspan="4" class="text-right uppercase text-xs font-bold">TOTAL INVENTARIO:</td>
-        <td class="text-center font-bold text-xs">${{ number_format($registros->filter(function($i) { return $i->estado !== 'anulada'; })->sum('total_documento'), 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($registros->filter(function($i) { return $i->estado !== 'anulada'; })->sum('total_documento'), 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>

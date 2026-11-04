@@ -5,7 +5,7 @@
 <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-between mb-8">
         <div class="flex items-center gap-3">
-            <a href="{{ route('stocks.categorias.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+            <a href="{{ route('stocks.categorias.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
             <div>
                 <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                     🏷️ Editar Clasificación
@@ -21,14 +21,14 @@
             @method('PUT')
             <div class="space-y-4">
                 <div>
-                    <label class="field-label">Tipo de Clasificación</label>
+                    <label class="field-label">Tipo de Clasificación <span class="text-red-500 font-bold">*</span></label>
                     <select name="tipo" class="glass-input font-bold" required>
                         <option value="categoria" {{ $categoria->tipo == 'categoria' ? 'selected' : '' }}>🗂️ Categoría Principal</option>
                         <option value="subcategoria" {{ $categoria->tipo == 'subcategoria' ? 'selected' : '' }}>📂 Subcategoría</option>
                     </select>
                 </div>
                 <div>
-                    <label class="field-label">Nombre</label>
+                    <label class="field-label">Nombre <span class="text-red-500 font-bold">*</span></label>
                     <input type="text" name="nombre" value="{{ $categoria->nombre }}" required class="glass-input" placeholder="Ej: Pantallas, Accesorios...">
                 </div>
                 <div class="flex gap-3 pt-2">

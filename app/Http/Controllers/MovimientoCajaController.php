@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Abono;
 use App\Models\Cliente;
 use App\Models\ConceptoCaja;
 use App\Models\Configuracion;
@@ -30,7 +31,7 @@ class MovimientoCajaController extends Controller
             'fecha_hasta' => $fecha_hasta,
         ]);
 
-        $query = MovimientoCaja::with('concepto', 'user', 'childPayments', 'parent.childPayments');
+        $query = MovimientoCaja::with('concepto', 'user', 'childPayments', 'parent.childPayments', 'factura');
 
         if ($request->filled('tipo_movimiento') && $request->tipo_movimiento !== 'todos') {
             $query->where('tipo_movimiento', $request->tipo_movimiento);
@@ -259,6 +260,10 @@ class MovimientoCajaController extends Controller
 
     public function edit(MovimientoCaja $movimiento)
     {
+        if ($movimiento->anulado || $movimiento->estado === 'anulado') {
+            return redirect()->route('caja.index')->with('error', 'Por seguridad, no se puede editar un movimiento de caja que se encuentra anulado.');
+        }
+
         $fechaOrig = $movimiento->fecha ? $movimiento->fecha->toDateString() : null;
         if (CierreCajaGuard::fechaEstaCerrada($fechaOrig)) {
             return redirect()->route('caja.index')->with('error', 'No se puede editar el movimiento: el día '.$fechaOrig.' ya está cerrado y bloqueado por arqueo.');
@@ -288,6 +293,14 @@ class MovimientoCajaController extends Controller
 
     public function update(Request $request, MovimientoCaja $movimiento)
     {
+        if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
+            return redirect()->back()->with('error', $error)->withInput();
+        }
+
+        if ($movimiento->anulado || $movimiento->estado === 'anulado') {
+            return redirect()->route('caja.index')->with('error', 'Por seguridad, no se puede editar un movimiento de caja que se encuentra anulado.');
+        }
+
         $validated = $request->validate([
             'empresa' => 'nullable|string|max:80',
             'persona' => 'nullable|string|max:80',
@@ -560,7 +573,7 @@ class MovimientoCajaController extends Controller
 
             // Sincronizar Abono asociado si existe
             if ($movimiento->abono_id) {
-                \App\Models\Abono::where('id', $movimiento->abono_id)->update(['anulado' => $esAnulacion]);
+                Abono::where('id', $movimiento->abono_id)->update(['anulado' => $esAnulacion]);
             }
 
             // Anular o restaurar todos los abonos asociados en cascada
@@ -577,7 +590,7 @@ class MovimientoCajaController extends Controller
                     'estado' => $esAnulacion ? 'anulado' : 'activo',
                 ]);
                 if ($child->abono_id) {
-                    \App\Models\Abono::where('id', $child->abono_id)->update(['anulado' => $esAnulacion]);
+                    Abono::where('id', $child->abono_id)->update(['anulado' => $esAnulacion]);
                 }
             }
 

@@ -54,7 +54,7 @@
   </td>
   
   <td data-label="Equipo:" class="{{ $dim }}">
-  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de equipos">
+  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="group block" title="Ver en tabla de equipos">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   {{ $m->equipo->nombre ?? 'Equipo' }}
   </div>
@@ -69,7 +69,7 @@
   
   <td class="{{ $dim }}">
   @if($m->equipo?->proveedor)
-  <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->equipo->proveedor_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->equipo->proveedor_id }}" class="group block" title="Ver en tabla de proveedores">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   🏢 {{ $m->equipo->proveedor->nombre_razon_social }}
   </div>
@@ -78,7 +78,7 @@
   </div>
   </a>
   @elseif($m->equipo?->cliente)
-  <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+  <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id }}" class="group block" title="Ver en tabla de clientes">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   👤 {{ $m->equipo->cliente->nombre }}
   </div>
@@ -107,13 +107,13 @@
   </td>
   
   <td data-label="Costo:" class="text-right font-black {{ $dim }}">
-    <div class="text-slate-800 dark:text-white font-bold">${{ number_format($m->costo, 0, ',', '.') }}</div>
+    <div class="text-slate-800 dark:text-white font-bold">$ {{ number_format($m->costo, 0, ',', '.') }}</div>
     @if($m->total_abonado > 0 && $m->saldo_pendiente > 0)
       <div class="text-[10px] font-bold text-amber-600 dark:text-amber-400 mt-0.5" title="Monto abonado">
-        Abono: ${{ number_format($m->total_abonado, 0, ',', '.') }}
+        Abono: $ {{ number_format($m->total_abonado, 0, ',', '.') }}
       </div>
       <div class="text-[10px] font-bold text-red-600 dark:text-red-400" title="Saldo pendiente por cobrar">
-        Falta: ${{ number_format($m->saldo_pendiente, 0, ',', '.') }}
+        Falta: $ {{ number_format($m->saldo_pendiente, 0, ',', '.') }}
       </div>
     @elseif($m->total_abonado > 0 && $m->saldo_pendiente <= 0)
       <div class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
@@ -167,11 +167,13 @@
   @if($m->estado === 'terminado' && $m->fecha_salida)
    <a href="{{ route('mantenimientos.factura', $m->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir Factura">🖨️</a>
   @elseif($m->estado === 'terminado')
-  <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
+  <span class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs opacity-50 cursor-not-allowed" title="Requiere fecha de salida para facturar">🖨️</span>
   @endif
 
   @if(!auth()->user()->isInvitado())
+  @if(!$m->anulado)
   <a href="{{ route('mantenimientos.edit', $m->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+  @endif
 
   <button type="button" onclick="openAnularModal('{{ route('mantenimientos.anular', $m->id) }}', {{ $m->anulado ? 'true' : 'false' }})" class="btn-ghost {{ $m->anulado ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $m->anulado ? 'Reactivar orden' : 'Anular orden' }}">
   {{ $m->anulado ? '✅' : '🚫' }}

@@ -1,12 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex gap-4 mb-6 no-print overflow-x-auto pb-2">
- <a href="{{ route('reportes.financiero.diario') }}" class="px-4 py-2 rounded-xl font-bold shadow-sm transition-all bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 whitespace-nowrap">💵 Informes Financieros</a>
- <a href="{{ route('mantenimientos.reportes') }}" class="px-4 py-2 rounded-xl font-bold shadow-lg transition-all bg-blue-500 text-white whitespace-nowrap">⚙️ Reporte de Mantenimientos</a>
- <a href="{{ route('electronicas.reportes') }}" class="px-4 py-2 rounded-xl font-bold shadow-sm transition-all bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-500/20 whitespace-nowrap">⚡ Reporte de Electrónica</a>
- <a href="{{ route('stocks.reportes') }}" class="px-4 py-2 rounded-xl font-bold shadow-sm transition-all bg-orange-500/10 text-orange-700 dark:text-orange-300 hover:bg-orange-500/20 whitespace-nowrap">📦 Informe Inventario</a>
-</div>
+@include('reportes._nav_principal')
 
 <div class="glass-card p-6 mb-6">
  
@@ -157,14 +152,14 @@
  @endphp
  <tr>
  <td class="text-center font-bold whitespace-nowrap {{ $dim }}">
- <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-500 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors no-print-link">
+ <a href="{{ route('mantenimientos.index', ['locate' => $m->id]) }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors no-print-link">
  {{ $m->id_orden }}
  </a>
  </td>
  <td class="{{ $dim }}">
  @if($m->equipo?->proveedor)
- <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->equipo->proveedor_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de proveedores">
- <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+ <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->equipo->proveedor_id }}" class="flex flex-col items-center gap-0 group no-print-link" title="Ver en tabla de proveedores">
+ <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
  🏢 {{ $m->equipo->proveedor->nombre_razon_social }}
  </span>
  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
@@ -172,8 +167,8 @@
  </span>
  </a>
  @elseif($m->equipo?->cliente)
- <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de clientes">
- <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+ <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id }}" class="flex flex-col items-center gap-0 group no-print-link" title="Ver en tabla de clientes">
+ <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
  👤 {{ $m->equipo->cliente->nombre }}
  </span>
  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
@@ -187,8 +182,8 @@
  
  <!-- Columna Equipo: Nombre arriba, Marca/Modelo abajo -->
  <td class="{{ $dim }}">
- <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 hover:opacity-75 transition-opacity group no-print-link" title="Ver en tabla de equipos">
- <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{{ $m->equipo->nombre ?? 'N/A' }}</span>
+ <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 group no-print-link" title="Ver en tabla de equipos">
+ <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{{ $m->equipo->nombre ?? 'N/A' }}</span>
  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
  <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">
  {{ strtoupper($m->equipo->serie ?? '') }}
@@ -242,7 +237,7 @@
  
  <!-- Salida Centrada -->
  <td class="text-center font-medium text-sm {{ $m->fecha_salida ? '' : 'text-gray-400 italic' }} {{ $dim }}">{{ $m->fecha_salida ? \Carbon\Carbon::parse($m->fecha_salida)->format('d/m/Y') : 'Pendiente' }}</td>
- <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">${{ number_format($m->costo, 0, '', '.') }}</td>
+ <td class="text-center font-black text-green-600 dark:text-green-400 {{ $dim }}">$ {{ number_format($m->costo, 0, '', '.') }}</td>
  </tr>
  @empty
  <tr>
@@ -261,7 +256,7 @@
  <tr>
  <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $mantenimientos->count() }}</td>
  <td colspan="8" class="text-right uppercase text-xs">TOTALES FILTRADOS:</td>
- <td class="text-center font-bold text-xs text-green-600 dark:text-green-400">${{ number_format($mantenimientos->sum('costo'), 0, '', '.') }}</td>
+ <td class="text-center font-bold text-xs text-green-600 dark:text-green-400">$ {{ number_format($mantenimientos->sum('costo'), 0, '', '.') }}</td>
  </tr>
  </tfoot>
  @endif

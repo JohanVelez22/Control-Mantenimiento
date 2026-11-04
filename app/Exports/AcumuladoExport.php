@@ -76,14 +76,14 @@ class AcumuladoExport implements FromArray, ShouldAutoSize, WithEvents, WithHead
                 $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 // Format amount column (C)
-                $sheet->getStyle('C5:C11')->getNumberFormat()->setFormatCode('"$"#,##0');
+                $sheet->getStyle('C5:C11')->getNumberFormat()->setFormatCode('"$ "#,##0');
 
-                // Force B11 and C11 cell values to show "0" and "$0" as strings if they are 0
+                // Force B11 and C11 cell values to show "0" and "$ 0" as strings if they are 0
                 if (($this->acumulado['total_anulados'] ?? 0) == 0) {
                     $sheet->setCellValueExplicit('B11', '0', DataType::TYPE_STRING);
                 }
                 if (($this->acumulado['total_costo_anulados'] ?? 0) == 0) {
-                    $sheet->setCellValueExplicit('C11', '$0', DataType::TYPE_STRING);
+                    $sheet->setCellValueExplicit('C11', '$ 0', DataType::TYPE_STRING);
                 }
                 $sheet->getStyle('B11:C11')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
@@ -100,7 +100,7 @@ class AcumuladoExport implements FromArray, ShouldAutoSize, WithEvents, WithHead
 
                 $sheet->setCellValue("B{$footerRow}", 'Balance Neto del Período:');
                 $sheet->setCellValue("C{$footerRow}", (float) ($this->acumulado['balance_neto'] ?? 0));
-                $sheet->getStyle("C{$footerRow}")->getNumberFormat()->setFormatCode('"$"#,##0');
+                $sheet->getStyle("C{$footerRow}")->getNumberFormat()->setFormatCode('"$ "#,##0');
 
                 $sheet->getStyle("B{$footerRow}:C{$footerRow}")->applyFromArray([
                     'font' => ['bold' => true, 'size' => 12],

@@ -8,6 +8,7 @@ use App\Models\Mantenimiento;
 use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
+use App\Services\StockService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,10 +17,15 @@ class MantenimientoControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected Cliente $cliente;
+
     protected Equipo $equipo;
+
     protected Tecnico $tecnicoM;
+
     protected Stock $stock;
 
     protected function setUp(): void
@@ -495,7 +501,7 @@ class MantenimientoControllerTest extends TestCase
         ]);
 
         // Simulate proper stock attachment via service (decrements stock)
-        app(\App\Services\StockService::class)->salida($this->stock, 2);
+        app(StockService::class)->salida($this->stock, 2);
         $mantenimiento->stocks()->attach($this->stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
         $this->stock->refresh();
         $this->assertEquals(8, $this->stock->cantidad);
@@ -531,7 +537,7 @@ class MantenimientoControllerTest extends TestCase
         ]);
 
         // Simulate proper stock attachment via service (decrements stock)
-        app(\App\Services\StockService::class)->salida($this->stock, 2);
+        app(StockService::class)->salida($this->stock, 2);
         $mantenimiento->stocks()->attach($this->stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
         $this->stock->refresh();
         $this->assertEquals(8, $this->stock->cantidad);
@@ -564,7 +570,7 @@ class MantenimientoControllerTest extends TestCase
         ]);
 
         // Simulate proper stock attachment via service (decrements stock)
-        app(\App\Services\StockService::class)->salida($this->stock, 2);
+        app(StockService::class)->salida($this->stock, 2);
         $mantenimiento->stocks()->attach($this->stock->id, ['cantidad' => 2, 'precio_unitario' => 120000]);
         $this->stock->refresh();
         $this->assertEquals(8, $this->stock->cantidad);

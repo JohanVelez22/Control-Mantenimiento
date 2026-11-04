@@ -79,6 +79,12 @@ class EquipoController extends Controller
 
     public function edit(Equipo $equipo)
     {
+        if ($equipo->estado === 'dado_de_baja' || ! $equipo->active) {
+            $motivo = $equipo->estado === 'dado_de_baja' ? 'ha sido dado de baja' : 'se encuentra anulado (inactivo)';
+
+            return redirect()->route('equipos.index')->with('error', "Por seguridad, no se puede editar un equipo que {$motivo}.");
+        }
+
         $clientes = Cliente::where(function ($q) use ($equipo) {
             $q->activos();
             if ($equipo->cliente_id) {
@@ -98,6 +104,12 @@ class EquipoController extends Controller
 
     public function update(Request $request, Equipo $equipo)
     {
+        if ($equipo->estado === 'dado_de_baja' || ! $equipo->active) {
+            $motivo = $equipo->estado === 'dado_de_baja' ? 'ha sido dado de baja' : 'se encuentra anulado (inactivo)';
+
+            return redirect()->route('equipos.index')->with('error', "Por seguridad, no se puede editar un equipo que {$motivo}.");
+        }
+
         $validated = $request->validate([
             'nombre' => 'required|string|max:80',
             'marca' => 'required|string|max:80',
@@ -142,6 +154,10 @@ class EquipoController extends Controller
 
     public function anular(Request $request, Equipo $equipo)
     {
+        if ($equipo->estado === 'dado_de_baja') {
+            return redirect()->back()->with('error', 'No se puede anular un equipo que ya ha sido dado de baja.');
+        }
+
         if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
         }
@@ -158,6 +174,10 @@ class EquipoController extends Controller
     {
         if (! $equipo->exists && $request->route('equipo')) {
             $equipo = Equipo::findOrFail($request->route('equipo'));
+        }
+
+        if ($equipo->estado === 'dado_de_baja') {
+            return redirect()->back()->with('error', 'Este equipo ya ha sido dado de baja.');
         }
 
         if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {

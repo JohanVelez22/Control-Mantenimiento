@@ -60,7 +60,7 @@
                     <td data-label="Descripción" class="text-gray-600 dark:text-gray-300 text-xs font-medium max-w-[200px] truncate" title="{{ $descStr }}">{{ $descStr }}</td>
                     <td data-label="Destinatario">
                         @if($cot->proveedor)
-                            <a href="{{ route('proveedores.index') }}#proveedor-{{ $cot->proveedor_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de proveedores">
+                            <a href="{{ route('proveedores.index') }}#proveedor-{{ $cot->proveedor_id }}" class="group block" title="Ver en tabla de proveedores">
                                 <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                                     🏢 {{ $cot->proveedor->nombre_razon_social }}
                                 </div>
@@ -69,7 +69,7 @@
                                 </div>
                             </a>
                         @elseif($cot->cliente)
-                            <a href="{{ route('clientes.index') }}#cliente-{{ $cot->cliente_id }}" class="group block hover:opacity-75 transition-opacity" title="Ver en tabla de clientes">
+                            <a href="{{ route('clientes.index') }}#cliente-{{ $cot->cliente_id }}" class="group block" title="Ver en tabla de clientes">
                                 <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                                     👤 {{ $cot->cliente->nombre }}
                                 </div>
@@ -83,7 +83,7 @@
                     </td>
                     <td data-label="Fecha" class="text-center font-medium">{{ \Carbon\Carbon::parse($cot->fecha)->format('d/m/Y') }}</td>
                     <td data-label="Validez" class="text-center font-medium">{{ $cot->validez_dias }} días</td>
-                    <td data-label="Total" class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($cot->total, 0, '', '.') }}</td>
+                    <td data-label="Total" class="text-right font-bold text-slate-800 dark:text-white">$ {{ number_format($cot->total, 0, '', '.') }}</td>
                     <td data-label="Estado" class="text-center">
                         <span class="pill {{ $cot->anulado ? 'pill-anulado' : ($cot->estado === 'aprobada' ? 'pill-done' : ($cot->estado === 'rechazada' ? 'pill-anulado' : 'pill-pending')) }}">
                             @if($cot->anulado)
@@ -105,8 +105,13 @@
                             
                             @if($cot->estado === 'aprobada')
                                 <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir PDF">🖨️</a>
+                                @if($cot->factura_creada)
+                                    <a href="{{ route('inventario.facturas.show', $cot->factura_creada->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Ver movimiento: {{ $cot->factura_creada->numero_factura }}">
+                                        {{ $cot->factura_creada->tipo_movimiento === 'compra' ? '📦' : '🛒' }}
+                                    </a>
+                                @endif
                             @else
-                                <span class="btn-ghost w-8 h-8 flex items-center justify-center p-0 text-xs opacity-40 cursor-not-allowed" title="Requiere estar aprobada para imprimir PDF">🖨️</span>
+                                <span class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs opacity-40 cursor-not-allowed" title="Requiere estar aprobada para imprimir PDF">🖨️</span>
                             @endif
 
                             @if(!auth()->user()->isInvitado())

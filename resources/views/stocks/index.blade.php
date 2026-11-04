@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="glass-card p-6">
- <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+ <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
  <div>
  <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
  <span class="text-3xl">📦</span> Inventario (Stock)
@@ -15,10 +15,10 @@
   </div>
  @if(!auth()->user()->isInvitado())
  <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 w-full sm:w-auto">
- <a href="{{ route('stocks.categorias.index') }}" class="btn-concepts flex items-center justify-center gap-2 w-full sm:w-auto text-center" style="padding: 9px 18px; font-size: 13px;">
+ <a href="{{ route('stocks.categorias.index') }}" class="btn-concepts flex items-center justify-center gap-2 w-full sm:w-auto text-center">
  🏷️ <span>Gestionar Categorías</span>
  </a>
- <a href="{{ route('stocks.create') }}" class="btn-primary flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30 w-full sm:w-auto text-center" style="padding: 9px 18px; font-size: 13px;">
+ <a href="{{ route('stocks.create') }}" class="btn-primary flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30 w-full sm:w-auto text-center">
  <span>➕</span> <span>Nuevo Producto</span>
  </a>
  </div>
@@ -49,12 +49,12 @@
 <td data-label="Código:" class="text-sm font-bold text-slate-500 dark:text-slate-400 {{ $dim }}">
   {{ $stock->codigo ?? '-' }}
   </td>
-  <td data-label="Foto:" class="text-center {{ $dim }}">
+  <td data-label="Foto:" class="text-center py-2 {{ $dim }}">
   @if($stock->photo)
   <img src="{{ asset('storage/' . $stock->photo) }}" alt="{{ $stock->producto }}"
-       onclick="openImageLightbox('{{ asset('storage/' . $stock->photo) }}', '{{ addslashes($stock->producto) }}', this)"
+       data-lightbox-src="{{ asset('storage/' . $stock->photo) }}" data-lightbox-alt="{{ $stock->producto }}"
        onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
-       class="w-11 h-11 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm mx-auto hover:opacity-80 transition">
+       class="w-8 h-8 rounded-lg object-cover cursor-pointer border border-white/40 shadow-sm mx-auto hover:opacity-80 transition">
   <span class="hidden text-[10px] text-gray-400 dark:text-gray-500">—</span>
   @else
   <span class="text-[10px] text-gray-400 dark:text-gray-500">—</span>
@@ -76,7 +76,7 @@
  </span>
  </td>
  <td data-label="P. Compra:" class="text-right font-medium {{ $dim }}">
- ${{ number_format($stock->precio_compra, 0, ',', '.') }}
+ $ {{ number_format($stock->precio_compra, 0, ',', '.') }}
  </td>
  @php
  $utilidadPesos = $stock->precio_venta - $stock->precio_compra;
@@ -88,15 +88,15 @@
  💹 +{{ number_format($utilidadPct, 0) }}%
  </span>
  <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
- +${{ number_format($utilidadPesos, 0, ',', '.') }}
+ +$ {{ number_format($utilidadPesos, 0, ',', '.') }}
  </span>
  </div>
  </td>
  <td data-label="P. Venta:" class="text-right font-black text-blue-600 dark:text-cyan-400 text-base {{ $dim }}">
- ${{ number_format($stock->precio_venta, 0, ',', '.') }}
+ $ {{ number_format($stock->precio_venta, 0, ',', '.') }}
  </td>
  <td data-label="P. Técnico:" class="text-right font-bold text-purple-600 dark:text-purple-400 {{ $dim }}">
- ${{ number_format($stock->precio_tecnico, 0, ',', '.') }}
+ $ {{ number_format($stock->precio_tecnico, 0, ',', '.') }}
  </td>
  <td data-label="Estado:" class="text-center">
  <span class="pill {{ $stock->active ? 'pill-done' : 'pill-anulado' }}">
@@ -108,11 +108,13 @@
     <a href="{{ route('stocks.show', $stock->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Detalles">👁️</a>
     <a href="{{ route('stocks.print', $stock->id) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir">🖨️</a>
     @if(!auth()->user()->isInvitado())
+    @if($stock->active)
     <a href="{{ route('stocks.edit', $stock->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/10" title="Editar">✏️</a>
     @if($stock->cantidad > 0)
     <button type="button" onclick="openBajaStockModal('{{ route('stocks.dar-de-baja', $stock->id) }}', '{{ addslashes($stock->producto) }}', {{ $stock->cantidad }}, {{ $stock->precio_compra }})" class="btn-ghost btn-action-baja w-8 h-8 flex items-center justify-center p-0 text-xs text-purple-600 dark:text-purple-400 hover:bg-purple-500/10" title="Dar de baja unidades por daño o merma">
     📉
     </button>
+    @endif
     @endif
     <button type="button" onclick="openAnularModal('{{ route('stocks.anular', $stock->id) }}', {{ !$stock->active ? 'true' : 'false' }})" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs {{ $stock->active ? 'text-red-600 dark:text-red-400 hover:bg-red-500/10' : 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10' }}" title="{{ $stock->active ? 'Anular Producto' : 'Reactivar Producto' }}">
     {{ $stock->active ? '🚫' : '✅' }}
@@ -149,22 +151,22 @@
 </div>
 
 <!-- MODAL DAR DE BAJA UNIDADES (Simétrico al Modal de Notificaciones) -->
-<div id="baja-stock-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+<div id="baja-stock-modal" role="dialog" aria-modal="true" aria-labelledby="baja-stock-title" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
     <div id="baja-stock-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px;">
         
         {{-- Header simétrico a notificaciones --}}
         <div class="flex items-center gap-3 mb-4">
             <span class="text-3xl shrink-0 select-none">📉</span>
             <div>
-                <h3 class="text-lg font-black text-slate-800 dark:text-white leading-tight">Dar de Baja Unidades</h3>
+                <h3 id="baja-stock-title" class="text-lg font-black text-slate-800 dark:text-white leading-tight">Dar de Baja Unidades</h3>
                 <p class="text-xs text-gray-500 dark:text-gray-400">Merma de inventario por daño o defecto</p>
             </div>
         </div>
 
         <form id="baja-stock-form" method="POST" action="">
             @csrf
-            {{-- Contenedor Central al mismo ancho que el modal de notificaciones --}}
-            <div class="w-full max-w-[450px] mx-auto flex flex-col flex-1 pb-2">
+            {{-- Contenedor Central a ancho completo alineado con el borde horizontal --}}
+            <div class="w-full flex flex-col flex-1">
                 
                 {{-- Bloque resumen del artículo con barra de acento --}}
                 <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 relative overflow-hidden mb-4">
@@ -212,11 +214,11 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 w-full modal-divider">
-                <button type="button" onclick="closeBajaStockModal()" class="flex-1 btn-ghost border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+            <div class="flex items-center gap-3 mt-4 w-full">
+                <button type="button" onclick="closeBajaStockModal()" class="flex-1 btn-ghost-red justify-center py-2.5 rounded-xl font-bold text-sm">
                     Cancelar
                 </button>
-                <button type="submit" class="flex-1 btn-ghost border-violet-500/30 text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 justify-center py-2.5 rounded-xl font-bold text-sm">
+                <button type="submit" class="flex-1 btn-ghost-blue justify-center py-2.5 rounded-xl font-bold text-sm">
                     Confirmar Baja
                 </button>
             </div>

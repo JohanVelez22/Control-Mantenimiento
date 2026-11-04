@@ -103,23 +103,23 @@
     @if($effectiveMontoTotal > 0)
         <tr>
             <td class="text-left font-bold">TOTAL SERVICIO/DEUDA:</td>
-            <td class="text-right font-bold">${{ number_format($effectiveMontoTotal, 0, ',', '.') }}</td>
+            <td class="text-right font-bold">$ {{ number_format($effectiveMontoTotal, 0, ',', '.') }}</td>
         </tr>
     @endif
     <tr class="grand-total">
         <td class="text-left">VALOR PAGADO AHORA:</td>
-        <td class="text-right font-bold">${{ number_format($movimiento->monto, 0, ',', '.') }}</td>
+        <td class="text-right font-bold">$ {{ number_format($movimiento->monto, 0, ',', '.') }}</td>
     </tr>
     @if($hasHistory)
         <tr>
             <td class="text-left">Total Acumulado Pagado:</td>
-            <td class="text-right font-bold">${{ number_format($totalAcumulado, 0, ',', '.') }}</td>
+            <td class="text-right font-bold">$ {{ number_format($totalAcumulado, 0, ',', '.') }}</td>
         </tr>
     @endif
     @if($effectiveMontoTotal > 0)
         <tr>
             <td class="text-left font-bold" style="color: #c00;">SALDO PENDIENTE:</td>
-            <td class="text-right font-bold" style="color: #c00;">${{ number_format($saldoPendiente, 0, ',', '.') }}</td>
+            <td class="text-right font-bold" style="color: #c00;">$ {{ number_format($saldoPendiente, 0, ',', '.') }}</td>
         </tr>
     @endif
 </table>
@@ -141,7 +141,7 @@
             <tr>
                 <td>{{ \Carbon\Carbon::parse($pago->fecha)->format('d/m/y') }}</td>
                 <td>{{ $pago->tipo_pago }}</td>
-                <td class="text-right font-bold">${{ number_format($pago->monto, 0, ',', '.') }}</td>
+                <td class="text-right font-bold">$ {{ number_format($pago->monto, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>

@@ -15,9 +15,11 @@
         @endif
 
         {{-- Encabezado --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
+        <div class="caja-detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 relative z-20">
+
+
             <div class="flex items-center gap-4">
-                <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a la lista de caja">⬅️</a>
+                <a href="{{ route('caja.index') }}" class="btn-ghost text-xl" title="Volver a la lista de caja">⬅️</a>
                 <div>
                     <div class="flex flex-wrap items-center gap-3">
                         <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight whitespace-nowrap">
@@ -38,14 +40,14 @@
             
             <div class="flex flex-wrap items-center gap-3 shrink-0">
                 @php
-                    $facturaRef = null;
-                    if ($movimiento->descripcion && preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $movimiento->descripcion, $mf)) {
+                    $facturaRef = $movimiento->factura;
+                    if (!$facturaRef && $movimiento->descripcion && preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $movimiento->descripcion, $mf)) {
                         $facturaRef = \App\Models\Factura::where('numero_factura', $mf[1])->first();
                     }
                 @endphp
                 @if($facturaRef)
-                <a href="{{ route('inventario.facturas.show', $facturaRef->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30" title="Ver factura {{ $facturaRef->numero_factura }}">
-                    📄 Ver Factura
+                <a href="{{ route('inventario.facturas.show', $facturaRef->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-semibold" title="Ver factura {{ $facturaRef->numero_factura }}">
+                    📄 Ver Factura ({{ $facturaRef->numero_factura }})
                 </a>
                 @endif
 
@@ -57,54 +59,56 @@
                 />
                 
                 @if(!auth()->user()->isInvitado())
+                @if(!$movimiento->anulado && $movimiento->estado !== 'anulado')
                 <a href="{{ route('caja.edit', $movimiento->id) }}" class="btn-ghost border-yellow-500/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/30">✏️ Editar</a>
+                @endif
                 <button type="button" onclick="openAnularModal('{{ route('caja.anular', $movimiento->id) }}', {{ $movimiento->anulado ? 'true' : 'false' }})" class="{{ $movimiento->anulado ? 'btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30' : 'btn-danger' }}">{{ $movimiento->anulado ? '✅ Reactivar' : '🚫 Anular' }}</button>
                 @endif
             </div>
         </div>
 
         {{-- Datos Operativos del Movimiento --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 text-sm p-6 glass-card mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 text-sm mb-6">
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">
                     {{ $movimiento->persona ? '👤 Cliente / Persona' : ($movimiento->empresa ? '🏢 Proveedor / Empresa' : '👤 Tercero') }}
                 </span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 break-words">
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 break-words">
                     {{ $movimiento->persona ?? ($movimiento->empresa ?? '—') }}
                 </span>
             </div>
 
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">🏷️ Concepto de Caja</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 break-words">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">🏷️ Concepto de Caja</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 break-words">
                     {{ $movimiento->concepto->nombre ?? '—' }}
                 </span>
             </div>
 
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">💳 Forma de Pago</span>
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">💳 Forma de Pago</span>
                 <span class="pill {{ $movimiento->tipo_pago === 'efectivo' ? 'pill-efectivo' : 'pill-banco' }} text-xs font-bold mt-1 inline-block">
                     {{ $movimiento->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Banco / Consignación' }}
                 </span>
             </div>
 
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📊 Tipo Operación</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 capitalize flex items-center gap-1.5 mt-0.5">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📊 Tipo Operación</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 capitalize flex items-center gap-1.5 mt-0.5">
                     {{ $movimiento->tipo_movimiento === 'ingreso' ? '📈 Ingreso' : '📉 Egreso' }}
                 </span>
             </div>
 
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">👤 Registrado Por</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300 break-words">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">👤 Registrado Por</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 break-words">
                     {{ $movimiento->user->name ?? 'Sistema' }}
                 </span>
             </div>
 
             <div class="min-w-0">
-                <span class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📅 Fecha Registro</span>
-                <span class="text-sm font-medium text-slate-600 dark:text-slate-300">
+                <span class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-1">📅 Fecha Registro</span>
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">
                     {{ \Carbon\Carbon::parse($movimiento->fecha)->format('d/m/Y') }}
                 </span>
             </div>
@@ -116,30 +120,30 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💳</span> Monto Transacción</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($movimiento->monto, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($movimiento->monto, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow glass-card-indigo p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💰</span> Monto Total</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($movimiento->effective_monto_total ?: $movimiento->monto, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($movimiento->effective_monto_total ?: $movimiento->monto, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💵</span> Total Acumulado Pagado</p>
-                <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400 z-10">${{ number_format($movimiento->total_pagado, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($movimiento->total_pagado, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow {{ $movimiento->saldo_pendiente > 0 ? 'glass-card-orange' : 'glass-card-teal' }} p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold {{ $movimiento->saldo_pendiente > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">⚖️</span> Saldo Pendiente</p>
-                <p class="text-2xl font-black {{ $movimiento->saldo_pendiente > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-slate-800 dark:text-white' }} z-10">${{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black {{ $movimiento->saldo_pendiente > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-slate-800 dark:text-white' }} z-10">$ {{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}</p>
             </div>
         </div>
 
         {{-- Descripción --}}
         @if($movimiento->descripcion)
-        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3">Descripción / Observaciones</h3>
-        <div class="p-5 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-2xl mb-8 shadow-sm">
-            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">{{ $movimiento->descripcion }}</p>
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-2">Descripción / Observaciones</h3>
+        <div class="py-2.5 px-4 bg-white/10 dark:bg-slate-900/25 border border-white/40 dark:border-white/5 backdrop-blur-md rounded-xl mb-6 shadow-sm overflow-hidden flex items-center min-h-[42px]">
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line break-words my-auto" style="overflow-wrap: anywhere; word-break: break-word;">{{ $movimiento->descripcion }}</p>
         </div>
         @endif
 
@@ -167,17 +171,17 @@
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
             <span>📑</span> Pagos y Abonos Relacionados ({{ $relacionados->count() }})
         </h3>
-        <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-8">
-            <table class="ts-table mb-0 w-full">
+        <div class="overflow-x-auto overflow-y-auto max-h-[400px] relative mb-6">
+            <table id="tabla-abonos-relacionados" class="ts-table table-dense mb-0 w-full">
                 <thead>
                     <tr>
-                        <th class="text-center whitespace-nowrap" style="width: 60px;">Código</th>
-                        <th class="text-center whitespace-nowrap" style="width: 100px;">Fecha</th>
+                        <th class="text-center whitespace-nowrap" style="width: 65px;">Código</th>
+                        <th class="text-center whitespace-nowrap" style="width: 95px;">Fecha</th>
                         <th class="text-left">Descripción</th>
-                        <th class="text-center whitespace-nowrap" style="width: 130px;">Método Pago</th>
-                        <th class="text-center whitespace-nowrap" style="width: 140px;">Registrado Por</th>
+                        <th class="text-center whitespace-nowrap" style="width: 120px;">Método Pago</th>
+                        <th class="text-center whitespace-nowrap" style="width: 130px;">Registrado Por</th>
                         <th class="text-right whitespace-nowrap" style="width: 100px;">Monto</th>
-                        <th class="text-center whitespace-nowrap" style="width: 90px;">Acciones</th>
+                        <th class="text-center whitespace-nowrap" style="width: 65px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -195,13 +199,14 @@
                             {{ $child->user->name ?? 'Sistema' }}
                         </td>
                         <td class="text-right font-black {{ $child->tipo_movimiento === 'ingreso' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400' }} whitespace-nowrap">
-                            ${{ number_format($child->monto, 0, ',', '.') }}
+                            $ {{ number_format($child->monto, 0, ',', '.') }}
                         </td>
                         <td class="text-center whitespace-nowrap">
-                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost px-2 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este pago">
-                                👁️
-                            </a>
+                            <div class="actions-grid">
+                                <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este pago">👁️</a>
+                            </div>
                         </td>
+
                     </tr>
                     @endforeach
                 </tbody>
@@ -209,7 +214,7 @@
         </div>
         @endif
 
-        <div class="pt-4 border-t border-gray-200/50 dark:border-white/5 flex justify-between items-center text-xs font-semibold text-gray-400">
+        <div class="pt-4 flex justify-between items-center text-xs font-semibold text-gray-400">
             <span>Última actualización: {{ $movimiento->updated_at->format('d/m/Y H:i:s') }}</span>
             <span>Fecha creación: {{ $movimiento->created_at->format('d/m/Y H:i:s') }}</span>
         </div>

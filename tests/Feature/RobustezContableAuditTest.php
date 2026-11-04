@@ -26,9 +26,13 @@ class RobustezContableAuditTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private Cliente $cliente;
+
     private Tecnico $tecnico;
+
     private Equipo $equipo;
+
     private ConceptoCaja $concepto;
 
     protected function setUp(): void

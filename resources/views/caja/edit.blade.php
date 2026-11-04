@@ -11,12 +11,12 @@
 @endphp
 
 <div class="max-w-7xl mx-auto">
-    <div class="glass-card p-6 md:p-8">
+    <div class="glass-card p-6 md:p-6 !pb-6">
         
         {{-- Encabezado unificado dentro de la tarjeta, tal como caja.show --}}
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 relative z-20">
             <div class="flex items-center gap-4">
-                <a href="{{ route('caja.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver a la lista de caja">⬅️</a>
+                <a href="{{ route('caja.index') }}" class="btn-ghost text-xl" title="Volver a la lista de caja">⬅️</a>
                 <div>
                     <div class="flex flex-wrap items-center gap-3">
                         <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight whitespace-nowrap">
@@ -30,7 +30,7 @@
                         </span>
                         @if($movimiento->monto_total > 0 && $movimiento->saldo_pendiente > 0)
                             <span class="pill pill-pending text-xs py-1 px-3 font-bold whitespace-nowrap">
-                                Saldo: ${{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}
+                                Saldo: $ {{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}
                             </span>
                         @endif
                     </div>
@@ -59,22 +59,22 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="glass-card hover-glow glass-card-blue p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💳</span> Monto Transacción</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($movimiento->monto, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($movimiento->monto, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow glass-card-indigo p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💰</span> Monto Total</p>
-                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">${{ number_format($movimiento->effective_monto_total ?: $movimiento->monto, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($movimiento->effective_monto_total ?: $movimiento->monto, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow glass-card-emerald p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">💵</span> Total Acumulado Pagado</p>
-                <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400 z-10">${{ number_format($movimiento->total_pagado, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black text-slate-800 dark:text-white z-10">$ {{ number_format($movimiento->total_pagado, 0, ',', '.') }}</p>
             </div>
 
             <div class="glass-card hover-glow {{ $movimiento->saldo_pendiente > 0 ? 'glass-card-orange' : 'glass-card-teal' }} p-4 sm:p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0">
                 <p class="text-xs font-bold {{ $movimiento->saldo_pendiente > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-teal-600 dark:text-teal-400' }} uppercase tracking-widest mb-1 z-10 flex items-center justify-center gap-1.5"><span class="text-base no-print-emoji">⚖️</span> Saldo Pendiente</p>
-                <p class="text-2xl font-black {{ $movimiento->saldo_pendiente > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-slate-800 dark:text-white' }} z-10">${{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}</p>
+                <p class="text-2xl font-black {{ $movimiento->saldo_pendiente > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-slate-800 dark:text-white' }} z-10">$ {{ number_format($movimiento->saldo_pendiente, 0, ',', '.') }}</p>
             </div>
         </div>
 
@@ -83,27 +83,29 @@
             <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                 <span>✏️</span> Modificar Registro de Caja
             </h3>
-            <form action="{{ route('caja.update', $movimiento->id) }}" method="POST">
+            <form id="cajaEditForm" action="{{ route('caja.update', $movimiento->id) }}" method="POST">
                 @csrf @method('PUT')
                 @include('caja._form', ['movimiento' => $movimiento])
-                
-                <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-                    <a href="{{ route('caja.index') }}" class="btn-cancel">✕ Cancelar</a>
-                    <button type="submit" class="btn-save">
-                        🔄 Actualizar Movimiento
-                    </button>
+                @if(auth()->check() && auth()->user()->isTecnico())
+                <div class="mt-6 p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 max-w-md ml-auto">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-center">
+                        🔒 Autorización Requerida — Contraseña de Administrador:
+                    </label>
+                    <input type="password" name="password_confirm" required placeholder="Contraseña de Administrador..." 
+                        class="glass-input text-center tracking-widest text-base w-full focus:ring-orange-500">
                 </div>
+                @endif
             </form>
         </div>
 
         {{-- Sección de Saldos y Abonos si aplica --}}
         @if(!$movimiento->parent_id && ($movimiento->effective_monto_total > 0 || $movimiento->childPayments->isNotEmpty()))
-            <div class="mt-10 pt-8 border-t border-gray-200/50 dark:border-white/10 space-y-6">
+            <div class="mt-6 pt-6 border-t border-gray-200/50 dark:border-white/10 space-y-6">
                 {{-- Registrar Nuevo Abono si hay saldo pendiente --}}
                 @if($movimiento->saldo_pendiente > 0)
-                <div class="p-6 rounded-2xl bg-blue-50/40 dark:bg-blue-900/10 border border-blue-200/50 dark:border-blue-500/20">
+                <div>
                     <h4 class="font-bold text-base text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                        <span>💵</span> Registrar Pago / Abono a este Movimiento
+                        <span>💳</span> Registrar Nuevo Abono
                     </h4>
                     <form action="{{ route('caja.abonos.store', $movimiento->id) }}" method="POST" class="space-y-4">
                         @csrf
@@ -113,7 +115,7 @@
                                     <span>💵</span> Monto del Abono <span class="text-red-500 font-bold">*</span>
                                 </label>
                                 <div>
-                                    <input type="text" id="monto_abono_visual" required placeholder="0" class="glass-input font-bold text-left py-2.5">
+                                    <input type="text" id="monto_abono_visual" required placeholder="0" class="glass-input font-bold text-left py-2.5 text-emerald-600 dark:text-emerald-400">
                                     <input type="hidden" name="monto_abono" id="monto_abono_real">
                                 </div>
                             </div>
@@ -143,8 +145,8 @@
                             <input type="text" name="descripcion" placeholder="Detalles u observaciones de este abono..." class="glass-input text-xs py-2.5">
                         </div>
                         <div class="flex justify-end pt-2">
-                            <button type="submit" class="btn-primary py-2.5 px-6 flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 font-bold">
-                                ➕ Guardar Abono
+                            <button type="submit" class="btn-primary py-2.5 px-6 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 font-bold">
+                                ➕ Registrar Abono
                             </button>
                         </div>
                     </form>
@@ -166,16 +168,16 @@
                     </h3>
                     @if($movimiento->childPayments->isNotEmpty())
                     <div class="overflow-x-auto overflow-y-auto max-h-[350px] relative">
-                        <table class="ts-table responsive-table w-full mb-0">
+                        <table id="tabla-abonos-caja-edit" class="ts-table table-dense responsive-table w-full mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-center" style="width: 70px;">Código</th>
-                                    <th class="text-center" style="width: 110px;">Fecha</th>
+                                    <th class="text-center whitespace-nowrap" style="width: 65px;">Código</th>
+                                    <th class="text-center whitespace-nowrap" style="width: 95px;">Fecha</th>
                                     <th class="text-left">Descripción</th>
-                                    <th class="text-center" style="width: 140px;">Método Pago</th>
-                                    <th class="text-center" style="width: 140px;">Registrado Por</th>
-                                    <th class="text-right" style="width: 120px;">Monto</th>
-                                    <th class="text-center" style="width: 90px;">Acciones</th>
+                                    <th class="text-center whitespace-nowrap" style="width: 120px;">Método Pago</th>
+                                    <th class="text-center whitespace-nowrap" style="width: 130px;">Registrado Por</th>
+                                    <th class="text-right whitespace-nowrap" style="width: 100px;">Monto</th>
+                                    <th class="text-center whitespace-nowrap" style="width: 65px;">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -189,16 +191,16 @@
                                             {{ $child->tipo_pago === 'efectivo' ? '💵 Efectivo' : '🏦 Banco' }}
                                         </span>
                                     </td>
-                                    <td data-label="Registró:" class="text-center text-xs font-bold text-slate-700 dark:text-slate-300">
+                                    <td data-label="Registró:" class="text-center text-xs font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">
                                         {{ $child->user->name ?? 'Sistema' }}
                                     </td>
                                     <td data-label="Monto:" class="text-right font-black text-blue-600 dark:text-blue-400 whitespace-nowrap">
-                                        ${{ number_format($child->monto, 0, ',', '.') }}
+                                        $ {{ number_format($child->monto, 0, ',', '.') }}
                                     </td>
                                     <td data-label="Acciones:" class="text-center whitespace-nowrap">
-                                        <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost px-2 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle de este abono">
-                                            👁️
-                                        </a>
+                                        <div class="actions-grid">
+                                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este abono">👁️</a>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -211,7 +213,7 @@
                 </div>
             </div>
         @elseif($movimiento->parent_id)
-            <div class="mt-8 p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="mt-6 p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <span class="text-3xl">🔗</span>
                     <div>
@@ -224,6 +226,12 @@
                 </a>
             </div>
         @endif
+
+        {{-- Botones de Acción al Final (Centrados verticalmente con espacio balanceado) --}}
+        <div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-6 pt-0">
+            <a href="{{ route('caja.index') }}" class="btn-cancel"><span>✕</span><span>Cancelar</span></a>
+            <button type="submit" form="cajaEditForm" class="btn-save">🔄 Actualizar Movimiento</button>
+        </div>
 
     </div>
 </div>

@@ -12,6 +12,7 @@ use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 
 class EventoController extends Controller
@@ -26,7 +27,11 @@ class EventoController extends Controller
 
         // Filtros
         if ($request->filled('accion') && $request->accion !== 'todas') {
-            $query->where('accion', $request->accion);
+            if ($request->accion === 'backup') {
+                $query->whereIn('accion', ['backup', 'backup_restaurado']);
+            } else {
+                $query->where('accion', $request->accion);
+            }
         }
 
         if ($request->filled('user_id') && $request->user_id !== 'todos') {
@@ -40,8 +45,10 @@ class EventoController extends Controller
         $query->whereDate('created_at', '<=', $fechaHasta);
 
         if ($request->filled('search')) {
-            $query->where('descripcion', 'LIKE', '%'.$request->search.'%')
-                ->orWhere('modelo_tipo', 'LIKE', '%'.$request->search.'%');
+            $query->where(function ($q) use ($request) {
+                $q->where('descripcion', 'LIKE', '%'.$request->search.'%')
+                    ->orWhere('modelo_tipo', 'LIKE', '%'.$request->search.'%');
+            });
         }
 
         $eventos = $query->paginate(30)->withQueryString();
@@ -94,7 +101,7 @@ class EventoController extends Controller
         }
 
         try {
-            \Illuminate\Support\Facades\Artisan::call('app:backup-db');
+            Artisan::call('app:backup-db');
 
             return redirect()->route('eventos.index')->with('success', 'Copia de seguridad del sistema generada exitosamente.');
         } catch (\Throwable $e) {

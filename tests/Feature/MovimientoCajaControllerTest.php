@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\ConceptoCaja;
 use App\Models\CierreCaja;
+use App\Models\ConceptoCaja;
 use App\Models\MovimientoCaja;
-use App\Services\CierreCajaGuard;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -15,7 +14,9 @@ class MovimientoCajaControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected ConceptoCaja $concepto;
 
     protected function setUp(): void
@@ -323,7 +324,7 @@ class MovimientoCajaControllerTest extends TestCase
         $this->assertEquals(30000, $abono->monto);
     }
 
-public function test_abono_store_rejects_monto_superior_a_saldo(): void
+    public function test_abono_store_rejects_monto_superior_a_saldo(): void
     {
         $padre = MovimientoCaja::create([
             'persona' => 'Cliente Abono Error',

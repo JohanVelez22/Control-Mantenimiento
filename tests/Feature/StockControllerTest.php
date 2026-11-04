@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\BajaStock;
 use App\Models\Proveedor;
 use App\Models\Stock;
 use App\Models\User;
@@ -15,7 +16,9 @@ class StockControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnico;
+
     protected Proveedor $proveedor;
 
     protected function setUp(): void
@@ -346,7 +349,7 @@ class StockControllerTest extends TestCase
         $stock->refresh();
         $this->assertEquals(6, $stock->cantidad);
 
-        $baja = \App\Models\BajaStock::where('stock_id', $stock->id)->first();
+        $baja = BajaStock::where('stock_id', $stock->id)->first();
         $this->assertNotNull($baja);
 
         $response = $this->actingAs($this->admin)->post(route('stocks.bajas.revertir', $baja), [

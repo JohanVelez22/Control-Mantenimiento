@@ -4,52 +4,50 @@
     $selEsp = old('especialidad', $t?->especialidad ?? '');
 @endphp
 
-<div class="space-y-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div>
-            <label class="field-label">Nombre Completo *</label>
-            <input type="text" name="nombre" value="{{ old('nombre', $t?->nombre) }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input mt-1 @error('nombre') border-red-500 @enderror">
-            @error('nombre') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
-        </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+        <label class="field-label">Nombre Completo <span class="text-red-500 font-bold">*</span></label>
+        <input type="text" name="nombre" value="{{ old('nombre', $t?->nombre) }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input @error('nombre') border-red-500 @enderror">
+        @error('nombre') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+    </div>
 
-        <div>
-            <label class="field-label">Identificación (DNI/NIT) *</label>
-            <input type="text" name="identificacion" value="{{ old('identificacion', $t?->identificacion) }}" required oninput="this.value = this.value.replace(/[^0-9-]/g, '')" class="glass-input mt-1 @error('identificacion') border-red-500 @enderror">
-            @error('identificacion') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
-        </div>
+    <div>
+        <label class="field-label">Identificación (DNI/NIT) <span class="text-red-500 font-bold">*</span></label>
+        <input type="text" name="identificacion" value="{{ old('identificacion', $t?->identificacion) }}" required oninput="this.value = this.value.replace(/[^0-9-]/g, '')" class="glass-input @error('identificacion') border-red-500 @enderror">
+        @error('identificacion') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+    </div>
 
-        <div>
-            <label class="field-label">Especialidad *</label>
-            <select name="especialidad" required class="glass-input mt-1 text-sm font-bold">
-                <option value="">— Seleccionar especialidad —</option>
-                <option value="Hardware" {{ $selEsp == 'Hardware' ? 'selected' : '' }}>Hardware</option>
-                <option value="Software" {{ $selEsp == 'Software' ? 'selected' : '' }}>Software</option>
-                <option value="Electrónica" {{ $selEsp == 'Electrónica' ? 'selected' : '' }}>Electrónica</option>
-                <option value="Redes" {{ $selEsp == 'Redes' ? 'selected' : '' }}>Redes</option>
-                <option value="General" {{ $selEsp == 'General' ? 'selected' : '' }}>General</option>
-            </select>
-            @error('especialidad') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
-        </div>
+    <div>
+        <label class="field-label">Especialidad <span class="text-red-500 font-bold">*</span></label>
+        <select name="especialidad" required class="glass-input text-sm font-bold">
+            <option value="">— Seleccionar especialidad —</option>
+            <option value="Hardware" {{ $selEsp == 'Hardware' ? 'selected' : '' }}>Hardware</option>
+            <option value="Software" {{ $selEsp == 'Software' ? 'selected' : '' }}>Software</option>
+            <option value="Electrónica" {{ $selEsp == 'Electrónica' ? 'selected' : '' }}>Electrónica</option>
+            <option value="Redes" {{ $selEsp == 'Redes' ? 'selected' : '' }}>Redes</option>
+            <option value="General" {{ $selEsp == 'General' ? 'selected' : '' }}>General</option>
+        </select>
+        @error('especialidad') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+    </div>
 
-        <div>
-            <label class="field-label">Teléfono Móvil *</label>
-            <input type="tel" name="movil" value="{{ old('movil', $t?->movil) }}" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="glass-input mt-1 @error('movil') border-red-500 @enderror">
-            @error('movil') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
-        </div>
+    <div>
+        <label class="field-label">Teléfono Móvil <span class="text-red-500 font-bold">*</span></label>
+        <input type="tel" name="movil" value="{{ old('movil', $t?->movil) }}" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="glass-input @error('movil') border-red-500 @enderror">
+        @error('movil') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
+    </div>
 
-        <div class="md:col-span-2">
-            <label class="field-label">Email</label>
-            <input type="email" name="email" value="{{ old('email', $t?->email) }}" class="glass-input mt-1 @error('email') border-red-500 @enderror">
-            @error('email') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
-        </div>
+    <div class="md:col-span-2">
+        <label class="field-label">Email</label>
+        <input type="email" name="email" value="{{ old('email', $t?->email) }}" class="glass-input @error('email') border-red-500 @enderror">
+        @error('email') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
 
     <div class="md:col-span-2">
         <label class="field-label">Dirección</label>
-        <textarea name="direccion" rows="3" class="glass-input mt-1 resize-y">{{ old('direccion', $t?->direccion) }}</textarea>
+        <textarea name="direccion" rows="2" class="glass-input resize-y">{{ old('direccion', $t?->direccion) }}</textarea>
     </div>
 
-    <div>
+    <div class="md:col-span-2">
         <label class="field-label mb-2 block">Foto del Técnico (Opcional)</label>
         <input type="hidden" name="remove_photo" id="remove_photo" value="0">
 
@@ -57,7 +55,7 @@
         @if($t?->photo)
             <div id="existing-photo-container" class="mb-3 flex items-center gap-4">
                 <div class="p-1 rounded-2xl bg-white/40 dark:bg-slate-900/40 border border-white/50 dark:border-white/10 backdrop-blur-sm shadow-sm shrink-0">
-                    <img src="{{ asset('storage/' . $t->photo) }}" width="100" height="100" class="w-20 h-20 rounded-xl object-cover shadow-sm cursor-pointer hover:opacity-80 transition block" onclick="openImageLightbox('{{ asset('storage/' . $t->photo) }}', '{{ addslashes($t->nombre) }}', this)">
+                    <img src="{{ asset('storage/' . $t->photo) }}" width="100" height="100" class="w-20 h-20 rounded-xl object-cover shadow-sm cursor-pointer hover:opacity-80 transition block" data-lightbox-src="{{ asset('storage/' . $t->photo) }}" data-lightbox-alt="{{ $t->nombre }}">
                 </div>
                 <div class="space-y-1.5">
                     <span class="text-xs font-bold text-slate-700 dark:text-slate-300 block">Foto actual del técnico</span>
@@ -107,7 +105,7 @@
             </span>
         </div>
 
-        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-3">
+        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
             Formatos: SVG, PNG, JPG, WEBP • Máx. 5 MB.
             @if($t?->photo)
                 <span class="text-indigo-500 dark:text-indigo-400 font-medium">Deja vacío para conservar la foto actual.</span>
@@ -116,11 +114,9 @@
         @error('photo') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
     </div>
 
-    <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-        <a href="{{ route('tecnicos.index') }}" class="btn-cancel">✕<space>Cancelar</a>
-        <button type="submit" class="btn-save">
-            {{ $t ? '🔄 Actualizar Técnico' : '💾 Guardar Técnico' }}
-        </button>
+    <div class="md:col-span-2 flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
+        <a href="{{ route('tecnicos.index') }}" class="btn-cancel"><span>✕</span><span>Cancelar</span></a>
+        <button type="submit" class="btn-save">{{ $t ? '🔄 Actualizar Técnico' : '💾 Guardar Técnico' }}</button>
     </div>
 </div>
 

@@ -3,24 +3,27 @@
     $isEdit = !is_null($user);
 @endphp
 
-{{-- Nombre --}}
-<div class="mb-5">
-    <label class="field-label">Nombre {{ $isEdit ? 'Completo' : '' }} *</label>
-    <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input mt-1 @error('name') border-red-500 @enderror">
-    @error('name') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
-</div>
+{{-- Nombre y Correo Electrónico en 2 columnas para optimizar espacio --}}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    {{-- Nombre --}}
+    <div>
+        <label class="field-label">Nombre {{ $isEdit ? 'Completo' : '' }} <span class="text-red-500 font-bold">*</span></label>
+        <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input mt-1 @error('name') border-red-500 @enderror">
+        @error('name') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
+    </div>
 
-{{-- Email --}}
-<div class="mb-5">
-    <label class="field-label">Correo Electrónico *</label>
-    <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}" required class="glass-input mt-1 @error('email') border-red-500 @enderror">
-    @error('email') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
+    {{-- Email --}}
+    <div>
+        <label class="field-label">Correo Electrónico <span class="text-red-500 font-bold">*</span></label>
+        <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}" required class="glass-input mt-1 @error('email') border-red-500 @enderror">
+        @error('email') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
+    </div>
 </div>
 
 {{-- Rol --}}
 @if(!$isEdit || auth()->user()->isAdmin())
-<div class="mb-5">
-    <label class="field-label">Rol {{ $isEdit ? 'del Sistema' : '*' }}</label>
+<div class="mb-4">
+    <label class="field-label">Rol {{ $isEdit ? 'del Sistema' : '' }} @if(!$isEdit)<span class="text-red-500 font-bold">*</span>@endif</label>
     <select name="role" required class="glass-input mt-1">
         <option value="tecnico" {{ old('role', $user->role ?? '') == 'tecnico' ? 'selected' : '' }}>Técnico</option>
         <option value="admin" {{ old('role', $user->role ?? '') == 'admin' ? 'selected' : '' }}>Administrador</option>
@@ -32,7 +35,7 @@
 @endif
 
 {{-- Foto de Perfil --}}
-<div class="mb-5">
+<div class="mb-4">
     <label class="field-label mb-2 block">Foto de Perfil {{ $isEdit ? '' : '(Opcional)' }}</label>
     <input type="hidden" name="remove_photo" id="remove_user_photo" value="0">
 
@@ -40,7 +43,7 @@
     @if($isEdit && $user->photo)
         <div id="existing-user-photo-container" class="mb-3 flex items-center gap-4">
             <div class="p-1 rounded-2xl bg-white/40 dark:bg-slate-900/40 border border-white/50 dark:border-white/10 backdrop-blur-sm shadow-sm shrink-0">
-                <img src="{{ asset('storage/' . $user->photo) }}" width="100" height="100" class="w-20 h-20 rounded-xl object-cover shadow-sm cursor-pointer hover:opacity-80 transition block" onclick="openImageLightbox('{{ asset('storage/' . $user->photo) }}', '{{ addslashes($user->name) }}', this)">
+                <img src="{{ asset('storage/' . $user->photo) }}" width="100" height="100" class="w-20 h-20 rounded-xl object-cover shadow-sm cursor-pointer hover:opacity-80 transition block" data-lightbox-src="{{ asset('storage/' . $user->photo) }}" data-lightbox-alt="{{ $user->name }}">
             </div>
             <div class="space-y-1.5">
                 <span class="text-xs font-bold text-slate-700 dark:text-slate-300 block">Foto actual del usuario</span>
@@ -103,50 +106,73 @@
     <hr class="my-6 border-gray-200/50 dark:border-white/10">
     @if(auth()->id() === $user->id)
     <div class="mb-4">
-        <label class="block text-sm font-medium mb-2 text-gray-500">Contraseña Actual *</label>
-        <input type="password" id="current_password" name="current_password" placeholder="Requerida para cambiar tu contraseña" class="glass-input @error('current_password') border-red-500 @enderror">
+        <label class="block text-sm font-medium mb-2 text-gray-500">Contraseña Actual <span class="text-red-500 font-bold">*</span></label>
+        <div class="ts-password-wrapper w-full user-password-wrapper mt-1">
+            <input type="password" id="current_password" name="current_password" placeholder="Requerida para cambiar tu contraseña" class="glass-input w-full @error('current_password') border-red-500 @enderror">
+        </div>
         @error('current_password') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
+        <div id="caps-current-password" class="hidden text-amber-600 dark:text-amber-400 text-xs font-bold mt-1 flex items-center gap-1 select-none" role="alert">
+            <span class="select-none text-sm leading-none">⚠️</span>
+            <span>Bloq Mayús está activado</span>
+        </div>
     </div>
     @endif
 @endif
 
-{{-- Password --}}
-<div class="mb-4">
-    <label class="block text-sm font-medium mb-2 text-gray-500">{{ $isEdit ? 'Cambiar Contraseña del Usuario (opcional)' : 'Contraseña del Nuevo Usuario *' }}</label>
-    <input type="password" id="password" name="password" {{ $isEdit ? '' : 'required' }} placeholder="{{ $isEdit ? 'Dejar en blanco para no cambiar' : '' }}" class="glass-input mt-1 @error('password') border-red-500 @enderror">
-    @error('password') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
-    <ul id="password-requirements" class="mt-2 text-xs space-y-1.5 hidden transition-all duration-300">
-        <li id="req-length" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium transition-colors">
-            <span class="flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[9px] font-black transition-colors">✖</span> Mínimo 8 caracteres
-        </li>
-        <li id="req-case" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium transition-colors">
-            <span class="flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[9px] font-black transition-colors">✖</span> Mayúsculas y minúsculas
-        </li>
-        <li id="req-number" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium transition-colors">
-            <span class="flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[9px] font-black transition-colors">✖</span> Al menos un número
-        </li>
-    </ul>
-</div>
+{{-- Contraseñas en 2 columnas para optimizar espacio --}}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    {{-- Password --}}
+    <div>
+        <label class="block text-sm font-medium mb-2 text-gray-500">
+            {{ $isEdit ? 'Cambiar Contraseña (opcional)' : 'Contraseña del Nuevo Usuario' }}
+            @if(!$isEdit)<span class="text-red-500 font-bold">*</span>@endif
+        </label>
+        <div class="ts-password-wrapper w-full user-password-wrapper mt-1">
+            <input type="password" id="password" name="password" {{ $isEdit ? '' : 'required' }} placeholder="{{ $isEdit ? 'Dejar en blanco para no cambiar' : '' }}" class="glass-input w-full @error('password') border-red-500 @enderror">
+        </div>
+        @error('password') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
+        <div id="caps-password" class="hidden text-amber-600 dark:text-amber-400 text-xs font-bold mt-1 flex items-center gap-1 select-none" role="alert">
+            <span class="select-none text-sm leading-none">⚠️</span>
+            <span>Bloq Mayús está activado</span>
+        </div>
+        <ul id="password-requirements" class="mt-2 text-xs space-y-1.5 hidden transition-all duration-300">
+            <li id="req-length" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium transition-colors">
+                <span class="flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[9px] font-black transition-colors">✖</span> Mínimo 8 caracteres
+            </li>
+            <li id="req-case" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium transition-colors">
+                <span class="flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[9px] font-black transition-colors">✖</span> Mayúsculas y minúsculas
+            </li>
+            <li id="req-number" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium transition-colors">
+                <span class="flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[9px] font-black transition-colors">✖</span> Al menos un número
+            </li>
+        </ul>
+    </div>
 
-{{-- Confirmar Contraseña --}}
-<div class="mb-5">
-    <label class="block text-sm font-medium mb-2 text-gray-500">{{ $isEdit ? 'Confirmar Nueva Contraseña' : 'Confirmar Contraseña *' }}</label>
-    <input type="password" id="password_confirmation" name="password_confirmation" {{ $isEdit ? '' : 'required' }} class="glass-input">
-    <p id="req-match" class="mt-1 text-sm text-red-500 hidden">Las contraseñas no coinciden</p>
+    {{-- Confirmar Contraseña --}}
+    <div>
+        <label class="block text-sm font-medium mb-2 text-gray-500">
+            {{ $isEdit ? 'Confirmar Nueva Contraseña' : 'Confirmar Contraseña' }}
+            @if(!$isEdit)<span class="text-red-500 font-bold">*</span>@endif
+        </label>
+        <div class="ts-password-wrapper w-full user-password-wrapper mt-1">
+            <input type="password" id="password_confirmation" name="password_confirmation" {{ $isEdit ? '' : 'required' }} class="glass-input w-full">
+        </div>
+        <div id="caps-password-confirmation" class="hidden text-amber-600 dark:text-amber-400 text-xs font-bold mt-1 flex items-center gap-1 select-none" role="alert">
+            <span class="select-none text-sm leading-none">⚠️</span>
+            <span>Bloq Mayús está activado</span>
+        </div>
+        <p id="req-match" class="mt-1 text-sm text-red-500 hidden">Las contraseñas no coinciden</p>
+    </div>
 </div>
 
 @if(!$isEdit)
-<div class="mb-6 flex items-center">
-    <input type="checkbox" name="active" id="active" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-0 focus:outline-none cursor-pointer" style="outline: none !important; box-shadow: none !important;">
-    <label for="active" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer select-none">Activar usuario inmediatamente</label>
-</div>
+<input type="hidden" name="active" value="1">
 @endif
 
-<div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-    <a href="{{ auth()->check() && auth()->user()->isAdmin() ? route('usuarios.index') : route('dashboard') }}" class="btn-cancel">✕<space>Cancelar</a>
-    <button type="submit" class="btn-save">
-        {{ $isEdit ? '🔄 Actualizar Usuario' : '💾 Guardar Usuario' }}
-    </button>
+
+<div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-0 pt-0">
+    <a href="{{ auth()->check() && auth()->user()->isAdmin() ? route('usuarios.index') : route('dashboard') }}" class="btn-cancel"><span>✕</span><span>Cancelar</span></a>
+    <button type="submit" class="btn-save">{{ $isEdit ? '🔄 Actualizar Usuario' : '💾 Guardar Usuario' }}</button>
 </div>
 
 <script>
@@ -278,5 +304,119 @@ document.addEventListener('DOMContentLoaded', function() {
             if (userPreviewImg) userPreviewImg.src = '';
         });
     }
+
+    // Revelar icono de ojo únicamente al hacer clic o interactuar con el campo de contraseña (igual que en Login)
+    function setupUserPasswordToggles() {
+        document.querySelectorAll('.user-password-wrapper').forEach(function(wrapper) {
+            var input = wrapper.querySelector('input');
+            if (!input || input.dataset.hasEyeInteractiveSetup) return;
+            input.dataset.hasEyeInteractiveSetup = 'true';
+
+            function syncEye() {
+                if (input.value && input.value.length > 0) {
+                    wrapper.classList.add('has-value');
+                } else {
+                    wrapper.classList.remove('has-value');
+                }
+            }
+
+            function activateEye() {
+                wrapper.classList.add('is-active');
+                syncEye();
+            }
+
+            input.addEventListener('focus', activateEye);
+            input.addEventListener('click', activateEye);
+            input.addEventListener('mousedown', activateEye);
+            input.addEventListener('input', syncEye);
+            input.addEventListener('change', syncEye);
+
+            input.addEventListener('blur', function() {
+                syncEye();
+                if (!input.value || input.value.length === 0) {
+                    wrapper.classList.remove('is-active');
+                }
+            });
+
+            wrapper.addEventListener('mousedown', function(e) {
+                if (e.target.closest('.ts-password-toggle')) {
+                    e.preventDefault();
+                    wrapper.classList.add('is-active');
+                }
+            });
+
+            syncEye();
+        });
+    }
+
+    setupUserPasswordToggles();
+    setTimeout(setupUserPasswordToggles, 100);
+
+    // Detección en tiempo real de Bloq Mayús (Caps Lock) en campos de contraseña (igual que en Login)
+    var isCapsActive = false;
+    var pwdCapsItems = [
+        { input: document.getElementById('current_password'), warning: document.getElementById('caps-current-password') },
+        { input: document.getElementById('password'), warning: document.getElementById('caps-password') },
+        { input: document.getElementById('password_confirmation'), warning: document.getElementById('caps-password-confirmation') }
+    ];
+
+    function handleCapsCheck(e) {
+        if (e && typeof e.getModifierState === 'function') {
+            isCapsActive = e.getModifierState('CapsLock');
+            pwdCapsItems.forEach(function(item) {
+                if (item.input && item.warning) {
+                    if (document.activeElement === item.input) {
+                        if (isCapsActive) {
+                            item.warning.classList.remove('hidden');
+                        } else {
+                            item.warning.classList.add('hidden');
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    window.addEventListener('keydown', handleCapsCheck);
+    window.addEventListener('keyup', handleCapsCheck);
+
+    pwdCapsItems.forEach(function(item) {
+        if (!item.input || !item.warning) return;
+
+        ['keydown', 'keyup', 'click', 'mousedown'].forEach(function(evt) {
+            item.input.addEventListener(evt, handleCapsCheck);
+        });
+
+        item.input.addEventListener('focus', function() {
+            if (isCapsActive) {
+                item.warning.classList.remove('hidden');
+            }
+        });
+
+        item.input.addEventListener('blur', function() {
+            item.warning.classList.add('hidden');
+        });
+    });
 });
 </script>
+
+<style>
+/* Ocultar el icono del ojo en los campos de usuario hasta hacer clic / foco en el campo */
+.user-password-wrapper .ts-password-toggle {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) scale(0.85) !important;
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s ease !important;
+}
+
+.user-password-wrapper:focus-within .ts-password-toggle,
+.user-password-wrapper.has-value .ts-password-toggle,
+.user-password-wrapper.is-active .ts-password-toggle {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateY(-50%) scale(1) !important;
+}
+</style>
+

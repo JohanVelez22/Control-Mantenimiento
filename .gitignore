@@ -5,6 +5,7 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+test_results*.txt
 /.cursor/
 /.idea
 /.nova

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\ColombiaHelper;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Proveedor extends Model
 {
-    use \App\Traits\Auditable, HasFactory, SoftDeletes;
+    use Auditable, HasFactory, SoftDeletes;
 
     protected $table = 'proveedores';
 
@@ -43,10 +45,56 @@ class Proveedor extends Model
         return $this->morphMany(Factura::class, 'facturable');
     }
 
+    public function getIdentificacionAttribute($value)
+    {
+        return $value ? strtoupper($value) : $value;
+    }
+
+    public function setIdentificacionAttribute($value)
+    {
+        $this->attributes['identificacion'] = $value ? strtoupper($value) : $value;
+    }
+
+    public function getNombreRazonSocialAttribute($value)
+    {
+        return ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setNombreRazonSocialAttribute($value)
+    {
+        $this->attributes['nombre_razon_social'] = ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function getContactoNombreAttribute($value)
+    {
+        return ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setContactoNombreAttribute($value)
+    {
+        $this->attributes['contacto_nombre'] = ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function getDireccionAttribute($value)
+    {
+        return ColombiaHelper::formatTitleCase($value);
+    }
+
+    public function setDireccionAttribute($value)
+    {
+        $this->attributes['direccion'] = ColombiaHelper::formatTitleCase($value);
+    }
+
     /** Etiqueta legible del tipo de entidad */
     public function getTipoLabelAttribute(): string
     {
         return $this->tipo_entidad === 'empresa' ? '🏢 Empresa' : '👤 Persona';
+    }
+
+    /** Abreviatura legible del tipo de identificación (ej. C.C., NIT, Pass, etc.) */
+    public function getTipoIdentificacionAbreviadoAttribute(): string
+    {
+        return ColombiaHelper::abreviaturaTipoIdentificacion($this->tipo_identificacion);
     }
 
     /** Scope: solo registros activos (no dados de baja lógicamente) */

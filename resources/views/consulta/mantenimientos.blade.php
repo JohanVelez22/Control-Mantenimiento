@@ -1,13 +1,26 @@
 @extends('layouts.consulta')
 
 @section('content')
-<div class="w-full max-w-4xl mx-auto">
-    <div class="glass-card p-6 md:p-8">
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 text-3xl mb-4">🔍</div>
-            <h1 class="text-2xl font-black text-slate-800 dark:text-white">Consulta de Mantenimientos</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingrese la cédula del cliente y el número de orden (ej: ORD-001)</p>
+<div class="w-full max-w-xl mx-auto">
+
+    {{-- Título de Marca WolfCore System --}}
+    <div class="flex justify-center mb-3">
+        <div class="text-[26px] font-black tracking-widest font-logo flex items-center gap-2">
+            <span class="text-[#2563EB] dark:text-[#3B82F6]">WOLFCORE</span>
+            <span class="text-slate-800 dark:text-white">SYSTEM</span>
         </div>
+    </div>
+
+    {{-- Encabezado con insignia oficial de WolfCore System --}}
+    <div class="text-center mb-3">
+        <div class="inline-flex items-center justify-center w-20 h-20 mb-2 hover:scale-105 transition-transform duration-300">
+            <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore System" class="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]">
+        </div>
+        <h1 class="text-xl font-black text-slate-800 dark:text-white">Consulta de Mantenimientos</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Ingresa la cédula del cliente y el número de orden (ej: ORD-001)</p>
+    </div>
+
+    <div class="glass-card p-6 md:p-8">
 
         @if(session('error'))
             <div class="mb-5 p-3 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm">
@@ -19,14 +32,14 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                        🪪 Cédula o NIT del Cliente *
+                        🪪 Cédula o NIT del Cliente <span class="text-red-500 font-bold">*</span>
                     </label>
                     <input type="text" name="identificacion" value="{{ $identificacion ?? '' }}" placeholder="Ej: 123456789" 
                            class="w-full glass-input py-3 text-base" required minlength="3" maxlength="30">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                        📋 Número de Orden *
+                        📋 Número de Orden <span class="text-red-500 font-bold">*</span>
                     </label>
                     <input type="text" name="id_orden" value="{{ $idOrden ?? '' }}" placeholder="Ej: ORD-001 o 1" 
                            class="w-full glass-input py-3 text-base" required minlength="1" maxlength="30">

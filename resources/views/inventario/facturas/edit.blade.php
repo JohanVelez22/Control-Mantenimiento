@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto">
-    <div class="glass-card p-6 md:p-8">
+    <div class="glass-card p-6 md:p-6">
         <div class="flex items-center gap-3 mb-6">
-            <a href="{{ route('inventario.facturas') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+            <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
             <div>
                 <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                     ✏️ Editar Factura {{ $factura->numero_factura }}
@@ -32,7 +32,7 @@
                         <input type="text" value="{{ $factura->numero_factura }}" readonly class="glass-input font-mono font-bold bg-white/40 dark:bg-black/20 {{ $nroFacturaText }} text-left pl-3 cursor-not-allowed w-full" style="width: 7rem !important;">
                     </div>
                     <div class="w-full flex-1 min-w-0">
-                        <label class="field-label">Cliente / Proveedor *</label>
+                        <label class="field-label">Cliente / Proveedor <span class="text-red-500 font-bold">*</span></label>
                         <select name="facturable_global" required class="glass-input font-bold {{ $ringColor }}" data-placeholder="Buscar cliente o proveedor...">
                             <option value="">Buscar cliente o proveedor...</option>
                             @foreach($proveedores as $p)
@@ -49,7 +49,7 @@
                         @error('facturable_global') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                     </div>
                     <div class="col-fecha-header">
-                        <label class="field-label whitespace-nowrap">Fecha Factura *</label>
+                        <label class="field-label whitespace-nowrap">Fecha Factura <span class="text-red-500 font-bold">*</span></label>
                         <input type="date" name="fecha" required value="{{ old('fecha', $factura->fecha->format('Y-m-d')) }}" class="glass-input reportes-date-input {{ $ringColor }}" style="width: 8.5rem !important;">
                         @error('fecha') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                     </div>
@@ -194,7 +194,7 @@
     height: 38px !important;
 }
 </style>
-                <div class="overflow-x-auto pb-2">
+                <div class="overflow-x-auto pb-2 max-h-[450px] overflow-y-auto" style="overflow-y: auto !important;">
                     <table class="ts-table w-full table-fixed table-factura-edit" id="factura-items-table">
                         <thead>
                             <tr>
@@ -243,7 +243,7 @@
                                                 <input type="text" name="existing_items[{{ $index }}][precio_unitario]" value="{{ number_format((float)$item->precio_unitario, 0, ',', '.') }}" required class="glass-input text-right py-1.5 {{ $ringColor }} font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
                                                 @if($factura->tipo_movimiento === 'venta')
                                                      <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis absolute right-1 top-full pointer-events-none uppercase tracking-wider">
-                                                         <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$0</span>)</span>
+                                                         <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$ 0</span>)</span>
                                                      </div>
                                                 @endif
                                             </div>
@@ -253,7 +253,7 @@
                                         <div class="flex flex-col gap-1">
                                             <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
                                             <div class="subtotal-display h-[38px] flex items-center justify-center font-bold text-slate-800 dark:text-white text-center whitespace-nowrap overflow-hidden text-ellipsis px-2">
-                                                ${{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}
+                                                $ {{ number_format($item->cantidad * $item->precio_unitario, 0, ',', '.') }}
                                             </div>
                                         </div>
                                     </td>
@@ -271,12 +271,12 @@
                             @endforeach
                         </tbody>
                         <tfoot>
-                            <tr class="border-0 bg-gray-50/50 dark:bg-gray-800/50">
+                            <tr class="border-0 bg-transparent">
                                 <td colspan="3" class="py-4 text-right pr-2 align-middle border-0">
                                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                                 </td>
                                 <td class="py-4 text-right pr-3 align-middle border-0">
-                                    <span class="font-black text-2xl {{ $totalTextColor }} whitespace-nowrap" id="total_documento_display">${{ number_format($factura->total_documento, 0, ',', '.') }}</span>
+                                    <span class="font-black text-2xl {{ $totalTextColor }} whitespace-nowrap" id="total_documento_display">$ {{ number_format($factura->total_documento, 0, ',', '.') }}</span>
                                 </td>
                                 <td class="py-4 align-middle border-0"></td>
                             </tr>
@@ -289,7 +289,7 @@
             <div class="md:col-span-2 p-4 glass-card">
                 <label class="field-label text-center block text-sm">Total Pagado <span class="text-red-500 font-bold">*</span></label>
                 <input type="text" name="total_pagado" id="total_pagado" required value="{{ old('total_pagado', number_format($factura->total_pagado, 0, ',', '.')) }}" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()" class="glass-input font-black text-2xl text-emerald-600 text-center py-3">
-                <p class="text-[11px] text-gray-400 mt-2 text-center" id="total_pagado_help">El monto total del documento es ${{ number_format($factura->total_documento, 0, ',', '.') }}. Modificar el pago ajustará el saldo y el estado automáticamente.</p>
+                <p class="text-[11px] text-gray-400 mt-2 text-center" id="total_pagado_help">El monto total del documento es $ {{ number_format($factura->total_documento, 0, ',', '.') }}. Modificar el pago ajustará el saldo y el estado automáticamente.</p>
                 @error('total_pagado') <p class="text-red-500 text-xs mt-1 font-bold text-center">{{ $message }}</p> @enderror
             </div>
 
@@ -325,8 +325,18 @@
             </div>
         @endif
 
-        <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-            <a href="{{ route('inventario.facturas') }}" class="btn-cancel w-full sm:w-auto justify-center text-center">✕<space>Cancelar</a>
+        @if(auth()->check() && auth()->user()->isTecnico())
+        <div class="mb-4 p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 max-w-md ml-auto">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-center">
+                🔒 Autorización Requerida — Contraseña de Administrador:
+            </label>
+            <input type="password" name="password_confirm" required placeholder="Contraseña de Administrador..." 
+                class="glass-input text-center tracking-widest text-base w-full focus:ring-orange-500">
+        </div>
+        @endif
+
+        <div class="flex flex-col sm:flex-row items-center justify-end gap-3 mt-0 pt-0">
+            <a href="{{ route('inventario.facturas') }}" class="btn-cancel w-full sm:w-auto justify-center text-center"><span>✕</span><span>Cancelar</span></a>
             <button type="submit" class="btn-save w-full sm:w-auto justify-center">💾 Guardar Cambios</button>
         </div>
     </form>
@@ -365,7 +375,7 @@ function agregarFila() {
         <td class="col-art py-2.5" style="vertical-align: top !important;">
             <div class="flex flex-col gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📦 Producto / Stock</span>
-                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 {{ $ringColor }}" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
+                <select name="new_items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 {{ $ringColor }} w-full" data-placeholder="Seleccionar producto..." onchange="actualizarPrecio(this)">
                     ${optionsHtml}
                 </select>
             </div>
@@ -383,7 +393,7 @@ function agregarFila() {
                     <input type="text" name="new_items[${filaIndex}][precio_unitario]" value="0" required class="glass-input text-right py-1.5 {{ $ringColor }} font-bold text-slate-800 dark:text-white price-input transition-all" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()">
                     @if($factura->tipo_movimiento === 'venta')
                         <div class="alerta-costo-badge hidden text-[10px] font-bold text-red-500 dark:text-red-400 text-right items-center justify-end gap-1 whitespace-nowrap overflow-hidden text-ellipsis absolute right-1 top-full pointer-events-none uppercase tracking-wider">
-                            <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$0</span>)</span>
+                            <span>⚠️ MENOR AL COSTO (<span class="costo-ref font-black">$ 0</span>)</span>
                         </div>
                     @endif
                 </div>
@@ -393,7 +403,7 @@ function agregarFila() {
             <div class="flex flex-col gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
                 <div class="subtotal-display h-[38px] flex items-center justify-center font-bold {{ $totalTextColor }} text-center whitespace-nowrap overflow-hidden text-ellipsis px-2">
-                    $0
+                    $ 0
                 </div>
             </div>
         </td>
@@ -421,6 +431,9 @@ function agregarFila() {
             });
         }
     }
+
+    // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
+    const scrollBox = tr.closest('.overflow-y-auto'); if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) { scrollBox.scrollTop = scrollBox.scrollHeight; }
 }
 
 let _pendingRowToDelete = null;
@@ -533,7 +546,7 @@ function verificarAlertaCostoEdicion(row) {
 
     if (precioCompra > 0 && precioVenta > 0 && precioVenta < precioCompra) {
         if (badge) {
-            if (costoRef) costoRef.textContent = '$' + window.formatNumber(precioCompra);
+            if (costoRef) costoRef.textContent = '$ ' + window.formatNumber(precioCompra);
             badge.classList.remove('hidden');
             badge.classList.add('flex');
         }
@@ -561,7 +574,7 @@ function recalcularTotalesEdicion() {
             const sub = qty * price;
             const subtotalCell = row.querySelector('.subtotal-display');
             if (subtotalCell) {
-                subtotalCell.textContent = '$' + window.formatNumber(sub);
+                subtotalCell.textContent = '$ ' + window.formatNumber(sub);
             }
             totalDoc += sub;
 
@@ -571,7 +584,7 @@ function recalcularTotalesEdicion() {
         }
     });
     
-    document.getElementById('total_documento_display').textContent = '$' + window.formatNumber(totalDoc);
+    document.getElementById('total_documento_display').textContent = '$ ' + window.formatNumber(totalDoc);
 
     const banner = document.getElementById('banner-alerta-bajo-costo');
     if (banner) {
@@ -595,7 +608,7 @@ function recalcularTotalesEdicion() {
     // Actualizar el texto de ayuda del total pagado
     const helpText = document.getElementById('total_pagado_help');
     if (helpText) {
-        helpText.textContent = `El monto total del documento es $${window.formatNumber(totalDoc)}. Modificar el pago ajustará el saldo y el estado automáticamente.`;
+        helpText.textContent = `El monto total del documento es $ ${window.formatNumber(totalDoc)}. Modificar el pago ajustará el saldo y el estado automáticamente.`;
     }
 }
 

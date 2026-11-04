@@ -14,6 +14,7 @@ class TecnicoControllerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $tecnicoUser;
 
     protected function setUp(): void

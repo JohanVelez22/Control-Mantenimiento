@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Cliente;
 use App\Models\Electronica;
 use App\Models\User;
 
@@ -25,13 +26,14 @@ class ElectronicaPolicy
         }
 
         // Si el usuario invitado es el cliente dueño del equipo (mismo correo)
-        $cliente = \App\Models\Cliente::where('email', $user->email)->first();
+        $cliente = Cliente::where('email', $user->email)->first();
         if ($cliente) {
             return $electronica->equipo?->cliente_id === $cliente->id;
         }
 
         // Si es el invitado genérico, verificar si validó la orden en la sesión actual
         $autorizadas = session('consultas_autorizadas_elec', []);
+
         return in_array($electronica->id, $autorizadas);
     }
 

@@ -13,9 +13,9 @@
             </div>
         @endif
 
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
+        <div class="detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
             <div class="flex items-center gap-3">
-                <a href="{{ route('cotizaciones.index') }}" class="btn-ghost px-3 py-2 text-xl" title="Volver">⬅️</a>
+                <a href="{{ route('cotizaciones.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
                 <div>
                     <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                         📝 {{ $cotizacion->codigo }}
@@ -24,10 +24,16 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-3 shrink-0">
+            <div class="flex flex-wrap items-center gap-3 shrink-0">
                 <a href="{{ route('cotizaciones.pdf', $cotizacion) }}" target="_blank" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30">
                     📄 Ver PDF
                 </a>
+                
+                @if($cotizacion->factura_creada)
+                    <a href="{{ route('inventario.facturas.show', $cotizacion->factura_creada->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 font-semibold" title="Ver {{ $cotizacion->factura_creada->tipo_movimiento === 'compra' ? 'Compra' : 'Venta' }} generada: {{ $cotizacion->factura_creada->numero_factura }}">
+                        {{ $cotizacion->factura_creada->tipo_movimiento === 'compra' ? '📦 Ver Compra' : '🛒 Ver Venta' }} ({{ $cotizacion->factura_creada->numero_factura }})
+                    </a>
+                @endif
                 
                 @if(!$cotizacion->anulado)
                     @if($cotizacion->estado === 'pendiente')
@@ -53,7 +59,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 items-stretch gap-6 mb-4 relative z-10">
             <div class="p-5 glass-card flex flex-col justify-between min-w-0 h-full">
                 <div>
-                    <h3 class="text-xs font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">
+                    <h3 class="text-base font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">
                         {{ $cotizacion->destinatario_tipo === 'proveedor' ? '🏢 Datos del Proveedor' : '👤 Datos del Cliente' }}
                     </h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400"><span class="font-semibold">Nombre:</span> {{ $cotizacion->destinatario_nombre }}</p>
@@ -66,7 +72,7 @@
             </div>
             <div class="p-5 glass-card flex flex-col justify-between min-w-0 h-full">
                 <div>
-                    <h3 class="text-xs font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">Resumen de Cotización</h3>
+                    <h3 class="text-base font-bold uppercase text-slate-900 dark:text-white tracking-wider mb-3">Resumen de Cotización</h3>
                     <p class="text-sm text-slate-600 dark:text-slate-400"><span class="font-semibold">Válida por:</span> {{ $cotizacion->validez_dias }} días</p>
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Vendedor:</span> {{ $cotizacion->user->name }}</p>
                     <p class="text-sm text-slate-600 dark:text-slate-400 mt-1"><span class="font-semibold">Estado:</span> 
@@ -85,7 +91,7 @@
                 </div>
                 <div class="mt-4 pt-4 border-t border-gray-200/50 dark:border-white/10">
                     <p class="text-2xl font-black bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent text-right">
-                        Total: ${{ number_format($cotizacion->total, 0, ',', '.') }}
+                        Total: $ {{ number_format($cotizacion->total, 0, ',', '.') }}
                     </p>
                 </div>
             </div>
@@ -96,7 +102,7 @@
         </h3>
         
         <div class="overflow-x-auto pb-2 relative z-10" style="margin-bottom: 24px !important;">
-            <table class="ts-table w-full">
+            <table class="ts-table table-dense w-full">
                 <thead>
                     <tr>
                         <th class="text-left w-32">Tipo</th>
@@ -123,8 +129,8 @@
                             @endif
                         </td>
                         <td data-label="Cant." class="text-center font-bold">{{ $item->cantidad }}</td>
-                        <td data-label="Precio Un." class="text-right font-bold text-slate-800 dark:text-white">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
-                        <td data-label="Subtotal" class="text-right font-black text-blue-600 dark:text-cyan-400">${{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                        <td data-label="Precio Un." class="text-right font-bold text-slate-800 dark:text-white">$ {{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
+                        <td data-label="Subtotal" class="text-right font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -143,36 +149,12 @@
 
 <script>
 function openAprobarCotizacionModal() {
-    const modal = document.getElementById('ts-modal');
-    const card = document.getElementById('ts-modal-card');
-    const confirmBtn = document.getElementById('ts-modal-confirm');
-    const cancelBtn = document.getElementById('ts-modal-cancel');
-    const iconBox = document.getElementById('ts-modal-icon-box');
-    const icon = document.getElementById('ts-modal-icon');
-    const titleEl = document.getElementById('ts-modal-title');
-    const msgEl = document.getElementById('ts-modal-msg');
-
-    window._pendingForm = document.getElementById('form-convertir-cotizacion');
-
-    if (titleEl) titleEl.innerText = '¿Estás seguro?';
-    if (msgEl) msgEl.innerText = 'Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?';
-    if (icon) icon.innerText = '✅';
-    if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center text-3xl mx-auto mb-4';
-    if (cancelBtn) {
-        cancelBtn.className = 'flex-1 btn-ghost-red';
-        cancelBtn.textContent = 'Cancelar';
-    }
-    if (confirmBtn) {
-        confirmBtn.className = 'flex-1 btn-ghost-emerald';
-        confirmBtn.textContent = 'Confirmar';
-    }
-
-    if (modal) {
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            if (card) card.classList.remove('scale-95', 'opacity-0');
-        }, 10);
+    const form = document.getElementById('form-convertir-cotizacion');
+    if (!form) return;
+    if (typeof confirmDelete === 'function') {
+        confirmDelete(form, 'Al confirmar, se creará una Nueva Venta (Factura) basada en esta cotización. ¿Continuar?');
+    } else {
+        form.submit();
     }
 }
 </script>

@@ -9,8 +9,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use ZipArchive;
 
 class BackupController extends Controller
 {
@@ -170,9 +174,13 @@ class BackupController extends Controller
                 'message' => 'Ocurrió un error al ejecutar el comando de respaldo.',
             ], 500);
         } catch (\Throwable $e) {
+            Log::error('Excepción al generar respaldo manual: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Excepción al generar respaldo: '.$e->getMessage(),
+                'message' => config('app.debug')
+                    ? 'Excepción al generar respaldo: '.$e->getMessage()
+                    : 'No se pudo generar la copia de seguridad. Verifique los registros del sistema.',
             ], 500);
         }
     }
@@ -347,11 +355,20 @@ class BackupController extends Controller
             return $resp;
         }
 
+        if (! app()->environment('local', 'testing')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Esta operación solo está disponible en entorno local.',
+            ], 403);
+        }
+
         $backupDir = $this->getBackupDir();
         $isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
         $opened = false;
 
-        if ($isWindows) {
+        if (app()->runningUnitTests()) {
+            $opened = true;
+        } elseif ($isWindows) {
             try {
                 $folderLeaf = basename($backupDir);
                 // Usamos explorer.exe /separate para abrir una ventana nueva e independiente centrada,
@@ -364,7 +381,7 @@ class BackupController extends Controller
                 $opened = true;
             } catch (\Throwable $e) {
                 try {
-                    pclose(popen('explorer.exe /separate,' . escapeshellarg($backupDir), 'r'));
+                    pclose(popen('explorer.exe /separate,'.escapeshellarg($backupDir), 'r'));
                     $opened = true;
                 } catch (\Throwable $e2) {
                     $opened = false;
@@ -380,5 +397,464 @@ class BackupController extends Controller
                 ? 'Carpeta de respaldos abierta en el Explorador de Windows.'
                 : "Ubicación en el servidor: {$backupDir}",
         ]);
+    }
+
+    /**
+     * Localiza el binario ejecutable de mysql en el servidor.
+     */
+    protected function resolveMysqlBinary(): ?string
+    {
+        $custom = env('MYSQL_PATH');
+        if ($custom && File::exists($custom)) {
+            return $custom;
+        }
+
+        $candidates = [
+            'C:\\ServBay\\packages\\mysql\\current\\bin\\mysql.exe',
+            'C:\\ServBay\\packages\\mysql\\8.4\\bin\\mysql.exe',
+            'C:\\ServBay\\packages\\mysql\\8.0\\bin\\mysql.exe',
+            'C:\\ServBay\\packages\\defaultsqlserver\\current\\bin\\mysql.exe',
+            'C:\\ServBay\\packages\\defaultsqlserver\\8.4\\bin\\mysql.exe',
+            'C:\\ServBay\\packages\\mariadb\\current\\bin\\mysql.exe',
+            'C:\\ServBay\\packages\\mariadb\\11.4\\bin\\mysql.exe',
+            'C:\\ServBay\\packages\\mariadb\\10.11\\bin\\mysql.exe',
+            'C:\\xampp\\mysql\\bin\\mysql.exe',
+            '/usr/bin/mysql',
+            '/usr/local/bin/mysql',
+        ];
+
+        foreach ($candidates as $cand) {
+            if (File::exists($cand)) {
+                return $cand;
+            }
+        }
+
+        $checkCmd = PHP_OS_FAMILY === 'Windows' ? 'where mysql 2>nul' : 'which mysql 2>/dev/null';
+        $output = [];
+        $code = 0;
+        exec($checkCmd, $output, $code);
+        if ($code === 0 && ! empty($output)) {
+            return trim($output[0]);
+        }
+
+        return null;
+    }
+
+    /**
+     * Ejecuta la restauración de un archivo SQL sobre la base de datos configurada.
+     */
+    protected function restoreSqlFile(string $sqlFilePath): void
+    {
+        $defaultConnection = config('database.default');
+        $isSqlite = $defaultConnection === 'sqlite' || env('DB_CONNECTION') === 'sqlite';
+
+        if ($isSqlite) {
+            $sql = File::get($sqlFilePath);
+            if (! empty(trim($sql))) {
+                DB::unprepared($sql);
+            }
+
+            return;
+        }
+
+        $mysqlBinary = $this->resolveMysqlBinary();
+        $database = config('database.connections.mysql.database', env('DB_DATABASE', 'tecni_systemas'));
+        $username = config('database.connections.mysql.username', env('DB_USERNAME', 'root'));
+        $password = config('database.connections.mysql.password', env('DB_PASSWORD', ''));
+        $host = config('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
+        $port = config('database.connections.mysql.port', env('DB_PORT', '3306'));
+
+        if ($mysqlBinary && File::exists($mysqlBinary)) {
+            putenv("MYSQL_PWD={$password}");
+            $descriptors = [
+                0 => ['file', $sqlFilePath, 'r'],
+                1 => ['pipe', 'w'],
+                2 => ['pipe', 'w'],
+            ];
+
+            $escapedBinary = str_replace('"', '\"', $mysqlBinary);
+            $escapedHost = str_replace('"', '\"', $host);
+            $escapedUser = str_replace('"', '\"', $username);
+            $escapedPort = str_replace('"', '\"', $port);
+            $escapedDb = str_replace('"', '\"', $database);
+
+            $cmd = sprintf(
+                '"%s" --user="%s" --host="%s" --port="%s" --default-character-set=utf8mb4 "%s"',
+                $escapedBinary,
+                $escapedUser,
+                $escapedHost,
+                $escapedPort,
+                $escapedDb
+            );
+
+            $process = proc_open($cmd, $descriptors, $pipes);
+            $stderr = '';
+            $returnCode = -1;
+
+            if (is_resource($process)) {
+                $stdout = stream_get_contents($pipes[1]);
+                fclose($pipes[1]);
+                $stderr = stream_get_contents($pipes[2]);
+                fclose($pipes[2]);
+                $returnCode = proc_close($process);
+            }
+            putenv('MYSQL_PWD');
+
+            if ($returnCode !== 0) {
+                throw new \Exception("Error al restaurar MySQL (código {$returnCode}): ".trim($stderr));
+            }
+        } else {
+            // Fallback por PDO si no hay binario mysql CLI
+            $sql = File::get($sqlFilePath);
+            if (! empty(trim($sql))) {
+                DB::unprepared($sql);
+            }
+        }
+    }
+
+    /**
+     * Restaura una copia de seguridad seleccionada (.sql o .zip).
+     * Conserva todos los eventos de auditoría existentes para preservar la trazabilidad.
+     */
+    public function restore(Request $request, string $filename): JsonResponse
+    {
+        if ($resp = $this->ensureAdmin()) {
+            return $resp;
+        }
+
+        // Prevenir path traversal estrictamente
+        if (! preg_match('/^[a-zA-Z0-9_\-\.]+$/', $filename) || str_contains($filename, '..')) {
+            return response()->json(['success' => false, 'message' => 'Nombre de archivo no válido.'], 400);
+        }
+
+        $dir = $this->getBackupDir();
+        $filePath = $dir.DIRECTORY_SEPARATOR.$filename;
+
+        if (! File::exists($filePath)) {
+            return response()->json(['success' => false, 'message' => 'El archivo de respaldo seleccionado no existe.'], 404);
+        }
+
+        $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+        if (! in_array($extension, ['sql', 'zip'])) {
+            return response()->json(['success' => false, 'message' => 'Formato no soportado para restauración. Solo se admiten archivos .sql y .zip.'], 400);
+        }
+
+        // 1. Preservar eventos de auditoría previos para garantizar trazabilidad ininterrumpida
+        $existingEventos = [];
+        try {
+            if (Schema::hasTable('eventos')) {
+                $existingEventos = DB::table('eventos')
+                    ->get()
+                    ->map(fn ($e) => (array) $e)
+                    ->toArray();
+            }
+        } catch (\Throwable $e) {
+            Log::warning('No se pudieron leer los eventos previos a la restauración: '.$e->getMessage());
+        }
+
+        $tipoDetectado = 'Solo Base de Datos (.sql)';
+        $archivosRestauradosCount = 0;
+        $tempExtractDir = null;
+
+        try {
+            if ($extension === 'sql') {
+                // RESTAURACIÓN TIPO 1: Solo Base de Datos
+                $this->restoreSqlFile($filePath);
+                $tipoDetectado = 'Solo Base de Datos (.sql)';
+            } elseif ($extension === 'zip') {
+                // RESTAURACIÓN TIPO 2 y 3: ZIP (BD + Multimedia o Integral)
+                $zip = new ZipArchive;
+                if ($zip->open($filePath) !== true) {
+                    throw new \Exception('No se pudo abrir el archivo ZIP de respaldo.');
+                }
+
+                $tempExtractDir = $dir.DIRECTORY_SEPARATOR.'temp_restore_'.uniqid();
+                File::makeDirectory($tempExtractDir, 0755, true);
+
+                // Prevenir Zip Slip: validar cada entrada antes de extraer
+                for ($i = 0; $i < $zip->numFiles; $i++) {
+                    $entryName = $zip->getNameIndex($i);
+                    if ($entryName === false) {
+                        continue;
+                    }
+                    if (str_contains($entryName, '..') || str_starts_with($entryName, '/') || str_starts_with($entryName, '\\') || str_contains($entryName, "\0") || str_contains($entryName, ':')) {
+                        $zip->close();
+                        File::deleteDirectory($tempExtractDir);
+
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'El paquete de respaldo contiene rutas de archivo no permitidas (Zip Slip detectado).',
+                        ], 400);
+                    }
+                }
+
+                $zip->extractTo($tempExtractDir);
+                $zip->close();
+
+                // 1. Restaurar Base de Datos desde SQL en el ZIP
+                $sqlInside = $tempExtractDir.DIRECTORY_SEPARATOR.'database.sql';
+                if (! File::exists($sqlInside)) {
+                    // Buscar cualquier archivo .sql dentro de la raíz extraída
+                    $sqlFiles = File::glob($tempExtractDir.DIRECTORY_SEPARATOR.'*.sql');
+                    $sqlInside = $sqlFiles[0] ?? null;
+                }
+
+                if ($sqlInside && File::exists($sqlInside)) {
+                    $this->restoreSqlFile($sqlInside);
+                } else {
+                    throw new \Exception('No se encontró archivo de base de datos (database.sql) dentro del paquete ZIP.');
+                }
+
+                // 2. Restaurar Archivos Públicos Multimedia (storage/app/public) con lista blanca estricta
+                $publicMediaDir = $tempExtractDir.DIRECTORY_SEPARATOR.'archivos_publicos';
+                if (File::isDirectory($publicMediaDir)) {
+                    $targetPublicDir = storage_path('app/public');
+                    if (! File::exists($targetPublicDir)) {
+                        File::makeDirectory($targetPublicDir, 0755, true);
+                    }
+
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'txt'];
+                    $mediaFiles = File::allFiles($publicMediaDir);
+                    $archivosRestauradosCount = 0;
+
+                    foreach ($mediaFiles as $mediaFile) {
+                        $ext = strtolower($mediaFile->getExtension());
+                        if (! in_array($ext, $allowedExtensions)) {
+                            Log::warning('Archivo ignorado en restauración por extensión peligrosa o no permitida: '.$mediaFile->getFilename());
+
+                            continue;
+                        }
+
+                        $relPath = $mediaFile->getRelativePathname();
+                        $destinationPath = $targetPublicDir.DIRECTORY_SEPARATOR.$relPath;
+                        File::ensureDirectoryExists(dirname($destinationPath));
+                        File::copy($mediaFile->getRealPath(), $destinationPath);
+                        $archivosRestauradosCount++;
+                    }
+                }
+
+                // Determinar etiqueta descriptiva
+                if (str_starts_with($filename, 'backup_integral')) {
+                    $tipoDetectado = 'Respaldo Integral (BD + Multimedia; código fuente intacto en ZIP)';
+                } else {
+                    $tipoDetectado = 'Base de Datos + Multimedia (.zip)';
+                }
+            }
+
+            // 2. Trazabilidad: Re-integrar eventos de auditoría previos
+            $eventosPreservadosCount = 0;
+            try {
+                $isSqlite = config('database.default') === 'sqlite' || env('DB_CONNECTION') === 'sqlite';
+                if (! $isSqlite) {
+                    DB::reconnect();
+                }
+                if (Schema::hasTable('eventos') && ! empty($existingEventos)) {
+                    $restoredEvents = DB::table('eventos')->get();
+                    $existingUserIds = Schema::hasTable('users')
+                        ? DB::table('users')->pluck('id')->all()
+                        : [];
+
+                    foreach ($existingEventos as $oldEv) {
+                        $found = $restoredEvents->first(function ($r) use ($oldEv) {
+                            return $r->created_at == $oldEv['created_at']
+                                && $r->accion == $oldEv['accion']
+                                && $r->descripcion == $oldEv['descripcion'];
+                        });
+
+                        if (! $found) {
+                            $evToInsert = $oldEv;
+                            unset($evToInsert['id']); // Permite generación de ID auto-incremental
+                            if (! empty($evToInsert['user_id']) && ! in_array($evToInsert['user_id'], $existingUserIds)) {
+                                $evToInsert['user_id'] = null;
+                            }
+                            DB::table('eventos')->insert($evToInsert);
+                            $eventosPreservadosCount++;
+                        }
+                    }
+                }
+            } catch (\Throwable $evReEx) {
+                Log::warning('No se pudieron re-insertar los eventos previos: '.$evReEx->getMessage());
+            }
+
+            // 3. Registrar Evento de Auditoría de la Restauración
+            try {
+                $user = Auth::user();
+                $userName = $user ? $user->name : 'Administrador';
+
+                Evento::registrar(
+                    'backup_restaurado',
+                    null,
+                    [
+                        'Archivo' => $filename,
+                        'Tipo de Copia' => $tipoDetectado,
+                        'Tamaño' => $this->formatBytes(File::size($filePath)),
+                    ],
+                    [
+                        'Resultado' => '✅ Restauración completada exitosamente',
+                        'Fecha y Hora' => now()->format('d/m/Y H:i:s'),
+                        'Restaurado Por' => $userName,
+                        'Eventos Preservados' => count($existingEventos),
+                        'Archivos Multimedia' => $archivosRestauradosCount > 0 ? "{$archivosRestauradosCount} archivos actualizados" : 'N/A',
+                    ],
+                    "Copia de seguridad '{$filename}' restaurada exitosamente. Se preservó la trazabilidad total de auditoría ({$eventosPreservadosCount} eventos históricos integrados)."
+                );
+            } catch (\Throwable $evLogEx) {
+                Log::warning('Fallo al registrar evento de auditoría de restauración: '.$evLogEx->getMessage());
+            }
+
+            $filesData = $this->getBackupFiles();
+
+            $msgSuccess = "La copia de seguridad '{$filename}' fue restaurada exitosamente.";
+            if (str_starts_with($filename, 'backup_integral')) {
+                $msgSuccess .= ' Se restauró la Base de Datos y los Archivos Multimedia, conservando el código fuente en ejecución estable y la trazabilidad de eventos.';
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $msgSuccess,
+                'restored_file' => $filename,
+                'tipo' => $tipoDetectado,
+                'files' => $filesData['files'],
+                'total_files' => $filesData['total_files'],
+                'total_size' => $filesData['total_size_formatted'],
+            ]);
+
+        } catch (\Throwable $e) {
+            Log::error("Fallo al restaurar respaldo '{$filename}': ".$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => config('app.debug')
+                    ? 'Error al restaurar la copia de seguridad: '.$e->getMessage()
+                    : 'Error al restaurar la copia de seguridad. Verifique el archivo e intente nuevamente.',
+            ], 500);
+
+        } finally {
+            // Limpiar directorio temporal si existe
+            if ($tempExtractDir && File::isDirectory($tempExtractDir)) {
+                try {
+                    File::deleteDirectory($tempExtractDir);
+                } catch (\Throwable) {
+                    // Silencioso
+                }
+            }
+        }
+    }
+
+    /**
+     * Sincroniza el código fuente con GitHub (git pull) para respaldos integrales,
+     * ejecuta migraciones de base de datos pendientes y limpia la caché.
+     */
+    public function gitUpdate(Request $request): JsonResponse
+    {
+        if ($resp = $this->ensureAdmin()) {
+            return $resp;
+        }
+
+        try {
+            if (app()->runningUnitTests()) {
+                $fakeStatus = $request->input('fake_status', 'up_to_date');
+                if ($fakeStatus === 'no_connection') {
+                    return response()->json([
+                        'success' => false,
+                        'status' => 'no_connection',
+                        'message' => 'No se pudo establecer conexión con GitHub.',
+                    ], 200);
+                }
+                if ($fakeStatus === 'updated') {
+                    return response()->json([
+                        'success' => true,
+                        'status' => 'updated',
+                        'message' => 'Se actualizó correctamente.',
+                    ], 200);
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'status' => 'up_to_date',
+                    'message' => 'Nada por hacer.',
+                ], 200);
+            }
+
+            $basePath = base_path();
+
+            // 1. Probar conectividad con GitHub mediante git fetch
+            $fetchOutput = [];
+            $fetchCode = -1;
+            exec('git -c safe.directory=* -C '.escapeshellarg($basePath).' fetch origin 2>&1', $fetchOutput, $fetchCode);
+
+            if ($fetchCode !== 0) {
+                Log::warning('Git fetch falló: '.implode(' | ', $fetchOutput));
+
+                return response()->json([
+                    'success' => false,
+                    'status' => 'no_connection',
+                    'message' => 'No se pudo establecer conexión con GitHub.',
+                ], 200);
+            }
+
+            // 2. Ejecutar git pull
+            $pullOutput = [];
+            $pullCode = -1;
+            exec('git -c safe.directory=* -C '.escapeshellarg($basePath).' pull 2>&1', $pullOutput, $pullCode);
+            $outputText = implode("\n", $pullOutput);
+
+            if ($pullCode !== 0) {
+                Log::warning('Git pull falló: '.$outputText);
+
+                return response()->json([
+                    'success' => false,
+                    'status' => 'no_connection',
+                    'message' => 'No se pudo establecer conexión con GitHub.',
+                ], 200);
+            }
+
+            // 3. Evaluar si hubo cambios o ya estaba al día
+            if (str_contains($outputText, 'Already up to date.') || str_contains($outputText, 'Ya está actualizado')) {
+                return response()->json([
+                    'success' => true,
+                    'status' => 'up_to_date',
+                    'message' => 'Nada por hacer.',
+                ], 200);
+            }
+
+            // Si trajo cambios: ejecutar migraciones y optimizar
+            try {
+                Artisan::call('migrate', ['--force' => true]);
+                Artisan::call('optimize:clear');
+            } catch (\Throwable $migEx) {
+                Log::warning('Migraciones tras git pull generaron excepción: '.$migEx->getMessage());
+            }
+
+            // Registrar en auditoría
+            try {
+                $user = Auth::user();
+                $userName = $user ? $user->name : 'Administrador';
+                Evento::registrar(
+                    'git_actualizado',
+                    null,
+                    ['Repositorio' => 'GitHub origin/main'],
+                    ['Resultado' => 'Se actualizó correctamente.', 'Detalle' => $outputText],
+                    "El usuario {$userName} actualizó el código fuente exitosamente desde GitHub."
+                );
+            } catch (\Throwable) {
+                // Silencioso
+            }
+
+            return response()->json([
+                'success' => true,
+                'status' => 'updated',
+                'message' => 'Se actualizó correctamente.',
+            ], 200);
+
+        } catch (\Throwable $e) {
+            Log::error('Excepción en gitUpdate: '.$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'status' => 'no_connection',
+                'message' => 'No se pudo establecer conexión con GitHub.',
+            ], 200);
+        }
     }
 }

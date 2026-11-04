@@ -279,8 +279,8 @@ class BackupDatabase extends Command
             $this->info('  📦 Volcando base de datos SQLite...');
             File::put($targetSqlPath, "-- Backup SQLite de prueba\n-- Base de datos: {$safeDatabase}\n-- Generado: {$date}\n");
             $sizeKb = round(File::size($targetSqlPath) / 1024, 2);
-            $this->info("  ✅ Base de datos respaldada: ".basename($targetSqlPath)." ({$sizeKb} KB)");
-            Log::info("Backup SQLite exitoso: ".basename($targetSqlPath)." ({$sizeKb} KB)");
+            $this->info('  ✅ Base de datos respaldada: '.basename($targetSqlPath)." ({$sizeKb} KB)");
+            Log::info('Backup SQLite exitoso: '.basename($targetSqlPath)." ({$sizeKb} KB)");
 
             return $sizeKb;
         }
@@ -294,19 +294,17 @@ class BackupDatabase extends Command
             throw new \Exception($msg);
         }
 
-        $username = env('DB_USERNAME', 'root');
-        $password = env('DB_PASSWORD', '');
-        $host = env('DB_HOST', '127.0.0.1');
-        $port = env('DB_PORT', '3306');
+        $username = config('database.connections.mysql.username', env('DB_USERNAME', 'root'));
+        $password = config('database.connections.mysql.password', env('DB_PASSWORD', ''));
+        $host = config('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
+        $port = config('database.connections.mysql.port', env('DB_PORT', '3306'));
 
-        $escapedPassword = str_replace('"', '\"', $password);
         $command = sprintf(
-            '"%s" --user="%s" --host="%s" --port="%s" --password="%s" "%s" --result-file="%s"',
+            '"%s" --user="%s" --host="%s" --port="%s" "%s" --result-file="%s"',
             $mysqldumpBinary,
             $username,
             $host,
             $port,
-            $escapedPassword,
             $database,
             $targetSqlPath
         );
@@ -319,8 +317,8 @@ class BackupDatabase extends Command
 
         if ($resultCode === 0 && File::exists($targetSqlPath) && File::size($targetSqlPath) > 0) {
             $sizeKb = round(File::size($targetSqlPath) / 1024, 2);
-            $this->info("  ✅ Base de datos respaldada: ".basename($targetSqlPath)." ({$sizeKb} KB)");
-            Log::info("Backup de base de datos exitoso: ".basename($targetSqlPath)." ({$sizeKb} KB)");
+            $this->info('  ✅ Base de datos respaldada: '.basename($targetSqlPath)." ({$sizeKb} KB)");
+            Log::info('Backup de base de datos exitoso: '.basename($targetSqlPath)." ({$sizeKb} KB)");
 
             return $sizeKb;
         }

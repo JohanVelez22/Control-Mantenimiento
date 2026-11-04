@@ -85,6 +85,18 @@ class BackupEventTest extends TestCase
             'ip_direccion' => '127.0.0.1',
         ]);
 
+        Evento::create([
+            'user_id' => $admin->id,
+            'accion' => 'backup_restaurado',
+            'modelo_tipo' => null,
+            'modelo_id' => null,
+            'valores_antiguos' => ['Archivo' => 'db_restore_2026.sql', 'Tipo de Copia' => 'Base de Datos (.sql)'],
+            'valores_nuevos' => ['Resultado' => '✅ Restauración completada exitosamente', 'Restaurado Por' => $admin->name],
+            'descripcion' => 'Copia de seguridad restaurada exitosamente en la base de datos.',
+            'ip_direccion' => '127.0.0.1',
+        ]);
+
+        // Filtrar por 'backup': debe incluir tanto 'backup' como 'backup_restaurado'
         $response = $this->actingAs($admin)->get(route('eventos.index', [
             'accion' => 'backup',
             'fecha_desde' => now()->format('Y-m-d'),
@@ -93,7 +105,21 @@ class BackupEventTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('💾 Backup');
+        $response->assertDontSee('🔄 Backup Restaurado');
         $response->assertSee('Copia de seguridad del sistema realizada exitosamente');
+        $response->assertSee('Copia de seguridad restaurada exitosamente en la base de datos');
+        $response->assertSee('badge-evento-backup-restaurado');
+        $response->assertSee('RESTAURADO');
+
+        // Filtrar específicamente por 'backup_restaurado'
+        $responseRestore = $this->actingAs($admin)->get(route('eventos.index', [
+            'accion' => 'backup_restaurado',
+            'fecha_desde' => now()->format('Y-m-d'),
+            'fecha_hasta' => now()->format('Y-m-d'),
+        ]));
+        $responseRestore->assertStatus(200);
+        $responseRestore->assertSee('Copia de seguridad restaurada exitosamente en la base de datos');
+        $responseRestore->assertDontSee('Copia de seguridad del sistema realizada exitosamente');
 
         $resEmpresa = $this->actingAs($admin)->get(route('configuracion.index'));
         $resEmpresa->assertStatus(200);

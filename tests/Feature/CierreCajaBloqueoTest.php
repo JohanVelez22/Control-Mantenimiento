@@ -6,12 +6,11 @@ use App\Models\Abono;
 use App\Models\CierreCaja;
 use App\Models\Cliente;
 use App\Models\ConceptoCaja;
-use App\Models\Factura;
+use App\Models\Equipo;
 use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
 use App\Models\Tecnico;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,7 +19,9 @@ class CierreCajaBloqueoTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private ConceptoCaja $concepto;
+
     private Cliente $cliente;
 
     protected function setUp(): void
@@ -172,7 +173,7 @@ class CierreCajaBloqueoTest extends TestCase
 
     public function test_no_se_puede_eliminar_abono_de_mantenimiento_si_su_fecha_esta_cerrada(): void
     {
-        $equipo = \App\Models\Equipo::create([
+        $equipo = Equipo::create([
             'nombre' => 'Laptop HP',
             'marca' => 'HP',
             'modelo' => 'Pavilion',
@@ -280,7 +281,7 @@ class CierreCajaBloqueoTest extends TestCase
 
     public function test_no_se_puede_anular_mantenimiento_si_tiene_abonos_en_dia_cerrado(): void
     {
-        $equipo = \App\Models\Equipo::create([
+        $equipo = Equipo::create([
             'nombre' => 'PC Dell',
             'marca' => 'Dell',
             'modelo' => 'Optiplex',

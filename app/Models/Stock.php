@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Services\StockService;
 use App\Traits\Auditable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Stock extends Model
 {
-    use Auditable;
+    use Auditable, HasFactory;
 
     protected $fillable = [
         'codigo',
@@ -33,16 +34,17 @@ class Stock extends Model
     protected static function booted(): void
     {
         static::saving(function (Stock $stock): void {
+            $precioCompra = (float) ($stock->precio_compra ?? 0);
+            $utilidad = (float) ($stock->utilidad ?? 0);
+
             // Auto-calcular precio de venta si no se provee
-            if (empty($stock->precio_venta) || $stock->precio_venta == 0) {
-                $stock->precio_venta = $stock->precio_compra
-                    + ($stock->precio_compra * ($stock->utilidad / 100));
+            if ($precioCompra > 0 && (empty($stock->precio_venta) || (float) $stock->precio_venta == 0.0)) {
+                $stock->precio_venta = round($precioCompra * (1 + ($utilidad / 100)), 2);
             }
 
             // Auto-calcular precio técnico si no se provee
-            if (empty($stock->precio_tecnico) || $stock->precio_tecnico == 0) {
-                $stock->precio_tecnico = $stock->precio_compra
-                    + ($stock->precio_compra * (($stock->utilidad / 2) / 100));
+            if ($precioCompra > 0 && (empty($stock->precio_tecnico) || (float) $stock->precio_tecnico == 0.0)) {
+                $stock->precio_tecnico = round($precioCompra * (1 + (($utilidad / 2) / 100)), 2);
             }
         });
     }

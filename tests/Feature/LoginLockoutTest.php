@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Evento;
+use Database\Seeders\AdminUserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -15,7 +17,7 @@ class LoginLockoutTest extends TestCase
     {
         parent::setUp();
         Cache::flush();
-        (new \Database\Seeders\AdminUserSeeder)->run();
+        (new AdminUserSeeder)->run();
     }
 
     public function test_intentos_fallidos_muestran_contador_de_intentos_restantes(): void
@@ -177,7 +179,7 @@ class LoginLockoutTest extends TestCase
         $this->assertTrue(Auth::check());
 
         // Verificar registro de auditoría en eventos
-        $evento = \App\Models\Evento::where('accion', 'login')->latest('id')->first();
+        $evento = Evento::where('accion', 'login')->latest('id')->first();
         $this->assertNotNull($evento);
         $this->assertNotNull($evento->valores_antiguos);
         $this->assertNotNull($evento->valores_nuevos);
@@ -199,7 +201,7 @@ class LoginLockoutTest extends TestCase
         $response->assertRedirect(route('dashboard'));
         $this->assertTrue(Auth::check());
 
-        $evento = \App\Models\Evento::where('accion', 'login')->latest('id')->first();
+        $evento = Evento::where('accion', 'login')->latest('id')->first();
         $this->assertNotNull($evento);
         // Debe ser nulo para que en la vista solo aparezca el guión '—' y no el botón 'Ver'
         $this->assertNull($evento->valores_antiguos);
@@ -207,5 +209,3 @@ class LoginLockoutTest extends TestCase
         $this->assertEquals('El usuario inició sesión en el sistema al primer intento.', $evento->descripcion);
     }
 }
-
-

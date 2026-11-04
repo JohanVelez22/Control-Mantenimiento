@@ -8,24 +8,24 @@
     $selProv = old('proveedor_id', $st?->proveedor_id ?? '');
 @endphp
 
-<div class="space-y-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <label for="codigo" class="field-label">Código (Opcional)</label>
+            <label for="codigo" class="field-label">Código <span class="text-red-500 font-bold">*</span></label>
             <input type="text" name="codigo" id="codigo" value="{{ old('codigo', $st?->codigo) }}"
-                   oninput="this.value = this.value.toUpperCase()" class="glass-input" placeholder="Ej: REF-001">
+                   oninput="this.value = this.value.toUpperCase()" required class="glass-input" placeholder="Ej: REF-001">
             @error('codigo') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label for="producto" class="field-label">Nombre del Producto *</label>
+            <label for="producto" class="field-label">Nombre del Producto <span class="text-red-500 font-bold">*</span></label>
             <input type="text" name="producto" id="producto" value="{{ old('producto', $st?->producto) }}"
                    required class="glass-input" placeholder="Ej: Disco Duro SSD 1TB">
             @error('producto') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label for="categoria" class="field-label">Categoría *</label>
+            <label for="categoria" class="field-label">Categoría <span class="text-red-500 font-bold">*</span></label>
             <select name="categoria" id="categoria" required class="glass-input">
                 <option value="">Seleccione una categoría...</option>
                 @foreach($categorias as $cat)
@@ -36,7 +36,7 @@
         </div>
 
         <div>
-            <label for="subcategoria" class="field-label">Subcategoría *</label>
+            <label for="subcategoria" class="field-label">Subcategoría <span class="text-red-500 font-bold">*</span></label>
             <select name="subcategoria" id="subcategoria" required class="glass-input">
                 <option value="">Seleccione una subcategoría...</option>
                 @foreach($subcategorias as $subcat)
@@ -47,7 +47,7 @@
         </div>
 
         <div>
-            <label for="cantidad" class="field-label">{{ $st ? 'Cantidad Actual *' : 'Cantidad Inicial *' }}</label>
+            <label for="cantidad" class="field-label">{{ $st ? 'Cantidad Actual' : 'Cantidad Inicial' }} <span class="text-red-500 font-bold">*</span></label>
             <input type="number" name="cantidad" id="cantidad"
                    value="{{ old('cantidad', $st?->cantidad ?? 0) }}"
                    required min="0" class="glass-input font-bold dark:[color-scheme:dark]">
@@ -55,7 +55,7 @@
         </div>
 
         <div>
-            <label for="proveedor_id" class="field-label">Proveedor *</label>
+            <label for="proveedor_id" class="field-label">Proveedor <span class="text-red-500 font-bold">*</span></label>
             <select name="proveedor_id" id="proveedor_id" required class="glass-input" data-placeholder="Buscar proveedor...">
                 <option value="">Buscar proveedor...</option>
                 @foreach($proveedores as $proveedor)
@@ -77,7 +77,7 @@
                 <div id="existing-photo-container" class="mb-3 flex items-center gap-4">
                     <div class="p-1 rounded-2xl bg-white/40 dark:bg-slate-900/40 border border-white/50 dark:border-white/10 backdrop-blur-sm shadow-sm shrink-0">
                         <img src="{{ asset('storage/' . $st->photo) }}" alt="{{ $st->producto }}"
-                             onclick="openImageLightbox('{{ asset('storage/' . $st->photo) }}', '{{ addslashes($st->producto) }}', this)"
+                             data-lightbox-src="{{ asset('storage/' . $st->photo) }}" data-lightbox-alt="{{ $st->producto }}"
                              class="w-20 h-20 rounded-xl object-cover cursor-pointer hover:opacity-80 transition block">
                     </div>
                     <div class="space-y-1.5">
@@ -139,7 +139,7 @@
     </div>
 
     {{-- Panel de Precios --}}
-    <div class="pricing-panel p-5 bg-white/45 dark:bg-slate-900/60 border border-white/40 dark:border-white/10 rounded-2xl shadow-sm">
+    <div class="pricing-panel">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
                 <label for="precio_compra_visual" class="field-label">Precio de Compra <span class="text-red-500 font-bold">*</span></label>
@@ -152,12 +152,13 @@
             </div>
 
             <div>
-                <label for="utilidad" class="field-label">Utilidad (%) *</label>
-                <div class="glass-input flex items-center justify-end pr-3">
+                <label for="utilidad" class="field-label">Utilidad (%) <span class="text-red-500 font-bold">*</span></label>
+                <div class="glass-input flex items-center justify-end pr-3 focus-within:border-blue-500/60 dark:focus-within:border-blue-400/50">
                     <input type="number" step="1" name="utilidad" id="utilidad"
                            value="{{ old('utilidad', isset($st) && $st->utilidad !== null ? (int)$st->utilidad : 30) }}" required min="0"
-                           class="w-12 bg-transparent border-none outline-none focus:ring-0 text-left pl-1 font-bold text-slate-800 dark:text-white dark:[color-scheme:dark] p-0">
-                    <span class="text-emerald-600 dark:text-emerald-400 font-bold text-sm ml-1">%</span>
+                           class="w-12 bg-transparent border-0 border-none outline-none focus:outline-none focus:ring-0 focus:border-0 text-left pl-1 font-bold text-slate-800 dark:text-white dark:[color-scheme:dark] p-0"
+                           style="outline: none !important; box-shadow: none !important; border: none !important;">
+                    <span class="text-emerald-600 dark:text-emerald-400 font-bold text-sm ml-1 select-none">%</span>
                 </div>
                 @error('utilidad') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
@@ -182,14 +183,12 @@
                 @error('precio_tecnico') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
         </div>
-        <p class="text-[10px] text-gray-500 mt-3 font-medium">Si dejas P. Venta y P. Técnico vacíos, se calculan automáticamente: Venta = Compra × (1 + Utilidad%), Técnico = Compra × (1 + Utilidad%/2).</p>
+        <p class="text-[10px] text-gray-500 mt-2 font-medium">Si dejas P. Venta y P. Técnico vacíos, se calculan automáticamente: Venta = Compra × (1 + Utilidad%), Técnico = Compra × (1 + Utilidad%/2).</p>
     </div>
 
-    <div class="flex flex-col md:flex-row justify-end gap-3 pt-6 border-t border-gray-200/50 dark:border-white/10 mt-6">
-        <a href="{{ route('stocks.index') }}" class="btn-cancel">✕<space>Cancelar</a>
-        <button type="submit" class="btn-save">
-            {{ $st ? '🔄 Actualizar Producto' : '💾 Guardar Producto' }}
-        </button>
+    <div class="flex flex-col md:flex-row items-center justify-end gap-3 mt-4 pt-0">
+        <a href="{{ route('stocks.index') }}" class="btn-cancel"><span>✕</span><span>Cancelar</span></a>
+        <button type="submit" class="btn-save">{{ $st ? '🔄 Actualizar Producto' : '💾 Guardar Producto' }}</button>
     </div>
 </div>
 

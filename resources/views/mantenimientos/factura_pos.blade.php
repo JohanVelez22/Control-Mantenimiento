@@ -55,7 +55,7 @@
             <tr>
                 <td class="font-bold">{{ $stock->pivot->cantidad }}</td>
                 <td>{{ $stock->producto }}</td>
-                <td class="text-right font-bold">${{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
+                <td class="text-right font-bold">$ {{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -68,18 +68,18 @@
 <table class="totals-pos">
     <tr>
         <td class="text-left font-bold">Costo Total Estimado:</td>
-        <td class="text-right font-bold">${{ number_format($mantenimiento->costo, 0, ',', '.') }}</td>
+        <td class="text-right font-bold">$ {{ number_format($mantenimiento->costo, 0, ',', '.') }}</td>
     </tr>
     @if($mantenimiento->abonos->count() > 0)
         <tr>
             <td class="text-left">Total Abonado:</td>
-            <td class="text-right font-bold">- ${{ number_format($mantenimiento->total_abonado, 0, ',', '.') }}</td>
+            <td class="text-right font-bold">- $ {{ number_format($mantenimiento->total_abonado, 0, ',', '.') }}</td>
         </tr>
     @endif
     <tr class="grand-total">
         <td class="text-left">SALDO PENDIENTE:</td>
         <td class="text-right font-bold">
-            ${{ number_format($mantenimiento->saldo_pendiente, 0, ',', '.') }}
+            $ {{ number_format($mantenimiento->saldo_pendiente, 0, ',', '.') }}
         </td>
     </tr>
 </table>
@@ -101,7 +101,7 @@
             <tr>
                 <td>{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/y') }}</td>
                 <td>{{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Transf.' }}</td>
-                <td class="text-right font-bold">${{ number_format($abono->monto, 0, ',', '.') }}</td>
+                <td class="text-right font-bold">$ {{ number_format($abono->monto, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>
