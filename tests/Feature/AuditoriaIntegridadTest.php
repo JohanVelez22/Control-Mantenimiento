@@ -18,6 +18,7 @@ use App\Models\User;
 use App\Services\AnulacionService;
 use App\Services\OrdenService;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -377,6 +378,25 @@ class AuditoriaIntegridadTest extends TestCase
         $this->assertNotEmpty($numeros[0], 'El PDF debe incluir "Página X de Y"');
         $this->assertSame('1', $numeros[1][0]);
         $this->assertSame(end($numeros[2]), end($numeros[1]), 'La última página debe ser "N de N"');
+    }
+
+    /** La base de datos impide borrar físicamente registros con historial contable (antes: cascada). */
+    public function test_la_base_impide_borrar_historial_contable(): void
+    {
+        $this->abonar(30000);
+
+        foreach ([fn () => $this->mantenimiento->delete(), fn () => $this->admin->delete(), fn () => Equipo::find($this->mantenimiento->equipo_id)->delete()] as $borrar) {
+            try {
+                $borrar();
+                $this->fail('El borrado debió ser rechazado por la base de datos');
+            } catch (QueryException) {
+                // esperado: restricción de clave foránea
+            }
+        }
+
+        $this->assertDatabaseHas('mantenimientos', ['id' => $this->mantenimiento->id]);
+        $this->assertSame(1, Abono::count());
+        $this->assertSame(1, MovimientoCaja::whereNotNull('abono_id')->count());
     }
 
     /** Un texto que empieza por "=" se exporta como texto, no como fórmula. */
