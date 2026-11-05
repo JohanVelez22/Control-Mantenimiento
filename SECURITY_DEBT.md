@@ -11,7 +11,7 @@ Este documento certifica el estado de seguridad, mitigación de vulnerabilidades
 - **Aserciones de Verificación:** 1.945 aserciones.
 - **Estilo (Laravel Pint):** `pint --test` sin violaciones tras la auditoría del 2026-11-04 (antes había 10 archivos sin formatear).
 - **Compilación de Activos (Vite):** Producción verificada sin errores de manifiesto (1.77s build).
-- **Auditoría de Dependencias (Composer):** `composer audit` reporta avisos en dependencias (Laravel, Symfony, dompdf, phpspreadsheet, commonmark) publicados después de fijar el lock. Ninguno afecta una función usada sin autenticación, pero la actualización está **pendiente**: `composer update` + regresión completa. `npm audit --omit=dev`: 0 vulnerabilidades.
+- **Auditoría de Dependencias:** `composer audit` sin avisos y `npm audit` sin vulnerabilidades tras la actualización del 2026-11-05 (Laravel 13.40, Symfony 8.1.11).
 
 ---
 
