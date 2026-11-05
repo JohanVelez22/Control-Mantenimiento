@@ -360,6 +360,25 @@ class AuditoriaIntegridadTest extends TestCase
         $this->assertSame('ORD-41', $siguiente);
     }
 
+    /** Los PDF se numeran sin PHP embebido en dompdf (enable_php apagado). */
+    public function test_pdf_numera_paginas_sin_php_embebido(): void
+    {
+        $this->assertFalse((bool) config('dompdf.options.enable_php'));
+        Mantenimiento::factory()->count(60)->create([
+            'equipo_id' => $this->mantenimiento->equipo_id, 'tecnico_id' => $this->mantenimiento->tecnico_id, 'user_id' => $this->admin->id,
+        ]);
+
+        $pdf = $this->actingAs($this->admin)->get(route('mantenimientos.reportes', ['export' => 'pdf']))->assertOk()->getContent();
+
+        preg_match_all('/stream\r?\n(.*?)\r?\nendstream/s', $pdf, $m);
+        $texto = implode('', array_map(fn ($s) => @gzuncompress($s) ?: '', $m[1]));
+        preg_match_all('/gina (\d+) de (\d+)/', $texto, $numeros);
+
+        $this->assertNotEmpty($numeros[0], 'El PDF debe incluir "Página X de Y"');
+        $this->assertSame('1', $numeros[1][0]);
+        $this->assertSame(end($numeros[2]), end($numeros[1]), 'La última página debe ser "N de N"');
+    }
+
     /** Un texto que empieza por "=" se exporta como texto, no como fórmula. */
     public function test_exportacion_no_ejecuta_formulas(): void
     {

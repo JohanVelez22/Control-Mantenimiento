@@ -233,7 +233,7 @@ return [
          *
          * @var bool
          */
-        'enable_php' => true,
+        'enable_php' => false, // La numeración usa App\Support\PaginacionPdf; PHP embebido permitiría ejecutar código
 
         /**
          * Enable inline JavaScript
@@ -245,7 +245,7 @@ return [
          *
          * @var bool
          */
-        'enable_javascript' => true,
+        'enable_javascript' => false,
 
         /**
          * Enable remote file access

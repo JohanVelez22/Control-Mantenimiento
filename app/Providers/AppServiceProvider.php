@@ -22,7 +22,9 @@ use App\Policies\MantenimientoPolicy;
 use App\Policies\MovimientoCajaPolicy;
 use App\Policies\StockPolicy;
 use App\Policies\UserPolicy;
+use App\Support\PaginacionPdf;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Schema\Blueprint;
@@ -46,6 +48,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // SQLite no implementa GREATEST() (columnas generadas de facturas).
         $this->app->bind('db.connector.sqlite', SqliteConnector::class);
+
+        // Numeración de páginas de los PDF sin PHP embebido (ver App\Support\PaginacionPdf).
+        $this->app->extend('dompdf', fn (Dompdf $dompdf) => PaginacionPdf::registrar($dompdf));
 
         // Dusk expone /_dusk/login/{id}: solo en local o testing, nunca en producción.
         if ($this->app->environment('local', 'testing') && filter_var(env('DUSK_ENABLED', false), FILTER_VALIDATE_BOOLEAN)) {
