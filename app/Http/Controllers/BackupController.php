@@ -539,6 +539,28 @@ class BackupController extends Controller
             return response()->json(['success' => false, 'message' => 'Formato no soportado para restauración. Solo se admiten archivos .sql y .zip.'], 400);
         }
 
+        // 0. Respaldo de seguridad del estado actual: restaurar sobrescribe la base completa y,
+        //    si se eligió el archivo equivocado, sin esta copia no habría vuelta atrás.
+        //    (Se omite solo con SQLite en memoria, que no se puede volcar: entorno de pruebas.)
+        $respaldoSeguridad = null;
+        $enMemoria = config('database.default') === 'sqlite' && config('database.connections.sqlite.database') === ':memory:';
+        if (! $enMemoria) {
+            $antes = collect(File::files($dir))->map->getFilename()->all();
+            try {
+                $codigo = Artisan::call('app:backup-db', ['--sin-rotacion' => true]);
+            } catch (\Throwable $e) {
+                $codigo = 1;
+                Log::error('Respaldo de seguridad previo a restaurar falló: '.$e->getMessage());
+            }
+            if ($codigo !== 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Restauración cancelada: no se pudo crear el respaldo de seguridad del estado actual.',
+                ], 500);
+            }
+            $respaldoSeguridad = collect(File::files($dir))->map->getFilename()->diff($antes)->first();
+        }
+
         // 1. Preservar eventos de auditoría previos para garantizar trazabilidad ininterrumpida
         $existingEventos = [];
         try {
@@ -705,6 +727,9 @@ class BackupController extends Controller
             $filesData = $this->getBackupFiles();
 
             $msgSuccess = "La copia de seguridad '{$filename}' fue restaurada exitosamente.";
+            if ($respaldoSeguridad) {
+                $msgSuccess .= " El estado anterior quedó guardado en '{$respaldoSeguridad}' por si necesita revertir.";
+            }
             if (str_starts_with($filename, 'backup_integral')) {
                 $msgSuccess .= ' Se restauró la Base de Datos y los Archivos Multimedia, conservando el código fuente en ejecución estable y la trazabilidad de eventos.';
             }

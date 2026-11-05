@@ -17,7 +17,8 @@ class BackupDatabase extends Command
                             {--code : Generar un snapshot empaquetado del código fuente}
                             {--all : Respaldo integral: Base de datos, multimedia pública y código fuente en un solo ZIP}
                             {--max-copies= : Límite máximo de copias a conservar antes de sobrescribir/rotar}
-                            {--drive-path= : Ruta manual de sincronización de Google Drive}';
+                            {--drive-path= : Ruta manual de sincronización de Google Drive}
+                            {--sin-rotacion : No elimina respaldos antiguos (respaldo de seguridad previo a una restauración)}';
 
     protected $description = 'Crea un respaldo integral de MySQL, archivos y código, con sincronización automática a Google Drive';
 
@@ -209,9 +210,12 @@ class BackupDatabase extends Command
                 $this->comment('ℹ️ Para sincronizar automáticamente con Google Drive, configura GOOGLE_DRIVE_BACKUP_PATH en tu .env');
             }
 
-            // 5. Política de retención y rotación local
-            $this->aplicarPoliticaRotacion($backupDir, $maxCopies);
-            $this->limpiarBackupsAntiguos($backupDir, $retentionDays, 'local');
+            // 5. Política de retención y rotación local (se omite en el respaldo de seguridad previo a
+            //    una restauración: la rotación podría borrar justo el archivo que se va a restaurar)
+            if (! $this->option('sin-rotacion')) {
+                $this->aplicarPoliticaRotacion($backupDir, $maxCopies);
+                $this->limpiarBackupsAntiguos($backupDir, $retentionDays, 'local');
+            }
 
             // 6. Registrar en Auditoría de Eventos
             try {
