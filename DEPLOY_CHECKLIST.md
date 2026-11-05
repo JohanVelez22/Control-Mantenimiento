@@ -85,7 +85,11 @@ npm run build
 # 3. Crear enlace simbólico de almacenamiento público
 php artisan storage:link
 
-# 4. Ejecutar migraciones pendientes de manera segura
+# 4. Respaldo previo y verificación de solo lectura (duplicados, migraciones pendientes)
+php artisan app:backup-db
+php artisan app:verificar-migraciones
+
+# 5. Ejecutar migraciones pendientes de manera segura
 php artisan migrate --force
 ```
 
@@ -119,13 +123,13 @@ php artisan event:cache
 
 ### En Linux (Nginx / Apache con usuario `www-data`):
 ```bash
-sudo chown -R www-data:www-data /var/www/tecni-systemas
-sudo find /var/www/tecni-systemas -type f -exec chmod 644 {} \;
-sudo find /var/www/tecni-systemas -type d -exec chmod 755 {} \;
+sudo chown -R www-data:www-data /var/www/tecnisystemas
+sudo find /var/www/tecnisystemas -type f -exec chmod 644 {} \;
+sudo find /var/www/tecnisystemas -type d -exec chmod 755 {} \;
 
 # Carpetas con permisos de escritura para la aplicación:
-sudo chmod -R 775 /var/www/tecni-systemas/storage
-sudo chmod -R 775 /var/www/tecni-systemas/bootstrap/cache
+sudo chmod -R 775 /var/www/tecnisystemas/storage
+sudo chmod -R 775 /var/www/tecnisystemas/bootstrap/cache
 ```
 
 ### En Windows (ServBay o IIS):
@@ -135,18 +139,18 @@ Asegúrate de que el usuario de servicio de PHP/ServBay tenga permisos de Lectur
 
 ## ⏰ 6. Programador de Tareas (Cron / Windows Task Scheduler)
 
-El sistema cuenta con respaldos automáticos programables y purga de eventos.
+El sistema cuenta con respaldos automáticos programables (el horario se configura en Configuración → Respaldos). Verifique la programación con `php artisan schedule:list`.
 
 ### Linux (Crontab):
 Agrega la siguiente línea al crontab del usuario del servidor (`crontab -e`):
 ```cron
-* * * * * cd /var/www/tecni-systemas && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /var/www/tecnisystemas && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 ### Windows (Programador de Tareas):
 Crea una tarea programada repetida cada minuto que ejecute:
 ```powershell
-powershell.exe -ExecutionPolicy Bypass -Command "cd C:\ServBay\www\tecni-systemas; php artisan schedule:run"
+powershell.exe -ExecutionPolicy Bypass -Command "cd C:\ServBay\www\tecnisystemas; C:\ServBay\packages\php\current\php.exe artisan schedule:run"
 ```
 
 ---

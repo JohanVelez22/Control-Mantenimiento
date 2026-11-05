@@ -39,7 +39,7 @@ Este documento certifica el estado de seguridad, mitigación de vulnerabilidades
 
 ### 1. Política de Seguridad de Contenido (CSP)
 - **Ubicación:** `app/Http/Middleware/SecurityHeaders.php`
-- **Estado Actual:** CSP activa con `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net`.
+- **Estado Actual (2026-11-05):** `script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net` — se retiró `'unsafe-eval'` y el dominio npmcdn (no se usaban) y se añadieron `object-src 'none'`, `base-uri 'self'`, `form-action 'self'` y `frame-ancestors 'none'`. Verificado en navegador sin violaciones. Las librerías CDN tienen versión fija y SRI.
 - **Justificación de Negocio:** Permite la renderización dinámica de gráficos en el Dashboard, selectores dependientes (TomSelect) y calendarios (Flatpickr) en la interfaz actual de taller sin alterar la experiencia de usuario.
 - **Plan de Evolución:**
   1. Empaquetar Flatpickr y TomSelect dentro del bundle local de Vite (`resources/js/app.js`).
@@ -48,3 +48,16 @@ Este documento certifica el estado de seguridad, mitigación de vulnerabilidades
 
 ### 2. Rotación Periódica de Claves de Cifrado
 - **Plan:** Establecer un procedimiento de rotación de `APP_KEY` anual o semestral utilizando el comando `php artisan key:generate` en ventanas de mantenimiento programadas.
+
+### 3. Decisiones de diseño documentadas (no son defectos abiertos)
+- **Claves foráneas en cascada** (`users`, `clientes`, `equipos`, `tecnicos`, `stocks`): la aplicación no expone ningún borrado físico de esas entidades (solo anulación/desactivación lógica) y se eliminó el único `destroy` muerto que existía. Cambiarlas a `restrict` exige una migración sobre datos de producción; se recomienda hacerlo en una ventana de mantenimiento con respaldo.
+- **Casts `decimal:2` en montos:** convertirían los montos en texto en el JSON que consumen los formularios (venta, compra, cotización). Las columnas ya son `decimal(10|12,2)` y los cálculos usan `Factura::EPSILON`; se mantiene así.
+- **`!important` en CSS y layout de ~2.200 líneas:** deuda de mantenibilidad sin impacto funcional. Refactor recomendado por módulos, con revisión visual pantalla por pantalla.
+- **Rollback de migraciones de junio 2026 en SQLite:** las migraciones antiguas que renombran columnas no revierten en SQLite; desde 2026_07_07 en adelante el rollback está verificado.
+
+### 4. Verificación previa a cada despliegue
+1. `php artisan app:backup-db` (respaldo).
+2. `php artisan app:verificar-migraciones` (solo lectura: duplicados y migraciones pendientes).
+3. `php artisan migrate --force`.
+4. `npm run build` y `php artisan optimize`.
+5. `php artisan security:check`.

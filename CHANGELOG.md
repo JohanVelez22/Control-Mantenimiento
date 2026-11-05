@@ -6,6 +6,37 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ---
 
+## [1.2.0] - 2026-11-05 (Cierre de hallazgos pendientes)
+
+### Reglas del taller
+- Días con cierre de caja inmodificables; ajustes manuales de stock por técnico solo con contraseña de administrador.
+- Medio de pago (efectivo / consignación) en ventas y compras; consulta del invitado solo con cédula + número de orden.
+
+### Seguridad
+- PDF sin PHP embebido en dompdf (numeración con `App\Support\PaginacionPdf`).
+- CSP más estricta (sin `unsafe-eval`; `object-src`, `base-uri`, `form-action`, `frame-ancestors`).
+- Respaldo de código sin `bootstrap/cache`, logs ni sesiones; actualización desde GitHub solo fast-forward.
+- Login por nombre sin ambigüedad; cambio de correo propio con contraseña actual.
+- Dependencias actualizadas: `composer audit` y `npm audit` sin avisos.
+
+### Integridad y backend
+- Saldo inicial del cierre desde el último conteo físico real; solo se elimina el último cierre.
+- Numeración siempre sincronizada; catálogos con órdenes pendientes no se desactivan.
+- Reportes sin doble conteo de anulados; filtro de stock inactivo; mensajes internos fuera de la UI.
+- Configuración de respaldos compatible con `config:cache`.
+
+### Frontend
+- Venta, compra y cotización conservan sus ítems si el servidor rechaza el envío; tope de stock en ventas.
+- Escape cierra todos los modales; títulos de pestaña por ruta; municipios sin autoselección.
+
+### Base de datos
+- `php artisan app:verificar-migraciones` (solo lectura) y `down()` de migraciones reparados.
+
+### Pruebas
+- 592 pruebas (1.966 aserciones) en verde; regresiones en `AuditoriaIntegridadTest`.
+
+---
+
 ## [1.1.0] - 2026-11-04 (Auditoría de integridad previa a la entrega)
 
 ### Seguridad
