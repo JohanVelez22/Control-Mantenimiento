@@ -60,6 +60,8 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'active' => $request->boolean('active', true), // Activo por defecto al crear usuario
+            // La contraseña la asignó el administrador: el usuario debe definir la suya al entrar
+            'must_change_password' => true,
         ];
 
         if ($request->hasFile('photo')) {
@@ -129,6 +131,8 @@ class UserController extends Controller
             $request->validate($rules);
             $usuario->password = Hash::make($request->password);
             $usuario->setRememberToken(Str::random(60));
+            // Si un administrador asigna la contraseña de otro usuario, ese usuario debe cambiarla al entrar
+            $usuario->must_change_password = auth()->id() !== $usuario->id;
         }
 
         if ($request->hasFile('photo')) {

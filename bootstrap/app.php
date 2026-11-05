@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\PreventBackHistory;
+use App\Http\Middleware\RequirePasswordChange;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -33,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => CheckRole::class,
             'prevent-back-history' => PreventBackHistory::class,
+            'password.cambio' => RequirePasswordChange::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

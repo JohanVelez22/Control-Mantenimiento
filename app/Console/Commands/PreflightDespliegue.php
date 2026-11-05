@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use App\Support\PasswordsConocidas;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -20,9 +20,6 @@ class PreflightDespliegue extends Command
     protected $signature = 'app:preflight';
 
     protected $description = 'Verifica (solo lectura) si el entorno está listo para producción y explica qué falta';
-
-    /** Contraseñas por defecto publicadas en versiones anteriores de la documentación. */
-    private const PASSWORDS_CONOCIDAS = ['Admin123*', 'Tecni123*', 'Tecnico123*', 'Invit123*', 'Invitado123*', 'password', 'secret'];
 
     private int $errores = 0;
 
@@ -90,7 +87,7 @@ class PreflightDespliegue extends Command
         }
 
         $expuestos = User::where('active', true)->get(['email', 'password'])
-            ->filter(fn ($u) => collect(self::PASSWORDS_CONOCIDAS)->contains(fn ($p) => Hash::check($p, $u->password)))
+            ->filter(fn ($u) => PasswordsConocidas::coincideConHash($u->password))
             ->pluck('email');
 
         $this->check($expuestos->isEmpty(), 'Ningún usuario con contraseña conocida', 'Usuarios con contraseña publicada en la documentación: '.$expuestos->implode(', ').'. Cámbielas desde Usuarios.');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Electronica;
 use App\Models\Mantenimiento;
 use App\Models\User;
+use App\Support\PasswordsConocidas;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -148,6 +149,11 @@ class AuthController extends Controller
             $history = Cache::get($historyKey, []);
             session()->put('login_attempts_history', $history);
             Cache::forget($historyKey);
+
+            // Contraseña predeterminada o pública: se exige cambiarla antes de usar el sistema
+            if (PasswordsConocidas::es($inputPassword) && ! $user->must_change_password) {
+                $user->forceFill(['must_change_password' => true])->save();
+            }
 
             // Prevenir Session Fixation regenerando el ID de sesión antes de autenticar al usuario
             $request->session()->regenerate();
