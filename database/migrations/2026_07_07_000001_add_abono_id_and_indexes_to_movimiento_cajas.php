@@ -44,17 +44,22 @@ return new class extends Migration
 
     public function down(): void
     {
+        // Migraciones posteriores eliminan algunos de estos índices: borrar solo los que existan.
+        foreach ([
+            ['movimiento_cajas', 'idx_movcaja_fecha'],
+            ['movimiento_cajas', 'idx_movcaja_tipo'],
+            ['movimiento_cajas', 'idx_movcaja_anulado'],
+            ['abonos', 'idx_abonos_mantenimiento'],
+            ['abonos', 'idx_abonos_electronica'],
+        ] as [$tabla, $indice]) {
+            if (Schema::hasIndex($tabla, $indice)) {
+                Schema::table($tabla, fn (Blueprint $table) => $table->dropIndex($indice));
+            }
+        }
+
         Schema::table('movimiento_cajas', function (Blueprint $table) {
             $table->dropForeign(['abono_id']);
             $table->dropColumn('abono_id');
-            $table->dropIndex('idx_movcaja_fecha');
-            $table->dropIndex('idx_movcaja_tipo');
-            $table->dropIndex('idx_movcaja_anulado');
-        });
-
-        Schema::table('abonos', function (Blueprint $table) {
-            $table->dropIndex('idx_abonos_mantenimiento');
-            $table->dropIndex('idx_abonos_electronica');
         });
     }
 };

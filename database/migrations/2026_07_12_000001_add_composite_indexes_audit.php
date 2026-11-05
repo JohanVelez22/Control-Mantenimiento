@@ -54,32 +54,24 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('mantenimientos', function (Blueprint $table) {
-            $table->dropIndex('idx_mant_estado_anulado');
-            $table->dropIndex('idx_mant_fecha_entrada');
-        });
+        // Migraciones posteriores eliminan algunos de estos índices: borrar solo los que existan.
+        $indices = [
+            ['mantenimientos', 'idx_mant_estado_anulado'],
+            ['mantenimientos', 'idx_mant_fecha_entrada'],
+            ['electronicas', 'idx_elec_estado_anulado'],
+            ['electronicas', 'idx_elec_fecha_entrada'],
+            ['movimiento_cajas', 'idx_movcaja_tipo_fecha'],
+            ['movimiento_cajas', 'idx_movcaja_estado_anulado'],
+            ['facturas', 'idx_fact_tipo_fecha'],
+            ['facturas', 'idx_fact_tipo_estado'],
+            ['stocks', 'idx_stock_active_categoria'],
+            ['abonos', 'idx_abonos_fecha'],
+        ];
 
-        Schema::table('electronicas', function (Blueprint $table) {
-            $table->dropIndex('idx_elec_estado_anulado');
-            $table->dropIndex('idx_elec_fecha_entrada');
-        });
-
-        Schema::table('movimiento_cajas', function (Blueprint $table) {
-            $table->dropIndex('idx_movcaja_tipo_fecha');
-            $table->dropIndex('idx_movcaja_estado_anulado');
-        });
-
-        Schema::table('facturas', function (Blueprint $table) {
-            $table->dropIndex('idx_fact_tipo_fecha');
-            $table->dropIndex('idx_fact_tipo_estado');
-        });
-
-        Schema::table('stocks', function (Blueprint $table) {
-            $table->dropIndex('idx_stock_active_categoria');
-        });
-
-        Schema::table('abonos', function (Blueprint $table) {
-            $table->dropIndex('idx_abonos_fecha');
-        });
+        foreach ($indices as [$tabla, $indice]) {
+            if (Schema::hasIndex($tabla, $indice)) {
+                Schema::table($tabla, fn (Blueprint $table) => $table->dropIndex($indice));
+            }
+        }
     }
 };

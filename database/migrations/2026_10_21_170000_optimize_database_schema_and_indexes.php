@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -42,6 +43,8 @@ return new class extends Migration
                 $table->unique(['mantenimiento_id', 'stock_id'], 'uq_mantenimiento_stock');
             });
         } catch (Throwable $e) {
+            // Normalmente por registros duplicados: ejecute php artisan app:verificar-migraciones
+            Log::warning('No se creó la restricción uq_mantenimiento_stock: '.$e->getMessage());
         }
 
         try {
@@ -49,6 +52,8 @@ return new class extends Migration
                 $table->unique(['electronica_id', 'stock_id'], 'uq_electronica_stock');
             });
         } catch (Throwable $e) {
+            // Normalmente por registros duplicados: ejecute php artisan app:verificar-migraciones
+            Log::warning('No se creó la restricción uq_electronica_stock: '.$e->getMessage());
         }
 
         try {
@@ -56,6 +61,8 @@ return new class extends Migration
                 $table->unique(['nombre', 'tipo'], 'uq_categoria_stocks');
             });
         } catch (Throwable $e) {
+            // Normalmente por registros duplicados: ejecute php artisan app:verificar-migraciones
+            Log::warning('No se creó la restricción uq_categoria_stocks: '.$e->getMessage());
         }
 
         try {
@@ -63,6 +70,8 @@ return new class extends Migration
                 $table->unique('nombre', 'uq_configuraciones_nombre');
             });
         } catch (Throwable $e) {
+            // Normalmente por registros duplicados: ejecute php artisan app:verificar-migraciones
+            Log::warning('No se creó la restricción uq_configuraciones_nombre: '.$e->getMessage());
         }
 
         // 3. Eliminar índices redundantes / prefijos de otros índices (F-17)
