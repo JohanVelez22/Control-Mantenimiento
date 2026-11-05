@@ -47,7 +47,8 @@ class AppServiceProvider extends ServiceProvider
         // SQLite no implementa GREATEST() (columnas generadas de facturas).
         $this->app->bind('db.connector.sqlite', SqliteConnector::class);
 
-        if (filter_var(env('DUSK_ENABLED', false), FILTER_VALIDATE_BOOLEAN)) {
+        // Dusk expone /_dusk/login/{id}: solo en local o testing, nunca en producción.
+        if ($this->app->environment('local', 'testing') && filter_var(env('DUSK_ENABLED', false), FILTER_VALIDATE_BOOLEAN)) {
             $this->app->register(DuskServiceProvider::class);
         }
     }

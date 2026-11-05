@@ -209,25 +209,7 @@ class CierreCajaController extends Controller
         $consignacionNeto = $consignacionIngresos - $consignacionEgresos;
 
         // Saldo anterior acumulado en efectivo previo a esta fecha
-        $ultimoCierre = CierreCaja::where('fecha', '<', $fecha)->orderBy('fecha', 'desc')->first();
-        if ($ultimoCierre && $ultimoCierre->efectivo_real_contado !== null) {
-            $base = (float) $ultimoCierre->efectivo_real_contado;
-            $intermedio = (float) MovimientoCaja::where('fecha', '>', $ultimoCierre->fecha)
-                ->where('fecha', '<', $fecha)
-                ->where('estado', 'activo')
-                ->where('anulado', false)
-                ->where('tipo_pago', 'efectivo')
-                ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
-                ->value('total') ?? 0;
-            $saldoAnterior = $base + $intermedio;
-        } else {
-            $saldoAnterior = (float) MovimientoCaja::where('fecha', '<', $fecha)
-                ->where('estado', 'activo')
-                ->where('anulado', false)
-                ->where('tipo_pago', 'efectivo')
-                ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
-                ->value('total') ?? 0;
-        }
+        $saldoAnterior = CierreCaja::saldoInicialEfectivo($fecha);
 
         $efectivoEsperado = $saldoAnterior + $efectivoNeto;
 

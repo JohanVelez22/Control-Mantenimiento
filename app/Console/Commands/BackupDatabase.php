@@ -28,9 +28,9 @@ class BackupDatabase extends Command
         $this->info('====================================================');
 
         try {
-            $database = env('DB_DATABASE', 'tecni_systemas');
+            $database = (string) config('database.connections.'.config('database.default').'.database', 'tecni_systemas');
             $safeDatabase = trim(preg_replace('/[^a-zA-Z0-9_-]+/', '_', $database), '_') ?: 'database';
-            $retentionDays = (int) env('BACKUP_RETENTION_DAYS', 15);
+            $retentionDays = (int) config('backup.retention_days', 15);
 
             $configEmpresa = Configuracion::first();
             $maxCopies = (int) ($this->option('max-copies') ?: ($configEmpresa?->backup_max_copias ?: 10));
@@ -201,7 +201,7 @@ class BackupDatabase extends Command
             }
 
             // 4. Sincronización con Google Drive
-            $drivePath = $this->option('drive-path') ?: env('GOOGLE_DRIVE_BACKUP_PATH');
+            $drivePath = $this->option('drive-path') ?: config('backup.drive_path');
             if ($drivePath) {
                 $this->info("☁️ Sincronizando con Google Drive corporativo: {$drivePath}");
                 $this->syncToGoogleDrive($generatedFiles, $drivePath, $retentionDays);
@@ -273,7 +273,7 @@ class BackupDatabase extends Command
      */
     protected function dumpDatabase(string $targetSqlPath, string $database, string $safeDatabase, string $date): float
     {
-        $isSqlite = config('database.default') === 'sqlite' || env('DB_CONNECTION') === 'sqlite';
+        $isSqlite = config('database.default') === 'sqlite';
 
         if ($isSqlite) {
             $this->info('  📦 Volcando base de datos SQLite...');
@@ -452,7 +452,7 @@ TXT;
      */
     protected function resolveMysqldumpBinary(): ?string
     {
-        $custom = env('MYSQLDUMP_PATH');
+        $custom = config('backup.mysqldump_path');
         if ($custom && File::exists($custom)) {
             return $custom;
         }

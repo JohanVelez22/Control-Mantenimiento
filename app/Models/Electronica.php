@@ -32,6 +32,7 @@ class Electronica extends Model
         return [
             'fecha_entrada' => 'date',
             'fecha_salida' => 'date',
+            'anulado' => 'boolean',
         ];
     }
 

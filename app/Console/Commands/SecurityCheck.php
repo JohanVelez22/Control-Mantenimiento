@@ -16,7 +16,7 @@ class SecurityCheck extends Command
         $warnings = 0;
 
         // 1. Validar entorno
-        if (env('APP_ENV') !== 'production') {
+        if (config('app.env') !== 'production') {
             $this->error('❌ APP_ENV no es "production"');
             $warnings++;
         } else {
@@ -24,7 +24,7 @@ class SecurityCheck extends Command
         }
 
         // 2. Validar Debug
-        if (env('APP_DEBUG') == true) {
+        if (config('app.debug') == true) {
             $this->error('❌ APP_DEBUG está activado (¡Peligro! Expone código fuente al fallar)');
             $warnings++;
         } else {
@@ -40,7 +40,7 @@ class SecurityCheck extends Command
             $this->info('✅ Contraseña de administrador segura detectada');
         }
 
-        $dbPass = env('DB_PASSWORD');
+        $dbPass = config('database.connections.'.config('database.default').'.password');
         if (! $dbPass) {
             $this->error('❌ La base de datos no tiene contraseña (DB_PASSWORD vacío)');
             $warnings++;
@@ -49,7 +49,7 @@ class SecurityCheck extends Command
         }
 
         // 4. Validar Sesión
-        $sessionLife = env('SESSION_LIFETIME', 120);
+        $sessionLife = config('session.lifetime', 120);
         if ($sessionLife > 1440) { // Mayor a 24h
             $this->warn('⚠️ SESSION_LIFETIME es mayor a 24 horas. Considere reducirlo por seguridad.');
             $warnings++;

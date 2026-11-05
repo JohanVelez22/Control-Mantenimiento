@@ -404,7 +404,7 @@ class BackupController extends Controller
      */
     protected function resolveMysqlBinary(): ?string
     {
-        $custom = env('MYSQL_PATH');
+        $custom = config('backup.mysql_path');
         if ($custom && File::exists($custom)) {
             return $custom;
         }
@@ -446,7 +446,7 @@ class BackupController extends Controller
     protected function restoreSqlFile(string $sqlFilePath): void
     {
         $defaultConnection = config('database.default');
-        $isSqlite = $defaultConnection === 'sqlite' || env('DB_CONNECTION') === 'sqlite';
+        $isSqlite = $defaultConnection === 'sqlite';
 
         if ($isSqlite) {
             $sql = File::get($sqlFilePath);
@@ -644,7 +644,7 @@ class BackupController extends Controller
             // 2. Trazabilidad: Re-integrar eventos de auditoría previos
             $eventosPreservadosCount = 0;
             try {
-                $isSqlite = config('database.default') === 'sqlite' || env('DB_CONNECTION') === 'sqlite';
+                $isSqlite = config('database.default') === 'sqlite';
                 if (! $isSqlite) {
                     DB::reconnect();
                 }

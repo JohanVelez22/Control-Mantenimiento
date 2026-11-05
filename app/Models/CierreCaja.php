@@ -36,26 +36,35 @@ class CierreCaja extends Model
             return 0.0;
         }
 
-        $ultimoCierre = static::where('fecha', '<', $fecha)->orderBy('fecha', 'desc')->first();
-        if ($ultimoCierre && $ultimoCierre->efectivo_real_contado !== null) {
-            $base = (float) $ultimoCierre->efectivo_real_contado;
-            $intermedio = (float) MovimientoCaja::where('fecha', '>', $ultimoCierre->fecha)
-                ->where('fecha', '<', $fecha)
-                ->where('estado', 'activo')
-                ->where('anulado', false)
-                ->where('tipo_pago', 'efectivo')
-                ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
-                ->value('total') ?? 0;
+        return static::saldoInicialEfectivo($fecha);
+    }
 
-            return $base + $intermedio;
-        }
-
-        return (float) MovimientoCaja::where('fecha', '<', $fecha)
-            ->where('estado', 'activo')
+    /**
+     * Efectivo con el que arranca un día: el último conteo físico real anterior a la fecha
+     * más el flujo en efectivo de los días intermedios. Se toma el último cierre CON conteo:
+     * si el más reciente no se contó, usarlo como base descartaba el conteo real anterior
+     * y el faltante de ese día se contaba dos veces.
+     */
+    public static function saldoInicialEfectivo(string $fecha): float
+    {
+        $flujoEfectivo = fn () => MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
             ->where('tipo_pago', 'efectivo')
-            ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
-            ->value('total') ?? 0;
+            ->where('fecha', '<', $fecha);
+        $sumaNeta = "SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total";
+
+        $ultimoConteo = static::where('fecha', '<', $fecha)
+            ->whereNotNull('efectivo_real_contado')
+            ->orderBy('fecha', 'desc')
+            ->first();
+
+        if ($ultimoConteo) {
+            $intermedio = (float) ($flujoEfectivo()->where('fecha', '>', $ultimoConteo->fecha)->selectRaw($sumaNeta)->value('total') ?? 0);
+
+            return (float) $ultimoConteo->efectivo_real_contado + $intermedio;
+        }
+
+        return (float) ($flujoEfectivo()->selectRaw($sumaNeta)->value('total') ?? 0);
     }
 
     /**

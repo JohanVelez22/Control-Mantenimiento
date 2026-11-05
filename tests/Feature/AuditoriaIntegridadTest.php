@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Exports\SafeValueBinder;
 use App\Models\Abono;
+use App\Models\CierreCaja;
 use App\Models\Cliente;
 use App\Models\ConceptoCaja;
 use App\Models\Equipo;
@@ -295,6 +296,20 @@ class AuditoriaIntegridadTest extends TestCase
         ])->assertSessionHasErrors('admin_password');
 
         $this->assertEquals(10, $stock->fresh()->cantidad);
+    }
+
+    /** El saldo inicial usa el último conteo real aunque el cierre más reciente no se haya contado. */
+    public function test_saldo_inicial_usa_ultimo_conteo_real(): void
+    {
+        $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Otros ingresos']);
+        MovimientoCaja::create(['concepto_id' => $concepto->id, 'tipo_movimiento' => 'ingreso', 'tipo_pago' => 'efectivo',
+            'fecha' => '2026-10-01', 'monto' => 100, 'estado' => 'activo', 'anulado' => false, 'persona' => 'X', 'user_id' => $this->admin->id]);
+
+        $cierre = ['total_ingresos' => 0, 'total_egresos' => 0, 'efectivo' => 0, 'consignacion' => 0, 'saldo_final' => 0, 'num_movimientos' => 0, 'user_id' => $this->admin->id];
+        CierreCaja::create($cierre + ['fecha' => '2026-10-01', 'efectivo_real_contado' => 90]); // faltaron 10
+        CierreCaja::create($cierre + ['fecha' => '2026-10-02']);                                 // sin conteo
+
+        $this->assertEquals(90.0, CierreCaja::saldoInicialEfectivo('2026-10-03'));
     }
 
     /** Un texto que empieza por "=" se exporta como texto, no como fórmula. */
