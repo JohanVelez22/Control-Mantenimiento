@@ -290,7 +290,7 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
-                    @if($abono->movimientoCaja)
+                    @if($abono->movimientoCaja && ! $esInvitado)
                     <a href="{{ route('caja.show', $abono->movimientoCaja->id) }}" class="btn-ghost btn-action-square font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30" title="Ver movimiento en Caja #{{ $abono->movimientoCaja->id }}">👁️</a>
                     @endif
 

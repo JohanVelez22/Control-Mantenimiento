@@ -2,12 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Concerns\ConfirmaBaseDeDatos;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class ResetTests extends Command
 {
+    use ConfirmaBaseDeDatos;
+
     /**
      * El nombre y firma del comando de consola.
      *
@@ -27,6 +30,10 @@ class ResetTests extends Command
      */
     public function handle()
     {
+        if (! $this->confirmarBaseDeDatos('Borrar transacciones')) {
+            return 1;
+        }
+
         if (! $this->confirm('⚠️ ¿Estás seguro que deseas borrar todas las transacciones de prueba? Esto vaciará Equipos, Mantenimientos, Caja y Facturas.')) {
             $this->info('Operación cancelada.');
 

@@ -13,10 +13,10 @@ use Illuminate\View\View;
 
 class ProveedorController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
         if ($request->has('locate')) {
-            $id = $request->locate;
+            $id = (int) $request->locate;
             $position = Proveedor::where('id', '>=', $id)->count();
             $page = ceil($position / 10) ?: 1;
 

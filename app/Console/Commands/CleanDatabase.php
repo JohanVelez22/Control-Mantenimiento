@@ -2,12 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Concerns\ConfirmaBaseDeDatos;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CleanDatabase extends Command
 {
+    use ConfirmaBaseDeDatos;
+
     /**
      * El nombre y firma del comando de consola.
      *
@@ -33,10 +36,8 @@ class CleanDatabase extends Command
             return 1;
         }
 
-        if (! $this->confirm('¿Estás seguro de que deseas vaciar las tablas de datos? Se perderá toda la información transaccional y de catálogos.')) {
-            $this->info('Operación cancelada.');
-
-            return 0;
+        if (! $this->confirmarBaseDeDatos('Vaciar las tablas de datos y catálogos')) {
+            return 1;
         }
 
         $this->info('Desactivando claves foráneas...');

@@ -128,7 +128,7 @@
     @endguest
 
     <!-- CONTENEDOR DE TOASTS (Notificaciones Glass) -->
-    <div id="toast-container" class="fixed bottom-5 right-3 flex flex-col gap-2.5 pointer-events-none w-full max-w-sm" style="z-index: 100000 !important;"></div>
+    <div id="toast-container" class="fixed bottom-5 left-3 right-3 sm:left-auto flex flex-col gap-2.5 pointer-events-none sm:w-full max-w-sm" style="z-index: 100000 !important;"></div>
 
     <!-- MODAL DE CONFIRMACIÓN DE ALERTA/ELIMINACIÓN (Liquid Glass) -->
     <div id="ts-modal" role="dialog" aria-modal="true" aria-labelledby="ts-modal-title" aria-describedby="ts-modal-msg" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" style="z-index: 50000 !important;" onclick="if(event.target === this) closeTsModal()">
@@ -292,7 +292,7 @@
         // Leer sesiones de Laravel
         @if(session('success')) showToast(@json(session('success')), 'success'); @endif
         @if(session('error')) showToast(@json(session('error')), 'error'); @endif
-        @if(isset($errors) && $errors->any()) showToast("Verifica los campos obligatorios del formulario.", 'error'); @endif
+        @if(isset($errors) && $errors->any()) showToast(@json($errors->count() > 1 ? $errors->first().' (y '.($errors->count() - 1).' error(es) más)' : $errors->first()), 'error'); @endif
 
         // ─── ACCESIBILIDAD Y GESTIÓN DE FOCO EN MODALES (WCAG 2.1) ────────
         let _lastFocusedElement = null;
@@ -318,6 +318,7 @@
             const modal = document.getElementById('ts-modal');
             const card = document.getElementById('ts-modal-card');
             const confirmBtn = document.getElementById('ts-modal-confirm');
+            if (confirmBtn) confirmBtn.disabled = false;
             const cancelBtn = document.getElementById('ts-modal-cancel');
             const iconBox = document.getElementById('ts-modal-icon-box');
             const icon = document.getElementById('ts-modal-icon');
@@ -385,6 +386,7 @@
                 window._pendingForm = null;
                 // Restaurar estado por defecto
                 const confirmBtn = document.getElementById('ts-modal-confirm');
+                if (confirmBtn) confirmBtn.disabled = false;
                 const cancelBtn = document.getElementById('ts-modal-cancel');
                 const iconBox = document.getElementById('ts-modal-icon-box');
                 const icon = document.getElementById('ts-modal-icon');
@@ -674,6 +676,8 @@
                     sessionStorage.setItem('ts_scroll_pos_' + window.location.pathname, window.scrollY);
                 } catch(e) {}
                 formToSubmit.setAttribute('data-confirmed', 'true');
+                const confirmBtnEl = document.getElementById('ts-modal-confirm');
+                if (confirmBtnEl) confirmBtnEl.disabled = true; // evita doble envío
                 formToSubmit.submit();
             }
         });
@@ -704,6 +708,41 @@
                     }
                 });
             });
+        });
+
+        // ─── BLOQUEO DE DOBLE ENVÍO ──────────────────────────────────────
+        // Un doble clic en Guardar/Procesar creaba dos facturas o dos abonos. Se registra en
+        // fase de burbuja: si otra validación canceló el envío (preventDefault) no bloquea.
+        // Excluye formularios GET (filtros), con target (exportaciones) o con data-no-lock.
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (e.defaultPrevented || !(form instanceof HTMLFormElement)) return;
+            if ((form.method || 'get').toLowerCase() === 'get' || form.target || form.hasAttribute('data-no-lock')) return;
+            if (form.dataset.submitting === '1') { e.preventDefault(); return; }
+            form.dataset.submitting = '1';
+            form.querySelectorAll('button[type=submit], button:not([type]), input[type=submit]').forEach(b => {
+                b.dataset.wasDisabled = b.disabled ? '1' : '0';
+                b.disabled = true;
+                b.classList.add('opacity-60', 'cursor-wait');
+            });
+            // Seguridad: si la navegación no ocurre (p. ej. descarga), liberar a los 8 s
+            setTimeout(() => liberarFormulario(form), 8000);
+        });
+        function liberarFormulario(form) {
+            delete form.dataset.submitting;
+            form.querySelectorAll('[data-was-disabled]').forEach(b => {
+                b.disabled = b.dataset.wasDisabled === '1';
+                b.classList.remove('opacity-60', 'cursor-wait');
+                delete b.dataset.wasDisabled;
+            });
+        }
+        // Al volver con el botón Atrás (bfcache) los formularios deben quedar usables
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) {
+                document.querySelectorAll('form[data-submitting]').forEach(liberarFormulario);
+                const c = document.getElementById('ts-modal-confirm');
+                if (c) c.disabled = false;
+            }
         });
 
         // Guardar scroll position antes de enviar cualquier formulario
@@ -1359,7 +1398,8 @@
                 flatpickr.localize(FlatpickrSpanish);
             }
 
-            flatpickr("input[type='date']", {
+            // Si el CDN no cargó, no abortar el resto del JS (formato de montos, validaciones)
+            window.flatpickr && flatpickr("input[type='date']", {
                 locale: FlatpickrSpanish,
                 dateFormat: "Y-m-d",
                 altInput: true,

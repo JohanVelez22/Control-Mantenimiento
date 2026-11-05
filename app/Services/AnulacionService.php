@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 
 /**
  * Lógica central de anulación/reactivación.
@@ -27,6 +29,9 @@ use Illuminate\Support\Facades\Hash;
  */
 class AnulacionService
 {
+    /** Intentos fallidos de contraseña de administrador permitidos cada 15 minutos. */
+    public const MAX_INTENTOS_PASSWORD_ADMIN = 10;
+
     /**
      * Valida que la contraseña corresponda a cualquier administrador.
      * Se usa para acciones sensibles de técnico (editar/anular).
@@ -34,14 +39,32 @@ class AnulacionService
      */
     public function adminPasswordValida(string $password): bool
     {
+        // Límite de intentos por usuario: sin él, cualquier formulario que pide la clave de
+        // administrador servía para adivinarla por fuerza bruta.
+        $clave = 'admin-password:'.(Auth::id() ?? request()->ip());
+        if (RateLimiter::tooManyAttempts($clave, self::MAX_INTENTOS_PASSWORD_ADMIN)) {
+            return false;
+        }
+
         $admins = User::where('role', 'admin')->where('active', true)->select('password')->cursor();
         foreach ($admins as $admin) {
             if (Hash::check($password, $admin->password)) {
+                RateLimiter::clear($clave);
+
                 return true;
             }
         }
 
+        RateLimiter::hit($clave, 900);
+        Log::warning('Contraseña de administrador incorrecta', ['user_id' => Auth::id(), 'ip' => request()->ip()]);
+
         return false;
+    }
+
+    /** Indica si el usuario agotó los intentos de contraseña de administrador (15 min). */
+    public function passwordAdminBloqueada(): bool
+    {
+        return RateLimiter::tooManyAttempts('admin-password:'.(Auth::id() ?? request()->ip()), self::MAX_INTENTOS_PASSWORD_ADMIN);
     }
 
     /**
@@ -87,7 +110,9 @@ class AnulacionService
             }
 
             if (! $this->adminPasswordValida($password)) {
-                return 'Contraseña de administrador incorrecta.';
+                return $this->passwordAdminBloqueada()
+                    ? 'Demasiados intentos fallidos de contraseña de administrador. Intente de nuevo en 15 minutos.'
+                    : 'Contraseña de administrador incorrecta.';
             }
 
             return null;

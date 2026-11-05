@@ -17,7 +17,7 @@ function formatNum(val) {
 }
 
 function esClienteTecnico() {
-    const sel = document.querySelector('select[name="cliente_id"]');
+    const sel = document.querySelector('select[name="facturable_global"]');
     if (!sel) return false;
     const opt = sel.options[sel.selectedIndex];
     return opt ? opt.dataset.tipo === 'tecnico' : false;
@@ -419,7 +419,7 @@ function recalcular() {
 
 // Bloquear submit si no hay stock
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('form.glass-panel') || document.querySelector('form');
+    const form = document.getElementById('cotizacion-form');
     if (form) {
         form.addEventListener('submit', function(e) {
             let hasError = false;
@@ -444,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const clienteSelectElem = document.querySelector('select[name="cliente_id"]');
+    const clienteSelectElem = document.querySelector('select[name="facturable_global"]');
     if (clienteSelectElem) {
         clienteSelectElem.addEventListener('change', () => {
             document.querySelectorAll('.item-row').forEach(tr => {

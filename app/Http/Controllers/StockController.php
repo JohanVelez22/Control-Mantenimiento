@@ -77,6 +77,10 @@ class StockController extends Controller
             'photo.max' => 'La imagen no debe superar los 5 MB de tamaño.',
         ]);
 
+        // Las columnas de precio son NOT NULL: sin estos valores el alta daba error 500.
+        $validated['precio_venta'] ??= 0;
+        $validated['precio_tecnico'] ??= 0;
+
         if ($request->hasFile('photo')) {
             $validated['photo'] = $request->file('photo')->store('stocks', 'public');
         }
