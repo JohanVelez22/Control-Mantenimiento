@@ -283,7 +283,7 @@
                                 <input type="text"
                                        id="efectivo_real_visual"
                                        name="efectivo_real_contado"
-                                       value=""
+                                       value="{{ old('efectivo_real_contado') }}"
                                        placeholder="0"
                                        autocomplete="off"
                                        class="glass-input w-full px-3 text-center !font-black !text-2xl md:!text-3xl text-slate-800 dark:text-white tracking-tight h-[48px] md:h-[54px] focus:ring-2 focus:ring-blue-500/40">
@@ -326,6 +326,7 @@
                     <input type="text" 
                            name="motivo_diferencia" 
                            id="motivo_diferencia" 
+                           value="{{ old('motivo_diferencia') }}"
                            placeholder="Si hubo diferencia, describe aquí la causa (ej. cambio mal entregado, propina, etc.)..." 
                            class="glass-input text-xs sm:text-sm">
                     <p id="error-motivo-diferencia" class="hidden text-xs text-red-500 font-bold mt-1">
@@ -342,7 +343,7 @@
                               id="cierre_observaciones" 
                               rows="2" 
                               placeholder="Notas generales sobre la jornada laboral o novedades..." 
-                              class="glass-input text-xs"></textarea>
+                              class="glass-input text-xs">{{ old('observaciones') }}</textarea>
                 </div>
 
                 {{-- Autorización Requerida para Técnico --}}
@@ -359,7 +360,7 @@
                 {{-- Botón de Cierre --}}
                 <div class="flex flex-col sm:flex-row justify-end items-center gap-3 mt-6 md:mt-8">
                     <button type="submit" id="btn-submit-cierre" class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
-                        <span>🔒</span> Cerrar y bloquear dia
+                        <span>🔒</span> Cerrar y bloquear día
                     </button>
                 </div>
             </form>

@@ -593,9 +593,13 @@
                             initDynamicPanelHandlers(panel);
 
                             // Disparar toast de sesión si existe en la respuesta
-                            const matches = html.match(/showToast\("([^"]+)",\s*'([^']+)'\)/);
+                            // El mensaje viene como literal JSON (directiva json de Blade): decodificarlo para que
+                            // "añadido" se muestre como "añadido".
+                            const matches = html.match(/showToast\(("(?:[^"\\]|\\.)*"),\s*'([^']+)'\)/);
                             if (matches && matches[1] && matches[2]) {
-                                showToast(matches[1], matches[2]);
+                                let texto = matches[1];
+                                try { texto = JSON.parse(matches[1]); } catch (e) { texto = matches[1].slice(1, -1); }
+                                showToast(texto, matches[2]);
                             }
                         }, 80);
                         return;

@@ -6,6 +6,33 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ---
 
+## [1.1.0] - 2026-11-04 (Auditoría de integridad previa a la entrega)
+
+### Seguridad
+- Retiradas contraseñas reales de la documentación versionada y de `phpunit-integration.xml`; seeders sin contraseñas por defecto.
+- Límite de 10 intentos / 15 min para la contraseña de administrador en todas las operaciones sensibles.
+- Exportaciones Excel protegidas contra inyección de fórmulas (`SafeValueBinder`).
+- CDN con versión fija y verificación SRI; validación estricta del login.
+- Comandos destructivos exigen escribir el nombre de la base de datos; Dusk se omite fuera de una base de prueba.
+
+### Integridad financiera
+- Anular una orden siempre anula su ingreso en caja; reactivar órdenes o facturas solo restaura lo anulado en cascada (`anulado_en_cascada`).
+- Anulaciones con bloqueo de fila e intención explícita (un doble clic ya no revierte la operación).
+- Caja: duplicados sin vínculos a documentos, sin abonos sobre hijos o pagos de órdenes, sin reactivar pagos de documentos anulados, sin editar monto/fecha de movimientos generados por abonos.
+- Referencias exactas de documentos (`#VT-1` ya no coincide con `#VT-10`), también en los comprobantes impresos.
+- Costo de las órdenes nunca por debajo de lo abonado ni de los repuestos; numeración de electrónica siempre del servidor.
+- Reporte de efectivo y consignación netos; exportación de stock valorizada.
+
+### Frontend
+- Logo responsive en login, consulta e invitado; bloqueo global de doble envío; mensajes de error reales.
+- Corregidos el técnico preseleccionado en la edición de mantenimientos y el precio técnico en cotizaciones.
+- Páginas 403, 419, 429, 500 y 503 autónomas en español; mensajes de validación completos en español.
+
+### Pruebas
+- 584 pruebas (1.945 aserciones) en verde, con 13 regresiones nuevas en `AuditoriaIntegridadTest`.
+
+---
+
 ## [1.0.0] - 2026-10-21 (Certificación Final de Auditoría y Producción)
 
 ### Fase 0 — Diagnóstico, Baseline y Matriz de Hallazgos

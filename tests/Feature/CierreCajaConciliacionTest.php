@@ -214,7 +214,7 @@ class CierreCajaConciliacionTest extends TestCase
         $respCierreIndex->assertSee('Conciliación Física');
         $respCierreIndex->assertSee('Dinero Contado en Mano');
         $respCierreIndex->assertSee('Calcular dinero');
-        $respCierreIndex->assertSee('Cerrar y bloquear dia');
+        $respCierreIndex->assertSee('Cerrar y bloquear día');
 
         // 3. Crear cierre con arqueo y probar cierre.show y cierre.edit
         $cierre = CierreCaja::create([

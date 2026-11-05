@@ -86,7 +86,7 @@
     $closeBtnClass = $btnClasses[$closeColor] ?? 'btn-ghost-amber';
 @endphp
 
-<div id="{{ $id }}" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 {{ $showOverlay ? '' : 'bg-transparent' }} {{ $extraClass }}" data-xmodal {{ $showOverlay ? '' : 'style="background: transparent;"' }}>
+<div id="{{ $id }}" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 {{ $showOverlay ? '' : 'bg-transparent' }} {{ $extraClass }}" data-xmodal @unless($showOverlay) style="background: transparent;" @endunless>
     <div class="ts-modal-card scale-95 opacity-0 {{ $centered ? 'mx-auto' : '' }} {{ $size }}" id="{{ $id }}-card" role="dialog" aria-modal="true" aria-labelledby="{{ $id }}-title" aria-describedby="{{ $id }}-msg">
         <div class="p-6">
             @if($icon)
@@ -128,11 +128,11 @@
                                 $onclick = isset($action['onclick']) ? 'onclick="' . $action['onclick'] . '"' : '';
                             @endphp
                             @if($type === 'submit')
-                                <button type="submit" class="{{ $btnClass }} justify-center font-bold {{ isset($action['class']) ? $action['class'] : '' }}" {{ $onclick }}>
+                                <button type="submit" class="{{ $btnClass }} justify-center font-bold {{ isset($action['class']) ? $action['class'] : '' }}" @if(isset($action['onclick'])) onclick="{{ $action['onclick'] }}" @endif>
                                     {{ $action['label'] }}
                                 </button>
                             @else
-                                <button type="button" class="{{ $btnClass }} justify-center font-bold {{ isset($action['class']) ? $action['class'] : '' }}" {{ $onclick }}>
+                                <button type="button" class="{{ $btnClass }} justify-center font-bold {{ isset($action['class']) ? $action['class'] : '' }}" @if(isset($action['onclick'])) onclick="{{ $action['onclick'] }}" @endif>
                                     {{ $action['label'] }}
                                 </button>
                             @endif
@@ -144,7 +144,7 @@
                                 $btnClass = $action['class'] ?? 'btn-ghost';
                                 $onclick = isset($action['onclick']) ? 'onclick="' . $action['onclick'] . '"' : '';
                             @endphp
-                            <button type="button" class="{{ $btnClass }} justify-center font-bold {{ isset($action['class']) ? $action['class'] : '' }}" {{ $onclick }}>
+                            <button type="button" class="{{ $btnClass }} justify-center font-bold {{ isset($action['class']) ? $action['class'] : '' }}" @if(isset($action['onclick'])) onclick="{{ $action['onclick'] }}" @endif>
                                 {{ $action['label'] }}
                             </button>
                         @endforeach
