@@ -191,15 +191,4 @@ trait HandlesAbono
 
         return $model->equipo->cliente->nombre ?? 'Cliente Electrónica';
     }
-
-    /**
-     * Obtener descripción para MovimientoCaja
-     */
-    protected function getDescripcion($model, Abono $abono, ?string $descripcion): string
-    {
-        $prefix = $model instanceof Mantenimiento ? 'Abono autom. Orden ' : 'Abono autom. ELC ';
-        $desc = $prefix.$model->id_orden;
-
-        return $desc.($descripcion ? ' — '.$descripcion : '');
-    }
 }

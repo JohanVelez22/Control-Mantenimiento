@@ -40,7 +40,7 @@ class MantenimientoController extends Controller
             return redirect()->route('mantenimientos.index', ['page' => $page])->withFragment('mantenimiento-'.$id);
         }
 
-        $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user', 'abonos'])->orderBy('id', 'desc')->paginate(10);
+        $mantenimientos = Mantenimiento::with(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'user', 'abonos'])->orderBy('id', 'desc')->paginate(10);
 
         return view('mantenimientos.index', compact('mantenimientos'));
     }

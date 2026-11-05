@@ -8,6 +8,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 use App\Models\Configuracion;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\Schema;
 
@@ -65,5 +66,7 @@ try {
         Schedule::command('app:backup-db')->dailyAt('02:00')->withoutOverlapping();
     }
 } catch (Throwable $e) {
+    // Sin base de datos o configuración no se puede leer el horario: respaldo diario por defecto
+    Log::warning('No se pudo leer la programación de respaldos; se usa 02:00 diario: '.$e->getMessage());
     Schedule::command('app:backup-db')->dailyAt('02:00')->withoutOverlapping();
 }

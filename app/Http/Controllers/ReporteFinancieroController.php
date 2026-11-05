@@ -168,12 +168,12 @@ class ReporteFinancieroController extends Controller
 
         $totalAnuladosCount = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', true)->count()
                             + Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', true)->count()
-                            + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->count()
+                            + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->whereNull('factura_id')->whereNull('abono_id')->count()
                             + Factura::whereDate('fecha', $fecha)->where('estado', 'anulada')->count();
 
         $montoAnuladosSum = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
                             + Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
-                            + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->sum('monto')
+                            + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->whereNull('factura_id')->whereNull('abono_id')->sum('monto')
                             + Factura::whereDate('fecha', $fecha)->where('estado', 'anulada')->sum('total_documento');
 
         // ════════════════════════════════════════════════════════════════════
@@ -345,8 +345,9 @@ class ReporteFinancieroController extends Controller
         $saldoPendienteCajaEgreso = 0;
 
         foreach ($cajaPendientes as $cmov) {
-            $isLinkedToFactura = false;
-            if ($cmov->descripcion) {
+            // El vínculo directo (factura_id) es la fuente de verdad; la descripción es respaldo legacy
+            $isLinkedToFactura = (bool) $cmov->factura_id;
+            if (! $isLinkedToFactura && $cmov->descripcion) {
                 foreach ($facturaNumeros as $fnum) {
                     if (str_contains($cmov->descripcion, $fnum)) {
                         $isLinkedToFactura = true;
@@ -401,12 +402,12 @@ class ReporteFinancieroController extends Controller
             'total_egresos' => (clone $cajaBase)->where('tipo_movimiento', 'egreso')->count(),
             'total_anulados' => Mantenimiento::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->count()
                                      + Electronica::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->count()
-                                     + MovimientoCaja::whereBetween('fecha', [$desde, $hasta])->where('anulado', true)->count()
+                                     + MovimientoCaja::whereBetween('fecha', [$desde, $hasta])->where('anulado', true)->whereNull('factura_id')->whereNull('abono_id')->count()
                                      + Factura::whereBetween('fecha', [$desde, $hasta])->where('estado', 'anulada')->count(),
 
             'total_costo_anulados' => Mantenimiento::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->sum('costo')
                                      + Electronica::whereBetween('fecha_entrada', [$desde, $hasta])->where('anulado', true)->sum('costo')
-                                     + MovimientoCaja::whereBetween('fecha', [$desde, $hasta])->where('anulado', true)->sum('monto')
+                                     + MovimientoCaja::whereBetween('fecha', [$desde, $hasta])->where('anulado', true)->whereNull('factura_id')->whereNull('abono_id')->sum('monto')
                                      + Factura::whereBetween('fecha', [$desde, $hasta])->where('estado', 'anulada')->sum('total_documento'),
 
             // Montos

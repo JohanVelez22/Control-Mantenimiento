@@ -16,8 +16,10 @@ use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
 use App\Services\AnulacionService;
+use App\Services\OrdenService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Tests\TestCase;
@@ -323,6 +325,39 @@ class AuditoriaIntegridadTest extends TestCase
 
         $this->post('/login', ['email' => 'gerente@x.com', 'password' => 'Clave-Admin-1']);
         $this->assertAuthenticatedAs($admin);
+    }
+
+    /** Solo se reabre el último día cerrado (borrar uno intermedio alteraba los arqueos posteriores). */
+    public function test_no_se_borra_un_cierre_intermedio(): void
+    {
+        $cierre = ['total_ingresos' => 0, 'total_egresos' => 0, 'efectivo' => 0, 'consignacion' => 0, 'saldo_final' => 0, 'num_movimientos' => 0, 'user_id' => $this->admin->id];
+        $intermedio = CierreCaja::create($cierre + ['fecha' => '2026-10-01']);
+        CierreCaja::create($cierre + ['fecha' => '2026-10-02']);
+
+        $this->actingAs($this->admin)->delete(route('cierre.destroy', $intermedio))->assertSessionHas('error');
+        $this->assertDatabaseHas('cierre_cajas', ['id' => $intermedio->id]);
+    }
+
+    /** No se desactiva un técnico ni un equipo con órdenes pendientes. */
+    public function test_no_se_desactiva_catalogo_con_ordenes_pendientes(): void
+    {
+        $m = $this->mantenimiento;
+        $this->actingAs($this->admin)->post(route('tecnicos.anular', $m->tecnico_id))->assertSessionHas('error');
+        $this->actingAs($this->admin)->post(route('equipos.anular', $m->equipo_id))->assertSessionHas('error');
+
+        $this->assertTrue((bool) Tecnico::find($m->tecnico_id)->active);
+        $this->assertTrue((bool) Equipo::find($m->equipo_id)->active);
+    }
+
+    /** La numeración se sincroniza con el mayor número existente aunque la secuencia vaya atrás. */
+    public function test_numeracion_no_repite_numeros_existentes(): void
+    {
+        DB::table('secuencias_documento')->updateOrInsert(['prefijo' => 'ORD-'], ['valor' => 1]);
+        Mantenimiento::factory()->create(['id_orden' => 'ORD-40', 'equipo_id' => $this->mantenimiento->equipo_id, 'tecnico_id' => $this->mantenimiento->tecnico_id, 'user_id' => $this->admin->id]);
+
+        $siguiente = DB::transaction(fn () => app(OrdenService::class)->siguiente('ORD-', Mantenimiento::class));
+
+        $this->assertSame('ORD-41', $siguiente);
     }
 
     /** Un texto que empieza por "=" se exporta como texto, no como fórmula. */

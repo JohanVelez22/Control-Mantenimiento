@@ -860,6 +860,15 @@ class MovimientoInventarioController extends Controller
             $entityName = $entity->nombre_razon_social ?? $entity->nombre;
 
             if ($baseCaja) {
+                // El pago base puede tener una fecha distinta a la de la factura (editable en caja):
+                // si ese día ya está cerrado, moverlo alteraría un arqueo registrado.
+                $fechaBase = $baseCaja->fecha?->toDateString();
+                if ($fechaBase && CierreCajaGuard::fechaEstaCerrada($fechaBase)) {
+                    DB::rollBack();
+
+                    return back()->with('error', "No se puede modificar la factura: su pago en caja es del {$fechaBase}, día que ya tiene cierre de caja.")->withInput();
+                }
+
                 $abonosExistentes = (float) $baseCaja->childPayments()
                     ->where('anulado', false)
                     ->where('estado', 'activo')

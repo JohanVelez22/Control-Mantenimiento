@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Electronica;
+use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
 use App\Models\Stock;
 use App\Models\User;
@@ -146,6 +148,26 @@ class AnulacionService
         }
 
         return null;
+    }
+
+    /**
+     * Mensaje de bloqueo si existen órdenes pendientes (mantenimiento o electrónica) para los
+     * equipos o el técnico indicados; null si se puede desactivar el registro de catálogo.
+     *
+     * @param  'equipo_id'|'tecnico_id'  $campo
+     */
+    public function bloqueoPorOrdenesPendientes(string $campo, array $ids, string $entidad): ?string
+    {
+        if (empty($ids)) {
+            return null;
+        }
+
+        $pendientes = Mantenimiento::whereIn($campo, $ids)->where('anulado', false)->where('estado', 'pendiente')->count()
+            + Electronica::whereIn($campo, $ids)->where('anulado', false)->where('estado', 'pendiente')->count();
+
+        return $pendientes > 0
+            ? "No se puede desactivar {$entidad}: tiene {$pendientes} orden(es) pendiente(s). Termine o anule primero esas órdenes."
+            : null;
     }
 
     /**

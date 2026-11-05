@@ -396,7 +396,8 @@ class CotizacionController extends Controller
             $factura = Factura::create([
                 'numero_factura' => Factura::siguienteNumero($prefijoFactura),
                 'tipo_movimiento' => $tipoMovimiento,
-                'estado' => 'pendiente_pago',
+                // Una cotización en $0 no deja saldo pendiente
+                'estado' => (float) $cotizacion->total > Factura::EPSILON ? 'pendiente_pago' : 'emitida',
                 'facturable_id' => $facturableId,
                 'facturable_type' => $facturableType,
                 'total_documento' => $cotizacion->total,
@@ -463,7 +464,8 @@ class CotizacionController extends Controller
             DB::rollBack();
             Log::error('Error al convertir cotización: '.$e->getMessage());
 
-            return back()->with('error', 'Error al procesar la conversión: '.$e->getMessage());
+            // Los mensajes de dominio (stock, cierre) son para el usuario; los técnicos no.
+            return back()->with('error', $e instanceof \DomainException ? $e->getMessage() : 'Error al procesar la conversión. Intente nuevamente.');
         }
     }
 }

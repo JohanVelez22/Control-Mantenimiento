@@ -153,7 +153,7 @@
                        value="{{ old('precio_compra', isset($st) && $st->precio_compra ? number_format($st->precio_compra, 0, '', '') : '') }}"
                        required class="glass-input text-right font-bold text-slate-800 dark:text-white" placeholder="0">
                 <input type="hidden" name="precio_compra" id="precio_compra_real"
-                       value="{{ old('precio_compra', isset($st) ? intval($st->precio_compra) : '') }}">
+                       value="{{ old('precio_compra', isset($st) ? rtrim(rtrim(number_format((float) $st->precio_compra, 2, '.', ''), '0'), '.') : '') }}">
                 @error('precio_compra') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
 
@@ -175,7 +175,7 @@
                        value="{{ old('precio_venta', isset($st) && $st->precio_venta ? number_format($st->precio_venta, 0, '', '') : '') }}"
                        placeholder="Automático" class="glass-input text-right font-bold text-blue-600 dark:text-cyan-400">
                 <input type="hidden" name="precio_venta" id="precio_venta_real"
-                       value="{{ old('precio_venta', isset($st) && $st->precio_venta ? intval($st->precio_venta) : '') }}">
+                       value="{{ old('precio_venta', isset($st) && $st->precio_venta ? rtrim(rtrim(number_format((float) $st->precio_venta, 2, '.', ''), '0'), '.') : '') }}">
                 @error('precio_venta') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
 
@@ -185,7 +185,7 @@
                        value="{{ old('precio_tecnico', isset($st) && $st->precio_tecnico ? number_format($st->precio_tecnico, 0, '', '') : '') }}"
                        placeholder="Automático" class="glass-input text-right font-bold text-purple-600 dark:text-purple-400">
                 <input type="hidden" name="precio_tecnico" id="precio_tecnico_real"
-                       value="{{ old('precio_tecnico', isset($st) && $st->precio_tecnico ? intval($st->precio_tecnico) : '') }}">
+                       value="{{ old('precio_tecnico', isset($st) && $st->precio_tecnico ? rtrim(rtrim(number_format((float) $st->precio_tecnico, 2, '.', ''), '0'), '.') : '') }}">
                 @error('precio_tecnico') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
             </div>
         </div>

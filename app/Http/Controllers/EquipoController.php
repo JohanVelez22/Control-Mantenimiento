@@ -172,6 +172,14 @@ class EquipoController extends Controller
             return redirect()->back()->with('error', $error)->withInput();
         }
 
+        $servicio = app(AnulacionService::class);
+        if ($error = $servicio->verificarIntencion($request, (bool) $equipo->active)) {
+            return redirect()->back()->with('error', $error);
+        }
+        if ($equipo->active && ($bloqueo = $servicio->bloqueoPorOrdenesPendientes('equipo_id', [$equipo->id], 'el equipo'))) {
+            return redirect()->back()->with('error', $bloqueo);
+        }
+
         $equipo->active = ! $equipo->active;
         $equipo->save();
 
@@ -192,6 +200,10 @@ class EquipoController extends Controller
 
         if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
+        }
+
+        if ($bloqueo = app(AnulacionService::class)->bloqueoPorOrdenesPendientes('equipo_id', [$equipo->id], 'el equipo')) {
+            return redirect()->back()->with('error', $bloqueo);
         }
 
         $validated = $request->validate([
@@ -233,16 +245,5 @@ class EquipoController extends Controller
         ]);
 
         return redirect()->back()->with('success', "El equipo '{$equipo->nombre}' ha sido reactivado y vuelve a estar disponible para mantenimiento.");
-    }
-
-    public function destroy(Equipo $equipo)
-    {
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('equipos.index')->with('error', 'No tienes permisos para eliminar.');
-        }
-
-        $equipo->delete();
-
-        return redirect()->route('equipos.index')->with('success', 'Equipo eliminado correctamente.');
     }
 }

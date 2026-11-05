@@ -153,12 +153,4 @@ class ProveedorController extends Controller
 
         return redirect()->back()->with('success', "El proveedor ha sido {$action} exitosamente.");
     }
-
-    /** AJAX: municipios de un departamento */
-    public function municipios(Request $request)
-    {
-        $dep = $request->get('departamento', '');
-
-        return response()->json(ColombiaHelper::municipiosDe($dep));
-    }
 }

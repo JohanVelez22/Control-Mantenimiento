@@ -172,10 +172,6 @@ class GuestDashboardTest extends TestCase
 
         $response = $this->actingAs($admin)->get('/dashboard');
 
-        if ($response->getStatusCode() === 500) {
-            $this->markTestSkipped('Dashboard depende de CURDATE() y no aplica en SQLite.');
-        }
-
         $response->assertStatus(200);
         $response->assertSee('Dashboard');
     }
@@ -185,10 +181,6 @@ class GuestDashboardTest extends TestCase
         $tecnico = $this->createTecnicoUser();
 
         $response = $this->actingAs($tecnico)->get('/dashboard');
-
-        if ($response->getStatusCode() === 500) {
-            $this->markTestSkipped('Dashboard depende de CURDATE() y no aplica en SQLite.');
-        }
 
         $response->assertStatus(200);
         $response->assertSee('Dashboard');

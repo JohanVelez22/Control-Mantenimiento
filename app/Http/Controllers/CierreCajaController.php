@@ -132,6 +132,13 @@ class CierreCajaController extends Controller
             return back()->with('error', $error)->withInput();
         }
 
+        // Solo se reabre el último día cerrado: borrar un cierre intermedio cambiaría el saldo
+        // inicial de los días posteriores, cuyos arqueos ya están registrados.
+        $posterior = CierreCaja::where('fecha', '>', $cierre->fecha)->orderBy('fecha')->first();
+        if ($posterior) {
+            return back()->with('error', 'No se puede eliminar este cierre: existe un cierre posterior ('.$posterior->fecha->format('d/m/Y').'). Elimine primero los cierres más recientes.');
+        }
+
         $cierre->delete();
 
         return redirect()->route('cierre.index')->with('success', 'Cierre eliminado y día desbloqueado.');

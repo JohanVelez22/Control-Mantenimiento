@@ -57,14 +57,11 @@ class OrdenService
             }
 
             $valorActual = (int) ($secuencia?->valor ?? 0);
-            $necesitaSincronizar = ($valorActual === 0) || app()->environment('testing');
 
-            if ($necesitaSincronizar) {
-                $maxExistente = $this->obtenerMaximoExistente($modelo, $columna, $prefijo);
-                $base = max($valorActual, $maxExistente);
-            } else {
-                $base = $valorActual;
-            }
+            // Siempre se sincroniza con el mayor número existente: si entraron documentos por
+            // otra vía (seeder, respaldo restaurado, importación) la secuencia quedaba atrás y
+            // generaba números repetidos que fallaban por la restricción unique.
+            $base = max($valorActual, $this->obtenerMaximoExistente($modelo, $columna, $prefijo));
 
             $siguienteNumero = $base + 1;
 

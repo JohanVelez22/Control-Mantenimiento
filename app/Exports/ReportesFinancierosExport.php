@@ -155,7 +155,7 @@ class ReportesFinancierosExport implements FromCollection, ShouldAutoSize, WithE
 
         $monto = $isArr ? ($tx['monto'] ?? 0) : ($tx->monto ?? $tx->total_documento ?? 0);
         $estado = $isArr ? ($tx['estado'] ?? '—') : ($tx->estado ?? '—');
-        $anulado = $isArr ? (! empty($tx['anulado']) ? 'Sí' : 'No') : ($tx->anulado ? 'Sí' : 'No');
+        $anulado = $isArr ? (! empty($tx['anulado']) ? 'Sí' : 'No') : (($tx->anulado ?? (($tx->estado ?? null) === 'anulada')) ? 'Sí' : 'No');
 
         return [
             $codigo,

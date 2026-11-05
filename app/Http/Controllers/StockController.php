@@ -13,6 +13,7 @@ use App\Services\StockService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -216,7 +217,7 @@ class StockController extends Controller
 
     public function reportes(Request $request)
     {
-        $query = Stock::with('proveedor')->where('active', true);
+        $query = Stock::with('proveedor');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -258,7 +259,11 @@ class StockController extends Controller
             $query->where($col, '<=', $request->max_costo);
         }
 
-        if ($request->filled('estado') && $request->estado !== 'todos') {
+        // Por defecto solo activos; el filtro de estado permite ver inactivos o todos
+        // (antes el filtro base fijo hacía que «inactivo» devolviera siempre vacío).
+        if (! $request->filled('estado')) {
+            $query->where('active', true);
+        } elseif ($request->estado !== 'todos') {
             $query->where('active', $request->estado === 'activo' ? 1 : 0);
         }
 
@@ -369,7 +374,9 @@ class StockController extends Controller
         } catch (\DomainException $e) {
             return redirect()->back()->with('error', $e->getMessage())->withInput();
         } catch (\Throwable $e) {
-            return redirect()->back()->with('error', 'Error al procesar la baja de stock: '.$e->getMessage())->withInput();
+            Log::error('Error en baja de stock: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'Error al procesar la baja de stock. Intente nuevamente.')->withInput();
         }
     }
 
@@ -391,8 +398,12 @@ class StockController extends Controller
             $stockService->revertirBaja($bajaStock);
 
             return redirect()->back()->with('success', "Se revirtió la baja exitosamente: se reintegraron {$cantidad} unidad(es) al inventario de '{$producto}'.");
+        } catch (\DomainException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         } catch (\Throwable $e) {
-            return redirect()->back()->with('error', 'Error al revertir la baja: '.$e->getMessage());
+            Log::error('Error al revertir baja de stock: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'Error al revertir la baja. Intente nuevamente.');
         }
     }
 }
