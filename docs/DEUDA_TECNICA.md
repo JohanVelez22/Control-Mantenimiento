@@ -44,5 +44,5 @@ Estado al 2026-11-05. Este documento lista lo que **queda pendiente** después d
 | `php artisan app:preflight` | Lista lo que falta para producción (configuración, contraseñas, migraciones, compilación, respaldos). |
 | `php artisan app:verificar-migraciones` | Duplicados y migraciones pendientes antes de migrar (solo lectura). |
 | `php artisan security:check` | Revisión rápida de configuración sensible. |
-| `php artisan test` | 599 pruebas, incluida la prueba de humo de todas las pantallas (`SmokeRutasTest`). |
+| `php artisan test` | 604 pruebas, incluida la prueba de humo de todas las pantallas (`SmokeRutasTest`). |
 | `npm run vendor:sync` | Copia flatpickr, tom-select y chart.js a `public/vendor` (actualizar SRI si cambian versiones). |

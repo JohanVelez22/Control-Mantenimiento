@@ -12,7 +12,8 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - **Respaldos:** restaurar genera antes un respaldo de seguridad del estado actual (`app:backup-db --sin-rotacion`) y se cancela si falla.
 - **Permisos:** pruebas que intentan cada acción de escritura como invitado y las acciones de administrador como técnico.
 - **Entorno:** `.env` en modo producción (`APP_ENV=production`, `APP_DEBUG=false`, `APP_LOCALE=es`, `LOG_LEVEL=warning`); copia previa en `.env.backup`.
-- **Pruebas:** 599 (2.009 aserciones) en verde.
+- **Contraseñas:** cambio obligatorio al ingresar con una contraseña predeterminada o asignada por un administrador; las 3 cuentas base quedaron marcadas.
+- **Pruebas:** 604 (2.041 aserciones) en verde.
 
 ---
 
