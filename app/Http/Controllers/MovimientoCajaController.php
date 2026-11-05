@@ -314,6 +314,27 @@ class MovimientoCajaController extends Controller
             'descripcion' => 'nullable|string|max:500',
         ]);
 
+        // Movimientos generados por un abono de orden: su monto, fecha y tipo los gobierna
+        // el abono. Editarlos aquí desincronizaba la caja del saldo de la orden.
+        if ($movimiento->abono_id) {
+            $cambiaMonto = abs((float) $validated['monto'] - (float) $movimiento->monto) > Factura::EPSILON;
+            $cambiaFecha = Carbon::parse($validated['fecha'])->toDateString() !== $movimiento->fecha?->toDateString();
+            $cambiaTipo = $validated['tipo_movimiento'] !== $movimiento->tipo_movimiento;
+            if ($cambiaMonto || $cambiaFecha || $cambiaTipo) {
+                return back()->with('error', 'Este movimiento lo generó un abono de una orden: el monto, la fecha y el tipo se modifican desde la orden (eliminando y registrando de nuevo el abono).')->withInput();
+            }
+        }
+
+        // Pagos de facturas o abonos parciales: no pueden cambiar de ingreso a egreso.
+        if (($movimiento->factura_id || $movimiento->parent_id) && $validated['tipo_movimiento'] !== $movimiento->tipo_movimiento) {
+            return back()->withErrors(['tipo_movimiento' => 'No se puede cambiar el tipo de un pago vinculado a una factura o a otro movimiento.'])->withInput();
+        }
+
+        if (! empty($validated['monto_total']) && (float) $validated['monto_total'] > 0
+            && (float) $validated['monto_total'] + Factura::EPSILON < (float) $validated['monto']) {
+            return back()->withErrors(['monto_total' => 'El valor total no puede ser menor que el monto pagado.'])->withInput();
+        }
+
         // Validar que al menos empresa o persona esté presente, pero NO ambas
         if (empty($validated['empresa']) && empty($validated['persona'])) {
             return back()->withErrors(['persona' => 'Debe indicar al menos un nombre de persona o empresa.'])->withInput();
@@ -419,6 +440,11 @@ class MovimientoCajaController extends Controller
         $nuevo->fecha = $hoy;
         $nuevo->user_id = auth()->id();
         $nuevo->parent_id = null;  // Nunca heredar vínculo padre (evita abonos huérfanos)
+        // Nunca heredar vínculos a documentos: el duplicado contaría como pago de la
+        // factura o del abono original sin que entre dinero.
+        $nuevo->factura_id = null;
+        $nuevo->abono_id = null;
+        $nuevo->monto_total = null;
         $nuevo->anulado = false; // Siempre crear como activo
         $nuevo->estado = 'activo';
         $nuevo->save();
@@ -436,6 +462,17 @@ class MovimientoCajaController extends Controller
 
         if ($movimiento->factura && ($movimiento->factura->estado === 'anulada' || $movimiento->factura->esta_anulada)) {
             return back()->with('error', 'No se pueden registrar abonos a una factura anulada.')->withInput();
+        }
+
+        // Los abonos se registran sobre el movimiento raíz: un "nieto" no cuenta en el saldo.
+        if ($movimiento->parent_id) {
+            return back()->with('error', 'Registre el abono sobre el movimiento original, no sobre otro abono.')->withInput();
+        }
+
+        // Pagos de órdenes (mantenimiento / electrónica): el abono debe pasar por la orden
+        // para que su saldo se actualice; desde caja se cobraría dos veces.
+        if ($movimiento->abono_id) {
+            return back()->with('error', 'Este movimiento pertenece a una orden: registre el abono desde la orden correspondiente.')->withInput();
         }
 
         $validated = $request->validate([
@@ -509,7 +546,7 @@ class MovimientoCajaController extends Controller
 
             $esPagoCompleto = ($validated['monto_abono'] >= $saldoActual - Factura::EPSILON);
 
-            $descAbono = $validated['descripcion'];
+            $descAbono = $validated['descripcion'] ?? null;
             if (! $descAbono) {
                 if ($numFactura) {
                     $descAbono = $esPagoCompleto
@@ -563,7 +600,21 @@ class MovimientoCajaController extends Controller
         try {
             DB::beginTransaction();
 
+            $movimiento = MovimientoCaja::whereKey($movimiento->id)->lockForUpdate()->firstOrFail();
             $esAnulacion = ! $movimiento->anulado;
+
+            if ($error = app(AnulacionService::class)->verificarIntencion($request, $esAnulacion)) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', $error);
+            }
+
+            // Reactivar un pago cuyo documento está anulado volvería a contar ese dinero en caja.
+            if (! $esAnulacion && ($bloqueo = $this->motivoBloqueoReactivacion($movimiento))) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', $bloqueo);
+            }
 
             // Anular movimiento principal
             $movimiento->update([
@@ -571,9 +622,9 @@ class MovimientoCajaController extends Controller
                 'estado' => $esAnulacion ? 'anulado' : 'activo',
             ]);
 
-            // Sincronizar Abono asociado si existe
-            if ($movimiento->abono_id) {
-                Abono::where('id', $movimiento->abono_id)->update(['anulado' => $esAnulacion]);
+            // Sincronizar Abono asociado si existe (anulación individual, no en cascada)
+            if ($movimiento->abono_id && ($abono = Abono::find($movimiento->abono_id))) {
+                $abono->update(['anulado' => $esAnulacion, 'anulado_en_cascada' => false]);
             }
 
             // Anular o restaurar todos los abonos asociados en cascada
@@ -589,8 +640,8 @@ class MovimientoCajaController extends Controller
                     'anulado' => $esAnulacion,
                     'estado' => $esAnulacion ? 'anulado' : 'activo',
                 ]);
-                if ($child->abono_id) {
-                    Abono::where('id', $child->abono_id)->update(['anulado' => $esAnulacion]);
+                if ($child->abono_id && ($abonoHijo = Abono::find($child->abono_id))) {
+                    $abonoHijo->update(['anulado' => $esAnulacion, 'anulado_en_cascada' => false]);
                 }
             }
 
@@ -605,6 +656,32 @@ class MovimientoCajaController extends Controller
 
             return redirect()->back()->with('error', 'Error al anular el movimiento de caja.');
         }
+    }
+
+    /**
+     * Motivo por el que un movimiento anulado no puede reactivarse, o null si puede.
+     */
+    private function motivoBloqueoReactivacion(MovimientoCaja $movimiento): ?string
+    {
+        if ($movimiento->factura_id && $movimiento->factura && $movimiento->factura->estado === 'anulada') {
+            return 'No se puede reactivar: la factura '.$movimiento->factura->numero_factura.' está anulada. Reactive primero la factura.';
+        }
+
+        if ($movimiento->parent_id && $movimiento->parent && $movimiento->parent->anulado) {
+            return 'No se puede reactivar un abono cuyo movimiento original está anulado.';
+        }
+
+        if ($movimiento->abono_id && ($abono = Abono::find($movimiento->abono_id))) {
+            $orden = $abono->mantenimiento ?? $abono->electronica;
+            if ($orden && $orden->anulado) {
+                return 'No se puede reactivar: la orden '.$orden->id_orden.' está anulada. Reactive primero la orden.';
+            }
+            if ($orden && (float) $abono->monto > (float) $orden->saldo_pendiente + Factura::EPSILON) {
+                return 'No se puede reactivar: el pago superaría el saldo pendiente de la orden.';
+            }
+        }
+
+        return null;
     }
 
     private function sincronizarFacturaRelacionada(MovimientoCaja $movimiento): void

@@ -55,4 +55,3 @@ class FacturaPolicy
         return $user->isAdmin();
     }
 }
-

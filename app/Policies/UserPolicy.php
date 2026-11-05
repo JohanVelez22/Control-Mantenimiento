@@ -46,4 +46,3 @@ class UserPolicy
         return $user->isAdmin() && $user->id !== $model->id;
     }
 }
-

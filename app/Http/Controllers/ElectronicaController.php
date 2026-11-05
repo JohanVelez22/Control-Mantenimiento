@@ -78,27 +78,25 @@ class ElectronicaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_orden' => 'nullable|string|unique:electronicas,id_orden',
-            'equipo_id' => 'required|exists:equipos,id',
-            'descripcion_problema' => 'required|string',
+            'equipo_id' => 'required|integer|exists:equipos,id',
+            'descripcion_problema' => 'required|string|max:1000',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
-            'costo' => 'required|numeric|min:0',
+            'costo' => 'required|numeric|min:0|decimal:0,2|max:99999999.99',
             'estado' => 'required|in:pendiente,terminado',
             'fecha_entrada' => 'required|date',
             'fecha_salida' => 'nullable|date|after_or_equal:fecha_entrada',
-            'tecnico_id' => 'required|exists:tecnicos,id',
+            'tecnico_id' => 'required|integer|exists:tecnicos,id',
         ]);
 
         try {
             DB::beginTransaction();
 
-            // Número de orden atómico: OrdenService usa lockForUpdate dentro
-            // de la transacción para eliminar la condición de carrera (race condition).
-            if (empty($validated['id_orden'])) {
-                $validated['id_orden'] = app(OrdenService::class)
-                    ->siguiente('ELC-', Electronica::class, 'id_orden', null);
-            }
+            // Número de orden atómico, siempre asignado por el servidor: el valor que
+            // muestra el formulario es solo una vista previa y puede haber sido tomado
+            // por otra orden creada al mismo tiempo.
+            $validated['id_orden'] = app(OrdenService::class)
+                ->siguiente('ELC-', Electronica::class, 'id_orden', null);
 
             $validated['user_id'] = auth()->id();
 
@@ -148,24 +146,27 @@ class ElectronicaController extends Controller
         }
 
         // El técnico puede editar, pero debe confirmar con la contraseña de un admin.
+        // El número de orden lo asigna el sistema y no se modifica (rompería las referencias
+        // de caja y la consulta del cliente), igual que en Mantenimiento.
         $reglas = [
-            'id_orden' => 'nullable|string|unique:electronicas,id_orden,'.$electronica->id,
-            'equipo_id' => 'required|exists:equipos,id',
-            'descripcion_problema' => 'required|string',
+            'equipo_id' => 'required|integer|exists:equipos,id',
+            'descripcion_problema' => 'required|string|max:1000',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
-            'costo' => 'required|numeric|min:0',
+            'costo' => ['required', 'numeric', 'decimal:0,2', 'max:99999999.99', 'min:'.$electronica->costoMinimoPermitido()],
             'estado' => 'required|in:pendiente,terminado',
             'fecha_entrada' => 'required|date',
             'fecha_salida' => 'nullable|date|after_or_equal:fecha_entrada',
-            'tecnico_id' => 'required|exists:tecnicos,id',
+            'tecnico_id' => 'required|integer|exists:tecnicos,id',
         ];
 
         if (auth()->user()->isTecnico()) {
             $reglas['admin_password'] = 'required';
         }
 
-        $validated = $request->validate($reglas);
+        $validated = $request->validate($reglas, [
+            'costo.min' => 'El costo no puede ser menor que lo ya abonado o que el valor de los repuestos asignados ($ '.number_format($electronica->costoMinimoPermitido(), 0, ',', '.').').',
+        ]);
 
         if (auth()->user()->isTecnico() &&
             ! app(AnulacionService::class)->adminPasswordValida($validated['admin_password'])) {
@@ -197,7 +198,17 @@ class ElectronicaController extends Controller
         try {
             DB::beginTransaction();
 
+            // Bloquear la fila y releer el estado: evita que dos peticiones simultáneas
+            // reviertan el stock dos veces.
+            $electronica = Electronica::whereKey($electronica->id)->lockForUpdate()->firstOrFail();
             $esAnulacion = ! $electronica->anulado;
+
+            if ($error = app(AnulacionService::class)->verificarIntencion($request, $esAnulacion)) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', $error);
+            }
+
             $electronica->update(['anulado' => $esAnulacion]);
 
             // Reversión centralizada de stock y abonos en caja
@@ -237,7 +248,7 @@ class ElectronicaController extends Controller
         if ($formato === 'pos') {
             $stocksCount = $electronica->stocks ? $electronica->stocks->count() : 0;
             $abonosCount = $electronica->abonos ? $electronica->abonos->count() : 0;
-            $obsLength = strlen($electronica->descripcion ?? '');
+            $obsLength = strlen($electronica->descripcion_problema ?? '');
             $obsExtra = ceil($obsLength / 35) * 14;
             $fallbackHeight = max(700, 520 + $obsExtra + ($stocksCount * 36) + ($abonosCount * 28));
 

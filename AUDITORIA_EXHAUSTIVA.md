@@ -144,13 +144,13 @@ File::copyDirectory($publicMediaDir, storage_path('app/public'));  // ← destin
 ### P0-4 ⛔ Credenciales por defecto débiles en `.env` **y** en el código
 
 ```
-.env:12   ADMIN_DEFAULT_PASSWORD="Admin123*"
-.env:13   TECNICO_DEFAULT_PASSWORD="Tecni123*"
-.env:14   INVITADO_DEFAULT_PASSWORD="Invit123*"
+.env:12   ADMIN_DEFAULT_PASSWORD="<REDACTADO>"
+.env:13   TECNICO_DEFAULT_PASSWORD="<REDACTADO>"
+.env:14   INVITADO_DEFAULT_PASSWORD="<REDACTADO>"
 ```
 Fallbacks **hardcodeados en el código** (se ejecutan aunque el `.env` no los defina):
-- `database/seeders/AdminUserSeeder.php:18-20` → `env('ADMIN_DEFAULT_PASSWORD', 'Admin123*')`
-- `app/Console/Commands/SeedDemoData.php:85, 90, 95` → `Hash::make('Admin123*')` **sin guarda de entorno**
+- `database/seeders/AdminUserSeeder.php:18-20` → `env('ADMIN_DEFAULT_PASSWORD', '<REDACTADO>')`
+- `app/Console/Commands/SeedDemoData.php:85, 90, 95` → `Hash::make('<REDACTADO>')` **sin guarda de entorno**
 - `app/Console/Commands/SystemAuditCommand.php:206` → crea admin con contraseña `secret`
 
 La contraseña del admin es además el **segundo factor** que autoriza anulaciones y bajas. Confirmado por el propio comando del proyecto: `php artisan security:check` → ❌ *ADMIN_DEFAULT_PASSWORD … valor inseguro por defecto*.
@@ -162,10 +162,10 @@ La contraseña del admin es además el **segundo factor** que autoriza anulacion
 - **Ubicación:** `phpunit-integration.xml:23-28` — **confirmado por `git ls-files` como trackeado**:
 ```xml
 <env name="DB_USERNAME" value="root"/>
-<env name="DB_PASSWORD" value="ServBay.dev"/>
+<env name="DB_PASSWORD" value="<TU_CONTRASEÑA_MYSQL>"/>
 ```
 - Misma credencial en `.env:33`. Cualquiera con lectura del repo tiene **root en el MySQL de la máquina**.
-- **Corrección:** rotar `root`; crear `tecni_app` con permisos mínimos (`SELECT, INSERT, UPDATE, DELETE` sobre `tecni_systemas`); mover la credencial del XML a `.env.testing` no versionado; `git log -p -S "ServBay.dev"` para auditar el historial.
+- **Corrección:** rotar `root`; crear `tecni_app` con permisos mínimos (`SELECT, INSERT, UPDATE, DELETE` sobre `tecni_systemas`); mover la credencial del XML a `.env.testing` no versionado; `git log -p -S "<TU_CONTRASEÑA_MYSQL>"` para auditar el historial.
 
 ### P0-6 ⛔ Build del frontend desfasado → la interfaz se renderiza sin estilos
 
@@ -338,7 +338,7 @@ $model->decrement('costo', $precio * $cantidad); // P1 × (Q1+Q2)
 | # | Ubicación | Hallazgo | Escenario | Corrección |
 |---|---|---|---|---|
 | A-4 | `app/Http/Middleware/SecurityHeaders.php:30` · `resources/views/layouts/app.blade.php:31-37` | CSP con `'unsafe-inline'` **y** `'unsafe-eval'` → deja de ser un control de XSS. Scripts de CDN (flatpickr, tom-select) **sin `integrity`/SRI**. `npmcdn.com` en la allowlist (mirror con historial de paquetes maliciosos) | Cualquier XSS se ejecuta sin restricción de origen; un paquete CDN comprometido corre en el contexto de la app con acceso al DOM y al token CSRF | Migrar los `<script>` inline a módulos Vite; autoalojar flatpickr/tom-select por npm con versión fija; CSP `script-src 'self'`; eliminar `npmcdn.com` |
-| A-5 | `app/Services/AnulacionService.php:41-51` · `MantenimientoController.php:279-288` · `ElectronicaController.php:164-173` | **Fuerza bruta de la contraseña de admin sin límite**: `PUT/PATCH mantenimientos|electronicas` **no tienen `throttle`** (el grupo de anulaciones sí lo tiene, `routes/web.php:201`). `Hash::check` bcrypt coste 12 por intento | Un técnico automatiza POST/PUT con `admin_password` a ~10-20 req/s → cientos de miles de intentos diarios. Con la password por defecto (`Admin123*`) es viable | `throttle:5,1` en ambas rutas + contador en `Cache` por (admin, IP) con bloqueo progresivo (1 min → 5 min → 30 min) tras 3-5 fallos, notificando al admin y registrando en `eventos` |
+| A-5 | `app/Services/AnulacionService.php:41-51` · `MantenimientoController.php:279-288` · `ElectronicaController.php:164-173` | **Fuerza bruta de la contraseña de admin sin límite**: `PUT/PATCH mantenimientos|electronicas` **no tienen `throttle`** (el grupo de anulaciones sí lo tiene, `routes/web.php:201`). `Hash::check` bcrypt coste 12 por intento | Un técnico automatiza POST/PUT con `admin_password` a ~10-20 req/s → cientos de miles de intentos diarios. Con la password por defecto (`<REDACTADO>`) es viable | `throttle:5,1` en ambas rutas + contador en `Cache` por (admin, IP) con bloqueo progresivo (1 min → 5 min → 30 min) tras 3-5 fallos, notificando al admin y registrando en `eventos` |
 | A-6 | `.env:40` vs `.env:6` · `config/session.php:172` · `AuthController.php:127` | `APP_URL=https://` pero `SESSION_SECURE_COOKIE=false` → la cookie de sesión **y** la cookie "recordarme" se emiten **sin `Secure`** y viajan en claro ante cualquier HTTP | Secuestro de sesión por atacante en posición de red (WiFi de oficina, ISP, router comprometido). `SESSION_ENCRYPT=true` protege el contenido, no el transporte | `SESSION_SECURE_COOKIE=true` + redirección 301 de `http://` a `https://` + `SESSION_SAME_SITE=strict` (o `lax` si hay redirecciones externas) |
 
 ### 4.2 Seguridad MEDIA
@@ -380,7 +380,7 @@ $model->decrement('costo', $precio * $cantidad); // P1 × (Q1+Q2)
 | B-17 | `SecurityHeaders.php:30` | La CSP no incluye `frame-ancestors` (no hereda de `default-src`); cubierto solo por `X-Frame-Options: DENY` | Añadir `frame-ancestors 'none'` |
 | I-1 | `routes/web.php` (ausencia) · `config/auth.php:95-102` | **No existe flujo de "olvidé mi contraseña"** (ni reset por token ni cambio forzado). El broker `users` está definido con `expire: 60` y `throttle: 60` pero ninguna ruta lo consume | Implementar reset por token de un solo uso, o documentar que la recuperación es vía admin (lo que concentra el uso del segundo factor A-5) |
 | I-2 | `config/cors.php` **no existe** | `HandleCors` es middleware global y sin config publicada → `config('cors',[])` vacío → CORS cerrado de hecho. Correcto pero implícito | Publicar `config/cors.php` con `allowed_origins => []` explícito |
-| I-5 | `.env:11` · `.env.example:11-12` | Configuración muerta: `ADMIN_REGISTRATION_PASSWORD="Control2026*"` no se usa en ningún archivo; `ROLE_PROMOTE_ADMIN_SECRET` / `ROLE_PROMOTE_TECNICO_SECRET` solo existen en el ejemplo y **no hay código que las lea** (las Gates `promote-admin`/`promote-tecnico` de `AppServiceProvider.php:74-75` solo comprueban `role === 'admin'`) | Eliminar o implementar — mantener secretos que nadie lee hace creer que hay un control inexistente |
+| I-5 | `.env:11` · `.env.example:11-12` | Configuración muerta: `ADMIN_REGISTRATION_PASSWORD="<REDACTADO>"` no se usa en ningún archivo; `ROLE_PROMOTE_ADMIN_SECRET` / `ROLE_PROMOTE_TECNICO_SECRET` solo existen en el ejemplo y **no hay código que las lea** (las Gates `promote-admin`/`promote-tecnico` de `AppServiceProvider.php:74-75` solo comprueban `role === 'admin'`) | Eliminar o implementar — mantener secretos que nadie lee hace creer que hay un control inexistente |
 | I-6 | `.env:3` · `config/app.php:100-107` | `APP_KEY` válido y `config/app.php` soporta `APP_PREVIOUS_KEYS` → la rotación de clave es viable sin invalidar sesiones, pero **no hay procedimiento documentado** | Fijar en `DEPLOY_CHECKLIST.md`: rotar → desplegar → esperar TTL de sesión → retirar clave antigua |
 | I-7 | `SECURITY_DEBT.md:25-37` | La deuda de `'unsafe-inline'`/`'unsafe-eval'` y la migración de CDN **ya está documentada** (buena práctica) → el riesgo es que se archive sin fecha ni responsable | Convertirla en issue con criterio de aceptación |
 
@@ -626,7 +626,7 @@ La tabla tiene **2.020 filas**, de las cuales **1.982 se crearon el 2026-10-16**
 | # | Sev | Ubicación | Hallazgo | Corrección |
 |---|---|---|---|---|
 | F-31 | ALTO | `.env:2, 4, 23-26` | `APP_ENV=local` (habilita Dusk → P0-1), `LOG_STACK=single` (un archivo sin rotación), `LOG_LEVEL=debug` | `APP_ENV=production`, `LOG_STACK=daily`, `LOG_LEVEL=warning` |
-| F-32 | ALTO | `.env:32-33` | `DB_USERNAME=root` / `DB_PASSWORD=ServBay.dev` (contraseña de distro por defecto de ServBay) + versionada en `phpunit-integration.xml` | Ver P0-5 |
+| F-32 | ALTO | `.env:32-33` | `DB_USERNAME=root` / `DB_PASSWORD=<TU_CONTRASEÑA_MYSQL>` (contraseña de distro por defecto de ServBay) + versionada en `phpunit-integration.xml` | Ver P0-5 |
 | F-33 | MEDIA | `.env` vs `.env.example` | Solo en `.env`: `APP_TIMEZONE`, `ADMIN_REGISTRATION_PASSWORD`, `LOG_STACK`. Solo en `.env.example`: `ROLE_PROMOTE_ADMIN_SECRET`, `ROLE_PROMOTE_TECNICO_SECRET`, `LOG_DAILY_MAX_FILES`, `MYSQLDUMP_PATH`, `GOOGLE_DRIVE_BACKUP_PATH`, `BACKUP_RETENTION_DAYS`. **Además `config/logging.php:72` lee `LOG_DAILY_DAYS` (default 14) pero el ejemplo documenta `LOG_DAILY_MAX_FILES`** → la rotación usaría el default silenciosamente | Sincronizar ambos archivos; renombrar la variable a `LOG_DAILY_DAYS`; eliminar del ejemplo las variables no usadas |
 | F-34 | MEDIA | `.env:40` | Cookie de sesión sin `Secure` en URL HTTPS | Ver A-6 |
 | F-35 | MEDIA | `.env:58-66` | `MAIL_MAILER=log` + `MAIL_FROM_ADDRESS="hello@example.com"` → los correos **nunca llegan** (se escriben al log) | Configurar proveedor real y remitente del dominio del cliente |
@@ -876,7 +876,7 @@ La tabla tiene **2.020 filas**, de las cuales **1.982 se crearon el 2026-10-16**
 |---|---|---|---|
 | 0.1 | `APP_ENV=production` + eliminar el registro de Dusk + bloquear `/_dusk` en el servidor web | `.env`, `AppServiceProvider.php:35-37`, config del server | `route:list --path=_dusk` → "No routes found" |
 | 0.2 | `SESSION_SECURE_COOKIE=true`, `SESSION_SAME_SITE=strict`, `LOG_STACK=daily`, `LOG_LEVEL=warning` | `.env` | Cookies con `Secure`; `storage/logs/` con rotación y 14 archivos |
-| 0.3 | Rotar contraseñas de `administrador@`, `tecnico@`, `invitado@`; eliminar los fallbacks hardcodeados; guarda de entorno en `SeedDemoData` | `.env`, `AdminUserSeeder.php:18-20`, `SeedDemoData.php:85-95`, `SystemAuditCommand.php:206` | `security:check` → 0 advertencias; ningún `env('…', 'Admin123*')` en el código |
+| 0.3 | Rotar contraseñas de `administrador@`, `tecnico@`, `invitado@`; eliminar los fallbacks hardcodeados; guarda de entorno en `SeedDemoData` | `.env`, `AdminUserSeeder.php:18-20`, `SeedDemoData.php:85-95`, `SystemAuditCommand.php:206` | `security:check` → 0 advertencias; ningún `env('…', '<REDACTADO>')` en el código |
 | 0.4 | Rotar `root` de MySQL; crear `tecni_app` con permisos mínimos; sacar la credencial de `phpunit-integration.xml`; `git rm --cached producto` | `.env`, `phpunit-integration.xml`, `.env.testing` | El XML no contiene contraseñas; `producto` fuera del repo |
 | 0.5 | Blindar `restore()` (validación del ZIP + lista blanca de extensiones + no copiar al webroot) | `BackupController.php:551-586` | T-13 verde |
 | 0.6 | Sacar `git-update` de HTTP → comando de consola con `--expected-sha`; eliminar `openFolder` | `BackupController.php:698-809, 348-387` | No existe `POST /backups/git-update` |

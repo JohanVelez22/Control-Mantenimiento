@@ -389,7 +389,7 @@ class MovimientoInventarioController extends Controller
                 $q->where('factura_id', $factura->id)
                     ->orWhere(function ($legacy) use ($factura) {
                         $legacy->whereNull('factura_id')
-                            ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
+                            ->referenciaExacta('#'.$factura->numero_factura);
                     });
             })
             ->whereNull('parent_id')
@@ -411,7 +411,7 @@ class MovimientoInventarioController extends Controller
                 $q->where('factura_id', $factura->id)
                     ->orWhere(function ($legacy) use ($factura) {
                         $legacy->whereNull('factura_id')
-                            ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
+                            ->referenciaExacta('#'.$factura->numero_factura);
                     });
             })
             ->whereNull('parent_id')
@@ -451,7 +451,10 @@ class MovimientoInventarioController extends Controller
         }
 
         // Bloqueo de período: no se puede anular o reactivar una factura con movimientos en fechas cerradas
-        $movsCaja = MovimientoCaja::where('descripcion', 'like', "%#{$factura->numero_factura}%")->get();
+        $movsCaja = MovimientoCaja::where(function ($q) use ($factura) {
+            $q->where('factura_id', $factura->id)
+                ->orWhere(fn ($legacy) => $legacy->whereNull('factura_id')->referenciaExacta('#'.$factura->numero_factura));
+        })->get();
         foreach ($movsCaja as $m) {
             $fechaM = $m->fecha ? $m->fecha->toDateString() : null;
             if (CierreCajaGuard::fechaEstaCerrada($fechaM)) {
@@ -462,6 +465,14 @@ class MovimientoInventarioController extends Controller
         try {
             DB::beginTransaction();
 
+            // Bloquear la factura y releer su estado (doble clic / pestañas simultáneas)
+            $factura = Factura::whereKey($factura->id)->lockForUpdate()->firstOrFail();
+            if ($error = app(AnulacionService::class)->verificarIntencion($request, $factura->estado !== 'anulada')) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', $error);
+            }
+
             foreach ($movsCaja as $m) {
                 $fechaM = $m->fecha ? $m->fecha->toDateString() : null;
                 if (CierreCajaGuard::fechaEstaCerrada($fechaM)) {
@@ -470,6 +481,14 @@ class MovimientoInventarioController extends Controller
                     return redirect()->back()->with('error', "No se puede cambiar el estado de la factura #{$factura->numero_factura}: tiene movimientos en caja con fecha {$fechaM} que ya tiene cierre de caja.");
                 }
             }
+
+            $pagosDeLaFactura = fn () => MovimientoCaja::where(function ($q) use ($factura) {
+                $q->where('factura_id', $factura->id)
+                    ->orWhere(function ($legacy) use ($factura) {
+                        $legacy->whereNull('factura_id')
+                            ->referenciaExacta('#'.$factura->numero_factura);
+                    });
+            });
 
             if ($factura->estado === 'anulada') {
                 // REACTIVAR LA FACTURA
@@ -503,13 +522,10 @@ class MovimientoInventarioController extends Controller
                 $saldo = $factura->total_documento - $factura->total_pagado;
                 $nuevoEstado = $saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida';
 
-                MovimientoCaja::where(function ($q) use ($factura) {
-                    $q->where('factura_id', $factura->id)
-                        ->orWhere(function ($legacy) use ($factura) {
-                            $legacy->whereNull('factura_id')
-                                ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
-                        });
-                })->update(['estado' => 'activo', 'anulado' => false]);
+                // Solo se restauran los pagos que se anularon junto con la factura; los
+                // anulados individualmente antes (p. ej. un reembolso) permanecen anulados.
+                $pagosDeLaFactura()->where('anulado_en_cascada', true)->get()
+                    ->each(fn (MovimientoCaja $m) => $m->update(['estado' => 'activo', 'anulado' => false, 'anulado_en_cascada' => false]));
 
                 $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn ($l) => ! preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
                 $factura->observaciones = trim($cleanObs."\n[REACTIVADA el ".now()->format('d/m/Y H:i').' por '.Auth::user()->name.']');
@@ -534,13 +550,8 @@ class MovimientoInventarioController extends Controller
                     }
                 }
 
-                MovimientoCaja::where(function ($q) use ($factura) {
-                    $q->where('factura_id', $factura->id)
-                        ->orWhere(function ($legacy) use ($factura) {
-                            $legacy->whereNull('factura_id')
-                                ->where('descripcion', 'like', "%#{$factura->numero_factura}%");
-                        });
-                })->update(['estado' => 'anulado', 'anulado' => true]);
+                $pagosDeLaFactura()->where('anulado', false)->get()
+                    ->each(fn (MovimientoCaja $m) => $m->update(['estado' => 'anulado', 'anulado' => true, 'anulado_en_cascada' => true]));
 
                 $cleanObs = implode("\n", array_filter(explode("\n", $factura->observaciones ?? ''), fn ($l) => ! preg_match('/^\[(ANULADA|REACTIVADA) el .* por .*\]$/u', trim($l))));
                 $factura->update([
@@ -838,7 +849,7 @@ class MovimientoInventarioController extends Controller
                 ->whereNull('parent_id')
                 ->first()
                 ?? MovimientoCaja::whereNull('factura_id')
-                    ->where('descripcion', 'like', "%#{$factura->numero_factura}%")
+                    ->referenciaExacta('#'.$factura->numero_factura)
                     ->whereNull('parent_id')
                     ->first();
 
@@ -921,7 +932,12 @@ class MovimientoInventarioController extends Controller
 
     // ─── Helpers Privados ─────────────────────────────────────────
 
-    private function cleanAmount(mixed $val): float
+    /**
+     * Normaliza un monto escrito en formato colombiano o inglés a número.
+     * Si el texto no representa un número se devuelve tal cual, para que la regla
+     * `numeric` lo rechace en lugar de convertirlo silenciosamente en 0.
+     */
+    private function cleanAmount(mixed $val): float|string
     {
         if (is_null($val) || $val === '') {
             return 0.0;
@@ -930,7 +946,11 @@ class MovimientoInventarioController extends Controller
             return (float) $val;
         }
 
-        $str = trim((string) $val);
+        // Quitar símbolo de moneda y espacios (incluido el espacio duro)
+        $str = preg_replace('/[\s\x{00A0}$]+/u', '', (string) $val);
+        if ($str === '' || ! preg_match('/^-?[\d.,]+$/', $str)) {
+            return (string) $val;
+        }
 
         // 1. Si es un número decimal estándar tipo "50000.00" o "50000.5" (un solo punto, 1 o 2 decimales al final, sin comas)
         if (preg_match('/^\d+\.\d{1,2}$/', $str)) {

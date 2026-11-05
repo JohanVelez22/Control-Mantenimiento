@@ -72,9 +72,10 @@ class Factura extends Model
         if ($cot) {
             return $cot;
         }
-        if (!empty($this->observaciones) && preg_match('/Cotización #([A-Za-z0-9-]+)/', $this->observaciones, $m)) {
+        if (! empty($this->observaciones) && preg_match('/Cotización #([A-Za-z0-9-]+)/', $this->observaciones, $m)) {
             return Cotizacion::where('codigo', $m[1])->first();
         }
+
         return null;
     }
 

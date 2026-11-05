@@ -601,7 +601,7 @@ class ReporteFinancieroController extends Controller
                 ->orderBy('fecha', 'desc')
                 ->paginate(10),
 
-            default => collect()->paginate(10),
+            default => Factura::query()->whereRaw('1 = 0')->paginate(10),
         };
 
         $tipoLabels = [

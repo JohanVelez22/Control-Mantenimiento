@@ -68,9 +68,9 @@ Antes de empezar, asegúrate de tener instalado en tu computador:
    DB_PORT=3306
    DB_DATABASE=tecni_systemas
    DB_USERNAME=root
-   DB_PASSWORD=ServBay.dev
+   DB_PASSWORD=<TU_CONTRASEÑA_MYSQL>
    ```
-   *(Nota: Por defecto en ServBay la contraseña de `root` en MySQL suele ser `ServBay.dev` o `root` o en blanco. Usa la que corresponda a tu instalación de ServBay).*
+   *(Nota: Por defecto en ServBay la contraseña de `root` en MySQL viene definida por la instalación (o en blanco). Usa la que corresponda a tu instalación de ServBay).*
 
 ---
 
@@ -132,9 +132,9 @@ Una vez finalizado el Paso 8, abre tu navegador e ingresa a `http://tecni-system
 
 | Rol / Perfil | Correo Electrónico | Contraseña Inicial | Acceso y Permisos |
 | :--- | :--- | :--- | :--- |
-| **👑 Administrador** | `administrador@tecnisystemas.com` | `Admin123*` | Control total, finanzas, caja, usuarios, anulaciones y reportes. |
-| **🛠️ Técnico** | `tecnico@tecnisystemas.com` | `Tecni123*` | Gestión de órdenes, reparación electrónica, abonos y repuestos. |
-| **👁️ Invitado / Consulta** | `invitado@tecnisystemas.com` | `Invit123*` | Portal público y de clientes para consultar estado de órdenes. |
+| **👑 Administrador** | `administrador@tecnisystemas.com` | Definida en `.env` (`ADMIN_DEFAULT_PASSWORD`) | Control total, finanzas, caja, usuarios, anulaciones y reportes. |
+| **🛠️ Técnico** | `tecnico@tecnisystemas.com` | Definida en `.env` (`TECNICO_DEFAULT_PASSWORD`) | Gestión de órdenes, reparación electrónica, abonos y repuestos. |
+| **👁️ Invitado / Consulta** | `invitado@tecnisystemas.com` | Definida en `.env` (`INVITADO_DEFAULT_PASSWORD`) | Portal público y de clientes para consultar estado de órdenes. |
 
 ---
 

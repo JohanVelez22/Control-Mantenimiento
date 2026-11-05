@@ -23,6 +23,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class SeedDemoData extends Command
 {
@@ -37,6 +38,16 @@ class SeedDemoData extends Command
         $this->info('║       TECNI SYSTEMAS - GENERADOR DE DATOS DE PRUEBA REALISTAS (5x5)        ║');
         $this->info('╚════════════════════════════════════════════════════════════════════════════╝');
         $this->line('');
+
+        if (app()->environment('production')) {
+            $this->error('Este comando borra y reemplaza datos: no se permite ejecutarlo en producción.');
+
+            return 1;
+        }
+
+        if ($this->option('force') && ! $this->option('no-interaction') && ! $this->confirm('Se vaciarán TODAS las tablas transaccionales (órdenes, caja, facturas, eventos). ¿Continuar?')) {
+            return 1;
+        }
 
         if ($this->option('force') || (Cliente::count() === 0 && Tecnico::count() === 0)) {
             // Limpieza controlada si se pasa --force
@@ -82,17 +93,17 @@ class SeedDemoData extends Command
             // Asegurar usuarios base
             $admin = User::firstOrCreate(
                 ['email' => 'administrador@tecnisystemas.com'],
-                ['name' => 'Administrador Principal', 'password' => Hash::make('Admin123*'), 'role' => 'admin', 'active' => true]
+                ['name' => 'Administrador Principal', 'password' => Hash::make(env('ADMIN_DEFAULT_PASSWORD') ?: Str::password(16)), 'role' => 'admin', 'active' => true]
             );
 
             $tecnico1 = User::firstOrCreate(
                 ['email' => 'tecnico@tecnisystemas.com'],
-                ['name' => 'Juan David Técnico', 'password' => Hash::make('Tecni123*'), 'role' => 'tecnico', 'active' => true]
+                ['name' => 'Juan David Técnico', 'password' => Hash::make(env('TECNICO_DEFAULT_PASSWORD') ?: Str::password(16)), 'role' => 'tecnico', 'active' => true]
             );
 
             $invitado = User::firstOrCreate(
                 ['email' => 'invitado@tecnisystemas.com'],
-                ['name' => 'Usuario Consulta', 'password' => Hash::make('Invit123*'), 'role' => 'invitado', 'active' => true]
+                ['name' => 'Usuario Consulta', 'password' => Hash::make(env('INVITADO_DEFAULT_PASSWORD') ?: Str::password(16)), 'role' => 'invitado', 'active' => true]
             );
 
             // 1. CLIENTES (5 registros)

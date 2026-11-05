@@ -58,11 +58,16 @@ class MantenimientoController extends Controller
     /** Duplicar un mantenimiento existente como nuevo borrador */
     public function duplicate(Mantenimiento $mantenimiento)
     {
+        Gate::authorize('create', Mantenimiento::class);
 
         // Número de orden atómico para la copia (evita colisión con otra creación/duplicado).
         $siguiente = app(OrdenService::class)->siguiente('ORD-', Mantenimiento::class);
 
-        $nuevo = $mantenimiento->replicate();
+        // La copia no hereda la anulación ni los repuestos (la pivot no se replica):
+        // su costo excluye el valor de los repuestos de la orden original.
+        $nuevo = $mantenimiento->replicate(['anulado']);
+        $nuevo->anulado = false;
+        $nuevo->costo = max(0, (float) $mantenimiento->costo - $mantenimiento->valorRepuestos());
         $nuevo->id_orden = $siguiente;
         $nuevo->fecha_entrada = now()->toDateString();
         $nuevo->fecha_salida = null;
@@ -270,7 +275,7 @@ class MantenimientoController extends Controller
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
             'descripcion' => 'required|string|max:500',
-            'costo' => 'required|numeric|min:0|decimal:0,2',
+            'costo' => ['required', 'numeric', 'decimal:0,2', 'max:99999999.99', 'min:'.$mantenimiento->costoMinimoPermitido()],
             'estado' => 'required|in:pendiente,terminado',
             'equipo_id' => 'required|integer|exists:equipos,id',
             'tecnico_id' => 'required|integer|exists:tecnicos,id',
@@ -280,7 +285,9 @@ class MantenimientoController extends Controller
             $reglas['admin_password'] = 'required';
         }
 
-        $validated = $request->validate($reglas);
+        $validated = $request->validate($reglas, [
+            'costo.min' => 'El costo no puede ser menor que lo ya abonado o que el valor de los repuestos asignados ($ '.number_format($mantenimiento->costoMinimoPermitido(), 0, ',', '.').').',
+        ]);
 
         if (Auth::user()->isTecnico() &&
             ! app(AnulacionService::class)->adminPasswordValida($validated['admin_password'])) {
@@ -346,7 +353,17 @@ class MantenimientoController extends Controller
         try {
             DB::beginTransaction();
 
+            // Bloquear la fila y releer el estado: evita que dos peticiones simultáneas
+            // reviertan el stock dos veces.
+            $mantenimiento = Mantenimiento::whereKey($mantenimiento->id)->lockForUpdate()->firstOrFail();
             $esAnulacion = ! $mantenimiento->anulado;
+
+            if ($error = app(AnulacionService::class)->verificarIntencion($request, $esAnulacion)) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', $error);
+            }
+
             $mantenimiento->update(['anulado' => $esAnulacion]);
 
             // Reversión centralizada de stock y abonos en caja

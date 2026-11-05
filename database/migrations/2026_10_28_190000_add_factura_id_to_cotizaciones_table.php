@@ -29,7 +29,7 @@ return new class extends Migration
                     DB::table('cotizaciones')->where('id', $cot->id)->update(['factura_id' => $factura->id]);
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Silencioso en entornos nuevos
         }
     }

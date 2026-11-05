@@ -33,7 +33,7 @@ APP_FALLBACK_LOCALE=es
 APP_FAKER_LOCALE=es_CO
 
 # Clave administrativa única para autorizar nuevos técnicos
-ADMIN_REGISTRATION_PASSWORD="ClaveExclusivaSegura2026!"
+ADMIN_REGISTRATION_PASSWORD="<REDACTADO>"
 
 # Conexión a Base de Datos
 DB_CONNECTION=mysql
@@ -41,7 +41,7 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=tecni_systemas
 DB_USERNAME=tecni_app
-DB_PASSWORD=ContraseñaGeneradaDeAltaComplejidad123!
+DB_PASSWORD=<CONTRASEÑA_FUERTE_UNICA>
 
 # Sesiones Blindadas
 SESSION_DRIVER=database

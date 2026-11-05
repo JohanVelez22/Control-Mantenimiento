@@ -44,9 +44,10 @@ class StocksExport implements FromCollection, ShouldAutoSize, WithEvents, WithHe
 
                 $totalRegistros = count($this->stocks);
                 $cantidadTotal = $this->stocks->sum('cantidad');
-                $compraTotal = $this->stocks->sum('precio_compra');
-                $ventaTotal = $this->stocks->sum('precio_venta');
-                $tecnicoTotal = $this->stocks->sum('precio_tecnico');
+                // Valor del inventario (cantidad × precio), no la suma de precios unitarios
+                $compraTotal = $this->stocks->sum(fn ($s) => (float) $s->cantidad * (float) $s->precio_compra);
+                $ventaTotal = $this->stocks->sum(fn ($s) => (float) $s->cantidad * (float) $s->precio_venta);
+                $tecnicoTotal = $this->stocks->sum(fn ($s) => (float) $s->cantidad * (float) $s->precio_tecnico);
 
                 // Aplicar formato de miles a las columnas G, I y J
                 $sheet->getStyle("G5:G{$lastRow}")->getNumberFormat()->setFormatCode('"$ "#,##0');
@@ -56,9 +57,9 @@ class StocksExport implements FromCollection, ShouldAutoSize, WithEvents, WithHe
                 // Escribir totales
                 $sheet->setCellValue("A{$footerRow}", "Total Registros: {$totalRegistros}");
                 $sheet->setCellValue("F{$footerRow}", "Cant. Total: {$cantidadTotal}");
-                $sheet->setCellValue("G{$footerRow}", 'T. Compra: $ '.number_format($compraTotal, 0, ',', '.'));
-                $sheet->setCellValue("I{$footerRow}", 'T. Venta: $ '.number_format($ventaTotal, 0, ',', '.'));
-                $sheet->setCellValue("J{$footerRow}", 'T. Técnico: $ '.number_format($tecnicoTotal, 0, ',', '.'));
+                $sheet->setCellValue("G{$footerRow}", 'Valor Compra: $ '.number_format($compraTotal, 0, ',', '.'));
+                $sheet->setCellValue("I{$footerRow}", 'Valor Venta: $ '.number_format($ventaTotal, 0, ',', '.'));
+                $sheet->setCellValue("J{$footerRow}", 'Valor Técnico: $ '.number_format($tecnicoTotal, 0, ',', '.'));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:J{$footerRow}")->applyFromArray([

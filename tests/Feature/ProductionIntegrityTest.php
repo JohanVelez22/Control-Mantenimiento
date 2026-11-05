@@ -239,6 +239,9 @@ class ProductionIntegrityTest extends TestCase
         $admin = User::where('email', 'administrador@tecnisystemas.com')->first();
         $this->assertNotNull($admin);
         $this->assertEquals('admin', $admin->role);
-        $this->assertTrue(Hash::check(env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'), $admin->password));
+        if (env('ADMIN_DEFAULT_PASSWORD')) {
+            $this->assertTrue(Hash::check(env('ADMIN_DEFAULT_PASSWORD'), $admin->password));
+        }
+        $this->assertFalse(Hash::check('Admin123*', $admin->password) && ! env('ADMIN_DEFAULT_PASSWORD'));
     }
 }

@@ -33,13 +33,13 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <!-- CSS Librerías: Flatpickr + TomSelect (NECESARIOS para que funcionen) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" integrity="sha384-RkASv+6KfBMW9eknReJIJ6b3UnjKOKC5bOUaNgIY778NFbQ8MtWq9Lr/khUgqtTt" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" integrity="sha384-dC18+guBm9Lk5IBQfkKIOw2YSxXWMsiuPfIOZNPilutZQn6MgBvcx+vejNQYlrbc" crossorigin="anonymous">
     
     <!-- Scripts de Librerías (cargados en el head para prevenir FOUC) -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js" integrity="sha384-5JqMv4L/Xa0hfvtF06qboNdhvuYXUku9ZrhZh3bSk8VXF0A/RuSLHpLsSV9Zqhl6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js" integrity="sha384-j/aEP2b+3OKmGqank2qCSosSrlrF9jpIpdgApXq2ryJYBpLSbEi63/PDdL+rKmcQ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js" integrity="sha384-cnROoUgVILyibe3J0zhzWoJ9p2WmdnK7j/BOTSWqVDbC1pVw2d+i6Q/1ESKJKCYf" crossorigin="anonymous"></script>
     
     <!-- CSS Propio (Liquid Glass) - va DESPUÉS para sobreescribir estilos base -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -172,6 +172,7 @@
                 <form id="global-anular-form" method="POST" class="space-y-4">
                     @csrf
                     <input type="hidden" name="_method" id="global-anular-method" value="POST">
+                    <input type="hidden" name="accion" id="global-anular-accion" value="">
                     @if(auth()->check() && auth()->user()->isTecnico())
                     <div>
                         <input type="password" name="password_confirm" id="global-anular-input" required
@@ -417,6 +418,12 @@
             form.action  = actionUrl;
             if (methodInput) methodInput.value = customMethod || 'POST';
             if (input) input.value  = '';
+            // Intención explícita: el servidor rechaza la operación si el registro ya cambió
+            // de estado (doble clic o pestaña desactualizada) en lugar de invertirla.
+            const accionInput = document.getElementById('global-anular-accion');
+            if (accionInput) {
+                accionInput.value = (customMethod === 'DELETE' || customTitle) ? '' : (isReactivation ? 'reactivar' : 'anular');
+            }
 
             if (customMethod === 'DELETE' || customTitle) {
                 // Modo Eliminación directa (p. ej. repuestos)

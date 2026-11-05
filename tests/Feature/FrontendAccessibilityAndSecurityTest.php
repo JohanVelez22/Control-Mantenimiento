@@ -100,11 +100,11 @@ class FrontendAccessibilityAndSecurityTest extends TestCase
     }
 
     /**
-     * F-02: Verificación sintáctica de que glass.css no contiene declaraciones huérfanas en @media print.
+     * F-02: Verificación sintáctica de que el módulo de impresión (_print.css) no contiene declaraciones huérfanas en @media print.
      */
     public function test_glass_css_no_contiene_declaraciones_huerfanas_en_print(): void
     {
-        $cssContent = str_replace("\r\n", "\n", file_get_contents(public_path('css/glass.css')));
+        $cssContent = str_replace("\r\n", "\n", file_get_contents(resource_path('css/glass/_print.css')));
         $this->assertNotEmpty($cssContent);
 
         // No debe existir el bloque sin selector th, td

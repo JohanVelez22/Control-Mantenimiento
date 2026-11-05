@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Traits\Auditable;
+use App\Traits\CalculaCostoOrden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Mantenimiento extends Model
 {
-    use Auditable, HasFactory;
+    use Auditable, CalculaCostoOrden, HasFactory;
 
     protected $fillable = [
         'id_orden',

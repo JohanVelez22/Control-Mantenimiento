@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Database\SqliteConnector;
 use App\Models\CierreCaja;
 use App\Models\Cliente;
 use App\Models\Cotizacion;
@@ -43,6 +44,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // SQLite no implementa GREATEST() (columnas generadas de facturas).
+        $this->app->bind('db.connector.sqlite', SqliteConnector::class);
+
         if (filter_var(env('DUSK_ENABLED', false), FILTER_VALIDATE_BOOLEAN)) {
             $this->app->register(DuskServiceProvider::class);
         }

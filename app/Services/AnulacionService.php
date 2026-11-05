@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\ConceptoCaja;
 use App\Models\MovimientoCaja;
 use App\Models\Stock;
 use App\Models\User;
@@ -28,11 +27,6 @@ use Illuminate\Support\Facades\Hash;
  */
 class AnulacionService
 {
-    /**
-     * Valida que la contraseña corresponda a cualquier administrador.
-     * Se usa para acciones sensibles de técnico (editar/anular).
-     * Verifica contra TODOS los admins, no solo el primero.
-     */
     /**
      * Valida que la contraseña corresponda a cualquier administrador.
      * Se usa para acciones sensibles de técnico (editar/anular).
@@ -103,16 +97,47 @@ class AnulacionService
     }
 
     /**
+     * Comprueba que la intención enviada por el formulario ('anular' / 'reactivar')
+     * coincide con el estado actual del registro. Evita que un doble clic o una
+     * pestaña desactualizada inviertan la operación (anular → reactivar).
+     *
+     * @return string|null Mensaje de error, o null si la operación es coherente.
+     */
+    public function verificarIntencion(Request $request, bool $esAnulacion): ?string
+    {
+        $accion = $request->input('accion');
+        if ($accion === null || $accion === '') {
+            return null; // Formularios sin intención explícita conservan el comportamiento de alternar.
+        }
+
+        if (! in_array($accion, ['anular', 'reactivar'], true)) {
+            return 'Acción no válida.';
+        }
+
+        if (($accion === 'anular') !== $esAnulacion) {
+            return $accion === 'anular'
+                ? 'El registro ya se encuentra anulado. Recargue la página.'
+                : 'El registro ya se encuentra activo. Recargue la página.';
+        }
+
+        return null;
+    }
+
+    /**
      * Revierte (anulación) o restaura (reactivación) stock y abonos en caja de forma atómica.
+     *
+     * Al anular, solo se anulan los abonos vigentes y se marcan como anulados en cascada.
+     * Al reactivar, solo se restauran los abonos anulados en cascada: los que el usuario
+     * eliminó individualmente antes de anular la orden permanecen anulados.
      *
      * @param  Model  $documento  Modelo con relaciones 'stocks' (pivot cantidad) y 'abonos'.
      * @param  bool  $esAnulacion  true = anular (devolver stock, anular caja); false = reactivar.
-     * @param  string  $conceptoAbono  Nombre del concepto en caja (p.ej. 'Abono Mantenimiento').
-     * @param  string[]  $prefijosDescripcion  Tokens que anteceden al id en la descripción de caja.
+     * @param  string  $conceptoAbono  Conservado por compatibilidad; los movimientos se localizan por abono_id.
+     * @param  string[]  $prefijosDescripcion  Conservado por compatibilidad.
      */
-    public function revertirStockYAbonos($documento, bool $esAnulacion, string $conceptoAbono, array $prefijosDescripcion): void
+    public function revertirStockYAbonos($documento, bool $esAnulacion, string $conceptoAbono = '', array $prefijosDescripcion = []): void
     {
-        DB::transaction(function () use ($documento, $esAnulacion, $conceptoAbono, $prefijosDescripcion) {
+        DB::transaction(function () use ($documento, $esAnulacion) {
             // Revertir stock asociado al documento de forma atómica
             $stockService = app(StockService::class);
             foreach ($documento->stocks as $stock) {
@@ -127,39 +152,34 @@ class AnulacionService
                 }
             }
 
-            // Revertir abonos registrados en Caja
-            if ($documento->abonos->count() > 0) {
-                $concepto = ConceptoCaja::where('nombre', $conceptoAbono)->first();
-                foreach ($documento->abonos as $abono) {
-                    $fechaAbono = $abono->fecha ? Carbon::parse($abono->fecha)->toDateString() : null;
-                    if (CierreCajaGuard::fechaEstaCerrada($fechaAbono)) {
-                        throw new \DomainException('No se puede '.($esAnulacion ? 'anular' : 'reactivar')." la orden: tiene un abono registrado el {$fechaAbono}, fecha que ya tiene un cierre de caja registrado. Para modificarla, elimine primero el cierre de ese día.");
-                    }
-                    if ($concepto) {
-                        $this->marcarMovimientosCaja($abono, $concepto, $documento->id_orden, $prefijosDescripcion, $esAnulacion);
-                    }
-                    $abono->update(['anulado' => $esAnulacion]);
+            // Revertir abonos registrados en Caja (localizados por abono_id, sin depender del concepto)
+            $abonos = $esAnulacion
+                ? $documento->abonos()->where('anulado', false)->get()
+                : $documento->abonos()->where('anulado', true)->where('anulado_en_cascada', true)->get();
+
+            foreach ($abonos as $abono) {
+                $fechaAbono = $abono->fecha ? Carbon::parse($abono->fecha)->toDateString() : null;
+                if (CierreCajaGuard::fechaEstaCerrada($fechaAbono)) {
+                    throw new \DomainException('No se puede '.($esAnulacion ? 'anular' : 'reactivar')." la orden: tiene un abono registrado el {$fechaAbono}, fecha que ya tiene un cierre de caja registrado. Para modificarla, elimine primero el cierre de ese día.");
                 }
+
+                $this->marcarMovimientosCaja($abono, $esAnulacion);
+                $abono->update(['anulado' => $esAnulacion, 'anulado_en_cascada' => $esAnulacion]);
             }
         });
     }
 
-    private function marcarMovimientosCaja($abono, $concepto, string $idOrden, array $prefijosDescripcion, bool $esAnulacion): void
+    /**
+     * Marca los movimientos de caja de un abono uno a uno (no update masivo)
+     * para que el trait Auditable registre cada cambio.
+     */
+    private function marcarMovimientosCaja($abono, bool $esAnulacion): void
     {
-        $query = MovimientoCaja::where('abono_id', $abono->id);
-
-        if ($esAnulacion) {
-            $query->where(function ($q) {
-                $q->where('estado', 'activo')->orWhere('anulado', false);
-            })->update([
-                'anulado' => true,
-                'estado' => 'anulado',
+        MovimientoCaja::where('abono_id', $abono->id)->get()->each(function (MovimientoCaja $mov) use ($esAnulacion) {
+            $mov->update([
+                'anulado' => $esAnulacion,
+                'estado' => $esAnulacion ? 'anulado' : 'activo',
             ]);
-        } else {
-            $query->update([
-                'anulado' => false,
-                'estado' => 'activo',
-            ]);
-        }
+        });
     }
 }
