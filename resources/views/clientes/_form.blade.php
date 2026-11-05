@@ -220,7 +220,7 @@ async function cargarMunicipios(departamento, seleccionado = '') {
 // Al cargar la página, si ya hay un departamento seleccionado, cargar sus municipios
 document.addEventListener('DOMContentLoaded', function() {
     const dep = document.getElementById('select_departamento').value;
-    const munSeleccionado = '{{ $selMun }}';
+    const munSeleccionado = @json($selMun);
     if (dep) {
         cargarMunicipios(dep, munSeleccionado);
     }

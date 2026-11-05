@@ -108,7 +108,7 @@
     <div class="mb-4">
         <label class="block text-sm font-medium mb-2 text-gray-500">Contraseña Actual <span class="text-red-500 font-bold">*</span></label>
         <div class="ts-password-wrapper w-full user-password-wrapper mt-1">
-            <input type="password" id="current_password" name="current_password" placeholder="Requerida para cambiar tu contraseña" class="glass-input w-full @error('current_password') border-red-500 @enderror">
+            <input type="password" id="current_password" name="current_password" placeholder="Requerida para cambiar tu contraseña o tu correo" class="glass-input w-full @error('current_password') border-red-500 @enderror">
         </div>
         @error('current_password') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
         <div id="caps-current-password" class="hidden text-amber-600 dark:text-amber-400 text-xs font-bold mt-1 flex items-center gap-1 select-none" role="alert">

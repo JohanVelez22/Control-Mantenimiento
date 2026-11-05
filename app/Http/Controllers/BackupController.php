@@ -781,7 +781,7 @@ class BackupController extends Controller
             // 1. Probar conectividad con GitHub mediante git fetch
             $fetchOutput = [];
             $fetchCode = -1;
-            exec('git -c safe.directory=* -C '.escapeshellarg($basePath).' fetch origin 2>&1', $fetchOutput, $fetchCode);
+            exec('git -c safe.directory='.escapeshellarg($basePath).' -C '.escapeshellarg($basePath).' fetch origin 2>&1', $fetchOutput, $fetchCode);
 
             if ($fetchCode !== 0) {
                 Log::warning('Git fetch falló: '.implode(' | ', $fetchOutput));
@@ -793,10 +793,24 @@ class BackupController extends Controller
                 ], 200);
             }
 
-            // 2. Ejecutar git pull
+            // 2. No actualizar si el servidor tiene cambios locales sin confirmar: un pull
+            //    los mezclaría o fallaría a medias dejando el código en un estado intermedio.
+            $statusOutput = [];
+            exec('git -c safe.directory='.escapeshellarg($basePath).' -C '.escapeshellarg($basePath).' status --porcelain --untracked-files=no 2>&1', $statusOutput);
+            if (! empty(array_filter($statusOutput))) {
+                Log::warning('Actualización cancelada: hay cambios locales sin confirmar en el servidor.', ['cambios' => $statusOutput]);
+
+                return response()->json([
+                    'success' => false,
+                    'status' => 'local_changes',
+                    'message' => 'El servidor tiene cambios locales sin confirmar. Actualice manualmente para no perderlos.',
+                ], 200);
+            }
+
+            // 3. Solo avance rápido (fast-forward): nunca crea merges ni reescribe historia
             $pullOutput = [];
             $pullCode = -1;
-            exec('git -c safe.directory=* -C '.escapeshellarg($basePath).' pull 2>&1', $pullOutput, $pullCode);
+            exec('git -c safe.directory='.escapeshellarg($basePath).' -C '.escapeshellarg($basePath).' pull --ff-only 2>&1', $pullOutput, $pullCode);
             $outputText = implode("\n", $pullOutput);
 
             if ($pullCode !== 0) {

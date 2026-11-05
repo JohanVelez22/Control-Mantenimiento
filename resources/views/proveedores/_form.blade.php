@@ -207,7 +207,7 @@ async function cargarMunicipiosProv(departamento, seleccionado = '') {
 
 document.addEventListener('DOMContentLoaded', function () {
     const dep = document.getElementById('prov_departamento').value;
-    const munSeleccionado = '{{ $selMun }}';
+    const munSeleccionado = @json($selMun);
     if (dep) cargarMunicipiosProv(dep, munSeleccionado);
 });
 </script>

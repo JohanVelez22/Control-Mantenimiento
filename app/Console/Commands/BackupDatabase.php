@@ -363,7 +363,9 @@ class BackupDatabase extends Command
         $count = 0;
 
         // Excluye dependencias instalables, repositorios internos, temporales y backups para evitar duplicación/recursión
-        $excludeRegex = '#[\\\\/](vendor|node_modules|\.git|\.kilo|storage[\\\\/]app[\\\\/]backups|storage[\\\\/]framework[\\\\/]cache|storage[\\\\/]framework[\\\\/]sessions|storage[\\\\/]framework[\\\\/]views|informes_viabilidad[\\\\/]videos)[\\\\/]#i';
+        // bootstrap/cache contiene config.php con APP_KEY y la clave de la BD cuando se usa
+        // config:cache; storage/logs y storage/framework (sesiones) contienen datos personales.
+        $excludeRegex = '#[\\\\/](vendor|node_modules|\.git|\.kilo|\.claude|storage[\\\\/]app[\\\\/]backups|storage[\\\\/]app[\\\\/]private|storage[\\\\/]framework|storage[\\\\/]logs|bootstrap[\\\\/]cache|public[\\\\/]build|public[\\\\/]storage|informes_viabilidad[\\\\/]videos)[\\\\/]#i';
 
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($base, \RecursiveDirectoryIterator::SKIP_DOTS),
@@ -390,6 +392,11 @@ class BackupDatabase extends Command
 
             // Omitir archivos de entorno con credenciales (.env, .env.production, etc.), conservando únicamente .env.example
             if ($filename === '.env' || (str_starts_with($filename, '.env') && $filename !== '.env.example')) {
+                continue;
+            }
+
+            // Otros archivos con credenciales o claves privadas
+            if (in_array($filename, ['auth.json', 'phpunit-integration.xml'], true) || preg_match('/\.(key|pem|p12|pfx|sqlite)$/i', $filename)) {
                 continue;
             }
 

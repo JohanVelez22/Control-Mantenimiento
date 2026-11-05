@@ -105,6 +105,13 @@ class UserController extends Controller
             'photo.max' => 'La foto no debe superar los 5 MB de tamaño.',
         ]);
 
+        // Cambiar el correo propio (que también sirve para iniciar sesión) exige la contraseña actual.
+        if (auth()->id() === $usuario->id && mb_strtolower($request->email) !== mb_strtolower($usuario->email)) {
+            $request->validate(['current_password' => ['required', 'current_password']], [
+                'current_password.required' => 'Para cambiar tu correo debes ingresar tu contraseña actual.',
+            ]);
+        }
+
         // El administrador puede cambiar roles
         if (auth()->user()->role === 'admin') {
             $usuario->role = $request->role;

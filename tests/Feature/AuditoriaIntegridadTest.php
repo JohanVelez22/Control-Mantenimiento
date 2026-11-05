@@ -312,6 +312,19 @@ class AuditoriaIntegridadTest extends TestCase
         $this->assertEquals(90.0, CierreCaja::saldoInicialEfectivo('2026-10-03'));
     }
 
+    /** Un nombre compartido por dos usuarios no inicia sesión; el correo siempre tiene prioridad. */
+    public function test_login_por_nombre_ambiguo_no_suplanta(): void
+    {
+        $admin = User::factory()->create(['name' => 'Gerente', 'email' => 'gerente@x.com', 'password' => bcrypt('Clave-Admin-1'), 'role' => 'admin']);
+        User::factory()->create(['name' => 'Gerente', 'email' => 'otro@x.com', 'password' => bcrypt('Clave-Otro-1'), 'role' => 'tecnico']);
+
+        $this->post('/login', ['email' => 'Gerente', 'password' => 'Clave-Otro-1']);
+        $this->assertGuest();
+
+        $this->post('/login', ['email' => 'gerente@x.com', 'password' => 'Clave-Admin-1']);
+        $this->assertAuthenticatedAs($admin);
+    }
+
     /** Un texto que empieza por "=" se exporta como texto, no como fórmula. */
     public function test_exportacion_no_ejecuta_formulas(): void
     {

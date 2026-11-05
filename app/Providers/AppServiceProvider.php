@@ -61,7 +61,9 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale('es');
         setlocale(LC_TIME, 'es_ES.utf8', 'es_ES', 'spanish', 'es');
 
-        if (request()->isSecure() || request()->header('X-Forwarded-Proto') === 'https') {
+        // isSecure() ya considera X-Forwarded-Proto, pero solo de los proxies de confianza
+        // (bootstrap/app.php); leer la cabecera cruda permitía que cualquiera la falsificara.
+        if (request()->isSecure()) {
             URL::forceScheme('https');
         }
 

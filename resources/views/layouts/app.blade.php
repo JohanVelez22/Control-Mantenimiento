@@ -283,10 +283,13 @@
             
             // Colores basados en el tipo
             const isError = type === 'error' || type === 'danger';
-            const bgStr = isError 
-                ? 'bg-red-500/90 dark:bg-red-900/80 border-red-500/50' 
-                : 'bg-emerald-500/90 dark:bg-emerald-900/80 border-emerald-500/50';
-            const icon = isError ? '⚠️' : '✅';
+            const isInfo = type === 'info' || type === 'warning';
+            const bgStr = isError
+                ? 'bg-red-500/90 dark:bg-red-900/80 border-red-500/50'
+                : (isInfo
+                    ? 'bg-blue-600/90 dark:bg-blue-900/80 border-blue-500/50'
+                    : 'bg-emerald-500/90 dark:bg-emerald-900/80 border-emerald-500/50');
+            const icon = isError ? '⚠️' : (isInfo ? 'ℹ️' : '✅');
 
             const safeMessage = String(message ?? '').replace(/[&<>"']/g, function(m) {
                 return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m];
@@ -295,7 +298,7 @@
             toast.innerHTML = `
                 <span class="text-2xl drop-shadow-md">${icon}</span>
                 <p class="text-sm font-bold leading-tight flex-1">${safeMessage}</p>
-                <button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white transition-colors text-lg focus:outline-none">&times;</button>
+                <button type="button" onclick="this.parentElement.remove()" aria-label="Cerrar notificación" class="text-white/60 hover:text-white transition-colors text-lg focus:outline-none">&times;</button>
             `;
 
             container.appendChild(toast);
