@@ -499,8 +499,9 @@ class MovimientoCajaControllerTest extends TestCase
             'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
         ]);
 
-        $response->assertSessionHas('success');
+        // Regla del taller: los días con cierre de caja no se modifican.
+        $response->assertSessionHas('error');
         $movimiento->refresh();
-        $this->assertTrue($movimiento->anulado);
+        $this->assertFalse($movimiento->anulado);
     }
 }

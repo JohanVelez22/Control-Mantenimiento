@@ -59,6 +59,7 @@ class MovimientoInventarioController extends Controller
             'facturable_global' => ['required', 'string'],
             'fecha' => ['required', 'date'],
             'total_pagado' => ['required', 'numeric', 'min:0'],
+            'tipo_pago' => ['nullable', 'in:efectivo,consignacion'],
             'observaciones' => ['nullable', 'string'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.stock_id' => ['required', 'exists:stocks,id'],
@@ -153,7 +154,8 @@ class MovimientoInventarioController extends Controller
                     descripcion: "Pago compra #{$factura->numero_factura}",
                     fecha: $request->fecha,
                     montoTotal: $totalDocumento,
-                    facturaId: $factura->id
+                    facturaId: $factura->id,
+                    tipoPago: $request->input('tipo_pago', 'efectivo')
                 );
             }
 
@@ -217,6 +219,7 @@ class MovimientoInventarioController extends Controller
             'facturable_global' => ['required', 'string'],
             'fecha' => ['required', 'date'],
             'total_pagado' => ['required', 'numeric', 'min:0'],
+            'tipo_pago' => ['nullable', 'in:efectivo,consignacion'],
             'observaciones' => ['nullable', 'string'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.stock_id' => ['required', 'exists:stocks,id'],
@@ -311,7 +314,8 @@ class MovimientoInventarioController extends Controller
                     descripcion: "Cobro venta #{$factura->numero_factura}",
                     fecha: $request->fecha,
                     montoTotal: $totalDocumento,
-                    facturaId: $factura->id
+                    facturaId: $factura->id,
+                    tipoPago: $request->input('tipo_pago', 'efectivo')
                 );
             }
 
@@ -1028,7 +1032,8 @@ class MovimientoInventarioController extends Controller
         string $descripcion,
         string $fecha,
         ?float $montoTotal = null,
-        ?int $facturaId = null
+        ?int $facturaId = null,
+        string $tipoPago = 'efectivo'
     ): MovimientoCaja {
         // Bloqueo de período: no se admiten movimientos sobre un día ya cerrado.
         CierreCajaGuard::asegurarAbierta($fecha, "movimiento de inventario ({$tipo})");
@@ -1039,7 +1044,8 @@ class MovimientoInventarioController extends Controller
 
         return MovimientoCaja::create([
             'tipo_movimiento' => $tipo,
-            'tipo_pago' => 'efectivo',
+            // El cierre de caja separa efectivo de consignación: registrar el medio real.
+            'tipo_pago' => in_array($tipoPago, ['efectivo', 'consignacion'], true) ? $tipoPago : 'efectivo',
             'monto' => $monto,
             'monto_total' => $montoTotal,
             'persona' => $persona,

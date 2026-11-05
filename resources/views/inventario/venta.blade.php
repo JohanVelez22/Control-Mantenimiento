@@ -115,9 +115,17 @@
  <div class="flex flex-col md:flex-row justify-center gap-5">
 <div class="text-center w-full md:w-1/2">
   <label class="field-label text-center block">Total Recibido Ahora <span class="text-red-500 font-bold">*</span></label>
-  <input type="text" name="total_pagado" id="total_pagado_real" value="0" required class="hidden">
-  <input type="text" id="total_pagado_visual" value="0" oninput="window.formatCurrencyDual(this, 'total_pagado_real'); recalcular()" required 
+  <input type="text" name="total_pagado" id="total_pagado_real" value="{{ old('total_pagado', 0) }}" required class="hidden">
+  <input type="text" id="total_pagado_visual" value="{{ number_format((float) old('total_pagado', 0), 0, ',', '.') }}" aria-label="Valor pagado ahora" oninput="window.formatCurrencyDual(this, 'total_pagado_real'); recalcular()" required 
   class="glass-input text-2xl font-black text-center focus:ring-emerald-500 py-3 text-emerald-600 dark:text-emerald-400">
+  <div class="mt-3 flex items-center justify-center gap-2">
+    <label for="tipo_pago" class="text-xs font-bold text-gray-500 dark:text-gray-400">Medio de pago</label>
+    <select name="tipo_pago" id="tipo_pago" class="glass-input no-tomselect !w-auto py-1.5 text-sm">
+      <option value="efectivo" {{ old('tipo_pago', 'efectivo') === 'efectivo' ? 'selected' : '' }}>💵 Efectivo</option>
+      <option value="consignacion" {{ old('tipo_pago') === 'consignacion' ? 'selected' : '' }}>🏦 Consignación / Transferencia</option>
+    </select>
+  </div>
+  @error('tipo_pago') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
   <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2 font-medium leading-tight">Si recibes menos del total, el estado quedará como <strong>Pendiente de Cobro</strong> y se registrará la deuda contable del cliente.</p>
 </div>
  <div id="saldo-preview" class="hidden w-full md:w-1/2 flex-col justify-center items-center bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 transition-all">

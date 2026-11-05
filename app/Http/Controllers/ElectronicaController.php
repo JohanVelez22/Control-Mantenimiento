@@ -394,15 +394,16 @@ class ElectronicaController extends Controller
             $electronicas = Electronica::with(['equipo.cliente', 'tecnico'])
                 ->where('anulado', false)
                 ->whereHas('equipo.cliente', function ($sub) use ($identificacion, $cleanId) {
+                    // Solo la identificación del cliente (el celular no es un dato secreto)
                     $sub->where('identificacion', $identificacion)
-                        ->orWhere('movil', $identificacion)
                         ->orWhereRaw("REPLACE(REPLACE(REPLACE(identificacion, ' ', ''), '-', ''), '.', '') = ?", [$cleanId]);
                 })
                 ->where(function ($q) use ($idOrden, $cleanOrden, $esNumero) {
                     $q->where('id_orden', $idOrden)
                         ->orWhereRaw("UPPER(REPLACE(REPLACE(REPLACE(id_orden, ' ', ''), '-', ''), '.', '')) = ?", [$cleanOrden]);
                     if ($esNumero) {
-                        $q->orWhere('id', $esNumero);
+                        // Un número solo se interpreta como número de orden, nunca como id interno
+                        $q->orWhere('id_orden', 'ELC-'.$esNumero);
                     }
                 })
                 ->latest()

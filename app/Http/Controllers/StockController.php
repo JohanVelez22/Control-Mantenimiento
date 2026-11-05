@@ -133,16 +133,25 @@ class StockController extends Controller
             'photo.max' => 'La imagen no debe superar los 5 MB de tamaño.',
         ]);
 
+        // Regla del taller: las existencias cambian con compras, ventas o bajas. Un técnico
+        // solo puede ajustarlas a mano con la contraseña de un administrador (evita ocultar faltantes).
+        if (auth()->user()->isTecnico() && (int) $validated['cantidad'] !== (int) $stock->cantidad) {
+            if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
+                return back()->withErrors(['admin_password' => $error])->withInput();
+            }
+        }
+
+        // La foto anterior solo se borra después de guardar con éxito; si la transacción
+        // falla se elimina la nueva y el producto conserva su foto.
+        $fotoAnterior = $stock->photo;
+        $fotoNueva = null;
+        $quitarFoto = false;
         if ($request->hasFile('photo')) {
-            if ($stock->photo && Storage::disk('public')->exists($stock->photo)) {
-                Storage::disk('public')->delete($stock->photo);
-            }
-            $validated['photo'] = $request->file('photo')->store('stocks', 'public');
+            $fotoNueva = $request->file('photo')->store('stocks', 'public');
+            $validated['photo'] = $fotoNueva;
         } elseif ($request->boolean('remove_photo') || $request->input('remove_photo') === '1') {
-            if ($stock->photo && Storage::disk('public')->exists($stock->photo)) {
-                Storage::disk('public')->delete($stock->photo);
-            }
             $validated['photo'] = null;
+            $quitarFoto = true;
         }
 
         unset($validated['remove_photo']);
@@ -191,8 +200,16 @@ class StockController extends Controller
                 }
             });
 
+            if (($fotoNueva || $quitarFoto) && $fotoAnterior && Storage::disk('public')->exists($fotoAnterior)) {
+                Storage::disk('public')->delete($fotoAnterior);
+            }
+
             return redirect()->route('stocks.index')->with('success', 'Producto actualizado exitosamente.');
         } catch (\DomainException $e) {
+            if ($fotoNueva) {
+                Storage::disk('public')->delete($fotoNueva);
+            }
+
             return back()->with('error', $e->getMessage())->withInput();
         }
     }

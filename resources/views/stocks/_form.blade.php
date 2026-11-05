@@ -52,6 +52,12 @@
                    value="{{ old('cantidad', $st?->cantidad ?? 0) }}"
                    required min="0" class="glass-input font-bold dark:[color-scheme:dark]">
             @error('cantidad') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+            @if($st && auth()->user()->isTecnico())
+                <p class="text-xs text-gray-400 mt-1">Las existencias cambian con compras, ventas o bajas. Para ajustarlas a mano se requiere la contraseña de un administrador.</p>
+                <input type="password" name="admin_password" autocomplete="off" aria-label="Contraseña de administrador"
+                       placeholder="🔐 Contraseña de administrador (solo si cambias la cantidad)" class="glass-input mt-2">
+                @error('admin_password') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+            @endif
         </div>
 
         <div>

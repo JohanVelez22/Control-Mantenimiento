@@ -603,6 +603,15 @@ class MovimientoCajaController extends Controller
             $movimiento = MovimientoCaja::whereKey($movimiento->id)->lockForUpdate()->firstOrFail();
             $esAnulacion = ! $movimiento->anulado;
 
+            // Un día con cierre de caja no se modifica (ni anular ni reactivar): el arqueo
+            // histórico quedaría desactualizado. Para corregirlo se elimina primero el cierre.
+            $fechaMov = $movimiento->fecha?->toDateString();
+            if (CierreCajaGuard::fechaEstaCerrada($fechaMov)) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', "No se puede modificar este movimiento: el día {$fechaMov} ya tiene cierre de caja. Elimine primero el cierre de ese día.");
+            }
+
             if ($error = app(AnulacionService::class)->verificarIntencion($request, $esAnulacion)) {
                 DB::rollBack();
 

@@ -86,16 +86,18 @@ class GuestController extends Controller
         $electronicas = collect();
 
         $clienteFilter = function ($sub) use ($identificacion, $cleanId) {
+            // Solo la identificación del cliente (el celular no es un dato secreto)
             $sub->where('identificacion', $identificacion)
-                ->orWhere('movil', $identificacion)
                 ->orWhereRaw("REPLACE(REPLACE(REPLACE(identificacion, ' ', ''), '-', ''), '.', '') = ?", [$cleanId]);
         };
 
-        $ordenFilter = function ($q) use ($id_orden, $cleanOrden, $es_numero) {
+        $prefijo = $tipo === 'mantenimiento' ? 'ORD-' : 'ELC-';
+        $ordenFilter = function ($q) use ($id_orden, $cleanOrden, $es_numero, $prefijo) {
             $q->where('id_orden', $id_orden)
                 ->orWhereRaw("UPPER(REPLACE(REPLACE(REPLACE(id_orden, ' ', ''), '-', ''), '.', '')) = ?", [$cleanOrden]);
             if ($es_numero) {
-                $q->orWhere('id', $es_numero);
+                // Un número solo se interpreta como número de orden (ORD-15), nunca como id interno
+                $q->orWhere('id_orden', $prefijo.$es_numero);
             }
         };
 

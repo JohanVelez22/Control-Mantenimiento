@@ -266,6 +266,37 @@ class AuditoriaIntegridadTest extends TestCase
         $this->assertTrue($servicio->passwordAdminBloqueada());
     }
 
+    /** La venta registra en caja el medio de pago real (antes siempre "efectivo"). */
+    public function test_venta_registra_el_medio_de_pago_elegido(): void
+    {
+        $stock = $this->crearStock();
+        $this->actingAs($this->admin)->post(route('inventario.venta.store'), [
+            'facturable_global' => 'Cliente:'.Cliente::first()->id,
+            'fecha' => Carbon::today()->toDateString(),
+            'total_pagado' => 2000,
+            'tipo_pago' => 'consignacion',
+            'items' => [['stock_id' => $stock->id, 'cantidad' => 1, 'precio_unitario' => 2000]],
+        ])->assertRedirect();
+
+        $factura = Factura::latest('id')->first();
+        $this->assertEquals('consignacion', MovimientoCaja::where('factura_id', $factura->id)->value('tipo_pago'));
+    }
+
+    /** Un técnico no puede ajustar existencias a mano sin la contraseña de un administrador. */
+    public function test_tecnico_no_ajusta_stock_sin_password_admin(): void
+    {
+        $stock = $this->crearStock(['proveedor_id' => Proveedor::create(['nombre_razon_social' => 'P', 'identificacion' => '901', 'tipo_entidad' => 'empresa'])->id]);
+        $tecnico = User::factory()->create(['role' => 'tecnico']);
+
+        $this->actingAs($tecnico)->put(route('stocks.update', $stock), [
+            'codigo' => $stock->codigo, 'producto' => $stock->producto, 'categoria' => 'Test', 'subcategoria' => 'Sub',
+            'cantidad' => 3, 'proveedor_id' => $stock->proveedor_id, 'precio_compra' => 1000, 'utilidad' => 50,
+            'precio_venta' => 2000, 'precio_tecnico' => 1500,
+        ])->assertSessionHasErrors('admin_password');
+
+        $this->assertEquals(10, $stock->fresh()->cantidad);
+    }
+
     /** Un texto que empieza por "=" se exporta como texto, no como fórmula. */
     public function test_exportacion_no_ejecuta_formulas(): void
     {
