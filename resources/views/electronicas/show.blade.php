@@ -17,7 +17,7 @@
                 <a href="{{ route('consulta.electronicas') }}" class="btn-ghost text-xl" title="Volver a búsqueda">⬅️</a>
                 @endif
                 <div>
-                    <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight flex flex-wrap items-center gap-2 sm:gap-3">
                         <span class="text-purple-500">⚡</span>
                         {{ $electronica->id_orden }}
                         @if($electronica->anulado)

@@ -19,7 +19,30 @@
     <meta name="description" content="Sistema de Control de Mantenimiento y Gestión de Equipos. Solución integral para talleres y gestión de garantías.">
     <meta name="keywords" content="Mantenimiento, Talleres, Gestión de Inventario, Cotizaciones, Electrónica">
     
-    <title>@yield('title', 'WolfCore System')</title>
+    @php
+        // Título de pestaña por defecto según la ruta (las vistas pueden definir @section('title')).
+        $tituloRuta = (function () {
+            $nombre = (string) optional(request()->route())->getName();
+            $partes = explode('.', $nombre);
+            $secciones = [
+                'dashboard' => 'Dashboard', 'mantenimientos' => 'Mantenimientos', 'electronicas' => 'Electrónica',
+                'stocks' => 'Inventario', 'inventario' => 'Inventario', 'caja' => 'Caja', 'cierre' => 'Cierre de caja',
+                'cotizaciones' => 'Cotizaciones', 'clientes' => 'Clientes', 'equipos' => 'Equipos', 'proveedores' => 'Proveedores',
+                'tecnicos' => 'Técnicos', 'usuarios' => 'Usuarios', 'configuracion' => 'Configuración', 'eventos' => 'Auditoría',
+                'reportes' => 'Reportes', 'conceptos' => 'Conceptos de caja', 'design-system' => 'Sistema de diseño',
+            ];
+            $acciones = ['create' => 'Nuevo', 'edit' => 'Editar', 'show' => 'Detalle', 'reportes' => 'Reportes',
+                'facturas' => 'Facturas', 'compra' => 'Compra', 'venta' => 'Venta', 'categorias' => 'Categorías'];
+            $seccion = $secciones[$partes[0]] ?? null;
+            if (! $seccion) {
+                return 'WolfCore System';
+            }
+            $accion = collect(array_slice($partes, 1))->map(fn ($p) => $acciones[$p] ?? null)->filter()->implode(' · ');
+
+            return trim($seccion.($accion ? ' · '.$accion : '')).' · WolfCore';
+        })();
+    @endphp
+    <title>@yield('title', $tituloRuta)</title>
     
     <!-- Favicon (Isotipo e Insignia WolfCore System con invalidación de caché) -->
     <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v={{ filemtime(public_path('favicon-48x48.png')) }}">
@@ -543,6 +566,15 @@
                     closeRechazarModal();
                 } else if (typeof lightboxOpen !== 'undefined' && lightboxOpen) {
                     closeImageLightbox();
+                } else {
+                    // Modales propios de cada módulo: id "baja-stock-modal" → closeBajaStockModal()
+                    const abierto = [...document.querySelectorAll('[id$="-modal"]')]
+                        .find(m => !m.classList.contains('hidden') && !m.classList.contains('opacity-0'));
+                    if (abierto) {
+                        const fn = 'close' + abierto.id.replace(/-modal$/, '').split('-')
+                            .map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('') + 'Modal';
+                        if (typeof window[fn] === 'function') window[fn]();
+                    }
                 }
             }
         });

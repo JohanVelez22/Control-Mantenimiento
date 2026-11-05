@@ -134,7 +134,7 @@
 
  <div>
  <label class="field-label">Observaciones</label>
- <textarea name="observaciones" rows="2" class="glass-input resize-y focus:ring-orange-500" placeholder="Notas sobre la compra..."></textarea>
+ <textarea name="observaciones" rows="2" class="glass-input resize-y focus:ring-orange-500" placeholder="Notas sobre la compra...">{{ old('observaciones') }}</textarea>
  </div>
 
         <div class="flex flex-col sm:flex-row items-center justify-end gap-3 mt-0 pt-0">
@@ -277,5 +277,33 @@ function calcularSaldo(total) {
 }
 
 document.querySelectorAll('.item-row').forEach(bindFila);
+
+// Restaurar los ítems enviados si el servidor rechazó el formulario (p. ej. stock
+// insuficiente): antes se perdían todas las líneas y había que rehacer el documento.
+// Se ejecuta en "load" porque usa TomSelect y window.formatNumber, que el layout
+// inicializa al terminar de cargar la página.
+(function (items) {
+  if (!Array.isArray(items) || items.length === 0) return;
+  window.addEventListener('load', () => {
+    items.forEach((it, i) => {
+      if (i > 0) agregarFila();
+      const tr = document.querySelectorAll('.item-row')[i];
+      if (!tr) return;
+      const sel = tr.querySelector('.stock-select');
+      if (sel && it.stock_id) {
+        if (sel.tomselect) { sel.tomselect.setValue(String(it.stock_id), true); } else { sel.value = String(it.stock_id); }
+      }
+      const cant = tr.querySelector('.cantidad-input');
+      if (cant && it.cantidad) cant.value = it.cantidad;
+      const real = tr.querySelector('[id^="precio_unitario_real_"]');
+      const visual = tr.querySelector('[id^="precio_unitario_visual_"]');
+      if (real && it.precio_unitario !== undefined && it.precio_unitario !== null) {
+        real.value = it.precio_unitario;
+        if (visual) visual.value = window.formatNumber(parseFloat(it.precio_unitario) || 0);
+      }
+      actualizarSubtotal(tr);
+    });
+  });
+})(@json(array_values(old('items', []))));
 </script>
 @endsection
