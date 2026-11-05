@@ -89,6 +89,9 @@ php artisan storage:link
 php artisan app:backup-db
 php artisan app:verificar-migraciones
 
+# Lista completa de lo que falta para producción (solo lectura)
+php artisan app:preflight
+
 # 5. Ejecutar migraciones pendientes de manera segura
 php artisan migrate --force
 ```
