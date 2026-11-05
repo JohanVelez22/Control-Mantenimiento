@@ -114,7 +114,7 @@
 
             <div>
                 <label class="field-label">Notas para el cliente</label>
-                <textarea name="notas" rows="3" class="glass-input resize-y focus:ring-blue-500" placeholder="Ej: Precios sujetos a cambio sin previo aviso. Tiempo estimado de entrega: 3 días hábiles."></textarea>
+                <textarea name="notas" rows="3" class="glass-input resize-y focus:ring-blue-500" placeholder="Ej: Precios sujetos a cambio sin previo aviso. Tiempo estimado de entrega: 3 días hábiles.">{{ old('notas') }}</textarea>
             </div>
 
             <div class="flex flex-col sm:flex-row items-center justify-end gap-3 mt-0 pt-0">
@@ -153,5 +153,23 @@ if (document.readyState === 'loading') {
 } else {
     initCotizacionRows();
 }
+</script>
+<script>
+// Restaurar los ítems enviados si el servidor rechazó la cotización (antes se perdían).
+// Se ejecuta en "load": usa TomSelect y formatNumber, que el layout inicializa al cargar.
+(function (items) {
+    if (!Array.isArray(items) || items.length === 0) return;
+    window.addEventListener('load', () => {
+        document.querySelectorAll('#items-body .item-row').forEach(tr => tr.remove());
+        items.forEach(it => agregarFila({
+            tipo: it.tipo || 'libre',
+            descripcion: it.descripcion || '',
+            item_id: it.item_id || null,
+            cantidad: it.cantidad || 1,
+            precio_unitario: it.precio_unitario || 0,
+        }));
+        if (typeof recalcular === 'function') recalcular();
+    });
+})(@json(array_values(old('items', []))));
 </script>
 @endsection

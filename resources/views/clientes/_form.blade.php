@@ -176,6 +176,7 @@ async function cargarMunicipios(departamento, seleccionado = '') {
 
     try {
         const res = await fetch(`{{ route('api.municipios') }}?departamento=` + encodeURIComponent(departamento));
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         const municipios = await res.json();
 
         if (ts) {
@@ -185,18 +186,17 @@ async function cargarMunicipios(departamento, seleccionado = '') {
             });
             if (seleccionado && municipios.includes(seleccionado)) {
                 ts.setValue(seleccionado);
-            } else if (municipios.length > 0) {
-                ts.setValue(municipios[0]); // Seleccionar primera ciudad automáticamente
             } else {
-                ts.setValue('');
+                // No autoseleccionar: era fácil guardar una ciudad equivocada sin notarlo
+                ts.clear(true);
             }
         } else {
-            select.innerHTML = '';
+            select.innerHTML = '<option value="">Seleccione un municipio...</option>';
             municipios.forEach((m, index) => {
                 const opt = document.createElement('option');
                 opt.value = m;
                 opt.textContent = m;
-                if (m === seleccionado || (index === 0 && !seleccionado)) opt.selected = true;
+                if (m === seleccionado) opt.selected = true;
                 select.appendChild(opt);
             });
         }

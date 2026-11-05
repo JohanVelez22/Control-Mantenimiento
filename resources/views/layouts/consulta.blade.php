@@ -49,11 +49,11 @@
                 $isElecHeader = request()->routeIs('consulta.electronicas') || request()->routeIs('electronicas.*');
                 $headerHome = $isElecHeader ? route('consulta.electronicas') : route('consulta.mantenimientos');
             @endphp
-            <a href="{{ $headerHome }}" class="flex items-center gap-2.5 hover:scale-105 transition-transform duration-200">
+            <a href="{{ $headerHome }}" class="flex items-center gap-2.5 min-w-0 hover:scale-105 transition-transform duration-200">
                 <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore System" class="w-7 h-7 object-contain">
-                <span class="text-[#2563EB] dark:text-[#3B82F6] font-logo font-black text-xl">WOLFCORE</span>
-                <span class="text-slate-800 dark:text-white font-logo font-black text-xl">SYSTEM</span>
-                <span class="ml-2 px-2 py-0.5 text-[10px] font-bold {{ $isElecHeader ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' }} rounded">CONSULTA</span>
+                <span class="text-[#2563EB] dark:text-[#3B82F6] font-logo font-black text-base sm:text-xl">WOLFCORE</span>
+                <span class="hidden sm:inline text-slate-800 dark:text-white font-logo font-black text-xl">SYSTEM</span>
+                <span class="hidden sm:inline ml-2 px-2 py-0.5 text-[10px] font-bold {{ $isElecHeader ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' }} rounded">CONSULTA</span>
             </a>
             <div class="flex items-center gap-2.5">
                 <button id="theme-toggle-consulta" type="button" class="theme-toggle-btn group" title="Cambiar tema" aria-label="Cambiar tema" onclick="const h=document.documentElement;const s=()=>{h.classList.add('preload');h.classList.toggle('dark');localStorage.setItem('color-theme',h.classList.contains('dark')?'dark':'light');void h.offsetHeight;};if(document.startViewTransition&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.startViewTransition(s).ready.then(()=>requestAnimationFrame(()=>h.classList.remove('preload'))).catch(()=>h.classList.remove('preload'));}else{h.classList.add('theme-transition');h.classList.toggle('dark');localStorage.setItem('color-theme',h.classList.contains('dark')?'dark':'light');setTimeout(()=>h.classList.remove('theme-transition'),280);}this.blur();">

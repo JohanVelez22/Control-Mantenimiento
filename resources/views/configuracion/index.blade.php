@@ -193,7 +193,7 @@ function previewLogo(event) {
             if (typeof showToast === 'function') {
                 showToast('El archivo seleccionado supera el límite de 5 MB.', 'error');
             } else {
-                alert('El archivo seleccionado supera el límite de 5 MB.');
+                (typeof window.showToast === 'function' ? window.showToast('El archivo seleccionado supera el límite de 5 MB.', 'error') : alert('El archivo seleccionado supera el límite de 5 MB.'));
             }
             event.target.value = '';
             return;

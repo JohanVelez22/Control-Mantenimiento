@@ -8,7 +8,7 @@
     {{-- Nombre --}}
     <div>
         <label class="field-label">Nombre {{ $isEdit ? 'Completo' : '' }} <span class="text-red-500 font-bold">*</span></label>
-        <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" required oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')" class="glass-input mt-1 @error('name') border-red-500 @enderror">
+        <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" required oninput="this.value = this.value.replace(/[^\p{L}\s'.-]/gu, '')" class="glass-input mt-1 @error('name') border-red-500 @enderror">
         @error('name') <span class="text-red-500 text-xs font-bold mt-1 block">{{ $message }}</span> @enderror
     </div>
 

@@ -269,6 +269,18 @@ function bindFila(tr) {
   const cant = tr.querySelector('.cantidad-input');
   const precioVisual = tr.querySelector('[id^="precio_unitario_visual_"]');
   const precioReal = tr.querySelector('[id^="precio_unitario_real_"]');
+  const aplicarTopeStock = () => {
+    const stock = stocksData.find(s => s.id == sel.value);
+    if (stock) {
+      // Tope en el navegador: evita enviar más unidades de las disponibles
+      cant.max = stock.cantidad;
+      cant.title = 'Disponible: ' + stock.cantidad;
+    } else {
+      cant.removeAttribute('max');
+    }
+  };
+  sel.addEventListener('change', aplicarTopeStock);
+  aplicarTopeStock();
   sel.addEventListener('change', () => {
     const opt = sel.options[sel.selectedIndex];
     if (!opt || !opt.value) return;
