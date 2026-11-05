@@ -6,6 +6,7 @@ use App\Models\CategoriaStock;
 use App\Models\CierreCaja;
 use App\Models\Cliente;
 use App\Models\ConceptoCaja;
+use App\Models\Configuracion;
 use App\Models\Cotizacion;
 use App\Models\Electronica;
 use App\Models\Equipo;
@@ -20,6 +21,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Tests\TestCase;
 
@@ -119,6 +121,57 @@ class SmokeRutasTest extends TestCase
         }
 
         $this->assertGreaterThanOrEqual(11, $revisadas);
+    }
+
+    /** El invitado no puede modificar nada: se intenta cada ruta de escritura y ningún dato cambia. */
+    public function test_invitado_no_puede_ejecutar_ninguna_accion_de_escritura(): void
+    {
+        $invitado = User::where('role', 'invitado')->first();
+        $permitidas = ['logout', 'login', 'electronicas.dismiss-alert'];
+        $tablas = ['clientes', 'equipos', 'tecnicos', 'stocks', 'mantenimientos', 'electronicas', 'abonos',
+            'movimiento_cajas', 'facturas', 'factura_items', 'cotizaciones', 'cierre_cajas', 'users',
+            'proveedores', 'concepto_cajas', 'categoria_stocks', 'configuraciones', 'bajas_stock'];
+        $huella = fn () => collect($tablas)->mapWithKeys(fn ($t) => [$t => DB::table($t)->count()
+            .'|'.DB::table($t)->max('updated_at')])->all();
+
+        $antes = $huella();
+        $probadas = 0;
+        foreach (RouteFacade::getRoutes() as $ruta) {
+            $metodo = collect($ruta->methods())->first(fn ($m) => in_array($m, ['POST', 'PUT', 'PATCH', 'DELETE'], true));
+            if (! $metodo || in_array($ruta->getName(), $permitidas, true) || ! in_array('auth', $ruta->gatherMiddleware(), true)) {
+                continue;
+            }
+            $url = url(preg_replace('/\{[^}]+\}/', '1', $ruta->uri()));
+            $this->actingAs($invitado)->call($metodo, $url, ['monto' => 1000, 'nombre' => 'x', 'accion' => 'anular']);
+            $probadas++;
+        }
+
+        $this->assertGreaterThan(50, $probadas);
+        $this->assertSame($antes, $huella(), 'Una acción de escritura modificó datos siendo invitado');
+    }
+
+    /** El técnico no ejecuta acciones exclusivas del administrador (usuarios, configuración, respaldos). */
+    public function test_tecnico_no_ejecuta_acciones_de_administrador(): void
+    {
+        $tecnico = User::where('role', 'tecnico')->first();
+        $otro = User::where('role', 'invitado')->first();
+        $usuarios = User::count();
+        $config = Configuracion::first()?->nombre;
+
+        $this->actingAs($tecnico)->post(route('usuarios.store'), [
+            'name' => 'Intruso', 'email' => 'intruso@x.com', 'password' => 'Clave-Segura-1', 'password_confirmation' => 'Clave-Segura-1', 'role' => 'admin',
+        ]);
+        $this->actingAs($tecnico)->put(route('usuarios.update', $otro), ['name' => $otro->name, 'email' => $otro->email, 'role' => 'admin']);
+        $this->actingAs($tecnico)->post(route('usuarios.anular', $otro));
+        $this->actingAs($tecnico)->post(route('configuracion.update'), ['nombre' => 'Cambiado por técnico']);
+        $this->actingAs($tecnico)->postJson(route('backups.manual'))->assertForbidden();
+        $this->actingAs($tecnico)->postJson(route('backups.restore', 'cualquiera.sql'))->assertForbidden();
+        $this->actingAs($tecnico)->postJson(route('backups.git-update'))->assertForbidden();
+
+        $this->assertSame($usuarios, User::count());
+        $this->assertSame('invitado', $otro->fresh()->role);
+        $this->assertTrue((bool) $otro->fresh()->active);
+        $this->assertSame($config, Configuracion::first()?->nombre);
     }
 
     /** El comando de pre-despliegue detecta un entorno que no es de producción y contraseñas publicadas. */

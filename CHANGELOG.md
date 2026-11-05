@@ -6,6 +6,16 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ---
 
+## [1.3.0] - 2026-11-05 (Preparación para operación con dinero real)
+
+- **Base de datos:** las 20 claves foráneas en CASCADE pasan a RESTRICT; un borrado físico ya no elimina órdenes, abonos, caja ni cierres. Probado sobre una copia real y aplicado con respaldo previo.
+- **Respaldos:** restaurar genera antes un respaldo de seguridad del estado actual (`app:backup-db --sin-rotacion`) y se cancela si falla.
+- **Permisos:** pruebas que intentan cada acción de escritura como invitado y las acciones de administrador como técnico.
+- **Entorno:** `.env` en modo producción (`APP_ENV=production`, `APP_DEBUG=false`, `APP_LOCALE=es`, `LOG_LEVEL=warning`); copia previa en `.env.backup`.
+- **Pruebas:** 599 (2.009 aserciones) en verde.
+
+---
+
 ## [1.2.0] - 2026-11-05 (Cierre de hallazgos pendientes)
 
 ### Reglas del taller

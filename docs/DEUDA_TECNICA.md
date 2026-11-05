@@ -16,8 +16,8 @@ Estado al 2026-11-05. Este documento lista lo que **queda pendiente** después d
 
 | # | Prioridad | Deuda | Por qué importa | Esfuerzo | Riesgo |
 |---|---|---|---|---|---|
-| 1 | Alta | Claves foráneas en cascada (`users`, `clientes`, `equipos`, `tecnicos`, `stocks`) → `restrict` | Un borrado manual (tinker, SQL) arrastraría órdenes, abonos y caja. La app no expone borrados físicos, pero la base no lo impide. | M | Medio: migración sobre datos reales |
-| 2 | Alta | Cobertura de pruebas en comandos de consola (`app:backup-db` con MySQL real, `app:clean-data`), PDF de facturas y matriz de permisos por endpoint POST | Hoy hay prueba de humo de todas las pantallas GET, pero no de cada acción POST por rol. | M | Bajo |
+| 1 | ✅ Resuelto (1.3.0) | ~~Claves foráneas en cascada → `restrict`~~ | Migración `2026_11_05_120000` aplicada: la base rechaza borrar registros con historial contable. | — | — |
+| 2 | Media | Cobertura de pruebas en comandos de consola (`app:backup-db` con MySQL real, `app:clean-data`) y PDF de facturas | Ya existe matriz de escritura para el invitado y acciones de admin para el técnico (`SmokeRutasTest`). | M | Bajo |
 | 3 | Media | JavaScript inline en vistas (≈75 bloques `<script>`, ≈200 `onclick`) → módulos de Vite | Es lo único que impide quitar `'unsafe-inline'` de la CSP. | L | Medio |
 | 4 | Media | Validación inline en controladores → FormRequests; `registrarCompra`/`registrarVenta` casi duplicados | Reglas repartidas y código repetido en `MovimientoInventarioController` (≈1.000 líneas). | M | Bajo (hay pruebas) |
 | 5 | Media | Autorización mezclada: Policies/Gates definidos, pero la mayoría de controladores compara `role` a mano | Las reglas son difíciles de auditar; gates como `view-financial-reports` no se aplican. | M | Medio |
@@ -32,11 +32,10 @@ Estado al 2026-11-05. Este documento lista lo que **queda pendiente** después d
 
 ## Orden recomendado
 
-1. **#6** (decisión rápida) y **#2** (más pruebas antes de refactorizar).
+1. **#2** (más pruebas antes de refactorizar).
 2. **#4** y **#5**, apoyados en las pruebas del paso anterior.
-3. **#1** en una ventana de mantenimiento con respaldo (`app:backup-db` → `app:verificar-migraciones` → migración).
-4. **#3**: al terminar, quitar `'unsafe-inline'` de `script-src` en `SecurityHeaders`.
-5. **#8–#12** de forma incremental, módulo por módulo, con revisión visual.
+3. **#3**: al terminar, quitar `'unsafe-inline'` de `script-src` en `SecurityHeaders`.
+4. **#8–#12** de forma incremental, módulo por módulo, con revisión visual.
 
 ## Herramientas disponibles
 
@@ -45,5 +44,5 @@ Estado al 2026-11-05. Este documento lista lo que **queda pendiente** después d
 | `php artisan app:preflight` | Lista lo que falta para producción (configuración, contraseñas, migraciones, compilación, respaldos). |
 | `php artisan app:verificar-migraciones` | Duplicados y migraciones pendientes antes de migrar (solo lectura). |
 | `php artisan security:check` | Revisión rápida de configuración sensible. |
-| `php artisan test` | 596 pruebas, incluida la prueba de humo de todas las pantallas (`SmokeRutasTest`). |
+| `php artisan test` | 599 pruebas, incluida la prueba de humo de todas las pantallas (`SmokeRutasTest`). |
 | `npm run vendor:sync` | Copia flatpickr, tom-select y chart.js a `public/vendor` (actualizar SRI si cambian versiones). |
