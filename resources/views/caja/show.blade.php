@@ -159,7 +159,7 @@
                           ->orWhere('parent_id', $rootId);
                     }
                     if ($refSearch) {
-                        $q->orWhere('descripcion', 'like', "%{$refSearch}%");
+                        $q->orWhere(fn ($ref) => $ref->referenciaExacta($refSearch)); // sin mezclar #VT-1 con #VT-10
                     }
                 })
                 ->orderBy('created_at', 'asc')

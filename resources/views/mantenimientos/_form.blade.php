@@ -31,7 +31,7 @@
         <select name="tecnico_id" required class="glass-input mt-1" data-placeholder="Seleccione un técnico...">
             <option value="">Seleccione un técnico...</option>
             @foreach($tecnicos as $tecnico)
-                <option value="{{ $tecnico->id }}" {{ (old('tecnico_id', $mantenimiento->equipo_id ?? '') == $tecnico->id) ? 'selected' : '' }}>
+                <option value="{{ $tecnico->id }}" {{ (old('tecnico_id', $mantenimiento->tecnico_id ?? '') == $tecnico->id) ? 'selected' : '' }}>
                     {{ $tecnico->nombre }} ({{ $tecnico->identificacion }})
                 </option>
             @endforeach

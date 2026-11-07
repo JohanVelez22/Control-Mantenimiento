@@ -282,6 +282,9 @@ class AnulacionServiceTest extends TestCase
             'fecha' => now()->toDateString(),
             'tipo_pago' => 'efectivo',
             'user_id' => $this->admin->id,
+            // Estado que deja la anulación de la orden: abono anulado en cascada
+            'anulado' => true,
+            'anulado_en_cascada' => true,
         ]);
 
         MovimientoCaja::create([
@@ -309,6 +312,8 @@ class AnulacionServiceTest extends TestCase
         $movCaja->refresh();
         $this->assertFalse($movCaja->anulado);
         $this->assertEquals('activo', $movCaja->estado);
+        $this->assertFalse($abono->fresh()->anulado);
+        $this->assertFalse($abono->fresh()->anulado_en_cascada);
     }
 
     public function test_revertir_stock_y_abonos_throws_on_closed_caja_date(): void

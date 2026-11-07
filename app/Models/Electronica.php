@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Traits\Auditable;
+use App\Traits\CalculaCostoOrden;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Electronica extends Model
 {
-    use Auditable, HasFactory;
+    use Auditable, CalculaCostoOrden, HasFactory;
 
     protected $fillable = [
         'id_orden',
@@ -31,6 +32,7 @@ class Electronica extends Model
         return [
             'fecha_entrada' => 'date',
             'fecha_salida' => 'date',
+            'anulado' => 'boolean',
         ];
     }
 

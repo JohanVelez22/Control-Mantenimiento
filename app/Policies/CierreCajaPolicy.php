@@ -47,4 +47,3 @@ class CierreCajaPolicy
         return $user->isAdmin();
     }
 }
-

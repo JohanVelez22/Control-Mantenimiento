@@ -3,10 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\CierreCaja;
-use App\Models\Cliente;
-use App\Models\Cotizacion;
 use App\Models\Factura;
-use App\Models\MovimientoCaja;
 use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,7 +15,9 @@ class PolicyAndAuthorizationAuditTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private User $tecnico;
+
     private User $invitado;
 
     protected function setUp(): void
@@ -64,7 +63,7 @@ class PolicyAndAuthorizationAuditTest extends TestCase
 
     public function test_factura_policy_authorization(): void
     {
-        $factura = new Factura();
+        $factura = new Factura;
 
         $this->assertTrue(Gate::forUser($this->admin)->allows('viewAny', Factura::class));
         $this->assertTrue(Gate::forUser($this->tecnico)->allows('viewAny', Factura::class));
@@ -77,7 +76,7 @@ class PolicyAndAuthorizationAuditTest extends TestCase
 
     public function test_cierre_caja_policy_authorization(): void
     {
-        $cierre = new CierreCaja();
+        $cierre = new CierreCaja;
 
         $this->assertTrue(Gate::forUser($this->admin)->allows('viewAny', CierreCaja::class));
         $this->assertTrue(Gate::forUser($this->tecnico)->allows('viewAny', CierreCaja::class));
@@ -89,7 +88,7 @@ class PolicyAndAuthorizationAuditTest extends TestCase
 
     public function test_stock_policy_authorization(): void
     {
-        $stock = new Stock();
+        $stock = new Stock;
 
         $this->assertTrue(Gate::forUser($this->admin)->allows('viewAny', Stock::class));
         $this->assertTrue(Gate::forUser($this->tecnico)->allows('viewAny', Stock::class));
@@ -113,4 +112,3 @@ class PolicyAndAuthorizationAuditTest extends TestCase
         $this->assertFalse(Gate::forUser($this->admin)->allows('delete', $this->admin));
     }
 }
-

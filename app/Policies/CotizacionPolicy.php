@@ -55,4 +55,3 @@ class CotizacionPolicy
         return $user->isAdmin();
     }
 }
-

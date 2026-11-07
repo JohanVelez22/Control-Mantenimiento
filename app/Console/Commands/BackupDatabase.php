@@ -17,7 +17,8 @@ class BackupDatabase extends Command
                             {--code : Generar un snapshot empaquetado del código fuente}
                             {--all : Respaldo integral: Base de datos, multimedia pública y código fuente en un solo ZIP}
                             {--max-copies= : Límite máximo de copias a conservar antes de sobrescribir/rotar}
-                            {--drive-path= : Ruta manual de sincronización de Google Drive}';
+                            {--drive-path= : Ruta manual de sincronización de Google Drive}
+                            {--sin-rotacion : No elimina respaldos antiguos (respaldo de seguridad previo a una restauración)}';
 
     protected $description = 'Crea un respaldo integral de MySQL, archivos y código, con sincronización automática a Google Drive';
 
@@ -28,9 +29,9 @@ class BackupDatabase extends Command
         $this->info('====================================================');
 
         try {
-            $database = env('DB_DATABASE', 'tecni_systemas');
+            $database = (string) config('database.connections.'.config('database.default').'.database', 'tecni_systemas');
             $safeDatabase = trim(preg_replace('/[^a-zA-Z0-9_-]+/', '_', $database), '_') ?: 'database';
-            $retentionDays = (int) env('BACKUP_RETENTION_DAYS', 15);
+            $retentionDays = (int) config('backup.retention_days', 15);
 
             $configEmpresa = Configuracion::first();
             $maxCopies = (int) ($this->option('max-copies') ?: ($configEmpresa?->backup_max_copias ?: 10));
@@ -201,7 +202,7 @@ class BackupDatabase extends Command
             }
 
             // 4. Sincronización con Google Drive
-            $drivePath = $this->option('drive-path') ?: env('GOOGLE_DRIVE_BACKUP_PATH');
+            $drivePath = $this->option('drive-path') ?: config('backup.drive_path');
             if ($drivePath) {
                 $this->info("☁️ Sincronizando con Google Drive corporativo: {$drivePath}");
                 $this->syncToGoogleDrive($generatedFiles, $drivePath, $retentionDays);
@@ -209,9 +210,12 @@ class BackupDatabase extends Command
                 $this->comment('ℹ️ Para sincronizar automáticamente con Google Drive, configura GOOGLE_DRIVE_BACKUP_PATH en tu .env');
             }
 
-            // 5. Política de retención y rotación local
-            $this->aplicarPoliticaRotacion($backupDir, $maxCopies);
-            $this->limpiarBackupsAntiguos($backupDir, $retentionDays, 'local');
+            // 5. Política de retención y rotación local (se omite en el respaldo de seguridad previo a
+            //    una restauración: la rotación podría borrar justo el archivo que se va a restaurar)
+            if (! $this->option('sin-rotacion')) {
+                $this->aplicarPoliticaRotacion($backupDir, $maxCopies);
+                $this->limpiarBackupsAntiguos($backupDir, $retentionDays, 'local');
+            }
 
             // 6. Registrar en Auditoría de Eventos
             try {
@@ -273,7 +277,7 @@ class BackupDatabase extends Command
      */
     protected function dumpDatabase(string $targetSqlPath, string $database, string $safeDatabase, string $date): float
     {
-        $isSqlite = config('database.default') === 'sqlite' || env('DB_CONNECTION') === 'sqlite';
+        $isSqlite = config('database.default') === 'sqlite';
 
         if ($isSqlite) {
             $this->info('  📦 Volcando base de datos SQLite...');
@@ -363,7 +367,9 @@ class BackupDatabase extends Command
         $count = 0;
 
         // Excluye dependencias instalables, repositorios internos, temporales y backups para evitar duplicación/recursión
-        $excludeRegex = '#[\\\\/](vendor|node_modules|\.git|\.kilo|storage[\\\\/]app[\\\\/]backups|storage[\\\\/]framework[\\\\/]cache|storage[\\\\/]framework[\\\\/]sessions|storage[\\\\/]framework[\\\\/]views|informes_viabilidad[\\\\/]videos)[\\\\/]#i';
+        // bootstrap/cache contiene config.php con APP_KEY y la clave de la BD cuando se usa
+        // config:cache; storage/logs y storage/framework (sesiones) contienen datos personales.
+        $excludeRegex = '#[\\\\/](vendor|node_modules|\.git|\.kilo|\.claude|storage[\\\\/]app[\\\\/]backups|storage[\\\\/]app[\\\\/]private|storage[\\\\/]framework|storage[\\\\/]logs|bootstrap[\\\\/]cache|public[\\\\/]build|public[\\\\/]storage|informes_viabilidad[\\\\/]videos)[\\\\/]#i';
 
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($base, \RecursiveDirectoryIterator::SKIP_DOTS),
@@ -390,6 +396,11 @@ class BackupDatabase extends Command
 
             // Omitir archivos de entorno con credenciales (.env, .env.production, etc.), conservando únicamente .env.example
             if ($filename === '.env' || (str_starts_with($filename, '.env') && $filename !== '.env.example')) {
+                continue;
+            }
+
+            // Otros archivos con credenciales o claves privadas
+            if (in_array($filename, ['auth.json', 'phpunit-integration.xml'], true) || preg_match('/\.(key|pem|p12|pfx|sqlite)$/i', $filename)) {
                 continue;
             }
 
@@ -452,7 +463,7 @@ TXT;
      */
     protected function resolveMysqldumpBinary(): ?string
     {
-        $custom = env('MYSQLDUMP_PATH');
+        $custom = config('backup.mysqldump_path');
         if ($custom && File::exists($custom)) {
             return $custom;
         }

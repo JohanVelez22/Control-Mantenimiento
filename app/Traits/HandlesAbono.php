@@ -83,7 +83,7 @@ trait HandlesAbono
 
             // Determinar si es un pago completo (total/final) o abono parcial
             $esPagoCompleto = ($validated['monto'] >= $saldoPendiente - Factura::EPSILON);
-            $totalAbonosCount = $model->abonos()->count();
+            $totalAbonosCount = $model->abonos()->where('anulado', false)->count();
 
             if ($esPagoCompleto && $totalAbonosCount === 1) {
                 $conceptoNombreFinal = $model instanceof Mantenimiento ? 'Pago Mantenimiento' : 'Pago Electrónica';
@@ -190,16 +190,5 @@ trait HandlesAbono
         }
 
         return $model->equipo->cliente->nombre ?? 'Cliente Electrónica';
-    }
-
-    /**
-     * Obtener descripción para MovimientoCaja
-     */
-    protected function getDescripcion($model, Abono $abono, ?string $descripcion): string
-    {
-        $prefix = $model instanceof Mantenimiento ? 'Abono autom. Orden ' : 'Abono autom. ELC ';
-        $desc = $prefix.$model->id_orden;
-
-        return $desc.($descripcion ? ' — '.$descripcion : '');
     }
 }

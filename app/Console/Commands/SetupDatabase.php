@@ -2,12 +2,17 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Concerns\ConfirmaBaseDeDatos;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use PDO;
 
 class SetupDatabase extends Command
 {
+    use ConfirmaBaseDeDatos;
+
     // El comando que escribiremos en la terminal
     protected $signature = 'db:setup';
 
@@ -53,6 +58,16 @@ class SetupDatabase extends Command
         }
 
         // Una vez creada, ejecutamos las migraciones frescas con seeders
+        // migrate:fresh BORRA todas las tablas: confirmar si la base ya tiene datos.
+        try {
+            $tieneDatos = Schema::hasTable('users') && DB::table('users')->exists();
+        } catch (\Throwable) {
+            $tieneDatos = false;
+        }
+        if ($tieneDatos && ! $this->confirmarBaseDeDatos('Recrear desde cero (migrate:fresh)')) {
+            return 1;
+        }
+
         $this->info('Ejecutando migraciones y cargando datos de prueba (seeders)...');
         $this->call('migrate:fresh', [
             '--seed' => true,

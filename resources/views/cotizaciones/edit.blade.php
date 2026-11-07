@@ -209,7 +209,7 @@
 <script>
 function initCotizacionRows() {
     // Inicializar select de cliente principal si no fue tomado automáticamente
-    const clienteSelect = document.querySelector('select[name="cliente_id"]');
+    const clienteSelect = document.querySelector('select[name="facturable_global"]');
     if (clienteSelect && !clienteSelect.classList.contains('tomselected') && typeof window.initGlassTomSelect === 'function') {
         window.initGlassTomSelect(clienteSelect);
     }

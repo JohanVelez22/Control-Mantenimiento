@@ -21,6 +21,7 @@ class MovimientoCaja extends Model
         'descripcion',
         'estado',
         'anulado',
+        'anulado_en_cascada', // anulado al anular la factura vinculada (no individualmente)
         'user_id',
         'abono_id',   // FK opcional al Abono que generó este movimiento
         'parent_id',  // FK opcional al MovimientoCaja padre (para abonos de caja)
@@ -32,6 +33,7 @@ class MovimientoCaja extends Model
         return [
             'fecha' => 'date',
             'anulado' => 'boolean',
+            'anulado_en_cascada' => 'boolean',
         ];
     }
 
@@ -83,6 +85,19 @@ class MovimientoCaja extends Model
         return null;
     }
 
+    /**
+     * Movimientos cuya descripción contiene la referencia exacta (p. ej. "#VT-1"),
+     * sin coincidir con referencias que la extienden ("#VT-10", "#VT-1A").
+     */
+    public function scopeReferenciaExacta($query, string $referencia)
+    {
+        return $query->where(function ($sub) use ($referencia) {
+            foreach (['', ' %', ',%', '.%', ')%', "\n%"] as $sufijo) {
+                $sub->orWhere('descripcion', 'like', '%'.$referencia.$sufijo);
+            }
+        });
+    }
+
     public function getTotalPagadoAttribute()
     {
         $root = $this->parent_id ? ($this->parent ?: self::find($this->parent_id)) : $this;
@@ -121,17 +136,16 @@ class MovimientoCaja extends Model
                         ->orWhere('parent_id', $rootId);
                 }
                 if ($refSearch) {
-                    if (str_starts_with($refSearch, '#')) {
-                        $q->orWhere(function ($sub) use ($refSearch) {
-                            $sub->where('descripcion', 'like', "%{$refSearch}")
-                                ->orWhere('descripcion', 'like', "%{$refSearch} %")
-                                ->orWhere('descripcion', 'like', "%{$refSearch},%")
-                                ->orWhere('descripcion', 'like', "%{$refSearch}.%")
-                                ->orWhere('descripcion', 'like', "%{$refSearch}\n%");
-                        });
-                    } else {
-                        $q->orWhere('descripcion', 'like', "%{$refSearch}%");
-                    }
+                    // Coincidencia con límite de palabra: "#VT-1" u "Orden ORD-1" no deben
+                    // coincidir con "#VT-10" u "Orden ORD-10".
+                    $q->orWhere(function ($sub) use ($refSearch) {
+                        $sub->where('descripcion', 'like', "%{$refSearch}")
+                            ->orWhere('descripcion', 'like', "%{$refSearch} %")
+                            ->orWhere('descripcion', 'like', "%{$refSearch},%")
+                            ->orWhere('descripcion', 'like', "%{$refSearch}.%")
+                            ->orWhere('descripcion', 'like', "%{$refSearch})%")
+                            ->orWhere('descripcion', 'like', "%{$refSearch}\n%");
+                    });
                 }
             })
             ->sum('monto');

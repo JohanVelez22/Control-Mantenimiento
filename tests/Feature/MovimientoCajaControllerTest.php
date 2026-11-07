@@ -384,10 +384,6 @@ class MovimientoCajaControllerTest extends TestCase
         $padre->refresh();
         $this->assertEquals(50000, $padre->saldo_pendiente);
 
-        // Note: MovimientoCaja child payments (abonos) don't have a dedicated destroy route.
-        // They are deleted when the parent is anulado or through the main movimiento destroy.
-        // This test is skipped as the feature doesn't exist yet.
-        $this->assertTrue(true);
     }
 
     public function test_concepto_store_creates_new_concepto(): void
@@ -499,8 +495,9 @@ class MovimientoCajaControllerTest extends TestCase
             'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
         ]);
 
-        $response->assertSessionHas('success');
+        // Regla del taller: los días con cierre de caja no se modifican.
+        $response->assertSessionHas('error');
         $movimiento->refresh();
-        $this->assertTrue($movimiento->anulado);
+        $this->assertFalse($movimiento->anulado);
     }
 }

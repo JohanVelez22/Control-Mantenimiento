@@ -22,6 +22,22 @@ abstract class DuskTestCase extends BaseTestCase
     }
 
     /**
+     * Las pruebas de navegador crean usuarios y movimientos reales: nunca deben
+     * ejecutarse contra la base de datos de trabajo. Se exige una base de prueba
+     * (nombre con _test / _dusk / testing), configurada en .env.dusk.local.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $conexion = config('database.default');
+        $base = (string) config("database.connections.{$conexion}.database");
+        if (! preg_match('/(_test|_dusk|testing|:memory:)/i', $base)) {
+            $this->markTestSkipped("Dusk omitido: la base de datos [{$base}] no es de prueba. Configure .env.dusk.local con una base *_dusk.");
+        }
+    }
+
+    /**
      * Create the RemoteWebDriver instance.
      */
     protected function driver(): RemoteWebDriver

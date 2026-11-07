@@ -116,7 +116,7 @@ class CierreCajaBloqueoTest extends TestCase
         $this->assertEquals(100000, (float) $movimiento->monto);
     }
 
-    public function test_se_puede_anular_movimiento_de_caja_en_dia_cerrado_por_admin(): void
+    public function test_no_se_puede_anular_movimiento_de_caja_en_dia_cerrado(): void
     {
         $fecha = '2026-09-27';
         $movimiento = MovimientoCaja::create([
@@ -134,13 +134,14 @@ class CierreCajaBloqueoTest extends TestCase
         // Se cierra el día
         $this->cerrarDia($fecha);
 
-        // Anulación administrativa procede exitosamente
+        // Regla del taller: un día cerrado no se modifica, ni siquiera por el administrador
+        // (el arqueo histórico quedaría desactualizado). Para corregirlo se elimina el cierre.
         $response = $this->actingAs($this->admin)->post(route('caja.anular', $movimiento));
-        $response->assertSessionHas('success');
+        $response->assertSessionHas('error');
 
         $movimiento->refresh();
-        $this->assertTrue($movimiento->anulado);
-        $this->assertEquals('anulado', $movimiento->estado);
+        $this->assertFalse($movimiento->anulado);
+        $this->assertEquals('activo', $movimiento->estado);
     }
 
     public function test_no_se_puede_registrar_abono_de_caja_en_dia_cerrado(): void

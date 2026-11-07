@@ -14,6 +14,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class EventoController extends Controller
 {
@@ -105,7 +106,9 @@ class EventoController extends Controller
 
             return redirect()->route('eventos.index')->with('success', 'Copia de seguridad del sistema generada exitosamente.');
         } catch (\Throwable $e) {
-            return redirect()->route('eventos.index')->with('error', 'Error al generar la copia de seguridad: '.$e->getMessage());
+            Log::error('Error al generar respaldo desde eventos: '.$e->getMessage());
+
+            return redirect()->route('eventos.index')->with('error', 'No se pudo generar la copia de seguridad. Revise los registros del sistema.');
         }
     }
 }

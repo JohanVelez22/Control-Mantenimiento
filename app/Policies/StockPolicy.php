@@ -63,4 +63,3 @@ class StockPolicy
         return $user->isAdmin();
     }
 }
-

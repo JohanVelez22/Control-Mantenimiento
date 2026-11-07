@@ -504,7 +504,7 @@
             })
             .catch(error => {
                 console.error(error);
-                alert('Hubo un error al generar o descargar el reporte.');
+                (typeof window.showToast === 'function' ? window.showToast('Hubo un error al generar o descargar el reporte.', 'error') : alert('Hubo un error al generar o descargar el reporte.'));
             })
             .finally(() => {
                 btn.disabled = false;

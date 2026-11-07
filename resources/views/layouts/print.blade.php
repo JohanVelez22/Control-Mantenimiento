@@ -178,6 +178,9 @@
         .mb-4 { margin-bottom: 15px; }
         .font-bold { font-weight: bold; }
     </style>
+    @if(View::hasSection('show_page_number') || ($showPageNumber ?? false))
+    <meta name="paginacion" content='{"x":80,"y":35,"size":8,"color":[0.3,0.3,0.3],"font":"sans-serif"}'>
+    @endif
 </head>
 <body onload="window.print()">
     @php
@@ -228,20 +231,5 @@
         </div>
         </div>
     </div>
-    
-    @if(View::hasSection('show_page_number') || ($showPageNumber ?? false))
-    <!-- Script nativo de DomPDF para garantizar la numeración solo en documentos que lo requieran -->
-    <script type="text/php">
-        if (isset($pdf)) {
-            $x = $pdf->get_width() - 80;
-            $y = $pdf->get_height() - 35;
-            $text = "Página {PAGE_NUM} de {PAGE_COUNT}";
-            $font = $fontMetrics->get_font("sans-serif", "normal");
-            $size = 8;
-            $color = array(0.3, 0.3, 0.3); // Gris oscuro (#555)
-            $pdf->page_text($x, $y, $text, $font, $size, $color);
-        }
-    </script>
-    @endif
 </body>
 </html>

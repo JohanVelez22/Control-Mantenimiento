@@ -25,7 +25,10 @@ trait HandlesStockAttach
                 // Bloquear el modelo (Mantenimiento o Electronica) para serializar modificaciones concurrentes
                 $lockedModel = get_class($model)::where('id', $model->id)->lockForUpdate()->firstOrFail();
 
-                $stock = Stock::findOrFail($validated['stock_id']);
+                $stock = Stock::activos()->find($validated['stock_id']);
+                if (! $stock) {
+                    throw new \DomainException('El repuesto seleccionado no existe o está anulado.');
+                }
 
                 // Salida atómica del stock (bloquea la fila y evita saldo negativo).
                 $stock = app(StockService::class)->salida($stock, $validated['cantidad']);

@@ -55,4 +55,3 @@ class MovimientoCajaPolicy
         return $user->isAdmin();
     }
 }
-

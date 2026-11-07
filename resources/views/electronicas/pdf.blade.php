@@ -186,18 +186,9 @@
         .footer-left  { display: table-cell; font-size: 7px; color: #000000; font-style: italic; }
         .footer-right { display: table-cell; text-align: right; font-size: 7px; color: #000000; }
     </style>
+    <meta name="paginacion" content='{"x":85,"y":24,"size":7.5,"color":[0.44,0.5,0.59],"font":"Arial, Helvetica, sans-serif"}'>
 </head>
 <body>
-    <script type="text/php">
-        if (isset($pdf)) {
-            $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-            $size = 7.5;
-            $color = array(0.44, 0.50, 0.59); // rgb(113, 128, 150)
-            $y = $pdf->get_height() - 24;
-            $x = $pdf->get_width() - 85;
-            $pdf->page_text($x, $y, "Página {PAGE_NUM} de {PAGE_COUNT}", $font, $size, $color);
-        }
-    </script>
 
     {{-- ── ENCABEZADO ── --}}
     <div class="report-header">

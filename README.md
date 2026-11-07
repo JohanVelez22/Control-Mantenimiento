@@ -102,9 +102,9 @@ Ingresa en tu navegador a `http://tecni-systemas.local` o `http://localhost:8000
 
 | Rol / Perfil | Correo Electrónico | Contraseña por Defecto | Alcance de Permisos |
 | :--- | :--- | :--- | :--- |
-| **👑 Administrador** | `administrador@tecnisystemas.com` | `Admin123*` | Control total del sistema, finanzas, caja chica, usuarios, auditoría y reportes. |
-| **🛠️ Técnico** | `tecnico@tecnisystemas.com` | `Tecni123*` | Gestión de órdenes de mantenimiento, electrónica, abonos y consumo de repuestos. |
-| **👁️ Invitado** | `invitado@tecnisystemas.com` | `Invit123*` | Portal público de consulta para clientes y seguimiento de estados. |
+| **👑 Administrador** | `administrador@tecnisystemas.com` | Definida en `.env` (`ADMIN_DEFAULT_PASSWORD`) | Control total del sistema, finanzas, caja chica, usuarios, auditoría y reportes. |
+| **🛠️ Técnico** | `tecnico@tecnisystemas.com` | Definida en `.env` (`TECNICO_DEFAULT_PASSWORD`) | Gestión de órdenes de mantenimiento, electrónica, abonos y consumo de repuestos. |
+| **👁️ Invitado** | `invitado@tecnisystemas.com` | Definida en `.env` (`INVITADO_DEFAULT_PASSWORD`) | Portal público de consulta para clientes y seguimiento de estados. |
 
 ---
 

@@ -132,6 +132,13 @@ class CierreCajaController extends Controller
             return back()->with('error', $error)->withInput();
         }
 
+        // Solo se reabre el último día cerrado: borrar un cierre intermedio cambiaría el saldo
+        // inicial de los días posteriores, cuyos arqueos ya están registrados.
+        $posterior = CierreCaja::where('fecha', '>', $cierre->fecha)->orderBy('fecha')->first();
+        if ($posterior) {
+            return back()->with('error', 'No se puede eliminar este cierre: existe un cierre posterior ('.$posterior->fecha->format('d/m/Y').'). Elimine primero los cierres más recientes.');
+        }
+
         $cierre->delete();
 
         return redirect()->route('cierre.index')->with('success', 'Cierre eliminado y día desbloqueado.');
@@ -209,25 +216,7 @@ class CierreCajaController extends Controller
         $consignacionNeto = $consignacionIngresos - $consignacionEgresos;
 
         // Saldo anterior acumulado en efectivo previo a esta fecha
-        $ultimoCierre = CierreCaja::where('fecha', '<', $fecha)->orderBy('fecha', 'desc')->first();
-        if ($ultimoCierre && $ultimoCierre->efectivo_real_contado !== null) {
-            $base = (float) $ultimoCierre->efectivo_real_contado;
-            $intermedio = (float) MovimientoCaja::where('fecha', '>', $ultimoCierre->fecha)
-                ->where('fecha', '<', $fecha)
-                ->where('estado', 'activo')
-                ->where('anulado', false)
-                ->where('tipo_pago', 'efectivo')
-                ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
-                ->value('total') ?? 0;
-            $saldoAnterior = $base + $intermedio;
-        } else {
-            $saldoAnterior = (float) MovimientoCaja::where('fecha', '<', $fecha)
-                ->where('estado', 'activo')
-                ->where('anulado', false)
-                ->where('tipo_pago', 'efectivo')
-                ->selectRaw("SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
-                ->value('total') ?? 0;
-        }
+        $saldoAnterior = CierreCaja::saldoInicialEfectivo($fecha);
 
         $efectivoEsperado = $saldoAnterior + $efectivoNeto;
 

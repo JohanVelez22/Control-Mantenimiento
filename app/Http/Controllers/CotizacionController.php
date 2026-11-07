@@ -263,7 +263,8 @@ class CotizacionController extends Controller
             return back()->with('error', $error)->withInput();
         }
 
-        if ($cotizacion->estado === 'convertida') {
+        // convertir() deja la cotización en estado 'aprobada' con factura_id
+        if (in_array($cotizacion->estado, ['convertida', 'aprobada'], true) || $cotizacion->factura_id) {
             return back()->with('error', 'No se puede anular una cotización que ya ha sido convertida en factura.')->withInput();
         }
 
@@ -325,7 +326,9 @@ class CotizacionController extends Controller
 
         // Bloqueo de período: la conversión genera un movimiento con fecha de hoy.
         $hoy = now()->toDateString();
-        CierreCajaGuard::asegurarAbierta($hoy, 'conversión de cotización a venta');
+        if (CierreCajaGuard::fechaEstaCerrada($hoy)) {
+            return back()->with('error', 'No se puede convertir la cotización: el día de hoy ya tiene cierre de caja registrado.');
+        }
 
         try {
             DB::beginTransaction();
@@ -393,7 +396,8 @@ class CotizacionController extends Controller
             $factura = Factura::create([
                 'numero_factura' => Factura::siguienteNumero($prefijoFactura),
                 'tipo_movimiento' => $tipoMovimiento,
-                'estado' => 'pendiente_pago',
+                // Una cotización en $0 no deja saldo pendiente
+                'estado' => (float) $cotizacion->total > Factura::EPSILON ? 'pendiente_pago' : 'emitida',
                 'facturable_id' => $facturableId,
                 'facturable_type' => $facturableType,
                 'total_documento' => $cotizacion->total,
@@ -460,7 +464,8 @@ class CotizacionController extends Controller
             DB::rollBack();
             Log::error('Error al convertir cotización: '.$e->getMessage());
 
-            return back()->with('error', 'Error al procesar la conversión: '.$e->getMessage());
+            // Los mensajes de dominio (stock, cierre) son para el usuario; los técnicos no.
+            return back()->with('error', $e instanceof \DomainException ? $e->getMessage() : 'Error al procesar la conversión. Intente nuevamente.');
         }
     }
 }

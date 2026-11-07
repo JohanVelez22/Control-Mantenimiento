@@ -60,6 +60,8 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'active' => $request->boolean('active', true), // Activo por defecto al crear usuario
+            // La contraseña la asignó el administrador: el usuario debe definir la suya al entrar
+            'must_change_password' => true,
         ];
 
         if ($request->hasFile('photo')) {
@@ -105,6 +107,13 @@ class UserController extends Controller
             'photo.max' => 'La foto no debe superar los 5 MB de tamaño.',
         ]);
 
+        // Cambiar el correo propio (que también sirve para iniciar sesión) exige la contraseña actual.
+        if (auth()->id() === $usuario->id && mb_strtolower($request->email) !== mb_strtolower($usuario->email)) {
+            $request->validate(['current_password' => ['required', 'current_password']], [
+                'current_password.required' => 'Para cambiar tu correo debes ingresar tu contraseña actual.',
+            ]);
+        }
+
         // El administrador puede cambiar roles
         if (auth()->user()->role === 'admin') {
             $usuario->role = $request->role;
@@ -122,6 +131,8 @@ class UserController extends Controller
             $request->validate($rules);
             $usuario->password = Hash::make($request->password);
             $usuario->setRememberToken(Str::random(60));
+            // Si un administrador asigna la contraseña de otro usuario, ese usuario debe cambiarla al entrar
+            $usuario->must_change_password = auth()->id() !== $usuario->id;
         }
 
         if ($request->hasFile('photo')) {

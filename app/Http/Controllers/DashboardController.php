@@ -87,7 +87,7 @@ class DashboardController extends Controller
         $ingresosPorDia = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
             ->whereBetween('fecha', [$startDate, $endDate])
-            ->selectRaw('DATE(fecha) as fecha, SUM(CASE WHEN tipo_movimiento = "ingreso" THEN monto ELSE -monto END) as total')
+            ->selectRaw("DATE(fecha) as fecha, SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total")
             ->groupBy('fecha')
             ->pluck('total', 'fecha');
 

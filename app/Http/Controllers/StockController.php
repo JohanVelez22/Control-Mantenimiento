@@ -13,6 +13,7 @@ use App\Services\StockService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -77,6 +78,10 @@ class StockController extends Controller
             'photo.max' => 'La imagen no debe superar los 5 MB de tamaño.',
         ]);
 
+        // Las columnas de precio son NOT NULL: sin estos valores el alta daba error 500.
+        $validated['precio_venta'] ??= 0;
+        $validated['precio_tecnico'] ??= 0;
+
         if ($request->hasFile('photo')) {
             $validated['photo'] = $request->file('photo')->store('stocks', 'public');
         }
@@ -129,16 +134,25 @@ class StockController extends Controller
             'photo.max' => 'La imagen no debe superar los 5 MB de tamaño.',
         ]);
 
+        // Regla del taller: las existencias cambian con compras, ventas o bajas. Un técnico
+        // solo puede ajustarlas a mano con la contraseña de un administrador (evita ocultar faltantes).
+        if (auth()->user()->isTecnico() && (int) $validated['cantidad'] !== (int) $stock->cantidad) {
+            if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
+                return back()->withErrors(['admin_password' => $error])->withInput();
+            }
+        }
+
+        // La foto anterior solo se borra después de guardar con éxito; si la transacción
+        // falla se elimina la nueva y el producto conserva su foto.
+        $fotoAnterior = $stock->photo;
+        $fotoNueva = null;
+        $quitarFoto = false;
         if ($request->hasFile('photo')) {
-            if ($stock->photo && Storage::disk('public')->exists($stock->photo)) {
-                Storage::disk('public')->delete($stock->photo);
-            }
-            $validated['photo'] = $request->file('photo')->store('stocks', 'public');
+            $fotoNueva = $request->file('photo')->store('stocks', 'public');
+            $validated['photo'] = $fotoNueva;
         } elseif ($request->boolean('remove_photo') || $request->input('remove_photo') === '1') {
-            if ($stock->photo && Storage::disk('public')->exists($stock->photo)) {
-                Storage::disk('public')->delete($stock->photo);
-            }
             $validated['photo'] = null;
+            $quitarFoto = true;
         }
 
         unset($validated['remove_photo']);
@@ -187,15 +201,23 @@ class StockController extends Controller
                 }
             });
 
+            if (($fotoNueva || $quitarFoto) && $fotoAnterior && Storage::disk('public')->exists($fotoAnterior)) {
+                Storage::disk('public')->delete($fotoAnterior);
+            }
+
             return redirect()->route('stocks.index')->with('success', 'Producto actualizado exitosamente.');
         } catch (\DomainException $e) {
+            if ($fotoNueva) {
+                Storage::disk('public')->delete($fotoNueva);
+            }
+
             return back()->with('error', $e->getMessage())->withInput();
         }
     }
 
     public function reportes(Request $request)
     {
-        $query = Stock::with('proveedor')->where('active', true);
+        $query = Stock::with('proveedor');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -237,7 +259,11 @@ class StockController extends Controller
             $query->where($col, '<=', $request->max_costo);
         }
 
-        if ($request->filled('estado') && $request->estado !== 'todos') {
+        // Por defecto solo activos; el filtro de estado permite ver inactivos o todos
+        // (antes el filtro base fijo hacía que «inactivo» devolviera siempre vacío).
+        if (! $request->filled('estado')) {
+            $query->where('active', true);
+        } elseif ($request->estado !== 'todos') {
             $query->where('active', $request->estado === 'activo' ? 1 : 0);
         }
 
@@ -348,7 +374,9 @@ class StockController extends Controller
         } catch (\DomainException $e) {
             return redirect()->back()->with('error', $e->getMessage())->withInput();
         } catch (\Throwable $e) {
-            return redirect()->back()->with('error', 'Error al procesar la baja de stock: '.$e->getMessage())->withInput();
+            Log::error('Error en baja de stock: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'Error al procesar la baja de stock. Intente nuevamente.')->withInput();
         }
     }
 
@@ -370,8 +398,12 @@ class StockController extends Controller
             $stockService->revertirBaja($bajaStock);
 
             return redirect()->back()->with('success', "Se revirtió la baja exitosamente: se reintegraron {$cantidad} unidad(es) al inventario de '{$producto}'.");
+        } catch (\DomainException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         } catch (\Throwable $e) {
-            return redirect()->back()->with('error', 'Error al revertir la baja: '.$e->getMessage());
+            Log::error('Error al revertir baja de stock: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'Error al revertir la baja. Intente nuevamente.');
         }
     }
 }

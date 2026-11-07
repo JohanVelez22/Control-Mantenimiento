@@ -78,13 +78,14 @@ class ReporteController extends Controller
 
         // --- INFORME POR OPERACIONES ---
         $operaciones = [
-            'efectivo' => (clone $acumuladoQuery)->where('tipo_pago', 'efectivo')->sum('monto'),
-            'consignacion' => (clone $acumuladoQuery)->where('tipo_pago', 'consignacion')->sum('monto'),
             'ingresos_efectivo' => (clone $acumuladoQuery)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'efectivo')->sum('monto'),
             'ingresos_consignacion' => (clone $acumuladoQuery)->where('tipo_movimiento', 'ingreso')->where('tipo_pago', 'consignacion')->sum('monto'),
             'egresos_efectivo' => (clone $acumuladoQuery)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'efectivo')->sum('monto'),
             'egresos_consignacion' => (clone $acumuladoQuery)->where('tipo_movimiento', 'egreso')->where('tipo_pago', 'consignacion')->sum('monto'),
         ];
+        // Saldo neto por medio de pago (antes se sumaban ingresos y egresos como si fueran entradas)
+        $operaciones['efectivo'] = $operaciones['ingresos_efectivo'] - $operaciones['egresos_efectivo'];
+        $operaciones['consignacion'] = $operaciones['ingresos_consignacion'] - $operaciones['egresos_consignacion'];
 
         // Lógica de exportación según el botón presionado
         if ($request->get('export') == 'excel') {

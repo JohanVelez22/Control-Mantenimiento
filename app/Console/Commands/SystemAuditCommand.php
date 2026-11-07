@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class SystemAuditCommand extends Command
 {
@@ -203,7 +204,7 @@ class SystemAuditCommand extends Command
             // Setup de datos transaccionales de prueba
             $userAdmin = User::firstOrCreate(
                 ['email' => 'audit_admin@test.com'],
-                ['name' => 'Auditor Admin', 'password' => Hash::make('secret'), 'role' => 'admin', 'active' => true]
+                ['name' => 'Auditor Admin', 'password' => Hash::make(Str::random(40)), 'role' => 'admin', 'active' => true]
             );
 
             $cliente = Cliente::create([

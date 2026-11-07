@@ -5,7 +5,7 @@
 
     {{-- Título de Marca WolfCore System --}}
     <div class="flex justify-center mb-3">
-        <div class="text-[26px] font-black tracking-widest font-logo flex items-center gap-2">
+        <div class="text-[length:clamp(15px,5vw,24px)] font-black tracking-wider sm:tracking-widest font-logo flex items-center justify-center gap-2 whitespace-nowrap max-w-full">
             <span class="text-[#2563EB] dark:text-[#3B82F6]">WOLFCORE</span>
             <span class="text-slate-800 dark:text-white">SYSTEM</span>
         </div>

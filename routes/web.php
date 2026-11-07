@@ -20,6 +20,7 @@ use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\MantenimientoStockController;
 use App\Http\Controllers\MovimientoCajaController;
 use App\Http\Controllers\MovimientoInventarioController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ReporteFinancieroController;
@@ -52,7 +53,11 @@ Route::middleware('guest')->group(function () {
 });
 
 // Rutas protegidas (autenticados)
-Route::middleware(['auth', 'prevent-back-history'])->group(function () {
+Route::middleware(['auth', 'prevent-back-history', 'password.cambio'])->group(function () {
+
+    // Cambio obligatorio de contraseña (predeterminada o asignada por un administrador)
+    Route::get('/cambiar-password', [PasswordController::class, 'edit'])->name('password.cambiar');
+    Route::put('/cambiar-password', [PasswordController::class, 'update'])->middleware('throttle:10,1')->name('password.actualizar');
 
     // Logout (cualquier usuario autenticado)
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('throttle:10,1')->name('logout');

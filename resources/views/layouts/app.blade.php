@@ -19,7 +19,30 @@
     <meta name="description" content="Sistema de Control de Mantenimiento y Gestión de Equipos. Solución integral para talleres y gestión de garantías.">
     <meta name="keywords" content="Mantenimiento, Talleres, Gestión de Inventario, Cotizaciones, Electrónica">
     
-    <title>@yield('title', 'WolfCore System')</title>
+    @php
+        // Título de pestaña por defecto según la ruta (las vistas pueden definir @section('title')).
+        $tituloRuta = (function () {
+            $nombre = (string) optional(request()->route())->getName();
+            $partes = explode('.', $nombre);
+            $secciones = [
+                'dashboard' => 'Dashboard', 'mantenimientos' => 'Mantenimientos', 'electronicas' => 'Electrónica',
+                'stocks' => 'Inventario', 'inventario' => 'Inventario', 'caja' => 'Caja', 'cierre' => 'Cierre de caja',
+                'cotizaciones' => 'Cotizaciones', 'clientes' => 'Clientes', 'equipos' => 'Equipos', 'proveedores' => 'Proveedores',
+                'tecnicos' => 'Técnicos', 'usuarios' => 'Usuarios', 'configuracion' => 'Configuración', 'eventos' => 'Auditoría',
+                'reportes' => 'Reportes', 'conceptos' => 'Conceptos de caja', 'design-system' => 'Sistema de diseño',
+            ];
+            $acciones = ['create' => 'Nuevo', 'edit' => 'Editar', 'show' => 'Detalle', 'reportes' => 'Reportes',
+                'facturas' => 'Facturas', 'compra' => 'Compra', 'venta' => 'Venta', 'categorias' => 'Categorías'];
+            $seccion = $secciones[$partes[0]] ?? null;
+            if (! $seccion) {
+                return 'WolfCore System';
+            }
+            $accion = collect(array_slice($partes, 1))->map(fn ($p) => $acciones[$p] ?? null)->filter()->implode(' · ');
+
+            return trim($seccion.($accion ? ' · '.$accion : '')).' · WolfCore';
+        })();
+    @endphp
+    <title>@yield('title', $tituloRuta)</title>
     
     <!-- Favicon (Isotipo e Insignia WolfCore System con invalidación de caché) -->
     <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}?v={{ filemtime(public_path('favicon-48x48.png')) }}">
@@ -33,13 +56,13 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <!-- CSS Librerías: Flatpickr + TomSelect (NECESARIOS para que funcionen) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
+    <link rel="stylesheet" href="{{ asset('vendor/flatpickr/flatpickr.min.css') }}" integrity="sha384-RkASv+6KfBMW9eknReJIJ6b3UnjKOKC5bOUaNgIY778NFbQ8MtWq9Lr/khUgqtTt">
+    <link rel="stylesheet" href="{{ asset('vendor/tom-select/tom-select.css') }}" integrity="sha384-dC18+guBm9Lk5IBQfkKIOw2YSxXWMsiuPfIOZNPilutZQn6MgBvcx+vejNQYlrbc">
     
     <!-- Scripts de Librerías (cargados en el head para prevenir FOUC) -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <script src="{{ asset('vendor/flatpickr/flatpickr.min.js') }}" integrity="sha384-5JqMv4L/Xa0hfvtF06qboNdhvuYXUku9ZrhZh3bSk8VXF0A/RuSLHpLsSV9Zqhl6"></script>
+    <script src="{{ asset('vendor/flatpickr/l10n/es.js') }}" integrity="sha384-j/aEP2b+3OKmGqank2qCSosSrlrF9jpIpdgApXq2ryJYBpLSbEi63/PDdL+rKmcQ"></script>
+    <script src="{{ asset('vendor/tom-select/tom-select.complete.min.js') }}" integrity="sha384-cnROoUgVILyibe3J0zhzWoJ9p2WmdnK7j/BOTSWqVDbC1pVw2d+i6Q/1ESKJKCYf"></script>
     
     <!-- CSS Propio (Liquid Glass) - va DESPUÉS para sobreescribir estilos base -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -128,7 +151,7 @@
     @endguest
 
     <!-- CONTENEDOR DE TOASTS (Notificaciones Glass) -->
-    <div id="toast-container" class="fixed bottom-5 right-3 flex flex-col gap-2.5 pointer-events-none w-full max-w-sm" style="z-index: 100000 !important;"></div>
+    <div id="toast-container" class="fixed bottom-5 left-3 right-3 sm:left-auto flex flex-col gap-2.5 pointer-events-none sm:w-full max-w-sm" style="z-index: 100000 !important;"></div>
 
     <!-- MODAL DE CONFIRMACIÓN DE ALERTA/ELIMINACIÓN (Liquid Glass) -->
     <div id="ts-modal" role="dialog" aria-modal="true" aria-labelledby="ts-modal-title" aria-describedby="ts-modal-msg" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" style="z-index: 50000 !important;" onclick="if(event.target === this) closeTsModal()">
@@ -172,6 +195,7 @@
                 <form id="global-anular-form" method="POST" class="space-y-4">
                     @csrf
                     <input type="hidden" name="_method" id="global-anular-method" value="POST">
+                    <input type="hidden" name="accion" id="global-anular-accion" value="">
                     @if(auth()->check() && auth()->user()->isTecnico())
                     <div>
                         <input type="password" name="password_confirm" id="global-anular-input" required
@@ -259,10 +283,13 @@
             
             // Colores basados en el tipo
             const isError = type === 'error' || type === 'danger';
-            const bgStr = isError 
-                ? 'bg-red-500/90 dark:bg-red-900/80 border-red-500/50' 
-                : 'bg-emerald-500/90 dark:bg-emerald-900/80 border-emerald-500/50';
-            const icon = isError ? '⚠️' : '✅';
+            const isInfo = type === 'info' || type === 'warning';
+            const bgStr = isError
+                ? 'bg-red-500/90 dark:bg-red-900/80 border-red-500/50'
+                : (isInfo
+                    ? 'bg-blue-600/90 dark:bg-blue-900/80 border-blue-500/50'
+                    : 'bg-emerald-500/90 dark:bg-emerald-900/80 border-emerald-500/50');
+            const icon = isError ? '⚠️' : (isInfo ? 'ℹ️' : '✅');
 
             const safeMessage = String(message ?? '').replace(/[&<>"']/g, function(m) {
                 return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m];
@@ -271,7 +298,7 @@
             toast.innerHTML = `
                 <span class="text-2xl drop-shadow-md">${icon}</span>
                 <p class="text-sm font-bold leading-tight flex-1">${safeMessage}</p>
-                <button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white transition-colors text-lg focus:outline-none">&times;</button>
+                <button type="button" onclick="this.parentElement.remove()" aria-label="Cerrar notificación" class="text-white/60 hover:text-white transition-colors text-lg focus:outline-none">&times;</button>
             `;
 
             container.appendChild(toast);
@@ -291,7 +318,7 @@
         // Leer sesiones de Laravel
         @if(session('success')) showToast(@json(session('success')), 'success'); @endif
         @if(session('error')) showToast(@json(session('error')), 'error'); @endif
-        @if(isset($errors) && $errors->any()) showToast("Verifica los campos obligatorios del formulario.", 'error'); @endif
+        @if(isset($errors) && $errors->any()) showToast(@json($errors->count() > 1 ? $errors->first().' (y '.($errors->count() - 1).' error(es) más)' : $errors->first()), 'error'); @endif
 
         // ─── ACCESIBILIDAD Y GESTIÓN DE FOCO EN MODALES (WCAG 2.1) ────────
         let _lastFocusedElement = null;
@@ -317,6 +344,7 @@
             const modal = document.getElementById('ts-modal');
             const card = document.getElementById('ts-modal-card');
             const confirmBtn = document.getElementById('ts-modal-confirm');
+            if (confirmBtn) confirmBtn.disabled = false;
             const cancelBtn = document.getElementById('ts-modal-cancel');
             const iconBox = document.getElementById('ts-modal-icon-box');
             const icon = document.getElementById('ts-modal-icon');
@@ -384,6 +412,7 @@
                 window._pendingForm = null;
                 // Restaurar estado por defecto
                 const confirmBtn = document.getElementById('ts-modal-confirm');
+                if (confirmBtn) confirmBtn.disabled = false;
                 const cancelBtn = document.getElementById('ts-modal-cancel');
                 const iconBox = document.getElementById('ts-modal-icon-box');
                 const icon = document.getElementById('ts-modal-icon');
@@ -417,6 +446,12 @@
             form.action  = actionUrl;
             if (methodInput) methodInput.value = customMethod || 'POST';
             if (input) input.value  = '';
+            // Intención explícita: el servidor rechaza la operación si el registro ya cambió
+            // de estado (doble clic o pestaña desactualizada) en lugar de invertirla.
+            const accionInput = document.getElementById('global-anular-accion');
+            if (accionInput) {
+                accionInput.value = (customMethod === 'DELETE' || customTitle) ? '' : (isReactivation ? 'reactivar' : 'anular');
+            }
 
             if (customMethod === 'DELETE' || customTitle) {
                 // Modo Eliminación directa (p. ej. repuestos)
@@ -534,6 +569,15 @@
                     closeRechazarModal();
                 } else if (typeof lightboxOpen !== 'undefined' && lightboxOpen) {
                     closeImageLightbox();
+                } else {
+                    // Modales propios de cada módulo: id "baja-stock-modal" → closeBajaStockModal()
+                    const abierto = [...document.querySelectorAll('[id$="-modal"]')]
+                        .find(m => !m.classList.contains('hidden') && !m.classList.contains('opacity-0'));
+                    if (abierto) {
+                        const fn = 'close' + abierto.id.replace(/-modal$/, '').split('-')
+                            .map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('') + 'Modal';
+                        if (typeof window[fn] === 'function') window[fn]();
+                    }
                 }
             }
         });
@@ -584,9 +628,13 @@
                             initDynamicPanelHandlers(panel);
 
                             // Disparar toast de sesión si existe en la respuesta
-                            const matches = html.match(/showToast\("([^"]+)",\s*'([^']+)'\)/);
+                            // El mensaje viene como literal JSON (directiva json de Blade): decodificarlo para que
+                            // "añadido" se muestre como "añadido".
+                            const matches = html.match(/showToast\(("(?:[^"\\]|\\.)*"),\s*'([^']+)'\)/);
                             if (matches && matches[1] && matches[2]) {
-                                showToast(matches[1], matches[2]);
+                                let texto = matches[1];
+                                try { texto = JSON.parse(matches[1]); } catch (e) { texto = matches[1].slice(1, -1); }
+                                showToast(texto, matches[2]);
                             }
                         }, 80);
                         return;
@@ -667,6 +715,8 @@
                     sessionStorage.setItem('ts_scroll_pos_' + window.location.pathname, window.scrollY);
                 } catch(e) {}
                 formToSubmit.setAttribute('data-confirmed', 'true');
+                const confirmBtnEl = document.getElementById('ts-modal-confirm');
+                if (confirmBtnEl) confirmBtnEl.disabled = true; // evita doble envío
                 formToSubmit.submit();
             }
         });
@@ -697,6 +747,41 @@
                     }
                 });
             });
+        });
+
+        // ─── BLOQUEO DE DOBLE ENVÍO ──────────────────────────────────────
+        // Un doble clic en Guardar/Procesar creaba dos facturas o dos abonos. Se registra en
+        // fase de burbuja: si otra validación canceló el envío (preventDefault) no bloquea.
+        // Excluye formularios GET (filtros), con target (exportaciones) o con data-no-lock.
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (e.defaultPrevented || !(form instanceof HTMLFormElement)) return;
+            if ((form.method || 'get').toLowerCase() === 'get' || form.target || form.hasAttribute('data-no-lock')) return;
+            if (form.dataset.submitting === '1') { e.preventDefault(); return; }
+            form.dataset.submitting = '1';
+            form.querySelectorAll('button[type=submit], button:not([type]), input[type=submit]').forEach(b => {
+                b.dataset.wasDisabled = b.disabled ? '1' : '0';
+                b.disabled = true;
+                b.classList.add('opacity-60', 'cursor-wait');
+            });
+            // Seguridad: si la navegación no ocurre (p. ej. descarga), liberar a los 8 s
+            setTimeout(() => liberarFormulario(form), 8000);
+        });
+        function liberarFormulario(form) {
+            delete form.dataset.submitting;
+            form.querySelectorAll('[data-was-disabled]').forEach(b => {
+                b.disabled = b.dataset.wasDisabled === '1';
+                b.classList.remove('opacity-60', 'cursor-wait');
+                delete b.dataset.wasDisabled;
+            });
+        }
+        // Al volver con el botón Atrás (bfcache) los formularios deben quedar usables
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) {
+                document.querySelectorAll('form[data-submitting]').forEach(liberarFormulario);
+                const c = document.getElementById('ts-modal-confirm');
+                if (c) c.disabled = false;
+            }
         });
 
         // Guardar scroll position antes de enviar cualquier formulario
@@ -1354,7 +1439,8 @@
                 flatpickr.localize(FlatpickrSpanish);
             }
 
-            flatpickr("input[type='date']", {
+            // Si el CDN no cargó, no abortar el resto del JS (formato de montos, validaciones)
+            window.flatpickr && flatpickr("input[type='date']", {
                 locale: FlatpickrSpanish,
                 dateFormat: "Y-m-d",
                 altInput: true,

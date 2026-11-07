@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Electronica;
 use App\Models\Mantenimiento;
 use App\Models\User;
+use App\Support\PasswordsConocidas;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,8 +40,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'string'],
-            'password' => ['required'],
+            'email' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'string', 'max:255'],
         ]);
 
         $rawInput = trim($request->email);
@@ -91,7 +92,7 @@ class AuthController extends Controller
         }
 
         // 2. Buscar si el usuario ya existe en la base de datos (por email, por nombre o por sufijo de dominio)
-        $user = User::where(function ($query) use ($resolvedEmail, $inputLower, $rawInput) {
+        $candidatos = User::where(function ($query) use ($resolvedEmail, $inputLower, $rawInput) {
             if ($resolvedEmail) {
                 $query->where('email', $resolvedEmail);
             } else {
@@ -100,14 +101,21 @@ class AuthController extends Controller
             }
             $query->orWhereRaw('LOWER(name) = ?', [$inputLower])
                 ->orWhere('name', $rawInput);
-        })->first();
+        })->limit(10)->get();
+
+        // El correo tiene prioridad sobre el nombre; un nombre compartido por varios usuarios
+        // es ambiguo y no se usa (un usuario podría renombrarse como otro y suplantar el alias).
+        $emailBuscado = $resolvedEmail ?? $inputLower;
+        $user = $candidatos->first(fn ($u) => mb_strtolower($u->email) === $emailBuscado
+                || mb_strtolower($u->email) === $inputLower.'@tecnisystemas.com')
+            ?? ($candidatos->count() === 1 ? $candidatos->first() : null);
 
         // Si no se encontró de forma directa, intentar búsqueda tolerante de nombre (sin tildes)
-        if (! $user) {
-            $user = User::select('id', 'name', 'email', 'password', 'role', 'active')
+        if (! $user && $candidatos->isEmpty()) {
+            $coincidencias = User::select('id', 'name', 'email', 'password', 'role', 'active')
                 ->limit(50)
                 ->get()
-                ->first(function ($u) use ($inputNormalized) {
+                ->filter(function ($u) use ($inputNormalized) {
                     $nameNorm = str_replace(
                         ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ'],
                         ['a', 'e', 'i', 'o', 'u', 'u', 'n'],
@@ -116,6 +124,8 @@ class AuthController extends Controller
 
                     return $nameNorm === $inputNormalized;
                 });
+            // Solo si el nombre identifica a un único usuario
+            $user = $coincidencias->count() === 1 ? $coincidencias->first() : null;
         }
 
         if ($user) {
@@ -139,6 +149,11 @@ class AuthController extends Controller
             $history = Cache::get($historyKey, []);
             session()->put('login_attempts_history', $history);
             Cache::forget($historyKey);
+
+            // Contraseña predeterminada o pública: se exige cambiarla antes de usar el sistema
+            if (PasswordsConocidas::es($inputPassword) && ! $user->must_change_password) {
+                $user->forceFill(['must_change_password' => true])->save();
+            }
 
             // Prevenir Session Fixation regenerando el ID de sesión antes de autenticar al usuario
             $request->session()->regenerate();

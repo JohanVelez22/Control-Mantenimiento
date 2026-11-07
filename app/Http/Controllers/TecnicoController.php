@@ -105,6 +105,14 @@ class TecnicoController extends Controller
             return redirect()->back()->with('error', $error)->withInput();
         }
 
+        $servicio = app(AnulacionService::class);
+        if ($error = $servicio->verificarIntencion($request, (bool) $tecnico->active)) {
+            return redirect()->back()->with('error', $error);
+        }
+        if ($tecnico->active && ($bloqueo = $servicio->bloqueoPorOrdenesPendientes('tecnico_id', [$tecnico->id], 'el técnico'))) {
+            return redirect()->back()->with('error', $bloqueo);
+        }
+
         $tecnico->active = ! $tecnico->active;
         $tecnico->save();
 

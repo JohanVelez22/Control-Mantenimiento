@@ -17,13 +17,13 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     {{-- CSS Librerías --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
+    <link rel="stylesheet" href="{{ asset('vendor/flatpickr/flatpickr.min.css') }}" integrity="sha384-RkASv+6KfBMW9eknReJIJ6b3UnjKOKC5bOUaNgIY778NFbQ8MtWq9Lr/khUgqtTt">
+    <link rel="stylesheet" href="{{ asset('vendor/tom-select/tom-select.css') }}" integrity="sha384-dC18+guBm9Lk5IBQfkKIOw2YSxXWMsiuPfIOZNPilutZQn6MgBvcx+vejNQYlrbc">
     
     {{-- Scripts Librerías --}}
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <script src="{{ asset('vendor/flatpickr/flatpickr.min.js') }}" integrity="sha384-5JqMv4L/Xa0hfvtF06qboNdhvuYXUku9ZrhZh3bSk8VXF0A/RuSLHpLsSV9Zqhl6"></script>
+    <script src="{{ asset('vendor/flatpickr/l10n/es.js') }}" integrity="sha384-j/aEP2b+3OKmGqank2qCSosSrlrF9jpIpdgApXq2ryJYBpLSbEi63/PDdL+rKmcQ"></script>
+    <script src="{{ asset('vendor/tom-select/tom-select.complete.min.js') }}" integrity="sha384-cnROoUgVILyibe3J0zhzWoJ9p2WmdnK7j/BOTSWqVDbC1pVw2d+i6Q/1ESKJKCYf"></script>
     
     {{-- CSS Propio (Vite) --}}
     @vite('resources/css/glass/glass.css')
@@ -49,11 +49,11 @@
                 $isElecHeader = request()->routeIs('consulta.electronicas') || request()->routeIs('electronicas.*');
                 $headerHome = $isElecHeader ? route('consulta.electronicas') : route('consulta.mantenimientos');
             @endphp
-            <a href="{{ $headerHome }}" class="flex items-center gap-2.5 hover:scale-105 transition-transform duration-200">
+            <a href="{{ $headerHome }}" class="flex items-center gap-2.5 min-w-0 hover:scale-105 transition-transform duration-200">
                 <img src="{{ asset('images/wolfcore.png') }}" alt="WolfCore System" class="w-7 h-7 object-contain">
-                <span class="text-[#2563EB] dark:text-[#3B82F6] font-logo font-black text-xl">WOLFCORE</span>
-                <span class="text-slate-800 dark:text-white font-logo font-black text-xl">SYSTEM</span>
-                <span class="ml-2 px-2 py-0.5 text-[10px] font-bold {{ $isElecHeader ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' }} rounded">CONSULTA</span>
+                <span class="text-[#2563EB] dark:text-[#3B82F6] font-logo font-black text-base sm:text-xl">WOLFCORE</span>
+                <span class="hidden sm:inline text-slate-800 dark:text-white font-logo font-black text-xl">SYSTEM</span>
+                <span class="hidden sm:inline ml-2 px-2 py-0.5 text-[10px] font-bold {{ $isElecHeader ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' }} rounded">CONSULTA</span>
             </a>
             <div class="flex items-center gap-2.5">
                 <button id="theme-toggle-consulta" type="button" class="theme-toggle-btn group" title="Cambiar tema" aria-label="Cambiar tema" onclick="const h=document.documentElement;const s=()=>{h.classList.add('preload');h.classList.toggle('dark');localStorage.setItem('color-theme',h.classList.contains('dark')?'dark':'light');void h.offsetHeight;};if(document.startViewTransition&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.startViewTransition(s).ready.then(()=>requestAnimationFrame(()=>h.classList.remove('preload'))).catch(()=>h.classList.remove('preload'));}else{h.classList.add('theme-transition');h.classList.toggle('dark');localStorage.setItem('color-theme',h.classList.contains('dark')?'dark':'light');setTimeout(()=>h.classList.remove('theme-transition'),280);}this.blur();">

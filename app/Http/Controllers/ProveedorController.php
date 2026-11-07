@@ -13,10 +13,10 @@ use Illuminate\View\View;
 
 class ProveedorController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
         if ($request->has('locate')) {
-            $id = $request->locate;
+            $id = (int) $request->locate;
             $position = Proveedor::where('id', '>=', $id)->count();
             $page = ceil($position / 10) ?: 1;
 
@@ -152,13 +152,5 @@ class ProveedorController extends Controller
         $action = $proveedor->active ? 'reactivado' : 'desactivado';
 
         return redirect()->back()->with('success', "El proveedor ha sido {$action} exitosamente.");
-    }
-
-    /** AJAX: municipios de un departamento */
-    public function municipios(Request $request)
-    {
-        $dep = $request->get('departamento', '');
-
-        return response()->json(ColombiaHelper::municipiosDe($dep));
     }
 }

@@ -114,6 +114,14 @@ class ClienteController extends Controller
             return redirect()->back()->with('error', $error)->withInput();
         }
 
+        $servicio = app(AnulacionService::class);
+        if ($error = $servicio->verificarIntencion($request, (bool) $cliente->active)) {
+            return redirect()->back()->with('error', $error);
+        }
+        if ($cliente->active && ($bloqueo = $servicio->bloqueoPorOrdenesPendientes('equipo_id', $cliente->equipos()->pluck('id')->all(), 'el cliente'))) {
+            return redirect()->back()->with('error', $bloqueo);
+        }
+
         $cliente->active = ! $cliente->active;
         $cliente->save();
 

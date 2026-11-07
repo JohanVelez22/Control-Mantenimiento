@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Database\SqliteConnector;
 use App\Models\CierreCaja;
 use App\Models\Cliente;
 use App\Models\Cotizacion;
@@ -21,7 +22,9 @@ use App\Policies\MantenimientoPolicy;
 use App\Policies\MovimientoCajaPolicy;
 use App\Policies\StockPolicy;
 use App\Policies\UserPolicy;
+use App\Support\PaginacionPdf;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Database\Schema\Blueprint;
@@ -43,7 +46,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if (filter_var(env('DUSK_ENABLED', false), FILTER_VALIDATE_BOOLEAN)) {
+        // SQLite no implementa GREATEST() (columnas generadas de facturas).
+        $this->app->bind('db.connector.sqlite', SqliteConnector::class);
+
+        // Numeración de páginas de los PDF sin PHP embebido (ver App\Support\PaginacionPdf).
+        $this->app->extend('dompdf', fn (Dompdf $dompdf) => PaginacionPdf::registrar($dompdf));
+
+        // Dusk expone /_dusk/login/{id}: solo en local o testing, nunca en producción.
+        if ($this->app->environment('local', 'testing') && filter_var(env('DUSK_ENABLED', false), FILTER_VALIDATE_BOOLEAN)) {
             $this->app->register(DuskServiceProvider::class);
         }
     }
@@ -56,7 +66,9 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale('es');
         setlocale(LC_TIME, 'es_ES.utf8', 'es_ES', 'spanish', 'es');
 
-        if (request()->isSecure() || request()->header('X-Forwarded-Proto') === 'https') {
+        // isSecure() ya considera X-Forwarded-Proto, pero solo de los proxies de confianza
+        // (bootstrap/app.php); leer la cabecera cruda permitía que cualquiera la falsificara.
+        if (request()->isSecure()) {
             URL::forceScheme('https');
         }
 

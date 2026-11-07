@@ -39,7 +39,7 @@ class EquipoController extends Controller
             'marca' => 'required|string|max:80',
             'modelo' => 'required|string|max:80',
             'serie' => 'required|string|max:80|unique:equipos',
-            'propietario_global' => 'nullable|string',
+            'propietario_global' => ['nullable', 'string', 'regex:/^(Cliente|Proveedor):\d+$/'],
             'cliente_id' => 'nullable|integer|exists:clientes,id',
             'proveedor_id' => 'nullable|integer|exists:proveedores,id',
             'observacion' => 'nullable|string|max:500',
@@ -65,6 +65,11 @@ class EquipoController extends Controller
 
         if (! $clienteId && ! $proveedorId) {
             return back()->withErrors(['propietario_global' => 'Debe seleccionar un propietario (cliente o proveedor).'])->withInput();
+        }
+
+        // El propietario debe existir (un id inexistente producía un error 500 por la FK)
+        if (($clienteId && ! Cliente::whereKey($clienteId)->exists()) || ($proveedorId && ! Proveedor::whereKey($proveedorId)->exists())) {
+            return back()->withErrors(['propietario_global' => 'El propietario seleccionado no existe.'])->withInput();
         }
 
         $validated['cliente_id'] = $clienteId;
@@ -115,7 +120,7 @@ class EquipoController extends Controller
             'marca' => 'required|string|max:80',
             'modelo' => 'required|string|max:80',
             'serie' => 'required|string|max:80|unique:equipos,serie,'.$equipo->id,
-            'propietario_global' => 'nullable|string',
+            'propietario_global' => ['nullable', 'string', 'regex:/^(Cliente|Proveedor):\d+$/'],
             'cliente_id' => 'nullable|integer|exists:clientes,id',
             'proveedor_id' => 'nullable|integer|exists:proveedores,id',
             'observacion' => 'nullable|string|max:500',
@@ -143,6 +148,11 @@ class EquipoController extends Controller
             return back()->withErrors(['propietario_global' => 'Debe seleccionar un propietario (cliente o proveedor).'])->withInput();
         }
 
+        // El propietario debe existir (un id inexistente producía un error 500 por la FK)
+        if (($clienteId && ! Cliente::whereKey($clienteId)->exists()) || ($proveedorId && ! Proveedor::whereKey($proveedorId)->exists())) {
+            return back()->withErrors(['propietario_global' => 'El propietario seleccionado no existe.'])->withInput();
+        }
+
         $validated['cliente_id'] = $clienteId;
         $validated['proveedor_id'] = $proveedorId;
         unset($validated['propietario_global']);
@@ -160,6 +170,14 @@ class EquipoController extends Controller
 
         if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
+        }
+
+        $servicio = app(AnulacionService::class);
+        if ($error = $servicio->verificarIntencion($request, (bool) $equipo->active)) {
+            return redirect()->back()->with('error', $error);
+        }
+        if ($equipo->active && ($bloqueo = $servicio->bloqueoPorOrdenesPendientes('equipo_id', [$equipo->id], 'el equipo'))) {
+            return redirect()->back()->with('error', $bloqueo);
         }
 
         $equipo->active = ! $equipo->active;
@@ -182,6 +200,10 @@ class EquipoController extends Controller
 
         if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
+        }
+
+        if ($bloqueo = app(AnulacionService::class)->bloqueoPorOrdenesPendientes('equipo_id', [$equipo->id], 'el equipo')) {
+            return redirect()->back()->with('error', $bloqueo);
         }
 
         $validated = $request->validate([
@@ -223,16 +245,5 @@ class EquipoController extends Controller
         ]);
 
         return redirect()->back()->with('success', "El equipo '{$equipo->nombre}' ha sido reactivado y vuelve a estar disponible para mantenimiento.");
-    }
-
-    public function destroy(Equipo $equipo)
-    {
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('equipos.index')->with('error', 'No tienes permisos para eliminar.');
-        }
-
-        $equipo->delete();
-
-        return redirect()->route('equipos.index')->with('success', 'Equipo eliminado correctamente.');
     }
 }

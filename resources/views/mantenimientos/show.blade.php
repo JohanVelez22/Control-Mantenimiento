@@ -17,7 +17,7 @@
         <a href="{{ route('consulta.mantenimientos') }}" class="btn-ghost text-xl" title="Volver a búsqueda">⬅️</a>
         @endif
         <div>
-        <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight flex flex-wrap items-center gap-2 sm:gap-3">
         <span class="text-blue-500">📋</span>
         {{ $mantenimiento->id_orden }}
         @if($mantenimiento->anulado)
@@ -290,7 +290,7 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
-                    @if($abono->movimientoCaja)
+                    @if($abono->movimientoCaja && ! $esInvitado)
                     <a href="{{ route('caja.show', $abono->movimientoCaja->id) }}" class="btn-ghost btn-action-square font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver movimiento en Caja #{{ $abono->movimientoCaja->id }}">👁️</a>
                     @endif
 

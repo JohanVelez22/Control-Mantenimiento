@@ -7,11 +7,11 @@ Este documento certifica el estado de seguridad, mitigación de vulnerabilidades
 ## 🛡️ Estado de Seguridad del Proyecto (Fases 1 a 6 Completadas)
 
 ### Métrica de Verificación Automatizada
-- **Tests Automatizados:** 565 pruebas aprobadas (100% verde).
-- **Aserciones de Verificación:** 1,828 aserciones independientes.
-- **Análisis Estático (Laravel Pint):** Sin violaciones de estándares PSR-12 / Laravel.
+- **Tests Automatizados:** 584 pruebas aprobadas (100% verde) — verificado el 2026-11-04.
+- **Aserciones de Verificación:** 1.945 aserciones.
+- **Estilo (Laravel Pint):** `pint --test` sin violaciones tras la auditoría del 2026-11-04 (antes había 10 archivos sin formatear).
 - **Compilación de Activos (Vite):** Producción verificada sin errores de manifiesto (1.77s build).
-- **Auditoría de Dependencias (Composer):** 0 advisories (`composer audit` limpio).
+- **Auditoría de Dependencias:** `composer audit` sin avisos y `npm audit` sin vulnerabilidades tras la actualización del 2026-11-05 (Laravel 13.40, Symfony 8.1.11).
 
 ---
 
@@ -21,13 +21,13 @@ Este documento certifica el estado de seguridad, mitigación de vulnerabilidades
 |---|---|---|---|---|
 | **P0-1** | Autenticación | Riesgo de bypass por contraseñas por defecto en `.env`. | Autenticación estricta contra hashes Bcrypt en BD. Dummy hash de 60 chars para mitigar timing attacks. | `LoginFlexibilityTest`, `LoginLockoutTest` |
 | **P0-2** | Fuga de Datos | Inclusión involuntaria de `.env` o credenciales en backups ZIP. | Exclusión estricta de `.env`, credenciales y logs en `BackupDatabase` y `BackupController`. | `BackupManagementTest` |
-| **P0-3** | Entorno | Rutas de Laravel Dusk potencialmente expuestas en producción. | Guarda estricta de entorno en `AppServiceProvider` / `CheckRole` y denegación en web server. | `RouteListTest`, `AUDITORIA_EXHAUSTIVA.md` |
+| **P0-3** | Entorno | Rutas de Laravel Dusk potencialmente expuestas en producción. | Guarda estricta de entorno en `AppServiceProvider` / `CheckRole` y denegación en web server. | `DuskRouteProtectionTest` |
 | **P0-4** | Backups | Vulnerabilidad potencial a Path Traversal y Zip Slip en restauración. | Validación de nombres de archivo mediante regex estricto y escaneo previo de cabeceras ZIP rechazando rutas relativas (`..`). | `SecurityHardeningAuditTest::test_backup_zip_slip_is_blocked_safely` |
 | **P0-5** | Autorización | Técnicos podían desvincular o anular repuestos/stock sin clave administrativa. | Verificación de contraseña administrativa mediante `Hash::check()` en anulación y desvinculación de repuestos. | `SecurityBloque0AuditTest` (13 tests) |
-| **P0-6** | Dependencias | Vulnerabilidad de denegación de servicio / recursión PHP 8.4 (CVE-2026-114509). | Actualización a Laravel 13.38.0, Dompdf 3.1.6, Guzzle 8.3.0 y eliminación de referencias huérfanas en arrays. | `composer audit`, `InventarioTest` |
-| **P1-1** | Finanzas | Mutabilidad arbitraria en cajas cerradas y recálculo de efectivo. | Cierres de caja inmutables, saldo anterior acumulado y validación de abonos contra fecha de cierre. | `CierreCajaConciliacionTest`, `FinancialIntegrityTest` |
-| **P1-2** | Concurrencia | Colisiones en numeración de documentos (`MAX+1`). | Implementación de tabla `secuencias_documento` con incremento atómico bajo transacción. | `DocumentSequenceTest`, `CotizacionConversionConcurrencyTest` |
-| **P1-3** | Inventario | Condiciones de carrera en deducción de existencias. | Deducción transaccional con `lockForUpdate()`, validación de stock disponible y registro de bajas auditables. | `StockConcurrencyTest`, `StockControllerTest` |
+| **P0-6** | Dependencias | Vulnerabilidad de denegación de servicio / recursión PHP 8.4 (CVE-2026-114509). | Actualización a Laravel 13.38.0, Dompdf 3.1.6, Guzzle 8.3.0 y eliminación de referencias huérfanas en arrays. | `composer audit` (ver estado actual arriba), `MovimientoInventarioControllerTest` |
+| **P1-1** | Finanzas | Mutabilidad arbitraria en cajas cerradas y recálculo de efectivo. | Cierres de caja inmutables, saldo anterior acumulado y validación de abonos contra fecha de cierre. | `CierreCajaConciliacionTest`, `CierreCajaBloqueoTest`, `Fase2IntegridadFinancieraTest` |
+| **P1-2** | Concurrencia | Colisiones en numeración de documentos (`MAX+1`). | Implementación de tabla `secuencias_documento` con incremento atómico bajo transacción. | `ConcurrencyTest`, `OrdenServiceTest` |
+| **P1-3** | Inventario | Condiciones de carrera en deducción de existencias. | Deducción transaccional con `lockForUpdate()`, validación de stock disponible y registro de bajas auditables. | `ConcurrencyTest`, `StockServiceTest`, `StockControllerTest` |
 | **P1-4** | Base de Datos | Consultas con `whereDate()` que invalidaban índices y redundancia. | Reemplazo por comparaciones directas de fecha, creación de índices compuestos y eliminación de pares inversos. | `DatabaseOptimizationTest` |
 | **P1-5** | Frontend | Sintaxis CSS huérfana en `glass.css`, accesibilidad deficiente en modales y uso de `innerHTML`. | Corrección de sintaxis en `@media print`, roles y atributos ARIA (`role="dialog"`, `aria-modal="true"`), y sanitización con `replaceChildren()`. | `FrontendAccessibilityAndSecurityTest` |
 | **P1-6** | Sesiones | `remember_token` estático al cambiar contraseña y subprocesos host en testing. | Rotación automática de `remember_token` con `Str::random(60)` y bypass seguro sin spawns de shell en testing. | `SecurityHardeningAuditTest::test_user_password_change_rotates_remember_token` |
@@ -39,7 +39,7 @@ Este documento certifica el estado de seguridad, mitigación de vulnerabilidades
 
 ### 1. Política de Seguridad de Contenido (CSP)
 - **Ubicación:** `app/Http/Middleware/SecurityHeaders.php`
-- **Estado Actual:** CSP activa con `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net`.
+- **Estado Actual (2026-11-05):** `script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net` — se retiró `'unsafe-eval'` y el dominio npmcdn (no se usaban) y se añadieron `object-src 'none'`, `base-uri 'self'`, `form-action 'self'` y `frame-ancestors 'none'`. Verificado en navegador sin violaciones. Las librerías CDN tienen versión fija y SRI.
 - **Justificación de Negocio:** Permite la renderización dinámica de gráficos en el Dashboard, selectores dependientes (TomSelect) y calendarios (Flatpickr) en la interfaz actual de taller sin alterar la experiencia de usuario.
 - **Plan de Evolución:**
   1. Empaquetar Flatpickr y TomSelect dentro del bundle local de Vite (`resources/js/app.js`).
@@ -48,3 +48,16 @@ Este documento certifica el estado de seguridad, mitigación de vulnerabilidades
 
 ### 2. Rotación Periódica de Claves de Cifrado
 - **Plan:** Establecer un procedimiento de rotación de `APP_KEY` anual o semestral utilizando el comando `php artisan key:generate` en ventanas de mantenimiento programadas.
+
+### 3. Decisiones de diseño documentadas (no son defectos abiertos)
+- **Claves foráneas en cascada** (`users`, `clientes`, `equipos`, `tecnicos`, `stocks`): la aplicación no expone ningún borrado físico de esas entidades (solo anulación/desactivación lógica) y se eliminó el único `destroy` muerto que existía. Cambiarlas a `restrict` exige una migración sobre datos de producción; se recomienda hacerlo en una ventana de mantenimiento con respaldo.
+- **Casts `decimal:2` en montos:** convertirían los montos en texto en el JSON que consumen los formularios (venta, compra, cotización). Las columnas ya son `decimal(10|12,2)` y los cálculos usan `Factura::EPSILON`; se mantiene así.
+- **`!important` en CSS y layout de ~2.200 líneas:** deuda de mantenibilidad sin impacto funcional. Refactor recomendado por módulos, con revisión visual pantalla por pantalla.
+- **Rollback de migraciones de junio 2026 en SQLite:** las migraciones antiguas que renombran columnas no revierten en SQLite; desde 2026_07_07 en adelante el rollback está verificado.
+
+### 4. Verificación previa a cada despliegue
+1. `php artisan app:backup-db` (respaldo).
+2. `php artisan app:verificar-migraciones` (solo lectura: duplicados y migraciones pendientes).
+3. `php artisan migrate --force`.
+4. `npm run build` y `php artisan optimize`.
+5. `php artisan security:check`.

@@ -23,9 +23,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('cotizaciones', function (Blueprint $table) {
-            $table->dropIndex(['estado']);
-            $table->dropIndex(['estado', 'user_id']);
-        });
+        // Una migración posterior (2026_10_21) elimina el índice simple de estado: borrar solo los que existan.
+        foreach (['cotizaciones_estado_index', 'cotizaciones_estado_user_id_index'] as $indice) {
+            if (Schema::hasIndex('cotizaciones', $indice)) {
+                Schema::table('cotizaciones', fn (Blueprint $table) => $table->dropIndex($indice));
+            }
+        }
     }
 };

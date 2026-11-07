@@ -47,4 +47,3 @@ class ClientePolicy
         return $user->isAdmin();
     }
 }
-

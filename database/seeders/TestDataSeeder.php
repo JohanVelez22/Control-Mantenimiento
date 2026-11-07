@@ -27,6 +27,17 @@ class TestDataSeeder extends Seeder
 {
     public function run(): void
     {
+        // Este seeder TRUNCA 17 tablas: solo se permite en testing o tras confirmar el nombre de la BD.
+        if (! app()->environment('testing')) {
+            $nombre = (string) config('database.connections.'.config('database.default').'.database');
+            $respuesta = $this->command?->ask("TestDataSeeder vacía las tablas de [{$nombre}]. Escriba el nombre de la base de datos para confirmar");
+            if (app()->environment('production') || $respuesta === null || trim($respuesta) !== basename($nombre)) {
+                $this->command?->warn('TestDataSeeder cancelado.');
+
+                return;
+            }
+        }
+
         // Desactivar temporalmente eventos de Eloquent para inserción de alto rendimiento
         // y evitar sobrecargar la tabla de logs de auditoría durante la siembra masiva
         $users = User::all();
