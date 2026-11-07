@@ -54,7 +54,7 @@
  </button>
  </div>
 
- <div class="overflow-x-auto pb-2 max-h-[420px] overflow-y-auto" style="overflow-y: auto !important;">
+    <div class="overflow-x-auto max-h-[366px] overflow-y-auto scroll-pt-[36px] content-scroll items-table-container" style="overflow-y: auto !important; scroll-behavior: smooth;">
  <table class="ts-table w-full table-fixed" id="items-table">
         <thead>
             <tr>
@@ -62,14 +62,14 @@
                 <th class="w-32 text-center px-2 py-3">Cant.</th>
                 <th class="w-48 text-right px-3 py-3">Precio Un. ($)</th>
                 <th class="w-48 text-center px-3 py-3">Subtotal</th>
-                <th class="w-16 text-center py-3"></th>
+                <th class="col-accion text-center py-3"></th>
             </tr>
         </thead>
         <tbody id="items-body">
             {{-- Fila base --}}
             <tr class="item-row bg-transparent">
-                <td>
-                    <select name="items[0][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-orange-500" data-placeholder="Seleccionar producto...">
+                <td class="align-middle">
+                    <select name="items[0][stock_id]" required class="stock-select glass-input focus:ring-orange-500 w-full" data-placeholder="Seleccionar producto...">
                         <option value="">Seleccionar producto...</option>
                         @foreach($stocks as $s)
                             <option value="{{ $s->id }}" data-precio="{{ $s->precio_compra }}">
@@ -78,30 +78,30 @@
                         @endforeach
                     </select>
                 </td>
-                <td>
-                    <input type="number" name="items[0][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-orange-500">
+                <td class="align-middle text-center">
+                    <input type="number" name="items[0][cantidad]" min="1" value="1" required class="cantidad-input glass-input text-center focus:ring-orange-500 w-full font-bold">
                 </td>
-                <td>
+                <td class="align-middle">
                     <input type="text" name="items[0][precio_unitario]" id="precio_unitario_real_0" value="0" required class="hidden">
-                    <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-orange-500 font-bold text-slate-800 dark:text-white">
+                    <input type="text" id="precio_unitario_visual_0" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_0'); recalcular()" required class="precio-input glass-input text-right focus:ring-orange-500 font-bold text-slate-800 dark:text-white w-full">
                 </td>
                 <td class="text-center font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle px-3 whitespace-nowrap overflow-hidden text-ellipsis">
                     $ 0
                 </td>
                 <td class="col-accion align-middle text-center">
-                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
+                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem">🗑️</button>
                 </td>
             </tr>
         </tbody>
         <tfoot>
             <tr class="border-0 bg-transparent">
-                <td colspan="3" class="py-4 text-right pr-2 border-0">
+                <td colspan="3" class="py-2 text-right pr-2 border-0 align-middle">
                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                 </td>
-                <td class="py-4 text-right pr-3 border-0">
+                <td class="py-2 text-right pr-3 border-0 align-middle">
                     <span class="font-black text-2xl text-orange-600 dark:text-orange-400 whitespace-nowrap" id="total-display">$ 0</span>
                 </td>
-                <td class="py-4 border-0"></td>
+                <td class="py-2 border-0 align-middle"></td>
             </tr>
         </tfoot>
     </table>
@@ -166,22 +166,22 @@ function agregarFila() {
  const tr = document.createElement('tr');
  tr.className = 'item-row bg-transparent';
 tr.innerHTML = `
-  <td>
-  <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input py-1.5 focus:ring-orange-500 w-full" data-placeholder="Seleccionar producto...">
+  <td class="align-middle">
+  <select name="items[${filaIndex}][stock_id]" required class="stock-select glass-input focus:ring-orange-500 w-full" data-placeholder="Seleccionar producto...">
   <option value="">Seleccionar producto...</option>
   ${stockSelectOptions()}
   </select>
   </td>
-  <td>
-  <input type="number" name="items[${filaIndex}][cantidad]" min="1" value="1" required class="cantidad-input glass-input py-1.5 text-center focus:ring-orange-500">
+  <td class="align-middle text-center">
+  <input type="number" name="items[${filaIndex}][cantidad]" min="1" value="1" required class="cantidad-input glass-input text-center focus:ring-orange-500 w-full font-bold">
   </td>
-  <td>
+  <td class="align-middle">
   <input type="text" name="items[${filaIndex}][precio_unitario]" id="precio_unitario_real_${filaIndex}" value="0" required class="hidden">
-  <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input py-1.5 text-right focus:ring-orange-500 font-bold text-slate-800 dark:text-white">
+  <input type="text" id="precio_unitario_visual_${filaIndex}" value="0" oninput="window.formatCurrencyDual(this, 'precio_unitario_real_${filaIndex}'); recalcular()" required class="precio-input glass-input text-right focus:ring-orange-500 font-bold text-slate-800 dark:text-white w-full">
   </td>
     <td class="text-center font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle px-3 whitespace-nowrap overflow-hidden text-ellipsis">$ 0</td>
     <td class="col-accion align-middle text-center">
-        <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">🗑️</button>
+        <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem">🗑️</button>
     </td>`;
  tbody.appendChild(tr);
  filaIndex++;
@@ -194,7 +194,12 @@ tr.innerHTML = `
  }
 
  // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
- const scrollBox = tbody.closest('.overflow-y-auto'); if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) { scrollBox.scrollTop = scrollBox.scrollHeight; }
+ const scrollBox = tbody.closest('.overflow-y-auto');
+  setTimeout(() => {
+    if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) {
+      scrollBox.scrollTo({ top: scrollBox.scrollHeight, behavior: 'smooth' });
+    }
+  }, 60);
 }
 
 function eliminarFila(btn) {

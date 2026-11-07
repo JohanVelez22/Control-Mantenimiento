@@ -74,7 +74,7 @@
 
                                 <!-- Items -->
                                 @if(isset($totalPendientes) && $totalPendientes > 0)
-                                <div class="py-1">
+                                <div class="flex flex-col">
                                     @if($mantPendientes > 0)
                                     <button onclick="openNotifModal('mant'); document.getElementById('notif-dropdown').classList.add('hidden');"
                                             class="notif-row w-full text-left px-4 py-2.5 flex items-center gap-3">

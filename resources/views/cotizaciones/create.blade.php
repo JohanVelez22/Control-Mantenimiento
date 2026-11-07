@@ -57,7 +57,7 @@
                     </button>
                 </div>
 
-                <div class="overflow-x-auto pb-2 max-h-[500px] overflow-y-auto cotizacion-table-scroll min-h-[165px]" style="overflow-y: auto !important;">
+                <div class="overflow-x-auto max-h-[366px] overflow-y-auto cotizacion-table-scroll min-h-[165px] scroll-pt-[36px] content-scroll items-table-container" style="overflow-y: auto !important; scroll-behavior: smooth;">
                     <table class="ts-table w-full table-fixed" id="items-table">
                         <thead>
                             <tr>
@@ -99,11 +99,11 @@
                         </tbody>
                         <tfoot>
                             <tr class="border-0 bg-transparent">
-                                <td colspan="3" class="py-4"></td>
-                                <td class="col-precio py-4 text-center align-middle">
+                                <td colspan="3" class="py-2"></td>
+                                <td class="col-precio py-2 text-center align-middle">
                                     <span class="font-bold text-slate-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Cotización:</span>
                                 </td>
-                                <td colspan="2" class="py-4 text-right pr-3 align-middle">
+                                <td colspan="2" class="py-2 text-right pr-3 align-middle">
                                     <span class="font-black text-2xl text-blue-600 dark:text-blue-400 whitespace-nowrap" id="total-display">$ 0</span>
                                 </td>
                             </tr>

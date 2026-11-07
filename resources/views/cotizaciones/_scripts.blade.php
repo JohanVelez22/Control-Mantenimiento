@@ -81,7 +81,12 @@ function agregarFila(itemData = null) {
     recalcular();
 
     // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
-    const scrollBox = tbody.closest('.overflow-y-auto, .cotizacion-table-scroll'); if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) { scrollBox.scrollTop = scrollBox.scrollHeight; }
+    const scrollBox = tbody.closest('.overflow-y-auto, .cotizacion-table-scroll');
+    setTimeout(() => {
+        if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) {
+            scrollBox.scrollTo({ top: scrollBox.scrollHeight, behavior: 'smooth' });
+        }
+    }, 60);
 }
 
 function bindFilaCotizacion(tr) {

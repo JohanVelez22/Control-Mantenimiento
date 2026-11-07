@@ -41,6 +41,25 @@ html.dark .glass-table {
   transition: none !important;
 }
 
+.ts-table thead,
+.glass-table thead,
+.table-dense thead,
+.table-compact thead,
+table thead {
+  z-index: 30 !important;
+}
+
+.ts-table thead,
+.glass-table thead,
+.table-dense thead,
+.table-compact thead,
+table thead {
+  background-color: #E2E8F0 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 30 !important;
+}
+
 .ts-table thead th,
 .glass-table thead th,
 .table-dense thead th,
@@ -52,18 +71,32 @@ table thead th {
   font-weight: 800 !important;
   letter-spacing: 0.5px !important;
   line-height: 1.3 !important;
-  height: 35px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
   box-sizing: border-box !important;
   text-transform: uppercase !important;
   color: #0F172A;
-  background: linear-gradient(180deg, #E6EDF6 0%, #DCE5F0 100%) !important;
+  background-color: #E2E8F0 !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
   border-bottom: 1px solid #CBD5E1;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
-  position: sticky;
-  top: 0;
-  z-index: 5;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 30 !important;
   white-space: nowrap !important;
   transition: none !important;
+}
+
+html.dark .ts-table thead,
+html.dark .glass-table thead,
+html.dark .table-dense thead,
+html.dark .table-compact thead,
+html.dark table thead {
+  background-color: #0D1527 !important;
 }
 
 html.dark .ts-table thead th,
@@ -72,9 +105,13 @@ html.dark .table-dense thead th,
 html.dark .table-compact thead th,
 html.dark table thead th {
   color: #F8FAFC !important;
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(11, 18, 36, 0.96) 100%) !important;
-  border-bottom-color: #1E293B !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  background-color: #0D1527 !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid #1E293B !important;
+  box-shadow: inset 0 -1px 0 #1E293B, inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
   transition: none !important;
 }
 
@@ -622,4 +659,113 @@ html.dark .ts-table a.dark\:text-purple-400:hover,
 html.dark .glass-table a.dark\:text-purple-400:hover,
 html.dark #tabla-electronicas .col-orden a:hover {
   color: #E9D5FF !important;
+}
+
+/* ==========================================================================
+   Tablas de Ítems Dinámicos (Compra, Venta, Factura, Cotizaciones)
+   Calibrada exactamente a 5 ítems antes de activar scroll vertical limpio y sin recortes
+   ========================================================================== */
+.items-table-container {
+  max-height: 366px !important;
+  scroll-snap-type: y mandatory !important;
+  scroll-padding-top: 36px !important;
+  box-sizing: border-box !important;
+}
+
+.items-table-container tr.item-row,
+.items-table-container tr.existing-row,
+.items-table-container tr.new-row {
+  height: 55px !important;
+  min-height: 55px !important;
+  max-height: 55px !important;
+  box-sizing: border-box !important;
+  scroll-snap-align: start !important;
+  scroll-snap-stop: normal !important;
+}
+
+#items-table thead,
+#factura-items-table thead {
+  background-color: #E2E8F0 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 30 !important;
+}
+
+html.dark #items-table thead,
+html.dark #factura-items-table thead {
+  background-color: #0D1527 !important;
+}
+
+#items-table thead th,
+#factura-items-table thead th {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  box-sizing: border-box !important;
+  background-color: #E2E8F0 !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid #CBD5E1 !important;
+}
+
+html.dark #items-table thead th,
+html.dark #factura-items-table thead th {
+  background-color: #0D1527 !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid #1E293B !important;
+  box-shadow: inset 0 -1px 0 #1E293B, inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+#items-table tbody td,
+#factura-items-table tbody td {
+  height: 55px !important;
+  min-height: 55px !important;
+  max-height: 55px !important;
+  vertical-align: middle !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  box-sizing: border-box !important;
+}
+
+#items-table tfoot tr,
+#factura-items-table tfoot tr {
+  height: 55px !important;
+  min-height: 55px !important;
+  max-height: 55px !important;
+  box-sizing: border-box !important;
+  scroll-snap-align: end !important;
+}
+
+#items-table tfoot td,
+#factura-items-table tfoot td {
+  height: 55px !important;
+  min-height: 55px !important;
+  max-height: 55px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+}
+
+#items-table .glass-input,
+#factura-items-table .glass-input {
+  height: 38px !important;
+  min-height: 38px !important;
+  box-sizing: border-box !important;
+}
+
+#items-table .ts-wrapper.glass-input .ts-control,
+#factura-items-table .ts-wrapper.glass-input .ts-control {
+  min-height: 38px !important;
+  height: 38px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
 }

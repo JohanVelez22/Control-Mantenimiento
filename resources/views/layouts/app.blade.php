@@ -1066,7 +1066,7 @@
     <!-- Modal de Notificaciones Pendientes (siempre disponible, abierto desde campana o al iniciar sesión) -->
     @if(isset($totalPendientes) && $totalPendientes > 0)
     <div id="ts-notif-modal" role="dialog" aria-modal="true" aria-labelledby="ts-notif-title" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
-        <div id="ts-notif-card" class="ts-modal-card opacity-0 p-4 sm:p-6 flex flex-col w-full mx-3 sm:mx-4" style="max-width: 550px;">
+        <div id="ts-notif-card" class="ts-modal-card opacity-0 p-4 sm:p-6 flex flex-col w-full mx-3 sm:mx-4" style="max-width: 550px; overflow: hidden !important;">
 
             {{-- Header --}}
             <div class="flex items-center gap-3 mb-4">
@@ -1079,8 +1079,8 @@
                 </div>
             </div>
 
-            {{-- Contenedor Central para alinear filtros e información al mismo ancho --}}
-            <div class="w-full max-w-[480px] mx-auto flex flex-col flex-1">
+            {{-- Contenedor Central para alinear filtros e información al mismo ancho con perfecta simetría --}}
+            <div class="w-full mx-auto flex flex-col flex-1">
                 {{-- Filtros / Tabs --}}
                 <div class="flex flex-wrap sm:flex-nowrap justify-center gap-1.5 mb-4 w-full">
                 <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60">Todos</button>
@@ -1098,8 +1098,8 @@
                 @endif
                 </div>
 
-            {{-- Scrollable list of all pending items --}}
-            <div class="w-full max-h-[55vh] sm:max-h-[50vh] overflow-y-auto space-y-2 px-1.5 pt-1 pb-1 sm:pb-1.5 content-scroll">
+            {{-- Scrollable list calibrada a exactamente 5 bloques antes de activar scroll único --}}
+            <div class="w-full max-h-[440px] overflow-y-auto space-y-2 px-2 pt-1 pb-2 content-scroll scroll-pb-2">
 
                 {{-- Mantenimientos --}}
                 @foreach($mantList as $m)
@@ -1247,7 +1247,7 @@
             </div>
             </div>
 
-            <button onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-base mt-5 sm:mt-6">
+            <button onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-base mt-4 sm:mt-5">
                 Cerrar
             </button>
         </div>
@@ -1302,6 +1302,8 @@
             const modal = document.getElementById('ts-notif-modal');
             const card  = document.getElementById('ts-notif-card');
             if (!modal) return;
+            const scrollContainer = card ? card.querySelector('.overflow-y-auto') : null;
+            if (scrollContainer) scrollContainer.scrollTop = 0;
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
             setTimeout(() => {

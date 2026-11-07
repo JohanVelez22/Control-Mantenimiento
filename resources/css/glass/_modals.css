@@ -89,6 +89,11 @@ html.dark .ts-modal-overlay,
   transition: opacity 0.2s ease !important;
 }
 
+#ts-notif-card {
+  max-width: 550px !important;
+  overflow: hidden !important;
+}
+
 html.dark .ts-modal-card,
 .dark .ts-modal-card {
   box-sizing: border-box !important;

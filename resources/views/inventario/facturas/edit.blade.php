@@ -194,7 +194,7 @@
     height: 38px !important;
 }
 </style>
-                <div class="overflow-x-auto pb-2 max-h-[450px] overflow-y-auto" style="overflow-y: auto !important;">
+                <div class="overflow-x-auto max-h-[366px] overflow-y-auto scroll-pt-[36px] content-scroll items-table-container" style="overflow-y: auto !important; scroll-behavior: smooth;">
                     <table class="ts-table w-full table-fixed table-factura-edit" id="factura-items-table">
                         <thead>
                             <tr>
@@ -261,7 +261,7 @@
                                         <div class="flex flex-col gap-1">
                                             <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
                                             <div class="h-[38px] flex items-center justify-center">
-                                                <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">
+                                                <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem">
                                                     🗑️
                                                 </button>
                                             </div>
@@ -272,13 +272,13 @@
                         </tbody>
                         <tfoot>
                             <tr class="border-0 bg-transparent">
-                                <td colspan="3" class="py-4 text-right pr-2 align-middle border-0">
+                                <td colspan="3" class="py-2 text-right pr-2 align-middle border-0">
                                     <span class="font-bold text-gray-500 uppercase tracking-widest text-xs whitespace-nowrap">Total Documento:</span>
                                 </td>
-                                <td class="py-4 text-right pr-3 align-middle border-0">
+                                <td class="py-2 text-right pr-3 align-middle border-0">
                                     <span class="font-black text-2xl {{ $totalTextColor }} whitespace-nowrap" id="total_documento_display">$ {{ number_format($factura->total_documento, 0, ',', '.') }}</span>
                                 </td>
-                                <td class="py-4 align-middle border-0"></td>
+                                <td class="py-2 align-middle border-0"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -411,7 +411,7 @@ function agregarFila() {
             <div class="flex flex-col gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
                 <div class="h-[38px] flex items-center justify-center">
-                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center relative z-10" title="Eliminar ítem">
+                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem">
                         🗑️
                     </button>
                 </div>
@@ -433,7 +433,12 @@ function agregarFila() {
     }
 
     // Auto-scroll al nuevo ítem añadido para que el usuario siempre lo vea
-    const scrollBox = tr.closest('.overflow-y-auto'); if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) { scrollBox.scrollTop = scrollBox.scrollHeight; }
+    const scrollBox = tr.closest('.overflow-y-auto');
+    setTimeout(() => {
+        if (scrollBox && scrollBox.scrollHeight > scrollBox.clientHeight) {
+            scrollBox.scrollTo({ top: scrollBox.scrollHeight, behavior: 'smooth' });
+        }
+    }, 60);
 }
 
 let _pendingRowToDelete = null;
