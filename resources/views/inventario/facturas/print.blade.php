@@ -8,6 +8,8 @@
     FACTURA DE {{ Str::upper($factura->tipo_movimiento) }} - {{ $factura->numero_factura }}
 @endsection
 
+@section('filas', (string) ($factura->items->count() + min(3, isset($abonos) ? $abonos->count() : 0)))
+
 @section('content')
 <div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
     <div class="info-col">
@@ -93,7 +95,7 @@
 </div>
 @endif
 
-<div class="signatures-block clearfix" style="position: absolute; bottom: 38px; left: 0; width: 100%;">
+<div class="signatures-block clearfix">
     <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 3px; font-size: 7.5pt;">
         <strong>Firma {{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}</strong>
     </div>

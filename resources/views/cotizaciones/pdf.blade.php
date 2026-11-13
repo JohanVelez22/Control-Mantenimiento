@@ -8,6 +8,8 @@
     COTIZACIÓN COMERCIAL - {{ $cotizacion->codigo }}
 @endsection
 
+@section('filas', (string) ($cotizacion->items->count() + (int) ceil(mb_strlen((string) $cotizacion->notas) / 180)))
+
 @section('content')
 <div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
     <div class="info-col">
@@ -70,7 +72,7 @@
     </tr>
 </table>
 
-<div class="signatures-block clearfix" style="position: absolute; bottom: 38px; left: 0; width: 100%;">
+<div class="signatures-block clearfix">
     <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 4px; font-size: 7.5pt;">
         <strong>Aprobación del {{ $cotizacion->destinatario_tipo === 'proveedor' ? 'Proveedor' : 'Cliente' }}</strong>
     </div>

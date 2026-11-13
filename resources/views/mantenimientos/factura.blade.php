@@ -6,6 +6,8 @@
 
 @section('doc_title', 'ORDEN DE SERVICIO TÉCNICO - ' . $mantenimiento->id_orden)
 
+@section('filas', (string) ($mantenimiento->stocks->count() + min(4, $mantenimiento->abonos->where('anulado', false)->count()) + (int) ceil(mb_strlen((string) $mantenimiento->descripcion) / 180)))
+
 @section('content')
 <div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
     <div class="info-col">
@@ -117,7 +119,7 @@
     </div>
 @endif
 
-<div class="signatures-block clearfix" style="position: absolute; bottom: 38px; left: 0; width: 100%;">
+<div class="signatures-block clearfix">
     <div style="float: left; text-align: center; border-top: 1px solid #333; width: 40%; padding-top: 2px; font-size: 7pt;">
         <strong>Firma Cliente / Recibe</strong>
     </div>

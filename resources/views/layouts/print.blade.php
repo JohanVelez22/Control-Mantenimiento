@@ -173,6 +173,32 @@
                 color: rgba(200, 100, 0, 0.2) !important;
             }
         }
+        /*
+         * X-02: con muchos renglones la media hoja no alcanza. En modo hoja completa todo
+         * va en flujo normal (sin alto fijo ni posiciones absolutas): las firmas y el pie
+         * quedan después de los ítems, los totales no se parten y la marca de agua se
+         * repite en cada página (position: fixed).
+         */
+        .invoice-wrapper.hoja-completa { height: auto; border-bottom: none; }
+        .hoja-completa .watermark-container { height: auto; }
+        .hoja-completa .watermark-container::after { content: none; }
+        .hoja-completa .signatures-block { position: static; margin-top: 30px; page-break-inside: avoid; }
+        .hoja-completa .footer { position: static; margin-top: 12px; page-break-inside: avoid; }
+        .hoja-completa .totals, .hoja-completa .bloque-totales { page-break-inside: avoid; }
+        .hoja-completa table.items-table tr { page-break-inside: avoid; }
+        .marca-fija {
+            position: fixed;
+            top: 40%;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 64pt;
+            font-weight: 900;
+            transform: rotate(-35deg);
+            z-index: 1000;
+        }
+        .marca-fija.anulado { color: rgba(239, 68, 68, 0.18); }
+        .marca-fija.rechazada { color: rgba(249, 115, 22, 0.18); }
         .text-center { text-align: center; }
         .mt-4 { margin-top: 15px; }
         .mb-4 { margin-bottom: 15px; }
@@ -196,7 +222,18 @@
         });
     @endphp
 
-    <div class="invoice-wrapper">
+    @php
+        // Cada vista indica cuántos renglones variables tiene (ítems, abonos, notas largas).
+        // Por encima de 8 la media hoja se desborda: se usa la hoja completa (X-02).
+        $filasDocumento = (int) trim(View::yieldContent('filas', '0'));
+        $hojaCompleta = $filasDocumento > 8;
+        $marcaAgua = trim(View::yieldContent('watermark_class'));
+    @endphp
+    @if($hojaCompleta && $marcaAgua !== '')
+        <div class="marca-fija {{ $marcaAgua }}">{{ $marcaAgua === 'rechazada' ? 'RECHAZADA' : 'ANULADA' }}</div>
+    @endif
+
+    <div class="invoice-wrapper {{ $hojaCompleta ? 'hoja-completa' : '' }}">
         <div class="watermark-container @yield('watermark_class')">
             <div class="header">
                 @if($logoBase64)
