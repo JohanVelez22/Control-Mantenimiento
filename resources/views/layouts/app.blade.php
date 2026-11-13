@@ -1174,6 +1174,28 @@
             const table = document.getElementById(tableId);
             if (!input || !table) return;
 
+            // F-04: escribir filtra al instante la página visible; Enter busca en TODOS los
+            // registros (parámetro `search` en el servidor, desde la página 1).
+            const url = new URL(window.location.href);
+            if (url.searchParams.get('search') && !input.value) {
+                input.value = url.searchParams.get('search');
+            }
+            input.title = 'Escriba para filtrar esta página. Presione Enter para buscar en todos los registros.';
+            input.addEventListener('keydown', function(e) {
+                if (e.key !== 'Enter') return;
+                e.preventDefault();
+                const destino = new URL(window.location.href);
+                const termino = input.value.trim();
+                if (termino) {
+                    destino.searchParams.set('search', termino);
+                } else {
+                    destino.searchParams.delete('search');
+                }
+                destino.searchParams.delete('page');
+                destino.hash = '';
+                window.location.href = destino.toString();
+            });
+
             input.addEventListener('keyup', function() {
                 const filter = input.value.toLowerCase();
                 const tbody = table.getElementsByTagName('tbody')[0];

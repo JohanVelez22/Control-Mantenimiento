@@ -389,6 +389,21 @@ class MovimientoInventarioController extends Controller
             $valor_total = Monto::parse($request->input('valor_total'));
             $query->where('total_documento', '=', $valor_total);
         }
+        // F-04: la búsqueda recorre todos los registros del período, no solo la página visible.
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('numero_factura', 'like', "%{$s}%")
+                    ->orWhere('observaciones', 'like', "%{$s}%")
+                    ->orWhereHasMorph('facturable', [Cliente::class], fn ($q2) => $q2
+                        ->where('nombres', 'like', "%{$s}%")
+                        ->orWhere('apellidos', 'like', "%{$s}%")
+                        ->orWhere('identificacion', 'like', "%{$s}%"))
+                    ->orWhereHasMorph('facturable', [Proveedor::class], fn ($q2) => $q2
+                        ->where('nombre_razon_social', 'like', "%{$s}%")
+                        ->orWhere('identificacion', 'like', "%{$s}%"));
+            });
+        }
 
         $query->whereDate('fecha', '>=', $fecha_desde);
         $query->whereDate('fecha', '<=', $fecha_hasta);

@@ -11,10 +11,29 @@ use Illuminate\Support\Facades\Auth;
 
 class EquipoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Cargamos 'cliente', 'proveedor', 'user' y 'bajaUser' para mostrar quién registró el equipo y la baja
-        $equipos = Equipo::with(['cliente', 'proveedor', 'user', 'bajaUser'])->orderBy('id', 'desc')->paginate(10);
+        $query = Equipo::with(['cliente', 'proveedor', 'user', 'bajaUser']);
+
+        // F-04: la búsqueda recorre todos los registros, no solo la página visible.
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('nombre', 'like', "%{$s}%")
+                    ->orWhere('marca', 'like', "%{$s}%")
+                    ->orWhere('modelo', 'like', "%{$s}%")
+                    ->orWhere('serie', 'like', "%{$s}%")
+                    ->orWhereHas('cliente', function ($q3) use ($s) {
+                        $q3->where('nombres', 'like', "%{$s}%")
+                            ->orWhere('apellidos', 'like', "%{$s}%")
+                            ->orWhere('identificacion', 'like', "%{$s}%");
+                    })
+                    ->orWhereHas('proveedor', fn ($q3) => $q3->where('nombre_razon_social', 'like', "%{$s}%"));
+            });
+        }
+
+        $equipos = $query->orderBy('id', 'desc')->paginate(10);
 
         return view('equipos.index', compact('equipos'));
     }

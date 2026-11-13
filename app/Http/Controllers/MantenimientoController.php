@@ -42,7 +42,31 @@ class MantenimientoController extends Controller
             return redirect()->route('mantenimientos.index', ['page' => $page])->withFragment('mantenimiento-'.$id);
         }
 
-        $mantenimientos = Mantenimiento::with(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'user', 'abonos'])->orderBy('id', 'desc')->paginate(10);
+        $query = Mantenimiento::with(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'user', 'abonos']);
+
+        // F-04: la búsqueda recorre todos los registros, no solo la página visible.
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('id_orden', 'like', "%{$s}%")
+                    ->orWhere('descripcion', 'like', "%{$s}%")
+                    ->orWhereHas('tecnico', fn ($q2) => $q2->where('nombre', 'like', "%{$s}%"))
+                    ->orWhereHas('equipo', function ($q2) use ($s) {
+                        $q2->where('nombre', 'like', "%{$s}%")
+                            ->orWhere('marca', 'like', "%{$s}%")
+                            ->orWhere('modelo', 'like', "%{$s}%")
+                            ->orWhere('serie', 'like', "%{$s}%")
+                            ->orWhereHas('cliente', function ($q3) use ($s) {
+                                $q3->where('nombres', 'like', "%{$s}%")
+                                    ->orWhere('apellidos', 'like', "%{$s}%")
+                                    ->orWhere('identificacion', 'like', "%{$s}%");
+                            })
+                            ->orWhereHas('proveedor', fn ($q3) => $q3->where('nombre_razon_social', 'like', "%{$s}%"));
+                    });
+            });
+        }
+
+        $mantenimientos = $query->orderBy('id', 'desc')->paginate(10);
 
         return view('mantenimientos.index', compact('mantenimientos'));
     }

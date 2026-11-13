@@ -23,9 +23,26 @@ use Illuminate\Support\Facades\Log;
 
 class CotizacionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $cotizaciones = Cotizacion::with(['cliente', 'proveedor', 'user', 'items', 'factura'])->orderBy('id', 'desc')->paginate(15);
+        $query = Cotizacion::with(['cliente', 'proveedor', 'user', 'items', 'factura']);
+
+        // F-04: la búsqueda recorre todos los registros, no solo la página visible.
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('codigo', 'like', "%{$s}%")
+                    ->orWhereHas('cliente', function ($q3) use ($s) {
+                        $q3->where('nombres', 'like', "%{$s}%")
+                            ->orWhere('apellidos', 'like', "%{$s}%")
+                            ->orWhere('identificacion', 'like', "%{$s}%");
+                    })
+                    ->orWhereHas('proveedor', fn ($q3) => $q3->where('nombre_razon_social', 'like', "%{$s}%")
+                        ->orWhere('identificacion', 'like', "%{$s}%"));
+            });
+        }
+
+        $cotizaciones = $query->orderBy('id', 'desc')->paginate(15);
 
         return view('cotizaciones.index', compact('cotizaciones'));
     }

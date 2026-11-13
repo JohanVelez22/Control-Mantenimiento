@@ -15,7 +15,7 @@
  <div class="flex flex-wrap items-center gap-3">
    <div class="relative">
     <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
-    <input type="text" id="search-facturas" placeholder="Buscar factura..." class="glass-input pl-9 w-48 sm:w-64 font-semibold" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); }">
+    <input type="text" id="search-facturas" placeholder="Buscar factura (Enter: buscar en todo)" class="glass-input pl-9 w-48 sm:w-64 font-semibold" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); }">
    </div>
    @if(!auth()->user()->isInvitado())
     <a href="{{ route('inventario.compra.create') }}" class="btn-compra">

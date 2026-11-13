@@ -9,9 +9,23 @@ use Illuminate\Support\Facades\Storage;
 
 class TecnicoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tecnicos = Tecnico::orderBy('id', 'desc')->paginate(10);
+        $query = Tecnico::query();
+
+        // F-04: la búsqueda recorre todos los registros, no solo la página visible.
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('nombre', 'like', "%{$s}%")
+                    ->orWhere('identificacion', 'like', "%{$s}%")
+                    ->orWhere('especialidad', 'like', "%{$s}%")
+                    ->orWhere('movil', 'like', "%{$s}%")
+                    ->orWhere('email', 'like', "%{$s}%");
+            });
+        }
+
+        $tecnicos = $query->orderBy('id', 'desc')->paginate(10);
 
         return view('tecnicos.index', compact('tecnicos'));
     }

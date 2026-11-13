@@ -19,7 +19,15 @@ class UserController extends Controller
             abort(403, 'Acceso denegado. Solo administradores pueden gestionar la lista de usuarios.');
         }
 
-        $users = User::orderBy('id', 'desc')->paginate(10);
+        $query = User::query();
+
+        // F-04: la búsqueda recorre todos los registros, no solo la página visible.
+        if (request()->filled('search')) {
+            $s = request('search');
+            $query->where(fn ($q) => $q->where('name', 'like', "%{$s}%")->orWhere('email', 'like', "%{$s}%"));
+        }
+
+        $users = $query->orderBy('id', 'desc')->paginate(10);
 
         return view('usuarios.index', compact('users'));
     }

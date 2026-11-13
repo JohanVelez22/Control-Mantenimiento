@@ -49,9 +49,12 @@ class ElectronicaController extends Controller
                         ->orWhere('serie', 'like', "%{$s}%")
                         ->orWhereHas('cliente', function ($q3) use ($s) {
                             $q3->where('nombres', 'like', "%{$s}%")
-                                ->orWhere('apellidos', 'like', "%{$s}%");
-                        });
-                })->orWhere('id_orden', 'like', "%{$s}%");
+                                ->orWhere('apellidos', 'like', "%{$s}%")
+                                ->orWhere('identificacion', 'like', "%{$s}%");
+                        })
+                        ->orWhereHas('proveedor', fn ($q3) => $q3->where('nombre_razon_social', 'like', "%{$s}%"));
+                })->orWhere('id_orden', 'like', "%{$s}%")
+                    ->orWhere('descripcion_problema', 'like', "%{$s}%");
             });
         }
 

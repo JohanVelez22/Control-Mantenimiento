@@ -13,7 +13,7 @@
   <div class="flex flex-wrap items-center gap-3">
    <div class="relative">
    <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
-   <input type="text" id="search-electronicas" placeholder="Buscar cliente, dispositivo..." class="glass-input pl-9 w-48 sm:w-64">
+   <input type="text" id="search-electronicas" placeholder="Buscar cliente, dispositivo (Enter: buscar en todo)" class="glass-input pl-9 w-48 sm:w-64">
    </div>
   @if(!auth()->user()->isInvitado())
   <a href="{{ route('electronicas.create') }}" class="btn-primary text-sm">

@@ -11,7 +11,7 @@
  <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
   <div class="relative w-full sm:w-auto">
   <span class="absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-sm select-none pointer-events-none">🔍</span>
-  <input type="text" id="search-stocks" placeholder="Buscar producto, cod..." class="glass-input pl-9 w-full sm:w-64">
+  <input type="text" id="search-stocks" placeholder="Buscar producto, cod (Enter: buscar en todo)" class="glass-input pl-9 w-full sm:w-64">
   </div>
  @if(!auth()->user()->isInvitado())
  <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 w-full sm:w-auto">

@@ -31,13 +31,16 @@ class StockController extends Controller
 
         $query = Stock::with('proveedor');
 
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('producto', 'like', "%{$search}%")
-                ->orWhere('codigo', 'like', "%{$search}%")
-                ->orWhereHas('proveedor', function ($q2) use ($search) {
-                    $q2->where('nombre_razon_social', 'like', "%{$search}%");
-                });
+            $query->where(function ($q) use ($search) {
+                $q->where('producto', 'like', "%{$search}%")
+                    ->orWhere('codigo', 'like', "%{$search}%")
+                    ->orWhere('categoria', 'like', "%{$search}%")
+                    ->orWhereHas('proveedor', function ($q2) use ($search) {
+                        $q2->where('nombre_razon_social', 'like', "%{$search}%");
+                    });
+            });
         }
 
         $stocks = $query->orderBy('id', 'desc')->paginate(10);
