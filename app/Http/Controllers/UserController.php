@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -139,6 +140,7 @@ class UserController extends Controller
             $usuario->setRememberToken(Str::random(60));
             // Si un administrador asigna la contraseña de otro usuario, ese usuario debe cambiarla al entrar
             $usuario->must_change_password = auth()->id() !== $usuario->id;
+            $passwordCambiada = true;
         }
 
         if ($request->hasFile('photo')) {
@@ -157,6 +159,15 @@ class UserController extends Controller
         $usuario->email = $request->email;
 
         $usuario->save();
+
+        // S-06: una contraseña nueva cierra las sesiones abiertas con la anterior en otros
+        // equipos (la sesión actual se conserva si el usuario cambia la suya).
+        if (! empty($passwordCambiada) && config('session.driver') === 'database') {
+            DB::table(config('session.table', 'sessions'))
+                ->where('user_id', $usuario->id)
+                ->where('id', '!=', $request->session()->getId())
+                ->delete();
+        }
 
         if (auth()->user()->role !== 'admin') {
             return redirect()->route('dashboard')->with('success', 'Perfil actualizado correctamente.');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CierreCaja;
+use App\Models\Evento;
 use App\Models\MovimientoCaja;
 use App\Services\AnulacionService;
 use Carbon\Carbon;
@@ -77,58 +78,69 @@ class CierreCajaController extends Controller
             'observaciones' => 'nullable|string|max:1000',
         ]);
 
-        return DB::transaction(function () use ($request, $fecha) {
-            // Protección contra race condition con bloqueo pesimista en índice único directo (F-24)
-            $yaExiste = CierreCaja::where('fecha', $fecha)->lockForUpdate()->exists();
-            if ($yaExiste) {
-                return back()->with('error', 'Ya existe un cierre registrado para la fecha seleccionada.')->withInput();
-            }
+        try {
+            return DB::transaction(function () use ($request, $fecha) {
+                // Protección contra race condition con bloqueo pesimista en índice único directo (F-24)
+                if (CierreCaja::where('fecha', $fecha)->lockForUpdate()->exists()) {
+                    throw new \DomainException('Ya existe un cierre registrado para la fecha seleccionada.');
+                }
 
-            $datos = $this->calcularDia($fecha);
+                // D-08: primero se reserva el día insertando el cierre y después se leen los
+                // movimientos con lectura bloqueante. Un movimiento que se esté guardando en ese
+                // mismo instante, o queda incluido en el arqueo (el cierre espera a que termine),
+                // o es rechazado por el guardián (que espera a este cierre y lo ve). Antes podía
+                // quedar fuera del arqueo de un día ya bloqueado.
+                $cierre = CierreCaja::withoutEvents(fn () => CierreCaja::create([
+                    'fecha' => $fecha, 'total_ingresos' => 0, 'total_egresos' => 0, 'efectivo' => 0,
+                    'consignacion' => 0, 'saldo_final' => 0, 'num_movimientos' => 0,
+                    'bloqueado' => true, 'user_id' => auth()->id(),
+                ]));
 
-            // El conteo físico es opcional. Si el cajero no registra un valor,
-            // `efectivo_real_contado` queda NULL y el modelo lo reporta como
-            // 'sin_conciliar'. Nunca se infiere el contado desde el valor
-            // teórico del sistema: eso afirmaría un cuadre no verificado.
-            $efectivoEsperado = (float) ($datos['efectivo_esperado'] ?? $datos['efectivo']);
-            $conteoRegistrado = $request->filled('efectivo_real_contado')
-                && is_numeric($request->efectivo_real_contado);
+                $datos = $this->calcularDia($fecha, bloquear: true);
 
-            if ($conteoRegistrado) {
-                $efectivoReal = round((float) $request->efectivo_real_contado, 2);
-                $diferencia = round($efectivoReal - $efectivoEsperado, 2);
-            } else {
-                $efectivoReal = null;
-                $diferencia = 0;
-            }
+                // El conteo físico es opcional. Si el cajero no registra un valor,
+                // `efectivo_real_contado` queda NULL y el modelo lo reporta como
+                // 'sin_conciliar'. Nunca se infiere el contado desde el valor
+                // teórico del sistema: eso afirmaría un cuadre no verificado.
+                $efectivoEsperado = (float) ($datos['efectivo_esperado'] ?? $datos['efectivo']);
+                $conteoRegistrado = $request->filled('efectivo_real_contado')
+                    && is_numeric($request->efectivo_real_contado);
 
-            if (abs($diferencia) >= 0.01 && empty(trim((string) $request->motivo_diferencia))) {
-                $tipoDescuadre = $diferencia > 0 ? 'sobrante' : 'faltante';
+                if ($conteoRegistrado) {
+                    $efectivoReal = round((float) $request->efectivo_real_contado, 2);
+                    $diferencia = round($efectivoReal - $efectivoEsperado, 2);
+                } else {
+                    $efectivoReal = null;
+                    $diferencia = 0;
+                }
 
-                return back()
-                    ->with('error', "Existe un descuadre en caja ({$tipoDescuadre} de $".number_format(abs($diferencia), 0, ',', '.').'). Debes ingresar el motivo o justificación de la diferencia para poder cerrar y bloquear el día.')
-                    ->withInput();
-            }
+                if (abs($diferencia) >= 0.01 && empty(trim((string) $request->motivo_diferencia))) {
+                    $tipoDescuadre = $diferencia > 0 ? 'sobrante' : 'faltante';
+                    // La excepción deshace también el cierre provisional.
+                    throw new \DomainException("Existe un descuadre en caja ({$tipoDescuadre} de $".number_format(abs($diferencia), 0, ',', '.').'). Debes ingresar el motivo o justificación de la diferencia para poder cerrar y bloquear el día.');
+                }
 
-            CierreCaja::create([
-                'fecha' => $fecha,
-                'total_ingresos' => $datos['total_ingresos'],
-                'total_egresos' => $datos['total_egresos'],
-                'efectivo' => $datos['efectivo'],
-                'efectivo_real_contado' => $efectivoReal,
-                'diferencia' => $diferencia,
-                'consignacion' => $datos['consignacion'],
-                'saldo_final' => $datos['saldo_final'],
-                'num_movimientos' => $datos['num_movimientos'],
-                'bloqueado' => true,
-                'observaciones' => $request->observaciones,
-                'motivo_diferencia' => $request->motivo_diferencia,
-                'user_id' => auth()->id(),
-            ]);
+                $cierre->fill([
+                    'total_ingresos' => $datos['total_ingresos'],
+                    'total_egresos' => $datos['total_egresos'],
+                    'efectivo' => $datos['efectivo'],
+                    'efectivo_real_contado' => $efectivoReal,
+                    'diferencia' => $diferencia,
+                    'consignacion' => $datos['consignacion'],
+                    'saldo_final' => $datos['saldo_final'],
+                    'num_movimientos' => $datos['num_movimientos'],
+                    'observaciones' => $request->observaciones,
+                    'motivo_diferencia' => $request->motivo_diferencia,
+                ])->saveQuietly();
 
-            return redirect()->route('cierre.index')
-                ->with('success', 'Cierre del '.Carbon::parse($fecha)->format('d/m/Y').' guardado y bloqueado.');
-        });
+                Evento::registrar('creado', $cierre, null, $cierre->getAttributes(), 'Creó un nuevo registro en CierreCaja');
+
+                return redirect()->route('cierre.index')
+                    ->with('success', 'Cierre del '.Carbon::parse($fecha)->format('d/m/Y').' guardado y bloqueado.');
+            });
+        } catch (\DomainException $e) {
+            return back()->with('error', $e->getMessage())->withInput();
+        }
     }
 
     /** Eliminar cierre — requiere autorización sensible (admin directo, técnico con clave admin) */
@@ -207,7 +219,7 @@ class CierreCajaController extends Controller
 
     // ──────────────────────────────────────────────────────────
     /** Helper: calcula totales de movimientos de un día dado excluyendo los anulados */
-    private function calcularDia(string $fecha): array
+    private function calcularDia(string $fecha, bool $bloquear = false): array
     {
         $movQuery = MovimientoCaja::query();
         if (DB::connection()->getDriverName() === 'mysql') {
@@ -216,6 +228,11 @@ class CierreCajaController extends Controller
             $movQuery->where(function ($q) use ($fecha) {
                 $q->where('fecha', $fecha)->orWhereDate('fecha', $fecha);
             });
+        }
+        if ($bloquear) {
+            // Lectura bloqueante: espera a los movimientos de esa fecha que otra transacción
+            // esté guardando y lee su versión confirmada (D-08).
+            $movQuery->sharedLock();
         }
         $movs = $movQuery->where('estado', 'activo')->where('anulado', false)->get();
 

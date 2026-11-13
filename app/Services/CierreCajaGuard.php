@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\CierreCaja;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Guardián de periods de caja cerrados.
@@ -25,7 +26,16 @@ class CierreCajaGuard
             return false;
         }
 
-        return CierreCaja::whereDate('fecha', '>=', $fecha)->exists();
+        $consulta = CierreCaja::whereDate('fecha', '>=', $fecha);
+
+        // D-08: dentro de una transacción, lectura bloqueante compartida. Si en ese momento
+        // se está guardando un cierre de esa fecha, se espera a que termine y se ve; y un
+        // cierre que empiece después espera a que esta operación confirme, y la incluye.
+        if (DB::transactionLevel() > 0) {
+            $consulta->sharedLock();
+        }
+
+        return $consulta->exists();
     }
 
     /**
