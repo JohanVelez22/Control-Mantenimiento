@@ -535,7 +535,7 @@ class RobustezContableAuditTest extends TestCase
     /**
      * P0-E2: storeAbono rechaza abonos sobre movimientos/facturas cuyo período ya está cerrado.
      */
-    public function test_p0_e2_store_abono_rechaza_abono_si_factura_o_padre_pertenece_a_dia_cerrado(): void
+    public function test_p0_e2_venta_a_credito_de_dia_cerrado_se_cobra_con_abono_de_hoy(): void
     {
         $fechaCerrada = now()->subDays(3)->toDateString();
 
@@ -590,15 +590,15 @@ class RobustezContableAuditTest extends TestCase
             'descripcion' => 'Abono tardío a factura cerrada',
         ]);
 
-        // Debe ser rechazado porque la factura vinculada pertenece a un día cerrado
-        $response->assertSessionHas('error');
-        $this->assertDatabaseMissing('movimiento_cajas', [
-            'parent_id' => $padre->id,
-            'monto' => 50000,
-        ]);
+        // Q-10: el cobro de hoy se acepta; el día cerrado no cambia (el abono es de hoy)
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('movimiento_cajas', ['parent_id' => $padre->id, 'monto' => 50000, 'fecha' => now()->toDateString().' 00:00:00']);
+        $this->assertEquals(100000, (float) $padre->fresh()->monto);
+        $this->assertEquals(100000, (float) MovimientoCaja::activos()->whereDate('fecha', $fechaCerrada)->sum('monto'));
+        $this->assertEquals(150000, (float) $factura->fresh()->total_pagado);
 
-        // El total pagado de la factura no debe haberse modificado
-        $factura->refresh();
-        $this->assertEquals(100000, (float) $factura->total_pagado);
+        // Un abono con fecha del día cerrado sigue rechazado
+        $this->post(route('caja.abonos.store', $padre), ['monto_abono' => 1000, 'fecha' => $fechaCerrada, 'tipo_pago' => 'efectivo'])
+            ->assertSessionHasErrors('fecha');
     }
 }
