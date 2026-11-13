@@ -8,7 +8,7 @@
     FACTURA DE {{ Str::upper($factura->tipo_movimiento) }} - {{ $factura->numero_factura }}
 @endsection
 
-@section('filas', (string) ($factura->items->count() + min(3, isset($abonos) ? $abonos->count() : 0)))
+@section('filas', (string) ($factura->items->count() + min(3, isset($abonos) ? $abonos->count() : 0) + (int) ceil(mb_strlen((string) $factura->observaciones) / 180)))
 
 @section('content')
 <div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">

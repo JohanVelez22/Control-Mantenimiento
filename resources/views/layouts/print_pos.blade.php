@@ -192,6 +192,8 @@
         {{-- Pie de página y garantía --}}
         <div class="footer-pos">
             <p class="font-bold">{{ $empresa->pie_pagina_factura ?? '¡Gracias por su compra / preferencia!' }}</p>
+            {{-- M-13: el sistema no emite facturación electrónica --}}
+            <p style="font-size: 6.3pt; color: #555;">Documento interno de control. No es factura electrónica de venta (DIAN).</p>
             <p style="font-size: 6.5pt; color: #555;">Software WolfCore System</p>
         </div>
     </div>

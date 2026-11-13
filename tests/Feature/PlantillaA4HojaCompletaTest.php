@@ -120,6 +120,19 @@ class PlantillaA4HojaCompletaTest extends TestCase
         $this->assertCount($r['paginas'], $paginasConMarca);
     }
 
+    public function test_media_hoja_llena_no_monta_items_sobre_las_firmas(): void
+    {
+        // 8 renglones: el máximo que se imprime en media hoja.
+        $r = $this->renderizar($this->ordenConRepuestos(8));
+
+        $this->assertSame(1, $r['paginas']);
+        $ultimo = $this->buscar($r['textos'], 'Repuesto numero 8')[0];
+        $saldo = $this->buscar($r['textos'], 'SALDO PENDIENTE')[0];
+        $firma = $this->buscar($r['textos'], 'Firma Cliente')[0];
+        $this->assertLessThan($firma['y'] - 8, $ultimo['y']);
+        $this->assertLessThan($firma['y'] - 8, $saldo['y'], 'Los totales tocan las firmas: '.json_encode([$saldo, $firma]));
+    }
+
     public function test_con_pocos_items_se_conserva_la_media_hoja(): void
     {
         $r = $this->renderizar($this->ordenConRepuestos(3));
@@ -127,6 +140,12 @@ class PlantillaA4HojaCompletaTest extends TestCase
         $this->assertSame(1, $r['paginas']);
         // Las firmas siguen en la mitad superior de la hoja (141 mm ≈ 400 pt).
         $this->assertLessThan(400, $this->buscar($r['textos'], 'Firma Cliente')[0]['y']);
+
+        // El pie (incluida la leyenda de documento interno) queda debajo de las firmas.
+        $firma = $this->buscar($r['textos'], 'Firma Cliente')[0];
+        $pie = $this->buscar($r['textos'], 'Gracias')[0] ?? $this->buscar($r['textos'], 'soporte válido')[0];
+        $this->assertGreaterThan($firma['y'] + 8, $pie['y'], 'El pie se monta sobre las firmas: '.json_encode([$firma, $pie]));
+        $this->assertNotEmpty($this->buscar($r['textos'], 'No es factura electrónica'));
     }
 
     private function assertFirmasDespuesDe(array $r, string $ultimoItem, string $firma): void

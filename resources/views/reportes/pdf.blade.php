@@ -127,7 +127,7 @@
                 <div class="summary-value blue">$ {{ number_format($acumulado['facturado_total'], 0, ',', '.') }}</div>
             </div>
             <div class="summary-cell">
-                <div class="summary-label">Utilidad Neta</div>
+                <div class="summary-label">Flujo Neto de Caja</div>
                 <div class="summary-value green">$ {{ number_format($acumulado['utilidad_neta'], 0, ',', '.') }}</div>
             </div>
         </div>

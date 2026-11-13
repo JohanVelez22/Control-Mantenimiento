@@ -120,7 +120,8 @@
 
         .signatures-block {
             position: absolute;
-            bottom: 38px;
+            /* Por encima de las 3 líneas del pie (incluida la leyenda de documento interno) */
+            bottom: 54px;
             left: 0;
             width: 100%;
         }
@@ -265,6 +266,8 @@
         <div class="footer">
             <p>{{ $empresa->pie_pagina_factura ?? 'Gracias por preferirnos.' }}</p>
             <p style="font-size: 7pt; color: #777; margin-top: 5px;">Este documento es un soporte válido bajo los términos y condiciones de la empresa. Su alteración o falsificación está penada por la ley.</p>
+            {{-- M-13: el sistema no emite facturación electrónica --}}
+            <p style="font-size: 6.5pt; color: #777;">Documento interno de control. No es factura electrónica de venta (DIAN).</p>
         </div>
         </div>
     </div>
