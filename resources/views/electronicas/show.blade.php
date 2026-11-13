@@ -32,7 +32,7 @@
             </div>
             
             <div class="flex items-center gap-3 shrink-0">
-                @if($electronica->fecha_salida)
+                @if($electronica->estado === 'terminado' && $electronica->fecha_salida)
                 <x-print-dropdown 
                     :url="route('electronicas.factura', $electronica)"
                     label="Imprimir"
@@ -105,7 +105,7 @@
         {{-- Panel de Repuestos Utilizados (Stock) --}}
         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 mt-8 flex items-center gap-2 border-t border-gray-200/50 dark:border-white/10 pt-6">📦 Repuestos / Insumos Utilizados</h3>
 
-        @if(!auth()->user()->isInvitado() && !$electronica->anulado)
+        @if(!auth()->user()->isInvitado() && !$electronica->anulado && $electronica->estado !== 'terminado')
         <form action="{{ route('electronicas.stocks.store', $electronica) }}" method="POST" class="mb-6">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -140,6 +140,10 @@
                 </div>
             </div>
         </form>
+        @elseif(!auth()->user()->isInvitado() && !$electronica->anulado)
+        <div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-500/30 rounded-xl p-4 mb-6">
+            <p class="text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center justify-center gap-2 text-center"><span>✅</span> Orden terminada: para agregar o quitar repuestos, reábrala desde Editar (estado Pendiente, con el motivo).</p>
+        </div>
         @elseif($electronica->anulado)
         <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-xl p-4 mb-6">
             <p class="text-sm font-bold text-red-600 dark:text-red-400 flex items-center justify-center gap-2"><span>🚫</span> No se pueden agregar repuestos a una orden anulada.</p>
@@ -174,7 +178,7 @@
                         <p class="font-black text-blue-600 dark:text-cyan-400">$ {{ number_format($repuesto->pivot->cantidad * $repuesto->pivot->precio_unitario, 0, ',', '.') }}</p>
                     </div>
                     
-                    @if(!$electronica->anulado)
+                    @if(!$electronica->anulado && $electronica->estado !== 'terminado')
                         @if(auth()->user()->role === 'admin')
                         <form action="{{ route('electronicas.stocks.destroy', [$electronica, $repuesto->id]) }}" method="POST" class="inline-block"
                             data-confirm-delete="¿Eliminar este repuesto ({{ $repuesto->producto }})? Se descontará del costo de la orden y volverá al inventario.">

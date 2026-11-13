@@ -96,7 +96,8 @@ class AuditoriaIntegralCorreccionesTest extends TestCase
         $this->post(route('abonos.store', $orden), ['monto' => 1000, 'fecha' => now()->toDateString(), 'tipo_pago' => 'efectivo', 'descripcion' => 'Abono anulado X']);
         Abono::where('monto', 1000)->update(['anulado' => true]);
 
-        $orden->update(['fecha_salida' => now()]);
+        // B-01: solo se factura una orden terminada.
+        $orden->update(['estado' => 'terminado', 'fecha_salida' => now()]);
         $this->get(route('mantenimientos.factura', $orden))->assertOk();
 
         // El PDF va comprimido: se verifica el HTML que recibe dompdf

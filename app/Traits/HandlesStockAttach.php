@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Stock;
 use App\Services\AnulacionService;
+use App\Services\OrdenEstadoService;
 use App\Services\StockService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
@@ -19,11 +20,18 @@ trait HandlesStockAttach
         if ($model->anulado) {
             return redirect()->back()->with('error', 'No se pueden añadir repuestos a un registro anulado.');
         }
+        if ($bloqueo = OrdenEstadoService::bloqueoRepuestos($model)) {
+            return redirect()->back()->with('error', $bloqueo);
+        }
 
         try {
             DB::transaction(function () use ($model, $validated, &$successMsg) {
                 // Bloquear el modelo (Mantenimiento o Electronica) para serializar modificaciones concurrentes
                 $lockedModel = get_class($model)::where('id', $model->id)->lockForUpdate()->firstOrFail();
+                // B-03: releer tras el bloqueo; otra petición pudo terminar la orden.
+                if ($bloqueo = OrdenEstadoService::bloqueoRepuestos($lockedModel)) {
+                    throw new \DomainException($bloqueo);
+                }
 
                 $stock = Stock::activos()->find($validated['stock_id']);
                 if (! $stock) {
@@ -91,11 +99,18 @@ trait HandlesStockAttach
         if ($model->anulado) {
             return redirect()->back()->with('error', 'No se pueden eliminar repuestos de un registro anulado.');
         }
+        if ($bloqueo = OrdenEstadoService::bloqueoRepuestos($model)) {
+            return redirect()->back()->with('error', $bloqueo);
+        }
 
         try {
             DB::transaction(function () use ($model, $stock_id) {
                 // Bloquear el modelo para serializar modificaciones concurrentes
                 $lockedModel = get_class($model)::where('id', $model->id)->lockForUpdate()->firstOrFail();
+                // B-03: releer tras el bloqueo; otra petición pudo terminar la orden.
+                if ($bloqueo = OrdenEstadoService::bloqueoRepuestos($lockedModel)) {
+                    throw new \DomainException($bloqueo);
+                }
                 $repuesto = $lockedModel->stocks()->where('stock_id', $stock_id)->first();
 
                 if (! $repuesto) {

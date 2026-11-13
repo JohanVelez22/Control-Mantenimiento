@@ -7,11 +7,12 @@
 
 | Hallazgo | Estado |
 |---|---|
-| B-01 cierre de órdenes sin reglas | **Pendiente** (requiere decisión de negocio, ver `PENDIENTES.md`) |
+| B-01 cierre de órdenes sin reglas | **Corregido** + prueba `OrdenCierreReglasTest` (entrega con saldo: casilla + motivo + evento) |
+| B-03 repuestos en órdenes terminadas | **Corregido** + prueba `test_b03_*` |
 | B-02 quitar repuesto oculta sobrepago | **Corregido** + prueba `AuditoriaIntegralCorreccionesTest::test_b02_*` |
 | B-12 el único admin podía quitarse el rol | **Corregido** + prueba `test_b12_*` |
 | B-05 errores 500 con entradas inválidas | **Parcial**: el cierre de caja con fecha inválida ya responde con error de validación; el resto, pendiente |
-| B-03, B-04, B-06 a B-11, B-13 a B-24 | **Pendientes** |
+| B-04, B-06 a B-11, B-13 a B-24 | **Pendientes** |
 
 Los identificadores (p. ej. `M-01`) se usan igual en `CAMBIOS_REALIZADOS.md`, `PENDIENTES.md` y en los mensajes de commit.
 

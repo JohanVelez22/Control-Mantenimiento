@@ -288,6 +288,9 @@ class ElectronicaControllerTest extends TestCase
             'reparacion' => 'software',
             'costo' => 100000,
             'estado' => 'terminado',
+            // B-01: terminar con saldo exige la entrega con saldo explícita y el motivo.
+            'entrega_con_saldo' => '1',
+            'motivo_entrega' => 'Cliente paga la próxima semana',
             'fecha_entrada' => now()->toDateString(),
             'fecha_salida' => now()->toDateString(),
             'tecnico_id' => $this->tecnicoM->id,

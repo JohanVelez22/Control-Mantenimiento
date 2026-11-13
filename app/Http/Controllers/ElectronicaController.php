@@ -11,6 +11,7 @@ use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
 use App\Services\AnulacionService;
+use App\Services\OrdenEstadoService;
 use App\Services\OrdenService;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -18,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ElectronicaController extends Controller
@@ -77,6 +79,7 @@ class ElectronicaController extends Controller
 
     public function store(Request $request)
     {
+        $estados = app(OrdenEstadoService::class);
         $validated = $request->validate([
             'equipo_id' => 'required|integer|exists:equipos,id',
             'descripcion_problema' => 'required|string|max:1000',
@@ -85,9 +88,15 @@ class ElectronicaController extends Controller
             'costo' => 'required|numeric|min:0|decimal:0,2|max:99999999.99',
             'estado' => 'required|in:pendiente,terminado',
             'fecha_entrada' => 'required|date',
-            'fecha_salida' => 'nullable|date|after_or_equal:fecha_entrada',
             'tecnico_id' => 'required|integer|exists:tecnicos,id',
-        ]);
+        ] + OrdenEstadoService::reglas(), OrdenEstadoService::mensajes());
+
+        [$validated, $eventos] = $estados->preparar($validated, null);
+
+        if ($estados->requiereClaveAlCrear($validated)
+            && ! app(AnulacionService::class)->adminPasswordValida((string) $request->input('admin_password'))) {
+            return redirect()->back()->with('error', 'Para registrar una orden terminada con saldo pendiente, un técnico necesita la contraseña de un administrador.')->withInput();
+        }
 
         try {
             DB::beginTransaction();
@@ -100,7 +109,8 @@ class ElectronicaController extends Controller
 
             $validated['user_id'] = auth()->id();
 
-            Electronica::create($validated);
+            $orden = Electronica::create($validated);
+            $estados->registrarEventos($orden, $eventos);
 
             DB::commit();
 
@@ -156,9 +166,8 @@ class ElectronicaController extends Controller
             'costo' => ['required', 'numeric', 'decimal:0,2', 'max:99999999.99', 'min:'.$electronica->costoMinimoPermitido()],
             'estado' => 'required|in:pendiente,terminado',
             'fecha_entrada' => 'required|date',
-            'fecha_salida' => 'nullable|date|after_or_equal:fecha_entrada',
             'tecnico_id' => 'required|integer|exists:tecnicos,id',
-        ];
+        ] + OrdenEstadoService::reglas();
 
         if (auth()->user()->isTecnico()) {
             $reglas['admin_password'] = 'required';
@@ -166,21 +175,32 @@ class ElectronicaController extends Controller
 
         $validated = $request->validate($reglas, [
             'costo.min' => 'El costo no puede ser menor que lo ya abonado o que el valor de los repuestos asignados ($ '.number_format($electronica->costoMinimoPermitido(), 0, ',', '.').').',
-        ]);
+        ] + OrdenEstadoService::mensajes());
 
         if (auth()->user()->isTecnico() &&
             ! app(AnulacionService::class)->adminPasswordValida($validated['admin_password'])) {
             return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para editar.')->withInput();
         }
+        unset($validated['admin_password']);
+
+        $estados = app(OrdenEstadoService::class);
 
         try {
             DB::beginTransaction();
 
+            // Releer con bloqueo: las reglas de cierre dependen del estado y de lo abonado.
+            $electronica = Electronica::whereKey($electronica->id)->lockForUpdate()->firstOrFail();
+            [$validated, $eventos] = $estados->preparar($validated, $electronica);
+
             $electronica->update($validated);
+            $estados->registrarEventos($electronica, $eventos);
             DB::commit();
 
             return redirect()->route('electronicas.index')
                 ->with('success', 'Registro electrónico actualizado correctamente.');
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            throw $e;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error actualizando electrónica: '.$e->getMessage());
@@ -235,10 +255,8 @@ class ElectronicaController extends Controller
     public function factura(Electronica $electronica)
     {
         Gate::authorize('view', $electronica);
-        if (! $electronica->fecha_salida) {
-            return redirect()
-                ->route('electronicas.index')
-                ->with('error', 'No se puede generar la factura sin fecha de salida. Registre la salida de la orden e inténtelo de nuevo.');
+        if ($error = OrdenEstadoService::bloqueoFactura($electronica)) {
+            return redirect()->back()->with('error', $error);
         }
         $electronica->load(['equipo.cliente', 'tecnico', 'user', 'abonos', 'stocks']);
 

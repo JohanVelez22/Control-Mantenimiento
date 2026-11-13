@@ -42,7 +42,7 @@
 
     {{-- Estado --}}
     <div>
-        <label class="field-label flex items-center gap-2">Estado Inicial <span class="text-red-500 font-bold">*</span></label>
+        <label class="field-label flex items-center gap-2">Estado <span class="text-red-500 font-bold">*</span></label>
         <select name="estado" required class="glass-input mt-1 font-bold {{ old('estado', $electronica->estado ?? 'pendiente') === 'terminado' ? 'text-emerald-600 dark:text-emerald-400' : 'text-yellow-600 dark:text-yellow-400' }}">
             <option value="pendiente" {{ old('estado', $electronica->estado ?? 'pendiente') === 'pendiente' ? 'selected' : '' }} class="text-yellow-600">⏳ Pendiente</option>
             <option value="terminado" {{ old('estado', $electronica->estado ?? '') === 'terminado' ? 'selected' : '' }} class="text-emerald-600">✅ Terminado</option>
@@ -60,12 +60,14 @@
         <div>
             <label class="field-label flex justify-between">
                 <span>Fecha de Salida</span>
-                <span class="text-[10px] font-normal text-gray-400 normal-case">(Opcional)</span>
+                <span class="text-[10px] font-normal text-gray-400 normal-case">(obligatoria al terminar)</span>
             </label>
             <input type="date" name="fecha_salida" value="{{ old('fecha_salida', isset($electronica->fecha_salida) ? \Carbon\Carbon::parse($electronica->fecha_salida)->format('Y-m-d') : '') }}" class="glass-input mt-1">
             @error('fecha_salida') <p class="text-red-500 text-xs font-bold mt-1">{{ $message }}</p> @enderror
         </div>
     </div>
+
+    @include('partials.orden-cierre', ['orden' => $electronica])
 
     {{-- Tipo Trabajo --}}
     <div>
@@ -107,7 +109,7 @@
     {{-- Costo --}}
     <div class="md:col-span-2 mt-2">
         <label class="field-label text-center mb-2 block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Costo Estimado / Final <span class="text-red-500 font-bold">*</span></label>
-        <input type="text" name="costo_visual" id="costo_visual" value="{{ isset($electronica->costo) ? number_format(old('costo', $electronica->costo), 0, ',', '.') : '' }}" placeholder="0" required class="glass-input text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20">
+        <input type="text" name="costo_visual" id="costo_visual" value="{{ is_numeric(old('costo', $electronica->costo ?? null)) ? number_format((float) old('costo', $electronica->costo ?? 0), 0, ',', '.') : '' }}" placeholder="0" required class="glass-input text-3xl font-black text-center py-3 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all focus:ring-4 focus:ring-emerald-500/20">
         <input type="hidden" name="costo" id="costo_real" value="{{ old('costo', $electronica->costo ?? '') }}">
         @error('costo') <p class="text-red-500 text-xs font-bold mt-2 text-center">{{ $message }}</p> @enderror
     </div>

@@ -11,6 +11,7 @@ use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
 use App\Services\AnulacionService;
+use App\Services\OrdenEstadoService;
 use App\Services\OrdenService;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 
 class MantenimientoController extends Controller
@@ -212,9 +214,9 @@ class MantenimientoController extends Controller
     public function store(Request $request)
     {
 
+        $estados = app(OrdenEstadoService::class);
         $validated = $request->validate([
             'fecha_entrada' => 'required|date',
-            'fecha_salida' => 'nullable|date|after_or_equal:fecha_entrada',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
             'descripcion' => 'required|string|max:500',
@@ -222,7 +224,14 @@ class MantenimientoController extends Controller
             'estado' => 'required|in:pendiente,terminado',
             'equipo_id' => 'required|integer|exists:equipos,id',
             'tecnico_id' => 'required|integer|exists:tecnicos,id',
-        ]);
+        ] + OrdenEstadoService::reglas(), OrdenEstadoService::mensajes());
+
+        [$validated, $eventos] = $estados->preparar($validated, null);
+
+        if ($estados->requiereClaveAlCrear($validated)
+            && ! app(AnulacionService::class)->adminPasswordValida((string) $request->input('admin_password'))) {
+            return redirect()->back()->with('error', 'Para registrar una orden terminada con saldo pendiente, un técnico necesita la contraseña de un administrador.')->withInput();
+        }
 
         try {
             DB::beginTransaction();
@@ -233,7 +242,8 @@ class MantenimientoController extends Controller
                 ->siguiente('ORD-', Mantenimiento::class);
             $validated['user_id'] = Auth::id();
 
-            Mantenimiento::create($validated);
+            $orden = Mantenimiento::create($validated);
+            $estados->registrarEventos($orden, $eventos);
             DB::commit();
 
             return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento registrado correctamente.');
@@ -271,7 +281,6 @@ class MantenimientoController extends Controller
         // El técnico puede editar, pero debe confirmar con la contraseña de un admin.
         $reglas = [
             'fecha_entrada' => 'required|date',
-            'fecha_salida' => 'nullable|date|after_or_equal:fecha_entrada',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
             'descripcion' => 'required|string|max:500',
@@ -279,7 +288,7 @@ class MantenimientoController extends Controller
             'estado' => 'required|in:pendiente,terminado',
             'equipo_id' => 'required|integer|exists:equipos,id',
             'tecnico_id' => 'required|integer|exists:tecnicos,id',
-        ];
+        ] + OrdenEstadoService::reglas();
 
         if (Auth::user()->isTecnico()) {
             $reglas['admin_password'] = 'required';
@@ -287,20 +296,31 @@ class MantenimientoController extends Controller
 
         $validated = $request->validate($reglas, [
             'costo.min' => 'El costo no puede ser menor que lo ya abonado o que el valor de los repuestos asignados ($ '.number_format($mantenimiento->costoMinimoPermitido(), 0, ',', '.').').',
-        ]);
+        ] + OrdenEstadoService::mensajes());
 
         if (Auth::user()->isTecnico() &&
             ! app(AnulacionService::class)->adminPasswordValida($validated['admin_password'])) {
             return redirect()->back()->with('error', 'Se requiere la contraseña de un administrador para editar.')->withInput();
         }
+        unset($validated['admin_password']);
+
+        $estados = app(OrdenEstadoService::class);
 
         try {
             DB::beginTransaction();
 
+            // Releer con bloqueo: las reglas de cierre dependen del estado y de lo abonado.
+            $mantenimiento = Mantenimiento::whereKey($mantenimiento->id)->lockForUpdate()->firstOrFail();
+            [$validated, $eventos] = $estados->preparar($validated, $mantenimiento);
+
             $mantenimiento->update($validated);
+            $estados->registrarEventos($mantenimiento, $eventos);
             DB::commit();
 
             return redirect()->route('mantenimientos.index')->with('success', 'Mantenimiento actualizado.');
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            throw $e;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error actualizando mantenimiento: '.$e->getMessage());
@@ -312,10 +332,8 @@ class MantenimientoController extends Controller
     public function factura(Mantenimiento $mantenimiento)
     {
         Gate::authorize('view', $mantenimiento);
-        if (! $mantenimiento->fecha_salida) {
-            return redirect()
-                ->route('mantenimientos.index')
-                ->with('error', 'No se puede generar la factura sin fecha de salida. Registre la salida de la orden e inténtelo de nuevo.');
+        if ($error = OrdenEstadoService::bloqueoFactura($mantenimiento)) {
+            return redirect()->back()->with('error', $error);
         }
 
         $mantenimiento->load(['equipo.cliente', 'tecnico', 'user', 'abonos', 'stocks']);

@@ -17,8 +17,8 @@ Orden: primero lo que bloquea operar con dinero real, luego el riesgo financiero
 
 | ID | Pendiente | Esfuerzo |
 |---|---|---|
-| B-01 | Reglas de cierre de órdenes: `fecha_salida` obligatoria al terminar, saldo 0 o entrega autorizada con motivo, reapertura con motivo y clave, factura solo para órdenes terminadas. **Requiere que el dueño decida la regla de "entrega con saldo"** | 1 día |
-| B-03 | Bloquear agregar o quitar repuestos en órdenes terminadas o facturadas | 2 h |
+| ~~B-01~~ | **Corregido** (`OrdenEstadoService`, prueba `OrdenCierreReglasTest`). Regla elegida para "entrega con saldo": se permite con casilla explícita y motivo, queda en `eventos`; un técnico que la registra al crear necesita la clave de admin | — |
+| ~~B-03~~ | **Corregido**: una orden terminada no recibe ni pierde repuestos hasta reabrirla | — |
 | M-06 (resto) | Guardar `saldo_inicial` y `efectivo_esperado` como snapshot en `cierre_cajas` | ½ día |
 | M-09 / M-14 | Motivo obligatorio al anular; el motivo de un descuadre no se puede borrar | ½ día |
 | M-11 | Congelar el costo histórico (`factura_items.costo_unitario`) para que la utilidad no cambie con el tiempo | 1 día |

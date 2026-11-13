@@ -292,6 +292,9 @@ class MantenimientoControllerTest extends TestCase
             'descripcion' => 'Actualizado',
             'costo' => 100000,
             'estado' => 'terminado',
+            // B-01: terminar con saldo exige la entrega con saldo explícita y el motivo.
+            'entrega_con_saldo' => '1',
+            'motivo_entrega' => 'Cliente paga la próxima semana',
             'equipo_id' => $this->equipo->id,
             'tecnico_id' => $this->tecnicoM->id,
         ]);
