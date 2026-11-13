@@ -20,21 +20,22 @@ Orden: primero lo que bloquea operar con dinero real, luego el riesgo financiero
 | ~~B-01~~ | **Corregido** (`OrdenEstadoService`, prueba `OrdenCierreReglasTest`). Regla elegida para "entrega con saldo": se permite con casilla explícita y motivo, queda en `eventos`; un técnico que la registra al crear necesita la clave de admin | — |
 | ~~B-03~~ | **Corregido**: una orden terminada no recibe ni pierde repuestos hasta reabrirla | — |
 | M-06 (resto) | Guardar `saldo_inicial` y `efectivo_esperado` como snapshot en `cierre_cajas` | ½ día |
-| M-09 / M-14 | Motivo obligatorio al anular; el motivo de un descuadre no se puede borrar | ½ día |
+| ~~M-09 / M-14~~ | **Corregido**: motivo obligatorio al anular órdenes, caja, facturas, cotizaciones y abonos (queda en `eventos`); el motivo de un descuadre no se puede vaciar | — |
 | M-11 | Congelar el costo histórico (`factura_items.costo_unitario`) para que la utilidad no cambie con el tiempo | 1 día |
 | M-12 / M-13 | Renombrar "utilidad neta" (es flujo de caja) y rotular la factura como "documento interno, no factura electrónica DIAN" | 2 h |
-| M-15, M-16, M-19 a M-24 | Duplicado sin persistir, redondeo único (`App\Support\Monto`), épsilon, venta en $0 en día cerrado, anulación de cotización, cotizaciones vencidas | 2 días |
+| ~~M-15, M-19 a M-22, M-24~~ | **Corregido**: duplicar sin guardar, comparación en centavos, venta en $0 en día cerrado, anulación de cotización con bloqueo e intención, cotizaciones vencidas, tope de costo | — |
+| M-16 / M-23 | Redondeo único y un solo normalizador de montos (`App\Support\Monto`) | 1 día |
 | D-01 | Restauración atómica: mantenimiento, comprobar la versión del esquema y restaurar primero en base temporal | 1 día |
 | D-07 / S-07 | Usuario MySQL propio con privilegios mínimos, en lugar de `root` | 1 h (+ prueba) |
-| D-08 | Serializar el cierre con las altas del mismo día | ½ día |
+| ~~D-08~~ | **Corregido** y comprobado en MySQL 8.4 con dos conexiones | — |
 | S-04 | Código de consulta aleatorio por orden para el invitado | ½ día |
-| S-06 | Cerrar las sesiones al cambiar la contraseña desde Usuarios (`auth.session`) | 2 h |
+| ~~S-06~~ | **Corregido**: cambiar la contraseña desde Usuarios cierra las demás sesiones | — |
 | S-08 | Respaldos cifrados y reautenticación para descargar, restaurar o actualizar | 1 día |
 | X-02 | Plantilla A4 de media hoja que no se rompa con muchos ítems | 1 día |
-| X-04 / X-05 / X-06 | Valor de inventario y totales iguales en pantalla, Excel y PDF; las anuladas fuera de los totales | 1 día |
+| ~~X-04 a X-09, X-12, X-13~~ | **Corregido**: totales iguales en pantalla, PDF y Excel, anuladas aparte, ceros en Excel, datos reales del cliente | — |
 | F-04 | Búsqueda en el servidor en los 11 listados (hoy solo filtra la página visible) | 1 día |
 | Q-02 | `.env.testing` propio para que las pruebas no dependan de contraseñas del `.env` | 1 h |
-| Q-03 | Incluir `tests/Integration` en `phpunit.xml` | 15 min |
+| ~~Q-03~~ | **Corregido**: suite `Integration` en `phpunit.xml` | — |
 | Q-04 | Pruebas de concurrencia reales con dos conexiones MySQL en una base de pruebas | 1 día |
 
 ## P2: calidad, rendimiento y reutilización
@@ -57,6 +58,11 @@ Orden: primero lo que bloquea operar con dinero real, luego el riesgo financiero
 - **Despliegue:** O-08 a O-20.
 
 ## Riesgos aceptados de forma explícita en esta versión
+
+- **Reglas de cierre de órdenes (B-01).** Terminar una orden con saldo exige marcar "entrega con saldo" y escribir el motivo. Para cobrar en el momento: crear la orden Pendiente, registrar el abono y luego terminarla.
+- **Motivo al anular (M-09).** Anular una orden, movimiento de caja, factura, cotización o abono pide un motivo de al menos 5 caracteres.
+- **Duplicar en caja (M-15).** "Duplicar" ya no guarda el movimiento: abre el formulario precargado y hay que presionar Guardar.
+- **Cotizaciones vencidas (M-22).** No se convierten; hay que editarlas (fecha o validez) y revisar los precios.
 
 - **El pagado ya no se edita desde la factura (M-05).** Si el usuario solía corregir pagos así, ahora debe anular el abono o registrar uno nuevo en Caja. Es intencional: la otra forma reescribía arqueos pasados.
 - **Período monótono (M-06).** Nada se registra ni se anula con fecha anterior al último cierre. Para corregir un día pasado hay que eliminar los cierres posteriores (admin con clave).

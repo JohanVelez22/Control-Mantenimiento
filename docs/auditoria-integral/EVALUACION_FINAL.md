@@ -29,9 +29,8 @@ Además, **la recuperación está demostrada**: se restauró un respaldo real en
 2. **La migración nueva está escrita y probada, pero no se aplicó** en la base real. En la base actual no cambia ninguna fila.
 3. **No existe la tarea programada de Windows**: no hay respaldos automáticos ni verificación semanal, y no hay copia fuera del disco C:.
 4. Hay limitaciones que afectan a las **pruebas financieras integrales**:
-   - El valor del inventario y algunos totales difieren entre la pantalla, el Excel y el PDF (X-04, X-05, X-06).
    - La plantilla A4 de media hoja se rompe con muchos ítems (X-02).
-   - Los bloqueos de concurrencia nunca se probaron en MySQL real (Q-04).
+   - Los bloqueos de concurrencia solo se probaron en MySQL real para el cierre de caja (D-08); el resto, no (Q-04).
 
 ### Restricciones para las pruebas
 
@@ -49,7 +48,7 @@ Estar listo para pruebas **no** certifica el sistema para producción.
 4. Copia fuera del equipo (Drive o disco externo), con una restauración de prueba en otra máquina siguiendo `GUIA_RESPALDOS.md` 5(c).
 5. Usuario MySQL propio sin privilegios globales (D-07).
 6. ~~Reglas de cierre de órdenes (B-01) y bloqueo de repuestos en órdenes cerradas (B-03).~~ Hecho el 2026-11-13.
-7. Totales de documentos iguales a los de la pantalla (X-04, X-05, X-06) y plantilla A4 que no se rompa (X-02).
+7. ~~Totales de documentos iguales a los de la pantalla (X-04, X-05, X-06)~~ (hecho el 2026-11-13). Pendiente: plantilla A4 que no se rompa con muchos ítems (X-02).
 8. `start-ngrok.bat` fuera del uso en producción, y HTTPS si el sistema sale de la red local.
 9. Una semana de **operación en paralelo** con el método actual, cuadrando la caja diaria contra el sistema.
 10. `php artisan app:preflight` sin bloqueantes.

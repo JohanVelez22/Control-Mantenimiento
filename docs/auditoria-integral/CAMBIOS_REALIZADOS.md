@@ -100,6 +100,38 @@ Base de comparación: `origin/main` en `1a4982b`. Cada bloque es un commit indep
   - se cierra con Escape (alias `closeTsNotifModal`) y con clic en el fondo;
   - el foco pasa al botón al abrirlo.
 
+### Segunda ronda (2026-11-13, preparación para operar)
+
+Cada punto tiene pruebas que fallan con el código anterior. Suite: 672 pruebas en verde, con la suite `Integration` incluida.
+
+- **B-01 / B-03 (órdenes).** `App\Services\OrdenEstadoService`:
+  - terminar exige fecha de salida (no futura); con saldo, exige "entrega con saldo" y motivo;
+  - reabrir exige motivo;
+  - una orden terminada no cambia costo, equipo ni técnico, ni repuestos;
+  - la factura solo se genera para órdenes terminadas.
+  Prueba: `OrdenCierreReglasTest`.
+- **X-04 a X-09, X-12, X-13 (reportes).**
+  - Totales sobre todo el filtro y no solo la página, sin las anuladas, iguales en pantalla, PDF y Excel.
+  - Valor de inventario = cantidad × precio.
+  - Ceros visibles en Excel.
+  - Propietario real del equipo y datos del cliente en las facturas.
+  Prueba: `ReportesTotalesCoherentesTest`.
+- **M-09 (anulaciones).** Motivo obligatorio al anular, registrado en `eventos`; el modal global lo pide. Prueba: `AnulacionMotivoTest`.
+- **M-14, M-15, M-19 a M-22, M-24 (caja y cotizaciones).**
+  - El motivo de un descuadre no se puede vaciar.
+  - Duplicar un movimiento no guarda nada.
+  - Los montos se comparan en centavos.
+  - Una venta en $0 en un día cerrado se rechaza.
+  - Anular una cotización respeta la intención (`accion`).
+  - Una cotización vencida no se convierte.
+  - El costo de una orden tiene tope.
+  Prueba: `CajaCotizacionCorreccionesTest`.
+- **S-06.** Cambiar la contraseña desde Usuarios cierra las demás sesiones. Prueba: `SesionesCambioPasswordTest`.
+- **D-08.** El cierre reserva el día antes de leer los movimientos con lectura bloqueante, y el guardián usa lectura compartida. Comprobado en MySQL 8.4 con dos conexiones sobre una base temporal.
+- **Q-03.** `tests/Integration` forma parte de `phpunit.xml`.
+
+Ninguno de estos cambios requiere migración.
+
 ## Archivos modificados en la ronda
 
 **Aplicación**
