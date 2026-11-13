@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,7 @@ abstract class TestCase extends BaseTestCase
         $app->useStoragePath(self::storageDePruebas());
 
         $this->traitsUsedByTest = class_uses_recursive(static::class);
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+        $app->make(Kernel::class)->bootstrap();
 
         // Nunca copiar a la carpeta externa (Drive) desde una prueba
         $app['config']->set('backup.drive_path', null);

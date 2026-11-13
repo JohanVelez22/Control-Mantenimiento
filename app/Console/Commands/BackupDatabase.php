@@ -304,7 +304,7 @@ class BackupDatabase extends Command
         $port = config('database.connections.mysql.port', env('DB_PORT', '3306'));
 
         $command = sprintf(
-            '"%s" --user="%s" --host="%s" --port="%s" "%s" --result-file="%s"',
+            '"%s" --user="%s" --host="%s" --port="%s" --single-transaction --quick --no-tablespaces --routines --triggers --default-character-set=utf8mb4 "%s" --result-file="%s"',
             $mysqldumpBinary,
             $username,
             $host,
@@ -530,8 +530,43 @@ TXT;
         $this->limpiarBackupsAntiguos($drivePath, $retentionDays, 'Google Drive');
     }
 
+    /** Copias que se conservan SIEMPRE por tipo, aunque superen los días de retención. */
+    private const MINIMO_POR_TIPO = 3;
+
     /**
-     * Elimina respaldos que excedan los días de retención establecidos.
+     * Tipo de respaldo según el nombre que genera este comando. Archivos con otro nombre
+     * (copias manuales, respaldos externos) nunca se rotan ni se eliminan.
+     */
+    public static function tipoRespaldo(string $nombre): ?string
+    {
+        foreach (['backup_integral_' => 'integral', 'backup_bd_multimedia_' => 'bd_multimedia', 'code_' => 'codigo', 'db_' => 'bd'] as $prefijo => $tipo) {
+            if (str_starts_with($nombre, $prefijo) && preg_match('/\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.(sql|zip|gz)$/', $nombre)) {
+                return $tipo;
+            }
+        }
+
+        return null;
+    }
+
+    /** @return array<string, array<int, \SplFileInfo>> respaldos propios por tipo, del más reciente al más antiguo */
+    protected function respaldosPorTipo(string $dir): array
+    {
+        $grupos = [];
+        foreach (File::files($dir) as $file) {
+            if ($tipo = self::tipoRespaldo($file->getFilename())) {
+                $grupos[$tipo][] = $file;
+            }
+        }
+        foreach ($grupos as &$archivos) {
+            usort($archivos, fn ($a, $b) => $b->getMTime() <=> $a->getMTime());
+        }
+
+        return $grupos;
+    }
+
+    /**
+     * Elimina respaldos que excedan los días de retención, conservando siempre las
+     * MINIMO_POR_TIPO copias más recientes de cada tipo.
      */
     protected function limpiarBackupsAntiguos(string $dir, int $retentionDays, string $label): void
     {
@@ -539,18 +574,12 @@ TXT;
             return;
         }
 
-        $files = File::files($dir);
         $deleted = 0;
-
-        foreach ($files as $file) {
-            $ext = strtolower($file->getExtension());
-            if (! in_array($ext, ['sql', 'zip', 'gz'])) {
-                continue;
-            }
-
-            if (Carbon::createFromTimestamp($file->getCTime())->diffInDays(Carbon::now()) > $retentionDays) {
-                File::delete($file);
-                $deleted++;
+        foreach ($this->respaldosPorTipo($dir) as $archivos) {
+            foreach (array_slice($archivos, self::MINIMO_POR_TIPO) as $file) {
+                if (Carbon::createFromTimestamp($file->getMTime())->diffInDays(Carbon::now()) > $retentionDays && File::delete($file->getPathname())) {
+                    $deleted++;
+                }
             }
         }
 
@@ -561,8 +590,8 @@ TXT;
     }
 
     /**
-     * Aplica la política de rotación por cupo máximo de copias.
-     * Si los respaldos superan $maxCopies, elimina los más antiguos para dar espacio a los nuevos.
+     * Rotación por cupo máximo de copias, contado POR TIPO: generar copias de código no
+     * desplaza los respaldos de base de datos. Nunca baja de MINIMO_POR_TIPO copias.
      */
     protected function aplicarPoliticaRotacion(string $dir, int $maxCopies): void
     {
@@ -570,37 +599,19 @@ TXT;
             return;
         }
 
-        $files = File::files($dir);
-        $backupFiles = [];
-
-        foreach ($files as $file) {
-            $ext = strtolower($file->getExtension());
-            if (in_array($ext, ['sql', 'zip', 'gz'])) {
-                $backupFiles[] = [
-                    'path' => $file->getRealPath(),
-                    'mtime' => $file->getMTime(),
-                    'name' => $file->getFilename(),
-                ];
-            }
-        }
-
-        // Ordenar del más reciente al más antiguo
-        usort($backupFiles, fn ($a, $b) => $b['mtime'] <=> $a['mtime']);
-
-        // Si excede el cupo máximo de copias, eliminar los excedentes más antiguos
-        if (count($backupFiles) > $maxCopies) {
-            $exceso = array_slice($backupFiles, $maxCopies);
-            $deleted = 0;
-            foreach ($exceso as $item) {
-                if (File::delete($item['path'])) {
+        $cupo = max($maxCopies, self::MINIMO_POR_TIPO);
+        $deleted = 0;
+        foreach ($this->respaldosPorTipo($dir) as $archivos) {
+            foreach (array_slice($archivos, $cupo) as $file) {
+                if (File::delete($file->getPathname())) {
                     $deleted++;
                 }
             }
+        }
 
-            if ($deleted > 0) {
-                $this->line("  🔄 Rotación de copias: Se eliminaron {$deleted} archivo(s) antiguo(s) para respetar el límite de {$maxCopies} copias.");
-                Log::info("Rotación de backups: {$deleted} archivo(s) eliminados para respetar límite de {$maxCopies} copias.");
-            }
+        if ($deleted > 0) {
+            $this->line("  🔄 Rotación de copias: Se eliminaron {$deleted} archivo(s) antiguo(s) para respetar el límite de {$cupo} copias por tipo.");
+            Log::info("Rotación de backups: {$deleted} archivo(s) eliminados para respetar límite de {$cupo} copias por tipo.");
         }
     }
 }

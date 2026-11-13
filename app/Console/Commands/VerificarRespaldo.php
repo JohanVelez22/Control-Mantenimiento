@@ -46,7 +46,8 @@ class VerificarRespaldo extends Command
         $dir = storage_path('app/backups');
         $archivo = $this->option('archivo')
             ?: collect(File::exists($dir) ? File::files($dir) : [])
-                ->filter(fn ($f) => in_array(strtolower($f->getExtension()), ['sql', 'zip'], true))
+                // Solo respaldos que contienen la base de datos (no las copias de código)
+                ->filter(fn ($f) => in_array(BackupDatabase::tipoRespaldo($f->getFilename()), ['bd', 'bd_multimedia', 'integral'], true))
                 ->sortByDesc(fn ($f) => $f->getMTime())
                 ->first()?->getFilename();
 
@@ -76,6 +77,8 @@ class VerificarRespaldo extends Command
             if (str_ends_with(strtolower($archivo), '.zip')) {
                 $sqlTemporal = $sql = $this->extraerSqlDeZip($sql);
             }
+
+            $this->validarArchivo($sql);
 
             $pdo->exec("CREATE DATABASE `{$temp}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
             $this->restaurar($mysql, $c, $temp, $sql);
@@ -112,7 +115,7 @@ class VerificarRespaldo extends Command
         putenv("MYSQL_PWD={$c['password']}");
         try {
             $proceso = proc_open(
-                [$mysql, "--user={$c['username']}", "--host={$c['host']}", "--port={$c['port']}", '--default-character-set=utf8mb4', $temp],
+                [$mysql, "--user={$c['username']}", "--host={$c['host']}", "--port={$c['port']}", '--default-character-set=utf8mb4', '--one-database', $temp],
                 [0 => ['file', $sql, 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
                 $tuberias
             );
@@ -122,6 +125,30 @@ class VerificarRespaldo extends Command
             }
         } finally {
             putenv('MYSQL_PWD');
+        }
+    }
+
+    /**
+     * El archivo debe estar completo (mysqldump escribe "Dump completed" al final) y no
+     * puede cambiar de base: un USE o CREATE DATABASE escribiría fuera de la temporal.
+     */
+    private function validarArchivo(string $sql): void
+    {
+        $fin = '';
+        $h = fopen($sql, 'rb');
+        fseek($h, max(0, filesize($sql) - 512));
+        $fin = (string) stream_get_contents($h);
+        rewind($h);
+        while (($linea = fgets($h)) !== false) {
+            if (preg_match('/^\s*(USE\s|CREATE\s+(DATABASE|SCHEMA)\s)/i', $linea)) {
+                fclose($h);
+                throw new \RuntimeException('El respaldo contiene USE/CREATE DATABASE; se rechaza para no escribir fuera de la base temporal.');
+            }
+        }
+        fclose($h);
+
+        if (! str_contains($fin, 'Dump completed')) {
+            throw new \RuntimeException('El respaldo está incompleto: falta la marca final "Dump completed" de mysqldump.');
         }
     }
 
