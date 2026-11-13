@@ -132,6 +132,17 @@ Cada punto tiene pruebas que fallan con el código anterior. Suite: 672 pruebas 
 
 Ninguno de estos cambios requiere migración.
 
+### Tercera ronda (2026-11-13, código pendiente)
+
+Suite: 708 pruebas en verde.
+
+- **X-02.** Con más de 8 renglones, la plantilla A4 pasa a hoja completa: las firmas y el pie quedan después de los ítems, los totales no se parten y la marca de agua sale en todas las páginas. Prueba `PlantillaA4HojaCompletaTest`: renderiza el PDF real y mide página y altura de cada texto.
+- **M-16 / M-23.** `App\Support\Monto::parse` es la única regla para interpretar montos; lo ambiguo se rechaza. Prueba `MontoTest`.
+- **M-12 / M-13.** El informe dice "Flujo Neto de Caja", y los documentos llevan la leyenda "Documento interno de control. No es factura electrónica de venta (DIAN)".
+- **F-04.** En los 11 listados, Enter busca en el servidor. Prueba `BusquedaServidorTest`.
+- **D-05.** Los pagos de caja se enlazan solo por clave: no hay LIKE sobre la descripción ni N+1. Prueba `CajaPagosPorClaveTest`.
+- **D-01 (parcial).** Antes de restaurar se verifica en una base temporal, y después se avisa si el esquema es viejo.
+
 ## Archivos modificados en la ronda
 
 **Aplicación**

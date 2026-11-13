@@ -22,18 +22,18 @@ Orden: primero lo que bloquea operar con dinero real, luego el riesgo financiero
 | M-06 (resto) | Guardar `saldo_inicial` y `efectivo_esperado` como snapshot en `cierre_cajas` | ½ día |
 | ~~M-09 / M-14~~ | **Corregido**: motivo obligatorio al anular órdenes, caja, facturas, cotizaciones y abonos (queda en `eventos`); el motivo de un descuadre no se puede vaciar | — |
 | M-11 | Congelar el costo histórico (`factura_items.costo_unitario`) para que la utilidad no cambie con el tiempo | 1 día |
-| M-12 / M-13 | Renombrar "utilidad neta" (es flujo de caja) y rotular la factura como "documento interno, no factura electrónica DIAN" | 2 h |
+| ~~M-12 / M-13~~ | **Corregido**: "Flujo Neto de Caja" y leyenda "Documento interno de control. No es factura electrónica de venta (DIAN)" en A4 y POS | — |
 | ~~M-15, M-19 a M-22, M-24~~ | **Corregido**: duplicar sin guardar, comparación en centavos, venta en $0 en día cerrado, anulación de cotización con bloqueo e intención, cotizaciones vencidas, tope de costo | — |
-| M-16 / M-23 | Redondeo único y un solo normalizador de montos (`App\Support\Monto`) | 1 día |
-| D-01 | Restauración atómica: mantenimiento, comprobar la versión del esquema y restaurar primero en base temporal | 1 día |
+| ~~M-16 / M-23~~ | **Corregido**: `App\Support\Monto::parse`, una sola regla en todo el sistema | — |
+| D-01 (resto) | **Parcial**: ya se verifica en base temporal antes de restaurar y se avisa si el esquema es viejo. Falta el modo mantenimiento: restaurar fuera del horario de atención | ½ día |
 | D-07 / S-07 | Usuario MySQL propio con privilegios mínimos, en lugar de `root` | 1 h (+ prueba) |
 | ~~D-08~~ | **Corregido** y comprobado en MySQL 8.4 con dos conexiones | — |
 | S-04 | Código de consulta aleatorio por orden para el invitado | ½ día |
 | ~~S-06~~ | **Corregido**: cambiar la contraseña desde Usuarios cierra las demás sesiones | — |
 | S-08 | Respaldos cifrados y reautenticación para descargar, restaurar o actualizar | 1 día |
-| X-02 | Plantilla A4 de media hoja que no se rompa con muchos ítems | 1 día |
+| ~~X-02~~ | **Corregido**: con más de 8 renglones la plantilla pasa a hoja completa | — |
 | ~~X-04 a X-09, X-12, X-13~~ | **Corregido**: totales iguales en pantalla, PDF y Excel, anuladas aparte, ceros en Excel, datos reales del cliente | — |
-| F-04 | Búsqueda en el servidor en los 11 listados (hoy solo filtra la página visible) | 1 día |
+| ~~F-04~~ | **Corregido**: Enter busca en todos los registros | — |
 | Q-02 | `.env.testing` propio para que las pruebas no dependan de contraseñas del `.env` | 1 h |
 | ~~Q-03~~ | **Corregido**: suite `Integration` en `phpunit.xml` | — |
 | Q-04 | Pruebas de concurrencia reales con dos conexiones MySQL en una base de pruebas | 1 día |
@@ -42,7 +42,7 @@ Orden: primero lo que bloquea operar con dinero real, luego el riesgo financiero
 
 - **Base de datos y rendimiento:**
   - D-04: los filtros `whereDate` impiden usar índices; deben pasar a rangos.
-  - D-05: N+1 con `LIKE` en los accessors de caja. La rama por texto se puede eliminar porque 0 filas dependen de ella.
+  - ~~D-05~~: **corregido**, los pagos de caja se enlazan solo por clave.
   - D-11 a D-26.
 - **Arquitectura:**
   - ARQ-01: policies y gates en uso real, `@can` en las vistas y roles de las rutas iguales al comportamiento.

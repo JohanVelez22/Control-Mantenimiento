@@ -39,6 +39,7 @@ Esta carpeta es la **documentación técnica vigente** del sistema. Cuando un do
 | 16 | `GUIA_DESPLIEGUE.md` | Pasos obligatorios de esta versión, staging y despliegue |
 | 17 | `GUIA_RESPALDOS.md` | Tarea programada, 3-2-1, recuperación ante desastre y verificación |
 | 18 | `EVALUACION_FINAL.md` | **Categoría B (apto con restricciones)**, condiciones para producción y las 12 respuestas |
+| 19 | `PLAN_PRUEBAS_OPERACION.md` | Pasos previos del dueño, recorrido de prueba, semana en paralelo y lo que sigue abierto |
 
 ## Registro de archivos
 
