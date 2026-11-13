@@ -857,12 +857,41 @@ class BackupController extends Controller
                 ], 200);
             }
 
-            // Si trajo cambios: ejecutar migraciones y optimizar
+            // Si trajo cambios: RESPALDO previo, luego migraciones (O-04). Antes se migraba sin
+            // respaldo y se informaba éxito aunque la migración fallara.
             try {
-                Artisan::call('migrate', ['--force' => true]);
+                $codigoRespaldo = Artisan::call('app:backup-db', ['--sin-rotacion' => true]);
+            } catch (\Throwable $bkEx) {
+                $codigoRespaldo = 1;
+                Log::error('Respaldo previo a migrar falló: '.$bkEx->getMessage());
+            }
+            if ($codigoRespaldo !== 0) {
                 Artisan::call('optimize:clear');
+
+                return response()->json([
+                    'success' => false,
+                    'status' => 'backup_failed',
+                    'message' => 'El código se actualizó, pero NO se aplicaron las migraciones porque no se pudo generar el respaldo previo. Revise el respaldo y ejecute php artisan migrate --force manualmente.',
+                ], 200);
+            }
+
+            try {
+                $codigoMigracion = Artisan::call('migrate', ['--force' => true]);
+                $salidaMigracion = Artisan::output();
             } catch (\Throwable $migEx) {
-                Log::warning('Migraciones tras git pull generaron excepción: '.$migEx->getMessage());
+                $codigoMigracion = 1;
+                $salidaMigracion = $migEx->getMessage();
+            }
+            Artisan::call('optimize:clear');
+
+            if ($codigoMigracion !== 0) {
+                Log::error('Migraciones tras git pull fallaron: '.$salidaMigracion);
+
+                return response()->json([
+                    'success' => false,
+                    'status' => 'migration_failed',
+                    'message' => 'El código se actualizó pero las migraciones FALLARON. Hay un respaldo recién generado en Respaldos; revise el log antes de seguir operando.',
+                ], 200);
             }
 
             // Registrar en auditoría
