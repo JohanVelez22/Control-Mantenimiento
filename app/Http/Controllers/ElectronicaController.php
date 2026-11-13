@@ -229,7 +229,16 @@ class ElectronicaController extends Controller
                 return redirect()->back()->with('error', $error);
             }
 
+            if ($esAnulacion && ($error = app(AnulacionService::class)->exigirMotivo($request))) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', $error)->withInput();
+            }
+
             $electronica->update(['anulado' => $esAnulacion]);
+            if ($esAnulacion) {
+                app(AnulacionService::class)->registrarMotivo($electronica, $request, 'Orden '.$electronica->id_orden.' anulada');
+            }
 
             // Reversión centralizada de stock y abonos en caja
             app(AnulacionService::class)

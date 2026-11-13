@@ -372,7 +372,7 @@ class SecurityBloque0AuditTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $resp = $this->actingAs($this->admin)->post(route('cotizaciones.anular', $cotizacion));
+        $resp = $this->actingAs($this->admin)->post(route('cotizaciones.anular', $cotizacion), ['motivo' => 'Prueba de anulación']);
         $resp->assertSessionHas('error');
         $this->assertStringContainsString('ya ha sido convertida en factura', session('error'));
         $this->assertFalse($cotizacion->fresh()->anulado);

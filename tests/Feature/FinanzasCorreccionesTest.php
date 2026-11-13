@@ -128,7 +128,7 @@ class FinanzasCorreccionesTest extends TestCase
         $factura = Factura::firstOrFail();
         $base = MovimientoCaja::where('factura_id', $factura->id)->firstOrFail();
 
-        $this->post(route('caja.anular', $base), ['accion' => 'anular']);
+        $this->post(route('caja.anular', $base), ['motivo' => 'Prueba de anulación', 'accion' => 'anular']);
         $this->assertTrue($base->fresh()->anulado);
 
         $this->editarFactura($factura->fresh(), ['total_pagado' => 0, 'observaciones' => 'nota'])->assertSessionHasNoErrors();

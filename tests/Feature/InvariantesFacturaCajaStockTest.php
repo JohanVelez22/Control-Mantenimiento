@@ -122,21 +122,21 @@ class InvariantesFacturaCajaStockTest extends TestCase
         $this->verificarInvariantes('compra');
 
         // Anulación de la venta enviada dos veces con intención explícita
-        $this->post(route('inventario.facturas.anular', $venta), ['accion' => 'anular'])->assertSessionHas('success');
-        $this->post(route('inventario.facturas.anular', $venta), ['accion' => 'anular'])->assertSessionHas('error');
+        $this->post(route('inventario.facturas.anular', $venta), ['motivo' => 'Prueba de anulación', 'accion' => 'anular'])->assertSessionHas('success');
+        $this->post(route('inventario.facturas.anular', $venta), ['motivo' => 'Prueba de anulación', 'accion' => 'anular'])->assertSessionHas('error');
         $this->assertSame('anulada', $venta->fresh()->estado);
         $this->assertSame(0, MovimientoCaja::where('factura_id', $venta->id)->where('anulado', false)->count());
         $this->verificarInvariantes('doble anulación');
 
         // Reactivación (también doble): vuelven a contar los 3 pagos y sale de nuevo el stock
-        $this->post(route('inventario.facturas.anular', $venta), ['accion' => 'reactivar'])->assertSessionHas('success');
-        $this->post(route('inventario.facturas.anular', $venta), ['accion' => 'reactivar'])->assertSessionHas('error');
+        $this->post(route('inventario.facturas.anular', $venta), ['motivo' => 'Prueba de anulación', 'accion' => 'reactivar'])->assertSessionHas('success');
+        $this->post(route('inventario.facturas.anular', $venta), ['motivo' => 'Prueba de anulación', 'accion' => 'reactivar'])->assertSessionHas('error');
         $this->assertEqualsWithDelta(120000, (float) $venta->fresh()->total_pagado, 0.001);
         $this->verificarInvariantes('doble reactivación');
 
         // Anular SOLO un abono hijo (reembolso) → la factura vuelve a quedar pendiente por 50.000
         $hijo = MovimientoCaja::where('parent_id', $movVenta->id)->latest('id')->firstOrFail();
-        $this->post(route('caja.anular', $hijo), ['accion' => 'anular'])->assertSessionHas('success');
+        $this->post(route('caja.anular', $hijo), ['motivo' => 'Prueba de anulación', 'accion' => 'anular'])->assertSessionHas('success');
         $this->assertEqualsWithDelta(70000, (float) $venta->fresh()->total_pagado, 0.001);
         $this->verificarInvariantes('anulación de un abono');
 

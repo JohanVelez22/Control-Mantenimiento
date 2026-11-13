@@ -585,7 +585,7 @@ class MovimientoInventarioControllerTest extends TestCase
         $this->stock->incrementarStock(5);
         $this->stock->refresh(); // 15
 
-        $response = $this->actingAs($this->admin)->post(route('inventario.facturas.anular', $factura), [
+        $response = $this->actingAs($this->admin)->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación',
             'password_confirm' => 'password',
         ]);
 
@@ -619,7 +619,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'precio_unitario' => 50000,
         ]);
 
-        $response = $this->actingAs($this->admin)->post(route('inventario.facturas.anular', $factura), [
+        $response = $this->actingAs($this->admin)->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación',
             'password_confirm' => 'password',
         ]);
 
@@ -650,7 +650,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'precio_unitario' => 30000,
         ]);
 
-        $response = $this->actingAs($this->admin)->post(route('inventario.facturas.anular', $factura), [
+        $response = $this->actingAs($this->admin)->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación',
             'password_confirm' => 'password',
         ]);
 
@@ -676,7 +676,7 @@ class MovimientoInventarioControllerTest extends TestCase
         ]);
 
         // Admin doesn't need password, test with tecnico
-        $response = $this->actingAs($this->tecnico)->post(route('inventario.facturas.anular', $factura), []);
+        $response = $this->actingAs($this->tecnico)->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación']);
 
         $response->assertSessionHas('error');
         $this->assertStringContainsString('contraseña', $response->getSession()->get('error'));
@@ -724,7 +724,7 @@ class MovimientoInventarioControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $response = $this->actingAs($this->admin)->post(route('inventario.facturas.anular', $factura), [
+        $response = $this->actingAs($this->admin)->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación',
             'password_confirm' => 'password',
         ]);
 

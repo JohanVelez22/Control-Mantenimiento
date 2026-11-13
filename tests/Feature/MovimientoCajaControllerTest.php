@@ -215,7 +215,7 @@ class MovimientoCajaControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $response = $this->actingAs($this->admin)->post(route('caja.anular', $movimiento), [
+        $response = $this->actingAs($this->admin)->post(route('caja.anular', $movimiento), ['motivo' => 'Prueba de anulación',
             'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
         ]);
 
@@ -240,7 +240,7 @@ class MovimientoCajaControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $response = $this->actingAs($this->tecnico)->post(route('caja.anular', $movimiento), [
+        $response = $this->actingAs($this->tecnico)->post(route('caja.anular', $movimiento), ['motivo' => 'Prueba de anulación',
             'admin_password' => 'password',
         ]);
 
@@ -279,7 +279,7 @@ class MovimientoCajaControllerTest extends TestCase
             'parent_id' => $padre->id,
         ]);
 
-        $response = $this->actingAs($this->admin)->post(route('caja.anular', $padre), [
+        $response = $this->actingAs($this->admin)->post(route('caja.anular', $padre), ['motivo' => 'Prueba de anulación',
             'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
         ]);
 
@@ -492,7 +492,7 @@ class MovimientoCajaControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $response = $this->actingAs($this->admin)->post(route('caja.anular', $movimiento), [
+        $response = $this->actingAs($this->admin)->post(route('caja.anular', $movimiento), ['motivo' => 'Prueba de anulación',
             'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
         ]);
 

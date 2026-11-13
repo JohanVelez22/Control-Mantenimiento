@@ -284,6 +284,14 @@ class CotizacionController extends Controller
 
                 return back()->with('error', $error);
             }
+            if ($esAnulacion && ($error = app(AnulacionService::class)->exigirMotivo($request))) {
+                DB::rollBack();
+
+                return back()->with('error', $error)->withInput();
+            }
+            if ($esAnulacion) {
+                app(AnulacionService::class)->registrarMotivo($cotizacion, $request, 'Cotización '.$cotizacion->codigo.' anulada');
+            }
             $cotizacion->update([
                 'anulado' => $esAnulacion,
             ]);

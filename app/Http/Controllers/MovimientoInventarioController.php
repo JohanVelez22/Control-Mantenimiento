@@ -481,6 +481,14 @@ class MovimientoInventarioController extends Controller
 
                 return redirect()->back()->with('error', $error);
             }
+            if ($factura->estado !== 'anulada' && ($error = app(AnulacionService::class)->exigirMotivo($request))) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', $error)->withInput();
+            }
+            if ($factura->estado !== 'anulada') {
+                app(AnulacionService::class)->registrarMotivo($factura, $request, 'Factura '.$factura->numero_factura.' anulada');
+            }
 
             foreach ($movsCaja as $m) {
                 $fechaM = $m->fecha ? $m->fecha->toDateString() : null;

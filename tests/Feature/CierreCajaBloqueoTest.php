@@ -136,7 +136,7 @@ class CierreCajaBloqueoTest extends TestCase
 
         // Regla del taller: un día cerrado no se modifica, ni siquiera por el administrador
         // (el arqueo histórico quedaría desactualizado). Para corregirlo se elimina el cierre.
-        $response = $this->actingAs($this->admin)->post(route('caja.anular', $movimiento));
+        $response = $this->actingAs($this->admin)->post(route('caja.anular', $movimiento), ['motivo' => 'Prueba de anulación']);
         $response->assertSessionHas('error');
 
         $movimiento->refresh();
@@ -238,7 +238,7 @@ class CierreCajaBloqueoTest extends TestCase
         $this->cerrarDia($fechaAbono);
 
         // Intento de eliminar el abono debe ser rechazado
-        $response = $this->actingAs($this->admin)->delete(route('abonos.destroy', $abono));
+        $response = $this->actingAs($this->admin)->delete(route('abonos.destroy', $abono), ['motivo' => 'Prueba de anulación']);
         $response->assertSessionHas('error');
 
         $this->assertNotNull(Abono::find($abono->id));
@@ -332,7 +332,7 @@ class CierreCajaBloqueoTest extends TestCase
         $this->cerrarDia($fechaAbono);
 
         // Intentar anular la orden debe rebotar con error descriptivo
-        $response = $this->actingAs($this->admin)->post(route('mantenimientos.anular', $mantenimiento));
+        $response = $this->actingAs($this->admin)->post(route('mantenimientos.anular', $mantenimiento), ['motivo' => 'Prueba de anulación']);
         $response->assertSessionHas('error');
 
         $mantenimiento->refresh();

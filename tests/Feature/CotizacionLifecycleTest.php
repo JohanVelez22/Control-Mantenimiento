@@ -115,13 +115,13 @@ class CotizacionLifecycleTest extends TestCase
         ]);
 
         // Anular
-        $responseAnular = $this->actingAs($this->admin)->post(route('cotizaciones.anular', $cotizacion));
+        $responseAnular = $this->actingAs($this->admin)->post(route('cotizaciones.anular', $cotizacion), ['motivo' => 'Prueba de anulación']);
         $responseAnular->assertSessionHas('success');
         $cotizacion->refresh();
         $this->assertTrue((bool) $cotizacion->anulado);
 
         // Reactivar
-        $responseReactivar = $this->actingAs($this->admin)->post(route('cotizaciones.anular', $cotizacion));
+        $responseReactivar = $this->actingAs($this->admin)->post(route('cotizaciones.anular', $cotizacion), ['motivo' => 'Prueba de anulación']);
         $responseReactivar->assertSessionHas('success');
         $cotizacion->refresh();
         $this->assertFalse((bool) $cotizacion->anulado);

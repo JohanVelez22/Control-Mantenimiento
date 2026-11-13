@@ -153,6 +153,11 @@ trait HandlesAbono
             return back()->with('error', 'Este abono ya se encuentra anulado.');
         }
 
+        // M-09: anular un abono (devolver dinero) exige motivo.
+        if ($error = app(AnulacionService::class)->exigirMotivo(request())) {
+            return back()->with('error', $error);
+        }
+
         try {
             DB::beginTransaction();
 
@@ -172,6 +177,7 @@ trait HandlesAbono
             }
 
             // Anular lógicamente el Abono (preservando el registro en la BD, la auditoría y la clave foránea)
+            app(AnulacionService::class)->registrarMotivo($abono, request(), 'Abono de $'.number_format((float) $abono->monto, 0, ',', '.').' anulado');
             $abono->update([
                 'anulado' => true,
             ]);

@@ -46,7 +46,7 @@ class ReporteDiarioExportCoincideTest extends TestCase
         $mov(['persona' => 'Cliente Mostrador', 'nuevo_concepto' => 'Servicio', 'tipo_movimiento' => 'ingreso', 'tipo_pago' => 'efectivo', 'monto' => 120000]);
         $mov(['empresa' => 'Internet SAS', 'nuevo_concepto' => 'Servicios públicos', 'tipo_movimiento' => 'egreso', 'tipo_pago' => 'consignacion', 'monto' => 20000]);
         $mov(['persona' => 'Error', 'nuevo_concepto' => 'Varios', 'tipo_movimiento' => 'ingreso', 'tipo_pago' => 'efectivo', 'monto' => 500000]);
-        $this->post(route('caja.anular', MovimientoCaja::where('monto', 500000)->first()), ['accion' => 'anular'])->assertSessionHas('success');
+        $this->post(route('caja.anular', MovimientoCaja::where('monto', 500000)->first()), ['motivo' => 'Prueba de anulación', 'accion' => 'anular'])->assertSessionHas('success');
 
         $this->post(route('inventario.venta.store'), [
             'facturable_global' => 'Cliente:'.$cliente->id, 'fecha' => self::DIA, 'total_pagado' => 30000, 'tipo_pago' => 'efectivo',

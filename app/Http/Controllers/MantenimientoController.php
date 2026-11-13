@@ -391,7 +391,16 @@ class MantenimientoController extends Controller
                 return redirect()->back()->with('error', $error);
             }
 
+            if ($esAnulacion && ($error = app(AnulacionService::class)->exigirMotivo($request))) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', $error)->withInput();
+            }
+
             $mantenimiento->update(['anulado' => $esAnulacion]);
+            if ($esAnulacion) {
+                app(AnulacionService::class)->registrarMotivo($mantenimiento, $request, 'Orden '.$mantenimiento->id_orden.' anulada');
+            }
 
             // Reversión centralizada de stock y abonos en caja
             app(AnulacionService::class)

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Electronica;
+use App\Models\Evento;
 use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
 use App\Models\Stock;
@@ -33,6 +34,28 @@ class AnulacionService
 {
     /** Intentos fallidos de contraseña de administrador permitidos cada 15 minutos. */
     public const MAX_INTENTOS_PASSWORD_ADMIN = 10;
+
+    public const MOTIVO_MIN = 5;
+
+    /**
+     * M-09: anular un documento con dinero exige un motivo. Devuelve el mensaje de error
+     * o null si el motivo es válido.
+     */
+    public function exigirMotivo(Request $request): ?string
+    {
+        if (mb_strlen(trim((string) $request->input('motivo', ''))) < self::MOTIVO_MIN) {
+            return 'Indique el motivo de la anulación (mínimo '.self::MOTIVO_MIN.' caracteres). Queda registrado en el historial.';
+        }
+
+        return null;
+    }
+
+    /** M-09: deja el motivo de la anulación en el historial (`eventos`) del registro. */
+    public function registrarMotivo(Model $modelo, Request $request, string $que = 'Anulación'): void
+    {
+        $motivo = mb_substr(trim((string) $request->input('motivo', '')), 0, 500);
+        Evento::registrar('motivo_anulacion', $modelo, null, ['motivo' => $motivo], "{$que}. Motivo: {$motivo}");
+    }
 
     /**
      * Valida que la contraseña corresponda a cualquier administrador.

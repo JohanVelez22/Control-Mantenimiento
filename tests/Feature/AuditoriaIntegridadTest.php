@@ -76,7 +76,7 @@ class AuditoriaIntegridadTest extends TestCase
         $this->abonar(100000);
         $this->assertEquals(100000, $this->ingresosActivos());
 
-        $this->actingAs($this->admin)->post(route('mantenimientos.anular', $this->mantenimiento))->assertRedirect();
+        $this->actingAs($this->admin)->post(route('mantenimientos.anular', $this->mantenimiento), ['motivo' => 'Prueba de anulación'])->assertRedirect();
 
         $this->assertTrue((bool) $this->mantenimiento->fresh()->anulado);
         $this->assertEquals(0, $this->ingresosActivos());
@@ -87,15 +87,15 @@ class AuditoriaIntegridadTest extends TestCase
     {
         $this->abonar(30000);
         $abonoEliminado = Abono::first();
-        $this->actingAs($this->admin)->delete(route('abonos.destroy', $abonoEliminado))->assertRedirect();
+        $this->actingAs($this->admin)->delete(route('abonos.destroy', $abonoEliminado), ['motivo' => 'Prueba de anulación'])->assertRedirect();
 
         $this->abonar(50000);
         $this->assertEquals(50000, $this->ingresosActivos());
 
-        $this->actingAs($this->admin)->post(route('mantenimientos.anular', $this->mantenimiento));
+        $this->actingAs($this->admin)->post(route('mantenimientos.anular', $this->mantenimiento), ['motivo' => 'Prueba de anulación']);
         $this->assertEquals(0, $this->ingresosActivos());
 
-        $this->actingAs($this->admin)->post(route('mantenimientos.anular', $this->mantenimiento));
+        $this->actingAs($this->admin)->post(route('mantenimientos.anular', $this->mantenimiento), ['motivo' => 'Prueba de anulación']);
         $this->assertFalse((bool) $this->mantenimiento->fresh()->anulado);
 
         $this->assertTrue($abonoEliminado->fresh()->anulado, 'El abono eliminado no debe reactivarse');
@@ -108,8 +108,8 @@ class AuditoriaIntegridadTest extends TestCase
     {
         $this->abonar(40000);
 
-        $this->actingAs($this->admin)->post(route('mantenimientos.anular', $this->mantenimiento), ['accion' => 'anular']);
-        $this->actingAs($this->admin)->post(route('mantenimientos.anular', $this->mantenimiento), ['accion' => 'anular'])
+        $this->actingAs($this->admin)->post(route('mantenimientos.anular', $this->mantenimiento), ['motivo' => 'Prueba de anulación', 'accion' => 'anular']);
+        $this->actingAs($this->admin)->post(route('mantenimientos.anular', $this->mantenimiento), ['motivo' => 'Prueba de anulación', 'accion' => 'anular'])
             ->assertSessionHas('error');
 
         $this->assertTrue((bool) $this->mantenimiento->fresh()->anulado);
@@ -165,11 +165,11 @@ class AuditoriaIntegridadTest extends TestCase
     public function test_no_se_reactiva_pago_de_factura_anulada(): void
     {
         $factura = $this->vender($this->crearStock(), 2000);
-        $this->actingAs($this->admin)->post(route('inventario.facturas.anular', $factura))->assertRedirect();
+        $this->actingAs($this->admin)->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación'])->assertRedirect();
         $mov = MovimientoCaja::where('factura_id', $factura->id)->first();
         $this->assertTrue($mov->anulado);
 
-        $this->actingAs($this->admin)->post(route('caja.anular', $mov))->assertSessionHas('error');
+        $this->actingAs($this->admin)->post(route('caja.anular', $mov), ['motivo' => 'Prueba de anulación'])->assertSessionHas('error');
 
         $this->assertTrue($mov->fresh()->anulado);
         $this->assertEquals(0, $this->ingresosActivos());

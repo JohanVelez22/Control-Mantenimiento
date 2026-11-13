@@ -625,7 +625,16 @@ class MovimientoCajaController extends Controller
                 return redirect()->back()->with('error', $bloqueo);
             }
 
+            if ($esAnulacion && ($error = app(AnulacionService::class)->exigirMotivo($request))) {
+                DB::rollBack();
+
+                return redirect()->back()->with('error', $error)->withInput();
+            }
+
             // Anular movimiento principal
+            if ($esAnulacion) {
+                app(AnulacionService::class)->registrarMotivo($movimiento, $request, 'Movimiento de caja '.$movimiento->id.' anulado');
+            }
             $movimiento->update([
                 'anulado' => $esAnulacion,
                 'estado' => $esAnulacion ? 'anulado' : 'activo',

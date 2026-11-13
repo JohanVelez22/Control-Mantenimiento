@@ -203,6 +203,12 @@
                             class="glass-input text-center tracking-widest text-lg focus:ring-orange-500">
                     </div>
                     @endif
+                    {{-- M-09: motivo obligatorio al anular documentos con dinero --}}
+                    <div id="global-anular-motivo-wrap" class="hidden">
+                        <label for="global-anular-motivo" class="field-label">Motivo de la anulación <span class="text-red-500 font-bold">*</span></label>
+                        <textarea name="motivo" id="global-anular-motivo" rows="2" maxlength="500" disabled
+                            placeholder="Ej.: el cliente desistió, cobro registrado dos veces..." class="glass-input mt-1 resize-y text-sm"></textarea>
+                    </div>
                     <div class="flex gap-3 pt-2">
                         <button type="button" id="global-anular-cancel" onclick="closeAnularModal()" class="flex-1 btn-ghost-amber">Cancelar</button>
                         <button type="submit" id="global-anular-submit" class="flex-1 btn-danger justify-center font-bold py-2.5 rounded-xl">Anular</button>
@@ -452,6 +458,19 @@
             const accionInput = document.getElementById('global-anular-accion');
             if (accionInput) {
                 accionInput.value = (customMethod === 'DELETE' || customTitle) ? '' : (isReactivation ? 'reactivar' : 'anular');
+            }
+            // M-09: anular documentos con dinero (órdenes, caja, facturas, cotizaciones, abonos)
+            // exige un motivo, que el servidor valida y deja en el historial.
+            const motivoWrap = document.getElementById('global-anular-motivo-wrap');
+            const motivoInput = document.getElementById('global-anular-motivo');
+            const esDocumentoConDinero = /\/(mantenimientos|electronicas|caja|facturas|cotizaciones|abonos)\//.test(actionUrl);
+            const pideMotivo = !isReactivation && esDocumentoConDinero
+                && (accionInput?.value === 'anular' || /\/abonos\//.test(actionUrl));
+            if (motivoWrap && motivoInput) {
+                motivoWrap.classList.toggle('hidden', !pideMotivo);
+                motivoInput.disabled = !pideMotivo;
+                motivoInput.required = pideMotivo;
+                motivoInput.value = '';
             }
 
             if (customMethod === 'DELETE' || customTitle) {

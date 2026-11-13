@@ -299,12 +299,10 @@
                     @endif
 
                     @if(!$abono->anulado && auth()->user()->isAdmin())
-                    <form action="{{ route('abonos.destroy', $abono) }}" method="POST" data-confirm-delete="¿Eliminar este abono de $ {{ number_format($abono->monto, 0, ',', '.') }}?">
-                        @csrf @method('DELETE')
-                        <button type="submit" class="btn-danger btn-action-square" title="Anular abono">
-                            🗑️
-                        </button>
-                    </form>
+                    <button type="button" class="btn-danger btn-action-square" title="Anular abono"
+                        onclick="openAnularModal('{{ route('abonos.destroy', $abono) }}', false, 'DELETE', 'Anular abono', '¿Anular este abono de $ {{ number_format($abono->monto, 0, ',', '.') }}? Su ingreso se retirará de la caja.')">
+                        🗑️
+                    </button>
                     @endif
                 </div>
             </div>

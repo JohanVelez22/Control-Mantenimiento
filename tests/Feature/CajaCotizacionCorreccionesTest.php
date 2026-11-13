@@ -113,10 +113,10 @@ class CajaCotizacionCorreccionesTest extends TestCase
             'validez_dias' => 15, 'total' => 1000, 'estado' => 'pendiente', 'user_id' => $this->admin->id,
         ]);
 
-        $this->actingAs($this->admin)->post(route('cotizaciones.anular', $cot), ['accion' => 'anular']);
+        $this->actingAs($this->admin)->post(route('cotizaciones.anular', $cot), ['motivo' => 'Prueba de anulación', 'accion' => 'anular']);
         $this->assertTrue((bool) $cot->fresh()->anulado);
 
-        $this->post(route('cotizaciones.anular', $cot), ['accion' => 'anular'])->assertSessionHas('error');
+        $this->post(route('cotizaciones.anular', $cot), ['motivo' => 'Prueba de anulación', 'accion' => 'anular'])->assertSessionHas('error');
         $this->assertTrue((bool) $cot->fresh()->anulado);
     }
 

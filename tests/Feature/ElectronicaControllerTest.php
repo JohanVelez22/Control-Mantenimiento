@@ -381,7 +381,7 @@ class ElectronicaControllerTest extends TestCase
         ]);
 
         // Anular
-        $response = $this->actingAs($this->admin)->post(route('electronicas.anular', $electronica), [
+        $response = $this->actingAs($this->admin)->post(route('electronicas.anular', $electronica), ['motivo' => 'Prueba de anulación',
             'password_confirm' => env('ADMIN_DEFAULT_PASSWORD', 'Admin123*'),
         ]);
 
@@ -390,7 +390,7 @@ class ElectronicaControllerTest extends TestCase
         $this->assertEquals(1, $electronica->anulado);
 
         // Reactivar
-        $response = $this->actingAs($this->admin)->post(route('electronicas.anular', $electronica), [
+        $response = $this->actingAs($this->admin)->post(route('electronicas.anular', $electronica), ['motivo' => 'Prueba de anulación',
             'password_confirm' => 'password',
         ]);
 
@@ -414,7 +414,7 @@ class ElectronicaControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $response = $this->actingAs($this->tecnico)->post(route('electronicas.anular', $electronica), [
+        $response = $this->actingAs($this->tecnico)->post(route('electronicas.anular', $electronica), ['motivo' => 'Prueba de anulación',
             'admin_password' => 'password',
         ]);
 
@@ -546,7 +546,7 @@ class ElectronicaControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $response = $this->actingAs($this->admin)->delete(route('electronicas.abonos.destroy', $abono));
+        $response = $this->actingAs($this->admin)->delete(route('electronicas.abonos.destroy', $abono), ['motivo' => 'Prueba de anulación']);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('abonos', ['id' => $abono->id, 'anulado' => true]);

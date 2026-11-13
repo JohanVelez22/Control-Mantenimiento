@@ -129,7 +129,7 @@ class ElectronicaAbonoControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $response = $this->actingAs($this->admin)->delete(route('electronicas.abonos.destroy', $abono), [
+        $response = $this->actingAs($this->admin)->delete(route('electronicas.abonos.destroy', $abono), ['motivo' => 'Prueba de anulación',
             'password_confirm' => 'password',
         ]);
 
@@ -161,7 +161,7 @@ class ElectronicaAbonoControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $response = $this->actingAs($this->tecnico)->delete(route('electronicas.abonos.destroy', $abono), [
+        $response = $this->actingAs($this->tecnico)->delete(route('electronicas.abonos.destroy', $abono), ['motivo' => 'Prueba de anulación',
             'password_confirm' => 'password',
         ]);
 
@@ -183,7 +183,7 @@ class ElectronicaAbonoControllerTest extends TestCase
         $abono = Abono::latest()->first();
 
         // Admin doesn't need password, test with tecnico
-        $response = $this->actingAs($this->tecnico)->delete(route('electronicas.abonos.destroy', $abono), []);
+        $response = $this->actingAs($this->tecnico)->delete(route('electronicas.abonos.destroy', $abono), ['motivo' => 'Prueba de anulación']);
 
         $response->assertSessionHas('error');
         $this->assertStringContainsString('contraseña', $response->getSession()->get('error'));

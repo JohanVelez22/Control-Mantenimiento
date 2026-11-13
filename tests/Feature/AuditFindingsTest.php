@@ -449,7 +449,7 @@ class AuditFindingsTest extends TestCase
 
         // Anular
         $this->actingAs($this->admin)
-            ->post(route('inventario.facturas.anular', $factura), [
+            ->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación',
                 'password_confirm' => 'password', // admin password
             ])
             ->assertRedirect()
@@ -502,7 +502,7 @@ class AuditFindingsTest extends TestCase
 
         // Anular
         $this->actingAs($this->admin)
-            ->post(route('inventario.facturas.anular', $factura), [
+            ->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación',
                 'password_confirm' => 'password',
             ])
             ->assertRedirect()
@@ -550,7 +550,7 @@ class AuditFindingsTest extends TestCase
 
         // Reactivar (llamar endpoint anular de nuevo)
         $this->actingAs($this->admin)
-            ->post(route('inventario.facturas.anular', $factura), [
+            ->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación',
                 'password_confirm' => 'password',
             ])
             ->assertRedirect()
@@ -597,7 +597,7 @@ class AuditFindingsTest extends TestCase
         $movimientosAntes = MovimientoCaja::count();
 
         $this->actingAs($this->admin)
-            ->post(route('inventario.facturas.anular', $factura), [
+            ->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación',
                 'password_confirm' => 'password',
             ])
             ->assertRedirect();
@@ -1051,7 +1051,7 @@ class AuditFindingsTest extends TestCase
         // 5. ANULAR VENTA: Stock debe volver a 10
         $venta = Factura::where('tipo_movimiento', 'venta')->first();
         $this->actingAs($this->admin)
-            ->post(route('inventario.facturas.anular', $venta), [
+            ->post(route('inventario.facturas.anular', $venta), ['motivo' => 'Prueba de anulación',
                 'password_confirm' => 'password',
             ])
             ->assertSessionHas('success');
@@ -1062,7 +1062,7 @@ class AuditFindingsTest extends TestCase
         // 6. ANULAR COMPRA: Stock debe volver a 0
         $compra = Factura::where('tipo_movimiento', 'compra')->first();
         $this->actingAs($this->admin)
-            ->post(route('inventario.facturas.anular', $compra), [
+            ->post(route('inventario.facturas.anular', $compra), ['motivo' => 'Prueba de anulación',
                 'password_confirm' => 'password',
             ])
             ->assertSessionHas('success');
@@ -1264,7 +1264,7 @@ class AuditFindingsTest extends TestCase
 
         // Reactivar factura usando la contraseña del admin
         $response = $this->actingAs($this->admin)
-            ->post(route('inventario.facturas.anular', $factura), [
+            ->post(route('inventario.facturas.anular', $factura), ['motivo' => 'Prueba de anulación',
                 'password_confirm' => 'password',
             ]);
 

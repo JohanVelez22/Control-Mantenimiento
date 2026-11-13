@@ -182,7 +182,7 @@ class RobustezContableAuditTest extends TestCase
         $this->assertNotNull($movCaja);
 
         // Anular el movimiento en Caja
-        $responseAnular = $this->actingAs($this->admin)->post(route('caja.anular', $movCaja));
+        $responseAnular = $this->actingAs($this->admin)->post(route('caja.anular', $movCaja), ['motivo' => 'Prueba de anulación']);
         $responseAnular->assertSessionHas('success');
 
         // Verificar que el Abono se marcó como anulado y el saldo del mantenimiento se actualizó
@@ -517,7 +517,7 @@ class RobustezContableAuditTest extends TestCase
         ]);
 
         // 4. Anular movimiento padre como admin con clave de confirmación
-        $response = $this->actingAs($this->admin)->post(route('caja.anular', $padre), [
+        $response = $this->actingAs($this->admin)->post(route('caja.anular', $padre), ['motivo' => 'Prueba de anulación',
             'admin_password' => 'Admin123*',
         ]);
 

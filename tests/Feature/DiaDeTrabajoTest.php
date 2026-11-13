@@ -150,7 +150,7 @@ class DiaDeTrabajoTest extends TestCase
             'tipo_movimiento' => 'ingreso', 'tipo_pago' => 'efectivo', 'monto' => 999000,
         ])->assertSessionHasNoErrors();
         $erroneo = MovimientoCaja::where('monto', 999000)->firstOrFail();
-        $this->post(route('caja.anular', $erroneo), ['accion' => 'anular'])->assertSessionHas('success');
+        $this->post(route('caja.anular', $erroneo), ['motivo' => 'Prueba de anulación', 'accion' => 'anular'])->assertSessionHas('success');
         $this->assertTrue((bool) $erroneo->fresh()->anulado);
 
         // Inventario

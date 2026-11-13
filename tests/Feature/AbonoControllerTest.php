@@ -150,7 +150,7 @@ class AbonoControllerTest extends TestCase
             'user_id' => $this->admin->id,
         ]);
 
-        $response = $this->actingAs($this->admin)->delete(route('abonos.destroy', $abono));
+        $response = $this->actingAs($this->admin)->delete(route('abonos.destroy', $abono), ['motivo' => 'Prueba de anulación']);
 
         $response->assertRedirect();
         // El abono NO se borra físicamente de la base de datos
@@ -196,12 +196,12 @@ class AbonoControllerTest extends TestCase
         ]);
 
         // Sin contraseña de admin debe fallar
-        $responseFail = $this->actingAs($this->tecnico)->delete(route('abonos.destroy', $abono), []);
+        $responseFail = $this->actingAs($this->tecnico)->delete(route('abonos.destroy', $abono), ['motivo' => 'Prueba de anulación']);
         $responseFail->assertSessionHas('error');
         $this->assertDatabaseHas('abonos', ['id' => $abono->id, 'anulado' => false]);
 
         // Con contraseña de admin autoriza la anulación lógica
-        $responseOk = $this->actingAs($this->tecnico)->delete(route('abonos.destroy', $abono), [
+        $responseOk = $this->actingAs($this->tecnico)->delete(route('abonos.destroy', $abono), ['motivo' => 'Prueba de anulación',
             'password_confirm' => 'password',
         ]);
         $responseOk->assertRedirect();
@@ -220,7 +220,7 @@ class AbonoControllerTest extends TestCase
             'anulado' => true,
         ]);
 
-        $response = $this->actingAs($this->admin)->delete(route('abonos.destroy', $abono));
+        $response = $this->actingAs($this->admin)->delete(route('abonos.destroy', $abono), ['motivo' => 'Prueba de anulación']);
         $response->assertSessionHas('error');
     }
 }

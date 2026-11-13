@@ -412,7 +412,7 @@ class MantenimientoControllerTest extends TestCase
         ]);
 
         // Anular
-        $response = $this->actingAs($this->admin)->post(route('mantenimientos.anular', $mantenimiento), [
+        $response = $this->actingAs($this->admin)->post(route('mantenimientos.anular', $mantenimiento), ['motivo' => 'Prueba de anulación',
             'password_confirm' => 'password',
         ]);
 
@@ -421,7 +421,7 @@ class MantenimientoControllerTest extends TestCase
         $this->assertEquals(1, $mantenimiento->anulado);
 
         // Reactivar
-        $response = $this->actingAs($this->admin)->post(route('mantenimientos.anular', $mantenimiento), [
+        $response = $this->actingAs($this->admin)->post(route('mantenimientos.anular', $mantenimiento), ['motivo' => 'Prueba de anulación',
             'password_confirm' => 'password',
         ]);
 
@@ -446,7 +446,7 @@ class MantenimientoControllerTest extends TestCase
             'anulado' => false,
         ]);
 
-        $response = $this->actingAs($this->tecnico)->post(route('mantenimientos.anular', $mantenimiento), [
+        $response = $this->actingAs($this->tecnico)->post(route('mantenimientos.anular', $mantenimiento), ['motivo' => 'Prueba de anulación',
             'admin_password' => 'password',
         ]);
 
