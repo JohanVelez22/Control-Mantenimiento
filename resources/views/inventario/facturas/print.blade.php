@@ -12,8 +12,8 @@
 <div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
     <div class="info-col">
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}:</strong> <strong>{{ $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? 'N/A' }}</strong></p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Identificación:</strong> <strong>{{ $factura->facturable->nit_documento ?? $factura->facturable->documento ?? 'N/A' }}</strong></p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Teléfono:</strong> <strong>{{ $factura->facturable->telefono ?? 'N/A' }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Identificación:</strong> <strong>{{ $factura->facturable->identificacion ?? 'N/A' }}</strong></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Teléfono:</strong> <strong>{{ $factura->facturable->telefono ?? $factura->facturable->movil ?? 'N/A' }}</strong></p>
     </div>
     <div class="info-col">
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Emisión:</strong> <strong>{{ \Carbon\Carbon::parse($factura->fecha)->format('d/m/Y') }}</strong></p>

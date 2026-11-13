@@ -44,7 +44,8 @@ class MantenimientosExport implements FromCollection, ShouldAutoSize, WithEvents
                 $footerRow = $lastRow + 2; // Dejamos una fila de espacio
 
                 $totalRegistros = count($this->mantenimientos);
-                $costoTotal = $this->mantenimientos->sum('costo');
+                // X-06: el total excluye las anuladas, igual que la pantalla y el PDF.
+                $costoTotal = $this->mantenimientos->where('anulado', false)->sum('costo');
 
                 // Aplicar formato de miles a la columna M (Costo)
                 $sheet->getStyle("M5:M{$lastRow}")->getNumberFormat()->setFormatCode('"$ "#,##0');
@@ -53,7 +54,7 @@ class MantenimientosExport implements FromCollection, ShouldAutoSize, WithEvents
                 $sheet->setCellValue("A{$footerRow}", "Total: {$totalRegistros}");
 
                 // Escribir el costo total bajo la columna "Costo" (Columna M)
-                $sheet->setCellValue("M{$footerRow}", 'Total: $ '.number_format($costoTotal, 0, ',', '.'));
+                $sheet->setCellValue("M{$footerRow}", 'Total (sin anuladas): $ '.number_format($costoTotal, 0, ',', '.'));
 
                 // Estilo para los totales
                 $sheet->getStyle("A{$footerRow}:M{$footerRow}")->applyFromArray([
@@ -122,8 +123,8 @@ class MantenimientosExport implements FromCollection, ShouldAutoSize, WithEvents
     {
         return [
             $m->id_orden,
-            $m->equipo->cliente->nombre ?? 'N/A',
-            $m->equipo->cliente->identificacion ?? '-',
+            $m->equipo?->propietario_nombre ?: 'N/A',
+            $m->equipo?->propietario_identificacion ?: '-',
             $m->equipo->nombre ?? 'N/A',
             $m->equipo->marca ?? 'N/A',
             $m->equipo->modelo ?? 'N/A',

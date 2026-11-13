@@ -209,7 +209,7 @@
 
     {{-- ── BARRA DE RESUMEN ── --}}
     @php
-        $totalCompra   = $stocks->sum('precio_compra');
+        $totalCompra   = $totales['valor_compra'];
         $totalVenta    = $stocks->sum('precio_venta');
         $totalCantidad = $stocks->sum('cantidad');
         $totalActivos  = $stocks->where('active', true)->count();
@@ -237,7 +237,7 @@
         </div>
         <div class="summary-divider"></div>
         <div class="summary-item">
-            <div class="summary-label">Valor Inv. (Compra)</div>
+            <div class="summary-label">Valor Inv. (Cant. × Compra)</div>
             <div class="summary-value" style="color:#000000; font-size:9px">$ {{ number_format($totalCompra, 0, ',', '.') }}</div>
         </div>
     </div>
@@ -308,14 +308,14 @@
                 </td>
                 <td></td>
                 <td class="col-center" style="font-weight:800;">
-                    $ {{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}
+                    $ {{ number_format($totales['valor_compra'], 0, '', '.') }}
                 </td>
                 <td style="text-align:center;"></td>
                 <td class="col-center" style="font-weight:800;">
-                    $ {{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}
+                    $ {{ number_format($totales['valor_venta'], 0, '', '.') }}
                 </td>
                 <td class="col-center" style="font-weight:800;">
-                    $ {{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}
+                    $ {{ number_format($totales['valor_tecnico'], 0, '', '.') }}
                 </td>
             </tr>
         </tfoot>

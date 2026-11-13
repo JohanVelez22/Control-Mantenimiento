@@ -133,12 +133,12 @@ class ReportesFinancierosExport implements FromCollection, ShouldAutoSize, WithE
             if ($tx instanceof Mantenimiento) {
                 $codigo = $tx->id_orden;
                 $equipo = $tx->equipo->nombre ?? '—';
-                $cliente = $tx->equipo->cliente->nombre ?? '—';
+                $cliente = $tx->equipo?->propietario_nombre ?? '—';
                 $desc = "{$equipo} ({$cliente})";
             } elseif ($tx instanceof Electronica) {
                 $codigo = $tx->id_orden;
                 $equipo = $tx->equipo->nombre ?? '—';
-                $cliente = $tx->equipo->cliente->nombre ?? '—';
+                $cliente = $tx->equipo?->propietario_nombre ?? '—';
                 $desc = "{$equipo} ({$cliente})";
             } elseif ($tx instanceof Factura) {
                 $codigo = $tx->numero_factura;

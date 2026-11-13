@@ -214,7 +214,9 @@
 
     {{-- ── BARRA DE RESUMEN ── --}}
     @php
-        $totalCosto    = $electronicas->sum('costo');
+        // X-06: el costo total excluye las anuladas (se informan aparte).
+        $totalCosto    = $electronicas->where('anulado', false)->sum('costo');
+        $costoAnuladas = $electronicas->where('anulado', true)->sum('costo');
         $totalActivos  = $electronicas->where('anulado', false)->count();
         $totalAnulados = $electronicas->where('anulado', true)->count();
         $totalEntregados = $electronicas->where('estado', 'entregado')->count();
@@ -311,10 +313,10 @@
             <tr>
                 <td colspan="10" style="text-align:left; letter-spacing:0.5px; text-transform:uppercase; padding: 5px 6px; border:none !important;">
                     <span style="float:left; font-weight:700;">TOTAL: {{ count($electronicas) }} REGISTROS</span>
-                    <span style="float:right; font-weight:700;">COSTO ACUMULADO:</span>
+                    <span style="float:right; font-weight:700;">COSTO ACUMULADO (SIN ANULADAS):</span>@if($totalAnulados > 0)<span style="float:right; clear:right; font-weight:400; font-size:7pt;">Anuladas: {{ $totalAnulados }} · $ {{ number_format($costoAnuladas, 0, '', '.') }} (no suman)</span>@endif
                 </td>
                 <td style="text-align:right; font-weight:800; padding: 5px 6px; border:none !important;">
-                    $ {{ number_format($electronicas->sum('costo'), 0, '', '.') }}
+                    $ {{ number_format($totalCosto, 0, '', '.') }}
                 </td>
             </tr>
         </tfoot>

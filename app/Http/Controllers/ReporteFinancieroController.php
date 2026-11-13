@@ -35,7 +35,7 @@ class ReporteFinancieroController extends Controller
             ->get()
             ->map(function ($m) {
                 $equipo = $m->equipo->nombre ?? '—';
-                $cliente = $m->equipo->cliente->nombre ?? '—';
+                $cliente = $m->equipo?->propietario_nombre ?? '—';
 
                 return [
                     'tipo' => 'mantenimiento',
@@ -57,7 +57,7 @@ class ReporteFinancieroController extends Controller
             ->get()
             ->map(function ($e) {
                 $equipo = $e->equipo->nombre ?? '—';
-                $cliente = $e->equipo->cliente->nombre ?? '—';
+                $cliente = $e->equipo?->propietario_nombre ?? '—';
 
                 return [
                     'tipo' => 'electronica',
@@ -448,7 +448,7 @@ class ReporteFinancieroController extends Controller
             ->get()
             ->map(function ($m) {
                 $equipo = $m->equipo->nombre ?? '—';
-                $cliente = $m->equipo->cliente->nombre ?? '—';
+                $cliente = $m->equipo?->propietario_nombre ?? '—';
 
                 return [
                     'tipo' => 'mantenimiento',
@@ -470,7 +470,7 @@ class ReporteFinancieroController extends Controller
             ->get()
             ->map(function ($e) {
                 $equipo = $e->equipo->nombre ?? '—';
-                $cliente = $e->equipo->cliente->nombre ?? '—';
+                $cliente = $e->equipo?->propietario_nombre ?? '—';
 
                 return [
                     'tipo' => 'electronica',
@@ -565,45 +565,38 @@ class ReporteFinancieroController extends Controller
         $desde = $request->filled('desde') ? Carbon::parse($request->desde) : now()->startOfMonth();
         $hasta = $request->filled('hasta') ? Carbon::parse($request->hasta)->endOfDay() : now()->endOfDay();
 
-        $registros = match ($tipo) {
-            'solo_mantenimientos' => Mantenimiento::with(['equipo.cliente', 'tecnico', 'user'])
+        // Una sola consulta por tipo: la pantalla la pagina, la exportación la trae completa
+        // y los totales se calculan sobre toda ella (X-05), sin las anuladas.
+        $query = match ($tipo) {
+            'solo_mantenimientos' => Mantenimiento::with(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'user'])
                 ->whereBetween('fecha_entrada', [$desde, $hasta])
-                ->orderBy('fecha_entrada', 'desc')
-                ->paginate(10),
-
-            'solo_electronica' => Electronica::with(['tecnico', 'user'])
+                ->orderBy('fecha_entrada', 'desc'),
+            'solo_electronica' => Electronica::with(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'user'])
                 ->whereBetween('fecha_entrada', [$desde, $hasta])
-                ->orderBy('fecha_entrada', 'desc')
-                ->paginate(10),
-
-            'solo_ingresos' => MovimientoCaja::with(['concepto', 'user'])
+                ->orderBy('fecha_entrada', 'desc'),
+            'solo_ingresos', 'solo_egresos' => MovimientoCaja::with(['concepto', 'user'])
                 ->where('anulado', false)
-                ->where('tipo_movimiento', 'ingreso')
+                ->where('tipo_movimiento', $tipo === 'solo_ingresos' ? 'ingreso' : 'egreso')
                 ->whereBetween('fecha', [$desde, $hasta])
-                ->orderBy('fecha', 'desc')
-                ->paginate(10),
-
-            'solo_egresos' => MovimientoCaja::with(['concepto', 'user'])
-                ->where('anulado', false)
-                ->where('tipo_movimiento', 'egreso')
+                ->orderBy('fecha', 'desc'),
+            'solo_compras', 'solo_ventas' => Factura::with(['facturable', 'items', 'user'])
+                ->where('tipo_movimiento', $tipo === 'solo_compras' ? 'compra' : 'venta')
                 ->whereBetween('fecha', [$desde, $hasta])
-                ->orderBy('fecha', 'desc')
-                ->paginate(10),
-
-            'solo_compras' => Factura::with(['facturable', 'items', 'user'])
-                ->where('tipo_movimiento', 'compra')
-                ->whereBetween('fecha', [$desde, $hasta])
-                ->orderBy('fecha', 'desc')
-                ->paginate(10),
-
-            'solo_ventas' => Factura::with(['facturable', 'items', 'user'])
-                ->where('tipo_movimiento', 'venta')
-                ->whereBetween('fecha', [$desde, $hasta])
-                ->orderBy('fecha', 'desc')
-                ->paginate(10),
-
-            default => Factura::query()->whereRaw('1 = 0')->paginate(10),
+                ->orderBy('fecha', 'desc'),
+            default => Factura::query()->whereRaw('1 = 0'),
         };
+
+        [$columnaMonto, $condicionActivos] = match ($tipo) {
+            'solo_mantenimientos', 'solo_electronica' => ['costo', fn ($q) => $q->where('anulado', false)],
+            'solo_ingresos', 'solo_egresos' => ['monto', fn ($q) => $q],
+            default => ['total_documento', fn ($q) => $q->where('estado', '!=', 'anulada')],
+        };
+        $totales = [
+            'cantidad' => (clone $query)->count(),
+            'monto' => (float) $condicionActivos(clone $query)->sum($columnaMonto),
+        ];
+
+        $registros = (clone $query)->paginate(10)->withQueryString();
 
         $tipoLabels = [
             'solo_mantenimientos' => '🔧 Mantenimientos',
@@ -616,35 +609,7 @@ class ReporteFinancieroController extends Controller
 
         if ($request->get('export')) {
             // Obtener todos los registros sin paginación para exportar
-            $exportData = match ($tipo) {
-                'solo_mantenimientos' => Mantenimiento::with(['equipo.cliente', 'tecnico', 'user'])
-                    ->whereBetween('fecha_entrada', [$desde, $hasta])
-                    ->orderBy('fecha_entrada', 'desc')->get(),
-                'solo_electronica' => Electronica::with(['tecnico', 'user'])
-                    ->whereBetween('fecha_entrada', [$desde, $hasta])
-                    ->orderBy('fecha_entrada', 'desc')->get(),
-                'solo_ingresos' => MovimientoCaja::with(['concepto', 'user'])
-                    ->where('anulado', false)
-                    ->where('estado', 'activo')
-                    ->where('tipo_movimiento', 'ingreso')
-                    ->whereBetween('fecha', [$desde, $hasta])
-                    ->orderBy('fecha', 'desc')->get(),
-                'solo_egresos' => MovimientoCaja::with(['concepto', 'user'])
-                    ->where('anulado', false)
-                    ->where('estado', 'activo')
-                    ->where('tipo_movimiento', 'egreso')
-                    ->whereBetween('fecha', [$desde, $hasta])
-                    ->orderBy('fecha', 'desc')->get(),
-                'solo_compras' => Factura::with(['facturable', 'items', 'user'])
-                    ->where('tipo_movimiento', 'compra')
-                    ->whereBetween('fecha', [$desde, $hasta])
-                    ->orderBy('fecha', 'desc')->get(),
-                'solo_ventas' => Factura::with(['facturable', 'items', 'user'])
-                    ->where('tipo_movimiento', 'venta')
-                    ->whereBetween('fecha', [$desde, $hasta])
-                    ->orderBy('fecha', 'desc')->get(),
-                default => collect(),
-            };
+            $exportData = (clone $query)->get();
 
             if ($request->get('export') === 'excel') {
                 if ($tipo === 'solo_mantenimientos') {
@@ -684,10 +649,10 @@ class ReporteFinancieroController extends Controller
                             'codigo' => $codigo,
                             'fecha' => $tx->fecha ?? $tx->fecha_entrada,
                             'tipo' => $tx->tipo_movimiento ?? str_replace('solo_', '', $tipo),
-                            'descripcion' => $tx->concepto->nombre ?? $tx->persona ?? ($tx->facturable->nombre ?? 'N/A'),
+                            'descripcion' => $tx->concepto->nombre ?? $tx->persona ?? ($tx->facturable->nombre_razon_social ?? $tx->facturable->nombre ?? 'N/A'),
                             'monto' => $tx->monto ?? $tx->total_documento ?? 0,
                             'estado' => $tx->estado ?? '—',
-                            'anulado' => $tx->anulado ?? false,
+                            'anulado' => $tx->anulado ?? (($tx->estado ?? null) === 'anulada'),
                             'icono' => '📋',
                             'color' => 'gray',
                         ];
@@ -708,6 +673,6 @@ class ReporteFinancieroController extends Controller
             }
         }
 
-        return view('reportes_financieros.operaciones', compact('registros', 'tipo', 'tipoLabels', 'desde', 'hasta'));
+        return view('reportes_financieros.operaciones', compact('registros', 'totales', 'tipo', 'tipoLabels', 'desde', 'hasta'));
     }
 }

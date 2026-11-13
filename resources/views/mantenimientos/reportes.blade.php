@@ -254,9 +254,9 @@
  @if($mantenimientos->count() > 0)
  <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
  <tr>
- <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $mantenimientos->count() }}</td>
- <td colspan="8" class="text-right uppercase text-xs">TOTALES FILTRADOS:</td>
- <td class="text-center font-bold text-xs text-green-600 dark:text-green-400">$ {{ number_format($mantenimientos->sum('costo'), 0, '', '.') }}</td>
+ <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $totales['cantidad'] }}</td>
+ <td colspan="8" class="text-right uppercase text-xs">TOTAL FILTRADOS (sin anuladas):@if($totales['anuladas'] > 0)<span class="block normal-case font-normal text-[11px] text-red-500">Anuladas: {{ $totales['anuladas'] }} · $ {{ number_format($totales['costo_anuladas'], 0, '', '.') }} (no suman)</span>@endif</td>
+ <td class="text-center font-bold text-xs text-green-600 dark:text-green-400">$ {{ number_format($totales['costo'], 0, '', '.') }}</td>
  </tr>
  </tfoot>
  @endif

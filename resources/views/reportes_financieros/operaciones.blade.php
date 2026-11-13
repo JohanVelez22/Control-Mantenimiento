@@ -116,9 +116,9 @@
  </tbody>
   <tfoot>
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
-        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $totales['cantidad'] }}</td>
         <td colspan="6" class="text-right uppercase text-xs">Total Costos Mantenimientos:</td>
-        <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($totales['monto'], 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>
@@ -165,9 +165,9 @@
  </tbody>
   <tfoot>
     <tr class="bg-gray-100/50 dark:bg-gray-800/50 font-bold text-center">
-        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $totales['cantidad'] }}</td>
         <td colspan="6" class="text-right uppercase text-xs">Total Costos Electrónica:</td>
-        <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($registros->where('anulado', 0)->sum('costo'), 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($totales['monto'], 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>
@@ -214,9 +214,9 @@
  </tbody>
  <tfoot>
      <tr class="bg-gray-100 dark:bg-gray-800">
-         <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
+         <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $totales['cantidad'] }}</td>
          <td colspan="6" class="text-right uppercase text-xs font-bold">TOTAL MONTO:</td>
-         <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($registros->where('anulado', 0)->sum('monto'), 0, ',', '.') }}</td>
+         <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($totales['monto'], 0, ',', '.') }}</td>
      </tr>
  </tfoot>
  </table>
@@ -264,9 +264,9 @@
   </tbody>
  <tfoot>
     <tr class="bg-gray-100 dark:bg-gray-800">
-        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $registros->count() }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">TOTAL: {{ $totales['cantidad'] }}</td>
         <td colspan="4" class="text-right uppercase text-xs font-bold">TOTAL INVENTARIO:</td>
-        <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($registros->filter(function($i) { return $i->estado !== 'anulada'; })->sum('total_documento'), 0, ',', '.') }}</td>
+        <td class="text-center font-bold text-xs whitespace-nowrap">$&nbsp;{{ number_format($totales['monto'], 0, ',', '.') }}</td>
     </tr>
  </tfoot>
  </table>

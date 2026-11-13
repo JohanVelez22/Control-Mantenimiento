@@ -208,16 +208,15 @@
             <tfoot class="bg-gray-100/50 dark:bg-gray-800/50 font-bold">
                 <tr>
                     <td class="text-center uppercase text-xs font-bold whitespace-nowrap">
-                        TOTAL: {{ $stocks->total() }}
+                        TOTAL: {{ $totales['registros'] }}
                     </td>
+                    <td colspan="2" class="text-right uppercase text-[10px] font-bold">Valor inventario (cant. × precio):</td>
+                    <td class="text-center font-bold text-xs">{{ $totales['cantidad'] }}</td>
                     <td></td>
+                    <td class="text-center font-bold text-xs">$ {{ number_format($totales['valor_compra'], 0, '', '.') }}</td>
                     <td></td>
-                    <td class="text-center font-bold text-xs">{{ $stocks->sum('cantidad') }}</td>
-                    <td></td>
-                    <td class="text-center font-bold text-xs">$ {{ number_format($stocks->sum('precio_compra'), 0, '', '.') }}</td>
-                    <td></td>
-                    <td class="text-center font-bold text-xs">$ {{ number_format($stocks->sum('precio_venta'), 0, '', '.') }}</td>
-                    <td class="text-center font-bold text-xs">$ {{ number_format($stocks->sum('precio_tecnico'), 0, '', '.') }}</td>
+                    <td class="text-center font-bold text-xs">$ {{ number_format($totales['valor_venta'], 0, '', '.') }}</td>
+                    <td class="text-center font-bold text-xs">$ {{ number_format($totales['valor_tecnico'], 0, '', '.') }}</td>
                 </tr>
             </tfoot>
             @endif

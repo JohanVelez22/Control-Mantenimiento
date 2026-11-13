@@ -268,9 +268,19 @@ class StockController extends Controller
         }
 
         // Exportar PDF
+        // X-04: valor del inventario = cantidad × precio sobre toda la consulta filtrada,
+        // el mismo cálculo en pantalla, PDF y Excel.
+        $totales = [
+            'registros' => (clone $query)->count(),
+            'cantidad' => (int) (clone $query)->sum('cantidad'),
+            'valor_compra' => (float) (clone $query)->sum(DB::raw('cantidad * precio_compra')),
+            'valor_venta' => (float) (clone $query)->sum(DB::raw('cantidad * precio_venta')),
+            'valor_tecnico' => (float) (clone $query)->sum(DB::raw('cantidad * COALESCE(precio_tecnico, 0)')),
+        ];
+
         if ($request->has('export') && $request->export === 'pdf') {
             $stocks = $query->get();
-            $pdf = Pdf::loadView('stocks.pdf_reportes', compact('stocks'))
+            $pdf = Pdf::loadView('stocks.pdf_reportes', compact('stocks', 'totales'))
                 ->setPaper('a4', 'portrait');
 
             return $pdf->download('Reporte_Inventario_'.date('Ymd_Hi').'.pdf');
@@ -293,7 +303,7 @@ class StockController extends Controller
 
         $proveedores = Proveedor::where('active', 1)->orderBy('nombre_razon_social')->get();
 
-        return view('stocks.reportes', compact('stocks', 'categorias', 'subcategorias', 'proveedores'));
+        return view('stocks.reportes', compact('stocks', 'totales', 'categorias', 'subcategorias', 'proveedores'));
     }
 
     public function show(Stock $stock)

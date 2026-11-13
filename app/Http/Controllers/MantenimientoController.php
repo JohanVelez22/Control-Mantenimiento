@@ -170,6 +170,15 @@ class MantenimientoController extends Controller
             });
         }
 
+        // X-05/X-06: totales sobre toda la consulta filtrada (no solo la página) y sin las
+        // anuladas, que se muestran aparte; igual en pantalla, PDF y Excel.
+        $totales = [
+            'cantidad' => (clone $query)->count(),
+            'costo' => (float) (clone $query)->where('anulado', false)->sum('costo'),
+            'anuladas' => (clone $query)->where('anulado', true)->count(),
+            'costo_anuladas' => (float) (clone $query)->where('anulado', true)->sum('costo'),
+        ];
+
         // Lógica de exportación o paginación según el botón presionado
         if ($request->get('export') == 'excel') {
             $mantenimientos = $query->orderBy('id', 'desc')->get();
@@ -191,7 +200,7 @@ class MantenimientoController extends Controller
         $tecnicos = Tecnico::orderBy('nombre')->get(['id', 'nombre']);
         $usuarios = User::orderBy('name')->get(['id', 'name']);
 
-        return view('mantenimientos.reportes', compact('mantenimientos', 'clientes', 'equipos', 'tecnicos', 'usuarios'));
+        return view('mantenimientos.reportes', compact('mantenimientos', 'totales', 'clientes', 'equipos', 'tecnicos', 'usuarios'));
     }
 
     public function create()

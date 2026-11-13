@@ -225,7 +225,7 @@
             <tr>
                 <td>Movimientos Anulados</td>
                 <td style="text-align:center">{{ $acumulado['total_anulados'] ?? 0 }}</td>
-                <td class="monto" style="text-align:center">$ 0</td>
+                <td class="monto" style="text-align:center">$ {{ number_format($acumulado['total_costo_anulados'] ?? 0, 0, ',', '.') }}</td>
             </tr>
         </tbody>
         <tfoot>
@@ -239,7 +239,7 @@
                                     + ($acumulado['total_egresos'] ?? 0)
                                     + ($acumulado['total_anulados'] ?? 0);
                 @endphp
-                <td style="text-align:center; padding: 5px 6px; color:#ffffff !important; font-weight:800;">TOTAL: 7</td>
+                <td style="text-align:center; padding: 5px 6px; color:#ffffff !important; font-weight:800;"></td>
                 <td style="text-align:center; padding: 5px 6px; color:#ffffff !important; font-weight:800;"><span style="position: relative; left: -55px; color:#ffffff !important;">TOTAL REGISTROS:</span> <span style="position: relative; left: -42.5px; color:#ffffff !important;">{{ $totalRegistros }}</span></td>
                 <td style="text-align:center; padding: 5px 6px; color:#ffffff !important; font-weight:800; font-size:10.5px; white-space:nowrap;"><span style="position: relative; left: -47px; color:#ffffff !important; font-size:9px;">BALANCE NETO:</span> <span style="position: relative; left: -36px; color:#ffffff !important;">{{ ($acumulado['balance_neto'] ?? 0) < 0 ? '-$ ' . number_format(abs($acumulado['balance_neto'] ?? 0), 0, ',', '.') : '$ ' . number_format($acumulado['balance_neto'] ?? 0, 0, ',', '.') }}</span></td>
             </tr>

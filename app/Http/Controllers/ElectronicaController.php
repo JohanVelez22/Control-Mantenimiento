@@ -363,9 +363,13 @@ class ElectronicaController extends Controller
             });
         }
 
+        // X-05/X-06: totales sobre toda la consulta filtrada (no solo la página) y sin las
+        // anuladas, que se muestran aparte; igual en pantalla, PDF y Excel.
         $totales = [
             'cantidad' => (clone $query)->count(),
-            'costo' => (clone $query)->sum('costo'),
+            'costo' => (float) (clone $query)->where('anulado', false)->sum('costo'),
+            'anuladas' => (clone $query)->where('anulado', true)->count(),
+            'costo_anuladas' => (float) (clone $query)->where('anulado', true)->sum('costo'),
         ];
 
         if ($request->get('export') == 'excel') {

@@ -14,9 +14,9 @@
 <div class="info-pos">
     <p><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($factura->fecha)->format('d/m/Y H:i') }}</p>
     <p><strong>{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}:</strong> {{ $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? 'N/A' }}</p>
-    <p><strong>Doc/NIT:</strong> {{ $factura->facturable->nit_documento ?? $factura->facturable->documento ?? 'N/A' }}</p>
-    @if(!empty($factura->facturable->telefono))
-        <p><strong>Teléfono:</strong> {{ $factura->facturable->telefono }}</p>
+    <p><strong>Doc/NIT:</strong> {{ $factura->facturable->identificacion ?? 'N/A' }}</p>
+    @if(!empty($factura->facturable->telefono ?? $factura->facturable->movil))
+        <p><strong>Teléfono:</strong> {{ $factura->facturable->telefono ?? $factura->facturable->movil }}</p>
     @endif
     <p><strong>Atendido por:</strong> {{ $factura->user->name ?? 'Sistema' }}</p>
     <p><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ str_replace('_', ' ', $factura->estado) }}</span></p>
