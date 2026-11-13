@@ -15,6 +15,7 @@ use App\Models\Proveedor;
 use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
+use App\Support\Monto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -110,14 +111,17 @@ class AuditFindingsTest extends TestCase
         $method->setAccessible(true);
 
         $items = [
-            ['cantidad' => 1, 'precio_unitario' => '1.500.50'], // 150050 centavos? No, formato COP
+            ['cantidad' => 1, 'precio_unitario' => '1.500,50'],
+            ['cantidad' => 2, 'precio_unitario' => '2.000'],
         ];
 
         $total = $method->invoke($controller, $items);
 
-        // str_replace quita TODOS los puntos -> "150050" -> 150050
-        // En COP no se usan decimales normalmente, pero el código lo permite
-        $this->assertEquals(150050, $total);
+        $this->assertEquals(5500.5, $total);
+
+        // M-23: un monto mal formado ("1.500.50") ya no se reinterpreta como 150050;
+        // queda como texto y la validación `numeric` lo rechaza antes de calcular.
+        $this->assertSame('1.500.50', Monto::parse('1.500.50'));
     }
 
     public function test_total_pagado_parsea_miles_igual_que_items()

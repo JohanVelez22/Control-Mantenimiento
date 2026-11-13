@@ -14,6 +14,7 @@ use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
 use App\Services\OrdenService;
 use App\Services\PosTicketService;
+use App\Support\Monto;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -385,7 +386,7 @@ class MovimientoInventarioController extends Controller
             $query->where('estado', $request->estado);
         }
         if ($request->filled('valor_total')) {
-            $valor_total = str_replace('.', '', $request->input('valor_total'));
+            $valor_total = Monto::parse($request->input('valor_total'));
             $query->where('total_documento', '=', $valor_total);
         }
 
@@ -960,64 +961,8 @@ class MovimientoInventarioController extends Controller
      */
     private function cleanAmount(mixed $val): float|string
     {
-        if (is_null($val) || $val === '') {
-            return 0.0;
-        }
-        if (is_int($val) || is_float($val)) {
-            return (float) $val;
-        }
-
-        // Quitar símbolo de moneda y espacios (incluido el espacio duro)
-        $str = preg_replace('/[\s\x{00A0}$]+/u', '', (string) $val);
-        if ($str === '' || ! preg_match('/^-?[\d.,]+$/', $str)) {
-            return (string) $val;
-        }
-
-        // 1. Si es un número decimal estándar tipo "50000.00" o "50000.5" (un solo punto, 1 o 2 decimales al final, sin comas)
-        if (preg_match('/^\d+\.\d{1,2}$/', $str)) {
-            return (float) $str;
-        }
-
-        // 2. Si contiene tanto puntos como comas (ej. "5.000.000,00" o "5,000,000.00")
-        if (str_contains($str, '.') && str_contains($str, ',')) {
-            if (strrpos($str, ',') > strrpos($str, '.')) {
-                // Formato español/colombiano: 5.000.000,00 -> quitar punto, reemplazar coma por punto
-                $clean = str_replace('.', '', $str);
-                $clean = str_replace(',', '.', $clean);
-
-                return (float) $clean;
-            } else {
-                // Formato inglés: 5,000,000.00 -> quitar coma
-                $clean = str_replace(',', '', $str);
-
-                return (float) $clean;
-            }
-        }
-
-        // 3. Si contiene solo comas (ej. "50000,00" o "50,000")
-        if (str_contains($str, ',') && ! str_contains($str, '.')) {
-            if (preg_match('/^\d+,\d{1,2}$/', $str)) {
-                return (float) str_replace(',', '.', $str);
-            }
-
-            return (float) str_replace(',', '', $str);
-        }
-
-        // 4. Si contiene solo puntos (ej. "50.000" o "5.000.000")
-        if (str_contains($str, '.')) {
-            if (substr_count($str, '.') > 1) {
-                return (float) str_replace('.', '', $str);
-            }
-            $parts = explode('.', $str);
-            $decimalPart = $parts[1] ?? '';
-            if (strlen($decimalPart) === 3) {
-                return (float) str_replace('.', '', $str);
-            }
-
-            return (float) $str;
-        }
-
-        return (float) $str;
+        // M-16/M-23: una sola regla para todo el sistema.
+        return Monto::parse($val);
     }
 
     private function calcularTotal(array $items): float

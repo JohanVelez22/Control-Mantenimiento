@@ -6,6 +6,7 @@ use App\Models\CierreCaja;
 use App\Models\Evento;
 use App\Models\MovimientoCaja;
 use App\Services\AnulacionService;
+use App\Support\Monto;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,21 +42,8 @@ class CierreCajaController extends Controller
 
         // Sanitizar efectivo_real_contado si viene con formato monetario
         if ($request->filled('efectivo_real_contado')) {
-            $rawContado = $request->efectivo_real_contado;
-            if (is_string($rawContado)) {
-                $rawContado = str_replace(['$', ' '], '', $rawContado);
-                if (str_contains($rawContado, '.') && str_contains($rawContado, ',')) {
-                    $rawContado = str_replace('.', '', $rawContado);
-                    $rawContado = str_replace(',', '.', $rawContado);
-                } elseif (str_contains($rawContado, '.') && ! str_contains($rawContado, ',')) {
-                    if (preg_match('/^\d{1,3}(\.\d{3})+$/', $rawContado)) {
-                        $rawContado = str_replace('.', '', $rawContado);
-                    }
-                } elseif (str_contains($rawContado, ',')) {
-                    $rawContado = str_replace(',', '.', $rawContado);
-                }
-            }
-            $request->merge(['efectivo_real_contado' => $rawContado]);
+            // M-23: la misma regla de montos que ventas, compras y caja ("1,500" = 1500).
+            $request->merge(['efectivo_real_contado' => Monto::parse($request->efectivo_real_contado)]);
         }
 
         $request->validate([
