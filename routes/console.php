@@ -70,3 +70,10 @@ try {
     Log::warning('No se pudo leer la programación de respaldos; se usa 02:00 diario: '.$e->getMessage());
     Schedule::command('app:backup-db')->dailyAt('02:00')->withoutOverlapping();
 }
+
+// Comprobación semanal de que el último respaldo se puede restaurar (base temporal, se elimina al terminar).
+// El resultado queda en storage/logs/verificacion-respaldos.log.
+Schedule::command('app:verificar-respaldo')
+    ->weeklyOn(0, '03:30')
+    ->withoutOverlapping()
+    ->appendOutputTo(storage_path('logs/verificacion-respaldos.log'));

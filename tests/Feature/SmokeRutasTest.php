@@ -18,6 +18,7 @@ use App\Models\Proveedor;
 use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Artisan;
@@ -172,6 +173,18 @@ class SmokeRutasTest extends TestCase
         $this->assertSame('invitado', $otro->fresh()->role);
         $this->assertTrue((bool) $otro->fresh()->active);
         $this->assertSame($config, Configuracion::first()?->nombre);
+    }
+
+    /** La verificación de restauración está programada y, fuera de MySQL, se niega sin tocar nada. */
+    public function test_verificacion_de_respaldo_programada_y_segura(): void
+    {
+        $this->artisan('app:verificar-respaldo')
+            ->expectsOutputToContain('solo está disponible con MySQL')
+            ->assertExitCode(1);
+
+        $programados = collect(app(Schedule::class)->events())->map->command->implode(' ');
+        $this->assertStringContainsString('app:verificar-respaldo', $programados);
+        $this->assertStringContainsString('app:backup-db', $programados);
     }
 
     /** El comando de pre-despliegue detecta un entorno que no es de producción y contraseñas publicadas. */
