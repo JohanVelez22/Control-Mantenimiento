@@ -70,7 +70,7 @@
         <td class="text-left font-bold">Costo Total Estimado:</td>
         <td class="text-right font-bold">$ {{ number_format($electronica->costo, 0, ',', '.') }}</td>
     </tr>
-    @if($electronica->abonos->count() > 0)
+    @if($electronica->abonos->where('anulado', false)->count() > 0)
         <tr>
             <td class="text-left">Total Abonado:</td>
             <td class="text-right font-bold">- $ {{ number_format($electronica->total_abonado, 0, ',', '.') }}</td>
@@ -85,7 +85,7 @@
 </table>
 
 {{-- Historial de abonos si existen --}}
-@if($electronica->abonos->count() > 0)
+@if($electronica->abonos->where('anulado', false)->count() > 0)
     <div class="divider"></div>
     <div style="font-size: 7.5pt; font-weight: bold; text-align: center; margin: 2px 0;">HISTORIAL DE ABONOS</div>
     <table class="table-pos" style="font-size: 7pt;">
@@ -97,7 +97,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($electronica->abonos->sortBy('fecha') as $abono)
+            @foreach($electronica->abonos->where('anulado', false)->sortBy('fecha') as $abono)
             <tr>
                 <td>{{ \Carbon\Carbon::parse($abono->fecha)->format('d/m/y') }}</td>
                 <td>{{ $abono->tipo_pago === 'efectivo' ? 'Efectivo' : 'Transf.' }}</td>

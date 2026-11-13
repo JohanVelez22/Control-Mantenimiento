@@ -115,6 +115,12 @@ class UserController extends Controller
         }
 
         // El administrador puede cambiar roles
+        // B-12: el sistema nunca puede quedar sin un administrador activo
+        if ($usuario->role === 'admin' && $request->role !== 'admin'
+            && User::where('role', 'admin')->where('active', true)->where('id', '!=', $usuario->id)->doesntExist()) {
+            return back()->withErrors(['role' => 'Este es el único administrador activo: asigne primero el rol de administrador a otro usuario.'])->withInput();
+        }
+
         if (auth()->user()->role === 'admin') {
             $usuario->role = $request->role;
         }

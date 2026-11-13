@@ -105,6 +105,15 @@ trait HandlesStockAttach
                 $cantidad = $repuesto->pivot->cantidad;
                 $precio = $repuesto->pivot->precio_unitario;
 
+                // B-02: quitar el repuesto no puede dejar el costo por debajo de lo ya abonado;
+                // eso ocultaba un cobro de más (saldo 0 con dinero recibido de sobra).
+                $costoNuevo = (float) $lockedModel->costo - (float) $precio * (int) $cantidad;
+                $abonado = (float) $lockedModel->abonos()->where('anulado', false)->sum('monto');
+                if ($abonado > 0.01 && $costoNuevo + 0.01 < $abonado) {
+                    throw new \DomainException('No se puede quitar el repuesto: el costo quedaría en $'.number_format(max(0, $costoNuevo), 0, ',', '.')
+                        .', menor a lo ya abonado ($'.number_format($abonado, 0, ',', '.').'). Anule primero el abono correspondiente (devolución).');
+                }
+
                 // Devolver al stock de forma atómica
                 app(StockService::class)->entrada($stock_id, $cantidad);
 

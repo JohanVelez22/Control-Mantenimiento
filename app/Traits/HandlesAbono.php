@@ -61,7 +61,14 @@ trait HandlesAbono
 
             // Bloqueo pesimista del modelo para evitar condiciones de carrera por abonos simultáneos
             $lockedModel = get_class($model)::where('id', $model->id)->lockForUpdate()->first();
-            $saldoPendiente = $lockedModel ? $lockedModel->saldo_pendiente : $model->saldo_pendiente;
+
+            // D-06: revalidar DESPUÉS del bloqueo; una anulación simultánea pudo ganar la carrera
+            if (! $lockedModel || $lockedModel->anulado || ($lockedModel->estado ?? null) === 'anulado') {
+                DB::rollBack();
+
+                return back()->with('error', 'El registro fue anulado mientras se registraba el abono.')->withInput();
+            }
+            $saldoPendiente = $lockedModel->saldo_pendiente;
 
             if ($validated['monto'] > $saldoPendiente + Factura::EPSILON) {
                 DB::rollBack();

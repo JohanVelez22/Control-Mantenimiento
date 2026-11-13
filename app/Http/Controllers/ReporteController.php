@@ -36,7 +36,8 @@ class ReporteController extends Controller
             $queryDetallado->where('tipo_pago', $request->tipo_pago);
         }
 
-        $transacciones = $queryDetallado->paginate(10, ['*'], 'transacciones_page');
+        // clone: paginate() agrega LIMIT al builder y las exportaciones salían con solo 10 filas (X-01)
+        $transacciones = (clone $queryDetallado)->paginate(10, ['*'], 'transacciones_page');
 
         // --- INFORME ACUMULADO (MES ACTUAL O FILTRADO) ---
         $acumuladoQuery = MovimientoCaja::where('estado', 'activo')

@@ -525,7 +525,15 @@ class MovimientoCajaController extends Controller
 
             // Bloqueo pesimista del movimiento para evitar sobre-abono concurrente
             $lockedMov = MovimientoCaja::where('id', $movimiento->id)->lockForUpdate()->first();
-            $saldoActual = $lockedMov ? $lockedMov->saldo_pendiente : $movimiento->saldo_pendiente;
+
+            // D-06: revalidar DESPUÉS del bloqueo; una anulación simultánea pudo ganar la carrera
+            $facturaBloqueada = $lockedMov?->factura_id ? Factura::whereKey($lockedMov->factura_id)->lockForUpdate()->first() : null;
+            if (! $lockedMov || $lockedMov->anulado || $lockedMov->estado !== 'activo' || $facturaBloqueada?->estado === 'anulada') {
+                DB::rollBack();
+
+                return back()->with('error', 'El movimiento o su factura fue anulado mientras se registraba el abono.');
+            }
+            $saldoActual = $lockedMov->saldo_pendiente;
 
             if ($validated['monto_abono'] > $saldoActual + Factura::EPSILON) {
                 DB::rollBack();

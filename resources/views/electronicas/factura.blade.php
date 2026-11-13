@@ -62,7 +62,7 @@
             <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Costo Total Estimado:</td>
             <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">$ {{ number_format($electronica->costo, 0, ',', '.') }}</td>
         </tr>
-        @if($electronica->abonos->count() > 0)
+        @if($electronica->abonos->where('anulado', false)->count() > 0)
             <tr>
                 <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Total Abonado:</td>
                 <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">- $ {{ number_format($electronica->total_abonado, 0, ',', '.') }}</td>
@@ -82,10 +82,12 @@
     </table>
 </div>
 
-@if($electronica->abonos->count() > 0)
+@if($electronica->abonos->where('anulado', false)->count() > 0)
     @php
-        $abonosHistorial = $electronica->abonos->sortBy('fecha');
-        $abonosMostrar = $abonosHistorial->take(3);
+        // X-03: solo abonos vigentes; en media hoja caben 3, se muestran los más recientes
+        $abonosHistorial = $electronica->abonos->where('anulado', false)->sortBy('fecha');
+        $abonosMostrar = $abonosHistorial->slice(-3);
+        $abonosOcultos = $abonosHistorial->count() - $abonosMostrar->count();
     @endphp
     <div style="margin-top: -10px; clear: both;">
         <p style="font-size: 6.8pt; font-weight: bold; text-transform: uppercase; color: #333; margin: 0 0 1px; text-align: left;">HISTORIAL DE ABONOS / PAGOS RECIBIDOS:</p>
@@ -107,6 +109,9 @@
                     <td style="padding: 1px 2px; text-align: center; font-size: 6.5pt; font-weight: bold;">$ {{ number_format($abono->monto, 0, ',', '.') }}</td>
                 </tr>
                 @endforeach
+                @if($abonosOcultos ?? 0)
+                <tr><td colspan="4" style="padding: 1px 2px; text-align: center; font-size: 6.3pt; font-style: italic;">+ {{ $abonosOcultos }} abono(s) anterior(es), incluidos en el Total Abonado</td></tr>
+                @endif
             </tbody>
         </table>
     </div>

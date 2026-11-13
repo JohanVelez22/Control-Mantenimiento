@@ -1183,7 +1183,7 @@
         <div id="ts-notif-card" class="ts-modal-card opacity-0 p-4 sm:p-6 flex flex-col w-full mx-3 sm:mx-4" style="max-width: 550px; overflow: hidden !important;">
 
             {{-- Header --}}
-            <div class="flex items-center gap-3 mb-4">
+            <div class="flex items-center gap-3 mb-4 shrink-0">
                 <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center shrink-0">
                     <span class="text-2xl">🔔</span>
                 </div>
@@ -1194,7 +1194,7 @@
             </div>
 
             {{-- Contenedor Central para alinear filtros e información al mismo ancho con perfecta simetría --}}
-            <div class="w-full mx-auto flex flex-col flex-1">
+            <div class="w-full mx-auto flex flex-col flex-1 min-h-0">
                 {{-- Filtros / Tabs --}}
                 <div class="flex flex-wrap sm:flex-nowrap justify-center gap-1.5 mb-4 w-full">
                 <button onclick="filterNotifs('all')" id="btn-notif-all" class="notif-tab whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60">Todos</button>
@@ -1213,7 +1213,8 @@
                 </div>
 
             {{-- Scrollable list calibrada a exactamente 5 bloques antes de activar scroll único --}}
-            <div class="w-full max-h-[440px] overflow-y-auto space-y-2 px-2 pt-1 pb-2 content-scroll scroll-pb-2">
+            {{-- F-02: flex-1 + min-h-0 permite que la lista se encoja en pantallas bajas y el botón Cerrar siempre quede visible --}}
+            <div class="w-full flex-1 min-h-0 max-h-[440px] overflow-y-auto space-y-2 px-2 pt-1 pb-2 content-scroll scroll-pb-2">
 
                 {{-- Mantenimientos --}}
                 @foreach($mantList as $m)
@@ -1361,7 +1362,7 @@
             </div>
             </div>
 
-            <button onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-base mt-4 sm:mt-5">
+            <button id="ts-notif-cerrar" onclick="closeNotifModal()" class="w-full btn-primary py-3 justify-center text-base mt-4 sm:mt-5 shrink-0">
                 Cerrar
             </button>
         </div>
@@ -1427,6 +1428,8 @@
             // Apply tab filter if provided, otherwise default to all
             const targetTab = tab || 'all';
             setTimeout(() => filterNotifs(targetTab), 50);
+            // F-03: el foco entra al diálogo (teclado y lectores de pantalla)
+            setTimeout(() => document.getElementById('ts-notif-cerrar')?.focus(), 60);
         }
 
         function closeNotifModal() {
@@ -1438,6 +1441,13 @@
             document.body.style.overflow = 'auto';
             setTimeout(() => { modal.classList.add('hidden'); }, 200);
         }
+
+        // F-03: el manejador global de Escape busca closeTsNotifModal() a partir del id
+        window.closeTsNotifModal = closeNotifModal;
+        // Clic en el fondo oscuro cierra el modal
+        document.getElementById('ts-notif-modal')?.addEventListener('click', function (e) {
+            if (e.target === this) closeNotifModal();
+        });
 
         // Abrir automáticamente al iniciar sesión si hay alertas de sesión pendientes
         @if(session('alertas_pendientes') && count(session('alertas_pendientes')) > 0)
