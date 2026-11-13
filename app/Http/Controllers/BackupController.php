@@ -539,6 +539,27 @@ class BackupController extends Controller
             return response()->json(['success' => false, 'message' => 'Formato no soportado para restauración. Solo se admiten archivos .sql y .zip.'], 400);
         }
 
+        // D-01: antes de tocar la base real, el respaldo se restaura en una base TEMPORAL
+        //    (app:verificar-respaldo): si el archivo está incompleto ("Dump completed"),
+        //    trae USE/CREATE DATABASE o MySQL no lo carga, se cancela sin cambiar nada.
+        if (config('database.default') === 'mysql') {
+            try {
+                $verificacion = Artisan::call('app:verificar-respaldo', ['--archivo' => $filename]);
+                $salidaVerificacion = trim(Artisan::output());
+            } catch (\Throwable $e) {
+                $verificacion = 1;
+                $salidaVerificacion = $e->getMessage();
+            }
+            if ($verificacion !== 0) {
+                Log::warning("Restauración cancelada: {$filename} no pasó la verificación en base temporal. {$salidaVerificacion}");
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Restauración cancelada: el respaldo no se pudo restaurar en una base temporal de prueba (archivo incompleto o dañado). La base actual no se modificó.',
+                ], 422);
+            }
+        }
+
         // 0. Respaldo de seguridad del estado actual: restaurar sobrescribe la base completa y,
         //    si se eligió el archivo equivocado, sin esta copia no habría vuelta atrás.
         //    (Se omite solo con SQLite en memoria, que no se puede volcar: entorno de pruebas.)
@@ -732,6 +753,21 @@ class BackupController extends Controller
             }
             if (str_starts_with($filename, 'backup_integral')) {
                 $msgSuccess .= ' Se restauró la Base de Datos y los Archivos Multimedia, conservando el código fuente en ejecución estable y la trazabilidad de eventos.';
+            }
+
+            // D-01: un respaldo de una versión anterior deja la base con un esquema más viejo
+            // que el código; se avisa para aplicar las migraciones que falten.
+            try {
+                $aplicadas = Schema::hasTable('migrations') ? DB::table('migrations')->pluck('migration')->all() : [];
+                $archivos = collect(File::files(database_path('migrations')))
+                    ->map(fn ($f) => pathinfo($f->getFilename(), PATHINFO_FILENAME));
+                $faltantes = $archivos->diff($aplicadas)->count();
+                if ($faltantes > 0) {
+                    $msgSuccess .= " ATENCIÓN: el respaldo es de una versión anterior del sistema ({$faltantes} migración(es) sin aplicar). Ejecute en el servidor: php artisan migrate --force";
+                    Log::warning("Restauración de {$filename}: {$faltantes} migraciones pendientes tras restaurar.");
+                }
+            } catch (\Throwable $e) {
+                Log::warning('No se pudo comprobar la versión del esquema tras restaurar: '.$e->getMessage());
             }
 
             return response()->json([
