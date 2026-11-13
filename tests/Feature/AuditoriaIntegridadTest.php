@@ -150,12 +150,14 @@ class AuditoriaIntegridadTest extends TestCase
         $factura = $this->vender($this->crearStock(), 1000);
         $mov = MovimientoCaja::where('factura_id', $factura->id)->first();
 
-        $this->actingAs($this->admin)->post(route('caja.duplicate', $mov))->assertRedirect();
+        $antes = MovimientoCaja::count();
+        // M-15: duplicar solo precarga el formulario; no guarda ni hereda vínculos.
+        $this->actingAs($this->admin)->post(route('caja.duplicate', $mov))
+            ->assertRedirect(route('caja.create'))
+            ->assertSessionMissing('_old_input.factura_id')
+            ->assertSessionMissing('_old_input.abono_id');
 
-        $copia = MovimientoCaja::latest('id')->first();
-        $this->assertNotEquals($mov->id, $copia->id);
-        $this->assertNull($copia->factura_id);
-        $this->assertNull($copia->abono_id);
+        $this->assertSame($antes, MovimientoCaja::count());
         $this->assertEquals(1000, (float) $factura->fresh()->total_pagado);
     }
 

@@ -133,6 +133,16 @@ class Factura extends Model
      */
     public const float EPSILON = 0.01;
 
+    /**
+     * M-19: ¿$monto supera a $tope? Se compara en centavos enteros. EPSILON sirve para
+     * comparar valores leídos de la base, nunca como margen permitido: con
+     * "monto > tope + EPSILON" se aceptaba un pago de un centavo de más, que quedaba oculto.
+     */
+    public static function superaMonto(float|int|string|null $monto, float|int|string|null $tope): bool
+    {
+        return (int) round((float) $monto * 100) > (int) round((float) $tope * 100);
+    }
+
     public function movimientosCaja(): HasMany
     {
         return $this->hasMany(MovimientoCaja::class, 'factura_id');

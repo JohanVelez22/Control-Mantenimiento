@@ -187,6 +187,15 @@ class CierreCajaController extends Controller
             'motivo_diferencia' => 'nullable|string|max:1000',
         ]);
 
+        // M-14: si el cierre tiene descuadre, su motivo es obligatorio al cerrar y no se
+        // puede vaciar después. Se puede corregir el texto; el anterior queda en eventos.
+        if (abs((float) $cierre->diferencia) >= 0.01 && trim((string) $request->motivo_diferencia) === '') {
+            return back()->withInput()->withErrors([
+                'motivo_diferencia' => 'Este cierre tiene un descuadre de $'.number_format(abs((float) $cierre->diferencia), 0, ',', '.')
+                    .': el motivo de la diferencia no se puede dejar vacío.',
+            ]);
+        }
+
         $cierre->update([
             'observaciones' => $request->observaciones,
             'motivo_diferencia' => $request->motivo_diferencia,

@@ -67,6 +67,13 @@ class MovimientoInventarioController extends Controller
             'items.*.precio_unitario' => ['required', 'numeric', 'min:0'],
         ]);
 
+        // M-20: el día cerrado se valida siempre, también si la operación no mueve caja
+        // (total y pagado en 0): igual mueve inventario en un día bloqueado.
+        if (CierreCajaGuard::fechaEstaCerrada((string) $request->fecha)) {
+            return back()->withInput()->with('error', 'No se puede registrar la compra con fecha '.$request->fecha
+                .': ese día (o uno posterior) ya tiene cierre de caja. Use la fecha de hoy o elimine el cierre correspondiente.');
+        }
+
         try {
             DB::beginTransaction();
 
@@ -85,7 +92,7 @@ class MovimientoInventarioController extends Controller
             $totalPagado = (float) $request->total_pagado;
 
             // No permitir pagar más de lo debido (evita saldos negativos)
-            if ($totalPagado > $totalDocumento + Factura::EPSILON) {
+            if (Factura::superaMonto($totalPagado, $totalDocumento)) {
                 DB::rollBack();
 
                 return back()->with('error', 'El valor pagado no puede superar el total del documento.')->withInput();
@@ -227,6 +234,13 @@ class MovimientoInventarioController extends Controller
             'items.*.precio_unitario' => ['required', 'numeric', 'min:0'],
         ]);
 
+        // M-20: el día cerrado se valida siempre, también si la operación no mueve caja
+        // (total y pagado en 0): igual mueve inventario en un día bloqueado.
+        if (CierreCajaGuard::fechaEstaCerrada((string) $request->fecha)) {
+            return back()->withInput()->with('error', 'No se puede registrar la venta con fecha '.$request->fecha
+                .': ese día (o uno posterior) ya tiene cierre de caja. Use la fecha de hoy o elimine el cierre correspondiente.');
+        }
+
         try {
             DB::beginTransaction();
 
@@ -245,7 +259,7 @@ class MovimientoInventarioController extends Controller
             $totalPagado = (float) $request->total_pagado;
 
             // No permitir cobrar más de lo debido (evita saldos negativos)
-            if ($totalPagado > $totalDocumento + Factura::EPSILON) {
+            if (Factura::superaMonto($totalPagado, $totalDocumento)) {
                 DB::rollBack();
 
                 return back()->with('error', 'El valor cobrado no puede superar el total del documento.')->withInput();
@@ -835,7 +849,7 @@ class MovimientoInventarioController extends Controller
             }
 
             // No permitir que el pagado supere el nuevo total del documento
-            if (! $shouldBeAnulada && $totalPagado > $totalDocumento + Factura::EPSILON) {
+            if (! $shouldBeAnulada && Factura::superaMonto($totalPagado, $totalDocumento)) {
                 DB::rollBack();
 
                 return back()->with('error', 'El valor pagado no puede superar el total del documento.')->withInput();

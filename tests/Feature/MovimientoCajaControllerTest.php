@@ -434,13 +434,14 @@ class MovimientoCajaControllerTest extends TestCase
 
         $response = $this->actingAs($this->admin)->post(route('caja.duplicate', $movimiento));
 
-        $response->assertRedirect();
-        $copia = MovimientoCaja::where('descripcion', 'Copia de mov. '.$movimiento->id.': Original')->first();
-        $this->assertNotNull($copia);
-        $this->assertEquals(50000, $copia->monto);
-        $this->assertEquals('activo', $copia->estado);
-        $this->assertFalse($copia->anulado);
-        $this->assertStringContainsString("/caja/{$copia->id}/edit", $response->getTargetUrl());
+        // M-15: no se guarda nada hasta que el usuario revise y presione Guardar.
+        $response->assertRedirect(route('caja.create'));
+        $this->assertSame(1, MovimientoCaja::count());
+        $response->assertSessionHasInput('descripcion', 'Copia de mov. '.$movimiento->id.': Original');
+        $response->assertSessionHasInput('monto', '50000');
+        $response->assertSessionHasInput('persona', 'Cliente Duplicar');
+
+        $this->get(route('caja.create'))->assertOk()->assertSee('Copia de mov. '.$movimiento->id.': Original');
     }
 
     public function test_caja_print_view(): void

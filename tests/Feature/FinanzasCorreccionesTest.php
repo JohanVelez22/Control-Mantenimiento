@@ -71,10 +71,13 @@ class FinanzasCorreccionesTest extends TestCase
         $factura = Factura::firstOrFail();
         $base = MovimientoCaja::where('factura_id', $factura->id)->firstOrFail();
 
-        $this->post(route('caja.duplicate', $base));
+        // M-15: duplicar precarga el formulario; se guarda la copia tal como llega.
+        $this->post(route('caja.duplicate', $base))->assertRedirect(route('caja.create'));
+        $copia = session('_old_input');
+        $this->assertStringNotContainsString('#'.$factura->numero_factura, $copia['descripcion']);
+        $this->post(route('caja.store'), $copia)->assertSessionHasNoErrors();
         $dup = MovimientoCaja::where('id', '!=', $base->id)->firstOrFail();
         $this->assertNull($dup->factura_id);
-        $this->assertStringNotContainsString('#'.$factura->numero_factura, $dup->descripcion);
 
         $this->post(route('caja.abonos.store', $base), [
             'monto_abono' => 10000, 'fecha' => Carbon::today()->toDateString(), 'tipo_pago' => 'efectivo',

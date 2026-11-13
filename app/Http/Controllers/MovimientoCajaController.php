@@ -338,7 +338,7 @@ class MovimientoCajaController extends Controller
         }
 
         if (! empty($validated['monto_total']) && (float) $validated['monto_total'] > 0
-            && (float) $validated['monto_total'] + Factura::EPSILON < (float) $validated['monto']) {
+            && Factura::superaMonto($validated['monto'], $validated['monto_total'])) {
             return back()->withErrors(['monto_total' => 'El valor total no puede ser menor que el monto pagado.'])->withInput();
         }
 
@@ -438,33 +438,32 @@ class MovimientoCajaController extends Controller
     /** Duplicar un movimiento de caja (copia con fecha hoy) */
     public function duplicate(MovimientoCaja $movimiento)
     {
-        $hoy = now()->toDateString();
-        if (CierreCajaGuard::fechaEstaCerrada($hoy)) {
-            return back()->with('error', 'No se puede duplicar el movimiento: el día de hoy ya tiene un cierre de caja registrado.');
-        }
-
-        $nuevo = $movimiento->replicate();
-        $nuevo->fecha = $hoy;
-        $nuevo->user_id = auth()->id();
-        $nuevo->parent_id = null;  // Nunca heredar vínculo padre (evita abonos huérfanos)
-        // Nunca heredar vínculos a documentos: el duplicado contaría como pago de la
-        // factura o del abono original sin que entre dinero.
-        $nuevo->factura_id = null;
-        $nuevo->abono_id = null;
-        $nuevo->monto_total = null;
-        // La descripción tampoco puede arrastrar referencias ("#VT-1", "Orden MT-3", "ELC 5") que
-        // el sistema interpreta como vínculo al calcular saldos (M-01).
-        $nuevo->descripcion = 'Copia de mov. '.$movimiento->id.': '.preg_replace(
+        // M-15: duplicar no guarda nada; abre el formulario de un movimiento nuevo con los
+        // datos precargados. El guardado ocurre en store(), con sus validaciones, el cierre
+        // de caja y el token de idempotencia. Antes se creaba un movimiento activo de
+        // inmediato, que descuadraba la caja si el usuario no lo revisaba.
+        //
+        // Nunca se heredan los vínculos a documentos (factura, abono, padre): la copia
+        // contaría como pago sin que entre dinero. La descripción tampoco arrastra
+        // referencias ("#VT-1", "Orden MT-3", "ELC 5") que se lean como vínculo (M-01).
+        $descripcion = 'Copia de mov. '.$movimiento->id.': '.preg_replace(
             ['/#(?=[A-Za-z0-9])/', '/\b(Orden|ELC)(\s+)(?=#?[A-Za-z0-9-])/i'],
             ['ref. ', '$1 ref.$2'],
             (string) $movimiento->descripcion
         );
-        $nuevo->anulado = false; // Siempre crear como activo
-        $nuevo->estado = 'activo';
-        $nuevo->save();
 
-        return redirect()->route('caja.edit', $nuevo)
-            ->with('success', 'Movimiento duplicado. Revisa y actualiza los datos antes de guardar.');
+        return redirect()->route('caja.create')
+            ->withInput([
+                'empresa' => $movimiento->empresa,
+                'persona' => $movimiento->persona,
+                'fecha' => now()->toDateString(),
+                'tipo_movimiento' => $movimiento->tipo_movimiento,
+                'tipo_pago' => $movimiento->tipo_pago,
+                'monto' => (string) (float) $movimiento->monto,
+                'concepto_id' => $movimiento->concepto_id,
+                'descripcion' => $descripcion,
+            ])
+            ->with('success', 'Copia lista para revisar: no se ha guardado nada todavía. Ajusta los datos y presiona Guardar.');
     }
 
     /** Registrar un abono/pago parcial a este movimiento */
@@ -496,7 +495,7 @@ class MovimientoCajaController extends Controller
             'descripcion' => 'nullable|string|max:500',
         ]);
 
-        if ($validated['monto_abono'] > $movimiento->saldo_pendiente + Factura::EPSILON) {
+        if (Factura::superaMonto($validated['monto_abono'], $movimiento->saldo_pendiente)) {
             return back()->with('error', 'El abono supera el saldo pendiente de $'.number_format($movimiento->saldo_pendiente, 0, ',', '.').'.');
         }
 
@@ -526,7 +525,7 @@ class MovimientoCajaController extends Controller
             }
             $saldoActual = $lockedMov->saldo_pendiente;
 
-            if ($validated['monto_abono'] > $saldoActual + Factura::EPSILON) {
+            if (Factura::superaMonto($validated['monto_abono'], $saldoActual)) {
                 DB::rollBack();
 
                 return back()->with('error', 'El abono supera el saldo pendiente de $'.number_format($saldoActual, 0, ',', '.').'.');
@@ -686,7 +685,7 @@ class MovimientoCajaController extends Controller
             if ($orden && $orden->anulado) {
                 return 'No se puede reactivar: la orden '.$orden->id_orden.' está anulada. Reactive primero la orden.';
             }
-            if ($orden && (float) $abono->monto > (float) $orden->saldo_pendiente + Factura::EPSILON) {
+            if ($orden && Factura::superaMonto((float) $abono->monto, (float) $orden->saldo_pendiente)) {
                 return 'No se puede reactivar: el pago superaría el saldo pendiente de la orden.';
             }
         }

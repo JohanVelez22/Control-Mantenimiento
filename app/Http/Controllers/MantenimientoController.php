@@ -229,7 +229,7 @@ class MantenimientoController extends Controller
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
             'descripcion' => 'required|string|max:500',
-            'costo' => 'required|numeric|min:0|decimal:0,2',
+            'costo' => 'required|numeric|min:0|decimal:0,2|max:99999999.99',
             'estado' => 'required|in:pendiente,terminado',
             'equipo_id' => 'required|integer|exists:equipos,id',
             'tecnico_id' => 'required|integer|exists:tecnicos,id',

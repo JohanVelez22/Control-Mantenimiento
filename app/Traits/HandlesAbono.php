@@ -37,7 +37,7 @@ trait HandlesAbono
 
         // No permitir abonar más de lo que se debe
         $saldoPendiente = $model->saldo_pendiente;
-        if ($validated['monto'] > $saldoPendiente + Factura::EPSILON) {
+        if (Factura::superaMonto($validated['monto'], $saldoPendiente)) {
             return back()->with('error',
                 'El abono ($'.number_format($validated['monto'], 0, ',', '.').
                 ') no puede superar el saldo pendiente ($'.number_format($saldoPendiente, 0, ',', '.').').')->withInput();
@@ -70,7 +70,7 @@ trait HandlesAbono
             }
             $saldoPendiente = $lockedModel->saldo_pendiente;
 
-            if ($validated['monto'] > $saldoPendiente + Factura::EPSILON) {
+            if (Factura::superaMonto($validated['monto'], $saldoPendiente)) {
                 DB::rollBack();
 
                 return back()->with('error',

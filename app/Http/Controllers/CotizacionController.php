@@ -16,6 +16,7 @@ use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
 use App\Services\OrdenService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -263,16 +264,26 @@ class CotizacionController extends Controller
             return back()->with('error', $error)->withInput();
         }
 
-        // convertir() deja la cotización en estado 'aprobada' con factura_id
-        if (in_array($cotizacion->estado, ['convertida', 'aprobada'], true) || $cotizacion->factura_id) {
-            return back()->with('error', 'No se puede anular una cotización que ya ha sido convertida en factura.')->withInput();
-        }
-
         try {
             DB::beginTransaction();
 
-            // Toggle anulado (like Mantenimiento/Electronica)
+            // M-21: bloquear la fila y releer; con la intención explícita ("anular" o
+            // "reactivar") un doble envío ya no revierte la primera acción.
+            $cotizacion = Cotizacion::whereKey($cotizacion->id)->lockForUpdate()->firstOrFail();
+
+            // convertir() deja la cotización en estado 'aprobada' con factura_id
+            if (in_array($cotizacion->estado, ['convertida', 'aprobada'], true) || $cotizacion->factura_id) {
+                DB::rollBack();
+
+                return back()->with('error', 'No se puede anular una cotización que ya ha sido convertida en factura.')->withInput();
+            }
+
             $esAnulacion = ! $cotizacion->anulado;
+            if ($error = app(AnulacionService::class)->verificarIntencion($request, $esAnulacion)) {
+                DB::rollBack();
+
+                return back()->with('error', $error);
+            }
             $cotizacion->update([
                 'anulado' => $esAnulacion,
             ]);
@@ -346,6 +357,16 @@ class CotizacionController extends Controller
                 DB::rollBack();
 
                 return back()->with('error', 'Esta cotización ya fue procesada o rechazada.');
+            }
+
+            // M-22: una cotización vencida tiene precios viejos; convertirla podía generar
+            // una venta por debajo del costo actual sin ningún aviso.
+            $vence = Carbon::parse($cotizacion->fecha)->startOfDay()->addDays((int) $cotizacion->validez_dias);
+            if ($vence->lt(now()->startOfDay())) {
+                DB::rollBack();
+
+                return back()->with('error', 'La cotización venció el '.$vence->format('d/m/Y')
+                    .'. Edítela para revisar los precios y actualizar la fecha o la validez antes de convertirla.');
             }
 
             $cotizacion->load('items');
