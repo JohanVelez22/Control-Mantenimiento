@@ -654,7 +654,7 @@ class AuditFindingsTest extends TestCase
         $this->actingAs($this->admin)
             ->put(route('inventario.facturas.update', $factura), [
                 'fecha' => now()->toDateString(),
-                'total_pagado' => '5000', // 5 * 1000
+                'total_pagado' => '2000', // el pagado no cambia al editar (M-05)
                 'facturable_global' => "Proveedor:{$this->proveedor->id}",
                 'existing_items' => [
                     [
@@ -675,7 +675,8 @@ class AuditFindingsTest extends TestCase
 
         $factura->refresh();
         $this->assertEquals(5000, $factura->total_documento);
-        $this->assertEquals(5000, $factura->total_pagado);
+        $this->assertEquals(2000, $factura->total_pagado);
+        $this->assertEquals('pendiente_pago', $factura->estado, 'El saldo nuevo se cobra con un abono en Caja');
     }
 
     public function test_editar_factura_pago_superior_al_nuevo_total_lanza_error()
@@ -1070,7 +1071,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(0, $stock->cantidad);
     }
 
-    public function test_editar_venta_con_pago_parcial_actualiza_caja_y_layout_no_falla()
+    public function test_editar_venta_no_reescribe_el_pago_y_layout_no_falla()
     {
         $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Ventas'], ['tipo' => 'ingreso']);
 
@@ -1130,13 +1131,13 @@ class AuditFindingsTest extends TestCase
                 ],
             ]);
 
-        $response->assertRedirect();
+        // M-05: el pagado no se reescribe desde la factura; se rechaza y nada cambia
+        $response->assertSessionHasErrors('total_pagado');
 
         $factura->refresh();
         $this->assertEquals(260000, $factura->total_documento);
-        $this->assertEquals(200000, $factura->total_pagado);
-        $this->assertEquals(60000, $factura->saldo_pendiente);
-        $this->assertEquals('pendiente_pago', $factura->estado);
+        $this->assertEquals(260000, $factura->total_pagado);
+        $this->assertEquals('emitida', $factura->estado);
 
         // Verificar que renderizar la vista de facturas o dashboard no genera 500
         $this->actingAs($this->admin)
@@ -1193,7 +1194,7 @@ class AuditFindingsTest extends TestCase
         $this->assertEquals(9, $stock->cantidad);
     }
 
-    public function test_editar_factura_con_item_libre_actualiza_pago_exitosamente()
+    public function test_editar_factura_con_item_libre_no_modifica_el_pago()
     {
         $factura = Factura::create([
             'numero_factura' => Factura::siguienteNumero('VT-'),
@@ -1232,12 +1233,11 @@ class AuditFindingsTest extends TestCase
                 ],
             ]);
 
-        $response->assertRedirect();
+        // M-05: el pagado no se reescribe desde la factura; se rechaza y nada cambia
+        $response->assertSessionHasErrors('total_pagado');
 
         $factura->refresh();
-        $this->assertEquals(150000, $factura->total_documento);
-        $this->assertEquals(150000, $factura->total_pagado);
-        $this->assertEquals('emitida', $factura->estado);
+        $this->assertEquals(0, (float) $factura->total_pagado);
     }
 
     public function test_reactivar_factura_con_item_libre_exitosamente()
@@ -1273,7 +1273,7 @@ class AuditFindingsTest extends TestCase
         $this->assertNotEquals('anulada', $factura->estado);
     }
 
-    public function test_editar_factura_con_pago_parcial_crea_saldo_pendiente_correctamente()
+    public function test_editar_factura_no_reduce_el_pago_registrado()
     {
         $factura = Factura::create([
             'numero_factura' => 'VT-TEST-PARTIAL',
@@ -1324,14 +1324,11 @@ class AuditFindingsTest extends TestCase
                 ],
             ]);
 
-        $response->assertRedirect(route('inventario.facturas'));
+        // M-05: el pagado no se reescribe desde la factura; se rechaza y nada cambia
+        $response->assertSessionHasErrors('total_pagado');
 
         $factura->refresh();
-        $this->assertEquals(345000, $factura->total_documento);
-        $this->assertEquals(300000, $factura->total_pagado);
-        $this->assertEquals('pendiente_pago', $factura->estado);
-        $this->assertStringContainsString('⚠️ SALDO PENDIENTE: $45.000', $factura->observaciones);
-        $this->assertEquals(50000, $item2->fresh()->precio_unitario);
+        $this->assertEquals(345000, (float) $factura->total_pagado);
     }
 
     /**

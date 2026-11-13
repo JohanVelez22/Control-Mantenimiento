@@ -288,8 +288,8 @@
             {{-- Total Pagado --}}
             <div class="md:col-span-2 p-4 glass-card">
                 <label class="field-label text-center block text-sm">Total Pagado <span class="text-red-500 font-bold">*</span></label>
-                <input type="text" name="total_pagado" id="total_pagado" required value="{{ old('total_pagado', number_format($factura->total_pagado, 0, ',', '.')) }}" oninput="window.formatCurrencyInput(this); recalcularTotalesEdicion()" class="glass-input font-black text-2xl text-emerald-600 text-center py-3">
-                <p class="text-[11px] text-gray-400 mt-2 text-center" id="total_pagado_help">El monto total del documento es $ {{ number_format($factura->total_documento, 0, ',', '.') }}. Modificar el pago ajustará el saldo y el estado automáticamente.</p>
+                <input type="text" name="total_pagado" id="total_pagado" required value="{{ old('total_pagado', number_format($factura->total_pagado, 0, ',', '.')) }}" readonly aria-readonly="true" title="Los pagos se registran como abono en Caja" class="glass-input font-black text-2xl text-emerald-600 text-center py-3 bg-gray-50 cursor-not-allowed">
+                <p class="text-[11px] text-gray-400 mt-2 text-center" id="total_pagado_help">El monto total del documento es $ {{ number_format($factura->total_documento, 0, ',', '.') }}. El pagado no se edita aquí: registre los pagos como abono en Caja, con su fecha y medio reales.</p>
                 @error('total_pagado') <p class="text-red-500 text-xs mt-1 font-bold text-center">{{ $message }}</p> @enderror
             </div>
 
@@ -613,7 +613,7 @@ function recalcularTotalesEdicion() {
     // Actualizar el texto de ayuda del total pagado
     const helpText = document.getElementById('total_pagado_help');
     if (helpText) {
-        helpText.textContent = `El monto total del documento es $ ${window.formatNumber(totalDoc)}. Modificar el pago ajustará el saldo y el estado automáticamente.`;
+        helpText.textContent = `El monto total del documento es $ ${window.formatNumber(totalDoc)}. El pagado no se edita aquí: registre los pagos como abono en Caja, con su fecha y medio reales.`;
     }
 }
 

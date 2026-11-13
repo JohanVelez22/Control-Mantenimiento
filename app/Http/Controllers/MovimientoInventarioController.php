@@ -390,11 +390,7 @@ class MovimientoInventarioController extends Controller
         $movimientoPadre = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
             ->where(function ($q) use ($factura) {
-                $q->where('factura_id', $factura->id)
-                    ->orWhere(function ($legacy) use ($factura) {
-                        $legacy->whereNull('factura_id')
-                            ->referenciaExacta('#'.$factura->numero_factura);
-                    });
+                $q->where('factura_id', $factura->id);
             })
             ->whereNull('parent_id')
             ->with(['childPayments' => fn ($q) => $q->where('anulado', false)->with('user')])
@@ -412,11 +408,7 @@ class MovimientoInventarioController extends Controller
         $movimientoPadre = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
             ->where(function ($q) use ($factura) {
-                $q->where('factura_id', $factura->id)
-                    ->orWhere(function ($legacy) use ($factura) {
-                        $legacy->whereNull('factura_id')
-                            ->referenciaExacta('#'.$factura->numero_factura);
-                    });
+                $q->where('factura_id', $factura->id);
             })
             ->whereNull('parent_id')
             ->with(['childPayments' => fn ($q) => $q->where('anulado', false)->with('user')])
@@ -456,8 +448,7 @@ class MovimientoInventarioController extends Controller
 
         // Bloqueo de período: no se puede anular o reactivar una factura con movimientos en fechas cerradas
         $movsCaja = MovimientoCaja::where(function ($q) use ($factura) {
-            $q->where('factura_id', $factura->id)
-                ->orWhere(fn ($legacy) => $legacy->whereNull('factura_id')->referenciaExacta('#'.$factura->numero_factura));
+            $q->where('factura_id', $factura->id);
         })->get();
         foreach ($movsCaja as $m) {
             $fechaM = $m->fecha ? $m->fecha->toDateString() : null;
@@ -487,11 +478,7 @@ class MovimientoInventarioController extends Controller
             }
 
             $pagosDeLaFactura = fn () => MovimientoCaja::where(function ($q) use ($factura) {
-                $q->where('factura_id', $factura->id)
-                    ->orWhere(function ($legacy) use ($factura) {
-                        $legacy->whereNull('factura_id')
-                            ->referenciaExacta('#'.$factura->numero_factura);
-                    });
+                $q->where('factura_id', $factura->id);
             });
 
             if ($factura->estado === 'anulada') {
@@ -688,13 +675,29 @@ class MovimientoInventarioController extends Controller
             $facturableType = Cliente::class;
         }
 
-        $totalPagado = $this->cleanAmount($request->total_pagado);
-
         $wasAnulada = $factura->estado === 'anulada';
         $shouldBeAnulada = $wasAnulada;
 
         try {
             DB::beginTransaction();
+
+            // Bloquea la factura: una anulación o un abono simultáneos esperan a esta edición (M-10)
+            $factura = Factura::whereKey($factura->id)->lockForUpdate()->firstOrFail();
+            if ($factura->estado === 'anulada') {
+                DB::rollBack();
+
+                return redirect()->route('inventario.facturas.show', $factura)->with('error', 'La factura fue anulada mientras se editaba.');
+            }
+
+            // El pagado NO se modifica editando la factura (M-05): hacerlo reescribía el pago en la
+            // fecha de la factura y siempre como efectivo, descuadrando el arqueo del día real.
+            // Los pagos posteriores se registran como abono en Caja, con su fecha y medio reales.
+            $totalPagado = (float) $factura->total_pagado;
+            if (abs((float) $request->total_pagado - $totalPagado) > Factura::EPSILON) {
+                DB::rollBack();
+
+                return back()->withErrors(['total_pagado' => 'El valor pagado no se modifica desde la factura. Registre el pago como abono en Caja (o anule el abono correspondiente).'])->withInput();
+            }
 
             if (CierreCajaGuard::fechaEstaCerrada($fechaOriginal) || CierreCajaGuard::fechaEstaCerrada($fechaDestino)) {
                 DB::rollBack();
@@ -849,13 +852,11 @@ class MovimientoInventarioController extends Controller
             $nuevaObservacion = $this->buildObservaciones($request->observaciones, $saldo, $historial ?: null);
 
             // Sincronizar movimiento de caja base
+            // Solo el pago base ACTIVO: uno anulado (reembolso) jamás se reactiva desde aquí (M-04)
             $baseCaja = MovimientoCaja::where('factura_id', $factura->id)
                 ->whereNull('parent_id')
-                ->first()
-                ?? MovimientoCaja::whereNull('factura_id')
-                    ->referenciaExacta('#'.$factura->numero_factura)
-                    ->whereNull('parent_id')
-                    ->first();
+                ->where('anulado', false)
+                ->first();
 
             $entityName = $entity->nombre_razon_social ?? $entity->nombre;
 
@@ -869,27 +870,11 @@ class MovimientoInventarioController extends Controller
                     return back()->with('error', "No se puede modificar la factura: su pago en caja es del {$fechaBase}, día que ya tiene cierre de caja.")->withInput();
                 }
 
-                $abonosExistentes = (float) $baseCaja->childPayments()
-                    ->where('anulado', false)
-                    ->where('estado', 'activo')
-                    ->sum('monto');
-
-                if ($totalPagado < $abonosExistentes - Factura::EPSILON) {
-                    DB::rollBack();
-
-                    return back()->with('error', 'El total pagado no puede ser menor a los abonos ya registrados en caja ($'.number_format($abonosExistentes, 0, ',', '.').').')->withInput();
-                }
-
-                $montoBaseAjustado = max(0, $totalPagado - $abonosExistentes);
-
+                // Monto, fecha y estado del pago no cambian: son hechos de caja ya ocurridos
                 $baseCaja->update([
                     'factura_id' => $factura->id,
-                    'monto' => $montoBaseAjustado,
                     'monto_total' => $totalDocumento > $totalPagado ? $totalDocumento : null,
                     'persona' => $entityName,
-                    'fecha' => $request->fecha,
-                    'estado' => $shouldBeAnulada ? 'anulado' : 'activo',
-                    'anulado' => $shouldBeAnulada,
                 ]);
 
                 if ($shouldBeAnulada) {
@@ -905,7 +890,8 @@ class MovimientoInventarioController extends Controller
                         ]);
                     }
                 }
-            } elseif (! $shouldBeAnulada && ($totalPagado > 0 || $saldo > Factura::EPSILON)) {
+            } elseif (! $shouldBeAnulada && $totalPagado > Factura::EPSILON && ! MovimientoCaja::where('factura_id', $factura->id)->exists()) {
+                // Factura antigua sin movimiento vinculado: se registra su pago una sola vez
                 $this->registrarMovimientoCaja(
                     tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',
                     monto: $totalPagado,

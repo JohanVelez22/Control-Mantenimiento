@@ -435,7 +435,7 @@ class MovimientoCajaControllerTest extends TestCase
         $response = $this->actingAs($this->admin)->post(route('caja.duplicate', $movimiento));
 
         $response->assertRedirect();
-        $copia = MovimientoCaja::where('descripcion', 'Original')->where('id', '!=', $movimiento->id)->first();
+        $copia = MovimientoCaja::where('descripcion', 'Copia de mov. '.$movimiento->id.': Original')->first();
         $this->assertNotNull($copia);
         $this->assertEquals(50000, $copia->monto);
         $this->assertEquals('activo', $copia->estado);

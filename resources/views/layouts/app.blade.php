@@ -318,6 +318,7 @@
         // Leer sesiones de Laravel
         @if(session('success')) showToast(@json(session('success')), 'success'); @endif
         @if(session('error')) showToast(@json(session('error')), 'error'); @endif
+        @if(session('warning')) showToast(@json(session('warning')), 'warning'); @endif
         @if(isset($errors) && $errors->any()) showToast(@json($errors->count() > 1 ? $errors->first().' (y '.($errors->count() - 1).' error(es) más)' : $errors->first()), 'error'); @endif
 
         // ─── ACCESIBILIDAD Y GESTIÓN DE FOCO EN MODALES (WCAG 2.1) ────────
@@ -747,6 +748,34 @@
                     }
                 });
             });
+        });
+
+        // ─── IDEMPOTENCIA (M-07) ─────────────────────────────────────────
+        // Cada formulario de escritura lleva un token único `_idem`; el servidor rechaza un
+        // segundo envío con el mismo token. Se agrega en fase de captura (antes de que un
+        // manejador AJAX arme su FormData) y se renueva cuando el usuario cambia algún campo.
+        function tokenIdem() {
+            if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+            return 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+        }
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (!(form instanceof HTMLFormElement) || (form.method || 'get').toLowerCase() === 'get') return;
+            let campo = form.querySelector('input[name="_idem"]');
+            if (!campo) {
+                campo = document.createElement('input');
+                campo.type = 'hidden';
+                campo.name = '_idem';
+                form.appendChild(campo);
+            }
+            if (!campo.value) campo.value = tokenIdem();
+        }, true);
+        ['input', 'change'].forEach(function (evento) {
+            document.addEventListener(evento, function (e) {
+                const form = e.target && e.target.form;
+                const campo = form && form.querySelector('input[name="_idem"]');
+                if (campo && e.target !== campo) campo.value = '';
+            }, true);
         });
 
         // ─── BLOQUEO DE DOBLE ENVÍO ──────────────────────────────────────

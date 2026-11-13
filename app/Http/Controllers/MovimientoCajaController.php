@@ -325,6 +325,13 @@ class MovimientoCajaController extends Controller
             }
         }
 
+        // Pagos de facturas o abonos parciales: su monto no se edita (M-03). Editarlo permitía
+        // dejar la factura con pagado > total; la corrección es anular y registrar de nuevo.
+        if (($movimiento->factura_id || $movimiento->parent_id)
+            && abs((float) $validated['monto'] - (float) $movimiento->monto) > Factura::EPSILON) {
+            return back()->withErrors(['monto' => 'El monto de un pago vinculado a una factura o a otro movimiento no se edita: anúlelo y registre el pago correcto.'])->withInput();
+        }
+
         // Pagos de facturas o abonos parciales: no pueden cambiar de ingreso a egreso.
         if (($movimiento->factura_id || $movimiento->parent_id) && $validated['tipo_movimiento'] !== $movimiento->tipo_movimiento) {
             return back()->withErrors(['tipo_movimiento' => 'No se puede cambiar el tipo de un pago vinculado a una factura o a otro movimiento.'])->withInput();
@@ -445,6 +452,13 @@ class MovimientoCajaController extends Controller
         $nuevo->factura_id = null;
         $nuevo->abono_id = null;
         $nuevo->monto_total = null;
+        // La descripción tampoco puede arrastrar referencias ("#VT-1", "Orden MT-3", "ELC 5") que
+        // el sistema interpreta como vínculo al calcular saldos (M-01).
+        $nuevo->descripcion = 'Copia de mov. '.$movimiento->id.': '.preg_replace(
+            ['/#(?=[A-Za-z0-9])/', '/\b(Orden|ELC)(\s+)(?=#?[A-Za-z0-9-])/i'],
+            ['ref. ', '$1 ref.$2'],
+            (string) $movimiento->descripcion
+        );
         $nuevo->anulado = false; // Siempre crear como activo
         $nuevo->estado = 'activo';
         $nuevo->save();
@@ -707,18 +721,7 @@ class MovimientoCajaController extends Controller
             return;
         }
 
-        $textToSearch = $movimiento->descripcion;
-        if ($movimiento->parent_id && $movimiento->parent) {
-            $textToSearch .= ' '.$movimiento->parent->descripcion;
-        }
-
-        if (preg_match_all('/#([A-Za-z0-9-]+)/', $textToSearch, $matches)) {
-            foreach ($matches[1] as $numFactura) {
-                $factura = Factura::where('numero_factura', $numFactura)->first();
-                if ($factura) {
-                    $factura->recalcularPagos();
-                }
-            }
-        }
+        // Sin vínculo por texto (M-01/M-02): una descripción que mencione "#VT-n" no paga ni
+        // modifica ninguna factura; el vínculo es solo factura_id / parent_id.
     }
 }

@@ -132,6 +132,7 @@ class ProductionIntegrityTest extends TestCase
             'persona' => $cliente->nombre,
             'concepto_id' => $concepto->id,
             'descripcion' => "Cobro venta #{$factura->numero_factura}",
+            'factura_id' => $factura->id, // el vínculo es solo por factura_id (M-01)
             'fecha' => now()->toDateString(),
             'estado' => 'activo',
             'anulado' => false,

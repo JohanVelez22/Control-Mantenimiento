@@ -775,7 +775,7 @@ class MovimientoInventarioControllerTest extends TestCase
         $response = $this->actingAs($this->admin)->put(route('inventario.facturas.update', $factura), [
             'facturable_global' => 'Cliente:'.$this->cliente->id,
             'fecha' => Carbon::today()->toDateString(),
-            'total_pagado' => 100000,
+            'total_pagado' => 50000,
             'observaciones' => 'Actualizada',
             'existing_items' => [
                 [
@@ -790,8 +790,9 @@ class MovimientoInventarioControllerTest extends TestCase
 
         $response->assertRedirect();
         $factura->refresh();
-        $this->assertEquals(100000, $factura->total_pagado);
-        $this->assertEquals('emitida', $factura->estado);
+        $this->assertEquals(50000, $factura->total_pagado);
+        $this->assertEquals('pendiente_pago', $factura->estado);
+        $this->assertStringContainsString('Actualizada', $factura->observaciones);
     }
 
     public function test_update_factura_validates_required_fields(): void

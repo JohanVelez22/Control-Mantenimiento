@@ -410,18 +410,18 @@ class RobustezContableAuditTest extends TestCase
             ],
         ]);
 
+        // M-05: el pagado no se modifica editando la factura
         $factura->refresh();
-        $this->assertEquals(200000, (float) $factura->total_pagado);
-        $this->assertEquals(100000, (float) $factura->saldo_pendiente);
+        $this->assertEquals(150000, (float) $factura->total_pagado);
 
         // El abono hijo de 50.000 sigue intacto y no fue borrado
         $abonoHijo->refresh();
         $this->assertFalse($abonoHijo->anulado);
         $this->assertEquals(50000, (float) $abonoHijo->monto);
 
-        // El monto base se ajustó a 150.000 (150.000 + 50.000 = 200.000)
+        // El pago base conserva su monto original
         $movBase->refresh();
-        $this->assertEquals(150000, (float) $movBase->monto);
+        $this->assertEquals(100000, (float) $movBase->monto);
     }
 
     /**
@@ -449,7 +449,7 @@ class RobustezContableAuditTest extends TestCase
     /**
      * P0-E1: La anulación en cascada omite los abonos hijos que pertenezcan a días cerrados.
      */
-    public function test_p0_e1_anular_movimiento_omite_hijos_en_dias_cerrados(): void
+    public function test_p0_e1_anular_movimiento_de_periodo_cerrado_se_rechaza(): void
     {
         // 1. Movimiento raíz en día abierto (hace 10 días)
         $fechaPadre = now()->subDays(10)->toDateString();
@@ -521,22 +521,15 @@ class RobustezContableAuditTest extends TestCase
             'admin_password' => 'Admin123*',
         ]);
 
-        $response->assertSessionHas('success');
+        // Período monótono (M-06): el padre es anterior a un cierre ya registrado, así que su
+        // período está cerrado y no se puede anular (cambiaría el saldo inicial de ese cierre).
+        $response->assertSessionHas('error');
 
-        // El padre queda anulado
-        $padre->refresh();
-        $this->assertTrue((bool) $padre->anulado);
-        $this->assertEquals('anulado', $padre->estado);
-
-        // El hijo en día abierto se anuló en cascada
-        $hijoAbierto->refresh();
-        $this->assertTrue((bool) $hijoAbierto->anulado);
-        $this->assertEquals('anulado', $hijoAbierto->estado);
-
-        // Mitigación P0-E1: El hijo del día cerrado fue OMITIDO de la cascada y permanece intacto
-        $hijoCerrado->refresh();
-        $this->assertFalse((bool) $hijoCerrado->anulado);
-        $this->assertEquals('activo', $hijoCerrado->estado);
+        foreach ([$padre, $hijoAbierto, $hijoCerrado] as $mov) {
+            $mov->refresh();
+            $this->assertFalse((bool) $mov->anulado, 'Nada se anula en un período cerrado');
+            $this->assertEquals('activo', $mov->estado);
+        }
     }
 
     /**

@@ -15,7 +15,9 @@ use App\Models\CierreCaja;
 class CierreCajaGuard
 {
     /**
-     * Determina si una fecha ya tiene cierre de caja registrado.
+     * Una fecha está cerrada si ella o CUALQUIER día posterior tiene cierre (M-06): un
+     * movimiento retroactivo en un día abierto anterior cambiaría el saldo inicial de
+     * efectivo de los cierres ya hechos sin que nadie lo note.
      */
     public static function fechaEstaCerrada(?string $fecha): bool
     {
@@ -23,7 +25,7 @@ class CierreCajaGuard
             return false;
         }
 
-        return CierreCaja::whereDate('fecha', $fecha)->exists();
+        return CierreCaja::whereDate('fecha', '>=', $fecha)->exists();
     }
 
     /**
@@ -36,8 +38,8 @@ class CierreCajaGuard
     {
         if (self::fechaEstaCerrada($fecha)) {
             throw new \DomainException(
-                "No se puede registrar {$contexto} con fecha {$fecha}: el día ya tiene cierre de caja registrado. "
-                .'Elimine el cierre desde el módulo de Cierre de Caja para reabrir el día.'
+                "No se puede registrar {$contexto} con fecha {$fecha}: ese día (o uno posterior) ya tiene cierre de caja registrado. "
+                .'Registre la operación con la fecha de hoy o elimine el cierre correspondiente para reabrir el período.'
             );
         }
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\IdempotenciaFormulario;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\RequirePasswordChange;
 use App\Http\Middleware\SecurityHeaders;
@@ -29,6 +30,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Headers de seguridad en TODAS las respuestas HTTP
         $middleware->append(SecurityHeaders::class);
+
+        // Un mismo envío de formulario no se procesa dos veces (M-07)
+        $middleware->web(append: [IdempotenciaFormulario::class]);
 
         // Registramos aliases para middlewares personalizados
         $middleware->alias([

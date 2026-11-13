@@ -34,6 +34,7 @@ class CierreCajaController extends Controller
             return back()->with('error', $error)->withInput();
         }
 
+        $request->validate(['fecha' => 'required|date']);
         $fecha = Carbon::parse($request->fecha)->toDateString();
         $request->merge(['fecha' => $fecha]);
 
@@ -63,6 +64,11 @@ class CierreCajaController extends Controller
                 function ($attribute, $value, $fail) use ($fecha) {
                     if (CierreCaja::where('fecha', $fecha)->exists()) {
                         $fail('Ya existe un cierre registrado para esta fecha.');
+                    } elseif ($fecha > now()->toDateString()) {
+                        $fail('No se puede cerrar un día futuro.');
+                    } elseif (CierreCaja::where('fecha', '>', $fecha)->exists()) {
+                        // M-08: los cierres son cronológicos; uno intermedio cambiaría el saldo inicial de los posteriores
+                        $fail('Ya existe un cierre posterior a esta fecha; los cierres deben hacerse en orden cronológico.');
                     }
                 },
             ],

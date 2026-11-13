@@ -153,20 +153,7 @@ class Factura extends Model
         $directMovIds = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
             ->where('tipo_movimiento', $expectedTipo)
-            ->where(function ($q) {
-                $q->where('factura_id', $this->id)
-                    ->orWhere(function ($legacy) {
-                        $num = $this->numero_factura;
-                        $legacy->whereNull('factura_id')
-                            ->where(function ($sub) use ($num) {
-                                $sub->where('descripcion', 'like', "%#{$num}")
-                                    ->orWhere('descripcion', 'like', "%#{$num} %")
-                                    ->orWhere('descripcion', 'like', "%#{$num},%")
-                                    ->orWhere('descripcion', 'like', "%#{$num}.%")
-                                    ->orWhere('descripcion', 'like', "%#{$num}\n%");
-                            });
-                    });
-            })
+            ->where('factura_id', $this->id)
             ->pluck('id');
 
         $pagosCaja = MovimientoCaja::where('estado', 'activo')

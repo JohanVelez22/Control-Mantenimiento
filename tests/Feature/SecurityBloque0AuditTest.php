@@ -193,8 +193,9 @@ class SecurityBloque0AuditTest extends TestCase
                 ],
             ]);
 
-        $resp->assertSessionHas('error');
-        $this->assertStringContainsString('no puede ser menor a los abonos ya registrados', session('error'));
+        // M-05: el pagado no se modifica desde la factura (ni para bajarlo ni para subirlo)
+        $resp->assertSessionHasErrors('total_pagado');
+        $this->assertEquals(70000, (float) $factura->fresh()->total_pagado, 'El pagado no cambia');
     }
 
     /**
