@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Auditable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class MovimientoCaja extends Model
@@ -66,121 +67,85 @@ class MovimientoCaja extends Model
             ->sum('monto');
     }
 
-    public function getRefSearchAttribute()
+    /** Movimiento raíz: el propio, o su padre si es un abono a otro movimiento. */
+    public function raiz(): self
     {
-        if (! $this->descripcion) {
+        if (! $this->parent_id) {
+            return $this;
+        }
+
+        return $this->parent ?: (self::find($this->parent_id) ?? $this);
+    }
+
+    /** Orden (mantenimiento o electrónica) a la que pertenece el pago, si es un abono de orden. */
+    public function ordenDelAbono(): Mantenimiento|Electronica|null
+    {
+        if (! $this->abono_id) {
             return null;
         }
+        $abono = $this->abono;
 
-        if (preg_match('/#([A-Za-z0-9-]+)/', $this->descripcion, $m)) {
-            return '#'.$m[1];
-        }
-        if (preg_match('/Orden\s+#?([A-Za-z0-9-]+)/i', $this->descripcion, $m)) {
-            return 'Orden '.$m[1];
-        }
-        if (preg_match('/ELC\s+#?([A-Za-z0-9-]+)/i', $this->descripcion, $m)) {
-            return 'ELC '.$m[1];
-        }
-
-        return null;
+        return $abono?->mantenimiento ?? $abono?->electronica;
     }
 
     /**
-     * Movimientos cuya descripción contiene la referencia exacta (p. ej. "#VT-1"),
-     * sin coincidir con referencias que la extienden ("#VT-10", "#VT-1A").
+     * D-05 / M-02: pagos activos del mismo documento, enlazados SOLO por clave: el
+     * movimiento raíz y sus abonos, los pagos de la misma factura (`factura_id`) o los
+     * de la misma orden (`abono_id`). Antes se buscaba "#VT-1" u "Orden ORD-1" en la
+     * descripción con LIKE '%…': lento (N+1 y recorrido completo) y un ingreso manual
+     * que mencionara la referencia contaba como pago del documento.
      */
-    public function scopeReferenciaExacta($query, string $referencia)
+    public function consultaPagosRelacionados(): Builder
     {
-        return $query->where(function ($sub) use ($referencia) {
-            foreach (['', ' %', ',%', '.%', ')%', "\n%"] as $sufijo) {
-                $sub->orWhere('descripcion', 'like', '%'.$referencia.$sufijo);
+        $raiz = $this->raiz();
+        $orden = $raiz->ordenDelAbono();
+
+        return self::activos()->where(function ($q) use ($raiz, $orden) {
+            $q->where('id', $raiz->id)->orWhere('parent_id', $raiz->id);
+            if ($raiz->factura_id) {
+                $q->orWhere('factura_id', $raiz->factura_id);
+            }
+            if ($orden) {
+                $q->orWhereIn('abono_id', $orden->abonos()->select('id'));
             }
         });
     }
 
     public function getTotalPagadoAttribute()
     {
-        $root = $this->parent_id ? ($this->parent ?: self::find($this->parent_id)) : $this;
+        $raiz = $this->raiz();
 
-        if (! $root) {
-            return (float) ($this->anulado ? 0 : $this->monto);
-        }
-
-        $rootId = $root->id;
-        $refSearch = $root->ref_search;
-
-        if ($root->relationLoaded('childPayments') && ! $refSearch) {
-            $abonosSum = (float) $root->childPayments
+        // Caso común del listado (sin factura ni orden): con los abonos ya cargados no
+        // hace falta ninguna consulta.
+        if (! $raiz->factura_id && ! $raiz->abono_id && $raiz->relationLoaded('childPayments')) {
+            $abonos = (float) $raiz->childPayments
                 ->filter(fn ($p) => ! $p->anulado && $p->estado === 'activo')
                 ->sum('monto');
 
-            return (float) ($root->anulado ? 0 : $root->monto) + $abonosSum;
+            return (float) ($raiz->anulado || $raiz->estado !== 'activo' ? 0 : $raiz->monto) + $abonos;
         }
 
-        if ($root->factura_id) {
-            return (float) self::activos()
-                ->where(function ($q) use ($rootId, $root) {
-                    if ($rootId) {
-                        $q->where('id', $rootId)
-                            ->orWhere('parent_id', $rootId);
-                    }
-                    $q->orWhere('factura_id', $root->factura_id);
-                })
-                ->sum('monto');
-        }
-
-        return (float) self::activos()
-            ->where(function ($q) use ($rootId, $refSearch) {
-                if ($rootId) {
-                    $q->where('id', $rootId)
-                        ->orWhere('parent_id', $rootId);
-                }
-                if ($refSearch) {
-                    // Coincidencia con límite de palabra: "#VT-1" u "Orden ORD-1" no deben
-                    // coincidir con "#VT-10" u "Orden ORD-10".
-                    $q->orWhere(function ($sub) use ($refSearch) {
-                        $sub->where('descripcion', 'like', "%{$refSearch}")
-                            ->orWhere('descripcion', 'like', "%{$refSearch} %")
-                            ->orWhere('descripcion', 'like', "%{$refSearch},%")
-                            ->orWhere('descripcion', 'like', "%{$refSearch}.%")
-                            ->orWhere('descripcion', 'like', "%{$refSearch})%")
-                            ->orWhere('descripcion', 'like', "%{$refSearch}\n%");
-                    });
-                }
-            })
-            ->sum('monto');
+        return (float) $this->consultaPagosRelacionados()->sum('monto');
     }
 
+    /** Total del documento al que corresponde el pago (monto_total, factura u orden). */
     public function getEffectiveMontoTotalAttribute()
     {
         if ($this->monto_total && $this->monto_total > 0) {
             return (float) $this->monto_total;
         }
 
-        $root = $this->parent_id ? ($this->parent ?: self::find($this->parent_id)) : null;
-        if ($root && $root->monto_total && $root->monto_total > 0) {
-            return (float) $root->monto_total;
+        $raiz = $this->raiz();
+        if ($raiz->monto_total && $raiz->monto_total > 0) {
+            return (float) $raiz->monto_total;
         }
 
-        if ($this->descripcion) {
-            if (preg_match('/#([A-Za-z0-9-]+)/', $this->descripcion, $m)) {
-                $val = Factura::where('numero_factura', $m[1])->value('total_documento');
-                if ($val) {
-                    return (float) $val;
-                }
-            }
-            if (preg_match('/Orden\s+#?([A-Za-z0-9-]+)/i', $this->descripcion, $m)) {
-                $val = Mantenimiento::where('id_orden', $m[1])->value('costo');
-                if ($val) {
-                    return (float) $val;
-                }
-            }
-            if (preg_match('/ELC\s+#?([A-Za-z0-9-]+)/i', $this->descripcion, $m)) {
-                $val = Electronica::where('id_orden', $m[1])->value('costo');
-                if ($val) {
-                    return (float) $val;
-                }
-            }
+        if ($raiz->factura_id) {
+            return (float) ($raiz->factura?->total_documento ?? 0);
+        }
+
+        if ($orden = $raiz->ordenDelAbono()) {
+            return (float) $orden->costo;
         }
 
         return 0;

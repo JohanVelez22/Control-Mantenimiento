@@ -148,20 +148,9 @@
         @endif
 
         @php
-            $rootId = $movimiento->parent_id ?: $movimiento->id;
-            $refSearch = $movimiento->ref_search;
-
-            $relacionados = \App\Models\MovimientoCaja::where('estado', 'activo')
+            // Pagos del mismo documento, enlazados por clave (D-05 / M-02)
+            $relacionados = $movimiento->consultaPagosRelacionados()
                 ->where('id', '!=', $movimiento->id)
-                ->where(function($q) use ($rootId, $refSearch) {
-                    if ($rootId) {
-                        $q->where('id', $rootId)
-                          ->orWhere('parent_id', $rootId);
-                    }
-                    if ($refSearch) {
-                        $q->orWhere(fn ($ref) => $ref->referenciaExacta($refSearch)); // sin mezclar #VT-1 con #VT-10
-                    }
-                })
                 ->orderBy('created_at', 'asc')
                 ->get();
         @endphp

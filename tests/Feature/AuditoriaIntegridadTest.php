@@ -190,15 +190,18 @@ class AuditoriaIntegridadTest extends TestCase
         $this->assertEquals(40000, $this->ingresosActivos());
     }
 
-    /** "#VT-1" no debe coincidir con "#VT-10". */
-    public function test_referencia_exacta_no_mezcla_documentos(): void
+    /** D-05 / M-02: una referencia escrita ("#VT-1") en la descripción no enlaza pagos entre sí. */
+    public function test_referencia_en_descripcion_no_enlaza_pagos(): void
     {
         $base = ['concepto_id' => ConceptoCaja::firstOrCreate(['nombre' => 'Otros ingresos'])->id, 'tipo_movimiento' => 'ingreso', 'tipo_pago' => 'efectivo', 'fecha' => Carbon::today(), 'estado' => 'activo', 'anulado' => false, 'persona' => 'X', 'user_id' => $this->admin->id];
         MovimientoCaja::create($base + ['monto' => 10, 'descripcion' => 'Cobro venta #VT-1']);
         MovimientoCaja::create($base + ['monto' => 20, 'descripcion' => 'Cobro venta #VT-10']);
         MovimientoCaja::create($base + ['monto' => 30, 'descripcion' => 'Abono parcial a #VT-1 (Ref)']);
 
-        $this->assertEquals(40, (float) MovimientoCaja::referenciaExacta('#VT-1')->sum('monto'));
+        foreach (MovimientoCaja::all() as $mov) {
+            $this->assertEquals((float) $mov->monto, $mov->total_pagado, $mov->descripcion);
+            $this->assertEquals(0, $mov->saldo_pendiente);
+        }
     }
 
     /** El costo de una orden no puede editarse por debajo de lo abonado. */
@@ -378,8 +381,13 @@ class AuditoriaIntegridadTest extends TestCase
         preg_match_all('/gina (\d+) de (\d+)/', $texto, $numeros);
 
         $this->assertNotEmpty($numeros[0], 'El PDF debe incluir "Página X de Y"');
-        $this->assertSame('1', $numeros[1][0]);
-        $this->assertSame(end($numeros[2]), end($numeros[1]), 'La última página debe ser "N de N"');
+        // Los flujos de las páginas no tienen por qué estar en orden dentro del archivo:
+        // se comprueba el conjunto (1..N, todas con el mismo total N), no la posición.
+        $paginas = array_map('intval', $numeros[1]);
+        $totales = array_unique($numeros[2]);
+        $this->assertCount(1, $totales, 'Todas las páginas deben indicar el mismo total');
+        $this->assertSame(1, min($paginas));
+        $this->assertSame((int) reset($totales), max($paginas), 'La última página debe ser "N de N"');
     }
 
     /** La base de datos impide borrar físicamente registros con historial contable (antes: cascada). */

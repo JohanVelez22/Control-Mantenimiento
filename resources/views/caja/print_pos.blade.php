@@ -21,52 +21,13 @@
     $isChild = (bool) $movimiento->parent_id;
     $rootId = $movimiento->parent_id ?: $movimiento->id;
 
-    // 1. Identificar referencia (Factura, Mantenimiento u Electrónica)
-    $facturaRef = null;
-    $mantRef = null;
-    $elecRef = null;
-    $refSearch = null;
-
-    if (preg_match('/#([A-Za-z0-9-]+)/', $desc, $m)) {
-        $facturaRef = \App\Models\Factura::where('numero_factura', $m[1])->first();
-        $refSearch = '#' . $m[1];
-    }
-    if (!$facturaRef && preg_match('/Orden\s+#?([A-Za-z0-9-]+)/i', $desc, $m)) {
-        $mantRef = \App\Models\Mantenimiento::where('id_orden', $m[1])->first();
-        $refSearch = 'Orden ' . $m[1];
-    }
-    if (!$facturaRef && !$mantRef && preg_match('/ELC\s+#?([A-Za-z0-9-]+)/i', $desc, $m)) {
-        $elecRef = \App\Models\Electronica::where('id_orden', $m[1])->first();
-        $refSearch = 'ELC ' . $m[1];
-    }
-
-    // 2. Determinar el Monto Total de la deuda/servicio
-    $effectiveMontoTotal = $movimiento->monto_total ?: ($parent->monto_total ?: null);
-    if (!$effectiveMontoTotal || $effectiveMontoTotal == 0) {
-        if ($facturaRef) {
-            $effectiveMontoTotal = $facturaRef->total_documento;
-        } elseif ($mantRef) {
-            $effectiveMontoTotal = $mantRef->costo;
-        } elseif ($elecRef) {
-            $effectiveMontoTotal = $elecRef->costo;
-        }
-    }
-
-    // 3. Obtener todos los pagos/abonos relacionados para el historial
-    $todosPagos = \App\Models\MovimientoCaja::where('estado', 'activo')
-        ->where('anulado', false)
-        ->where(function($q) use ($rootId, $refSearch) {
-            $q->where('id', $rootId)
-              ->orWhere('parent_id', $rootId);
-            if ($refSearch) {
-                $q->orWhere(fn ($ref) => $ref->referenciaExacta($refSearch)); // sin mezclar #VT-1 con #VT-10
-            }
-        })
-        ->orderBy('created_at', 'asc')
-        ->get();
+    // Total del documento y pagos relacionados: solo por clave (factura, orden o
+    // movimiento raíz), nunca por referencias escritas en la descripción (D-05 / M-02).
+    $effectiveMontoTotal = $movimiento->effective_monto_total;
+    $todosPagos = $movimiento->consultaPagosRelacionados()->orderBy('created_at', 'asc')->get();
 
     $totalAcumulado = $todosPagos->sum('monto');
-    $saldoPendiente = $effectiveMontoTotal > 0 ? max(0, (float)$effectiveMontoTotal - $totalAcumulado) : 0;
+    $saldoPendiente = $effectiveMontoTotal > 0 ? max(0, (float) $effectiveMontoTotal - $totalAcumulado) : 0;
     $hasHistory = $todosPagos->count() > 1;
 @endphp
 
