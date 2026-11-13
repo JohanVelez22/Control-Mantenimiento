@@ -28,6 +28,10 @@ class PasswordController extends Controller
     {
         $usuario = $request->user();
 
+        // Solo quien está obligado a cambiarla: evita que alguien con acceso a una cuenta
+        // compartida (invitado) fije una contraseña que los demás no conocen (S-05).
+        abort_unless($usuario->must_change_password, 403);
+
         $request->validate([
             'current_password' => ['required', 'current_password'],
             'password' => [

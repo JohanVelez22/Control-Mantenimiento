@@ -114,7 +114,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(User::class, UserPolicy::class);
 
         View::composer('layouts.app', function ($view) {
-            if (! Auth::check()) {
+            // Solo admin y técnico ven notificaciones: el invitado (cuenta compartida) nunca debe
+            // recibir nombres de clientes ni saldos, ni siquiera en páginas de error (F-01).
+            if (! Auth::check() || ! in_array(Auth::user()->role, ['admin', 'tecnico'], true)) {
                 $view->with([
                     'mantList' => collect(),
                     'elecList' => collect(),
