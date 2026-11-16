@@ -38,20 +38,4 @@ class FacturaPolicy
     {
         return ! $user->isInvitado();
     }
-
-    /**
-     * Solo administradores pueden anular facturas.
-     */
-    public function anular(User $user, Factura $factura): bool
-    {
-        return $user->isAdmin();
-    }
-
-    /**
-     * Solo administradores pueden eliminar facturas físicamente si aplica.
-     */
-    public function delete(User $user, Factura $factura): bool
-    {
-        return $user->isAdmin();
-    }
 }

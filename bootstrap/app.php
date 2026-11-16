@@ -30,6 +30,13 @@ return Application::configure(basePath: dirname(__DIR__))
             Request::HEADER_X_FORWARDED_AWS_ELB
         );
 
+        // S-13: con APP_TRUSTED_HOSTS (nombres separados por coma) solo se aceptan esos
+        // nombres en la cabecera Host. Es opcional: si se activa sin incluir el nombre o la
+        // IP con que se entra desde la red, el sistema responde "Untrusted Host".
+        if ($hosts = array_filter(array_map('trim', explode(',', (string) env('APP_TRUSTED_HOSTS', ''))))) {
+            $middleware->trustHosts(at: array_map(fn ($h) => '^'.preg_quote($h).'$', $hosts), subdomains: false);
+        }
+
         // Headers de seguridad en TODAS las respuestas HTTP
         $middleware->append(SecurityHeaders::class);
 

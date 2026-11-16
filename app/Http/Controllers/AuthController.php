@@ -57,11 +57,9 @@ class AuthController extends Controller
         $lockoutUntilKey = 'login_locked_until:'.sha1($inputNormalized.'|'.$request->ip());
         $lockoutLevelKey = 'login_lockout_level:'.sha1($inputNormalized.'|'.$request->ip());
         $ipLockoutKey = 'login_ip_locked_until:'.sha1($request->ip());
-        $accountThrottleKey = 'login_account_attempts:'.sha1($inputNormalized);
-        $accountLockoutKey = 'login_account_locked_until:'.sha1($inputNormalized);
-
-        // Verificar si se encuentra en periodo de bloqueo activo
-        $activeLockout = Cache::get($lockoutUntilKey) ?: Cache::get($ipLockoutKey) ?: Cache::get($accountLockoutKey);
+        // Verificar si se encuentra en periodo de bloqueo activo (por IP + texto o por IP).
+        // El bloqueo por cuenta se revisa más abajo, cuando ya se sabe qué usuario es (S-09).
+        $activeLockout = Cache::get($lockoutUntilKey) ?: Cache::get($ipLockoutKey);
         if ($activeLockout && now()->timestamp < $activeLockout) {
             $secondsRemaining = max(1, $activeLockout - now()->timestamp);
 
@@ -125,6 +123,25 @@ class AuthController extends Controller
             $user = $coincidencias->count() === 1 ? $coincidencias->first() : null;
         }
 
+        // S-09: el bloqueo por cuenta se lleva por usuario (no por el texto escrito): con
+        // "admin", "administrador" o el correo se suman los mismos intentos. Y solo detiene a
+        // las IP que participaron en los fallos: un tercero no puede dejar afuera al usuario
+        // legítimo que entra desde otro equipo.
+        $cuentaId = $user ? 'u'.$user->id : 't'.sha1($inputNormalized);
+        $accountThrottleKey = 'login_account_attempts:'.$cuentaId;
+        $accountLockoutKey = 'login_account_locked_until:'.$cuentaId;
+        $accountIpsKey = 'login_account_ips:'.$cuentaId;
+        $ipHash = sha1((string) $request->ip());
+        $bloqueoCuenta = (int) Cache::get($accountLockoutKey, 0);
+        $cuentaBloqueada = $bloqueoCuenta > now()->timestamp;
+        if ($cuentaBloqueada && in_array($ipHash, Cache::get($accountIpsKey, []), true)) {
+            return back()->with([
+                'lockout_seconds' => max(1, $bloqueoCuenta - now()->timestamp),
+            ])->withErrors([
+                'email' => '🔒 Acceso bloqueado temporalmente por seguridad tras reiterados intentos fallidos.',
+            ])->onlyInput('email');
+        }
+
         if ($user) {
             // Validar si la contraseña coincide estrictamente contra su hash en BD
             $passwordValid = Hash::check($inputPassword, $user->password);
@@ -158,6 +175,18 @@ class AuthController extends Controller
             goto authenticated_user;
         }
 
+        // Cuenta bloqueada: un equipo nuevo solo entra con la contraseña correcta; si falla,
+        // queda incluido en el bloqueo (un atacante que rota IP obtiene un intento por IP).
+        if ($cuentaBloqueada) {
+            Cache::put($accountIpsKey, array_values(array_unique(array_merge(Cache::get($accountIpsKey, []), [$ipHash]))), now()->addMinutes(15));
+
+            return back()->with([
+                'lockout_seconds' => max(1, $bloqueoCuenta - now()->timestamp),
+            ])->withErrors([
+                'email' => '🔒 Acceso bloqueado temporalmente por seguridad tras reiterados intentos fallidos.',
+            ])->onlyInput('email');
+        }
+
         // Nivel de penalización acumulado previamente
         $level = (int) Cache::get($lockoutLevelKey, 0);
 
@@ -171,6 +200,8 @@ class AuthController extends Controller
         // Registro de intentos por cuenta (mitiga evasión por rotación de IP)
         $accountAttempts = (int) Cache::get($accountThrottleKey, 0) + 1;
         Cache::put($accountThrottleKey, $accountAttempts, now()->addMinutes(15));
+        $ipsConFallos = array_values(array_unique(array_merge(Cache::get($accountIpsKey, []), [$ipHash])));
+        Cache::put($accountIpsKey, array_slice($ipsConFallos, -200), now()->addMinutes(15));
         if ($accountAttempts >= 10) {
             Cache::put($accountLockoutKey, now()->timestamp + 300, now()->addMinutes(5));
         }
@@ -245,6 +276,7 @@ class AuthController extends Controller
         Cache::forget($ipLockoutKey);
         Cache::forget($accountThrottleKey);
         Cache::forget($accountLockoutKey);
+        Cache::forget($accountIpsKey);
 
         $user = Auth::user();
 

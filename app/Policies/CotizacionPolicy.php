@@ -46,12 +46,4 @@ class CotizacionPolicy
     {
         return ! $user->isInvitado();
     }
-
-    /**
-     * Solo administradores pueden anular o eliminar cotizaciones.
-     */
-    public function delete(User $user, Cotizacion $cotizacion): bool
-    {
-        return $user->isAdmin();
-    }
 }

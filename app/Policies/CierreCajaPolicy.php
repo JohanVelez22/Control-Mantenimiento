@@ -30,20 +30,4 @@ class CierreCajaPolicy
     {
         return ! $user->isInvitado();
     }
-
-    /**
-     * Cierres son inmutables por diseño contable; modificaciones restringidas a admin.
-     */
-    public function update(User $user, CierreCaja $cierre): bool
-    {
-        return $user->isAdmin();
-    }
-
-    /**
-     * Solo administradores pueden eliminar o desbloquear un cierre de caja.
-     */
-    public function delete(User $user, CierreCaja $cierre): bool
-    {
-        return $user->isAdmin();
-    }
 }

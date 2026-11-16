@@ -57,9 +57,8 @@ class BackupEventTest extends TestCase
             'role' => 'tecnico',
         ]);
 
-        $response = $this->actingAs($tecnico)->post(route('eventos.backup'));
-        $response->assertRedirect(route('dashboard'));
-        $response->assertSessionHas('error');
+        // ARQ-01: el permiso se aplica en la ruta (can:manage-backups).
+        $this->actingAs($tecnico)->post(route('eventos.backup'))->assertForbidden();
     }
 
     public function test_guest_cannot_trigger_backup()

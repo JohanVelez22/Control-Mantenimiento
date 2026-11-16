@@ -46,20 +46,4 @@ class StockPolicy
     {
         return ! $user->isInvitado();
     }
-
-    /**
-     * Solo administradores pueden revertir bajas de inventario.
-     */
-    public function revertirBaja(User $user, Stock $stock): bool
-    {
-        return $user->isAdmin();
-    }
-
-    /**
-     * Solo administradores pueden eliminar o anular un ítem de catálogo.
-     */
-    public function delete(User $user, Stock $stock): bool
-    {
-        return $user->isAdmin();
-    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class SecurityCheck extends Command
@@ -31,13 +32,21 @@ class SecurityCheck extends Command
             $this->info('✅ Modo debug desactivado');
         }
 
-        // 3. Validar Contraseñas Críticas
-        $adminPass = env('ADMIN_DEFAULT_PASSWORD') ?: env('ADMIN_REGISTRATION_PASSWORD');
-        if (! $adminPass || $adminPass === 'Admin123*') {
-            $this->error('❌ ADMIN_DEFAULT_PASSWORD / ADMIN_REGISTRATION_PASSWORD está ausente o usa un valor inseguro por defecto');
+        // 3. Contraseñas iniciales (S-01 / O-14): en producción deben estar vacías y ninguna
+        //    cuenta activa debe tener pendiente el cambio obligatorio de contraseña.
+        $iniciales = array_filter((array) config('seguridad.passwords_iniciales', []));
+        if ($iniciales) {
+            $this->error('❌ Hay contraseñas iniciales definidas en .env ('.implode(', ', array_map(fn ($r) => strtoupper($r).'_DEFAULT_PASSWORD', array_keys($iniciales))).'): vacíelas tras fijar las contraseñas reales');
             $warnings++;
         } else {
-            $this->info('✅ Contraseña de administrador segura detectada');
+            $this->info('✅ Sin contraseñas iniciales en .env');
+        }
+        $pendientes = User::where('active', true)->where('must_change_password', true)->pluck('email');
+        if ($pendientes->isNotEmpty()) {
+            $this->error('❌ Cuentas con contraseña inicial o publicada (cambio pendiente): '.$pendientes->implode(', ').'. Use php artisan app:restablecer-password <correo>');
+            $warnings++;
+        } else {
+            $this->info('✅ Ninguna cuenta activa usa la contraseña inicial');
         }
 
         $dbPass = config('database.connections.'.config('database.default').'.password');

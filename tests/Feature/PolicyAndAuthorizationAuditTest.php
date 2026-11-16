@@ -47,10 +47,11 @@ class PolicyAndAuthorizationAuditTest extends TestCase
         $this->assertTrue(Gate::forUser($this->tecnico)->allows('manage-caja'));
         $this->assertFalse(Gate::forUser($this->invitado)->allows('manage-caja'));
 
-        // anular-operacion
-        $this->assertTrue(Gate::forUser($this->admin)->allows('anular-operacion'));
-        $this->assertFalse(Gate::forUser($this->tecnico)->allows('anular-operacion'));
-        $this->assertFalse(Gate::forUser($this->invitado)->allows('anular-operacion'));
+        // configuración y auditoría: solo administrador
+        $this->assertTrue(Gate::forUser($this->admin)->allows('manage-config'));
+        $this->assertFalse(Gate::forUser($this->tecnico)->allows('manage-config'));
+        $this->assertTrue(Gate::forUser($this->admin)->allows('view-audit'));
+        $this->assertFalse(Gate::forUser($this->tecnico)->allows('view-audit'));
 
         // manage-users
         $this->assertTrue(Gate::forUser($this->admin)->allows('manage-users'));
@@ -69,9 +70,6 @@ class PolicyAndAuthorizationAuditTest extends TestCase
         $this->assertTrue(Gate::forUser($this->tecnico)->allows('viewAny', Factura::class));
         $this->assertFalse(Gate::forUser($this->invitado)->allows('viewAny', Factura::class));
 
-        $this->assertTrue(Gate::forUser($this->admin)->allows('anular', $factura));
-        $this->assertFalse(Gate::forUser($this->tecnico)->allows('anular', $factura));
-        $this->assertFalse(Gate::forUser($this->invitado)->allows('anular', $factura));
     }
 
     public function test_cierre_caja_policy_authorization(): void
@@ -82,8 +80,6 @@ class PolicyAndAuthorizationAuditTest extends TestCase
         $this->assertTrue(Gate::forUser($this->tecnico)->allows('viewAny', CierreCaja::class));
         $this->assertFalse(Gate::forUser($this->invitado)->allows('viewAny', CierreCaja::class));
 
-        $this->assertTrue(Gate::forUser($this->admin)->allows('delete', $cierre));
-        $this->assertFalse(Gate::forUser($this->tecnico)->allows('delete', $cierre));
     }
 
     public function test_stock_policy_authorization(): void
@@ -94,8 +90,6 @@ class PolicyAndAuthorizationAuditTest extends TestCase
         $this->assertTrue(Gate::forUser($this->tecnico)->allows('viewAny', Stock::class));
         $this->assertFalse(Gate::forUser($this->invitado)->allows('viewAny', Stock::class));
 
-        $this->assertTrue(Gate::forUser($this->admin)->allows('revertirBaja', $stock));
-        $this->assertFalse(Gate::forUser($this->tecnico)->allows('revertirBaja', $stock));
     }
 
     public function test_user_policy_authorization(): void

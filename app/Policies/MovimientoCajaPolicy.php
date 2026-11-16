@@ -38,20 +38,4 @@ class MovimientoCajaPolicy
     {
         return ! $user->isInvitado();
     }
-
-    /**
-     * Solo administradores pueden anular movimientos contables.
-     */
-    public function anular(User $user, MovimientoCaja $movimiento): bool
-    {
-        return $user->isAdmin();
-    }
-
-    /**
-     * Solo administradores pueden eliminar movimientos de caja.
-     */
-    public function delete(User $user, MovimientoCaja $movimiento): bool
-    {
-        return $user->isAdmin();
-    }
 }

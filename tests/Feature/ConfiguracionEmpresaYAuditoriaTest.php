@@ -51,13 +51,12 @@ class ConfiguracionEmpresaYAuditoriaTest extends TestCase
 
     public function test_non_admin_cannot_access_or_update_configuracion(): void
     {
-        $resTecnicoIndex = $this->actingAs($this->tecnico)->get(route('configuracion.index'));
-        $resTecnicoIndex->assertRedirect(route('dashboard'));
+        // ARQ-01: el permiso se aplica en la ruta (can:manage-config).
+        $this->actingAs($this->tecnico)->get(route('configuracion.index'))->assertForbidden();
 
-        $resTecnicoUpdate = $this->actingAs($this->tecnico)->post(route('configuracion.update'), [
+        $this->actingAs($this->tecnico)->post(route('configuracion.update'), [
             'nombre' => 'Intento Hacker',
-        ]);
-        $resTecnicoUpdate->assertRedirect(route('dashboard'));
+        ])->assertForbidden();
 
         $this->assertDatabaseMissing('configuraciones', ['nombre' => 'Intento Hacker']);
     }

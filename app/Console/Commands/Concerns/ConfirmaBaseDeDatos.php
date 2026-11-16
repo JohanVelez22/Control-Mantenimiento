@@ -11,13 +11,13 @@ namespace App\Console\Commands\Concerns;
  */
 trait ConfirmaBaseDeDatos
 {
-    protected function confirmarBaseDeDatos(string $accion): bool
+    protected function confirmarBaseDeDatos(string $accion, bool $permitirProduccion = false): bool
     {
         if (app()->environment('testing')) {
             return true;
         }
 
-        if (app()->environment('production')) {
+        if (app()->environment('production') && ! $permitirProduccion) {
             $this->error("{$accion}: deshabilitado en producción.");
 
             return false;

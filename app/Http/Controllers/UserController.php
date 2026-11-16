@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\AnulacionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,8 @@ class UserController extends Controller
 {
     public function index()
     {
-        if (auth()->user()->role !== 'admin') {
+        // ARQ-01: los permisos de usuarios salen de UserPolicy.
+        if (auth()->user()->cannot('viewAny', User::class)) {
             abort(403, 'Acceso denegado. Solo administradores pueden gestionar la lista de usuarios.');
         }
 
@@ -39,7 +41,7 @@ class UserController extends Controller
 
     public function create()
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->cannot('create', User::class)) {
             return redirect()->route('usuarios.index')->with('error', 'Solo el administrador puede crear usuarios.');
         }
 
@@ -48,7 +50,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->cannot('create', User::class)) {
             return redirect()->route('usuarios.index')->with('error', 'Solo el administrador puede crear usuarios.');
         }
 
@@ -84,7 +86,7 @@ class UserController extends Controller
 
     public function edit(User $usuario)
     {
-        if (auth()->user()->role !== 'admin' && auth()->id() !== $usuario->id) {
+        if (auth()->user()->cannot('update', $usuario)) {
             return redirect()->route('usuarios.index')->with('error', 'Solo puedes editar tu propio perfil.');
         }
 
@@ -97,7 +99,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $usuario)
     {
-        if (auth()->user()->role !== 'admin' && auth()->id() !== $usuario->id) {
+        if (auth()->user()->cannot('update', $usuario)) {
             return redirect()->route('usuarios.index')->with('error', 'Solo puedes editar tu propio perfil.');
         }
 
@@ -130,7 +132,7 @@ class UserController extends Controller
             return back()->withErrors(['role' => 'Este es el único administrador activo: asigne primero el rol de administrador a otro usuario.'])->withInput();
         }
 
-        if (auth()->user()->role === 'admin') {
+        if (auth()->user()->can('promote-admin')) {
             $usuario->role = $request->role;
         }
 
@@ -177,16 +179,16 @@ class UserController extends Controller
                 ->delete();
         }
 
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->cannot('viewAny', User::class)) {
             return redirect()->route('dashboard')->with('success', 'Perfil actualizado correctamente.');
         }
 
         return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado correctamente.');
     }
 
-    public function anular(User $usuario)
+    public function anular(Request $request, User $usuario)
     {
-        if (Auth::user()->role !== 'admin') {
+        if (Auth::user()->cannot('manage-users')) {
             return back()->with('error', 'No tienes permisos para modificar el estado.');
         }
 
@@ -194,7 +196,16 @@ class UserController extends Controller
             return back()->with('error', 'No puedes anular tu propio usuario.');
         }
 
+        // Intención explícita ("anular" / "reactivar"): un doble clic no revierte la acción.
+        if ($error = app(AnulacionService::class)->verificarIntencion($request, (bool) $usuario->active)) {
+            return back()->with('error', $error);
+        }
+
         $usuario->update(['active' => ! $usuario->active]);
+        if (! $usuario->active) {
+            // Un usuario desactivado sale de inmediato de todas sus sesiones.
+            DB::table('sessions')->where('user_id', $usuario->id)->delete();
+        }
         $action = $usuario->active ? 'reactivado' : 'desactivado (anulado)';
 
         return back()->with('success', "El usuario ha sido {$action} exitosamente.");

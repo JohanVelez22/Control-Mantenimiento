@@ -21,9 +21,9 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         $usuarios = [
-            ['email' => 'administrador@tecnisystemas.com', 'name' => 'Administrador', 'role' => 'admin', 'env' => 'ADMIN_DEFAULT_PASSWORD'],
-            ['email' => 'tecnico@tecnisystemas.com', 'name' => 'Técnico', 'role' => 'tecnico', 'env' => 'TECNICO_DEFAULT_PASSWORD'],
-            ['email' => 'invitado@tecnisystemas.com', 'name' => 'Invitado', 'role' => 'invitado', 'env' => 'INVITADO_DEFAULT_PASSWORD'],
+            ['email' => 'administrador@tecnisystemas.com', 'name' => 'Administrador', 'role' => 'admin', 'env' => 'admin'],
+            ['email' => 'tecnico@tecnisystemas.com', 'name' => 'Técnico', 'role' => 'tecnico', 'env' => 'tecnico'],
+            ['email' => 'invitado@tecnisystemas.com', 'name' => 'Invitado', 'role' => 'invitado', 'env' => 'invitado'],
         ];
 
         foreach ($usuarios as $u) {
@@ -43,7 +43,8 @@ class AdminUserSeeder extends Seeder
 
     private function resolverPassword(string $variable, string $email): string
     {
-        $password = (string) env($variable, '');
+        // O-14: config(), no env(): funciona igual con config:cache.
+        $password = (string) config('seguridad.passwords_iniciales.'.$variable, '');
 
         if ($password !== '') {
             return $password;

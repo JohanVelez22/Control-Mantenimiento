@@ -52,12 +52,4 @@ class MantenimientoPolicy
     {
         return ! $user->isInvitado();
     }
-
-    /**
-     * Solo administradores pueden anular o eliminar.
-     */
-    public function delete(User $user, Mantenimiento $mantenimiento): bool
-    {
-        return $user->isAdmin();
-    }
 }

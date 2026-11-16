@@ -3,8 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use App\Support\ModoRestauracion;
 use App\Support\PasswordsConocidas;
+use App\Support\VerificadorEsquema;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -68,6 +71,25 @@ class PreflightDespliegue extends Command
         $this->check(config('database.default') !== 'mysql' || ($mysqldump && File::exists($mysqldump)) || $this->enPath('mysqldump'), 'mysqldump disponible', 'No se encontró mysqldump: defina MYSQLDUMP_PATH en .env.');
         $ultimo = collect(File::exists($dirRespaldos) ? File::files($dirRespaldos) : [])->max(fn ($f) => $f->getMTime());
         $this->check($ultimo && $ultimo > now()->subDays(2)->timestamp, 'Respaldo reciente (últimas 48 h)', 'No hay respaldos recientes: ejecute php artisan app:backup-db y programe el scheduler (DEPLOY_CHECKLIST §6).', aviso: true);
+
+        $this->seccion('Operación');
+        $latido = (int) rescue(fn () => Cache::get('scheduler_latido', 0), 0, false);
+        $this->check($latido > now()->subHours(2)->getTimestamp(), 'Programador de tareas en marcha', 'El programador de tareas no se ha ejecutado en las últimas 2 horas: sin él no hay respaldos automáticos ni verificación semanal (GUIA_RESPALDOS.md, 5(a)).');
+        $destino = config('backup.drive_path');
+        $this->check($destino && File::isDirectory($destino), 'Copia de respaldos fuera del disco del servidor', 'GOOGLE_DRIVE_BACKUP_PATH no está configurado o la carpeta no existe: si falla el disco se pierde todo (GUIA_RESPALDOS.md, 5(b)).', aviso: true);
+        $this->check(filled(config('backup.password')), 'Respaldos cifrados (BACKUP_PASSWORD)', 'Los respaldos se guardan sin cifrar: defina BACKUP_PASSWORD y guarde la clave por escrito en otro lugar.', aviso: true);
+        $iniciales = array_filter((array) config('seguridad.passwords_iniciales', []));
+        $this->check($iniciales === [], 'Sin contraseñas iniciales en .env', 'Vacíe '.implode(', ', array_map(fn ($r) => strtoupper($r).'_DEFAULT_PASSWORD', array_keys($iniciales))).' en .env (respáldelo antes).');
+        $this->check(! File::exists(base_path('.env.backup')), 'Sin .env.backup en el proyecto', '.env.backup contiene secretos y APP_DEBUG=true: muévalo fuera de la carpeta del proyecto.', aviso: true);
+        $this->check(! ModoRestauracion::activo(), 'Sin restauración en curso', 'Hay una restauración marcada como en curso: si no es así, espere a que venza o borre storage/framework/restaurando.json.', aviso: true);
+        try {
+            $faltantes = VerificadorEsquema::faltantes();
+            $this->check($faltantes === [], 'Índices y restricciones esperados', 'Faltan: '.implode('; ', $faltantes).'. Ejecute php artisan app:verificar-migraciones.');
+            $demo = Schema::hasTable('configuraciones') && DB::table('configuraciones')->where('nit', '900.000.000-1')->exists();
+            $this->check(! $demo, 'Sin datos de demostración', 'La configuración tiene el NIT de demostración: retire los datos de prueba (php artisan app:clean-data --produccion) y registre los datos reales de la empresa.', aviso: true);
+        } catch (\Throwable $e) {
+            $this->check(false, 'Revisión del esquema', 'No se pudo revisar: '.$e->getMessage(), aviso: true);
+        }
 
         $this->newLine();
         if ($this->errores === 0 && $this->avisos === 0) {

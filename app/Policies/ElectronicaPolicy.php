@@ -52,12 +52,4 @@ class ElectronicaPolicy
     {
         return ! $user->isInvitado();
     }
-
-    /**
-     * Solo administradores pueden anular o eliminar.
-     */
-    public function delete(User $user, Electronica $electronica): bool
-    {
-        return $user->isAdmin();
-    }
 }

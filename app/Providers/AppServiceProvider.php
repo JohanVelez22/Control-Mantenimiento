@@ -76,10 +76,14 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('promote-tecnico', fn (User $u) => $u->role === 'admin');
         Gate::define('manage-caja', fn (User $u) => ! $u->isInvitado());
         Gate::define('close-caja', fn (User $u) => ! $u->isInvitado());
-        Gate::define('anular-operacion', fn (User $u) => $u->isAdmin());
         Gate::define('manage-users', fn (User $u) => $u->isAdmin());
-        Gate::define('view-financial-reports', fn (User $u) => $u->isAdmin());
         Gate::define('manage-backups', fn (User $u) => $u->isAdmin());
+        Gate::define('manage-config', fn (User $u) => $u->isAdmin());
+        Gate::define('view-audit', fn (User $u) => $u->isAdmin());
+        // ARQ-01 / S-11: los permisos se aplican en las rutas (middleware `can:`) y coinciden
+        // con lo que hace la aplicación. Anular o borrar no es un permiso fijo por rol: el
+        // técnico puede hacerlo con la clave de un administrador (AnulacionService). Los
+        // reportes financieros los usan admin y técnico (el técnico opera la caja y el cierre).
 
         Gate::policy(Mantenimiento::class, MantenimientoPolicy::class);
         Gate::policy(Electronica::class, ElectronicaPolicy::class);

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Support\VerificadorEsquema;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -57,6 +58,27 @@ class VerificarMigraciones extends Command
             $problemas += $duplicados->count();
             $this->error("❌ {$duplicados->count()} grupo(s) duplicado(s) en {$etiqueta}:");
             $this->table([...$columnas, 'repeticiones'], $duplicados->map(fn ($d) => (array) $d)->all());
+        }
+
+        // Restricciones CHECK de la migración de integridad (D-13): las filas que no las cumplan
+        // no impiden migrar, pero esa restricción no se crea. Mejor corregirlas antes.
+        if (DB::getDriverName() === 'mysql') {
+            $checks = (require database_path('migrations/2026_11_16_110300_indices_y_restricciones_de_integridad.php'))::CHECKS;
+            foreach ($checks as $nombre => [$tabla, $condicion]) {
+                if (! Schema::hasTable($tabla)) {
+                    continue;
+                }
+                $violan = (int) DB::table($tabla)->whereRaw("NOT ({$condicion})")->count();
+                if ($violan > 0) {
+                    $this->warn("⚠ {$violan} fila(s) de {$tabla} no cumplen {$nombre} ({$condicion}): esa restricción no se creará hasta corregirlas.");
+                }
+            }
+        }
+
+        // D-19: índices y restricciones de los que depende el código.
+        foreach (VerificadorEsquema::faltantes() as $faltante) {
+            $problemas++;
+            $this->error("❌ Falta {$faltante}.");
         }
 
         // Usuario que las pruebas de navegador (Dusk) podían crear en la base de trabajo

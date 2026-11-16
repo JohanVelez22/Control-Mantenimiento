@@ -93,17 +93,17 @@ class SeedDemoData extends Command
             // Asegurar usuarios base
             $admin = User::firstOrCreate(
                 ['email' => 'administrador@tecnisystemas.com'],
-                ['name' => 'Administrador Principal', 'password' => Hash::make(env('ADMIN_DEFAULT_PASSWORD') ?: Str::password(16)), 'role' => 'admin', 'active' => true]
+                ['name' => 'Administrador Principal', 'password' => Hash::make(config('seguridad.passwords_iniciales.admin') ?: Str::password(16)), 'role' => 'admin', 'active' => true]
             );
 
             $tecnico1 = User::firstOrCreate(
                 ['email' => 'tecnico@tecnisystemas.com'],
-                ['name' => 'Juan David Técnico', 'password' => Hash::make(env('TECNICO_DEFAULT_PASSWORD') ?: Str::password(16)), 'role' => 'tecnico', 'active' => true]
+                ['name' => 'Juan David Técnico', 'password' => Hash::make(config('seguridad.passwords_iniciales.tecnico') ?: Str::password(16)), 'role' => 'tecnico', 'active' => true]
             );
 
             $invitado = User::firstOrCreate(
                 ['email' => 'invitado@tecnisystemas.com'],
-                ['name' => 'Usuario Consulta', 'password' => Hash::make(env('INVITADO_DEFAULT_PASSWORD') ?: Str::password(16)), 'role' => 'invitado', 'active' => true]
+                ['name' => 'Usuario Consulta', 'password' => Hash::make(config('seguridad.passwords_iniciales.invitado') ?: Str::password(16)), 'role' => 'invitado', 'active' => true]
             );
 
             // 1. CLIENTES (5 registros)

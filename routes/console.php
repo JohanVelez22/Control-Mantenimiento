@@ -8,6 +8,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 use App\Models\Configuracion;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\Schema;
@@ -77,3 +78,9 @@ Schedule::command('app:verificar-respaldo')
     ->weeklyOn(0, '03:30')
     ->withoutOverlapping()
     ->appendOutputTo(storage_path('logs/verificacion-respaldos.log'));
+
+// O-17: latido del programador de tareas. app:preflight avisa si lleva más de 2 horas sin
+// registrarse (la tarea programada de Windows no está corriendo y no hay respaldos automáticos).
+Schedule::call(fn () => Cache::forever('scheduler_latido', now()->getTimestamp()))
+    ->name('latido-programador')
+    ->everyTenMinutes();

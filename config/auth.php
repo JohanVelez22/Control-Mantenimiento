@@ -41,6 +41,9 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+            // S-10: "Mantener sesión iniciada" dura 7 días (el valor por defecto de Laravel, 400
+            // días, anulaba el cierre de sesión por inactividad en equipos compartidos).
+            'remember' => (int) env('AUTH_REMEMBER_MINUTES', 60 * 24 * 7),
         ],
     ],
 

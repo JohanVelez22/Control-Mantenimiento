@@ -51,8 +51,19 @@ class SystemAuditCommand extends Command
         // 2. Auditoría de Configuración e Integridad de la Base de Datos Existente
         $this->auditExistingDataIntegrity();
 
-        // 3. Pruebas Transaccionales de Flujos de Negocio (Riesgo Cero - DB::rollBack)
-        $this->runBusinessFlowTransactions();
+        // 3. Pruebas transaccionales de flujos de negocio. O-19: crean registros dentro de una
+        //    transacción que se revierte, pero toman bloqueos y consumen números AUTO_INCREMENT
+        //    en la base viva: solo con --deep y, en producción, con confirmación explícita.
+        if ($this->option('deep')) {
+            if (app()->environment('production')
+                && ! $this->confirm('Las pruebas profundas escriben (y revierten) registros en la base de PRODUCCIÓN. Ejecútelas fuera del horario de atención. ¿Continuar?', false)) {
+                $this->warn('Pruebas transaccionales omitidas.');
+            } else {
+                $this->runBusinessFlowTransactions();
+            }
+        } else {
+            $this->line('Pruebas transaccionales omitidas (use --deep para ejecutarlas).');
+        }
 
         // 4. Reporte y Veredicto Final
         return $this->outputSummary();

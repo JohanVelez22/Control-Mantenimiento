@@ -38,12 +38,4 @@ class ClientePolicy
     {
         return ! $user->isInvitado();
     }
-
-    /**
-     * Solo administradores pueden anular o eliminar clientes.
-     */
-    public function delete(User $user, Cliente $cliente): bool
-    {
-        return $user->isAdmin();
-    }
 }

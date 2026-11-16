@@ -83,9 +83,12 @@ Route::middleware(['auth', 'prevent-back-history', 'password.cambio'])->group(fu
         Route::get('/electronicas-reportes', [ElectronicaController::class, 'reportes'])->name('electronicas.reportes');
         Route::get('/stocks-reportes', [StockController::class, 'reportes'])->name('stocks.reportes');
         Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
-        Route::get('/design-system', function () {
-            return view('design_system.index');
-        })->name('design-system');
+        // ARQ-11: catálogo de componentes solo en desarrollo.
+        if (app()->environment('local', 'testing')) {
+            Route::get('/design-system', function () {
+                return view('design_system.index');
+            })->name('design-system');
+        }
 
         // Reportes Financieros
         Route::prefix('reportes-financieros')->name('reportes.financiero.')->group(function () {
@@ -96,15 +99,15 @@ Route::middleware(['auth', 'prevent-back-history', 'password.cambio'])->group(fu
 
         // Módulos generales
         Route::get('api/municipios', [ClienteController::class, 'municipios'])->name('api.municipios');
-        Route::resource('clientes', ClienteController::class)->except(['destroy']);
+        Route::resource('clientes', ClienteController::class)->except(['destroy'])->middleware('can:viewAny,App\Models\Cliente');
         Route::resource('equipos', EquipoController::class)->except(['destroy']);
         Route::resource('tecnicos', TecnicoController::class)->except(['destroy']);
         Route::resource('stocks/categorias', CategoriaStockController::class)->names('stocks.categorias')->except(['create', 'show']);
-        Route::resource('stocks', StockController::class)->except(['destroy']);
+        Route::resource('stocks', StockController::class)->except(['destroy'])->middleware('can:viewAny,App\Models\Stock');
         Route::get('stocks/{stock}/print', [StockController::class, 'print'])->name('stocks.print');
 
         // Cotizaciones
-        Route::resource('cotizaciones', CotizacionController::class)->parameters(['cotizaciones' => 'cotizacion'])->except(['destroy']);
+        Route::resource('cotizaciones', CotizacionController::class)->parameters(['cotizaciones' => 'cotizacion'])->except(['destroy'])->middleware('can:viewAny,App\Models\Cotizacion');
         Route::post('cotizaciones/{cotizacion}/convertir', [CotizacionController::class, 'convertir'])->middleware('throttle:10,1')->name('cotizaciones.convertir');
         Route::post('cotizaciones/{cotizacion}/anular', [CotizacionController::class, 'anular'])->middleware('throttle:10,1')->name('cotizaciones.anular');
         Route::post('cotizaciones/{cotizacion}/rechazar', [CotizacionController::class, 'rechazar'])->middleware('throttle:10,1')->name('cotizaciones.rechazar');
@@ -122,7 +125,7 @@ Route::middleware(['auth', 'prevent-back-history', 'password.cambio'])->group(fu
         Route::resource('proveedores', ProveedorController::class)->parameters(['proveedores' => 'proveedor'])->except(['destroy']);
 
         // Inventario: Compras y Ventas
-        Route::prefix('inventario')->name('inventario.')->group(function () {
+        Route::prefix('inventario')->name('inventario.')->middleware('can:viewAny,App\Models\Factura')->group(function () {
             Route::get('/compra/nueva', [MovimientoInventarioController::class, 'createCompra'])->name('compra.create');
             Route::post('/compra', [MovimientoInventarioController::class, 'registrarCompra'])->name('compra.store');
             Route::get('/venta/nueva', [MovimientoInventarioController::class, 'createVenta'])->name('venta.create');
@@ -135,7 +138,7 @@ Route::middleware(['auth', 'prevent-back-history', 'password.cambio'])->group(fu
         });
 
         // Caja
-        Route::resource('caja', MovimientoCajaController::class)->except(['destroy'])->parameters(['caja' => 'movimiento']);
+        Route::resource('caja', MovimientoCajaController::class)->except(['destroy'])->parameters(['caja' => 'movimiento'])->middleware('can:manage-caja');
         Route::get('caja/{movimiento}/print', [MovimientoCajaController::class, 'print'])->name('caja.print');
         Route::post('caja/{movimiento}/duplicate', [MovimientoCajaController::class, 'duplicate'])->name('caja.duplicate');
         Route::post('caja/{movimiento}/abonos', [MovimientoCajaController::class, 'storeAbono'])->name('caja.abonos.store');
@@ -155,32 +158,40 @@ Route::middleware(['auth', 'prevent-back-history', 'password.cambio'])->group(fu
         Route::delete('electronicas/{electronica}/stocks/{stock_id}', [ElectronicaStockController::class, 'destroy'])->whereNumber('stock_id')->name('electronicas.stocks.destroy');
 
         // Cierre de Caja
-        Route::get('cierre', [CierreCajaController::class, 'index'])->name('cierre.index');
-        Route::post('cierre', [CierreCajaController::class, 'store'])->name('cierre.store');
-        Route::get('cierre/{cierre}', [CierreCajaController::class, 'show'])->name('cierre.show');
-        Route::get('cierre/{cierre}/edit', [CierreCajaController::class, 'edit'])->name('cierre.edit');
-        Route::put('cierre/{cierre}', [CierreCajaController::class, 'update'])->name('cierre.update');
-        Route::delete('cierre/{cierre}', [CierreCajaController::class, 'destroy'])->name('cierre.destroy');
+        Route::middleware('can:close-caja')->group(function () {
+            Route::get('cierre', [CierreCajaController::class, 'index'])->name('cierre.index');
+            Route::post('cierre', [CierreCajaController::class, 'store'])->name('cierre.store');
+            Route::get('cierre/{cierre}', [CierreCajaController::class, 'show'])->name('cierre.show');
+            Route::get('cierre/{cierre}/edit', [CierreCajaController::class, 'edit'])->name('cierre.edit');
+            Route::put('cierre/{cierre}', [CierreCajaController::class, 'update'])->name('cierre.update');
+            Route::delete('cierre/{cierre}', [CierreCajaController::class, 'destroy'])->name('cierre.destroy');
+        });
 
-        // Configuración de Empresa
-        Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
-        Route::post('/configuracion', [ConfiguracionController::class, 'update'])->name('configuracion.update');
+        // Configuración de Empresa (solo administrador)
+        Route::middleware('can:manage-config')->group(function () {
+            Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
+            Route::post('/configuracion', [ConfiguracionController::class, 'update'])->name('configuracion.update');
+        });
 
-        // Eventos / Auditoría
-        Route::get('/eventos', [EventoController::class, 'index'])->name('eventos.index');
-        Route::post('/eventos/backup', [EventoController::class, 'backup'])->name('eventos.backup');
-        Route::get('/eventos/{evento}', [EventoController::class, 'show'])->name('eventos.show');
+        // Eventos / Auditoría (solo administrador)
+        Route::middleware('can:view-audit')->group(function () {
+            Route::get('/eventos', [EventoController::class, 'index'])->name('eventos.index');
+            Route::get('/eventos/{evento}', [EventoController::class, 'show'])->name('eventos.show');
+        });
+        Route::post('/eventos/backup', [EventoController::class, 'backup'])->middleware('can:manage-backups')->name('eventos.backup');
 
         // Gestión y Programación de Respaldos (Backups)
-        Route::get('/backups/config', [BackupController::class, 'getConfig'])->name('backups.config');
-        Route::post('/backups/manual', [BackupController::class, 'createManual'])->middleware('throttle:10,1')->name('backups.manual');
-        Route::post('/backups/schedule', [BackupController::class, 'saveSchedule'])->name('backups.schedule');
-        // S-08: descargar un respaldo pide la contraseña (POST con el formulario de confirmación).
-        Route::post('/backups/download/{filename}', [BackupController::class, 'download'])->middleware('throttle:20,1')->where('filename', '.*')->name('backups.download');
-        Route::delete('/backups/destroy/{filename}', [BackupController::class, 'destroy'])->where('filename', '.*')->name('backups.destroy');
-        Route::post('/backups/restore/{filename}', [BackupController::class, 'restore'])->middleware('throttle:10,1')->where('filename', '.*')->name('backups.restore');
-        Route::post('/backups/git-update', [BackupController::class, 'gitUpdate'])->middleware('throttle:5,1')->name('backups.git-update');
-        Route::post('/backups/open-folder', [BackupController::class, 'openFolder'])->name('backups.open-folder');
+        Route::middleware('can:manage-backups')->group(function () {
+            Route::get('/backups/config', [BackupController::class, 'getConfig'])->name('backups.config');
+            Route::post('/backups/manual', [BackupController::class, 'createManual'])->middleware('throttle:10,1')->name('backups.manual');
+            Route::post('/backups/schedule', [BackupController::class, 'saveSchedule'])->name('backups.schedule');
+            // S-08: descargar un respaldo pide la contraseña (POST con el formulario de confirmación).
+            Route::post('/backups/download/{filename}', [BackupController::class, 'download'])->middleware('throttle:20,1')->where('filename', '.*')->name('backups.download');
+            Route::delete('/backups/destroy/{filename}', [BackupController::class, 'destroy'])->where('filename', '.*')->name('backups.destroy');
+            Route::post('/backups/restore/{filename}', [BackupController::class, 'restore'])->middleware('throttle:10,1')->where('filename', '.*')->name('backups.restore');
+            Route::post('/backups/git-update', [BackupController::class, 'gitUpdate'])->middleware('throttle:5,1')->name('backups.git-update');
+            Route::post('/backups/open-folder', [BackupController::class, 'openFolder'])->name('backups.open-folder');
+        });
 
         // Mantenimientos y Electrónicas: listados generales (solo admin y técnico)
         Route::get('mantenimientos', [MantenimientoController::class, 'index'])->name('mantenimientos.index');
