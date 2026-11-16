@@ -59,10 +59,11 @@ class TrazabilidadRepuestosTest extends TestCase
     public function test_precio_promedio_no_deja_el_costo_descuadrado_ni_negativo(): void
     {
         $orden = $this->orden();
-        $stock = Stock::factory()->create(['cantidad' => 10, 'precio_venta' => 10000, 'active' => true]);
+        // Mismo precio para cliente normal y técnico: el tipo de cliente de la fábrica es aleatorio.
+        $stock = Stock::factory()->create(['cantidad' => 10, 'precio_venta' => 10000, 'precio_tecnico' => 10000, 'active' => true]);
 
         $this->actingAs($this->admin)->post(route('mantenimientos.stocks.store', $orden), ['stock_id' => $stock->id, 'cantidad' => 1]);
-        $stock->update(['precio_venta' => 10001]);
+        $stock->update(['precio_venta' => 10001, 'precio_tecnico' => 10001]);
         $this->post(route('mantenimientos.stocks.store', $orden), ['stock_id' => $stock->id, 'cantidad' => 2]);
 
         $orden->refresh();
