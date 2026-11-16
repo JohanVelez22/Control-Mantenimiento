@@ -417,7 +417,7 @@ class SystemAuditCommand extends Command
             // ── TEST 3.10: Cuadre de Arqueo de Caja Diario ──
             // Cada invocación del closure construye un Builder nuevo, de modo que
             // las consultas de ingresos y egresos quedan completamente aisladas.
-            $baseArqueo = fn () => MovimientoCaja::whereDate('fecha', now()->toDateString())
+            $baseArqueo = fn () => MovimientoCaja::whereDia('fecha', now()->toDateString())
                 ->where('estado', 'activo')->where('anulado', false);
 
             $ingresosActivos = $baseArqueo()->where('tipo_movimiento', 'ingreso')->sum('monto');
@@ -431,7 +431,7 @@ class SystemAuditCommand extends Command
                 $sumaManual += $movArqueo->tipo_movimiento === 'ingreso' ? $movArqueo->monto : -$movArqueo->monto;
             }
 
-            $movimientosAnuladosExcluidos = MovimientoCaja::whereDate('fecha', now()->toDateString())
+            $movimientosAnuladosExcluidos = MovimientoCaja::whereDia('fecha', now()->toDateString())
                 ->where('estado', 'anulado')
                 ->whereIn('id', [$movCajaVenta->id, $movAbono->id])
                 ->count() === 2;

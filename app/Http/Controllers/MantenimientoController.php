@@ -212,6 +212,10 @@ class MantenimientoController extends Controller
         ];
 
         // Lógica de exportación o paginación según el botón presionado
+        if ($limite = $this->limiteExportacion($totales['cantidad'], $request->get('export'))) {
+            return $limite;
+        }
+
         if ($request->get('export') == 'excel') {
             $mantenimientos = $query->orderBy('id', 'desc')->get();
 

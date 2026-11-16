@@ -26,7 +26,7 @@ class CierreCajaGuard
             return false;
         }
 
-        $consulta = CierreCaja::whereDate('fecha', '>=', $fecha);
+        $consulta = CierreCaja::whereDesdeDia('fecha', $fecha);
 
         // D-08: dentro de una transacción, lectura bloqueante compartida. Si en ese momento
         // se está guardando un cierre de esa fecha, se espera a que termine y se ve; y un

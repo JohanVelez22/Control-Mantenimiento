@@ -399,6 +399,10 @@ class ElectronicaController extends Controller
             'costo_anuladas' => (float) (clone $query)->where('anulado', true)->sum('costo'),
         ];
 
+        if ($limite = $this->limiteExportacion($totales['cantidad'], $request->get('export'))) {
+            return $limite;
+        }
+
         if ($request->get('export') == 'excel') {
             $electronicas = $query->orderBy('id', 'desc')->get();
 

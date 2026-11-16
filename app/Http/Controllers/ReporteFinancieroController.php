@@ -34,7 +34,7 @@ class ReporteFinancieroController extends Controller
 
         // — Mantenimientos ingresados ese día
         $mantenimientos = Mantenimiento::with(['equipo.cliente', 'tecnico'])
-            ->whereDate('fecha_entrada', $fecha)
+            ->whereDia('fecha_entrada', $fecha)
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($m) {
@@ -56,7 +56,7 @@ class ReporteFinancieroController extends Controller
 
         // — Electrónicas ingresadas ese día
         $electronicas = Electronica::with(['tecnico', 'equipo.cliente'])
-            ->whereDate('fecha_entrada', $fecha)
+            ->whereDia('fecha_entrada', $fecha)
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($e) {
@@ -78,7 +78,7 @@ class ReporteFinancieroController extends Controller
 
         // — Facturas (compras y ventas)
         $facturas = Factura::with('facturable')
-            ->whereDate('fecha', $fecha)
+            ->whereDia('fecha', $fecha)
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($f) {
@@ -99,7 +99,7 @@ class ReporteFinancieroController extends Controller
 
         // — Movimientos de Caja (ingresos/egresos)
         $caja = MovimientoCaja::with('concepto')
-            ->whereDate('fecha', $fecha)
+            ->whereDia('fecha', $fecha)
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($c) {
@@ -131,7 +131,7 @@ class ReporteFinancieroController extends Controller
         // ════════════════════════════════════════════════════════════════════
         // CONSULTAS DIRECTAS A BASE DE DATOS PARA RIGOR CONTABLE (DINERO REAL)
         // ════════════════════════════════════════════════════════════════════
-        $movCajaTotales = MovimientoCaja::whereDate('fecha', $fecha)
+        $movCajaTotales = MovimientoCaja::whereDia('fecha', $fecha)
             ->where('estado', 'activo')
             ->where('anulado', false)
             ->selectRaw("
@@ -151,11 +151,11 @@ class ReporteFinancieroController extends Controller
         $ingresosCaja = (float) ($movCajaTotales->tot_ing ?? 0);
         $egresosCaja = (float) ($movCajaTotales->tot_eg ?? 0);
 
-        $facturadoMant = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
-        $facturadoElec = Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
+        $facturadoMant = Mantenimiento::whereDia('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
+        $facturadoElec = Electronica::whereDia('fecha_entrada', $fecha)->where('anulado', false)->sum('costo');
 
         // Consolidación de totales y saldos de Facturas en una sola consulta
-        $facturasAgg = Factura::whereDate('fecha', $fecha)
+        $facturasAgg = Factura::whereDia('fecha', $fecha)
             ->where('estado', '!=', 'anulada')
             ->selectRaw("
                 SUM(CASE WHEN tipo_movimiento = 'venta' THEN total_documento ELSE 0 END) as ventas_inv,
@@ -170,15 +170,15 @@ class ReporteFinancieroController extends Controller
         $saldoPendienteVenta = (float) ($facturasAgg->saldo_pend_vta ?? 0);
         $saldoPendienteCompra = (float) ($facturasAgg->saldo_pend_cmp ?? 0);
 
-        $totalAnuladosCount = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', true)->count()
-                            + Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', true)->count()
-                            + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->whereNull('factura_id')->whereNull('abono_id')->count()
-                            + Factura::whereDate('fecha', $fecha)->where('estado', 'anulada')->count();
+        $totalAnuladosCount = Mantenimiento::whereDia('fecha_entrada', $fecha)->where('anulado', true)->count()
+                            + Electronica::whereDia('fecha_entrada', $fecha)->where('anulado', true)->count()
+                            + MovimientoCaja::whereDia('fecha', $fecha)->where('anulado', true)->whereNull('factura_id')->whereNull('abono_id')->count()
+                            + Factura::whereDia('fecha', $fecha)->where('estado', 'anulada')->count();
 
-        $montoAnuladosSum = Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
-                            + Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
-                            + MovimientoCaja::whereDate('fecha', $fecha)->where('anulado', true)->whereNull('factura_id')->whereNull('abono_id')->sum('monto')
-                            + Factura::whereDate('fecha', $fecha)->where('estado', 'anulada')->sum('total_documento');
+        $montoAnuladosSum = Mantenimiento::whereDia('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
+                            + Electronica::whereDia('fecha_entrada', $fecha)->where('anulado', true)->sum('costo')
+                            + MovimientoCaja::whereDia('fecha', $fecha)->where('anulado', true)->whereNull('factura_id')->whereNull('abono_id')->sum('monto')
+                            + Factura::whereDia('fecha', $fecha)->where('estado', 'anulada')->sum('total_documento');
 
         // ════════════════════════════════════════════════════════════════════
         // SALDOS PENDIENTES DEL DÍA (CUENTAS POR COBRAR Y POR PAGAR)
@@ -191,10 +191,10 @@ class ReporteFinancieroController extends Controller
             ->where('anulado', false)
             ->where('estado', 'activo')
             ->where('monto_total', '>', 0)
-            ->whereDate('fecha', $fecha)
+            ->whereDia('fecha', $fecha)
             ->get();
 
-        $facturaNumerosDia = Factura::whereDate('fecha', $fecha)->where('estado', '!=', 'anulada')->pluck('numero_factura')->filter()->all();
+        $facturaNumerosDia = Factura::whereDia('fecha', $fecha)->where('estado', '!=', 'anulada')->pluck('numero_factura')->filter()->all();
         $saldoPendienteCajaIngreso = 0;
         $saldoPendienteCajaEgreso = 0;
 
@@ -234,8 +234,8 @@ class ReporteFinancieroController extends Controller
             }
         }
 
-        $saldoPendienteMant = (float) Mantenimiento::whereDate('fecha_entrada', $fecha)->where('anulado', false)->with('abonos')->get()->sum(fn ($m) => $m->saldo_pendiente);
-        $saldoPendienteElec = (float) Electronica::whereDate('fecha_entrada', $fecha)->where('anulado', false)->with('abonos')->get()->sum(fn ($e) => $e->saldo_pendiente);
+        $saldoPendienteMant = (float) Mantenimiento::whereDia('fecha_entrada', $fecha)->where('anulado', false)->with('abonos')->get()->sum(fn ($m) => $m->saldo_pendiente);
+        $saldoPendienteElec = (float) Electronica::whereDia('fecha_entrada', $fecha)->where('anulado', false)->with('abonos')->get()->sum(fn ($e) => $e->saldo_pendiente);
 
         $totalPorCobrar = $saldoPendienteVenta + $saldoPendienteCajaIngreso + $saldoPendienteMant + $saldoPendienteElec;
         $totalPorPagar = $saldoPendienteCompra + $saldoPendienteCajaEgreso;
@@ -638,6 +638,10 @@ class ReporteFinancieroController extends Controller
             'solo_compras' => '📦 Compras de Inventario',
             'solo_ventas' => '🛒 Ventas de Inventario',
         ];
+
+        if ($limite = $this->limiteExportacion($totales['cantidad'], $request->get('export'))) {
+            return $limite;
+        }
 
         if ($request->get('export')) {
             // Obtener todos los registros sin paginación para exportar

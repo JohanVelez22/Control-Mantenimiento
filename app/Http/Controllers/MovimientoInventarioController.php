@@ -407,8 +407,8 @@ class MovimientoInventarioController extends Controller
             });
         }
 
-        $query->whereDate('fecha', '>=', $fecha_desde);
-        $query->whereDate('fecha', '<=', $fecha_hasta);
+        $query->whereDesdeDia('fecha', $fecha_desde);
+        $query->whereHastaDia('fecha', $fecha_hasta);
 
         $facturas = $query->paginate(10);
 

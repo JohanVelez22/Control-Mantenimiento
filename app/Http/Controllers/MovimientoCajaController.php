@@ -40,8 +40,8 @@ class MovimientoCajaController extends Controller
             $query->where('tipo_pago', $request->tipo_pago);
         }
 
-        $query->whereDate('fecha', '>=', $fecha_desde);
-        $query->whereDate('fecha', '<=', $fecha_hasta);
+        $query->whereDesdeDia('fecha', $fecha_desde);
+        $query->whereHastaDia('fecha', $fecha_hasta);
 
         if ($request->filled('tipo_entidad') && $request->tipo_entidad !== 'todos') {
             if ($request->tipo_entidad === 'persona') {
@@ -124,8 +124,8 @@ class MovimientoCajaController extends Controller
             }
         }
 
-        $totalesQuery->whereDate('fecha', '>=', $fecha_desde);
-        $totalesQuery->whereDate('fecha', '<=', $fecha_hasta);
+        $totalesQuery->whereDesdeDia('fecha', $fecha_desde);
+        $totalesQuery->whereHastaDia('fecha', $fecha_hasta);
 
         if ($request->filled('search')) {
             $s = $request->search;

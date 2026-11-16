@@ -257,10 +257,10 @@ class StockController extends Controller
         }
 
         if ($request->filled('desde')) {
-            $query->whereDate('created_at', '>=', $request->desde);
+            $query->whereDesdeDia('created_at', $request->desde);
         }
         if ($request->filled('hasta')) {
-            $query->whereDate('created_at', '<=', $request->hasta);
+            $query->whereHastaDia('created_at', $request->hasta);
         }
 
         if ($request->filled('min_costo')) {
@@ -291,6 +291,10 @@ class StockController extends Controller
             'valor_venta' => (float) (clone $query)->sum(DB::raw('cantidad * precio_venta')),
             'valor_tecnico' => (float) (clone $query)->sum(DB::raw('cantidad * COALESCE(precio_tecnico, 0)')),
         ];
+
+        if ($limite = $this->limiteExportacion($totales['registros'], $request->export)) {
+            return $limite;
+        }
 
         if ($request->has('export') && $request->export === 'pdf') {
             $stocks = $query->get();

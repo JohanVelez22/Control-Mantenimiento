@@ -29,6 +29,7 @@ use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
@@ -68,6 +69,27 @@ class AppServiceProvider extends ServiceProvider
         if (request()->isSecure()) {
             URL::forceScheme('https');
         }
+
+        // D-04: filtros por día como rangos sobre la columna, para que MySQL use los índices
+        // de fecha (DATE(col), MONTH(col) y YEAR(col) obligaban a recorrer toda la tabla).
+        // Funcionan igual con columnas DATE y DATETIME, y en SQLite.
+        $diaSiguiente = fn ($dia) => Carbon::parse($dia)->addDay()->toDateString();
+        QueryBuilder::macro('whereDia', function (string $columna, $dia) use ($diaSiguiente) {
+            return $this->where($columna, '>=', Carbon::parse($dia)->toDateString())
+                ->where($columna, '<', $diaSiguiente($dia));
+        });
+        QueryBuilder::macro('whereDesdeDia', function (string $columna, $dia) {
+            return $this->where($columna, '>=', Carbon::parse($dia)->toDateString());
+        });
+        QueryBuilder::macro('whereHastaDia', function (string $columna, $dia) use ($diaSiguiente) {
+            return $this->where($columna, '<', $diaSiguiente($dia));
+        });
+        QueryBuilder::macro('whereMes', function (string $columna, int $mes, int $anio) {
+            $inicio = Carbon::create($anio, $mes, 1)->startOfDay();
+
+            return $this->where($columna, '>=', $inicio->toDateString())
+                ->where($columna, '<', $inicio->copy()->addMonth()->toDateString());
+        });
 
         // ─────────────────────────────────────────────────────────────────
         // GATES DE AUTORIZACIÓN CENTRALIZADOS

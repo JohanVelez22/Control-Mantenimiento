@@ -16,6 +16,10 @@ class ReporteController extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'mes' => 'nullable|integer|between:1,12',
+            'anio' => 'nullable|integer|between:2000,2100',
+        ]);
         $mes = $request->get('mes', Carbon::now()->month);
         $anio = $request->get('anio', Carbon::now()->year);
 
@@ -26,7 +30,7 @@ class ReporteController extends Controller
             ->orderBy('id', 'desc');
 
         if ($request->filled('mes')) {
-            $queryDetallado->whereMonth('fecha', $mes)->whereYear('fecha', $anio);
+            $queryDetallado->whereMes('fecha', (int) $mes, (int) $anio);
         }
 
         if ($request->filled('tipo_movimiento')) {
@@ -42,8 +46,7 @@ class ReporteController extends Controller
         // --- INFORME ACUMULADO (MES ACTUAL O FILTRADO) ---
         $acumuladoQuery = MovimientoCaja::where('estado', 'activo')
             ->where('anulado', false)
-            ->whereMonth('fecha', $mes)
-            ->whereYear('fecha', $anio);
+            ->whereMes('fecha', (int) $mes, (int) $anio);
 
         $ingresos_mes = (clone $acumuladoQuery)->where('tipo_movimiento', 'ingreso')->sum('monto');
         $egresos_mes = (clone $acumuladoQuery)->where('tipo_movimiento', 'egreso')->sum('monto');
@@ -51,13 +54,11 @@ class ReporteController extends Controller
 
         // Facturación Total (Mantenimientos + Electrónica) - Lo que se ha cobrado o se debe cobrar
         $facturado_mantenimientos = Mantenimiento::where('anulado', false)
-            ->whereMonth('fecha_entrada', $mes)
-            ->whereYear('fecha_entrada', $anio)
+            ->whereMes('fecha_entrada', (int) $mes, (int) $anio)
             ->sum('costo');
 
         $facturado_electronica = Electronica::where('anulado', false)
-            ->whereMonth('fecha_entrada', $mes)
-            ->whereYear('fecha_entrada', $anio)
+            ->whereMes('fecha_entrada', (int) $mes, (int) $anio)
             ->sum('costo');
 
         $facturado_total = $facturado_mantenimientos + $facturado_electronica;
