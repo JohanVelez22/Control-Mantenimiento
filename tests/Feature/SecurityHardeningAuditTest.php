@@ -113,9 +113,9 @@ class SecurityHardeningAuditTest extends TestCase
         $this->actingAs($this->tecnico)->getJson(route('backups.config'))->assertForbidden();
         $this->actingAs($this->tecnico)->postJson(route('backups.manual'))->assertForbidden();
         $this->actingAs($this->tecnico)->postJson(route('backups.schedule'), [])->assertForbidden();
-        $this->actingAs($this->tecnico)->getJson(route('backups.download', ['filename' => 'sec_sample.sql']))->assertForbidden();
-        $this->actingAs($this->tecnico)->deleteJson(route('backups.destroy', ['filename' => 'sec_sample.sql']))->assertForbidden();
-        $this->actingAs($this->tecnico)->postJson(route('backups.restore', ['filename' => 'sec_sample.sql']))->assertForbidden();
+        $this->actingAs($this->tecnico)->postJson(route('backups.download', ['filename' => 'sec_sample.sql']), ['password' => 'password'])->assertForbidden();
+        $this->actingAs($this->tecnico)->deleteJson(route('backups.destroy', ['filename' => 'sec_sample.sql']), ['password' => 'password'])->assertForbidden();
+        $this->actingAs($this->tecnico)->postJson(route('backups.restore', ['filename' => 'sec_sample.sql']), ['password' => 'password'])->assertForbidden();
         $this->actingAs($this->tecnico)->postJson(route('backups.git-update'))->assertForbidden();
         $this->actingAs($this->tecnico)->postJson(route('backups.open-folder'))->assertForbidden();
     }
@@ -126,14 +126,14 @@ class SecurityHardeningAuditTest extends TestCase
     public function test_backup_path_traversal_attempts_are_strictly_rejected(): void
     {
         // Intento con '..'
-        $resDownload = $this->actingAs($this->admin)->get(route('backups.download', ['filename' => '..%2F..%2F..%2Fetc%2Fpasswd']));
+        $resDownload = $this->actingAs($this->admin)->post(route('backups.download', ['filename' => '..%2F..%2F..%2Fetc%2Fpasswd']), ['password' => 'password']);
         $this->assertTrue(in_array($resDownload->status(), [400, 404]), 'Debe rechazar path traversal');
 
-        $resDestroy = $this->actingAs($this->admin)->deleteJson(route('backups.destroy', ['filename' => '..%2F..%2Fconfig.php']));
+        $resDestroy = $this->actingAs($this->admin)->deleteJson(route('backups.destroy', ['filename' => '..%2F..%2Fconfig.php']), ['password' => 'password']);
         $this->assertEquals(400, $resDestroy->status());
         $this->assertFalse($resDestroy->json('success'));
 
-        $resRestore = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => '..%2F..%2Fhack.sql']));
+        $resRestore = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => '..%2F..%2Fhack.sql']), ['password' => 'password']);
         $this->assertEquals(400, $resRestore->status());
         $this->assertFalse($resRestore->json('success'));
     }
@@ -156,7 +156,7 @@ class SecurityHardeningAuditTest extends TestCase
 
         $this->assertFileExists($zipFilePath);
 
-        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFileName]));
+        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFileName]), ['password' => 'password']);
 
         $response->assertStatus(400);
         $this->assertFalse($response->json('success'));

@@ -175,7 +175,8 @@ Route::middleware(['auth', 'prevent-back-history', 'password.cambio'])->group(fu
         Route::get('/backups/config', [BackupController::class, 'getConfig'])->name('backups.config');
         Route::post('/backups/manual', [BackupController::class, 'createManual'])->middleware('throttle:10,1')->name('backups.manual');
         Route::post('/backups/schedule', [BackupController::class, 'saveSchedule'])->name('backups.schedule');
-        Route::get('/backups/download/{filename}', [BackupController::class, 'download'])->where('filename', '.*')->name('backups.download');
+        // S-08: descargar un respaldo pide la contraseña (POST con el formulario de confirmación).
+        Route::post('/backups/download/{filename}', [BackupController::class, 'download'])->middleware('throttle:20,1')->where('filename', '.*')->name('backups.download');
         Route::delete('/backups/destroy/{filename}', [BackupController::class, 'destroy'])->where('filename', '.*')->name('backups.destroy');
         Route::post('/backups/restore/{filename}', [BackupController::class, 'restore'])->middleware('throttle:10,1')->where('filename', '.*')->name('backups.restore');
         Route::post('/backups/git-update', [BackupController::class, 'gitUpdate'])->middleware('throttle:5,1')->name('backups.git-update');

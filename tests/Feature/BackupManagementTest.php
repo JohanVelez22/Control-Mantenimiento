@@ -200,7 +200,7 @@ class BackupManagementTest extends TestCase
         $fullPath = $this->backupDir.DIRECTORY_SEPARATOR.$testFile;
         File::put($fullPath, '-- Test Download Content');
 
-        $response = $this->actingAs($this->admin)->get(route('backups.download', ['filename' => $testFile]));
+        $response = $this->actingAs($this->admin)->post(route('backups.download', ['filename' => $testFile]), ['password' => 'password']);
 
         $response->assertStatus(200);
         $this->assertEquals('attachment; filename='.$testFile, $response->headers->get('content-disposition'));
@@ -212,7 +212,7 @@ class BackupManagementTest extends TestCase
 
     public function test_path_traversal_is_blocked_on_download()
     {
-        $response = $this->actingAs($this->admin)->get(route('backups.download', ['filename' => '../.env']));
+        $response = $this->actingAs($this->admin)->post(route('backups.download', ['filename' => '../.env']), ['password' => 'password']);
 
         $response->assertStatus(400);
     }
@@ -225,7 +225,7 @@ class BackupManagementTest extends TestCase
 
         $this->assertTrue(File::exists($fullPath));
 
-        $response = $this->actingAs($this->admin)->deleteJson(route('backups.destroy', ['filename' => $testFile]));
+        $response = $this->actingAs($this->admin)->deleteJson(route('backups.destroy', ['filename' => $testFile]), ['password' => 'password']);
 
         $response->assertStatus(200);
         $this->assertTrue($response->json('success'));
@@ -281,7 +281,7 @@ class BackupManagementTest extends TestCase
         File::put($sqlPath, "-- SQL test restore file\nSELECT 1;\n");
 
         // 3. Ejecutar restauración
-        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $sqlFile]));
+        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $sqlFile]), ['password' => 'password']);
 
         $response->assertStatus(200);
         $this->assertTrue($response->json('success'));
@@ -313,7 +313,7 @@ class BackupManagementTest extends TestCase
         $zip->addFromString('archivos_publicos/test_media_file.txt', 'Contenido multimedia de prueba');
         $zip->close();
 
-        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFile]));
+        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFile]), ['password' => 'password']);
 
         $response->assertStatus(200);
         $this->assertTrue($response->json('success'));
@@ -344,7 +344,7 @@ class BackupManagementTest extends TestCase
         $zip->addFromString('codigo_fuente/dummy_app.php', '<?php // Safe code');
         $zip->close();
 
-        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFile]));
+        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFile]), ['password' => 'password']);
 
         $response->assertStatus(200);
         $this->assertTrue($response->json('success'));
@@ -368,7 +368,7 @@ class BackupManagementTest extends TestCase
         $dummyPath = $this->backupDir.DIRECTORY_SEPARATOR.$dummy;
         File::put($dummyPath, '-- Test');
 
-        $response = $this->actingAs($this->tecnico)->postJson(route('backups.restore', ['filename' => $dummy]));
+        $response = $this->actingAs($this->tecnico)->postJson(route('backups.restore', ['filename' => $dummy]), ['password' => 'password']);
         $response->assertStatus(403);
 
         if (File::exists($dummyPath)) {
@@ -378,7 +378,7 @@ class BackupManagementTest extends TestCase
 
     public function test_path_traversal_is_blocked_on_restore()
     {
-        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => '../.env']));
+        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => '../.env']), ['password' => 'password']);
         $response->assertStatus(400);
     }
 
@@ -393,7 +393,7 @@ class BackupManagementTest extends TestCase
         $zip->addFromString('../../evil.txt', 'evil content');
         $zip->close();
 
-        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFile]));
+        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFile]), ['password' => 'password']);
 
         $response->assertStatus(400);
         $this->assertStringContainsString('Zip Slip', $response->json('message'));
@@ -415,7 +415,7 @@ class BackupManagementTest extends TestCase
         $zip->addFromString('archivos_publicos/webshell.php', '<?php echo "pwned";');
         $zip->close();
 
-        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFile]));
+        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => $zipFile]), ['password' => 'password']);
 
         $response->assertStatus(200);
 
@@ -441,13 +441,14 @@ class BackupManagementTest extends TestCase
 
     public function test_restore_fails_when_file_does_not_exist()
     {
-        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => 'no_existe.sql']));
+        $response = $this->actingAs($this->admin)->postJson(route('backups.restore', ['filename' => 'no_existe.sql']), ['password' => 'password']);
         $response->assertStatus(404);
     }
 
     public function test_admin_can_trigger_git_update_when_updated()
     {
         $response = $this->actingAs($this->admin)->postJson(route('backups.git-update'), [
+            'password' => 'password',
             'fake_status' => 'updated',
         ]);
 
@@ -460,6 +461,7 @@ class BackupManagementTest extends TestCase
     public function test_admin_can_trigger_git_update_when_up_to_date()
     {
         $response = $this->actingAs($this->admin)->postJson(route('backups.git-update'), [
+            'password' => 'password',
             'fake_status' => 'up_to_date',
         ]);
 
@@ -472,6 +474,7 @@ class BackupManagementTest extends TestCase
     public function test_admin_handles_git_update_when_no_connection()
     {
         $response = $this->actingAs($this->admin)->postJson(route('backups.git-update'), [
+            'password' => 'password',
             'fake_status' => 'no_connection',
         ]);
 

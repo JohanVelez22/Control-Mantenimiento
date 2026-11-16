@@ -14,6 +14,10 @@ return [
     // Carpeta sincronizada (p. ej. Google Drive) donde se copia cada respaldo. Vacío = no copiar.
     'drive_path' => env('GOOGLE_DRIVE_BACKUP_PATH'),
 
+    // S-08: clave para cifrar los respaldos (ZIP AES-256). Vacío = sin cifrar.
+    // Sin esta clave un respaldo cifrado NO se puede restaurar: guárdela por escrito aparte.
+    'password' => env('BACKUP_PASSWORD'),
+
     // Binarios de MySQL. Vacío = búsqueda automática en rutas conocidas de ServBay / Linux.
     'mysqldump_path' => env('MYSQLDUMP_PATH'),
     'mysql_path' => env('MYSQL_PATH'),

@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Models\Configuracion;
 use App\Models\Evento;
+use App\Support\BinariosMysql;
+use App\Support\ManifiestoRespaldos;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -93,6 +95,7 @@ class BackupDatabase extends Command
                 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 $zip->addFromString('backup_info.json', $infoJson);
 
+                $this->cifrarZip($zip);
                 $zip->close();
 
                 // Limpiar SQL temporal
@@ -146,6 +149,7 @@ class BackupDatabase extends Command
                 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 $zip->addFromString('backup_info.json', $infoJson);
 
+                $this->cifrarZip($zip);
                 $zip->close();
 
                 // Limpiar SQL temporal
@@ -175,6 +179,7 @@ class BackupDatabase extends Command
                 }
 
                 $codeCount = $this->addSourceCodeToZip($zip, $backupDir, '');
+                $this->cifrarZip($zip);
                 $zip->close();
 
                 $sizeMb = round(File::size($zipFilePath) / (1024 * 1024), 2);
@@ -194,11 +199,35 @@ class BackupDatabase extends Command
                 $sqlFilePath = $backupDir.DIRECTORY_SEPARATOR.$sqlFileName;
 
                 $sizeKb = $this->dumpDatabase($sqlFilePath, $database, $safeDatabase, $date);
+                $tipoEtiqueta = 'Solo Base de Datos (.sql)';
+
+                // S-08: con BACKUP_PASSWORD el volcado se guarda dentro de un ZIP cifrado (AES-256).
+                if (self::claveCifrado()) {
+                    $zipFileName = "db_{$safeDatabase}_{$date}.zip";
+                    $zipFilePath = $backupDir.DIRECTORY_SEPARATOR.$zipFileName;
+                    $zip = new ZipArchive;
+                    if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                        throw new \Exception('No se pudo crear el ZIP cifrado del respaldo.');
+                    }
+                    $zip->addFile($sqlFilePath, 'database.sql');
+                    $zip->addFromString('LEAME.txt', $this->createReadme('bd', $database, $date));
+                    $this->cifrarZip($zip);
+                    $zip->close();
+                    File::delete($sqlFilePath);
+                    $sqlFileName = $zipFileName;
+                    $sqlFilePath = $zipFilePath;
+                    $sizeKb = round(File::size($zipFilePath) / 1024, 2);
+                    $tipoEtiqueta = 'Solo Base de Datos (.zip cifrado)';
+                }
 
                 $generatedFiles[] = $sqlFilePath;
                 $mainFileName = $sqlFileName;
                 $mainFileSize = "{$sizeKb} KB";
-                $tipoEtiqueta = 'Solo Base de Datos (.sql)';
+            }
+
+            // D-03: huella SHA-256 de cada archivo generado.
+            foreach ($generatedFiles as $generado) {
+                ManifiestoRespaldos::registrar($generado, ['cifrado' => self::claveCifrado() !== null && str_ends_with($generado, '.zip')]);
             }
 
             // 4. Sincronización con Google Drive
@@ -290,7 +319,7 @@ class BackupDatabase extends Command
         }
 
         $this->info('  📦 Volcando base de datos MySQL con mysqldump...');
-        $mysqldumpBinary = $this->resolveMysqldumpBinary();
+        $mysqldumpBinary = BinariosMysql::mysqldump();
 
         if (! $mysqldumpBinary) {
             $msg = 'No se encontró el binario mysqldump. Configura MYSQLDUMP_PATH en tu archivo .env';
@@ -298,26 +327,30 @@ class BackupDatabase extends Command
             throw new \Exception($msg);
         }
 
-        $username = config('database.connections.mysql.username', env('DB_USERNAME', 'root'));
-        $password = config('database.connections.mysql.password', env('DB_PASSWORD', ''));
-        $host = config('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
-        $port = config('database.connections.mysql.port', env('DB_PORT', '3306'));
+        // D-10: credenciales en un archivo de opciones temporal (no en MYSQL_PWD).
+        $resultCode = BinariosMysql::conCredenciales(config('database.connections.mysql'), function (string $credenciales) use ($mysqldumpBinary, $database, $targetSqlPath) {
+            $proceso = proc_open([
+                $mysqldumpBinary,
+                '--defaults-extra-file='.$credenciales,
+                '--single-transaction', '--quick', '--no-tablespaces', '--routines', '--triggers',
+                '--default-character-set=utf8mb4',
+                '--result-file='.$targetSqlPath,
+                $database,
+            ], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $tuberias);
+            if (! is_resource($proceso)) {
+                return -1;
+            }
+            stream_get_contents($tuberias[1]);
+            $error = trim((string) stream_get_contents($tuberias[2]));
+            fclose($tuberias[1]);
+            fclose($tuberias[2]);
+            $codigo = proc_close($proceso);
+            if ($codigo !== 0 && $error !== '') {
+                Log::error('mysqldump: '.$error);
+            }
 
-        $command = sprintf(
-            '"%s" --user="%s" --host="%s" --port="%s" --single-transaction --quick --no-tablespaces --routines --triggers --default-character-set=utf8mb4 "%s" --result-file="%s"',
-            $mysqldumpBinary,
-            $username,
-            $host,
-            $port,
-            $database,
-            $targetSqlPath
-        );
-
-        putenv("MYSQL_PWD={$password}");
-        $output = [];
-        $resultCode = null;
-        exec($command, $output, $resultCode);
-        putenv('MYSQL_PWD');
+            return $codigo;
+        });
 
         if ($resultCode === 0 && File::exists($targetSqlPath) && File::size($targetSqlPath) > 0) {
             $sizeKb = round(File::size($targetSqlPath) / 1024, 2);
@@ -421,9 +454,16 @@ class BackupDatabase extends Command
      */
     protected function createReadme(string $tipo, string $database, string $date, int $uploadCount = 0, int $codeCount = 0): string
     {
-        $tipoNombre = $tipo === 'integral' ? 'RESPALDO INTEGRAL (SNAPSHOT TOTAL)' : 'RESPALDO BD + MULTIMEDIA';
+        $tipoNombre = match ($tipo) {
+            'integral' => 'RESPALDO INTEGRAL (SNAPSHOT TOTAL)',
+            'bd' => 'RESPALDO DE BASE DE DATOS',
+            default => 'RESPALDO BD + MULTIMEDIA',
+        };
+        $avisoCifrado = self::claveCifrado()
+            ? "\nCIFRADO: el contenido está protegido con AES-256. Para abrirlo fuera del sistema use 7-Zip\n(o similar) con la clave BACKUP_PASSWORD del archivo .env del servidor. Sin esa clave\nel respaldo NO se puede recuperar: guárdela por escrito en un lugar seguro.\n"
+            : '';
 
-        return <<<TXT
+        return $avisoCifrado.<<<TXT
 ================================================================================
   {$tipoNombre} - TECNI-SYSTEMAS
 ================================================================================
@@ -459,47 +499,6 @@ TXT;
     }
 
     /**
-     * Localiza el ejecutable de mysqldump en el entorno.
-     */
-    protected function resolveMysqldumpBinary(): ?string
-    {
-        $custom = config('backup.mysqldump_path');
-        if ($custom && File::exists($custom)) {
-            return $custom;
-        }
-
-        $candidates = [
-            'C:\\ServBay\\packages\\mysql\\current\\bin\\mysqldump.exe',
-            'C:\\ServBay\\packages\\mysql\\8.4\\bin\\mysqldump.exe',
-            'C:\\ServBay\\packages\\mysql\\8.0\\bin\\mysqldump.exe',
-            'C:\\ServBay\\packages\\defaultsqlserver\\current\\bin\\mysqldump.exe',
-            'C:\\ServBay\\packages\\defaultsqlserver\\8.4\\bin\\mysqldump.exe',
-            'C:\\ServBay\\packages\\mariadb\\current\\bin\\mysqldump.exe',
-            'C:\\ServBay\\packages\\mariadb\\11.4\\bin\\mysqldump.exe',
-            'C:\\ServBay\\packages\\mariadb\\10.11\\bin\\mysqldump.exe',
-            'C:\\xampp\\mysql\\bin\\mysqldump.exe',
-            '/usr/bin/mysqldump',
-            '/usr/local/bin/mysqldump',
-        ];
-
-        foreach ($candidates as $cand) {
-            if (File::exists($cand)) {
-                return $cand;
-            }
-        }
-
-        $checkCmd = PHP_OS_FAMILY === 'Windows' ? 'where mysqldump 2>nul' : 'which mysqldump 2>/dev/null';
-        $output = [];
-        $code = 0;
-        exec($checkCmd, $output, $code);
-        if ($code === 0 && ! empty($output)) {
-            return trim($output[0]);
-        }
-
-        return null;
-    }
-
-    /**
      * Copia los archivos respaldados a la carpeta sincronizada de Google Drive.
      */
     protected function syncToGoogleDrive(array $files, string $drivePath, int $retentionDays): void
@@ -524,6 +523,12 @@ TXT;
             }
         }
 
+        // D-03: el manifiesto viaja con los respaldos para poder verificarlos en la copia externa.
+        $manifiesto = dirname((string) ($files[0] ?? '')).DIRECTORY_SEPARATOR.ManifiestoRespaldos::ARCHIVO;
+        if ($files && File::exists($manifiesto)) {
+            File::copy($manifiesto, rtrim($drivePath, '/\\').DIRECTORY_SEPARATOR.ManifiestoRespaldos::ARCHIVO);
+        }
+
         $this->info("  ✅ {$copied} archivo(s) sincronizados con la carpeta de Google Drive.");
         Log::info("Backups sincronizados con Google Drive: {$copied} archivos a {$drivePath}");
 
@@ -537,6 +542,32 @@ TXT;
      * Tipo de respaldo según el nombre que genera este comando. Archivos con otro nombre
      * (copias manuales, respaldos externos) nunca se rotan ni se eliminan.
      */
+    /** S-08: clave de cifrado de los respaldos (BACKUP_PASSWORD); null = sin cifrar. */
+    public static function claveCifrado(): ?string
+    {
+        $clave = (string) config('backup.password', '');
+
+        return $clave !== '' ? $clave : null;
+    }
+
+    /** Cifra con AES-256 todas las entradas del ZIP salvo la nota de restauración. */
+    protected function cifrarZip(ZipArchive $zip): void
+    {
+        $clave = self::claveCifrado();
+        if (! $clave) {
+            return;
+        }
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $nombre = (string) $zip->getNameIndex($i);
+            if (in_array($nombre, ['LEAME.txt', 'README_RESTAURACION.txt'], true)) {
+                continue;
+            }
+            if (! $zip->setEncryptionIndex($i, ZipArchive::EM_AES_256, $clave)) {
+                throw new \Exception("No se pudo cifrar {$nombre} dentro del respaldo.");
+            }
+        }
+    }
+
     public static function tipoRespaldo(string $nombre): ?string
     {
         foreach (['backup_integral_' => 'integral', 'backup_bd_multimedia_' => 'bd_multimedia', 'code_' => 'codigo', 'db_' => 'bd'] as $prefijo => $tipo) {

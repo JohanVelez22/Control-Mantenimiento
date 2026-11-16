@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Support\BinariosMysql;
+use App\Support\ManifiestoRespaldos;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use PDO;
@@ -57,7 +59,7 @@ class VerificarRespaldo extends Command
             return self::FAILURE;
         }
 
-        $mysql = $this->binarioMysql();
+        $mysql = BinariosMysql::mysql();
         if (! $mysql) {
             $this->error('No se encontró el cliente mysql: defina MYSQL_PATH en .env.');
 
@@ -74,6 +76,12 @@ class VerificarRespaldo extends Command
 
         try {
             $sql = "{$dir}/{$archivo}";
+
+            // D-03: si el respaldo está en el manifiesto, su huella debe coincidir.
+            if (ManifiestoRespaldos::verificar($sql) === false) {
+                throw new \RuntimeException('La huella SHA-256 del archivo no coincide con la registrada al crearlo: el archivo cambió o está dañado.');
+            }
+
             if (str_ends_with(strtolower($archivo), '.zip')) {
                 $sqlTemporal = $sql = $this->extraerSqlDeZip($sql);
             }
@@ -112,10 +120,9 @@ class VerificarRespaldo extends Command
 
     private function restaurar(string $mysql, array $c, string $temp, string $sql): void
     {
-        putenv("MYSQL_PWD={$c['password']}");
-        try {
+        BinariosMysql::conCredenciales($c, function (string $credenciales) use ($mysql, $temp, $sql) {
             $proceso = proc_open(
-                [$mysql, "--user={$c['username']}", "--host={$c['host']}", "--port={$c['port']}", '--default-character-set=utf8mb4', '--one-database', $temp],
+                [$mysql, '--defaults-extra-file='.$credenciales, '--default-character-set=utf8mb4', '--one-database', $temp],
                 [0 => ['file', $sql, 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
                 $tuberias
             );
@@ -123,9 +130,7 @@ class VerificarRespaldo extends Command
             if (proc_close($proceso) !== 0) {
                 throw new \RuntimeException(trim($error) ?: 'mysql terminó con error');
             }
-        } finally {
-            putenv('MYSQL_PWD');
-        }
+        });
     }
 
     /**
@@ -196,33 +201,17 @@ class VerificarRespaldo extends Command
         if ($zip->open($zipRuta) !== true) {
             throw new \RuntimeException('No se pudo abrir el ZIP.');
         }
+        if ($clave = BackupDatabase::claveCifrado()) {
+            $zip->setPassword($clave);
+        }
         $contenido = $zip->getFromName('database.sql');
         $zip->close();
         if ($contenido === false) {
-            throw new \RuntimeException('El ZIP no contiene database.sql.');
+            throw new \RuntimeException('No se pudo leer database.sql del ZIP (falta el archivo o está cifrado con otra clave: revise BACKUP_PASSWORD).');
         }
         $destino = storage_path('app/verif_restauracion_'.uniqid().'.sql');
         File::put($destino, $contenido);
 
         return $destino;
-    }
-
-    private function binarioMysql(): ?string
-    {
-        $candidatos = array_filter([
-            config('backup.mysql_path'),
-            'C:\\ServBay\\packages\\mysql\\current\\bin\\mysql.exe',
-            'C:\\ServBay\\packages\\mysql\\8.4\\bin\\mysql.exe',
-            '/usr/bin/mysql',
-            '/usr/local/bin/mysql',
-        ]);
-
-        foreach ($candidatos as $ruta) {
-            if (File::exists($ruta)) {
-                return $ruta;
-            }
-        }
-
-        return null;
     }
 }

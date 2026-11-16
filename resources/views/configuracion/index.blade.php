@@ -359,6 +359,57 @@ let _pendingBackupDeleteFilename = null;
 let _pendingBackupRestoreFilename = null;
 let _pendingGitUpdate = false;
 
+/**
+ * S-08: descargar, restaurar, borrar un respaldo o actualizar el sistema pide volver a
+ * escribir la contraseña de la sesión. Devuelve la contraseña o null si se cancela.
+ */
+function pedirClaveRespaldo(titulo) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('reauth-respaldo-modal');
+        const input = document.getElementById('reauth-respaldo-input');
+        const form = document.getElementById('reauth-respaldo-form');
+        const cancelar = document.getElementById('reauth-respaldo-cancelar');
+        document.getElementById('reauth-respaldo-titulo').textContent = titulo;
+        input.value = '';
+        modal.classList.remove('hidden');
+        setTimeout(() => input.focus(), 50);
+
+        const cerrar = (valor) => {
+            modal.classList.add('hidden');
+            form.removeEventListener('submit', alEnviar);
+            cancelar.removeEventListener('click', alCancelar);
+            document.removeEventListener('keydown', alTecla);
+            resolve(valor);
+        };
+        const alEnviar = (e) => { e.preventDefault(); if (input.value) cerrar(input.value); };
+        const alCancelar = () => cerrar(null);
+        const alTecla = (e) => { if (e.key === 'Escape') cerrar(null); };
+        form.addEventListener('submit', alEnviar);
+        cancelar.addEventListener('click', alCancelar);
+        document.addEventListener('keydown', alTecla);
+    });
+}
+
+async function descargarRespaldo(filename) {
+    const clave = await pedirClaveRespaldo('Descargar ' + filename);
+    if (!clave) return;
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ url('/backups/download') }}/' + encodeURIComponent(filename);
+    form.style.display = 'none';
+    for (const [nombre, valor] of [['_token', BACKUP_CSRF], ['password', clave]]) {
+        const campo = document.createElement('input');
+        campo.type = 'hidden';
+        campo.name = nombre;
+        campo.value = valor;
+        form.appendChild(campo);
+    }
+    document.body.appendChild(form);
+    notifyDownload(filename);
+    form.submit();
+    setTimeout(() => form.remove(), 1000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ts-modal-confirm')?.addEventListener('click', async () => {
         if (_pendingLogoDelete) {
@@ -369,16 +420,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const fname = _pendingBackupDeleteFilename;
             _pendingBackupDeleteFilename = null;
             if (typeof closeTsModal === 'function') closeTsModal();
-            await ejecutarEliminacionBackup(fname);
+            const clave = await pedirClaveRespaldo('Eliminar ' + fname);
+            if (clave) await ejecutarEliminacionBackup(fname, clave);
         } else if (_pendingBackupRestoreFilename) {
             const fname = _pendingBackupRestoreFilename;
             _pendingBackupRestoreFilename = null;
             if (typeof closeTsModal === 'function') closeTsModal();
-            await ejecutarRestauracionBackup(fname);
+            const clave = await pedirClaveRespaldo('Restaurar ' + fname);
+            if (clave) await ejecutarRestauracionBackup(fname, clave);
         } else if (_pendingGitUpdate) {
             _pendingGitUpdate = false;
             if (typeof closeTsModal === 'function') closeTsModal();
-            await ejecutarActualizacionGit();
+            const clave = await pedirClaveRespaldo('Actualizar el sistema desde GitHub');
+            if (clave) await ejecutarActualizacionGit(clave);
         }
     });
 });
@@ -838,6 +892,20 @@ async function submitConfiguracion(event) {
         </div>
 
     </div>
+</div>
+
+{{-- S-08: confirmación con contraseña para descargar, restaurar o borrar respaldos y actualizar el sistema --}}
+<div id="reauth-respaldo-modal" class="hidden fixed inset-0 z-[80] flex items-center justify-center bg-slate-900/60 p-4" role="dialog" aria-modal="true" aria-labelledby="reauth-respaldo-titulo">
+    <form id="reauth-respaldo-form" class="glass-card w-full max-w-sm p-6 space-y-4">
+        <h3 id="reauth-respaldo-titulo" class="text-lg font-bold text-slate-800 dark:text-white">Confirmar operación</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300">Por seguridad, escriba su contraseña para continuar.</p>
+        <label for="reauth-respaldo-input" class="sr-only">Su contraseña</label>
+        <input type="password" id="reauth-respaldo-input" autocomplete="current-password" required class="glass-input w-full" placeholder="Su contraseña">
+        <div class="flex gap-2">
+            <button type="button" id="reauth-respaldo-cancelar" class="btn-ghost flex-1 justify-center">Cancelar</button>
+            <button type="submit" class="btn-primary flex-1 justify-center font-bold">Continuar</button>
+        </div>
+    </form>
 </div>
 
 <script>
@@ -1317,7 +1385,7 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
         } else if (f.name.startsWith('backup_bd_multimedia') || f.extension === 'zip') {
             icon = '🗜️';
         }
-        const downloadUrl = '{{ url('/backups/download') }}/' + encodeURIComponent(f.name);
+
         html += `
             <tr class="backup-file-row">
                 <td class="pl-4">
@@ -1335,9 +1403,9 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
                 </td>
                 <td class="text-center whitespace-nowrap">
                     <div class="flex items-center justify-center gap-1.5">
-                        <a href="${downloadUrl}" onclick="notifyDownload('${f.name}')" class="btn-backup-download" title="Descargar copia de seguridad">
-                            <span>⬇️</span>
-                        </a>
+                        <button type="button" onclick="descargarRespaldo('${f.name}')" class="btn-backup-download" title="Descargar copia de seguridad" aria-label="Descargar ${f.name}">
+                            <span aria-hidden="true">⬇️</span>
+                        </button>
                         ${f.name.startsWith('backup_integral') ? `
                             <button type="button" onclick="updateSystemFromGit('${f.name}')" class="btn-backup-update" title="Actualizar sistema desde GitHub">
                                 <span>🚀</span>
@@ -1553,15 +1621,17 @@ function deleteBackupFile(filename) {
     }
 }
 
-async function ejecutarEliminacionBackup(filename) {
+async function ejecutarEliminacionBackup(filename, clave) {
     try {
         const res = await fetch('{{ url('/backups/destroy') }}/' + encodeURIComponent(filename), {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': BACKUP_CSRF,
                 'X-Requested-With': 'XMLHttpRequest'
-            }
+            },
+            body: JSON.stringify({ password: clave })
         });
 
         const data = await res.json();
@@ -1735,7 +1805,7 @@ function updateSystemFromGit(filename) {
     }
 }
 
-async function ejecutarActualizacionGit() {
+async function ejecutarActualizacionGit(clave) {
     try {
         const res = await fetch('{{ route('backups.git-update') }}', {
             method: 'POST',
@@ -1744,7 +1814,8 @@ async function ejecutarActualizacionGit() {
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': BACKUP_CSRF,
                 'X-Requested-With': 'XMLHttpRequest'
-            }
+            },
+            body: JSON.stringify({ password: clave })
         });
 
         const data = await res.json();
@@ -1769,7 +1840,7 @@ async function ejecutarActualizacionGit() {
     }
 }
 
-async function ejecutarRestauracionBackup(filename) {
+async function ejecutarRestauracionBackup(filename, clave) {
     if (typeof showToast === 'function') {
         showToast('Iniciando restauración de la copia de seguridad, por favor espera...', 'info');
     }
@@ -1778,10 +1849,12 @@ async function ejecutarRestauracionBackup(filename) {
         const res = await fetch('{{ url('/backups/restore') }}/' + encodeURIComponent(filename), {
             method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': BACKUP_CSRF,
                 'X-Requested-With': 'XMLHttpRequest'
-            }
+            },
+            body: JSON.stringify({ password: clave })
         });
 
         const data = await res.json();

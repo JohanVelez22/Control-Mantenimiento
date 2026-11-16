@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Console\Commands\BackupDatabase;
 use App\Models\Configuracion;
 use App\Models\Evento;
+use App\Support\BinariosMysql;
+use App\Support\ManifiestoRespaldos;
+use App\Support\ModoRestauracion;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use ZipArchive;
@@ -36,6 +43,32 @@ class BackupController extends Controller
     /**
      * Obtiene la ruta física del directorio de respaldos.
      */
+    /**
+     * S-08: descargar, restaurar, borrar un respaldo o actualizar el sistema exige volver a
+     * escribir la contraseña del administrador que tiene la sesión abierta. Así una sesión
+     * olvidada abierta no basta para llevarse la base completa o reemplazarla.
+     * Máximo 5 intentos fallidos cada 15 minutos.
+     */
+    protected function confirmarClave(Request $request): ?string
+    {
+        $user = Auth::user();
+        $clave = 'reauth-respaldos:'.$user?->id;
+        if (RateLimiter::tooManyAttempts($clave, 5)) {
+            return 'Demasiados intentos con contraseña incorrecta. Espere unos minutos.';
+        }
+
+        $password = $request->input('password');
+        if (! is_string($password) || $password === '' || ! $user || ! Hash::check($password, $user->password)) {
+            RateLimiter::hit($clave, 15 * 60);
+
+            return 'Confirme la operación con su contraseña (la contraseña no es correcta).';
+        }
+
+        RateLimiter::clear($clave);
+
+        return null;
+    }
+
     protected function getBackupDir(): string
     {
         $backupDir = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, storage_path('app/backups'));
@@ -277,7 +310,7 @@ class BackupController extends Controller
     /**
      * Descarga de forma segura un archivo de respaldo.
      */
-    public function download(string $filename): BinaryFileResponse|JsonResponse
+    public function download(Request $request, string $filename): BinaryFileResponse|JsonResponse|RedirectResponse
     {
         if ($resp = $this->ensureAdmin()) {
             return $resp;
@@ -288,11 +321,23 @@ class BackupController extends Controller
             abort(400, 'Nombre de archivo no válido.');
         }
 
+        if ($error = $this->confirmarClave($request)) {
+            return $request->expectsJson()
+                ? response()->json(['success' => false, 'message' => $error], 403)
+                : back()->with('error', $error);
+        }
+
         $dir = $this->getBackupDir();
         $filePath = $dir.DIRECTORY_SEPARATOR.$filename;
 
         if (! File::exists($filePath)) {
             abort(404, 'El archivo de respaldo solicitado no existe.');
+        }
+
+        try {
+            Evento::registrar('backup', null, null, ['Archivo' => $filename], "Respaldo '{$filename}' descargado.");
+        } catch (\Throwable) {
+            // La descarga no depende del registro.
         }
 
         return response()->download($filePath, $filename, [
@@ -303,7 +348,7 @@ class BackupController extends Controller
     /**
      * Elimina manualmente una copia de seguridad.
      */
-    public function destroy(string $filename): JsonResponse
+    public function destroy(Request $request, string $filename): JsonResponse
     {
         if ($resp = $this->ensureAdmin()) {
             return $resp;
@@ -311,6 +356,10 @@ class BackupController extends Controller
 
         if (! preg_match('/^[a-zA-Z0-9_\-\.]+$/', $filename) || str_contains($filename, '..')) {
             return response()->json(['success' => false, 'message' => 'Nombre de archivo no válido.'], 400);
+        }
+
+        if ($error = $this->confirmarClave($request)) {
+            return response()->json(['success' => false, 'message' => $error], 403);
         }
 
         $dir = $this->getBackupDir();
@@ -400,47 +449,6 @@ class BackupController extends Controller
     }
 
     /**
-     * Localiza el binario ejecutable de mysql en el servidor.
-     */
-    protected function resolveMysqlBinary(): ?string
-    {
-        $custom = config('backup.mysql_path');
-        if ($custom && File::exists($custom)) {
-            return $custom;
-        }
-
-        $candidates = [
-            'C:\\ServBay\\packages\\mysql\\current\\bin\\mysql.exe',
-            'C:\\ServBay\\packages\\mysql\\8.4\\bin\\mysql.exe',
-            'C:\\ServBay\\packages\\mysql\\8.0\\bin\\mysql.exe',
-            'C:\\ServBay\\packages\\defaultsqlserver\\current\\bin\\mysql.exe',
-            'C:\\ServBay\\packages\\defaultsqlserver\\8.4\\bin\\mysql.exe',
-            'C:\\ServBay\\packages\\mariadb\\current\\bin\\mysql.exe',
-            'C:\\ServBay\\packages\\mariadb\\11.4\\bin\\mysql.exe',
-            'C:\\ServBay\\packages\\mariadb\\10.11\\bin\\mysql.exe',
-            'C:\\xampp\\mysql\\bin\\mysql.exe',
-            '/usr/bin/mysql',
-            '/usr/local/bin/mysql',
-        ];
-
-        foreach ($candidates as $cand) {
-            if (File::exists($cand)) {
-                return $cand;
-            }
-        }
-
-        $checkCmd = PHP_OS_FAMILY === 'Windows' ? 'where mysql 2>nul' : 'which mysql 2>/dev/null';
-        $output = [];
-        $code = 0;
-        exec($checkCmd, $output, $code);
-        if ($code === 0 && ! empty($output)) {
-            return trim($output[0]);
-        }
-
-        return null;
-    }
-
-    /**
      * Ejecuta la restauración de un archivo SQL sobre la base de datos configurada.
      */
     protected function restoreSqlFile(string $sqlFilePath): void
@@ -457,48 +465,27 @@ class BackupController extends Controller
             return;
         }
 
-        $mysqlBinary = $this->resolveMysqlBinary();
-        $database = config('database.connections.mysql.database', env('DB_DATABASE', 'tecni_systemas'));
-        $username = config('database.connections.mysql.username', env('DB_USERNAME', 'root'));
-        $password = config('database.connections.mysql.password', env('DB_PASSWORD', ''));
-        $host = config('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
-        $port = config('database.connections.mysql.port', env('DB_PORT', '3306'));
+        $mysqlBinary = BinariosMysql::mysql();
+        $database = (string) config('database.connections.mysql.database');
 
         if ($mysqlBinary && File::exists($mysqlBinary)) {
-            putenv("MYSQL_PWD={$password}");
-            $descriptors = [
-                0 => ['file', $sqlFilePath, 'r'],
-                1 => ['pipe', 'w'],
-                2 => ['pipe', 'w'],
-            ];
-
-            $escapedBinary = str_replace('"', '\"', $mysqlBinary);
-            $escapedHost = str_replace('"', '\"', $host);
-            $escapedUser = str_replace('"', '\"', $username);
-            $escapedPort = str_replace('"', '\"', $port);
-            $escapedDb = str_replace('"', '\"', $database);
-
-            $cmd = sprintf(
-                '"%s" --user="%s" --host="%s" --port="%s" --default-character-set=utf8mb4 "%s"',
-                $escapedBinary,
-                $escapedUser,
-                $escapedHost,
-                $escapedPort,
-                $escapedDb
-            );
-
-            $process = proc_open($cmd, $descriptors, $pipes);
-            $stderr = '';
-            $returnCode = -1;
-
-            if (is_resource($process)) {
-                $stdout = stream_get_contents($pipes[1]);
+            // D-10: credenciales en archivo de opciones temporal, no en MYSQL_PWD.
+            [$returnCode, $stderr] = BinariosMysql::conCredenciales(config('database.connections.mysql'), function (string $credenciales) use ($mysqlBinary, $database, $sqlFilePath) {
+                $process = proc_open(
+                    [$mysqlBinary, '--defaults-extra-file='.$credenciales, '--default-character-set=utf8mb4', $database],
+                    [0 => ['file', $sqlFilePath, 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+                    $pipes
+                );
+                if (! is_resource($process)) {
+                    return [-1, 'No se pudo iniciar mysql.'];
+                }
+                stream_get_contents($pipes[1]);
                 fclose($pipes[1]);
                 $stderr = stream_get_contents($pipes[2]);
                 fclose($pipes[2]);
-                $returnCode = proc_close($process);
-            }
-            putenv('MYSQL_PWD');
+
+                return [proc_close($process), (string) $stderr];
+            });
 
             if ($returnCode !== 0) {
                 throw new \Exception("Error al restaurar MySQL (código {$returnCode}): ".trim($stderr));
@@ -538,6 +525,22 @@ class BackupController extends Controller
         if (! in_array($extension, ['sql', 'zip'])) {
             return response()->json(['success' => false, 'message' => 'Formato no soportado para restauración. Solo se admiten archivos .sql y .zip.'], 400);
         }
+
+        if ($error = $this->confirmarClave($request)) {
+            return response()->json(['success' => false, 'message' => $error], 403);
+        }
+
+        // D-03: un archivo que cambió desde que se creó no se restaura.
+        if (ManifiestoRespaldos::verificar($filePath) === false) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Restauración cancelada: la huella SHA-256 del archivo no coincide con la registrada al crearlo (archivo dañado o alterado). La base actual no se modificó.',
+            ], 422);
+        }
+
+        // La restauración no debe quedar a medias si el navegador se cierra o tarda.
+        ignore_user_abort(true);
+        @set_time_limit(0);
 
         // D-01: antes de tocar la base real, el respaldo se restaura en una base TEMPORAL
         //    (app:verificar-respaldo): si el archivo está incompleto ("Dump completed"),
@@ -582,18 +585,13 @@ class BackupController extends Controller
             $respaldoSeguridad = collect(File::files($dir))->map->getFilename()->diff($antes)->first();
         }
 
-        // 1. Preservar eventos de auditoría previos para garantizar trazabilidad ininterrumpida
-        $existingEventos = [];
-        try {
-            if (Schema::hasTable('eventos')) {
-                $existingEventos = DB::table('eventos')
-                    ->get()
-                    ->map(fn ($e) => (array) $e)
-                    ->toArray();
-            }
-        } catch (\Throwable $e) {
-            Log::warning('No se pudieron leer los eventos previos a la restauración: '.$e->getMessage());
-        }
+        // 1. D-16: los eventos de auditoría se copian a una tabla auxiliar dentro de la misma
+        //    base (el respaldo no la toca) y se reintegran con SQL; antes se cargaban todos en
+        //    memoria y se comparaban uno a uno, lo que no escalaba.
+        $eventosPreservados = $this->preservarEventos();
+
+        // D-01: el resto de usuarios ve "mantenimiento" mientras se reemplaza la base.
+        ModoRestauracion::activar($filename, Auth::user()?->name);
 
         $tipoDetectado = 'Solo Base de Datos (.sql)';
         $archivosRestauradosCount = 0;
@@ -631,7 +629,14 @@ class BackupController extends Controller
                     }
                 }
 
-                $zip->extractTo($tempExtractDir);
+                // S-08: respaldos cifrados con BACKUP_PASSWORD.
+                if ($claveZip = BackupDatabase::claveCifrado()) {
+                    $zip->setPassword($claveZip);
+                }
+                if (! $zip->extractTo($tempExtractDir)) {
+                    $zip->close();
+                    throw new \Exception('No se pudo extraer el respaldo (¿está cifrado con otra clave? Revise BACKUP_PASSWORD).');
+                }
                 $zip->close();
 
                 // 1. Restaurar Base de Datos desde SQL en el ZIP
@@ -684,40 +689,11 @@ class BackupController extends Controller
                 }
             }
 
-            // 2. Trazabilidad: Re-integrar eventos de auditoría previos
-            $eventosPreservadosCount = 0;
-            try {
-                $isSqlite = config('database.default') === 'sqlite';
-                if (! $isSqlite) {
-                    DB::reconnect();
-                }
-                if (Schema::hasTable('eventos') && ! empty($existingEventos)) {
-                    $restoredEvents = DB::table('eventos')->get();
-                    $existingUserIds = Schema::hasTable('users')
-                        ? DB::table('users')->pluck('id')->all()
-                        : [];
-
-                    foreach ($existingEventos as $oldEv) {
-                        $found = $restoredEvents->first(function ($r) use ($oldEv) {
-                            return $r->created_at == $oldEv['created_at']
-                                && $r->accion == $oldEv['accion']
-                                && $r->descripcion == $oldEv['descripcion'];
-                        });
-
-                        if (! $found) {
-                            $evToInsert = $oldEv;
-                            unset($evToInsert['id']); // Permite generación de ID auto-incremental
-                            if (! empty($evToInsert['user_id']) && ! in_array($evToInsert['user_id'], $existingUserIds)) {
-                                $evToInsert['user_id'] = null;
-                            }
-                            DB::table('eventos')->insert($evToInsert);
-                            $eventosPreservadosCount++;
-                        }
-                    }
-                }
-            } catch (\Throwable $evReEx) {
-                Log::warning('No se pudieron re-insertar los eventos previos: '.$evReEx->getMessage());
+            // 2. Trazabilidad: reintegrar los eventos que no venían en el respaldo
+            if (config('database.default') !== 'sqlite') {
+                DB::reconnect();
             }
+            $eventosPreservadosCount = $this->reintegrarEventos($eventosPreservados);
 
             // 3. Registrar Evento de Auditoría de la Restauración
             try {
@@ -736,7 +712,7 @@ class BackupController extends Controller
                         'Resultado' => '✅ Restauración completada exitosamente',
                         'Fecha y Hora' => now()->format('d/m/Y H:i:s'),
                         'Restaurado Por' => $userName,
-                        'Eventos Preservados' => count($existingEventos),
+                        'Eventos Preservados' => $eventosPreservadosCount,
                         'Archivos Multimedia' => $archivosRestauradosCount > 0 ? "{$archivosRestauradosCount} archivos actualizados" : 'N/A',
                     ],
                     "Copia de seguridad '{$filename}' restaurada exitosamente. Se preservó la trazabilidad total de auditoría ({$eventosPreservadosCount} eventos históricos integrados)."
@@ -791,6 +767,9 @@ class BackupController extends Controller
             ], 500);
 
         } finally {
+            ModoRestauracion::desactivar();
+            $this->descartarEventosPreservados();
+
             // Limpiar directorio temporal si existe
             if ($tempExtractDir && File::isDirectory($tempExtractDir)) {
                 try {
@@ -802,6 +781,65 @@ class BackupController extends Controller
         }
     }
 
+    private const TABLA_EVENTOS_PRESERVADOS = 'eventos_preservados_restauracion';
+
+    /** Copia los eventos actuales a una tabla auxiliar; devuelve cuántos se copiaron. */
+    private function preservarEventos(): int
+    {
+        try {
+            if (! Schema::hasTable('eventos')) {
+                return 0;
+            }
+            $this->descartarEventosPreservados();
+            DB::statement('CREATE TABLE '.self::TABLA_EVENTOS_PRESERVADOS.' AS SELECT * FROM eventos');
+
+            return (int) DB::table(self::TABLA_EVENTOS_PRESERVADOS)->count();
+        } catch (\Throwable $e) {
+            Log::warning('No se pudieron preservar los eventos previos a la restauración: '.$e->getMessage());
+
+            return 0;
+        }
+    }
+
+    /** Inserta los eventos preservados que no trae el respaldo; devuelve cuántos agregó. */
+    private function reintegrarEventos(int $preservados): int
+    {
+        if ($preservados === 0) {
+            return 0;
+        }
+        try {
+            if (! Schema::hasTable('eventos') || ! Schema::hasTable(self::TABLA_EVENTOS_PRESERVADOS)) {
+                return 0;
+            }
+            $antes = (int) DB::table('eventos')->count();
+            $columnas = 'accion, modelo_tipo, modelo_id, valores_antiguos, valores_nuevos, ip_direccion, user_agent, descripcion, created_at, updated_at';
+            DB::statement(
+                'INSERT INTO eventos (user_id, '.$columnas.') '
+                .'SELECT CASE WHEN EXISTS (SELECT 1 FROM users u WHERE u.id = p.user_id) THEN p.user_id ELSE NULL END, '
+                .'p.'.str_replace(', ', ', p.', $columnas).' '
+                .'FROM '.self::TABLA_EVENTOS_PRESERVADOS.' p '
+                .'WHERE NOT EXISTS (SELECT 1 FROM eventos e WHERE e.created_at = p.created_at AND e.accion = p.accion '
+                .'AND (e.descripcion = p.descripcion OR (e.descripcion IS NULL AND p.descripcion IS NULL))) '
+                .'ORDER BY p.id'
+            );
+
+            return (int) DB::table('eventos')->count() - $antes;
+        } catch (\Throwable $e) {
+            Log::warning('No se pudieron reintegrar los eventos previos: '.$e->getMessage());
+
+            return 0;
+        }
+    }
+
+    private function descartarEventosPreservados(): void
+    {
+        try {
+            Schema::dropIfExists(self::TABLA_EVENTOS_PRESERVADOS);
+        } catch (\Throwable) {
+            // Sin tabla auxiliar no hay nada que limpiar.
+        }
+    }
+
     /**
      * Sincroniza el código fuente con GitHub (git pull) para respaldos integrales,
      * ejecuta migraciones de base de datos pendientes y limpia la caché.
@@ -810,6 +848,10 @@ class BackupController extends Controller
     {
         if ($resp = $this->ensureAdmin()) {
             return $resp;
+        }
+
+        if ($error = $this->confirmarClave($request)) {
+            return response()->json(['success' => false, 'status' => 'error', 'message' => $error], 403);
         }
 
         try {
