@@ -30,6 +30,9 @@
         <env name="APP_ENV" value="testing"/>
         <env name="APP_KEY" value="base64:JAJcx+HsrY8ojD6fBpYdYYOAAaCIuewCLUrwCl23ISc=" force="true"/>
         <env name="APP_DEBUG" value="false" force="true"/>
+        <!-- Base http fija: con el APP_URL https del .env de producción las peticiones de prueba
+             llegaban como seguras y cambiaban las cabeceras (HSTS). -->
+        <env name="APP_URL" value="http://localhost" force="true"/>
         <env name="ADMIN_DEFAULT_PASSWORD" value="Admin123*" force="true"/>
         <env name="TECNICO_DEFAULT_PASSWORD" value="Tecni123*" force="true"/>
         <env name="INVITADO_DEFAULT_PASSWORD" value="Invit123*" force="true"/>
