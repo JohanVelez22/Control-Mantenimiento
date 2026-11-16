@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\StocksExport;
 use App\Models\BajaStock;
 use App\Models\CategoriaStock;
+use App\Models\Evento;
 use App\Models\FacturaItem;
 use App\Models\Proveedor;
 use App\Models\Stock;
@@ -322,7 +323,33 @@ class StockController extends Controller
         $proveedor = $stock->proveedor()->first();
         $bajas = $stock->bajas()->with('user')->get();
 
-        return view('stocks.show', compact('stock', 'historial', 'proveedor', 'bajas'));
+        // B-23: el kardex incluye el uso como repuesto en órdenes y los ajustes manuales de
+        // existencias; antes esas unidades "desaparecían" de la ficha.
+        $repuestos = collect([
+            ['tabla' => 'mantenimiento_stock', 'orden' => 'mantenimientos', 'fk' => 'mantenimiento_id', 'ruta' => 'mantenimientos.show'],
+            ['tabla' => 'electronica_stock', 'orden' => 'electronicas', 'fk' => 'electronica_id', 'ruta' => 'electronicas.show'],
+        ])->flatMap(fn ($t) => DB::table($t['tabla'].' as p')
+            ->join($t['orden'].' as o', 'o.id', '=', 'p.'.$t['fk'])
+            ->where('p.stock_id', $stock->id)
+            ->get(['o.id', 'o.id_orden', 'o.estado', 'o.anulado', 'p.cantidad', 'p.precio_unitario', 'p.created_at', 'p.updated_at'])
+            ->map(fn ($r) => (object) [
+                'orden' => $r->id_orden,
+                'url' => route($t['ruta'], $r->id),
+                'estado' => $r->anulado ? 'anulada' : $r->estado,
+                'cantidad' => (int) $r->cantidad,
+                'precio_unitario' => (float) $r->precio_unitario,
+                'fecha' => $r->updated_at ?? $r->created_at,
+            ]))
+            ->sortByDesc('fecha')->values();
+
+        $ajustes = Evento::with('user:id,name')
+            ->where('modelo_tipo', Stock::class)->where('modelo_id', $stock->id)
+            ->where('accion', 'actualizado')
+            ->orderByDesc('id')->limit(50)->get()
+            ->filter(fn ($e) => is_array($e->valores_nuevos) && array_key_exists('cantidad', $e->valores_nuevos))
+            ->values();
+
+        return view('stocks.show', compact('stock', 'historial', 'proveedor', 'bajas', 'repuestos', 'ajustes'));
     }
 
     public function print(Stock $stock)

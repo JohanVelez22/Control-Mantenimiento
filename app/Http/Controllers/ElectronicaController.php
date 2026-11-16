@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Configuracion;
 use App\Models\Electronica;
 use App\Models\Equipo;
+use App\Models\Evento;
 use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
@@ -128,10 +129,12 @@ class ElectronicaController extends Controller
     public function show(Electronica $electronica)
     {
         Gate::authorize('view', $electronica);
-        $electronica->load(['equipo.cliente', 'tecnico', 'user', 'stocks', 'abonos.user', 'abonos.movimientoCaja']);
+        $electronica->load(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'user', 'stocks', 'abonos.user', 'abonos.movimientoCaja']);
         $stocks_disponibles = Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
+        $historial = auth()->user()->isAdmin() ? Evento::historialDeOrden($electronica) : null;
+        $historialUrl = route('eventos.index', ['modelo_tipo' => Electronica::class, 'modelo_id' => $electronica->id]);
 
-        return view('electronicas.show', compact('electronica', 'stocks_disponibles'));
+        return view('electronicas.show', compact('electronica', 'stocks_disponibles', 'historial', 'historialUrl'));
     }
 
     public function edit(Electronica $electronica)

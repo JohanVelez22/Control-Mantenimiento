@@ -6,20 +6,29 @@ use App\Models\Evento;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Registra en `eventos` las altas, cambios, anulaciones y borrados del modelo.
+ *
+ * - ARQ-10: el enmascarado de datos personales está en un solo lugar (MASCARA) y ya no
+ *   depende de una función global declarada dentro del archivo del trait.
+ * - B-04: la descripción nombra el registro (número de orden, de factura, código o id)
+ *   para poder seguir su historial.
+ */
 trait Auditable
 {
+    /** Campos que nunca se guardan en claro en el historial. */
+    private const MASCARA = ['password', 'remember_token', 'email', 'identificacion', 'telefono', 'movil', 'direccion'];
+
+    /** Campos que no aportan al historial. */
+    private const IGNORADOS = ['updated_at', 'password', 'remember_token'];
+
     public static function bootAuditable()
     {
         static::created(function ($model) {
             // El try/catch evita que un fallo de auditoría derribe la operación principal
             try {
-                Evento::registrar(
-                    'creado',
-                    $model,
-                    null,
-                    clone_model_data($model->getAttributes()),
-                    'Creó un nuevo registro en '.class_basename($model)
-                );
+                Evento::registrar('creado', $model, null, self::limpiarParaAuditoria($model->getAttributes()),
+                    'Creó '.self::nombreParaAuditoria($model));
             } catch (\Exception $e) {
                 Log::warning('Auditable::created — no se pudo registrar evento: '.$e->getMessage());
             }
@@ -27,50 +36,28 @@ trait Auditable
 
         static::updated(function ($model) {
             try {
-                $cambios = $model->getChanges();
-
-                if (count(Arr::except($cambios, ['updated_at'])) === 0) {
+                $cambios = Arr::except($model->getChanges(), self::IGNORADOS);
+                if ($cambios === []) {
                     return;
                 }
 
-                $changedViejos = [];
-                $changedNuevos = [];
-
+                $viejos = [];
+                $nuevos = [];
                 foreach ($cambios as $key => $value) {
-                    if (in_array($key, ['updated_at', 'password', 'remember_token'])) {
-                        continue;
-                    }
-                    if (in_array($key, ['email', 'identificacion', 'telefono', 'movil', 'direccion'])) {
-                        $changedViejos[$key] = '*** ENMASCARADO ***';
-                        $changedNuevos[$key] = '*** ENMASCARADO ***';
-                    } else {
-                        $orig = $model->getOriginal($key);
-                        $changedViejos[$key] = ($orig instanceof \DateTimeInterface) ? $orig->format('Y-m-d H:i:s') : $orig;
-                        $changedNuevos[$key] = ($value instanceof \DateTimeInterface) ? $value->format('Y-m-d H:i:s') : $value;
-                    }
+                    $viejos[$key] = $model->getOriginal($key);
+                    $nuevos[$key] = $value;
                 }
+                $viejos = self::limpiarParaAuditoria($viejos);
+                $nuevos = self::limpiarParaAuditoria($nuevos);
 
-                if (count($changedNuevos) === 0) {
-                    return;
-                }
+                [$accion, $verbo] = match (true) {
+                    isset($nuevos['anulado'], $viejos['anulado']) && $nuevos['anulado'] == 1 && $viejos['anulado'] == 0 => ['anulado', 'Anuló'],
+                    isset($nuevos['estado']) && $nuevos['estado'] === 'anulada' => ['anulado', 'Anuló'],
+                    isset($nuevos['active'], $viejos['active']) && $nuevos['active'] == 0 && $viejos['active'] == 1 => ['anulado', 'Inactivó (anuló)'],
+                    default => ['actualizado', 'Actualizó'],
+                };
 
-                $accion = 'actualizado';
-                $mensaje = 'Actualizó un registro de '.class_basename($model);
-
-                if (isset($changedNuevos['anulado']) && $changedNuevos['anulado'] == 1
-                    && isset($changedViejos['anulado']) && $changedViejos['anulado'] == 0) {
-                    $accion = 'anulado';
-                    $mensaje = 'Anuló un registro de '.class_basename($model);
-                } elseif (isset($changedNuevos['estado']) && $changedNuevos['estado'] === 'anulada') {
-                    $accion = 'anulado';
-                    $mensaje = 'Anuló un registro de '.class_basename($model);
-                } elseif (isset($changedNuevos['active']) && $changedNuevos['active'] == 0
-                          && isset($changedViejos['active']) && $changedViejos['active'] == 1) {
-                    $accion = 'anulado';
-                    $mensaje = 'Inactivó (anuló) un registro de '.class_basename($model);
-                }
-
-                Evento::registrar($accion, $model, $changedViejos, $changedNuevos, $mensaje);
+                Evento::registrar($accion, $model, $viejos, $nuevos, $verbo.' '.self::nombreParaAuditoria($model));
             } catch (\Exception $e) {
                 Log::warning('Auditable::updated — no se pudo registrar evento: '.$e->getMessage());
             }
@@ -78,40 +65,36 @@ trait Auditable
 
         static::deleted(function ($model) {
             try {
-                Evento::registrar(
-                    'eliminado',
-                    $model,
-                    clone_model_data($model->getOriginal()),
-                    null,
-                    'Eliminó un registro de '.class_basename($model)
-                );
+                Evento::registrar('eliminado', $model, self::limpiarParaAuditoria($model->getOriginal()), null,
+                    'Eliminó '.self::nombreParaAuditoria($model));
             } catch (\Exception $e) {
                 Log::warning('Auditable::deleted — no se pudo registrar evento: '.$e->getMessage());
             }
         });
     }
-}
 
-/**
- * Limpia datos sensibles antes de guardarlos en el log de auditoría.
- * Función global para compatibilidad con el uso existente.
- */
-if (! function_exists('clone_model_data')) {
-    function clone_model_data($data)
+    /** Enmascara datos personales y convierte fechas a texto. */
+    private static function limpiarParaAuditoria(array $datos): array
     {
-        $sensibles = ['password', 'remember_token', 'email', 'identificacion', 'telefono', 'movil', 'direccion'];
-        foreach ($sensibles as $key) {
-            if (isset($data[$key])) {
-                $data[$key] = '*** ENMASCARADO ***';
+        foreach ($datos as $clave => $valor) {
+            if (in_array($clave, self::MASCARA, true)) {
+                $datos[$clave] = '*** ENMASCARADO ***';
+            } elseif ($valor instanceof \DateTimeInterface) {
+                $datos[$clave] = $valor->format('Y-m-d H:i:s');
             }
         }
 
-        foreach ($data as $key => $value) {
-            if ($value instanceof \DateTimeInterface) {
-                $data[$key] = $value->format('Y-m-d H:i:s');
-            }
-        }
+        return $datos;
+    }
 
-        return $data;
+    /** "el registro de Mantenimiento ORD-12", "el registro de Factura VT-3", "… #5". */
+    private static function nombreParaAuditoria($model): string
+    {
+        $ref = $model->getAttribute('id_orden')
+            ?? $model->getAttribute('numero_factura')
+            ?? $model->getAttribute('codigo')
+            ?? ($model->getKey() ? '#'.$model->getKey() : null);
+
+        return 'el registro de '.class_basename($model).($ref ? ' '.$ref : '');
     }
 }

@@ -239,6 +239,52 @@
             </table>
         </div>
 
+        {{-- B-23: uso como repuesto en órdenes y ajustes manuales de existencias --}}
+        <div class="mt-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg" aria-hidden="true">🔧</span>
+                    <h3 class="font-bold text-base sm:text-lg text-slate-800 dark:text-white">Uso como repuesto en órdenes</h3>
+                </div>
+                @if($repuestos->isNotEmpty())
+                <span class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap text-xs font-bold">
+                    En órdenes activas: {{ $repuestos->where('estado', '!=', 'anulada')->sum('cantidad') }} unidades
+                </span>
+                @endif
+            </div>
+            <div class="overflow-x-auto">
+                <table class="ts-table w-full text-sm">
+                    <thead><tr><th>Orden</th><th>Estado</th><th class="text-right">Cantidad</th><th class="text-right">Precio unitario</th><th>Última modificación</th></tr></thead>
+                    <tbody>
+                        @forelse($repuestos as $r)
+                        <tr>
+                            <td data-label="Orden"><a href="{{ $r->url }}" class="font-semibold text-blue-600 dark:text-blue-400 hover:underline">{{ $r->orden }}</a></td>
+                            <td data-label="Estado">{{ ucfirst($r->estado) }}</td>
+                            <td data-label="Cantidad" class="text-right">{{ $r->cantidad }}</td>
+                            <td data-label="Precio unitario" class="text-right">$ {{ number_format($r->precio_unitario, 0, ',', '.') }}</td>
+                            <td data-label="Última modificación">{{ $r->fecha ? \Illuminate\Support\Carbon::parse($r->fecha)->format('d/m/Y H:i') : '—' }}</td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="5" class="text-center text-slate-500 py-4">Este producto no se ha usado como repuesto.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            @if($ajustes->isNotEmpty())
+            <h4 class="font-bold text-sm text-slate-700 dark:text-slate-200 mt-5 mb-2">Ajustes manuales de existencias</h4>
+            <ul class="space-y-1 text-sm">
+                @foreach($ajustes as $a)
+                <li class="flex flex-wrap gap-x-3">
+                    <span class="text-xs text-slate-500 w-32">{{ $a->created_at?->format('d/m/Y H:i') }}</span>
+                    <span class="text-xs font-semibold w-28">{{ $a->user->name ?? 'Sistema' }}</span>
+                    <span>{{ $a->valores_antiguos['cantidad'] ?? '—' }} → {{ $a->valores_nuevos['cantidad'] }} unidades</span>
+                </li>
+                @endforeach
+            </ul>
+            @endif
+        </div>
+
         {{-- Historial de Bajas y Mermas --}}
         <div class="mt-8">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">

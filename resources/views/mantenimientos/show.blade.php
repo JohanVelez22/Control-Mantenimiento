@@ -313,6 +313,8 @@
     </div>
 </div>
 
+@include('partials.historial-orden')
+
 <script>
  const abonoVisual = document.getElementById('abono_monto_visual');
  const abonoReal = document.getElementById('abono_monto_real');

@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\Evento;
 use App\Models\Stock;
 use App\Services\AnulacionService;
 use App\Services\OrdenEstadoService;
@@ -52,24 +53,37 @@ trait HandlesStockAttach
                 $existing = $lockedModel->stocks()->where('stock_id', $stock->id)->first();
                 if ($existing) {
                     $newCantidad = $existing->pivot->cantidad + $validated['cantidad'];
-                    $totalPrevio = (float) $existing->pivot->cantidad * (float) $existing->pivot->precio_unitario;
+                    $totalPrevio = self::totalLinea($existing->pivot->cantidad, $existing->pivot->precio_unitario);
                     $totalNuevo = (float) $validated['cantidad'] * $precioUnitario;
                     $nuevoPrecioUnitario = round(($totalPrevio + $totalNuevo) / $newCantidad, 2);
                     $lockedModel->stocks()->updateExistingPivot($stock->id, [
                         'cantidad' => $newCantidad,
                         'precio_unitario' => $nuevoPrecioUnitario,
                     ]);
+                    // M-18: el costo sube exactamente lo que sube la línea (cantidad × precio
+                    // promedio redondeado); así quitar el repuesto descuenta lo mismo que se sumó.
+                    $aumento = round(self::totalLinea($newCantidad, $nuevoPrecioUnitario) - $totalPrevio, 2);
                     $successMsg = "Se sumaron {$validated['cantidad']} unidad(es) a '{$stock->producto}' (total actual: {$newCantidad} uds).";
                 } else {
                     $lockedModel->stocks()->attach($stock->id, [
                         'cantidad' => $validated['cantidad'],
                         'precio_unitario' => $precioUnitario,
                     ]);
+                    $aumento = self::totalLinea($validated['cantidad'], $precioUnitario);
                     $successMsg = "Repuesto '{$stock->producto}' agregado a la orden.";
                 }
 
                 // Sumar al costo del modelo
-                $lockedModel->increment('costo', $precioUnitario * $validated['cantidad']);
+                $lockedModel->increment('costo', $aumento);
+
+                // B-04 / M-17: la tabla pivote no dispara eventos; se deja constancia explícita.
+                Evento::registrar('repuesto_agregado', $lockedModel, null, [
+                    'stock_id' => $stock->id,
+                    'producto' => $stock->producto,
+                    'cantidad' => (int) $validated['cantidad'],
+                    'precio_unitario' => $precioUnitario,
+                    'valor' => $aumento,
+                ], "Repuesto {$stock->producto} ×{$validated['cantidad']} agregado a {$lockedModel->id_orden} (\$".number_format($aumento, 0, ',', '.').')');
             });
 
             return redirect()->back()->with('success', $successMsg);
@@ -119,10 +133,11 @@ trait HandlesStockAttach
 
                 $cantidad = $repuesto->pivot->cantidad;
                 $precio = $repuesto->pivot->precio_unitario;
+                $valorLinea = self::totalLinea($cantidad, $precio);
 
                 // B-02: quitar el repuesto no puede dejar el costo por debajo de lo ya abonado;
                 // eso ocultaba un cobro de más (saldo 0 con dinero recibido de sobra).
-                $costoNuevo = (float) $lockedModel->costo - (float) $precio * (int) $cantidad;
+                $costoNuevo = round((float) $lockedModel->costo - $valorLinea, 2);
                 $abonado = (float) $lockedModel->abonos()->where('anulado', false)->sum('monto');
                 if ($abonado > 0.01 && $costoNuevo + 0.01 < $abonado) {
                     throw new \DomainException('No se puede quitar el repuesto: el costo quedaría en $'.number_format(max(0, $costoNuevo), 0, ',', '.')
@@ -132,11 +147,19 @@ trait HandlesStockAttach
                 // Devolver al stock de forma atómica
                 app(StockService::class)->entrada($stock_id, $cantidad);
 
-                // Restar costo del modelo
-                $lockedModel->decrement('costo', $precio * $cantidad);
+                // Restar costo del modelo (M-18: nunca por debajo de 0 por redondeos antiguos)
+                $lockedModel->decrement('costo', min($valorLinea, max(0, (float) $lockedModel->costo)));
 
                 // Desvincular
                 $lockedModel->stocks()->detach($stock_id);
+
+                Evento::registrar('repuesto_quitado', $lockedModel, [
+                    'stock_id' => (int) $stock_id,
+                    'producto' => $repuesto->producto,
+                    'cantidad' => (int) $cantidad,
+                    'precio_unitario' => (float) $precio,
+                    'valor' => $valorLinea,
+                ], null, "Repuesto {$repuesto->producto} ×{$cantidad} quitado de {$lockedModel->id_orden} (stock devuelto)");
             });
 
             return redirect()->back()->with('success', $successMsg);
@@ -147,5 +170,11 @@ trait HandlesStockAttach
 
             return redirect()->back()->with('error', 'Error al eliminar el repuesto. Intente nuevamente.');
         }
+    }
+
+    /** Valor de una línea de repuestos redondeado a centavos (M-18). */
+    private static function totalLinea($cantidad, $precio): float
+    {
+        return round((int) $cantidad * (float) $precio, 2);
     }
 }

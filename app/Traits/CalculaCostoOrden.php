@@ -13,7 +13,8 @@ trait CalculaCostoOrden
     {
         $stocks = $this->relationLoaded('stocks') ? $this->stocks : $this->stocks()->get();
 
-        return (float) $stocks->sum(fn ($s) => (float) $s->pivot->cantidad * (float) $s->pivot->precio_unitario);
+        // M-18: cada línea redondeada a centavos, igual que lo que se sumó al costo.
+        return (float) $stocks->sum(fn ($s) => round((int) $s->pivot->cantidad * (float) $s->pivot->precio_unitario, 2));
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Exports\MantenimientosExport;
 use App\Models\Cliente;
 use App\Models\Configuracion;
 use App\Models\Equipo;
+use App\Models\Evento;
 use App\Models\Mantenimiento;
 use App\Models\Stock;
 use App\Models\Tecnico;
@@ -76,10 +77,12 @@ class MantenimientoController extends Controller
     {
         Gate::authorize('view', $mantenimiento);
 
-        $mantenimiento->load(['equipo.cliente', 'tecnico', 'user', 'abonos.user', 'abonos.movimientoCaja', 'stocks']);
+        $mantenimiento->load(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'user', 'abonos.user', 'abonos.movimientoCaja', 'stocks']);
         $stocks_disponibles = Stock::activos()->where('cantidad', '>', 0)->orderBy('producto')->get();
+        $historial = Auth::user()->isAdmin() ? Evento::historialDeOrden($mantenimiento) : null;
+        $historialUrl = route('eventos.index', ['modelo_tipo' => Mantenimiento::class, 'modelo_id' => $mantenimiento->id]);
 
-        return view('mantenimientos.show', compact('mantenimiento', 'stocks_disponibles'));
+        return view('mantenimientos.show', compact('mantenimiento', 'stocks_disponibles', 'historial', 'historialUrl'));
     }
 
     /** Duplicar un mantenimiento existente como nuevo borrador */

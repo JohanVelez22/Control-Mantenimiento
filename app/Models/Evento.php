@@ -49,6 +49,26 @@ class Evento extends Model
     }
 
     /**
+     * B-04: historial de una orden: sus propios eventos (cambios, repuestos, cierre,
+     * reapertura, anulación) y los de sus abonos, del más reciente al más antiguo.
+     */
+    public static function historialDeOrden(Model $orden, int $limite = 60)
+    {
+        $abonos = method_exists($orden, 'abonos') ? $orden->abonos()->pluck('id') : collect();
+
+        return self::with('user:id,name')
+            ->where(function ($q) use ($orden, $abonos) {
+                $q->where(fn ($w) => $w->where('modelo_tipo', get_class($orden))->where('modelo_id', $orden->getKey()));
+                if ($abonos->isNotEmpty()) {
+                    $q->orWhere(fn ($w) => $w->where('modelo_tipo', Abono::class)->whereIn('modelo_id', $abonos));
+                }
+            })
+            ->orderByDesc('id')
+            ->limit($limite)
+            ->get();
+    }
+
+    /**
      * Convierte una cadena User-Agent técnica en un formato amigable para humanos.
      * Ejemplo: "Google Chrome v153.0 · Windows 10/11 (64 bits)"
      */
