@@ -155,6 +155,7 @@ class AuditFindingsTest extends TestCase
      */
     public function test_compra_pago_total_queda_emitida()
     {
+        $this->registrarEfectivoEnCaja();
         $stock = Stock::create([
             'producto' => 'Producto Compra',
             'categoria' => 'Test',
@@ -191,6 +192,7 @@ class AuditFindingsTest extends TestCase
 
     public function test_compra_pago_parcial_queda_pendiente_pago()
     {
+        $this->registrarEfectivoEnCaja();
         $stock = Stock::create([
             'producto' => 'Producto Compra Parcial',
             'categoria' => 'Test',
@@ -250,6 +252,7 @@ class AuditFindingsTest extends TestCase
 
     public function test_compra_multiples_items_calcula_total_correcto()
     {
+        $this->registrarEfectivoEnCaja();
         $stock1 = Stock::create([
             'producto' => 'Producto A',
             'categoria' => 'Test',
@@ -765,6 +768,7 @@ class AuditFindingsTest extends TestCase
 
     public function test_crear_movimiento_caja_egreso()
     {
+        $this->registrarEfectivoEnCaja();
         $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Test Egreso']);
 
         $this->actingAs($this->admin)
@@ -1009,6 +1013,7 @@ class AuditFindingsTest extends TestCase
      */
     public function test_flujo_completo_compra_venta_anulacion()
     {
+        $this->registrarEfectivoEnCaja();
         // 1. Crear proveedor y cliente ya en setUp
 
         // 2. Crear stock inicial

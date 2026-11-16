@@ -106,7 +106,8 @@ class PlantillaA4HojaCompletaTest extends TestCase
     {
         $r = $this->renderizar($this->ordenConRepuestos(40));
 
-        $costo = $this->buscar($r['textos'], 'Costo Total Estimado')[0];
+        // La orden de prueba está terminada: el total se rotula «Total del servicio».
+        $costo = $this->buscar($r['textos'], 'Total del servicio')[0];
         $saldo = $this->buscar($r['textos'], 'SALDO PENDIENTE')[0];
         $this->assertSame($costo['pagina'], $saldo['pagina']);
     }

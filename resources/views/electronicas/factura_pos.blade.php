@@ -18,6 +18,9 @@
         <p><strong>Tel:</strong> {{ $electronica->equipo->propietario_telefono }}</p>
     @endif
     <p><strong>Técnico:</strong> {{ $electronica->tecnico->nombre ?? 'N/A' }}</p>
+    @if($electronica->codigo_consulta_formateado)
+        <p><strong>Código de consulta:</strong> {{ $electronica->codigo_consulta_formateado }}</p>
+    @endif
     <p><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $electronica->estado }}</span></p>
 </div>
 
@@ -58,6 +61,14 @@
                 <td class="text-right font-bold">$ {{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
             </tr>
             @endforeach
+            @php $valorServicio = max(0, (float) $electronica->costo - $electronica->stocks->sum(fn ($s) => $s->pivot->cantidad * $s->pivot->precio_unitario)); @endphp
+            @if($valorServicio > 0)
+            <tr>
+                <td class="font-bold">1</td>
+                <td>Servicio técnico / mano de obra</td>
+                <td class="text-right font-bold">$ {{ number_format($valorServicio, 0, ',', '.') }}</td>
+            </tr>
+            @endif
         </tbody>
     </table>
 @endif
@@ -67,7 +78,7 @@
 {{-- Totales --}}
 <table class="totals-pos">
     <tr>
-        <td class="text-left font-bold">Costo Total Estimado:</td>
+        <td class="text-left font-bold">{{ $electronica->estado === 'terminado' ? 'Total del servicio:' : 'Costo Total Estimado:' }}</td>
         <td class="text-right font-bold">$ {{ number_format($electronica->costo, 0, ',', '.') }}</td>
     </tr>
     @if($electronica->abonos->where('anulado', false)->count() > 0)

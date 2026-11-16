@@ -75,6 +75,10 @@ class FinanzasCorreccionesTest extends TestCase
         $this->post(route('caja.duplicate', $base))->assertRedirect(route('caja.create'));
         $copia = session('_old_input');
         $this->assertStringNotContainsString('#'.$factura->numero_factura, $copia['descripcion']);
+        // El pago original usa un concepto del sistema («Venta de Inventario»): la copia manual
+        // no puede conservarlo (aparecería como cobro de venta sin factura). Se elige otro.
+        $this->post(route('caja.store'), $copia)->assertSessionHasErrors('concepto_id');
+        $copia['concepto_id'] = ConceptoCaja::create(['nombre' => 'Otros ingresos'])->id;
         $this->post(route('caja.store'), $copia)->assertSessionHasNoErrors();
         $dup = MovimientoCaja::where('id', '!=', $base->id)->firstOrFail();
         $this->assertNull($dup->factura_id);

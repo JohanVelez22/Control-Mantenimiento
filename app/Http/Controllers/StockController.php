@@ -6,6 +6,7 @@ use App\Exports\StocksExport;
 use App\Models\BajaStock;
 use App\Models\CategoriaStock;
 use App\Models\Evento;
+use App\Models\Factura;
 use App\Models\FacturaItem;
 use App\Models\Proveedor;
 use App\Models\Stock;
@@ -84,9 +85,11 @@ class StockController extends Controller
             'photo.max' => 'La imagen no debe superar los 5 MB de tamaño.',
         ]);
 
-        // Las columnas de precio son NOT NULL: sin estos valores el alta daba error 500.
-        $validated['precio_venta'] ??= 0;
-        $validated['precio_tecnico'] ??= 0;
+        $precios = $this->resolverPrecios($validated);
+        if (is_string($precios)) {
+            return back()->withErrors(['precio_venta' => $precios])->withInput();
+        }
+        $validated = $precios;
         if (! Esquema::tiene('stocks', 'stock_minimo')) {
             unset($validated['stock_minimo']);
         }
@@ -98,6 +101,44 @@ class StockController extends Controller
         Stock::create($validated);
 
         return redirect()->route('stocks.index')->with('success', 'Producto agregado al inventario exitosamente.');
+    }
+
+    /**
+     * Precios de lista del producto: ninguno puede quedar por debajo del costo. Antes se
+     * aceptaba un precio de venta de $1 para un producto de $10.000 y la ficha seguía
+     * mostrando "+50 %". Los precios vacíos los calcula el modelo (venta: costo + utilidad;
+     * técnico: costo + la mitad de la utilidad); aquí se aplica la misma regla para validar.
+     * Las rebajas puntuales se hacen en la venta, que avisa del margen negativo.
+     *
+     * @param  array<string, mixed>  $validated
+     * @return array<string, mixed>|string los datos con los precios, o el mensaje de error
+     */
+    private function resolverPrecios(array $validated): array|string
+    {
+        $costo = (float) $validated['precio_compra'];
+        $utilidad = (float) $validated['utilidad'];
+        $venta = (float) ($validated['precio_venta'] ?? 0);
+        $tecnico = (float) ($validated['precio_tecnico'] ?? 0);
+
+        if ($venta <= 0) {
+            $venta = round($costo * (1 + $utilidad / 100), 2);
+        }
+        if ($tecnico <= 0) {
+            $tecnico = round($costo * (1 + ($utilidad / 2) / 100), 2);
+        }
+
+        $fmt = fn (float $v) => '$ '.number_format($v, 0, ',', '.');
+        if (Factura::superaMonto($costo, $venta)) {
+            return "El precio de venta ({$fmt($venta)}) no puede ser menor que el precio de compra ({$fmt($costo)}).";
+        }
+        if (Factura::superaMonto($costo, $tecnico)) {
+            return "El precio para técnico ({$fmt($tecnico)}) no puede ser menor que el precio de compra ({$fmt($costo)}).";
+        }
+
+        $validated['precio_venta'] = $venta;
+        $validated['precio_tecnico'] = $tecnico;
+
+        return $validated;
     }
 
     public function edit(Stock $stock)
@@ -171,12 +212,15 @@ class StockController extends Controller
 
         unset($validated['remove_photo']);
 
-        if (! isset($validated['precio_venta'])) {
-            $validated['precio_venta'] = 0;
+        $precios = $this->resolverPrecios($validated);
+        if (is_string($precios)) {
+            if ($fotoNueva) {
+                Storage::disk('public')->delete($fotoNueva);
+            }
+
+            return back()->withErrors(['precio_venta' => $precios])->withInput();
         }
-        if (! isset($validated['precio_tecnico'])) {
-            $validated['precio_tecnico'] = 0;
-        }
+        $validated = $precios;
 
         try {
             DB::transaction(function () use ($stock, $validated, $request) {

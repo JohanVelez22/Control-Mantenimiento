@@ -36,6 +36,23 @@ class FacturaItem extends Model
                 ? (float) $item->precio_unitario
                 : (float) (Stock::whereKey($item->stock_id)->value('precio_compra') ?? 0);
         });
+
+        // Al editar una factura: si cambia el producto (venta) o el precio pagado (compra),
+        // el costo guardado debe seguir al nuevo dato; si no, la utilidad queda calculada
+        // con el costo de otro producto.
+        static::updating(function (FacturaItem $item): void {
+            if (! $item->isDirty(['stock_id', 'precio_unitario']) || ! Esquema::tiene('factura_items', 'costo_unitario')) {
+                return;
+            }
+            $esCompra = Factura::whereKey($item->factura_id)->value('tipo_movimiento') === 'compra';
+            if ($esCompra) {
+                $item->costo_unitario = $item->stock_id ? (float) $item->precio_unitario : null;
+            } elseif ($item->isDirty('stock_id')) {
+                $item->costo_unitario = $item->stock_id
+                    ? (float) (Stock::whereKey($item->stock_id)->value('precio_compra') ?? 0)
+                    : null;
+            }
+        });
     }
 
     protected function casts(): array

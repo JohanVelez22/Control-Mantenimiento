@@ -45,8 +45,10 @@ class GuestController extends Controller
         }
 
         $usaCodigo = Esquema::tiene('mantenimientos', 'codigo_consulta');
+        // Llegando desde la consulta antigua de electrónica se abre la pestaña de electrónica.
+        $tipo = request('tipo') === 'electronica' ? 'electronica' : 'mantenimiento';
 
-        return view('guest.dashboard', compact('cliente', 'mantenimientos', 'electronicas', 'usaCodigo'));
+        return view('guest.dashboard', compact('cliente', 'mantenimientos', 'electronicas', 'usaCodigo', 'tipo'));
     }
 
     /**

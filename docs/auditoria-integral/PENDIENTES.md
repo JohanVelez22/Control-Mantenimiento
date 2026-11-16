@@ -1,6 +1,6 @@
 # Pendientes
 
-Estado al 2026-11-16, después de la cuarta ronda ("robustez"). Cada fila remite al informe donde están la evidencia, el archivo y la línea. El detalle de lo corregido está en `CAMBIOS_REALIZADOS.md`.
+Estado al 2026-11-16, después de la quinta ronda (verificación de punta a punta en el navegador; ver `CAMBIOS_REALIZADOS.md`). Cada fila remite al informe donde están la evidencia, el archivo y la línea. El detalle de lo corregido está en `CAMBIOS_REALIZADOS.md`.
 
 ## P0: acciones del dueño antes de operar (no las puede hacer el código)
 
@@ -18,6 +18,8 @@ Estado al 2026-11-16, después de la cuarta ronda ("robustez"). Cada fila remite
 | 10 | Usuario MySQL propio en lugar de `root` | D-07 / S-07 / O-10 | `GUIA_INSTALACION.md`, paso 4 |
 | 11 | No usar `start-ngrok.bat` en producción | S-03 / O-05 | Decisión del dueño |
 | 12 | Revisión final | Debe terminar sin bloqueantes | `php artisan app:preflight` |
+| 13 | Registrar el efectivo inicial de la caja | Desde esta ronda ninguna salida en efectivo puede dejar la caja en negativo: el primer día, antes de pagar algo en efectivo, se registra el dinero que hay en el cajón | Caja → Nuevo movimiento → Ingreso, concepto "Apertura de caja", efectivo |
+| 14 | Rutas de node y composer para "Actualizar desde GitHub" | El servidor web no suele tenerlas en el PATH; sin ellas la actualización avisa que falta compilar | `.env` → `NPM_BIN=C:\ServBay\packages\node\current\npm.cmd` y `COMPOSER_BIN=C:\ServBay\bin\composer.cmd` |
 
 ## Resueltos en el código
 
@@ -54,6 +56,9 @@ Detalle del sistema de diseño pendiente:
 - nombres de marca.
 
 ## Riesgos aceptados de forma explícita
+
+- **Efectivo nunca negativo (quinta ronda).** Una salida en efectivo mayor que el efectivo registrado se rechaza. Si el dinero salió de una plata que no estaba registrada, primero se registra ese ingreso o se usa Consignación.
+- **Venta por debajo del costo.** Se permite con la advertencia de margen negativo en pantalla. El precio de lista del producto sí debe ser igual o mayor que el costo.
 
 - **Reglas de cierre de órdenes (B-01).** Terminar una orden con saldo exige "entrega con saldo" y motivo.
 - **Motivo al anular (M-09).** Anular pide un motivo de al menos 5 caracteres.

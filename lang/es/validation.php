@@ -95,6 +95,13 @@ return [
     'uploaded' => 'El archivo :attribute no se pudo subir.',
     'url' => 'El campo :attribute debe ser una URL válida.',
 
+    // «before_or_equal:today» muestra el valor del parámetro: sin esto el mensaje decía «a today».
+    'values' => [
+        'fecha' => ['today' => 'hoy'],
+        'fecha_entrada' => ['today' => 'hoy'],
+        'fecha_salida' => ['today' => 'hoy'],
+    ],
+
     'attributes' => [
         'name' => 'nombre',
         'email' => 'correo electrónico',

@@ -11,6 +11,7 @@ use App\Models\MovimientoCaja;
 use App\Models\Proveedor;
 use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
+use App\Services\EfectivoCaja;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -172,7 +173,8 @@ class MovimientoCajaController extends Controller
 
     public function create()
     {
-        $conceptos = ConceptoCaja::orderBy('nombre')->get();
+        // Los conceptos del sistema no se ofrecen para movimientos manuales.
+        $conceptos = ConceptoCaja::whereNotIn('nombre', ConceptoCaja::DEL_SISTEMA)->orderBy('nombre')->get();
 
         $todasEntidades = Cliente::orderBy('nombres')->orderBy('apellidos')
             ->get(['id', 'nombres', 'apellidos', 'identificacion', 'movil'])
@@ -198,7 +200,7 @@ class MovimientoCajaController extends Controller
         $validated = $request->validate([
             'empresa' => 'nullable|string|max:80',
             'persona' => 'nullable|string|max:80',
-            'fecha' => 'required|date',
+            'fecha' => 'required|date|before_or_equal:today',
             'concepto_id' => 'required_without:nuevo_concepto|nullable|integer|exists:concepto_cajas,id',
             'nuevo_concepto' => 'required_without:concepto_id|nullable|string|max:80',
             'tipo_movimiento' => 'required|in:ingreso,egreso',
@@ -221,6 +223,15 @@ class MovimientoCajaController extends Controller
             return back()->withErrors([
                 'fecha' => 'No se pueden registrar movimientos en el '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
             ])->withInput();
+        }
+
+        if ($error = $this->conceptoReservado($validated)) {
+            return back()->withErrors(['concepto_id' => $error])->withInput();
+        }
+
+        if ($validated['tipo_movimiento'] === 'egreso' && $validated['tipo_pago'] === 'efectivo'
+            && ($error = EfectivoCaja::verificarSalida($validated['fecha'], (float) $validated['monto']))) {
+            return back()->withErrors(['monto' => $error])->withInput();
         }
 
         try {
@@ -275,7 +286,9 @@ class MovimientoCajaController extends Controller
         }
 
         $movimiento->load('childPayments.user');
-        $conceptos = ConceptoCaja::orderBy('nombre')->get();
+        // Se conserva el concepto actual aunque sea del sistema; los demás del sistema no se ofrecen.
+        $conceptos = ConceptoCaja::where(fn ($q) => $q->whereNotIn('nombre', ConceptoCaja::DEL_SISTEMA)->orWhere('id', $movimiento->concepto_id))
+            ->orderBy('nombre')->get();
 
         $todasEntidades = Cliente::orderBy('nombres')->orderBy('apellidos')
             ->get(['id', 'nombres', 'apellidos', 'identificacion', 'movil'])
@@ -309,7 +322,7 @@ class MovimientoCajaController extends Controller
         $validated = $request->validate([
             'empresa' => 'nullable|string|max:80',
             'persona' => 'nullable|string|max:80',
-            'fecha' => 'required|date',
+            'fecha' => 'required|date|before_or_equal:today',
             'concepto_id' => 'required_without:nuevo_concepto|nullable|integer|exists:concepto_cajas,id',
             'nuevo_concepto' => 'required_without:concepto_id|nullable|string|max:80',
             'tipo_movimiento' => 'required|in:ingreso,egreso',
@@ -367,6 +380,18 @@ class MovimientoCajaController extends Controller
             return back()->withErrors([
                 'fecha' => 'No se pueden registrar o mover movimientos al '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
             ])->withInput();
+        }
+
+        // Un movimiento manual no puede pasar a un concepto del sistema (sí conserva el suyo).
+        $cambiaConcepto = ! empty($validated['nuevo_concepto'])
+            || (int) ($validated['concepto_id'] ?? 0) !== (int) $movimiento->concepto_id;
+        if ($cambiaConcepto && ($error = $this->conceptoReservado($validated))) {
+            return back()->withErrors(['concepto_id' => $error])->withInput();
+        }
+
+        if ($validated['tipo_movimiento'] === 'egreso' && $validated['tipo_pago'] === 'efectivo'
+            && ($error = EfectivoCaja::verificarSalida($validated['fecha'], (float) $validated['monto'], EfectivoCaja::salidaActual($movimiento)))) {
+            return back()->withErrors(['monto' => $error])->withInput();
         }
 
         try {
@@ -497,7 +522,7 @@ class MovimientoCajaController extends Controller
 
         $validated = $request->validate([
             'monto_abono' => 'required|numeric|min:0.01',
-            'fecha' => 'required|date',
+            'fecha' => 'required|date|before_or_equal:today',
             'tipo_pago' => 'required|in:efectivo,consignacion',
             'descripcion' => 'nullable|string|max:500',
         ]);
@@ -511,6 +536,11 @@ class MovimientoCajaController extends Controller
             return back()->withErrors([
                 'fecha' => 'No se pueden registrar abonos con fecha '.$validated['fecha'].' porque ese día ya tiene cierre de caja registrado.',
             ])->withInput();
+        }
+
+        if ($movimiento->tipo_movimiento === 'egreso' && $validated['tipo_pago'] === 'efectivo'
+            && ($error = EfectivoCaja::verificarSalida($validated['fecha'], (float) $validated['monto_abono']))) {
+            return back()->with('error', $error)->withInput();
         }
 
         // Q-10: solo cuenta la fecha del ABONO. El abono es un movimiento nuevo de un día abierto y
@@ -725,5 +755,25 @@ class MovimientoCajaController extends Controller
 
         // Sin vínculo por texto (M-01/M-02): una descripción que mencione "#VT-n" no paga ni
         // modifica ninguna factura; el vínculo es solo factura_id / parent_id.
+    }
+
+    /**
+     * Los conceptos del sistema (abonos de órdenes, ventas y compras) solo los usa el propio
+     * sistema: un movimiento manual con «Abono Mantenimiento» aparecía como abono de una
+     * orden sin estar ligado a ninguna, y descuadraba los reportes por concepto.
+     *
+     * @param  array<string, mixed>  $validated
+     */
+    private function conceptoReservado(array $validated): ?string
+    {
+        $nombre = ! empty($validated['nuevo_concepto'])
+            ? trim((string) $validated['nuevo_concepto'])
+            : ConceptoCaja::whereKey($validated['concepto_id'] ?? 0)->value('nombre');
+
+        if ($nombre !== null && in_array($nombre, ConceptoCaja::DEL_SISTEMA, true)) {
+            return "El concepto «{$nombre}» lo registra el sistema automáticamente (desde órdenes, ventas o compras). Elija otro concepto.";
+        }
+
+        return null;
     }
 }

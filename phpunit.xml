@@ -47,5 +47,8 @@
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
         <env name="GOOGLE_DRIVE_BACKUP_PATH" value=""/>
+        <!-- Sin clave de respaldos por defecto: las pruebas de cifrado la fijan ellas mismas.
+             Si se hereda del .env, los respaldos de prueba salen cifrados (.zip). -->
+        <env name="BACKUP_PASSWORD" value="" force="true"/>
     </php>
 </phpunit>

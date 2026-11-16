@@ -275,6 +275,7 @@ class SecurityBloque0AuditTest extends TestCase
      */
     public function test_tecnico_requires_admin_password_to_update_movimiento_caja(): void
     {
+        $this->registrarEfectivoEnCaja();
         $concepto = ConceptoCaja::create(['nombre' => 'Honorarios']);
 
         $movimiento = MovimientoCaja::create([

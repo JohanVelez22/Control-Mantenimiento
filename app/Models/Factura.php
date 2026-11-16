@@ -112,8 +112,12 @@ class Factura extends Model
     /** Costo total de adquisición de los productos en la factura */
     public function getCostoTotalAttribute(): float
     {
+        // Con el costo guardado en cada ítem al venderlo (M-11): si se usa el costo vigente
+        // del producto, la utilidad de una venta pasada cambia con cada compra nueva.
         return (float) $this->items->sum(function ($item) {
-            return (float) $item->cantidad * (float) ($item->stock->precio_compra ?? 0);
+            $costo = $item->costo_unitario ?? $item->stock?->precio_compra ?? 0;
+
+            return (float) $item->cantidad * (float) $costo;
         });
     }
 

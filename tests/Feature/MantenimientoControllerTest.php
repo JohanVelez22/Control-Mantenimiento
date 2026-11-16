@@ -697,44 +697,13 @@ class MantenimientoControllerTest extends TestCase
         $this->assertEquals('application/pdf', $response->headers->get('Content-Type'));
     }
 
-    public function test_mantenimiento_consulta_requires_both_cedula_and_orden(): void
+    /**
+     * S-04: con el código de consulta creado, la búsqueda antigua por cédula + número de
+     * orden (consecutivo) ya no muestra nada: lleva al portal que exige el código.
+     */
+    public function test_mantenimiento_consulta_antigua_por_numero_lleva_al_portal_con_codigo(): void
     {
-        $mantenimiento = Mantenimiento::create([
-            'id_orden' => 'ORD-CONS-1',
-            'equipo_id' => $this->equipo->id,
-            'tecnico_id' => $this->tecnicoM->id,
-            'user_id' => $this->admin->id,
-            'fecha_entrada' => now(),
-            'descripcion' => 'Test consulta',
-            'tipo' => 'correctivo',
-            'reparacion' => 'hardware',
-            'costo' => 150000,
-            'estado' => 'pendiente',
-            'anulado' => false,
-        ]);
-
-        $invitado = User::factory()->create(['role' => 'invitado']);
-
-        // Solo cédula
-        $response = $this->actingAs($invitado)->get(route('consulta.mantenimientos', ['identificacion' => $this->cliente->identificacion]));
-        $response->assertSessionHas('error');
-
-        // Solo orden
-        $response = $this->actingAs($invitado)->get(route('consulta.mantenimientos', ['id_orden' => 'ORD-CONS-1']));
-        $response->assertSessionHas('error');
-
-        // Ambos correctos
-        $response = $this->actingAs($invitado)->get(route('consulta.mantenimientos', [
-            'identificacion' => $this->cliente->identificacion,
-            'id_orden' => 'ORD-CONS-1',
-        ]));
-        $response->assertStatus(200);
-        $response->assertSee('ORD-CONS-1');
-    }
-
-    public function test_mantenimiento_consulta_rejects_wrong_cedula(): void
-    {
-        $mantenimiento = Mantenimiento::create([
+        Mantenimiento::create([
             'id_orden' => 'ORD-CONS-2',
             'equipo_id' => $this->equipo->id,
             'tecnico_id' => $this->tecnicoM->id,
@@ -751,11 +720,10 @@ class MantenimientoControllerTest extends TestCase
         $invitado = User::factory()->create(['role' => 'invitado']);
 
         $response = $this->actingAs($invitado)->get(route('consulta.mantenimientos', [
-            'identificacion' => '999999999',
+            'identificacion' => $this->cliente->identificacion,
             'id_orden' => 'ORD-CONS-2',
         ]));
-        $response->assertStatus(200);
-        $response->assertDontSee('Test consulta privacidad');
-        $response->assertSee('No se encontró ningún mantenimiento');
+        $response->assertRedirect(route('guest.dashboard', ['tipo' => 'mantenimiento']));
+        $this->followRedirects($response)->assertDontSee('Test consulta privacidad');
     }
 }

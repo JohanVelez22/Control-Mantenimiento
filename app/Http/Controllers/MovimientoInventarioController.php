@@ -13,6 +13,7 @@ use App\Models\Stock;
 use App\Rules\Facturable;
 use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
+use App\Services\EfectivoCaja;
 use App\Services\OrdenService;
 use App\Services\PosTicketService;
 use App\Services\StockService;
@@ -60,7 +61,7 @@ class MovimientoInventarioController extends Controller
 
         $request->validate([
             'facturable_global' => ['required', new Facturable],
-            'fecha' => ['required', 'date'],
+            'fecha' => ['required', 'date', 'before_or_equal:today'],
             'total_pagado' => ['required', 'numeric', 'min:0'],
             'tipo_pago' => ['nullable', 'in:efectivo,consignacion'],
             'observaciones' => ['nullable', 'string'],
@@ -99,6 +100,14 @@ class MovimientoInventarioController extends Controller
                 DB::rollBack();
 
                 return back()->with('error', 'El valor pagado no puede superar el total del documento.')->withInput();
+            }
+
+            // Una compra pagada en efectivo no puede dejar la caja en negativo.
+            if ($totalPagado > 0 && $request->input('tipo_pago', 'efectivo') === 'efectivo'
+                && ($errorEfectivo = EfectivoCaja::verificarSalida((string) $request->fecha, $totalPagado))) {
+                DB::rollBack();
+
+                return back()->with('error', $errorEfectivo)->withInput();
             }
 
             $saldo = $totalDocumento - $totalPagado;
@@ -182,7 +191,7 @@ class MovimientoInventarioController extends Controller
 
             return redirect()->route('inventario.facturas.show', $factura->id)
                 ->with('success', "Compra #{$factura->numero_factura} registrada correctamente.".
-                    ($saldo > Factura::EPSILON ? ' ⚠️ Saldo pendiente con proveedor: $'.number_format($saldo, 2) : ''));
+                    ($saldo > Factura::EPSILON ? ' ⚠️ Saldo pendiente con proveedor: $'.number_format($saldo, 0, ',', '.') : ''));
         } catch (\DomainException $e) {
             DB::rollBack();
 
@@ -227,7 +236,7 @@ class MovimientoInventarioController extends Controller
 
         $request->validate([
             'facturable_global' => ['required', new Facturable],
-            'fecha' => ['required', 'date'],
+            'fecha' => ['required', 'date', 'before_or_equal:today'],
             'total_pagado' => ['required', 'numeric', 'min:0'],
             'tipo_pago' => ['nullable', 'in:efectivo,consignacion'],
             'observaciones' => ['nullable', 'string'],
@@ -349,7 +358,7 @@ class MovimientoInventarioController extends Controller
 
             return redirect()->route('inventario.facturas.show', $factura->id)
                 ->with('success', "Venta #{$factura->numero_factura} registrada correctamente.".
-                    ($saldo > Factura::EPSILON ? ' ⚠️ Saldo pendiente por cobrar: $'.number_format($saldo, 2) : ''));
+                    ($saldo > Factura::EPSILON ? ' ⚠️ Saldo pendiente por cobrar: $'.number_format($saldo, 0, ',', '.') : ''));
         } catch (\DomainException $e) {
             DB::rollBack();
 

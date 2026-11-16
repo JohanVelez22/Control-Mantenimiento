@@ -36,7 +36,7 @@
   </div>
 
   <div class="glass-card hover-glow glass-card-red p-3.5 sm:p-4 flex flex-col justify-center items-center text-center relative overflow-hidden group min-w-0 col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
-  <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">📦</span> <span class="break-words">Stock Bajo (<5)</span></div>
+  <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-tight sm:tracking-widest mb-1 z-10 flex items-center justify-center gap-1 leading-tight"><span class="text-base sm:text-lg flex-shrink-0">📦</span> <span class="break-words" title="Productos en o por debajo de su stock mínimo (5 si no tienen uno propio)">Stock bajo</span></div>
   <div class="text-2xl font-black text-slate-800 dark:text-white z-10">{{ $stats['stock_bajo'] ?? 0 }}</div>
   </div>
 </div>

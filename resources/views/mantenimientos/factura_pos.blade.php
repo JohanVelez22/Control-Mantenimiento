@@ -61,6 +61,14 @@
                 <td class="text-right font-bold">$ {{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
             </tr>
             @endforeach
+            @php $valorServicio = max(0, (float) $mantenimiento->costo - $mantenimiento->stocks->sum(fn ($s) => $s->pivot->cantidad * $s->pivot->precio_unitario)); @endphp
+            @if($valorServicio > 0)
+            <tr>
+                <td class="font-bold">1</td>
+                <td>Servicio técnico / mano de obra</td>
+                <td class="text-right font-bold">$ {{ number_format($valorServicio, 0, ',', '.') }}</td>
+            </tr>
+            @endif
         </tbody>
     </table>
 @endif
@@ -70,7 +78,7 @@
 {{-- Totales --}}
 <table class="totals-pos">
     <tr>
-        <td class="text-left font-bold">Costo Total Estimado:</td>
+        <td class="text-left font-bold">{{ $mantenimiento->estado === 'terminado' ? 'Total del servicio:' : 'Costo Total Estimado:' }}</td>
         <td class="text-right font-bold">$ {{ number_format($mantenimiento->costo, 0, ',', '.') }}</td>
     </tr>
     @if($mantenimiento->abonos->where('anulado', false)->count() > 0)

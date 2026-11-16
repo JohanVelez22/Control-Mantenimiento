@@ -64,6 +64,7 @@ class MovimientoCajaControllerTest extends TestCase
 
     public function test_admin_can_create_egreso_movimiento(): void
     {
+        $this->registrarEfectivoEnCaja();
         $response = $this->actingAs($this->admin)->post(route('caja.store'), [
             'persona' => 'Proveedor Test',
             'fecha' => now()->toDateString(),

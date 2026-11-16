@@ -6,7 +6,15 @@
 
 @section('doc_title', 'ORDEN DE SERVICIO TÉCNICO - ' . $mantenimiento->id_orden)
 
-@section('filas', (string) ($mantenimiento->stocks->count() + min(4, $mantenimiento->abonos->where('anulado', false)->count()) + (int) ceil(mb_strlen((string) $mantenimiento->descripcion) / 180)))
+@php
+    // Renglones que ocupa el contenido variable: cada ítem (más la línea de mano de obra), cada
+    // abono, la descripción y el título + encabezado de cada tabla. Antes no se contaban los
+    // títulos y, con el encabezado completo de la empresa, la firma quedaba encima del último abono.
+    $nItems = $mantenimiento->stocks->count();
+    $nAbonos = min(4, $mantenimiento->abonos->where('anulado', false)->count());
+    $filasDoc = ($nItems > 0 ? $nItems + 1 + 2 : 0) + ($nAbonos > 0 ? $nAbonos + 2 : 0) + max(1, (int) ceil(mb_strlen((string) $mantenimiento->descripcion) / 180));
+@endphp
+@section('filas', (string) $filasDoc)
 
 @section('content')
 <div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
@@ -54,6 +62,15 @@
                 <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
             </tr>
             @endforeach
+            @php $valorServicio = max(0, (float) $mantenimiento->costo - $mantenimiento->stocks->sum(fn ($s) => $s->pivot->cantidad * $s->pivot->precio_unitario)); @endphp
+            @if($valorServicio > 0)
+            <tr style="font-weight: bold;">
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">1</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">Servicio técnico / mano de obra</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($valorServicio, 0, ',', '.') }}</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($valorServicio, 0, ',', '.') }}</td>
+            </tr>
+            @endif
         </tbody>
     </table>
 @endif
@@ -61,7 +78,7 @@
 <div class="clearfix" style="margin-bottom: 2px;">
     <table class="totals" style="width: 45%; float: right; margin-bottom: 0;">
         <tr>
-            <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Costo Total Estimado:</td>
+            <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">{{ $mantenimiento->estado === 'terminado' ? 'Total del servicio:' : 'Costo Total Estimado:' }}</td>
             <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">$ {{ number_format($mantenimiento->costo, 0, ',', '.') }}</td>
         </tr>
         @if($mantenimiento->abonos->where('anulado', false)->count() > 0)

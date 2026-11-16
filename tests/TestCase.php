@@ -2,6 +2,9 @@
 
 namespace Tests;
 
+use App\Models\ConceptoCaja;
+use App\Models\MovimientoCaja;
+use App\Models\User;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -58,5 +61,27 @@ abstract class TestCase extends BaseTestCase
         if (DB::getDriverName() !== 'sqlite') {
             $this->markTestSkipped('Prueba del flujo con SQLite; en MySQL la cubre RestauracionMysqlTest.');
         }
+    }
+
+    /**
+     * Efectivo inicial en caja (una «Apertura de caja» con fecha antigua, para no alterar los
+     * totales del día). Una salida en efectivo ya no puede dejar la caja en negativo, así que
+     * las pruebas que pagan compras o egresos en efectivo registran antes el dinero, como en
+     * el local.
+     */
+    protected function registrarEfectivoEnCaja(float $monto = 10000000): void
+    {
+        $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Apertura de caja']);
+        MovimientoCaja::create([
+            'persona' => 'Base de caja',
+            'fecha' => '2000-01-01',
+            'concepto_id' => $concepto->id,
+            'tipo_movimiento' => 'ingreso',
+            'tipo_pago' => 'efectivo',
+            'monto' => $monto,
+            'estado' => 'activo',
+            'anulado' => false,
+            'user_id' => User::query()->value('id') ?? User::factory()->create()->id,
+        ]);
     }
 }

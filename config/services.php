@@ -28,6 +28,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // Herramientas que usa «Actualizar desde GitHub» tras descargar código nuevo. En Windows,
+    // el proceso del servidor web suele no tener node ni composer en el PATH: indicar la ruta.
+    'herramientas' => [
+        'composer' => env('COMPOSER_BIN', 'composer'),
+        'npm' => env('NPM_BIN', 'npm'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

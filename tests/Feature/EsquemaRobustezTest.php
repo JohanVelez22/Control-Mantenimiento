@@ -108,6 +108,7 @@ class EsquemaRobustezTest extends TestCase
 
     public function test_compra_actualiza_el_costo_promedio_ponderado(): void
     {
+        $this->registrarEfectivoEnCaja();
         $proveedor = Proveedor::create(['nombre_razon_social' => 'Mayorista', 'identificacion' => '901', 'tipo_identificacion' => 'nit', 'active' => true]);
         $stock = Stock::factory()->create(['cantidad' => 10, 'precio_compra' => 1000, 'active' => true]);
 

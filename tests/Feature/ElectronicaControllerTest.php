@@ -595,43 +595,13 @@ class ElectronicaControllerTest extends TestCase
         $this->assertEquals('application/pdf', $response->headers->get('Content-Type'));
     }
 
-    public function test_electronica_consulta_requires_both_cedula_and_orden(): void
+    /**
+     * S-04: con el código de consulta creado, la búsqueda antigua por cédula + número de
+     * orden (consecutivo) ya no muestra nada: lleva al portal que exige el código.
+     */
+    public function test_electronica_consulta_antigua_por_numero_lleva_al_portal_con_codigo(): void
     {
-        $electronica = Electronica::create([
-            'id_orden' => 'ELC-CONSULTA-1',
-            'equipo_id' => $this->equipo->id,
-            'descripcion_problema' => 'Test consulta',
-            'tipo' => 'correctivo',
-            'reparacion' => 'hardware',
-            'costo' => 150000,
-            'estado' => 'pendiente',
-            'fecha_entrada' => now()->toDateString(),
-            'tecnico_id' => $this->tecnicoM->id,
-            'user_id' => $this->admin->id,
-        ]);
-
-        $invitado = User::factory()->create(['role' => 'invitado']);
-
-        // Solo cédula
-        $response = $this->actingAs($invitado)->get(route('consulta.electronicas', ['identificacion' => $this->cliente->identificacion]));
-        $response->assertSessionHas('error');
-
-        // Solo orden
-        $response = $this->actingAs($invitado)->get(route('consulta.electronicas', ['id_orden' => 'ELC-CONSULTA-1']));
-        $response->assertSessionHas('error');
-
-        // Ambos correctos
-        $response = $this->actingAs($invitado)->get(route('consulta.electronicas', [
-            'identificacion' => $this->cliente->identificacion,
-            'id_orden' => 'ELC-CONSULTA-1',
-        ]));
-        $response->assertStatus(200);
-        $response->assertSee('ELC-CONSULTA-1');
-    }
-
-    public function test_electronica_consulta_rejects_wrong_cedula(): void
-    {
-        $electronica = Electronica::create([
+        Electronica::create([
             'id_orden' => 'ELC-CONSULTA-2',
             'equipo_id' => $this->equipo->id,
             'descripcion_problema' => 'Test consulta privacidad',
@@ -647,11 +617,10 @@ class ElectronicaControllerTest extends TestCase
         $invitado = User::factory()->create(['role' => 'invitado']);
 
         $response = $this->actingAs($invitado)->get(route('consulta.electronicas', [
-            'identificacion' => '999999999',
+            'identificacion' => $this->cliente->identificacion,
             'id_orden' => 'ELC-CONSULTA-2',
         ]));
-        $response->assertStatus(200);
-        $response->assertDontSee('Test consulta privacidad');
-        $response->assertSee('No se encontró ninguna orden');
+        $response->assertRedirect(route('guest.dashboard', ['tipo' => 'electronica']));
+        $this->followRedirects($response)->assertDontSee('Test consulta privacidad');
     }
 }

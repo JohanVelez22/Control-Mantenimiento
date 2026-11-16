@@ -85,6 +85,7 @@ class MovimientoInventarioControllerTest extends TestCase
 
     public function test_admin_can_registrar_compra(): void
     {
+        $this->registrarEfectivoEnCaja();
         $response = $this->actingAs($this->admin)->post(route('inventario.compra.store'), [
             'facturable_global' => 'Proveedor:'.$this->proveedor->id,
             'fecha' => Carbon::today()->toDateString(),
@@ -140,6 +141,7 @@ class MovimientoInventarioControllerTest extends TestCase
 
     public function test_compra_creates_caja_movement_when_pagado(): void
     {
+        $this->registrarEfectivoEnCaja();
         $response = $this->actingAs($this->admin)->post(route('inventario.compra.store'), [
             'facturable_global' => 'Proveedor:'.$this->proveedor->id,
             'fecha' => Carbon::today()->toDateString(),
@@ -162,6 +164,7 @@ class MovimientoInventarioControllerTest extends TestCase
 
     public function test_compra_shows_saldo_pendiente_alert(): void
     {
+        $this->registrarEfectivoEnCaja();
         $response = $this->actingAs($this->admin)->post(route('inventario.compra.store'), [
             'facturable_global' => 'Proveedor:'.$this->proveedor->id,
             'fecha' => Carbon::today()->toDateString(),

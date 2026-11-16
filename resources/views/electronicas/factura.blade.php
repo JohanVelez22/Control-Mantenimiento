@@ -6,7 +6,15 @@
 
 @section('doc_title', 'ORDEN DE ELECTRÓNICA - ' . $electronica->id_orden)
 
-@section('filas', (string) ($electronica->stocks->count() + min(4, $electronica->abonos->where('anulado', false)->count()) + (int) ceil(mb_strlen((string) $electronica->descripcion_problema) / 180)))
+@php
+    // Renglones que ocupa el contenido variable: cada ítem (más la línea de mano de obra), cada
+    // abono, la descripción y el título + encabezado de cada tabla. Antes no se contaban los
+    // títulos y, con el encabezado completo de la empresa, la firma quedaba encima del último abono.
+    $nItems = $electronica->stocks->count();
+    $nAbonos = min(4, $electronica->abonos->where('anulado', false)->count());
+    $filasDoc = ($nItems > 0 ? $nItems + 1 + 2 : 0) + ($nAbonos > 0 ? $nAbonos + 2 : 0) + max(1, (int) ceil(mb_strlen((string) $electronica->descripcion_problema) / 180));
+@endphp
+@section('filas', (string) $filasDoc)
 
 @section('content')
 <div class="info-grid" style="font-size: 7.5pt; margin-bottom: 2px;">
@@ -18,7 +26,7 @@
     <div class="info-col">
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Ingreso:</strong> <strong>{{ $electronica->fecha_entrada ? \Carbon\Carbon::parse($electronica->fecha_entrada)->format('d/m/Y') : '—' }}</strong></p>
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Emisión:</strong> <strong>{{ now()->format('d/m/Y h:i A') }}</strong></p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $electronica->estado }}</span></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $electronica->estado }}</span>@if($electronica->codigo_consulta_formateado) · <strong>Código de consulta:</strong> {{ $electronica->codigo_consulta_formateado }}@endif</p>
     </div>
 </div>
 
@@ -54,6 +62,15 @@
                 <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($stock->pivot->cantidad * $stock->pivot->precio_unitario, 0, ',', '.') }}</td>
             </tr>
             @endforeach
+            @php $valorServicio = max(0, (float) $electronica->costo - $electronica->stocks->sum(fn ($s) => $s->pivot->cantidad * $s->pivot->precio_unitario)); @endphp
+            @if($valorServicio > 0)
+            <tr style="font-weight: bold;">
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">1</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">Servicio técnico / mano de obra</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($valorServicio, 0, ',', '.') }}</td>
+                <td class="text-center" style="font-size: 6.5pt; padding: 1px 2px; font-weight: bold;">$ {{ number_format($valorServicio, 0, ',', '.') }}</td>
+            </tr>
+            @endif
         </tbody>
     </table>
 @endif
@@ -61,7 +78,7 @@
 <div class="clearfix" style="margin-bottom: 2px;">
     <table class="totals" style="width: 45%; float: right; margin-bottom: 0;">
         <tr>
-            <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">Costo Total Estimado:</td>
+            <td class="lbl" style="font-size: 6.8pt; padding: 0px 2px;">{{ $electronica->estado === 'terminado' ? 'Total del servicio:' : 'Costo Total Estimado:' }}</td>
             <td class="val" style="font-size: 6.8pt; padding: 0px 2px; font-weight: bold;">$ {{ number_format($electronica->costo, 0, ',', '.') }}</td>
         </tr>
         @if($electronica->abonos->where('anulado', false)->count() > 0)

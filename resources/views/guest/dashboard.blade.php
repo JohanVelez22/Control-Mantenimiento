@@ -60,7 +60,7 @@
                     @endphp
                     <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Resultados para la orden <span class="{{ $isElectronicaSearch ? 'text-purple-600 dark:text-purple-400' : 'text-blue-600 dark:text-blue-400' }} font-bold">{{ strtoupper($id_orden ?? '') }}</span> (Doc: {{ $identificacion ?? '' }})</p>
                 @else
-                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">Ingresa tu número de identificación y número de orden para hacer el seguimiento de tu equipo.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">{{ ($usaCodigo ?? false) ? 'Ingresa tu número de identificación y el código de consulta impreso en tu recibo para hacer el seguimiento de tu equipo.' : 'Ingresa tu número de identificación y número de orden para hacer el seguimiento de tu equipo.' }}</p>
                 @endif
             </div>
             
@@ -248,7 +248,7 @@
                                placeholder="Ej: 123456789 o 900123456" minlength="3" maxlength="30" autocomplete="off">
                         <p id="error-identificacion" class="text-xs text-red-500 font-semibold mt-1.5 ml-0.5 flex items-start gap-1.5 leading-[18px] {{ ($hasNotFound || $errors->has('identificacion')) ? '' : 'hidden' }}">
                             <span class="shrink-0 inline-flex items-center justify-center h-[18px] text-xs select-none">⚠️</span>
-                            <span id="error-identificacion-text" class="leading-[18px]">{{ $errors->first('identificacion') ?: 'No es correcto: No se encontró ningun resultado para esta cédula o NIT' }}</span>
+                            <span id="error-identificacion-text" class="leading-[18px]">{{ $errors->first('identificacion') ?: (($usaCodigo ?? false) ? 'Revise el documento y el código: no coinciden con ninguna orden' : 'No es correcto: no se encontró ningún resultado para esta cédula o NIT') }}</span>
                         </p>
                     </div>
 
@@ -264,7 +264,7 @@
                                placeholder="{{ ($usaCodigo ?? false) ? 'Ej: ABCD-EFGH' : ($isElec ? 'Ej: ELC-001 o 1' : 'Ej: ORD-001 o 1') }}" minlength="1" maxlength="30" autocomplete="off">
                         <p id="error-orden" class="text-xs text-red-500 font-semibold mt-1.5 ml-0.5 flex items-start gap-1.5 leading-[18px] {{ ($hasNotFound || $errors->has($campoOrden)) ? '' : 'hidden' }}">
                             <span class="shrink-0 inline-flex items-center justify-center h-[18px] text-xs select-none">⚠️</span>
-                            <span id="error-orden-text" class="leading-[18px]">{{ $errors->first($campoOrden) ?: (($usaCodigo ?? false) ? 'No es correcto: no se encontró ninguna orden con ese documento y código' : 'No es correcto: No se encontró ningun resultado para este número de orden') }}</span>
+                            <span id="error-orden-text" class="leading-[18px]">{{ $errors->first($campoOrden) ?: (($usaCodigo ?? false) ? 'No es correcto: no se encontró ninguna orden con ese documento y código' : 'No es correcto: no se encontró ningún resultado para este número de orden') }}</span>
                         </p>
                     </div>
 

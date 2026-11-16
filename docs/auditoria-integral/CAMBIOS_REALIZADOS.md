@@ -168,6 +168,45 @@ Puntos importantes:
   - "Imprimir" en los reportes abre el PDF completo;
   - el menú usa "Compras y ventas", "Caja" y "Reportes".
 
+### Quinta ronda (2026-11-16, verificación de punta a punta en el navegador)
+
+Se montó una copia aislada (rama `verificacion-e2e`, base MySQL propia `tecni_e2e`, datos inventados) y se recorrió el sistema como lo haría el personal del local: clientes, técnicos, proveedores, productos, equipos, órdenes de mantenimiento y electrónica, repuestos, abonos, entrega, ventas de contado y a crédito, compras, cotizaciones, caja, cierre, anulaciones, respaldo y restauración, la consulta del invitado, los permisos por rol, los PDF (A4 y tirilla) y la vista en celular. Cada error encontrado se corrigió con una prueba que falla con el código anterior (`VerificacionOperacionTest`, `MediaHojaFirmasTest`).
+
+| Hallazgo (lo que se vio en pantalla) | Corrección |
+|---|---|
+| Un producto se guardaba con precio de venta $1 y costo $10.000; la lista mostraba "+50 %" y "+$ −9.999" | El precio de venta y el de técnico no pueden ser menores que el costo (al crear y al editar). Los precios vacíos los sigue calculando el modelo |
+| La utilidad de una venta ya hecha cambiaba después de cada compra del mismo producto (VT-3 pasó de +30.000 a +43.333) | `Factura::costo_total` usa el costo guardado en cada ítem al vender. Si al editar se cambia el producto de un ítem, su costo guardado se actualiza |
+| Se aceptó un egreso en efectivo de $99.999.999 con la caja casi vacía (efectivo en −99,7 millones) | Ninguna salida en efectivo (egreso manual, edición, compra, abono a una compra) puede dejar la caja en negativo; el mensaje indica registrar primero la "Apertura de caja" o usar Consignación (`App\Services\EfectivoCaja`) |
+| Se aceptó un movimiento de caja con fecha 31/12/2026 | Caja, ventas y compras no admiten fechas futuras; el mensaje dice "anterior o igual a hoy" |
+| Se registró a mano un ingreso con el concepto "Abono Mantenimiento" sin orden asociada | Los conceptos del sistema no se ofrecen ni se aceptan en movimientos manuales |
+| La orden impresa (A4 y tirilla) mostraba los repuestos y el total, pero no el valor del servicio | Línea "Servicio técnico / mano de obra" y rótulo "Total del servicio" cuando la orden está terminada. La orden de electrónica imprime el código de consulta |
+| En media hoja, con el encabezado completo de la empresa, la línea de firma quedaba encima del último abono | El cálculo de espacio cuenta los títulos de las tablas; si no cabe, se usa la hoja completa. La prueba mide la posición real en el PDF |
+| El invitado podía consultar una orden con cédula + número consecutivo en `/consulta/...`, sin el código | Esas rutas llevan al portal que exige el código |
+| La lista de respaldos mostraba la hora en UTC (07:25 PM en lugar de 02:25 PM) | Se usa la zona horaria del sistema |
+| "Actualizar desde GitHub" descargaba el código y migraba, pero no recompilaba la interfaz ni instalaba dependencias | Si cambian estilos, scripts o `composer.lock`, ejecuta `npm ci && npm run build` o `composer install --no-dev`; si no puede, dice exactamente qué correr (`NPM_BIN`, `COMPOSER_BIN` en `.env`) |
+| En una instalación nueva las facturas salían con la empresa de ejemplo (NIT 900.000.000-1) | El seeder reemplaza la fila de demostración por los datos reales; no toca datos que el dueño ya cambió |
+| En el punto de venta, "Total recibido" arrancaba en 0: si el cajero lo olvidaba, la venta quedaba fiada | Sigue al total mientras el cajero no lo cambie |
+| Se aceptó un celular "12" | Celular de al menos 7 caracteres (clientes y técnicos) |
+| Aviso de venta a crédito con formato "$100,000.00"; tarjeta "Stock bajo (<5)" aunque cada producto tiene su mínimo; texto del portal que pedía "número de orden" | Formato `$100.000`; "Stock bajo" con la regla real; textos del portal con el código |
+| Las pruebas heredaban `BACKUP_PASSWORD` del `.env` y fallaban cuando la clave estaba definida | `phpunit.xml` la fija vacía (las pruebas de cifrado la ponen ellas mismas) |
+
+Revisado y **sin cambios** (se confirmó que es intencional o ya estaba resuelto):
+- la venta por debajo del costo se permite: la pantalla muestra "Advertencia de Margen Negativo";
+- cada usuario cambia su contraseña desde su perfil (el ícono con su inicial), con la contraseña actual;
+- anular sin indicar la intención alterna el estado, pero la interfaz siempre la envía, y un doble clic no revierte la acción;
+- el técnico ve caja, reportes y compras; cerrar caja, configuración, auditoría y respaldos son solo del administrador.
+
+Lo que funcionó sin cambios en el recorrido:
+- descuento de inventario y costo promedio ponderado;
+- validaciones de abonos (monto, fecha, saldo);
+- entrega con saldo y motivo;
+- cierre de caja con descuadre y bloqueo del día;
+- anulación con motivo y devolución de inventario;
+- cotización convertida en venta una sola vez;
+- respaldo cifrado, restauración con contraseña y estado anterior guardado;
+- los permisos por rol;
+- todas las pantallas a 375 px sin desbordes.
+
 ## Archivos modificados en la ronda
 
 **Aplicación**

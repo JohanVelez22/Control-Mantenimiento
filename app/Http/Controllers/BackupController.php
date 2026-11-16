@@ -112,7 +112,8 @@ class BackupController extends Controller
             $size = $file->getSize();
             $totalBytes += $size;
             $mtime = $file->getMTime();
-            $carbon = Carbon::createFromTimestamp($mtime);
+            // Carbon 3 crea la fecha en UTC: sin la zona del sistema la lista mostraba 07:25 PM por 02:25 PM.
+            $carbon = Carbon::createFromTimestamp($mtime, config('app.timezone'));
 
             $backupFiles[] = [
                 'name' => $file->getFilename(),
@@ -972,6 +973,20 @@ class BackupController extends Controller
                 ], 200);
             }
 
+            // Dependencias y pantallas: public/build no está en el repositorio, así que un cambio
+            // en estilos o scripts no se veía hasta compilar a mano (y un composer.lock nuevo
+            // dejaba clases faltantes). Se hace aquí y, si falla, se dice exactamente qué correr.
+            $pasosPendientes = $this->completarActualizacion($basePath);
+            if ($pasosPendientes !== []) {
+                return response()->json([
+                    'success' => false,
+                    'status' => 'build_failed',
+                    'message' => 'El código y la base de datos se actualizaron, pero falta completar: '
+                        .implode(' y ', $pasosPendientes)
+                        .'. Ejecútelo en la carpeta del sistema antes de seguir operando.',
+                ], 200);
+            }
+
             // Registrar en auditoría
             try {
                 $user = Auth::user();
@@ -1002,5 +1017,55 @@ class BackupController extends Controller
                 'message' => 'No se pudo establecer conexión con GitHub.',
             ], 200);
         }
+    }
+
+    /**
+     * Tras un git pull: instala dependencias de PHP si cambió composer.lock y recompila las
+     * pantallas si cambiaron estilos, scripts o package.json. Devuelve los comandos que no se
+     * pudieron ejecutar (vacío si todo quedó listo).
+     *
+     * @return list<string>
+     */
+    private function completarActualizacion(string $basePath): array
+    {
+        $cambios = [];
+        exec('git -c safe.directory='.escapeshellarg($basePath).' -C '.escapeshellarg($basePath).' diff --name-only ORIG_HEAD HEAD 2>&1', $cambios, $codigo);
+        if ($codigo !== 0) {
+            // Sin ORIG_HEAD no se sabe qué cambió: se hace todo por seguridad.
+            $cambios = ['composer.lock', 'package.json'];
+        }
+
+        $necesitaComposer = collect($cambios)->contains(fn ($f) => $f === 'composer.lock');
+        $necesitaBuild = collect($cambios)->contains(fn ($f) => $f === 'package.json' || $f === 'package-lock.json'
+            || $f === 'vite.config.js' || str_starts_with($f, 'resources/css/') || str_starts_with($f, 'resources/js/'));
+
+        @set_time_limit(900);
+        $pendientes = [];
+        $ejecutar = function (string $comando) use ($basePath): bool {
+            $salida = [];
+            $codigo = -1;
+            $cd = PHP_OS_FAMILY === 'Windows' ? 'cd /d ' : 'cd ';
+            exec($cd.escapeshellarg($basePath).' && '.$comando.' 2>&1', $salida, $codigo);
+            if ($codigo !== 0) {
+                Log::error('Actualización: falló «'.$comando.'»', ['salida' => array_slice($salida, -20)]);
+            }
+
+            return $codigo === 0;
+        };
+
+        if ($necesitaComposer) {
+            $composer = (string) config('services.herramientas.composer', 'composer');
+            if (! $ejecutar(escapeshellarg($composer).' install --no-dev --no-interaction --optimize-autoloader')) {
+                $pendientes[] = 'composer install --no-dev';
+            }
+        }
+        if ($necesitaBuild) {
+            $npm = (string) config('services.herramientas.npm', 'npm');
+            if (! $ejecutar(escapeshellarg($npm).' ci --no-audit --no-fund') || ! $ejecutar(escapeshellarg($npm).' run build')) {
+                $pendientes[] = 'npm ci && npm run build';
+            }
+        }
+
+        return $pendientes;
     }
 }

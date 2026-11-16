@@ -2,6 +2,15 @@
 
 Fecha: 2026-11-13. Todas las cifras de esta página salen de ejecuciones reales en este equipo (PHP 8.4.27, PHPUnit 12.5.43, SQLite en memoria). No se declara nada que no se haya ejecutado.
 
+## 0. Quinta ronda (2026-11-16): recorrido en el navegador y suites
+
+| Corrida | Resultado |
+|---|---|
+| Recorrido manual por el navegador (copia aislada, MySQL `tecni_e2e`) | 37 pantallas, todos los flujos de dinero, roles, PDF A4 y tirilla, vista a 375 px. 15 hallazgos corregidos (ver `CAMBIOS_REALIZADOS.md`, quinta ronda) y repetidos en el navegador después de corregir |
+| Suite completa en SQLite | **795 pruebas en verde** (incluye `VerificacionOperacionTest` y `MediaHojaFirmasTest`, nuevas) |
+| Suite completa en MySQL 8.4.11 (base temporal) | **786 en verde, 9 saltadas a propósito, 0 fallos** |
+| Restauración de punta a punta en MySQL | OK |
+
 ## 0. Cuarta ronda (2026-11-16): SQLite y MySQL 8.4
 
 | Corrida | Resultado | Cómo |

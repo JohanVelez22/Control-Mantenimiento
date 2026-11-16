@@ -116,7 +116,7 @@
 <div class="text-center w-full md:w-1/2">
   <label class="field-label text-center block">Total Recibido Ahora <span class="text-red-500 font-bold">*</span></label>
   <input type="text" name="total_pagado" id="total_pagado_real" value="{{ old('total_pagado', 0) }}" required class="hidden">
-  <input type="text" id="total_pagado_visual" value="{{ number_format((float) old('total_pagado', 0), 0, ',', '.') }}" aria-label="Valor pagado ahora" oninput="window.formatCurrencyDual(this, 'total_pagado_real'); recalcular()" required 
+  <input type="text" id="total_pagado_visual" value="{{ number_format((float) old('total_pagado', 0), 0, ',', '.') }}" data-manual="{{ old('total_pagado') !== null ? '1' : '' }}" aria-label="Valor pagado ahora" oninput="this.dataset.manual = '1'; window.formatCurrencyDual(this, 'total_pagado_real'); recalcular()" required 
   class="glass-input text-2xl font-black text-center focus:ring-emerald-500 py-3 text-emerald-600 dark:text-emerald-400">
   <div class="mt-3 flex items-center justify-center gap-2">
     <label for="tipo_pago" class="text-xs font-bold text-gray-500 dark:text-gray-400">Medio de pago</label>
@@ -354,6 +354,14 @@ function recalcular() {
     }
   });
   document.getElementById('total-display').textContent = '$ ' + window.formatNumber(total);
+
+  // Lo recibido sigue al total mientras el cajero no lo cambie: si lo olvidaba en 0, la venta
+  // quedaba registrada como fiada sin querer. Para una venta a crédito basta con escribir el abono.
+  const pagadoVisual = document.getElementById('total_pagado_visual');
+  if (pagadoVisual && pagadoVisual.dataset.manual !== '1') {
+    document.getElementById('total_pagado_real').value = total;
+    pagadoVisual.value = window.formatNumber(total);
+  }
 
   const banner = document.getElementById('banner-alerta-bajo-costo');
   if (banner) {

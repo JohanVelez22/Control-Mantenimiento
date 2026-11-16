@@ -15,6 +15,7 @@ use App\Services\AnulacionService;
 use App\Services\OrdenEstadoService;
 use App\Services\OrdenService;
 use App\Services\PosTicketService;
+use App\Support\Esquema;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -472,6 +473,12 @@ class MantenimientoController extends Controller
      */
     public function consulta(Request $request)
     {
+        // S-04: con el código de consulta ya creado, la búsqueda por cédula + número de orden
+        // (consecutivo, fácil de adivinar) deja de estar disponible: se usa el portal con código.
+        if (Esquema::tiene('mantenimientos', 'codigo_consulta')) {
+            return redirect()->route('guest.dashboard', ['tipo' => 'mantenimiento']);
+        }
+
         $identificacion = $request->get('identificacion') ?? $request->get('cedula');
         $idOrden = $request->get('id_orden') ?? $request->get('orden');
         $mantenimientos = collect();

@@ -22,19 +22,25 @@ class DatabaseSeeder extends Seeder
         ConceptoCaja::firstOrCreate(['nombre' => 'Otros ingresos']);
         ConceptoCaja::firstOrCreate(['nombre' => 'Otros egresos']);
 
-        // Configuración inicial de la Empresa
-        Configuracion::firstOrCreate(
-            ['id' => 1],
-            [
-                'nombre' => 'Tecni Systemas',
-                'nit' => '4.501.927',
-                'telefono' => '3172697442 - 3165528637',
-                'direccion' => 'Cra 4 # 20-81 Pereira',
-                'correo' => 'tecnisystemaspereira@hotmail.com',
-                'logo_path' => 'configuracion/logo_nuevo_tecnisystemas.png',
-                'pie_pagina_factura' => 'Gracias por su confianza. Garantía de servicio sujeta a términos y condiciones.',
-            ]
-        );
+        // Configuración inicial de la Empresa. Una migración antigua deja una fila de
+        // demostración (NIT 900.000.000-1): si es esa, se reemplaza por los datos reales; con
+        // firstOrCreate las facturas de una instalación nueva salían con la empresa de ejemplo.
+        $actual = Configuracion::orderBy('id')->first();
+        $esDemo = $actual === null || $actual->nit === '900.000.000-1';
+        if ($esDemo) {
+            Configuracion::updateOrCreate(
+                ['id' => $actual->id ?? 1],
+                [
+                    'nombre' => 'Tecni Systemas',
+                    'nit' => '4.501.927',
+                    'telefono' => '3172697442 - 3165528637',
+                    'direccion' => 'Cra 4 # 20-81 Pereira',
+                    'correo' => 'tecnisystemaspereira@hotmail.com',
+                    'logo_path' => 'configuracion/logo_nuevo_tecnisystemas.png',
+                    'pie_pagina_factura' => 'Gracias por su confianza. Garantía de servicio sujeta a términos y condiciones.',
+                ]
+            );
+        }
 
         // Categorías base de Stock
         CategoriaStock::firstOrCreate(['nombre' => 'Tecnologia', 'tipo' => 'categoria']);
