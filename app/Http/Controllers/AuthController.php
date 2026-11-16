@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Electronica;
-use App\Models\Mantenimiento;
 use App\Models\User;
 use App\Support\PasswordsConocidas;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -251,59 +248,11 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
-        // 5. Construir alertas de tareas pendientes (Top 50 más antiguas + Totales para trazabilidad)
-        $totalElec = Electronica::where('estado', 'pendiente')->where('anulado', false)->count();
-        $totalMant = Mantenimiento::where('estado', 'pendiente')->where('anulado', false)->count();
-
-        $alertasElectronica = Electronica::with('equipo.cliente')
-            ->where('estado', 'pendiente')
-            ->where('anulado', false)
-            ->orderBy('fecha_entrada', 'asc') // Más antiguos primero
-            ->take(50)
-            ->get()
-            ->map(function ($e) {
-                return [
-                    'modulo' => 'electrónica',
-                    'id_orden' => $e->id_orden,
-                    'cliente' => $e->equipo->cliente->nombre ?? 'N/A',
-                    'dispositivo' => $e->equipo->nombre ?? 'N/A',
-                    'estado' => $e->estado,
-                    'dias' => $e->dias_transcurridos ?? floor(abs(Carbon::parse($e->fecha_entrada)->diffInDays(now()))),
-                ];
-            })->toArray();
-
-        $alertasMantenimiento = Mantenimiento::with('equipo.cliente')
-            ->where('estado', 'pendiente')
-            ->where('anulado', false)
-            ->orderBy('fecha_entrada', 'asc') // Más antiguos primero
-            ->take(50)
-            ->get()
-            ->map(function ($m) {
-                return [
-                    'modulo' => 'mantenimiento',
-                    'id_orden' => $m->id_orden,
-                    'cliente' => $m->equipo->cliente->nombre ?? 'N/A',
-                    'dispositivo' => $m->equipo->nombre ?? 'N/A',
-                    'estado' => $m->estado,
-                    'dias' => floor(abs(Carbon::parse($m->fecha_entrada)->diffInDays(now()))),
-                ];
-            })->toArray();
-
-        $alertasPendientes = array_merge($alertasElectronica, $alertasMantenimiento);
-        usort($alertasPendientes, function ($a, $b) {
-            return $b['dias'] <=> $a['dias']; // Ordenar por días descendente (los más antiguos primero)
-        });
-
-        // Tomar solo los 50 más críticos (más antiguos) de la combinación
-        $alertasPendientes = array_slice($alertasPendientes, 0, 50);
-
-        if (($totalElec + $totalMant) > 0) {
-            $request->session()->flash('alertas_pendientes', $alertasPendientes);
-            $request->session()->flash('alertas_totales', [
-                'electronica' => $totalElec,
-                'mantenimiento' => $totalMant,
-                'total' => $totalElec + $totalMant,
-            ]);
+        // 5. ARQ-07 / F-06: el login ya no consulta ni guarda en sesión la lista de pendientes;
+        // solo marca que el modal de notificaciones puede abrirse. El layout lo abre si hay
+        // órdenes atrasadas o cotizaciones vencidas, como máximo una vez al día.
+        if (in_array($user->role, ['admin', 'tecnico'], true)) {
+            $request->session()->flash('abrir_notificaciones', true);
         }
 
         if ($user->role === 'invitado') {

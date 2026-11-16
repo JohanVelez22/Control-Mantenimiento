@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Schema;
  */
 class OrdenService
 {
+    private static ?bool $hayTablaSecuencias = null;
+
     /**
      * Calcula el siguiente número correlativo atómico.
      *
@@ -32,18 +34,23 @@ class OrdenService
         ?int $pad = null,
         bool $lock = true
     ): string {
-        if (! Schema::hasTable('secuencias_documento')) {
+        // D-17: la existencia de la tabla se consulta una vez por proceso, no en cada documento.
+        self::$hayTablaSecuencias ??= Schema::hasTable('secuencias_documento');
+        if (! self::$hayTablaSecuencias) {
             return $this->generarLegacy($prefijo, $modelo, $columna, $pad, $lock);
         }
 
         $operacion = function () use ($prefijo, $modelo, $columna, $pad, $lock) {
-            // Asegurar que exista la fila para el prefijo de forma atómica
-            DB::table('secuencias_documento')->insertOrIgnore([
-                'prefijo' => $prefijo,
-                'valor' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            // Asegurar que exista la fila para el prefijo de forma atómica. La vista previa
+            // (formulario de creación, petición GET) no escribe en la base (B-15).
+            if ($lock) {
+                DB::table('secuencias_documento')->insertOrIgnore([
+                    'prefijo' => $prefijo,
+                    'valor' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
 
             if ($lock) {
                 $secuencia = DB::table('secuencias_documento')
@@ -95,25 +102,26 @@ class OrdenService
             return 0;
         }
 
-        $query = $modelo::query();
-        if (! empty($prefijo)) {
-            $query->where($columna, 'like', "{$prefijo}%");
+        // B-15 / D-17: el máximo se calcula en SQL (antes se traían todos los números) e
+        // incluye los registros borrados lógicamente, que siguen ocupando el número en el
+        // índice único.
+        $query = $modelo::query()->withoutGlobalScopes();
+        if ($prefijo === '') {
+            return (int) $query->max($columna);
         }
 
-        $valores = $query->pluck($columna);
-        $max = 0;
-        foreach ($valores as $val) {
-            if (preg_match('/(\d+)\s*$/', (string) $val, $matches)) {
-                $num = (int) $matches[1];
-            } else {
-                $num = (int) preg_replace('/[^0-9]/', '', (string) $val);
-            }
-            if ($num > $max) {
-                $max = $num;
-            }
-        }
+        $tabla = (new $modelo)->getTable();
+        $col = $query->getQuery()->getGrammar()->wrap($columna);
+        $desde = mb_strlen($prefijo) + 1;
+        $expresion = DB::connection($query->getConnection()->getName())->getDriverName() === 'sqlite'
+            ? "MAX(CAST(SUBSTR({$col}, {$desde}) AS INTEGER))"
+            : "MAX(CAST(SUBSTRING({$col}, {$desde}) AS UNSIGNED))";
 
-        return $max;
+        return (int) DB::connection($query->getConnection()->getName())
+            ->table($tabla)
+            ->where($columna, 'like', $prefijo.'%')
+            ->selectRaw("{$expresion} as maximo")
+            ->value('maximo');
     }
 
     /**

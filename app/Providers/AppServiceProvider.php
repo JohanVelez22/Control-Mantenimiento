@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Database\SqliteConnector;
+use App\Models\Abono;
 use App\Models\CierreCaja;
 use App\Models\Cliente;
 use App\Models\Cotizacion;
@@ -23,17 +24,13 @@ use App\Policies\MovimientoCajaPolicy;
 use App\Policies\StockPolicy;
 use App\Policies\UserPolicy;
 use App\Support\PaginacionPdf;
+use App\View\Composers\NotificacionesComposer;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -72,25 +69,6 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        // Directiva Blade para formato de moneda uniforme ($ 1.000.000)
-        Blade::directive('money', function ($expression) {
-            return "<?php echo '$ ' . number_format(($expression) ?? 0, 0, ',', '.'); ?>";
-        });
-
-        // Garantizar existencia de formato_factura en configuraciones (Riesgo Cero)
-        if (! Cache::has('schema_config_formato_checked')) {
-            try {
-                if (Schema::hasTable('configuraciones') && ! Schema::hasColumn('configuraciones', 'formato_factura')) {
-                    Schema::table('configuraciones', function (Blueprint $table) {
-                        $table->string('formato_factura')->default('estandar')->after('pie_pagina_factura');
-                    });
-                }
-                Cache::forever('schema_config_formato_checked', true);
-            } catch (\Throwable $e) {
-                // Fallback silencioso
-            }
-        }
-
         // ─────────────────────────────────────────────────────────────────
         // GATES DE AUTORIZACIÓN CENTRALIZADOS
         // ─────────────────────────────────────────────────────────────────
@@ -113,190 +91,13 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Cliente::class, ClientePolicy::class);
         Gate::policy(User::class, UserPolicy::class);
 
-        View::composer('layouts.app', function ($view) {
-            // Solo admin y técnico ven notificaciones: el invitado (cuenta compartida) nunca debe
-            // recibir nombres de clientes ni saldos, ni siquiera en páginas de error (F-01).
-            if (! Auth::check() || ! in_array(Auth::user()->role, ['admin', 'tecnico'], true)) {
-                $view->with([
-                    'mantList' => collect(),
-                    'elecList' => collect(),
-                    'cajaList' => collect(),
-                    'movimientosPendientes' => collect(),
-                    'cotList' => collect(),
-                    'mantPendientes' => 0,
-                    'elecPendientes' => 0,
-                    'cotPendientes' => 0,
-                    'cajaPendientes' => 0,
-                    'totalPendientes' => 0,
-                ]);
-
-                return;
-            }
-
-            $userId = Auth::id();
-            $data = Cache::remember("topbar_notifs_user_{$userId}", 30, function () {
-
-                // Mantenimientos pendientes
-                $mantList = Mantenimiento::activos()
-                    ->where('estado', 'pendiente')
-                    ->select('id', 'id_orden', 'equipo_id', 'estado')
-                    ->with(['equipo.cliente:id,nombres,apellidos', 'equipo.proveedor:id,nombre_razon_social'])
-                    ->latest()
-                    ->limit(50)
-                    ->get()
-                    ->map(function ($m) {
-                        return [
-                            'id' => $m->id,
-                            'id_orden' => $m->id_orden,
-                            'equipo_nombre' => $m->equipo?->nombre ?? 'N/A',
-                            'cliente_nombre' => $m->equipo?->propietario_nombre ?: '—',
-                            'url' => route('mantenimientos.show', $m->id),
-                        ];
-                    })->values()->all();
-
-                // Electrónicas pendientes
-                $elecList = Electronica::activos()
-                    ->where('estado', 'pendiente')
-                    ->select('id', 'id_orden', 'equipo_id', 'estado')
-                    ->with(['equipo.cliente:id,nombres,apellidos', 'equipo.proveedor:id,nombre_razon_social'])
-                    ->latest()
-                    ->limit(50)
-                    ->get()
-                    ->map(function ($e) {
-                        return [
-                            'id' => $e->id,
-                            'id_orden' => $e->id_orden,
-                            'equipo_nombre' => $e->equipo?->nombre ?? 'N/A',
-                            'cliente_nombre' => $e->equipo?->propietario_nombre ?: '—',
-                            'url' => route('electronicas.show', $e->id),
-                        ];
-                    })->values()->all();
-
-                // Facturas con saldo pendiente (Compras / Ventas)
-                $cajaFacturas = Factura::where('estado', '!=', 'anulada')
-                    ->where('saldo_pendiente', '>', 0)
-                    ->select('id', 'numero_factura', 'tipo_movimiento', 'saldo_pendiente', 'total_documento', 'facturable_id', 'facturable_type')
-                    ->with('facturable')
-                    ->latest()
-                    ->limit(50)
-                    ->get();
-
-                // Extraer IDs y números de factura pendientes para búsqueda en lote (evita N+1 queries)
-                $facturaIds = $cajaFacturas->pluck('id')->filter()->values()->toArray();
-                $facturasNumeros = $cajaFacturas->pluck('numero_factura')->filter()->values()->toArray();
-
-                // Movimientos de caja relacionados en lote vinculados por factura_id (con fallback de compatibilidad)
-                $movimientosRel = empty($facturaIds) ? collect() : MovimientoCaja::whereNull('parent_id')
-                    ->where(function ($q) use ($facturaIds, $facturasNumeros) {
-                        $q->whereIn('factura_id', $facturaIds);
-                        if (! empty($facturasNumeros)) {
-                            $q->orWhere(function ($sub) use ($facturasNumeros) {
-                                $sub->whereNull('factura_id')
-                                    ->where(function ($legacy) use ($facturasNumeros) {
-                                        foreach ($facturasNumeros as $num) {
-                                            $legacy->orWhere('descripcion', 'like', "%#{$num} %")
-                                                ->orWhere('descripcion', 'like', "%#{$num}");
-                                        }
-                                    });
-                            });
-                        }
-                    })
-                    ->select('id', 'factura_id', 'descripcion')
-                    ->get();
-
-                $cajaList = $cajaFacturas->map(function ($f) use ($movimientosRel) {
-                    $matched = $movimientosRel->first(function ($m) use ($f) {
-                        if ($m->factura_id) {
-                            return (int) $m->factura_id === (int) $f->id;
-                        }
-
-                        return str_contains($m->descripcion ?? '', "#{$f->numero_factura}");
-                    });
-                    $movCajaId = $matched?->id;
-                    $facturableNombre = is_object($f->facturable)
-                        ? ($f->facturable->nombre_razon_social ?? $f->facturable->nombre ?? '—')
-                        : '—';
-
-                    return [
-                        'id' => $f->id,
-                        'numero_factura' => $f->numero_factura,
-                        'facturable_nombre' => $facturableNombre ?: '—',
-                        'saldo_pendiente' => (float) $f->saldo_pendiente,
-                        'movimiento_caja_id' => $movCajaId,
-                        'url' => $movCajaId ? route('caja.edit', $movCajaId) : route('inventario.facturas.show', $f->id),
-                    ];
-                })->values()->all();
-
-                // Movimientos de caja pendientes independientes (excluye facturas de inventario y movimientos ya saldados)
-                $movimientosPendientes = MovimientoCaja::where('anulado', false)
-                    ->whereNull('parent_id')
-                    ->whereNotNull('monto_total')
-                    ->where('monto_total', '>', 0)
-                    ->whereNull('factura_id')
-                    ->when(! empty($facturasNumeros), function ($query) use ($facturasNumeros) {
-                        $query->where(function ($q) use ($facturasNumeros) {
-                            foreach ($facturasNumeros as $num) {
-                                $q->where('descripcion', 'not like', "%#{$num}%");
-                            }
-                        });
-                    })
-                    ->with(['concepto:id,nombre', 'childPayments'])
-                    ->latest()
-                    ->limit(50)
-                    ->get()
-                    ->filter(fn ($mov) => $mov->saldo_pendiente > 0.01)
-                    ->take(50)
-                    ->map(function ($mov) {
-                        $conceptoNombre = is_object($mov->concepto) ? $mov->concepto->nombre : ($mov->concepto ?? '—');
-
-                        return [
-                            'id' => $mov->id,
-                            'tipo_movimiento' => $mov->tipo_movimiento,
-                            'concepto_nombre' => $conceptoNombre ?: '—',
-                            'persona' => $mov->persona ?? '—',
-                            'saldo_pendiente' => (float) $mov->saldo_pendiente,
-                            'url' => route('caja.edit', $mov->id),
-                        ];
-                    })->values()->all();
-
-                // Cotizaciones pendientes
-                $cotList = Cotizacion::activos()
-                    ->where('estado', 'pendiente')
-                    ->select('id', 'codigo', 'cliente_id', 'proveedor_id', 'total', 'estado')
-                    ->with(['cliente:id,nombres,apellidos', 'proveedor:id,nombre_razon_social'])
-                    ->latest()
-                    ->limit(50)
-                    ->get()
-                    ->map(function ($c) {
-                        return [
-                            'id' => $c->id,
-                            'codigo' => $c->codigo ?? '—',
-                            'cliente_nombre' => $c->destinatario_nombre ?: '—',
-                            'total' => (float) ($c->total ?? 0),
-                            'url' => route('cotizaciones.show', $c->id),
-                        ];
-                    })->values()->all();
-
-                return [
-                    'mantList' => $mantList,
-                    'elecList' => $elecList,
-                    'cajaList' => $cajaList,
-                    'movimientosPendientes' => $movimientosPendientes,
-                    'cotList' => $cotList,
-                    'mantPendientes' => count($mantList),
-                    'elecPendientes' => count($elecList),
-                    'cotPendientes' => count($cotList),
-                    'cajaPendientes' => count($cajaList) + count($movimientosPendientes),
-                    'totalPendientes' => count($mantList)
-                                              + count($elecList)
-                                              + count($cajaList)
-                                              + count($movimientosPendientes)
-                                              + count($cotList),
-                ];
-            });
-
-            $view->with($data);
-        });
+        // Notificaciones de la barra superior (ARQ-06): la lógica vive en su propia clase y la
+        // caché compartida se borra cuando cambia algo que las afecta.
+        View::composer('layouts.app', NotificacionesComposer::class);
+        foreach ([Mantenimiento::class, Electronica::class, Factura::class, Cotizacion::class, MovimientoCaja::class, Abono::class] as $modelo) {
+            $modelo::saved(fn () => NotificacionesComposer::invalidar());
+            $modelo::deleted(fn () => NotificacionesComposer::invalidar());
+        }
 
         Event::listen(Login::class, function ($event) {
             $history = session()->pull('login_attempts_history', []);

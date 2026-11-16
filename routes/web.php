@@ -62,13 +62,6 @@ Route::middleware(['auth', 'prevent-back-history', 'password.cambio'])->group(fu
     // Logout (cualquier usuario autenticado)
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('throttle:10,1')->name('logout');
 
-    // Descartar alerta de electrónica (JS)
-    Route::post('/electronicas/dismiss-alert', function () {
-        session()->forget('alertas_electronica');
-
-        return response()->noContent();
-    })->name('electronicas.dismiss-alert');
-
     // Dashboard: todos los autenticados (invitado ve resumen de solo lectura)
     Route::middleware('role:admin,tecnico,invitado')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -157,9 +150,9 @@ Route::middleware(['auth', 'prevent-back-history', 'password.cambio'])->group(fu
 
         // Repuestos de stock (anidados)
         Route::post('mantenimientos/{mantenimiento}/stocks', [MantenimientoStockController::class, 'store'])->name('mantenimientos.stocks.store');
-        Route::delete('mantenimientos/{mantenimiento}/stocks/{stock_id}', [MantenimientoStockController::class, 'destroy'])->name('mantenimientos.stocks.destroy');
+        Route::delete('mantenimientos/{mantenimiento}/stocks/{stock_id}', [MantenimientoStockController::class, 'destroy'])->whereNumber('stock_id')->name('mantenimientos.stocks.destroy');
         Route::post('electronicas/{electronica}/stocks', [ElectronicaStockController::class, 'store'])->name('electronicas.stocks.store');
-        Route::delete('electronicas/{electronica}/stocks/{stock_id}', [ElectronicaStockController::class, 'destroy'])->name('electronicas.stocks.destroy');
+        Route::delete('electronicas/{electronica}/stocks/{stock_id}', [ElectronicaStockController::class, 'destroy'])->whereNumber('stock_id')->name('electronicas.stocks.destroy');
 
         // Cierre de Caja
         Route::get('cierre', [CierreCajaController::class, 'index'])->name('cierre.index');

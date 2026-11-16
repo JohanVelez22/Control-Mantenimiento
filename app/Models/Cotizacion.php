@@ -48,16 +48,15 @@ class Cotizacion extends Model
         return $this->belongsTo(Factura::class, 'factura_id');
     }
 
+    /**
+     * B-08: la venta o compra generada se enlaza solo por `factura_id`. Antes se buscaba
+     * "Cotización #COT-1" en las observaciones, que también encontraba la factura de
+     * COT-10, y lo hacía con una consulta por fila del listado. Las cotizaciones
+     * antiguas sin `factura_id` las enlaza la migración 2026_11_16_100000.
+     */
     public function getFacturaCreadaAttribute()
     {
-        if ($this->factura_id && $this->relationLoaded('factura')) {
-            return $this->factura;
-        }
-        if ($this->factura_id) {
-            return $this->factura;
-        }
-
-        return Factura::where('observaciones', 'like', "%Cotización #{$this->codigo}%")->first();
+        return $this->factura_id ? $this->factura : null;
     }
 
     public function getDestinatarioAttribute()

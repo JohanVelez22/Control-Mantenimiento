@@ -30,6 +30,10 @@ class ConceptoCajaController extends Controller
 
     public function update(Request $request, ConceptoCaja $concepto)
     {
+        if ($concepto->es_del_sistema) {
+            return redirect()->route('conceptos.index')->with('error', 'El concepto "'.$concepto->nombre.'" lo usa el sistema para abonos, ventas o compras: no se puede renombrar.');
+        }
+
         $request->validate(['nombre' => 'required|string|max:80|unique:concepto_cajas,nombre,'.$concepto->id]);
         $concepto->update(['nombre' => trim($request->nombre)]);
 
@@ -40,6 +44,10 @@ class ConceptoCajaController extends Controller
     {
         if ($error = app(AnulacionService::class)->autorizarOperacionSensible($request)) {
             return redirect()->back()->with('error', $error)->withInput();
+        }
+
+        if ($concepto->es_del_sistema) {
+            return redirect()->route('conceptos.index')->with('error', 'El concepto "'.$concepto->nombre.'" lo usa el sistema: no se puede eliminar.');
         }
 
         if ($concepto->movimientos()->exists()) {

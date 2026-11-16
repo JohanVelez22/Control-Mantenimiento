@@ -15,6 +15,7 @@ use App\Services\OrdenEstadoService;
 use App\Services\OrdenService;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -120,11 +121,12 @@ class MantenimientoController extends Controller
             'fecha_hasta' => $fecha_hasta,
         ]);
 
-        $query = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user']);
+        $query = Mantenimiento::with(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'user']);
 
-        // Aplicación de filtros según los parámetros recibidos en el request
-        $query->whereDate('fecha_entrada', '>=', $fecha_desde);
-        $query->whereDate('fecha_entrada', '<=', $fecha_hasta);
+        // Aplicación de filtros según los parámetros recibidos en el request.
+        // D-04: rango sobre la columna (usa el índice) en lugar de DATE(columna).
+        $query->where('fecha_entrada', '>=', $fecha_desde)
+            ->where('fecha_entrada', '<', Carbon::parse($fecha_hasta)->addDay()->toDateString());
 
         // Filtro complejo: Buscar mantenimientos de equipos que pertenecen a un cliente específico
         if ($request->filled('cliente_id') && $request->cliente_id !== 'todos') {
@@ -188,8 +190,11 @@ class MantenimientoController extends Controller
                             ->orWhere('serie', 'like', "%{$search}%")
                             ->orWhereHas('cliente', function ($q3) use ($search) {
                                 $q3->where('nombres', 'like', "%{$search}%")
-                                    ->orWhere('apellidos', 'like', "%{$search}%");
-                            });
+                                    ->orWhere('apellidos', 'like', "%{$search}%")
+                                    ->orWhere('identificacion', 'like', "%{$search}%");
+                            })
+                            ->orWhereHas('proveedor', fn ($q3) => $q3->where('nombre_razon_social', 'like', "%{$search}%")
+                                ->orWhere('identificacion', 'like', "%{$search}%"));
                     });
             });
         }
@@ -217,7 +222,7 @@ class MantenimientoController extends Controller
                 ->download('Reporte_Mantenimientos_'.date('Y-m-d_His').'.pdf');
         }
 
-        $mantenimientos = $query->orderBy('id', 'desc')->paginate(10);
+        $mantenimientos = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
         $clientes = Cliente::orderBy('nombres')->orderBy('apellidos')->get(['id', 'nombres', 'apellidos', 'identificacion']);
         $equipos = Equipo::orderBy('nombre')->get(['id', 'nombre', 'modelo', 'serie']);
@@ -249,15 +254,12 @@ class MantenimientoController extends Controller
 
         $estados = app(OrdenEstadoService::class);
         $validated = $request->validate([
-            'fecha_entrada' => 'required|date',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
-            'descripcion' => 'required|string|max:500',
+            'descripcion' => 'required|string|max:1000',
             'costo' => 'required|numeric|min:0|decimal:0,2|max:99999999.99',
             'estado' => 'required|in:pendiente,terminado',
-            'equipo_id' => 'required|integer|exists:equipos,id',
-            'tecnico_id' => 'required|integer|exists:tecnicos,id',
-        ] + OrdenEstadoService::reglas(), OrdenEstadoService::mensajes());
+        ] + OrdenEstadoService::reglasComunes(null) + OrdenEstadoService::reglas(), OrdenEstadoService::mensajes());
 
         [$validated, $eventos] = $estados->preparar($validated, null);
 
@@ -313,18 +315,15 @@ class MantenimientoController extends Controller
 
         // El técnico puede editar, pero debe confirmar con la contraseña de un admin.
         $reglas = [
-            'fecha_entrada' => 'required|date',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
-            'descripcion' => 'required|string|max:500',
+            'descripcion' => 'required|string|max:1000',
             'costo' => ['required', 'numeric', 'decimal:0,2', 'max:99999999.99', 'min:'.$mantenimiento->costoMinimoPermitido()],
             'estado' => 'required|in:pendiente,terminado',
-            'equipo_id' => 'required|integer|exists:equipos,id',
-            'tecnico_id' => 'required|integer|exists:tecnicos,id',
-        ] + OrdenEstadoService::reglas();
+        ] + OrdenEstadoService::reglasComunes($mantenimiento) + OrdenEstadoService::reglas();
 
         if (Auth::user()->isTecnico()) {
-            $reglas['admin_password'] = 'required';
+            $reglas['admin_password'] = 'required|string';
         }
 
         $validated = $request->validate($reglas, [

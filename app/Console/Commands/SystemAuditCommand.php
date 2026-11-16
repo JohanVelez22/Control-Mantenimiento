@@ -237,7 +237,6 @@ class SystemAuditCommand extends Command
                 'producto' => 'Disco SSD 1TB Test',
                 'categoria_id' => $categoria->id,
                 'cantidad' => 10,
-                'stock_minimo' => 2,
                 'precio_compra' => 50000,
                 'precio_venta' => 80000,
                 'activo' => true,

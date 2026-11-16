@@ -15,6 +15,7 @@ use App\Services\OrdenEstadoService;
 use App\Services\OrdenService;
 use App\Services\PosTicketService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -84,15 +85,12 @@ class ElectronicaController extends Controller
     {
         $estados = app(OrdenEstadoService::class);
         $validated = $request->validate([
-            'equipo_id' => 'required|integer|exists:equipos,id',
             'descripcion_problema' => 'required|string|max:1000',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
             'costo' => 'required|numeric|min:0|decimal:0,2|max:99999999.99',
             'estado' => 'required|in:pendiente,terminado',
-            'fecha_entrada' => 'required|date',
-            'tecnico_id' => 'required|integer|exists:tecnicos,id',
-        ] + OrdenEstadoService::reglas(), OrdenEstadoService::mensajes());
+        ] + OrdenEstadoService::reglasComunes(null) + OrdenEstadoService::reglas(), OrdenEstadoService::mensajes());
 
         [$validated, $eventos] = $estados->preparar($validated, null);
 
@@ -162,18 +160,15 @@ class ElectronicaController extends Controller
         // El número de orden lo asigna el sistema y no se modifica (rompería las referencias
         // de caja y la consulta del cliente), igual que en Mantenimiento.
         $reglas = [
-            'equipo_id' => 'required|integer|exists:equipos,id',
             'descripcion_problema' => 'required|string|max:1000',
             'tipo' => 'required|in:preventivo,correctivo',
             'reparacion' => 'required|in:software,hardware',
             'costo' => ['required', 'numeric', 'decimal:0,2', 'max:99999999.99', 'min:'.$electronica->costoMinimoPermitido()],
             'estado' => 'required|in:pendiente,terminado',
-            'fecha_entrada' => 'required|date',
-            'tecnico_id' => 'required|integer|exists:tecnicos,id',
-        ] + OrdenEstadoService::reglas();
+        ] + OrdenEstadoService::reglasComunes($electronica) + OrdenEstadoService::reglas();
 
         if (auth()->user()->isTecnico()) {
-            $reglas['admin_password'] = 'required';
+            $reglas['admin_password'] = 'required|string';
         }
 
         $validated = $request->validate($reglas, [
@@ -298,17 +293,19 @@ class ElectronicaController extends Controller
 
     public function reportes(Request $request)
     {
-        $query = Electronica::query();
+        // B-10: las relaciones se cargan al construir la consulta, también para Excel y PDF
+        // (antes eran unas 4 consultas por fila al exportar).
+        $query = Electronica::with(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'user']);
 
-        $fechaDesde = $request->input('fecha_desde') ?? $request->input('fecha_inicio');
-        $fechaHasta = $request->input('fecha_hasta') ?? $request->input('fecha_fin');
+        // B-07: mismo rango por defecto que Mantenimiento (mes actual); sin él, exportar
+        // volcaba toda la tabla.
+        $fechaDesde = $request->input('fecha_desde') ?? $request->input('fecha_inicio') ?? date('Y-m-01');
+        $fechaHasta = $request->input('fecha_hasta') ?? $request->input('fecha_fin') ?? date('Y-m-d');
+        $request->merge(['fecha_desde' => $fechaDesde, 'fecha_hasta' => $fechaHasta]);
 
-        if ($fechaDesde) {
-            $query->whereDate('fecha_entrada', '>=', $fechaDesde);
-        }
-        if ($fechaHasta) {
-            $query->whereDate('fecha_entrada', '<=', $fechaHasta);
-        }
+        // D-04: rango sobre la columna (usa el índice) en lugar de DATE(columna).
+        $query->where('fecha_entrada', '>=', $fechaDesde)
+            ->where('fecha_entrada', '<', Carbon::parse($fechaHasta)->addDay()->toDateString());
         if ($request->filled('estado') && $request->estado !== 'todos') {
             $query->where('estado', $request->estado);
         }
@@ -370,7 +367,9 @@ class ElectronicaController extends Controller
                                 $q3->where('nombres', 'like', "%{$search}%")
                                     ->orWhere('apellidos', 'like', "%{$search}%")
                                     ->orWhere('identificacion', 'like', "%{$search}%");
-                            });
+                            })
+                            ->orWhereHas('proveedor', fn ($q3) => $q3->where('nombre_razon_social', 'like', "%{$search}%")
+                                ->orWhere('identificacion', 'like', "%{$search}%"));
                     });
             });
         }
@@ -398,7 +397,7 @@ class ElectronicaController extends Controller
                 ->download('Reporte_Electronica_'.date('Y-m-d_His').'.pdf');
         }
 
-        $registros = $query->with(['tecnico', 'user', 'equipo.cliente'])->orderBy('id', 'desc')->paginate(10);
+        $registros = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
         $tecnicos = Tecnico::orderBy('nombre')->get(['id', 'nombre']);
         $clientes = Cliente::orderBy('nombres')->orderBy('apellidos')->get(['id', 'nombres', 'apellidos', 'identificacion']);
         $equipos = Equipo::orderBy('nombre')->get(['id', 'nombre', 'modelo', 'serie']);

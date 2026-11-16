@@ -4,6 +4,7 @@ use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\IdempotenciaFormulario;
 use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\RequirePasswordChange;
+use App\Http\Middleware\SanearFiltros;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -32,7 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(SecurityHeaders::class);
 
         // Un mismo envío de formulario no se procesa dos veces (M-07)
-        $middleware->web(append: [IdempotenciaFormulario::class]);
+        $middleware->web(append: [SanearFiltros::class, IdempotenciaFormulario::class]);
 
         // Registramos aliases para middlewares personalizados
         $middleware->alias([

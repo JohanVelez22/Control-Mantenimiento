@@ -429,7 +429,7 @@ class MovimientoCajaController extends Controller
      */
     public function storeConcepto(Request $request)
     {
-        $request->validate(['nombre' => 'required|string|max:255|unique:concepto_cajas,nombre']);
+        $request->validate(['nombre' => 'required|string|max:80|unique:concepto_cajas,nombre']);
         $concepto = ConceptoCaja::create(['nombre' => trim($request->nombre)]);
 
         return response()->json(['id' => $concepto->id, 'nombre' => $concepto->nombre]);

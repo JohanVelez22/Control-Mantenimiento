@@ -12,6 +12,7 @@ use App\Models\FacturaItem;
 use App\Models\MovimientoCaja;
 use App\Models\Proveedor;
 use App\Models\Stock;
+use App\Rules\Facturable;
 use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
 use App\Services\OrdenService;
@@ -59,7 +60,7 @@ class CotizacionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'facturable_global' => 'nullable|string',
+            'facturable_global' => ['nullable', new Facturable],
             'cliente_id' => 'nullable|exists:clientes,id',
             'fecha' => 'required|date',
             'validez_dias' => 'required|integer|min:1',
@@ -69,7 +70,7 @@ class CotizacionController extends Controller
             'items.*.descripcion' => 'required|string',
             'items.*.cantidad' => 'required|integer|min:1',
             'items.*.precio_unitario' => 'required|numeric|min:0',
-            'items.*.item_id' => 'nullable|exists:stocks,id',
+            'items.*.item_id' => 'required_if:items.*.tipo,stock|nullable|exists:stocks,id',
         ]);
 
         $clienteId = null;
@@ -179,7 +180,7 @@ class CotizacionController extends Controller
         }
 
         $request->validate([
-            'facturable_global' => 'nullable|string',
+            'facturable_global' => ['nullable', new Facturable],
             'cliente_id' => 'nullable|exists:clientes,id',
             'fecha' => 'required|date',
             'validez_dias' => 'required|integer|min:1',
@@ -189,7 +190,7 @@ class CotizacionController extends Controller
             'items.*.descripcion' => 'required|string',
             'items.*.cantidad' => 'required|integer|min:1',
             'items.*.precio_unitario' => 'required|numeric|min:0',
-            'items.*.item_id' => 'nullable|exists:stocks,id',
+            'items.*.item_id' => 'required_if:items.*.tipo,stock|nullable|exists:stocks,id',
         ]);
 
         $clienteId = null;
@@ -322,8 +323,9 @@ class CotizacionController extends Controller
             return back()->with('success', $mensaje);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error anulando cotización: '.$e->getMessage());
 
-            return back()->with('error', 'Error al cambiar estado: '.$e->getMessage());
+            return back()->with('error', 'Error al cambiar el estado de la cotización. Intente nuevamente.');
         }
     }
 
@@ -412,6 +414,12 @@ class CotizacionController extends Controller
                         DB::rollBack();
 
                         return back()->with('error', "El artículo '{$item->descripcion}' ya no existe en el inventario.");
+                    }
+                    // B-07: un producto anulado no se vende ni se compra.
+                    if (! $stock->active) {
+                        DB::rollBack();
+
+                        return back()->with('error', "El artículo '{$stock->producto}' está anulado en el inventario. Reactívelo o edite la cotización.");
                     }
                     $lockedStocks[$item->item_id] = $stock;
                 }

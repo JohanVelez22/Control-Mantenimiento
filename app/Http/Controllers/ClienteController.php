@@ -137,6 +137,7 @@ class ClienteController extends Controller
     {
         $dep = $request->get('departamento', '');
 
-        return response()->json(ColombiaHelper::municipiosDe($dep));
+        // B-05: un arreglo (`departamento[]=x`) producía un TypeError.
+        return response()->json(is_string($dep) ? ColombiaHelper::municipiosDe($dep) : []);
     }
 }

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Electronica;
 use App\Models\Equipo;
+use App\Models\Evento;
+use App\Models\Mantenimiento;
 use App\Models\Proveedor;
 use App\Services\AnulacionService;
 use Illuminate\Http\Request;
@@ -176,7 +179,25 @@ class EquipoController extends Controller
         $validated['proveedor_id'] = $proveedorId;
         unset($validated['propietario_global']);
 
+        // B-06: las órdenes muestran al dueño actual del equipo. Si ya hay órdenes cobradas
+        // o entregadas, cambiar el dueño reescribiría sus facturas y la consulta del cliente.
+        $cambiaDueno = (int) $equipo->cliente_id !== (int) $clienteId || (int) $equipo->proveedor_id !== (int) $proveedorId;
+        if ($cambiaDueno) {
+            $conHistorial = collect([Mantenimiento::class, Electronica::class])->contains(
+                fn ($modelo) => $modelo::where('equipo_id', $equipo->id)->where('anulado', false)
+                    ->where(fn ($q) => $q->where('estado', 'terminado')->orWhereHas('abonos', fn ($a) => $a->where('anulado', false)))
+                    ->exists()
+            );
+            if ($conHistorial) {
+                return back()->withErrors(['propietario_global' => 'Este equipo tiene órdenes cobradas o entregadas a nombre del dueño actual: no se puede cambiar el propietario. Si cambió de dueño, registre el equipo de nuevo para el nuevo propietario.'])->withInput();
+            }
+        }
+
         $equipo->update($validated);
+        if ($cambiaDueno) {
+            Evento::registrar('propietario_cambiado', $equipo, null, ['cliente_id' => $clienteId, 'proveedor_id' => $proveedorId],
+                'Cambió el propietario del equipo '.$equipo->nombre.' (serie '.$equipo->serie.')');
+        }
 
         return redirect()->route('equipos.index')->with('success', 'Equipo actualizado correctamente.');
     }

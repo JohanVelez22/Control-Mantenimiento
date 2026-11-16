@@ -1490,9 +1490,17 @@
             if (e.target === this) closeNotifModal();
         });
 
-        // Abrir automáticamente al iniciar sesión si hay alertas de sesión pendientes
-        @if(session('alertas_pendientes') && count(session('alertas_pendientes')) > 0)
-        document.addEventListener('DOMContentLoaded', () => openNotifModal());
+        // F-06: al iniciar sesión, abrir solo si hay pendientes críticos (órdenes atrasadas o
+        // cotizaciones vencidas) y como máximo una vez al día por navegador.
+        @if(session('abrir_notificaciones') && ($atrasadas ?? 0) > 0)
+        document.addEventListener('DOMContentLoaded', () => {
+            const hoy = new Date().toISOString().slice(0, 10);
+            let visto = null;
+            try { visto = localStorage.getItem('ts-notif-abierto'); } catch (e) {}
+            if (visto === hoy) return;
+            try { localStorage.setItem('ts-notif-abierto', hoy); } catch (e) {}
+            openNotifModal();
+        });
         @endif
     </script>
     @endif

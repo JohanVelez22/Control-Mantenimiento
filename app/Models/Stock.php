@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\StockService;
+use App\Support\Esquema;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -109,5 +110,30 @@ class Stock extends Model
     public function scopeActivos($query)
     {
         return $query->where('active', true);
+    }
+
+    /** Umbral de "stock bajo" para productos sin mínimo propio (ARQ-12). */
+    public const STOCK_MINIMO_GLOBAL = 5;
+
+    /** Mínimo de existencias de este producto: el suyo o el global. */
+    public function getMinimoAttribute(): int
+    {
+        return (int) ($this->attributes['stock_minimo'] ?? self::STOCK_MINIMO_GLOBAL);
+    }
+
+    /** ¿Las existencias están en el mínimo o por debajo? */
+    public function getBajoMinimoAttribute(): bool
+    {
+        return (int) $this->cantidad <= $this->minimo;
+    }
+
+    /** Scope: productos en su mínimo de existencias o por debajo (ARQ-12). */
+    public function scopeBajoMinimo($query)
+    {
+        if (Esquema::tiene('stocks', 'stock_minimo')) {
+            return $query->whereRaw('cantidad <= COALESCE(stock_minimo, ?)', [self::STOCK_MINIMO_GLOBAL]);
+        }
+
+        return $query->where('cantidad', '<=', self::STOCK_MINIMO_GLOBAL);
     }
 }

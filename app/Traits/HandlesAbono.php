@@ -9,6 +9,7 @@ use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
 use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
+use App\Support\Monto;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,17 +22,30 @@ trait HandlesAbono
      * Registrar un abono en un modelo (Mantenimiento o Electronica)
      * y crear el MovimientoCaja correspondiente.
      */
-    protected function storeAbono($model, Request $request, string $conceptoNombre, string $successMsg): RedirectResponse
+    protected function storeAbono($model, Request $request, string $conceptoNombre): RedirectResponse
     {
+        // B-07 / M-16: el monto se normaliza en el servidor con la regla única ("1.000" = 1000),
+        // sin depender del JavaScript del formulario.
+        if ($request->has('monto') && ! is_array($request->input('monto'))) {
+            $request->merge(['monto' => Monto::parse($request->input('monto'))]);
+        }
+
+        $fechaEntrada = $model->fecha_entrada ? Carbon::parse($model->fecha_entrada)->toDateString() : null;
         $validated = $request->validate([
-            'monto' => 'required|numeric|min:0.01',
-            'fecha' => 'required|date',
+            'monto' => 'required|numeric|min:0.01|max:9999999999.99|decimal:0,2',
+            // B-07: el abono no puede ser anterior al ingreso de la orden ni futuro
+            // (caería en la caja de un día que aún no existe).
+            'fecha' => array_values(array_filter(['required', 'date', 'before_or_equal:today', $fechaEntrada ? 'after_or_equal:'.$fechaEntrada : null])),
             'tipo_pago' => 'required|in:efectivo,consignacion',
             'descripcion' => 'nullable|string|max:500',
+        ], [
+            'fecha.before_or_equal' => 'La fecha del abono no puede ser futura.',
+            'fecha.after_or_equal' => 'La fecha del abono no puede ser anterior al ingreso de la orden ('.($fechaEntrada ? Carbon::parse($fechaEntrada)->format('d/m/Y') : '').').',
+            'monto.decimal' => 'El monto admite como máximo 2 decimales.',
         ]);
 
         // No permitir abonar a registros anulados
-        if ($model->anulado || ($model->estado ?? null) === 'anulado') {
+        if ($model->anulado) {
             return back()->with('error', 'No se pueden registrar abonos a un registro anulado.')->withInput();
         }
 
@@ -63,7 +77,7 @@ trait HandlesAbono
             $lockedModel = get_class($model)::where('id', $model->id)->lockForUpdate()->first();
 
             // D-06: revalidar DESPUÉS del bloqueo; una anulación simultánea pudo ganar la carrera
-            if (! $lockedModel || $lockedModel->anulado || ($lockedModel->estado ?? null) === 'anulado') {
+            if (! $lockedModel || $lockedModel->anulado) {
                 DB::rollBack();
 
                 return back()->with('error', 'El registro fue anulado mientras se registraba el abono.')->withInput();
@@ -113,7 +127,7 @@ trait HandlesAbono
                 'fecha' => $validated['fecha'],
                 'monto' => $validated['monto'],
                 'concepto_id' => $concepto->id,
-                'persona' => $this->getPersona($model),
+                'persona' => $this->getPersona($lockedModel),
                 'descripcion' => $descripcionFinal,
                 'tipo_pago' => $validated['tipo_pago'],
                 'estado' => 'activo',
@@ -138,15 +152,19 @@ trait HandlesAbono
     /**
      * Eliminar un abono y su MovimientoCaja asociado
      */
-    protected function destroyAbono(Abono $abono, string $successMsg): RedirectResponse
+    protected function destroyAbono(Abono $abono, string $modulo): RedirectResponse
     {
+        // B-19: cada módulo anula solo sus propios abonos.
+        $fk = $modulo === 'electronica' ? 'electronica_id' : 'mantenimiento_id';
+        abort_unless($abono->{$fk}, 404);
+
         if ($error = app(AnulacionService::class)->autorizarOperacionSensible(request())) {
             return back()->with('error', $error);
         }
 
         $fechaAbono = $abono->fecha ? Carbon::parse($abono->fecha)->toDateString() : null;
         if (CierreCajaGuard::fechaEstaCerrada($fechaAbono)) {
-            return back()->with('error', 'No se puede eliminar este abono: la fecha '.$fechaAbono.' ya tiene un cierre de caja registrado. Para modificarlo, elimine primero el cierre de ese día.');
+            return back()->with('error', 'No se puede anular este abono: la fecha '.$fechaAbono.' ya tiene un cierre de caja registrado. Para modificarlo, elimine primero el cierre de ese día.');
         }
 
         if ($abono->anulado) {
@@ -164,11 +182,19 @@ trait HandlesAbono
             if (CierreCajaGuard::fechaEstaCerrada($fechaAbono)) {
                 DB::rollBack();
 
-                return back()->with('error', 'No se puede eliminar este abono: la fecha '.$fechaAbono.' ya tiene un cierre de caja registrado.');
+                return back()->with('error', 'No se puede anular este abono: la fecha '.$fechaAbono.' ya tiene un cierre de caja registrado.');
+            }
+
+            // Doble clic o dos usuarios a la vez: solo una anulación gana.
+            $abono = Abono::whereKey($abono->id)->lockForUpdate()->first();
+            if (! $abono || $abono->anulado) {
+                DB::rollBack();
+
+                return back()->with('error', 'Este abono ya se encuentra anulado.');
             }
 
             // Anular lógicamente el MovimientoCaja asociado vía modelo para preservar la trazabilidad contable y auditoría
-            $mov = MovimientoCaja::where('abono_id', $abono->id)->first();
+            $mov = MovimientoCaja::where('abono_id', $abono->id)->lockForUpdate()->first();
             if ($mov) {
                 $mov->update([
                     'anulado' => true,
@@ -184,12 +210,13 @@ trait HandlesAbono
 
             DB::commit();
 
-            return back()->with('success', $successMsg);
+            // F-07: el abono no se borra; queda anulado en el historial y en caja.
+            return back()->with('success', 'Abono anulado. Se conserva en el historial y su ingreso en caja quedó anulado.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error eliminando abono: '.$e->getMessage());
+            Log::error('Error anulando abono: '.$e->getMessage());
 
-            return back()->with('error', 'Error al eliminar el abono. Intenta de nuevo.');
+            return back()->with('error', 'Error al anular el abono. Intenta de nuevo.');
         }
     }
 
@@ -198,10 +225,12 @@ trait HandlesAbono
      */
     protected function getPersona($model): string
     {
-        if ($model instanceof Mantenimiento) {
-            return $model->equipo->cliente->nombre ?? 'Cliente Mantenimiento';
+        // B-18: el dueño del equipo puede ser un cliente o un proveedor.
+        $nombre = $model->equipo?->propietario_nombre;
+        if ($nombre && $nombre !== 'N/A') {
+            return $nombre;
         }
 
-        return $model->equipo->cliente->nombre ?? 'Cliente Electrónica';
+        return $model instanceof Mantenimiento ? 'Cliente Mantenimiento' : 'Cliente Electrónica';
     }
 }

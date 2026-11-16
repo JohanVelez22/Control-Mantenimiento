@@ -340,11 +340,24 @@ class StockController extends Controller
             return redirect()->back()->with('error', $error)->withInput();
         }
 
-        // Alterna el estado activo
-        $stock->active = ! $stock->active;
-        $stock->save();
+        // B-09: bloqueo de fila e intención explícita ("anular" / "reactivar"): un doble
+        // clic ya no revierte la primera acción.
+        $resultado = DB::transaction(function () use ($request, $stock) {
+            $stock = Stock::whereKey($stock->id)->lockForUpdate()->firstOrFail();
+            $esAnulacion = (bool) $stock->active;
+            if ($error = app(AnulacionService::class)->verificarIntencion($request, $esAnulacion)) {
+                return ['error' => $error];
+            }
+            $stock->active = ! $esAnulacion;
+            $stock->save();
 
-        $action = $stock->active ? 'reactivado' : 'desactivado (anulado)';
+            return ['activo' => $stock->active];
+        });
+        if (isset($resultado['error'])) {
+            return redirect()->back()->with('error', $resultado['error']);
+        }
+
+        $action = $resultado['activo'] ? 'reactivado' : 'desactivado (anulado)';
 
         return redirect()->back()->with('success', "El producto ha sido {$action} exitosamente.");
     }

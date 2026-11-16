@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cliente;
-use App\Models\Cotizacion;
 use App\Models\Electronica;
 use App\Models\Equipo;
 use App\Models\Factura;
 use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
 use App\Models\Stock;
-use App\Models\Tecnico;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
@@ -33,27 +31,29 @@ class DashboardController extends Controller
         $counts = (object) [
             'mant_pendientes' => Mantenimiento::where('anulado', 0)->where('estado', 'pendiente')->count(),
             'mant_terminados' => Mantenimiento::where('anulado', 0)->where('estado', 'terminado')->count(),
-            'stock_bajo' => Stock::where('cantidad', '<=', 5)->count(),
+            // B-13 / ARQ-12: solo productos activos, con su propio mínimo (o el global).
+            'stock_bajo' => Stock::activos()->bajoMinimo()->count(),
             'elec_pendientes' => Electronica::where('anulado', 0)->where('estado', 'pendiente')->count(),
         ];
 
         $today = Carbon::today()->toDateString();
 
-        $baseCaja = MovimientoCaja::where('estado', 'activo')->where('anulado', 0);
-        $cajaIngresos = (clone $baseCaja)->where('tipo_movimiento', 'ingreso')->sum('monto');
-        $cajaEgresos = (clone $baseCaja)->where('tipo_movimiento', 'egreso')->sum('monto');
-        $cajaIngresosHoy = (clone $baseCaja)->where('tipo_movimiento', 'ingreso')->whereDate('fecha', $today)->sum('monto');
-        $cajaEgresosHoy = (clone $baseCaja)->where('tipo_movimiento', 'egreso')->whereDate('fecha', $today)->sum('monto');
+        // D-22: el saldo histórico recorre toda la caja; se calcula en una sola consulta
+        // agrupada y se guarda 60 s (se refresca solo al cambiar algún movimiento).
+        $saldos = Cache::remember('dashboard_saldos_caja_'.$today, 60, function () use ($today) {
+            $fila = MovimientoCaja::where('estado', 'activo')->where('anulado', false)
+                ->selectRaw("COALESCE(SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END), 0) as saldo")
+                ->selectRaw("COALESCE(SUM(CASE WHEN fecha >= ? AND fecha < ? THEN (CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) ELSE 0 END), 0) as saldo_dia",
+                    [$today, Carbon::parse($today)->addDay()->toDateString()])
+                ->first();
 
-        $cajaSaldoActual = $cajaIngresos - $cajaEgresos;
-        $cajaSaldoDia = $cajaIngresosHoy - $cajaEgresosHoy;
-
-        // Formateo para la vista
-        $totalCostoFormateado = number_format($cajaSaldoActual, 0, ',', '.');
-        $totalCostoDiaFormateado = number_format($cajaSaldoDia, 0, ',', '.');
+            return ['actual' => (float) $fila->saldo, 'dia' => (float) $fila->saldo_dia];
+        });
+        $cajaSaldoActual = $saldos['actual'];
+        $cajaSaldoDia = $saldos['dia'];
 
         // Mantenimientos recientes (usando withSum para evitar N+1 en abonos)
-        $recentMant = Mantenimiento::with(['equipo.cliente', 'tecnico', 'user'])
+        $recentMant = Mantenimiento::with(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'user'])
             ->withSum(['abonos as total_abonado' => fn ($q) => $q->where('anulado', false)], 'monto')
             ->orderBy('id', 'desc')
             ->take(5)
@@ -154,19 +154,7 @@ class DashboardController extends Controller
         $electronicaCorrectivos = (int) $elecStats->correctivos;
         $electronicaPreventivos = (int) $elecStats->preventivos;
         // 5 más recientes (cualquier estado) para la tabla del dashboard
-        $recentElec = Electronica::with(['tecnico', 'equipo.cliente'])
-            ->orderBy('id', 'desc')
-            ->take(5)
-            ->get();
-        // Pendientes más antiguos para el slide del carrusel
-        $electronicaRecientes = Electronica::with(['tecnico', 'equipo.cliente'])
-            ->where('estado', 'pendiente')
-            ->orderBy('fecha_entrada', 'asc')
-            ->take(5)
-            ->get();
-
-        // 5 cotizaciones más recientes para el dashboard
-        $recentCot = Cotizacion::with(['cliente', 'items'])
+        $recentElec = Electronica::with(['tecnico', 'equipo.cliente', 'equipo.proveedor'])
             ->orderBy('id', 'desc')
             ->take(5)
             ->get();
@@ -186,28 +174,15 @@ class DashboardController extends Controller
             'electronicaPreventivos' => $electronicaPreventivos,
         ];
 
-        // Pasar los recientes por separado para el blade
-        $electronicaRecientes = $electronicaRecientes;
-
-        // Listas para selects (solo columnas necesarias)
-        $clientes = Cliente::orderBy('nombres')->orderBy('apellidos')->get(['id', 'nombres', 'apellidos']);
-        $tecnicos = Tecnico::orderBy('nombre')->get(['id', 'nombre']);
-
         return view('dashboard', compact(
             'totalEquipos',
             'totalMantenimientos',
             'recentMant',
             'recentElec',
-            'recentCot',
             'stats',
             'chartData',
-            'clientes',
-            'tecnicos',
             'cajaSaldoActual',
-            'cajaSaldoDia',
-            'totalCostoFormateado',
-            'totalCostoDiaFormateado',
-            'electronicaRecientes'
+            'cajaSaldoDia'
         ));
     }
 }

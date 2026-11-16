@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Evento;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -36,9 +37,43 @@ class OrdenEstadoService
         ];
     }
 
+    /**
+     * B-07: reglas comunes de Mantenimiento y Electrónica. El equipo y el técnico deben
+     * estar activos (al editar se conserva el que ya tenía la orden) y la fecha de entrada
+     * no puede ser futura.
+     */
+    public static function reglasComunes(?Model $orden): array
+    {
+        $equipoActual = $orden?->equipo_id;
+        $tecnicoActual = $orden?->tecnico_id;
+
+        return [
+            'fecha_entrada' => ['required', 'date', 'before_or_equal:today'],
+            'equipo_id' => ['required', 'integer', Rule::exists('equipos', 'id')->where(function ($q) use ($equipoActual) {
+                $q->where(function ($w) use ($equipoActual) {
+                    $w->where(fn ($a) => $a->where('active', true)->where('estado', '!=', 'dado_de_baja'));
+                    if ($equipoActual) {
+                        $w->orWhere('id', $equipoActual);
+                    }
+                });
+            })],
+            'tecnico_id' => ['required', 'integer', Rule::exists('tecnicos', 'id')->where(function ($q) use ($tecnicoActual) {
+                $q->where(function ($w) use ($tecnicoActual) {
+                    $w->where('active', true);
+                    if ($tecnicoActual) {
+                        $w->orWhere('id', $tecnicoActual);
+                    }
+                });
+            })],
+        ];
+    }
+
     public static function mensajes(): array
     {
         return [
+            'fecha_entrada.before_or_equal' => 'La fecha de entrada no puede ser futura.',
+            'equipo_id.exists' => 'El equipo seleccionado no existe, está anulado o fue dado de baja.',
+            'tecnico_id.exists' => 'El técnico seleccionado no existe o está inactivo.',
             'fecha_salida.required_if' => 'Para marcar la orden como terminada, indique la fecha de salida (entrega).',
             'fecha_salida.before_or_equal' => 'La fecha de salida no puede ser futura.',
             'fecha_salida.after_or_equal' => 'La fecha de salida no puede ser anterior a la de entrada.',
@@ -68,6 +103,27 @@ class OrdenEstadoService
         if ($estadoNuevo === 'pendiente') {
             // Una orden pendiente no se ha entregado.
             $datos['fecha_salida'] = null;
+        }
+
+        if ($orden) {
+            // B-21: el costo mínimo se valida de nuevo sobre la fila bloqueada; un abono
+            // simultáneo pudo subir lo abonado después de la validación del formulario.
+            $minimo = (float) $orden->costoMinimoPermitido();
+            if (isset($datos['costo']) && (int) round($minimo * 100) > (int) round((float) $datos['costo'] * 100)) {
+                throw ValidationException::withMessages([
+                    'costo' => 'El costo no puede ser menor que lo ya abonado o que el valor de los repuestos asignados ($ '
+                        .number_format($minimo, 0, ',', '.').').',
+                ]);
+            }
+
+            // B-06: con abonos registrados, la orden pertenece a ese equipo y a su dueño
+            // (la caja ya tiene su nombre); cambiar el equipo reescribiría el historial.
+            if (isset($datos['equipo_id']) && (int) $datos['equipo_id'] !== (int) $orden->equipo_id
+                && $orden->abonos()->where('anulado', false)->exists()) {
+                throw ValidationException::withMessages([
+                    'equipo_id' => 'La orden ya tiene abonos: no se puede cambiar el equipo. Anule los abonos o cree una orden nueva.',
+                ]);
+            }
         }
 
         if ($estadoAnterior === 'terminado' && $estadoNuevo === 'terminado') {

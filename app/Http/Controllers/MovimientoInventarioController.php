@@ -10,6 +10,7 @@ use App\Models\FacturaItem;
 use App\Models\MovimientoCaja;
 use App\Models\Proveedor;
 use App\Models\Stock;
+use App\Rules\Facturable;
 use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
 use App\Services\OrdenService;
@@ -57,13 +58,13 @@ class MovimientoInventarioController extends Controller
         }
 
         $request->validate([
-            'facturable_global' => ['required', 'string'],
+            'facturable_global' => ['required', new Facturable],
             'fecha' => ['required', 'date'],
             'total_pagado' => ['required', 'numeric', 'min:0'],
             'tipo_pago' => ['nullable', 'in:efectivo,consignacion'],
             'observaciones' => ['nullable', 'string'],
             'items' => ['required', 'array', 'min:1'],
-            'items.*.stock_id' => ['required', 'exists:stocks,id'],
+            'items.*.stock_id' => ['required', Rule::exists('stocks', 'id')->where('active', true)],
             'items.*.cantidad' => ['required', 'integer', 'min:1'],
             'items.*.precio_unitario' => ['required', 'numeric', 'min:0'],
         ]);
@@ -224,13 +225,13 @@ class MovimientoInventarioController extends Controller
         }
 
         $request->validate([
-            'facturable_global' => ['required', 'string'],
+            'facturable_global' => ['required', new Facturable],
             'fecha' => ['required', 'date'],
             'total_pagado' => ['required', 'numeric', 'min:0'],
             'tipo_pago' => ['nullable', 'in:efectivo,consignacion'],
             'observaciones' => ['nullable', 'string'],
             'items' => ['required', 'array', 'min:1'],
-            'items.*.stock_id' => ['required', 'exists:stocks,id'],
+            'items.*.stock_id' => ['required', Rule::exists('stocks', 'id')->where('active', true)],
             'items.*.cantidad' => ['required', 'integer', 'min:1'],
             'items.*.precio_unitario' => ['required', 'numeric', 'min:0'],
         ]);
@@ -450,7 +451,7 @@ class MovimientoInventarioController extends Controller
         $formato = request('formato', $empresa->formato_factura ?? 'estandar');
 
         if ($formato === 'pos') {
-            $itemsCount = $factura->items ? $factura->items->count() : ($factura->detalles ? $factura->detalles->count() : 0);
+            $itemsCount = $factura->items->count();
             $abonosCount = $abonos ? $abonos->count() : 0;
             $obsLength = strlen($factura->observaciones ?? '');
             $obsExtra = ceil($obsLength / 35) * 14;
@@ -676,7 +677,7 @@ class MovimientoInventarioController extends Controller
             'fecha' => 'required|date',
             'total_pagado' => 'required|numeric|min:0',
             'observaciones' => 'nullable|string',
-            'facturable_global' => 'required|string',
+            'facturable_global' => ['required', new Facturable(class_basename((string) $factura->facturable_type).':'.$factura->facturable_id)],
             'existing_items' => 'nullable|array',
             'existing_items.*.id' => [
                 'required',
@@ -688,7 +689,7 @@ class MovimientoInventarioController extends Controller
             'existing_items.*.cantidad' => 'required|integer|min:1',
             'existing_items.*.precio_unitario' => 'required|numeric|min:0',
             'new_items' => 'nullable|array',
-            'new_items.*.stock_id' => 'required|exists:stocks,id',
+            'new_items.*.stock_id' => ['required', Rule::exists('stocks', 'id')->where('active', true)],
             'new_items.*.cantidad' => 'required|integer|min:1',
             'new_items.*.precio_unitario' => 'required|numeric|min:0',
         ]);
@@ -712,9 +713,6 @@ class MovimientoInventarioController extends Controller
             $entity = Cliente::findOrFail($id);
             $facturableType = Cliente::class;
         }
-
-        $wasAnulada = $factura->estado === 'anulada';
-        $shouldBeAnulada = $wasAnulada;
 
         try {
             DB::beginTransaction();
@@ -744,26 +742,24 @@ class MovimientoInventarioController extends Controller
             }
 
             // 1.5. Eliminar ítems removidos de la factura y ajustar su inventario
-            if (! $shouldBeAnulada) {
-                $submittedIds = collect($request->existing_items ?? [])->pluck('id')->filter()->all();
-                $deletedItems = $factura->items()->whereNotIn('id', $submittedIds)->get();
-                foreach ($deletedItems as $delItem) {
-                    if ($delItem->stock_id) {
-                        $stockItem = Stock::where('id', $delItem->stock_id)->lockForUpdate()->first();
-                        if ($stockItem) {
-                            if ($factura->tipo_movimiento === 'compra') {
-                                $stockItem->decrementarStock((int) $delItem->cantidad);
-                            } else {
-                                $stockItem->incrementarStock((int) $delItem->cantidad);
-                            }
+            $submittedIds = collect($request->existing_items ?? [])->pluck('id')->filter()->all();
+            $deletedItems = $factura->items()->whereNotIn('id', $submittedIds)->get();
+            foreach ($deletedItems as $delItem) {
+                if ($delItem->stock_id) {
+                    $stockItem = Stock::where('id', $delItem->stock_id)->lockForUpdate()->first();
+                    if ($stockItem) {
+                        if ($factura->tipo_movimiento === 'compra') {
+                            $stockItem->decrementarStock((int) $delItem->cantidad);
+                        } else {
+                            $stockItem->incrementarStock((int) $delItem->cantidad);
                         }
                     }
-                    $delItem->delete();
                 }
+                $delItem->delete();
             }
 
             // 2. Ajustar stock por modificación de cantidad o artículo de los ítems existentes
-            if (isset($request->existing_items) && is_array($request->existing_items) && ! $shouldBeAnulada) {
+            if (isset($request->existing_items) && is_array($request->existing_items)) {
                 foreach ($request->existing_items as $itemData) {
                     $item = $factura->items()->findOrFail($itemData['id']);
                     $oldStock = $item->stock;
@@ -840,7 +836,7 @@ class MovimientoInventarioController extends Controller
             }
 
             // 2.5. Añadir nuevos ítems a la factura
-            if (isset($request->new_items) && is_array($request->new_items) && ! $shouldBeAnulada) {
+            if (isset($request->new_items) && is_array($request->new_items)) {
                 foreach ($request->new_items as $itemData) {
                     $stock = Stock::where('id', $itemData['stock_id'])->lockForUpdate()->firstOrFail();
                     $newPrice = $this->cleanAmount($itemData['precio_unitario']);
@@ -873,14 +869,14 @@ class MovimientoInventarioController extends Controller
             }
 
             // No permitir que el pagado supere el nuevo total del documento
-            if (! $shouldBeAnulada && Factura::superaMonto($totalPagado, $totalDocumento)) {
+            if (Factura::superaMonto($totalPagado, $totalDocumento)) {
                 DB::rollBack();
 
                 return back()->with('error', 'El valor pagado no puede superar el total del documento.')->withInput();
             }
 
             $saldo = $totalDocumento - $totalPagado;
-            $estado = $shouldBeAnulada ? 'anulada' : ($saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida');
+            $estado = $saldo > Factura::EPSILON ? 'pendiente_pago' : 'emitida';
 
             // Extraer historial de anulaciones/reactivaciones de la observación actual
             $historial = collect(explode("\n", $factura->observaciones ?? ''))
@@ -914,21 +910,7 @@ class MovimientoInventarioController extends Controller
                     'monto_total' => $totalDocumento > $totalPagado ? $totalDocumento : null,
                     'persona' => $entityName,
                 ]);
-
-                if ($shouldBeAnulada) {
-                    $childMovs = $baseCaja->childPayments()->get();
-                    foreach ($childMovs as $child) {
-                        $fechaHijo = $child->fecha ? $child->fecha->toDateString() : null;
-                        if ($fechaHijo && CierreCajaGuard::fechaEstaCerrada($fechaHijo)) {
-                            continue;
-                        }
-                        $child->update([
-                            'estado' => 'anulado',
-                            'anulado' => true,
-                        ]);
-                    }
-                }
-            } elseif (! $shouldBeAnulada && $totalPagado > Factura::EPSILON && ! MovimientoCaja::where('factura_id', $factura->id)->exists()) {
+            } elseif ($totalPagado > Factura::EPSILON && ! MovimientoCaja::where('factura_id', $factura->id)->exists()) {
                 // Factura antigua sin movimiento vinculado: se registra su pago una sola vez
                 $this->registrarMovimientoCaja(
                     tipo: $factura->tipo_movimiento === 'venta' ? 'ingreso' : 'egreso',

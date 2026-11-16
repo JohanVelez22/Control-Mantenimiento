@@ -105,12 +105,20 @@
                 <ul class="space-y-3.5">
                     @forelse($conceptos as $c)
                     <li class="flex items-center justify-between gap-2">
+                        @if($c->es_del_sistema)
+                            <div class="flex-1 flex items-center gap-2">
+                                <span class="glass-input flex-1 py-2 px-3 text-sm opacity-80">{{ $c->nombre }}</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400" title="Lo usa el sistema para abonos, ventas y compras: no se puede renombrar ni eliminar">Del sistema</span>
+                            </div>
+                        @else
                         <form action="{{ route('conceptos.update', $c->id) }}" method="POST" class="flex-1 flex items-center gap-2">
                             @csrf @method('PUT')
-                            <input type="text" name="nombre" value="{{ $c->nombre }}" required class="glass-input flex-1 py-2 px-3 text-sm">
-                            <button type="submit" class="btn-ghost btn-action-square text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Guardar concepto">💾</button>
+                            <label for="concepto-{{ $c->id }}" class="sr-only">Nombre del concepto</label>
+                            <input type="text" id="concepto-{{ $c->id }}" name="nombre" value="{{ $c->nombre }}" required maxlength="80" class="glass-input flex-1 py-2 px-3 text-sm">
+                            <button type="submit" class="btn-ghost btn-action-square text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Guardar concepto" aria-label="Guardar concepto {{ $c->nombre }}"><span aria-hidden="true">💾</span></button>
                         </form>
-                        <button type="button" onclick="openDeletePwd('{{ route('conceptos.destroy', $c->id) }}')" class="btn-danger btn-action-square" title="Eliminar concepto">🗑️</button>
+                        <button type="button" onclick="openDeletePwd('{{ route('conceptos.destroy', $c->id) }}')" class="btn-danger btn-action-square" title="Eliminar concepto" aria-label="Eliminar concepto {{ $c->nombre }}"><span aria-hidden="true">🗑️</span></button>
+                        @endif
                     </li>
                     @empty
                     <li class="py-6 text-center text-gray-500 font-medium text-sm">No hay conceptos registrados.</li>

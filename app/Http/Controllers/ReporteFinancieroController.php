@@ -24,6 +24,8 @@ class ReporteFinancieroController extends Controller
 
     public function reporteDiario(Request $request)
     {
+        $request->validate(['fecha' => 'nullable|date']);
+
         $fecha = $request->filled('fecha')
             ? Carbon::parse($request->fecha)->toDateString()
             : now()->toDateString();
@@ -295,6 +297,12 @@ class ReporteFinancieroController extends Controller
 
     public function reporteAcumulado(Request $request)
     {
+        $request->validate([
+            'desde' => 'nullable|date',
+            'hasta' => 'nullable|date',
+            'export' => 'nullable|in:excel,pdf',
+        ]);
+
         $desde = $request->filled('desde')
             ? Carbon::parse($request->desde)->startOfDay()
             : now()->startOfMonth();
@@ -561,6 +569,13 @@ class ReporteFinancieroController extends Controller
 
     public function reporteOperaciones(Request $request)
     {
+        $request->validate([
+            'tipo' => 'nullable|in:solo_mantenimientos,solo_electronica,solo_ingresos,solo_egresos,solo_compras,solo_ventas',
+            'desde' => 'nullable|date',
+            'hasta' => 'nullable|date',
+            'export' => 'nullable|in:excel,pdf',
+        ]);
+
         $tipo = $request->get('tipo', 'solo_mantenimientos');
         $desde = $request->filled('desde') ? Carbon::parse($request->desde) : now()->startOfMonth();
         $hasta = $request->filled('hasta') ? Carbon::parse($request->hasta)->endOfDay() : now()->endOfDay();

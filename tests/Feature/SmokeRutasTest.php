@@ -128,7 +128,7 @@ class SmokeRutasTest extends TestCase
     public function test_invitado_no_puede_ejecutar_ninguna_accion_de_escritura(): void
     {
         $invitado = User::where('role', 'invitado')->first();
-        $permitidas = ['logout', 'login', 'electronicas.dismiss-alert'];
+        $permitidas = ['logout', 'login'];
         $tablas = ['clientes', 'equipos', 'tecnicos', 'stocks', 'mantenimientos', 'electronicas', 'abonos',
             'movimiento_cajas', 'facturas', 'factura_items', 'cotizaciones', 'cierre_cajas', 'users',
             'proveedores', 'concepto_cajas', 'categoria_stocks', 'configuraciones', 'bajas_stock'];

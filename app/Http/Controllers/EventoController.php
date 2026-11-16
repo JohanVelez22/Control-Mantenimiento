@@ -11,6 +11,7 @@ use App\Models\Proveedor;
 use App\Models\Stock;
 use App\Models\Tecnico;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,12 @@ class EventoController extends Controller
             return redirect()->route('dashboard')->with('error', 'Acceso denegado. Solo administradores pueden ver la auditoría de eventos.');
         }
 
-        $query = Evento::with(['user'])->latest();
+        $query = Evento::with(['user'])->orderByDesc('id');
+
+        // B-04: historial de un registro concreto (por ejemplo, desde la ficha de una orden).
+        if ($request->filled('modelo_tipo') && $request->filled('modelo_id') && ctype_digit((string) $request->modelo_id)) {
+            $query->where('modelo_tipo', (string) $request->modelo_tipo)->where('modelo_id', (int) $request->modelo_id);
+        }
 
         // Filtros
         if ($request->filled('accion') && $request->accion !== 'todas') {
@@ -42,8 +48,12 @@ class EventoController extends Controller
         $fechaDesde = $request->input('fecha_desde', now()->format('Y-m-d'));
         $fechaHasta = $request->input('fecha_hasta', now()->format('Y-m-d'));
 
-        $query->whereDate('created_at', '>=', $fechaDesde);
-        $query->whereDate('created_at', '<=', $fechaHasta);
+        // D-04: rango sobre la columna (usa el índice). Con un registro concreto no se
+        // limita por fecha: se quiere su historial completo.
+        if (! $request->filled('modelo_id')) {
+            $query->where('created_at', '>=', $fechaDesde.' 00:00:00')
+                ->where('created_at', '<', Carbon::parse($fechaHasta)->addDay()->toDateString().' 00:00:00');
+        }
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -53,8 +63,8 @@ class EventoController extends Controller
         }
 
         $eventos = $query->paginate(30)->withQueryString();
-        $users = User::orderBy('name')->get();
-        $lookups = $this->getEntityLookups();
+        $users = User::orderBy('name')->get(['id', 'name']);
+        $lookups = $this->getEntityLookups($eventos->items());
 
         return view('eventos.index', compact('eventos', 'users', 'lookups', 'fechaDesde', 'fechaHasta'));
     }
@@ -69,29 +79,69 @@ class EventoController extends Controller
         // Forzar parseo como array si fuera necesario
         $viejos = is_string($evento->valores_antiguos) ? json_decode($evento->valores_antiguos, true) : $evento->valores_antiguos;
         $nuevos = is_string($evento->valores_nuevos) ? json_decode($evento->valores_nuevos, true) : $evento->valores_nuevos;
-        $lookups = $this->getEntityLookups();
+        $lookups = $this->getEntityLookups([$evento]);
 
         return view('eventos.show', compact('evento', 'viejos', 'nuevos', 'lookups'));
     }
 
+    /** Llaves foráneas que se muestran con su nombre, por diccionario. */
+    private const LLAVES = [
+        'users' => ['user_id', 'usuario_id', 'baja_user_id', 'created_by', 'updated_by'],
+        'clientes' => ['cliente_id'],
+        'proveedores' => ['proveedor_id'],
+        'tecnicos' => ['tecnico_id'],
+        'categorias' => ['categoria_id', 'categoria_stock_id'],
+        'conceptos' => ['concepto_id', 'concepto_caja_id'],
+        'stocks' => ['stock_id', 'producto_id', 'repuesto_id'],
+        'equipos' => ['equipo_id'],
+    ];
+
     /**
-     * Diccionario de resolución de llaves foráneas a nombres descriptivos
+     * Diccionario de resolución de llaves foráneas a nombres descriptivos.
+     *
+     * B-14: solo se consultan los ids que aparecen en los eventos mostrados (antes se
+     * cargaban 8 tablas completas en cada página).
+     *
+     * @param  iterable<Evento>  $eventos
      */
-    protected function getEntityLookups(): array
+    protected function getEntityLookups(iterable $eventos): array
     {
+        $ids = array_fill_keys(array_keys(self::LLAVES), []);
+        foreach ($eventos as $evento) {
+            foreach ([$evento->valores_antiguos, $evento->valores_nuevos] as $valores) {
+                $valores = is_string($valores) ? json_decode($valores, true) : $valores;
+                if (! is_array($valores)) {
+                    continue;
+                }
+                foreach ($valores as $clave => $valor) {
+                    if (! is_scalar($valor) || ! ctype_digit((string) $valor)) {
+                        continue;
+                    }
+                    foreach (self::LLAVES as $diccionario => $claves) {
+                        if (in_array(strtolower((string) $clave), $claves, true)) {
+                            $ids[$diccionario][] = (int) $valor;
+                        }
+                    }
+                }
+            }
+        }
+        $ids = array_map(fn ($lista) => array_values(array_unique($lista)), $ids);
+
+        $buscar = fn (array $lista, \Closure $consulta) => $lista ? $consulta($lista) : [];
+
         return [
-            'users' => User::pluck('name', 'id')->toArray(),
-            'clientes' => Cliente::get(['id', 'nombres', 'apellidos'])->mapWithKeys(function ($c) {
-                return [$c->id => trim(($c->nombres ?? '').' '.($c->apellidos ?? ''))];
-            })->filter(fn ($v) => ! empty($v))->toArray(),
-            'proveedores' => Proveedor::pluck('nombre_razon_social', 'id')->toArray(),
-            'tecnicos' => Tecnico::pluck('nombre', 'id')->toArray(),
-            'categorias' => CategoriaStock::pluck('nombre', 'id')->toArray(),
-            'conceptos' => ConceptoCaja::pluck('nombre', 'id')->toArray(),
-            'stocks' => Stock::pluck('producto', 'id')->toArray(),
-            'equipos' => Equipo::get(['id', 'nombre', 'marca', 'modelo'])->mapWithKeys(function ($e) {
-                return [$e->id => trim(($e->nombre ?? '').' '.($e->marca ?? '').' '.($e->modelo ?? ''))];
-            })->filter(fn ($v) => ! empty($v))->toArray(),
+            'users' => $buscar($ids['users'], fn ($l) => User::whereIn('id', $l)->pluck('name', 'id')->toArray()),
+            'clientes' => $buscar($ids['clientes'], fn ($l) => Cliente::whereIn('id', $l)->get(['id', 'nombres', 'apellidos'])
+                ->mapWithKeys(fn ($c) => [$c->id => trim(($c->nombres ?? '').' '.($c->apellidos ?? ''))])
+                ->filter(fn ($v) => $v !== '')->toArray()),
+            'proveedores' => $buscar($ids['proveedores'], fn ($l) => Proveedor::whereIn('id', $l)->pluck('nombre_razon_social', 'id')->toArray()),
+            'tecnicos' => $buscar($ids['tecnicos'], fn ($l) => Tecnico::whereIn('id', $l)->pluck('nombre', 'id')->toArray()),
+            'categorias' => $buscar($ids['categorias'], fn ($l) => CategoriaStock::whereIn('id', $l)->pluck('nombre', 'id')->toArray()),
+            'conceptos' => $buscar($ids['conceptos'], fn ($l) => ConceptoCaja::whereIn('id', $l)->pluck('nombre', 'id')->toArray()),
+            'stocks' => $buscar($ids['stocks'], fn ($l) => Stock::whereIn('id', $l)->pluck('producto', 'id')->toArray()),
+            'equipos' => $buscar($ids['equipos'], fn ($l) => Equipo::whereIn('id', $l)->get(['id', 'nombre', 'marca', 'modelo'])
+                ->mapWithKeys(fn ($e) => [$e->id => trim(($e->nombre ?? '').' '.($e->marca ?? '').' '.($e->modelo ?? ''))])
+                ->filter(fn ($v) => $v !== '')->toArray()),
         ];
     }
 

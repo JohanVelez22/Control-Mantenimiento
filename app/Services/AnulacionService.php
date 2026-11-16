@@ -62,8 +62,13 @@ class AnulacionService
      * Se usa para acciones sensibles de técnico (editar/anular).
      * Verifica contra administradores activos con salida temprana.
      */
-    public function adminPasswordValida(string $password): bool
+    public function adminPasswordValida(mixed $password): bool
     {
+        // B-05: un arreglo (`admin_password[]=x`) producía un TypeError.
+        if (! is_string($password) || $password === '') {
+            return false;
+        }
+
         // Límite de intentos por usuario: sin él, cualquier formulario que pide la clave de
         // administrador servía para adivinarla por fuerza bruta.
         $clave = 'admin-password:'.(Auth::id() ?? request()->ip());

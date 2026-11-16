@@ -16,13 +16,12 @@ class ElectronicaAbonoController extends Controller
         return $this->storeAbono(
             $electronica,
             $request,
-            'Abono Electrónica',
-            'Abono de $'.number_format($request->monto, 0, ',', '.').' registrado y añadido a caja correctamente.'
+            'Abono Electrónica'
         );
     }
 
     public function destroy(Abono $abono)
     {
-        return $this->destroyAbono($abono, 'Abono eliminado correctamente y su ingreso removido de la caja.');
+        return $this->destroyAbono($abono, 'electronica');
     }
 }

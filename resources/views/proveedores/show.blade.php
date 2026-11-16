@@ -130,7 +130,7 @@
                         <td class="font-bold text-slate-800 dark:text-white">{{ $s->producto }}</td>
                         <td class="text-center text-xs font-medium text-gray-500 dark:text-gray-400">{{ $s->created_at ? $s->created_at->format('d/m/Y') : '—' }}</td>
                         <td class="text-center">
-                            <span class="pill {{ $s->cantidad <= 0 ? 'pill-anulado' : ($s->cantidad < 5 ? 'pill-pending' : 'pill-done') }} py-0.5 px-2 text-[10px]">
+                            <span class="pill {{ $s->cantidad <= 0 ? 'pill-anulado' : ($s->bajo_minimo ? 'pill-pending' : 'pill-done') }} py-0.5 px-2 text-[10px]">
                                 {{ $s->cantidad }}
                             </span>
                         </td>

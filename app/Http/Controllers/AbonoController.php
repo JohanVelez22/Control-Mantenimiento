@@ -16,13 +16,12 @@ class AbonoController extends Controller
         return $this->storeAbono(
             $mantenimiento,
             $request,
-            'Abono Mantenimiento',
-            'Abono de $'.number_format($request->monto, 0, ',', '.').' registrado y añadido a caja correctamente.'
+            'Abono Mantenimiento'
         );
     }
 
     public function destroy(Abono $abono)
     {
-        return $this->destroyAbono($abono, 'Abono eliminado correctamente y su ingreso removido de la caja.');
+        return $this->destroyAbono($abono, 'mantenimiento');
     }
 }
