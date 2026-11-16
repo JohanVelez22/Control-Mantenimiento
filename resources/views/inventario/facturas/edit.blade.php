@@ -4,7 +4,7 @@
 <div class="max-w-7xl mx-auto">
     <div class="glass-card p-6 md:p-6">
         <div class="flex items-center gap-3 mb-6">
-            <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
+            <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver" aria-label="Volver">⬅️</a>
             <div>
                 <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                     ✏️ Editar Factura {{ $factura->numero_factura }}
@@ -261,7 +261,7 @@
                                         <div class="flex flex-col gap-1">
                                             <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
                                             <div class="h-[38px] flex items-center justify-center">
-                                                <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem">
+                                                <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem" aria-label="Eliminar ítem">
                                                     🗑️
                                                 </button>
                                             </div>
@@ -411,7 +411,7 @@ function agregarFila() {
             <div class="flex flex-col gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider opacity-0 select-none pointer-events-none" aria-hidden="true">&nbsp;</span>
                 <div class="h-[38px] flex items-center justify-center">
-                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem">
+                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem" aria-label="Eliminar ítem">
                         🗑️
                     </button>
                 </div>
@@ -496,9 +496,7 @@ function eliminarFila(btn) {
         const msg = itemNombre 
             ? `¿Eliminar el ítem "${itemNombre}" de la factura?` 
             : '¿Eliminar este ítem de la factura?';
-        if (confirm(msg)) {
-            removerFila(tr);
-        }
+        removerFila(tr);
     }
 }
 
@@ -516,7 +514,11 @@ function removerFila(tr) {
 }
 
 function eliminarFilaNueva(btn) {
-    eliminarFila(btn);
+    // F-08: una fila nueva aún no existe en la factura: se quita sin confirmar.
+    if (document.querySelectorAll('#items-body tr').length <= 1) {
+        return eliminarFila(btn);
+    }
+    removerFila(btn.closest('tr'));
 }
 
 function actualizarPrecio(selectElem) {

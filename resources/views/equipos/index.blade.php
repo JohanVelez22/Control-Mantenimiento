@@ -49,7 +49,7 @@
  <td class="uppercase text-gray-600 dark:text-gray-300 {{ $dim }}">{{ $equipo->serie }}</td>
  <td class="{{ $dim }}">
   @if($equipo->cliente)
-  <a href="{{ route('clientes.index') }}#cliente-{{ $equipo->cliente_id }}" class="group block" title="Ver en tabla de clientes">
+  <a href="{{ route('clientes.index') }}#cliente-{{ $equipo->cliente_id }}" class="group block" title="Ver en tabla de clientes" aria-label="Ver en tabla de clientes">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   👤 {{ $equipo->cliente->nombre }}
   </div>
@@ -60,7 +60,7 @@
   @endif
   </a>
   @elseif($equipo->proveedor)
-  <a href="{{ route('proveedores.index') }}#proveedor-{{ $equipo->proveedor_id }}" class="group block" title="Ver en tabla de proveedores">
+  <a href="{{ route('proveedores.index') }}#proveedor-{{ $equipo->proveedor_id }}" class="group block" title="Ver en tabla de proveedores" aria-label="Ver en tabla de proveedores">
   <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
   🏢 {{ $equipo->proveedor->nombre_razon_social }}
   </div>
@@ -91,15 +91,15 @@
     <div class="actions-grid">
     @if(!auth()->user()->isInvitado())
     @if($equipo->estado !== 'dado_de_baja' && $equipo->active)
-    <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/10" title="Editar">✏️</a>
-    <button type="button" onclick="openBajaEquipoModal('{{ route('equipos.dar-de-baja', $equipo->id) }}', '{{ addslashes($equipo->nombre) }} ({{ addslashes($equipo->serie ?? $equipo->modelo ?? '') }})')" class="btn-ghost btn-action-baja w-8 h-8 flex items-center justify-center p-0 text-xs text-purple-600 dark:text-purple-400 hover:bg-purple-500/10" title="Dar de baja equipo (irreparable / desguace)">
+    <a href="{{ route('equipos.edit', $equipo->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/10" title="Editar" aria-label="Editar">✏️</a>
+    <button type="button" onclick="openBajaEquipoModal('{{ route('equipos.dar-de-baja', $equipo->id) }}', '{{ addslashes($equipo->nombre) }} ({{ addslashes($equipo->serie ?? $equipo->modelo ?? '') }})')" class="btn-ghost btn-action-baja w-8 h-8 flex items-center justify-center p-0 text-xs text-purple-600 dark:text-purple-400 hover:bg-purple-500/10" title="Dar de baja equipo (irreparable / desguace)" aria-label="Dar de baja equipo (irreparable / desguace)">
         ⚠️
     </button>
-    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', false)" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs text-red-600 dark:text-red-400 hover:bg-red-500/10" title="Anular Equipo">
+    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', false)" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs text-red-600 dark:text-red-400 hover:bg-red-500/10" title="Anular Equipo" aria-label="Anular Equipo">
         🚫
     </button>
     @elseif($equipo->estado !== 'dado_de_baja' && !$equipo->active)
-    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', true)" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Reactivar Equipo">
+    <button type="button" onclick="openAnularModal('{{ route('equipos.anular', $equipo->id) }}', true)" class="btn-ghost btn-action-anular w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Reactivar Equipo" aria-label="Reactivar Equipo">
         ✅
     </button>
     @else
@@ -116,10 +116,10 @@
     @endphp
      <button type="button" 
          onclick='openDetalleBajaModal(@json($detallePayload))'
-         class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Diagnóstico y Motivo de Baja">
+         class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver Diagnóstico y Motivo de Baja" aria-label="Ver Diagnóstico y Motivo de Baja">
          📋
      </button>
-    <button type="button" onclick="openAnularModal('{{ route('equipos.reactivar', $equipo->id) }}', true)" class="btn-ghost btn-action-reactivar w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Reactivar Equipo dado de baja">
+    <button type="button" onclick="openAnularModal('{{ route('equipos.reactivar', $equipo->id) }}', true)" class="btn-ghost btn-action-reactivar w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Reactivar Equipo dado de baja" aria-label="Reactivar Equipo dado de baja">
         ✅
     </button>
     @endif
@@ -154,7 +154,7 @@
 </div>
 
 <!-- MODAL DAR DE BAJA EQUIPO (Simétrico al Modal de Notificaciones) -->
-<div id="baja-equipo-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+<div id="baja-equipo-modal" role="dialog" aria-modal="true" data-close-fn="closeBajaEquipoModal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
     <div id="baja-equipo-card" class="ts-modal-card scale-95 opacity-0 p-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px;">
         
         {{-- Header simétrico a notificaciones --}}
@@ -229,7 +229,7 @@
 </div>
 
 <!-- MODAL DETALLE DE BAJA Y DIAGNÓSTICO (Simétrico al de notificaciones) -->
-<div id="detalle-baja-modal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
+<div id="detalle-baja-modal" role="dialog" aria-modal="true" data-close-fn="closeDetalleBajaModal" class="ts-modal-overlay opacity-0 hidden transition-opacity duration-300 z-[200]">
     <div id="detalle-baja-card" class="ts-modal-card scale-95 opacity-0 px-6 pb-6 flex flex-col transition-all duration-300 w-full mx-4" style="max-width: 550px; padding-top: 19px;">
         
         {{-- Header simétrico a notificaciones --}}

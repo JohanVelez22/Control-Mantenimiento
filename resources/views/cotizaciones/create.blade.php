@@ -3,7 +3,7 @@
 <div class="max-w-7xl mx-auto">
     <div class="glass-card p-6 md:p-6">
         <div class="flex items-center gap-3 mb-6">
-            <a href="{{ route('cotizaciones.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
+            <a href="{{ route('cotizaciones.index') }}" class="btn-ghost text-xl" title="Volver" aria-label="Volver">⬅️</a>
             <div>
                 <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">📝 Crear Nueva Cotización</h2>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Arma un presupuesto sin afectar el inventario o la caja</p>
@@ -91,7 +91,7 @@
                                 </td>
                                 <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$ 0</td>
                                 <td class="col-accion align-middle text-right">
-                                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">
+                                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem" aria-label="Eliminar ítem">
                                         🗑️
                                     </button>
                                 </td>

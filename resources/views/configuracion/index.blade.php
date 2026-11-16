@@ -1407,15 +1407,15 @@ function renderBackupFiles(files, totalFiles, totalSize, maxCopies, latest) {
                             <span aria-hidden="true">⬇️</span>
                         </button>
                         ${f.name.startsWith('backup_integral') ? `
-                            <button type="button" onclick="updateSystemFromGit('${f.name}')" class="btn-backup-update" title="Actualizar sistema desde GitHub">
+                            <button type="button" onclick="updateSystemFromGit('${f.name}')" class="btn-backup-update" title="Actualizar sistema desde GitHub" aria-label="Actualizar sistema desde GitHub">
                                 <span>🚀</span>
                             </button>
                         ` : `
-                            <button type="button" onclick="restoreBackupFile('${f.name}')" class="btn-backup-restore" title="Restaurar copia de seguridad">
+                            <button type="button" onclick="restoreBackupFile('${f.name}')" class="btn-backup-restore" title="Restaurar copia de seguridad" aria-label="Restaurar copia de seguridad">
                                 <span>🔄</span>
                             </button>
                         `}
-                        <button type="button" onclick="deleteBackupFile('${f.name}')" class="btn-backup-delete" title="Eliminar respaldo">
+                        <button type="button" onclick="deleteBackupFile('${f.name}')" class="btn-backup-delete" title="Eliminar respaldo" aria-label="Eliminar respaldo">
                             <span>🗑️</span>
                         </button>
                     </div>

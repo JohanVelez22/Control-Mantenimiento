@@ -239,7 +239,7 @@
                     @forelse($movimientos as $m)
                     <tr class="{{ $m->anulado ? 'opacity-50 grayscale' : '' }}">
                         <td class="font-bold">
-                            <a href="{{ route('caja.show', $m->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline print:text-black print:no-underline" title="Ver detalle del movimiento #{{ $m->id }}">
+                            <a href="{{ route('caja.show', $m->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline print:text-black print:no-underline" title="Ver detalle del movimiento #{{ $m->id }}" aria-label="Ver detalle del movimiento #{{ $m->id }}">
                                 #{{ $m->id }}
                             </a>
                         </td>

@@ -3,7 +3,7 @@
 <div class="max-w-7xl mx-auto">
  <div class="glass-card p-6 md:p-6">
  <div class="flex items-center gap-3 mb-8">
- <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
+ <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver" aria-label="Volver">⬅️</a>
  <div>
  <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">📦 Registrar Compra de Inventario</h2>
  <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Ingresa productos al stock y genera la orden de pago</p>
@@ -89,7 +89,7 @@
                     $ 0
                 </td>
                 <td class="col-accion align-middle text-center">
-                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem">🗑️</button>
+                    <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem" aria-label="Eliminar ítem">🗑️</button>
                 </td>
             </tr>
         </tbody>
@@ -189,7 +189,7 @@ tr.innerHTML = `
   </td>
     <td class="text-center font-black text-orange-600 dark:text-orange-400 text-base subtotal-cell align-middle px-3 whitespace-nowrap overflow-hidden text-ellipsis">$ 0</td>
     <td class="col-accion align-middle text-center">
-        <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem">🗑️</button>
+        <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all inline-flex items-center justify-center" title="Eliminar ítem" aria-label="Eliminar ítem">🗑️</button>
     </td>`;
  tbody.appendChild(tr);
  filaIndex++;

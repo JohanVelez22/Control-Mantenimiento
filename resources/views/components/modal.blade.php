@@ -120,19 +120,19 @@
                         {{-- Botones de formulario --}}
                         @foreach($actions as $action)
                             @php
-                                $btnClass = $action['class'] ?? 'btn-ghost';
-                                if (isset($action['primary']) && $action['primary']) {
-                                    $btnClass = 'btn-danger'; // Botón primario en formularios de confirmación = danger
-                                }
+                                // F-16: el estilo lo decide la variante explícita (primary, danger,
+                                // success); antes todo botón principal salía rojo, aunque fuera "Guardar".
+                                $variantes = ['primary' => 'btn-primary', 'danger' => 'btn-danger', 'success' => 'btn-ghost-emerald'];
+                                $btnClass = $variantes[$action['variant'] ?? ''] ?? ((isset($action['primary']) && $action['primary']) ? 'btn-primary' : 'btn-ghost');
                                 $type = $action['type'] ?? 'button';
                                 $onclick = isset($action['onclick']) ? 'onclick="' . $action['onclick'] . '"' : '';
                             @endphp
                             @if($type === 'submit')
-                                <button type="submit" class="{{ $btnClass }} justify-center font-bold {{ isset($action['class']) ? $action['class'] : '' }}" @if(isset($action['onclick'])) onclick="{{ $action['onclick'] }}" @endif>
+                                <button type="submit" class="{{ $btnClass }} justify-center font-bold {{ ($action['class'] ?? '') !== $btnClass ? ($action['class'] ?? '') : '' }}" @if(isset($action['onclick'])) onclick="{{ $action['onclick'] }}" @endif>
                                     {{ $action['label'] }}
                                 </button>
                             @else
-                                <button type="button" class="{{ $btnClass }} justify-center font-bold {{ isset($action['class']) ? $action['class'] : '' }}" @if(isset($action['onclick'])) onclick="{{ $action['onclick'] }}" @endif>
+                                <button type="button" class="{{ $btnClass }} justify-center font-bold {{ ($action['class'] ?? '') !== $btnClass ? ($action['class'] ?? '') : '' }}" @if(isset($action['onclick'])) onclick="{{ $action['onclick'] }}" @endif>
                                     {{ $action['label'] }}
                                 </button>
                             @endif
@@ -144,7 +144,7 @@
                                 $btnClass = $action['class'] ?? 'btn-ghost';
                                 $onclick = isset($action['onclick']) ? 'onclick="' . $action['onclick'] . '"' : '';
                             @endphp
-                            <button type="button" class="{{ $btnClass }} justify-center font-bold {{ isset($action['class']) ? $action['class'] : '' }}" @if(isset($action['onclick'])) onclick="{{ $action['onclick'] }}" @endif>
+                            <button type="button" class="{{ $btnClass }} justify-center font-bold {{ ($action['class'] ?? '') !== $btnClass ? ($action['class'] ?? '') : '' }}" @if(isset($action['onclick'])) onclick="{{ $action['onclick'] }}" @endif>
                                 {{ $action['label'] }}
                             </button>
                         @endforeach

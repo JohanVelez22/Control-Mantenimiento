@@ -22,18 +22,18 @@
      <input type="date" name="fecha" value="{{ $fecha }}" class="glass-input reportes-date-input">
    </div>
    <div class="reportes-filter-actions flex items-center gap-2">
-     <button class="btn-primary py-2 px-5 text-sm" title="Filtrar">Ver Día</button>
-     <a href="{{ route('reportes.financiero.diario') }}" class="btn-today text-sm" title="Ir al día de hoy">Hoy</a>
+     <button class="btn-primary py-2 px-5 text-sm" title="Filtrar" aria-label="Filtrar">Ver Día</button>
+     <a href="{{ route('reportes.financiero.diario') }}" class="btn-today text-sm" title="Ir al día de hoy" aria-label="Ir al día de hoy">Hoy</a>
    </div>
   
    <div class="reportes-filter-export flex items-center gap-2 ml-auto">
-       <button type="button" onclick="window.open('{{ request()->fullUrlWithQuery(['export' => 'pdf', 'page' => null]) }}', '_blank')" class="btn-print text-sm" title="Imprimir el reporte completo (abre el PDF con todos los registros)">
+       <button type="button" onclick="window.open('{{ request()->fullUrlWithQuery(['export' => 'pdf', 'page' => null]) }}', '_blank')" class="btn-print text-sm" title="Imprimir el reporte completo (abre el PDF con todos los registros)" aria-label="Imprimir el reporte completo (abre el PDF con todos los registros)">
        <span>🖨️</span> Imprimir
        </button>
-       <button type="button" onclick="exportarDiario('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">
+       <button type="button" onclick="exportarDiario('excel', this)" class="btn-excel text-sm" title="Exportar a Excel" aria-label="Exportar a Excel">
        <span class="no-print-emoji">📊</span> Excel
        </button>
-       <button type="button" onclick="exportarDiario('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
+       <button type="button" onclick="exportarDiario('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF" aria-label="Exportar a PDF">
        <span class="no-print-emoji">📄</span> PDF
        </button>
    </div>

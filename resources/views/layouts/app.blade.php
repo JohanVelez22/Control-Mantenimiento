@@ -68,7 +68,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     @vite('resources/css/glass/glass.css')
-    <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     
     <!-- Lógica de Tema Temprana para evitar Flash de Contenido No Estilizado (FOUC) -->
@@ -117,7 +117,7 @@
             <div id="nav-progress" class="no-print"></div>
 
             <!-- CONTENIDO DINÁMICO -->
-            <main id="ts-main" class="flex-1 p-3 sm:p-5 lg:p-8 pb-[30vh] md:pb-[50vh] relative z-10 content-scroll max-w-full overflow-x-hidden">
+            <main id="ts-main" class="flex-1 p-3 sm:p-5 lg:p-8 pb-24 relative z-10 content-scroll max-w-full overflow-x-hidden">
                 <!-- Encabezado de Impresión -->
                 <div class="print-header hidden-screen" style="margin-bottom: 20px;">
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; border-bottom: 2px solid #000000;">
@@ -151,7 +151,7 @@
     @endguest
 
     <!-- CONTENEDOR DE TOASTS (Notificaciones Glass) -->
-    <div id="toast-container" class="fixed bottom-5 left-3 right-3 sm:left-auto flex flex-col gap-2.5 pointer-events-none sm:w-full max-w-sm" style="z-index: 100000 !important;"></div>
+    <div id="toast-container" role="status" aria-live="polite" class="fixed bottom-5 left-3 right-3 sm:left-auto flex flex-col gap-2.5 pointer-events-none sm:w-full max-w-sm" style="z-index: 100000 !important;"></div>
 
     <!-- MODAL DE CONFIRMACIÓN DE ALERTA/ELIMINACIÓN (Liquid Glass) -->
     <div id="ts-modal" role="dialog" aria-modal="true" aria-labelledby="ts-modal-title" aria-describedby="ts-modal-msg" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300" style="z-index: 50000 !important;" onclick="if(event.target === this) closeTsModal()">
@@ -288,23 +288,28 @@
             const toast = document.createElement('div');
             
             // Colores basados en el tipo
+            // F-27: cuatro variantes; los errores no se cierran solos y se anuncian de inmediato.
             const isError = type === 'error' || type === 'danger';
-            const isInfo = type === 'info' || type === 'warning';
+            const isWarning = type === 'warning';
+            const isInfo = type === 'info';
             const bgStr = isError
                 ? 'bg-red-500/90 dark:bg-red-900/80 border-red-500/50'
-                : (isInfo
-                    ? 'bg-blue-600/90 dark:bg-blue-900/80 border-blue-500/50'
-                    : 'bg-emerald-500/90 dark:bg-emerald-900/80 border-emerald-500/50');
-            const icon = isError ? '⚠️' : (isInfo ? 'ℹ️' : '✅');
+                : (isWarning
+                    ? 'bg-amber-600/90 dark:bg-amber-800/80 border-amber-500/50'
+                    : (isInfo
+                        ? 'bg-blue-600/90 dark:bg-blue-900/80 border-blue-500/50'
+                        : 'bg-emerald-500/90 dark:bg-emerald-900/80 border-emerald-500/50'));
+            const icon = isError ? '⚠️' : (isWarning ? '⚠️' : (isInfo ? 'ℹ️' : '✅'));
+            if (isError) toast.setAttribute('role', 'alert');
 
             const safeMessage = String(message ?? '').replace(/[&<>"']/g, function(m) {
                 return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m];
             });
             toast.className = `flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl text-white transform transition-all duration-400 translate-y-12 opacity-0 pointer-events-auto ${bgStr}`;
             toast.innerHTML = `
-                <span class="text-2xl drop-shadow-md">${icon}</span>
+                <span class="text-2xl drop-shadow-md" aria-hidden="true">${icon}</span>
                 <p class="text-sm font-bold leading-tight flex-1">${safeMessage}</p>
-                <button type="button" onclick="this.parentElement.remove()" aria-label="Cerrar notificación" class="text-white/60 hover:text-white transition-colors text-lg focus:outline-none">&times;</button>
+                <button type="button" onclick="this.parentElement.remove()" aria-label="Cerrar notificación" class="text-white/70 hover:text-white transition-colors text-lg"><span aria-hidden="true">&times;</span></button>
             `;
 
             container.appendChild(toast);
@@ -315,17 +320,19 @@
                 });
             });
 
-            setTimeout(() => {
-                toast.classList.add('translate-y-8', 'opacity-0');
-                setTimeout(() => toast.remove(), 400);
-            }, 4500);
+            if (!isError) {
+                setTimeout(() => {
+                    toast.classList.add('translate-y-8', 'opacity-0');
+                    setTimeout(() => toast.remove(), 400);
+                }, isWarning ? 8000 : 4500);
+            }
         }
 
         // Leer sesiones de Laravel
         @if(session('success')) showToast(@json(session('success')), 'success'); @endif
         @if(session('error')) showToast(@json(session('error')), 'error'); @endif
         @if(session('warning')) showToast(@json(session('warning')), 'warning'); @endif
-        @if(isset($errors) && $errors->any()) showToast(@json($errors->count() > 1 ? $errors->first().' (y '.($errors->count() - 1).' error(es) más)' : $errors->first()), 'error'); @endif
+        @if(isset($errors) && $errors->any()) showToast(@json($errors->count() > 1 ? 'Revise el formulario: '.implode(' · ', $errors->all()) : $errors->first()), 'error'); @endif
 
         // ─── ACCESIBILIDAD Y GESTIÓN DE FOCO EN MODALES (WCAG 2.1) ────────
         let _lastFocusedElement = null;
@@ -364,19 +371,18 @@
             const customBtn = form?.dataset?.confirmBtn;
             const customCancel = form?.dataset?.confirmCancel;
 
-            const isSuccessType = (form && typeof form === 'object' && (
-                form.dataset?.confirmType === 'success' ||
-                form.dataset?.confirmVariant === 'success' ||
-                (typeof form.action === 'string' && form.action.includes('cotizaciones') && form.action.includes('convertir')) ||
-                (typeof form.action === 'string' && form.action.includes('backup'))
-            )) || (typeof message === 'string' && (message.includes('Nueva Venta') || message.includes('cotización') || message.includes('cotizacion') || message.includes('seguridad') || message.includes('Respaldo') || message.includes('copia')));
+            // F-19: el estilo lo define solo data-confirm-type="success" (antes se deducía del
+            // texto y una eliminación que mencionara "cotización" salía en verde).
+            const isSuccessType = !!(form && typeof form === 'object' && (
+                form.dataset?.confirmType === 'success' || form.dataset?.confirmVariant === 'success'
+            ));
 
             if (isSuccessType) {
                 if (titleEl) titleEl.innerText = customTitle || '¿Estás seguro?';
                 if (icon) icon.innerText = customIcon || '✅';
                 if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center text-3xl mx-auto mb-4';
                 if (cancelBtn) {
-                    cancelBtn.className = 'flex-1 btn-ghost-red';
+                    cancelBtn.className = 'flex-1 btn-ghost';
                     cancelBtn.textContent = customCancel || 'Cancelar';
                 }
                 if (confirmBtn) {
@@ -388,7 +394,7 @@
                 if (icon) icon.innerText = customIcon || '⚠️';
                 if (iconBox) iconBox.className = 'w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-3xl mx-auto mb-4';
                 if (cancelBtn) {
-                    cancelBtn.className = 'flex-1 btn-ghost-amber';
+                    cancelBtn.className = 'flex-1 btn-ghost';
                     cancelBtn.textContent = customCancel || 'Cancelar';
                 }
                 if (confirmBtn) {
@@ -593,7 +599,10 @@
                     // Modales propios de cada módulo: id "baja-stock-modal" → closeBajaStockModal()
                     const abierto = [...document.querySelectorAll('[id$="-modal"]')]
                         .find(m => !m.classList.contains('hidden') && !m.classList.contains('opacity-0'));
-                    if (abierto) {
+                    if (abierto && abierto.dataset.closeFn && typeof window[abierto.dataset.closeFn] === 'function') {
+                        // F-35: cada modal puede declarar su función de cierre explícitamente.
+                        window[abierto.dataset.closeFn]();
+                    } else if (abierto) {
                         const fn = 'close' + abierto.id.replace(/-modal$/, '').split('-')
                             .map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('') + 'Modal';
                         if (typeof window[fn] === 'function') window[fn]();
@@ -1119,29 +1128,45 @@
         }
 
         // Alternar y cerrar el dropdown de notificaciones (disponible siempre, incluso con 0 pendientes)
+        // F-21: aria-expanded sincronizado, cierre con Escape o clic afuera, y los manejadores
+        // se retiran al cerrar por cualquier vía (antes se acumulaban).
+        let _notifCerrar = null;
         function toggleNotifDropdown() {
             const d = document.getElementById('notif-dropdown');
+            const boton = document.querySelector('.notif-toggle-btn');
             if (!d) return;
             if (d.classList.contains('hidden')) {
                 if (typeof applyNotifDropdownTheme === 'function') applyNotifDropdownTheme();
                 positionNotifDropdown();
                 d.classList.remove('hidden');
+                boton?.setAttribute('aria-expanded', 'true');
                 requestAnimationFrame(() => {
                     d.classList.remove('opacity-0', 'scale-95');
                 });
+                const alClic = function (e) {
+                    if (!d.contains(e.target) && !e.target.closest('.notif-toggle-btn')) _notifCerrar();
+                };
+                const alTecla = function (e) {
+                    if (e.key === 'Escape') { _notifCerrar(); boton?.focus(); }
+                };
+                _notifCerrar = function () {
+                    d.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => d.classList.add('hidden'), 200);
+                    boton?.setAttribute('aria-expanded', 'false');
+                    document.removeEventListener('click', alClic);
+                    document.removeEventListener('keydown', alTecla);
+                    _notifCerrar = null;
+                };
                 setTimeout(() => {
-                    const clickHandler = function(e) {
-                        if (!d.contains(e.target) && !e.target.closest('.notif-toggle-btn') && !e.target.closest('[onclick*="toggleNotifDropdown"]')) {
-                            d.classList.add('opacity-0', 'scale-95');
-                            setTimeout(() => d.classList.add('hidden'), 200);
-                            document.removeEventListener('click', clickHandler);
-                        }
-                    };
-                    document.addEventListener('click', clickHandler);
+                    document.addEventListener('click', alClic);
+                    document.addEventListener('keydown', alTecla);
                 }, 50);
+            } else if (_notifCerrar) {
+                _notifCerrar();
             } else {
                 d.classList.add('opacity-0', 'scale-95');
                 setTimeout(() => d.classList.add('hidden'), 200);
+                boton?.setAttribute('aria-expanded', 'false');
             }
         }
 
@@ -2169,182 +2194,8 @@
         // Global Hash Target Row Highlighter
         // (Unificado con activateHashTarget — ya no se necesita un handler separado)
 
-        // Global Placeholder: Ocultar placeholder al enfocar/dar clic y restaurar al desenfocar
-        document.addEventListener('focus', function (e) {
-            var el = e.target;
-            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
-                var type = (el.type || '').toLowerCase();
-                if (type !== 'checkbox' && type !== 'radio' && type !== 'submit' && type !== 'button' && type !== 'file') {
-                    if (el.placeholder && !el.dataset.savedPlaceholder) {
-                        el.dataset.savedPlaceholder = el.placeholder;
-                    }
-                    if (el.dataset.savedPlaceholder) {
-                        el.placeholder = '';
-                    }
-                }
-            }
-        }, true);
-
-        document.addEventListener('blur', function (e) {
-            var el = e.target;
-            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
-                if (el.dataset.savedPlaceholder) {
-                    el.placeholder = el.dataset.savedPlaceholder;
-                }
-            }
-        }, true);
-
-        // ─── GLOBAL PASSWORD VISIBILITY TOGGLE (OJITO UNIVERSAL MÓVIL Y WEB) ──
-        function initPasswordToggles(root) {
-            root = root || document;
-            if (!root || !root.querySelectorAll) return;
-            var inputs = root.querySelectorAll('input[type="password"]');
-            inputs.forEach(function (input) {
-                if (input.dataset.hasPasswordToggle === 'true') return;
-                input.dataset.hasPasswordToggle = 'true';
-
-                // Si ya está dentro de un wrapper propio, usarlo; si no, envolver
-                var wrapper = input.parentElement;
-                var isAlreadyWrapper = wrapper && wrapper.classList.contains('ts-password-wrapper');
-                if (!isAlreadyWrapper) {
-                    wrapper = document.createElement('div');
-                    wrapper.className = 'ts-password-wrapper';
-                    if (input.classList.contains('w-full')) {
-                        wrapper.classList.add('w-full');
-                    }
-                    if (input.classList.contains('flex-1')) {
-                        wrapper.classList.add('flex-1');
-                    }
-
-                    // Transferir márgenes del input al wrapper para centrado vertical perfecto
-                    var marginClasses = [];
-                    input.classList.forEach(function (cls) {
-                        if (/^m[trblxy]?-\d+/.test(cls) || cls === 'my-auto' || cls === 'mx-auto') {
-                            marginClasses.push(cls);
-                            wrapper.classList.add(cls);
-                        }
-                    });
-                    marginClasses.forEach(function (cls) {
-                        input.classList.remove(cls);
-                    });
-
-                    input.parentNode.insertBefore(wrapper, input);
-                    wrapper.appendChild(input);
-                }
-
-                // Asegurar atributos que evitan autocorrección intrusiva al revelar
-                if (!input.hasAttribute('autocapitalize')) input.setAttribute('autocapitalize', 'none');
-                if (!input.hasAttribute('autocorrect')) input.setAttribute('autocorrect', 'off');
-                if (!input.hasAttribute('spellcheck')) input.setAttribute('spellcheck', 'false');
-
-                // Balancear padding si el texto está centrado
-                var isCenter = input.classList.contains('text-center') || (window.getComputedStyle && window.getComputedStyle(input).textAlign === 'center');
-                if (isCenter) {
-                    input.classList.add('ts-password-input-center');
-                } else {
-                    input.classList.add('ts-password-input');
-                }
-
-                // Crear botón de alternancia con icono estilo navegador (un solo SVG a la vez)
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'ts-password-toggle';
-                btn.tabIndex = -1;
-
-                var SVG_EYE = '<svg viewBox="0 0 24 24" fill="currentColor" class="ts-eye-svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
-                var SVG_EYE_OFF = '<svg viewBox="0 0 24 24" fill="currentColor" class="ts-eye-svg"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
-
-                var isInitiallyText = (input.type === 'text');
-                btn.innerHTML = isInitiallyText ? SVG_EYE_OFF : SVG_EYE;
-                btn.setAttribute('title', isInitiallyText ? 'Ocultar contraseña' : 'Mostrar contraseña');
-                btn.setAttribute('aria-label', isInitiallyText ? 'Ocultar contraseña' : 'Mostrar contraseña');
-
-                var lastToggleTime = 0;
-
-                function togglePassword(e) {
-                    if (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
-                    var now = Date.now();
-                    if (now - lastToggleTime < 350) return;
-                    lastToggleTime = now;
-
-                    var hadFocus = (document.activeElement === input);
-                    var show = (input.type === 'password');
-                    input.type = show ? 'text' : 'password';
-
-                    // Reemplazar completamente por el icono correspondiente (NUNCA coexisten dos)
-                    btn.innerHTML = show ? SVG_EYE_OFF : SVG_EYE;
-                    btn.setAttribute('title', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
-                    btn.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
-
-                    // Si ya tenía el foco antes del toque/clic, mantenerlo y posicionar el cursor al final
-                    if (hadFocus) {
-                        try {
-                            input.focus();
-                            var len = input.value.length;
-                            input.setSelectionRange(len, len);
-                        } catch (err) {}
-                    } else {
-                        // Des-enfocar el botón para que no se quede iluminado tras el clic
-                        try {
-                            btn.blur();
-                        } catch (err) {}
-                    }
-                }
-
-                btn.addEventListener('mousedown', function (e) {
-                    e.preventDefault();
-                });
-                btn.addEventListener('click', togglePassword);
-                btn.addEventListener('touchend', togglePassword);
-
-                wrapper.appendChild(btn);
-
-                // Al enviar formulario, asegurar type="password" para que gestores de contraseñas lo reconozcan
-                var form = input.form;
-                if (form && !form.dataset.hasPasswordSubmitReset) {
-                    form.dataset.hasPasswordSubmitReset = 'true';
-                    form.addEventListener('submit', function () {
-                        var pwInputs = form.querySelectorAll('.ts-password-wrapper input');
-                        pwInputs.forEach(function (pwInput) {
-                            if (pwInput.type === 'text') {
-                                pwInput.type = 'password';
-                                var pwBtn = pwInput.parentElement.querySelector('.ts-password-toggle');
-                                if (pwBtn) {
-                                    pwBtn.innerHTML = SVG_EYE;
-                                    pwBtn.setAttribute('title', 'Mostrar contraseña');
-                                    pwBtn.setAttribute('aria-label', 'Mostrar contraseña');
-                                }
-                            }
-                        });
-                    });
-                }
-            });
-        }
-
-        window.initPasswordToggles = initPasswordToggles;
-
-        document.addEventListener('DOMContentLoaded', function () {
-            initPasswordToggles();
-            if (window.MutationObserver) {
-                var observer = new MutationObserver(function (mutations) {
-                    var needsScan = false;
-                    for (var i = 0; i < mutations.length; i++) {
-                        if (mutations[i].addedNodes && mutations[i].addedNodes.length > 0) {
-                            needsScan = true;
-                            break;
-                        }
-                    }
-                    if (needsScan) {
-                        initPasswordToggles();
-                    }
-                });
-                observer.observe(document.body, { childList: true, subtree: true });
-            }
-        });
-        window.addEventListener('load', function () { initPasswordToggles(); });
+        // F-26: el botón para ver la contraseña lo registra resources/js/app.js (antes había dos copias
+        // con dos MutationObserver sobre todo el documento).
     </script>
 
     @stack('modals')

@@ -28,18 +28,18 @@
    <option value="{{ $i }}" {{ $anio == $i ? 'selected' : '' }}>{{ $i }}</option>
    @endfor
    </select>
-   <button type="submit" class="btn-primary py-2 px-3 text-sm" title="Filtrar">
+   <button type="submit" class="btn-primary py-2 px-3 text-sm" title="Filtrar" aria-label="Filtrar">
    🌪️ Filtrar
    </button>
    
    <div class="flex items-center gap-2 ml-auto">
-       <button type="button" onclick="window.open('{{ request()->fullUrlWithQuery(['export' => 'pdf', 'page' => null]) }}', '_blank')" class="btn-print text-sm" title="Imprimir el reporte completo (abre el PDF con todos los registros)">
+       <button type="button" onclick="window.open('{{ request()->fullUrlWithQuery(['export' => 'pdf', 'page' => null]) }}', '_blank')" class="btn-print text-sm" title="Imprimir el reporte completo (abre el PDF con todos los registros)" aria-label="Imprimir el reporte completo (abre el PDF con todos los registros)">
        <span>🖨️</span> Imprimir
        </button>
-       <button type="button" onclick="exportarAcumuladoGeneral('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">
+       <button type="button" onclick="exportarAcumuladoGeneral('excel', this)" class="btn-excel text-sm" title="Exportar a Excel" aria-label="Exportar a Excel">
        <span>📊</span> Excel
        </button>
-       <button type="button" onclick="exportarAcumuladoGeneral('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
+       <button type="button" onclick="exportarAcumuladoGeneral('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF" aria-label="Exportar a PDF">
        <span>📄</span> PDF
        </button>
    </div>

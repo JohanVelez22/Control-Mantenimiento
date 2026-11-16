@@ -12,9 +12,9 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 w-full relative z-20">
         <div class="flex items-center gap-3">
         @if(!$esInvitado)
-        <a href="{{ route('mantenimientos.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
+        <a href="{{ route('mantenimientos.index') }}" class="btn-ghost text-xl" title="Volver" aria-label="Volver">⬅️</a>
         @else
-        <a href="{{ route('consulta.mantenimientos') }}" class="btn-ghost text-xl" title="Volver a búsqueda">⬅️</a>
+        <a href="{{ route('consulta.mantenimientos') }}" class="btn-ghost text-xl" title="Volver a búsqueda" aria-label="Volver a búsqueda">⬅️</a>
         @endif
         <div>
         <h2 class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight flex flex-wrap items-center gap-2 sm:gap-3">
@@ -36,7 +36,7 @@
  
             <div class="flex items-center gap-3 shrink-0">
                 @if(!auth()->user()->isInvitado() && !$mantenimiento->anulado)
-                <a href="{{ route('mantenimientos.recepcion', $mantenimiento) }}" target="_blank" rel="noopener" class="btn-ghost border-slate-500/20 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/40" title="Comprobante de recepción con el código de consulta del cliente">🧾 Recepción</a>
+                <a href="{{ route('mantenimientos.recepcion', $mantenimiento) }}" target="_blank" rel="noopener" class="btn-ghost border-slate-500/20 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/40" title="Comprobante de recepción con el código de consulta del cliente" aria-label="Comprobante de recepción con el código de consulta del cliente">🧾 Recepción</a>
                 @endif
                 @if($mantenimiento->estado === 'terminado' && $mantenimiento->fecha_salida)
                 <x-print-dropdown 
@@ -189,14 +189,14 @@
                         <form action="{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}" method="POST" class="inline-block"
                             data-confirm-delete="¿Eliminar este repuesto ({{ $repuesto->producto }})? Se descontará del costo de la orden y volverá al inventario.">
                             @csrf @method('DELETE')
-                            <button type="submit" class="btn-danger btn-action-square" title="Eliminar y devolver al stock">
+                            <button type="submit" class="btn-danger btn-action-square" title="Eliminar y devolver al stock" aria-label="Eliminar y devolver al stock">
                                 🗑️
                             </button>
                         </form>
                         @elseif(auth()->user()->isTecnico())
                         <button type="button" 
                             onclick="openAnularModal('{{ route('mantenimientos.stocks.destroy', [$mantenimiento, $repuesto->id]) }}', false, 'DELETE', 'Eliminar Repuesto', 'Ingresa la contraseña de un administrador para retirar este repuesto ({{ addslashes($repuesto->producto) }}) de la orden y devolverlo al inventario.')"
-                            class="btn-danger btn-action-square" title="Eliminar y devolver al stock">
+                            class="btn-danger btn-action-square" title="Eliminar y devolver al stock" aria-label="Eliminar y devolver al stock">
                             🗑️
                         </button>
                         @endif
@@ -301,12 +301,12 @@
                 
                 <div class="flex items-center gap-2">
                     @if($abono->movimientoCaja && ! $esInvitado)
-                    <a href="{{ route('caja.show', $abono->movimientoCaja->id) }}" class="btn-ghost btn-action-square font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver movimiento en Caja #{{ $abono->movimientoCaja->id }}">👁️</a>
+                    <a href="{{ route('caja.show', $abono->movimientoCaja->id) }}" class="btn-ghost btn-action-square font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver movimiento en Caja #{{ $abono->movimientoCaja->id }}" aria-label="Ver movimiento en Caja #{{ $abono->movimientoCaja->id }}">👁️</a>
                     @endif
 
                     @if(!$abono->anulado && auth()->user()->isAdmin())
                     <button type="button" class="btn-danger btn-action-square" title="Anular abono"
-                        onclick="openAnularModal('{{ route('abonos.destroy', $abono) }}', false, 'DELETE', 'Anular abono', '¿Anular este abono de $ {{ number_format($abono->monto, 0, ',', '.') }}? Su ingreso se retirará de la caja.')">
+                        onclick="openAnularModal('{{ route('abonos.destroy', $abono) }}', false, 'DELETE', 'Anular abono', '¿Anular este abono de $ {{ number_format($abono->monto, 0, ',', '.') }}? Su ingreso se retirará de la caja.')" aria-label="Anular abono">
                         🗑️
                     </button>
                     @endif

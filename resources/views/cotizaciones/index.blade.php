@@ -60,7 +60,7 @@
                     <td data-label="Descripción" class="text-gray-600 dark:text-gray-300 text-xs font-medium max-w-[200px] truncate" title="{{ $descStr }}">{{ $descStr }}</td>
                     <td data-label="Destinatario">
                         @if($cot->proveedor)
-                            <a href="{{ route('proveedores.index') }}#proveedor-{{ $cot->proveedor_id }}" class="group block" title="Ver en tabla de proveedores">
+                            <a href="{{ route('proveedores.index') }}#proveedor-{{ $cot->proveedor_id }}" class="group block" title="Ver en tabla de proveedores" aria-label="Ver en tabla de proveedores">
                                 <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                                     🏢 {{ $cot->proveedor->nombre_razon_social }}
                                 </div>
@@ -69,7 +69,7 @@
                                 </div>
                             </a>
                         @elseif($cot->cliente)
-                            <a href="{{ route('clientes.index') }}#cliente-{{ $cot->cliente_id }}" class="group block" title="Ver en tabla de clientes">
+                            <a href="{{ route('clientes.index') }}#cliente-{{ $cot->cliente_id }}" class="group block" title="Ver en tabla de clientes" aria-label="Ver en tabla de clientes">
                                 <div class="font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                                     👤 {{ $cot->cliente->nombre }}
                                 </div>
@@ -101,12 +101,12 @@
                     </td>
                     <td data-label="Acciones" class="text-center w-28">
                         <div class="actions-grid">
-                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver detalle">👁️</a>
+                            <a href="{{ route('cotizaciones.show', $cot) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10" title="Ver detalle" aria-label="Ver detalle">👁️</a>
                             
                             @if($cot->estado === 'aprobada')
-                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir PDF">🖨️</a>
+                                <a href="{{ route('cotizaciones.pdf', $cot) }}" target="_blank" class="btn-ghost btn-action-print w-8 h-8 flex items-center justify-center p-0 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-500/10" title="Imprimir PDF" aria-label="Imprimir PDF">🖨️</a>
                                 @if($cot->factura_creada)
-                                    <a href="{{ route('inventario.facturas.show', $cot->factura_creada->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Ver movimiento: {{ $cot->factura_creada->numero_factura }}">
+                                    <a href="{{ route('inventario.facturas.show', $cot->factura_creada->id) }}" class="btn-ghost btn-action-view w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" title="Ver movimiento: {{ $cot->factura_creada->numero_factura }}" aria-label="Ver movimiento: {{ $cot->factura_creada->numero_factura }}">
                                         {{ $cot->factura_creada->tipo_movimiento === 'compra' ? '📦' : '🛒' }}
                                     </a>
                                 @endif
@@ -116,10 +116,10 @@
 
                             @if(!auth()->user()->isInvitado())
                                 @if($cot->estado === 'pendiente' && !$cot->anulado)
-                                    <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+                                    <a href="{{ route('cotizaciones.edit', $cot) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar" aria-label="Editar">✏️</a>
                                 @endif
 
-                                <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', {{ $cot->anulado ? 'true' : 'false' }})" class="btn-ghost {{ $cot->anulado ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $cot->anulado ? 'Reactivar cotización' : 'Anular cotización' }}">
+                                <button type="button" onclick="openAnularModal('{{ route('cotizaciones.anular', $cot) }}', {{ $cot->anulado ? 'true' : 'false' }})" class="btn-ghost {{ $cot->anulado ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $cot->anulado ? 'Reactivar cotización' : 'Anular cotización' }}" aria-label="{{ $cot->anulado ? 'Reactivar cotización' : 'Anular cotización' }}">
                                     {{ $cot->anulado ? '✅' : '🚫' }}
                                 </button>
                             @else

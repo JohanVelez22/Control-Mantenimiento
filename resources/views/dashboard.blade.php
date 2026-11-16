@@ -134,10 +134,10 @@
 
  <!-- Indicadores (fuera del glass-card para evitar overflow hidden) -->
  <div class="absolute bottom-6 left-0 right-0 flex justify-center gap-3 z-10 flex-wrap px-2" id="carouselIndicators">
- <button type="button" class="w-8 h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-md transition-all duration-500 backdrop-blur-sm"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-slate-400/75 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-slate-500 dark:hover:bg-gray-500/80"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-slate-400/75 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-slate-500 dark:hover:bg-gray-500/80"></button>
- <button type="button" class="w-2.5 h-2.5 rounded-full bg-slate-400/75 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-slate-500 dark:hover:bg-gray-500/80"></button>
+ <button type="button" aria-label="Ir al gráfico 1" aria-current="true" class="w-8 h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-md transition-all duration-500 backdrop-blur-sm"></button>
+ <button type="button" aria-label="Ir al gráfico 2" class="w-2.5 h-2.5 rounded-full bg-slate-400/75 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-slate-500 dark:hover:bg-gray-500/80"></button>
+ <button type="button" aria-label="Ir al gráfico 3" class="w-2.5 h-2.5 rounded-full bg-slate-400/75 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-slate-500 dark:hover:bg-gray-500/80"></button>
+ <button type="button" aria-label="Ir al gráfico 4" class="w-2.5 h-2.5 rounded-full bg-slate-400/75 dark:bg-gray-600/60 transition-all duration-500 backdrop-blur-sm hover:bg-slate-500 dark:hover:bg-gray-500/80"></button>
  </div>
 </div>
 
@@ -158,19 +158,19 @@
 <div class="glass-card p-6 md:px-8">
 
   {{-- Tabs --}}
-   <div class="flex items-center gap-1 mb-5">
-  <button type="button" onclick="switchDashTab('mant')" id="tabBtnMant"
+   <div class="flex items-center gap-1 mb-5" role="tablist" aria-label="Órdenes recientes">
+  <button type="button" onclick="switchDashTab('mant')" id="tabBtnMant" role="tab" aria-selected="true" aria-controls="tabPanelMant"
   class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all border-b-[3px] border-blue-600 text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20">
   🔧 Mantenimientos
   </button>
-  <button type="button" onclick="switchDashTab('elec')" id="tabBtnElec"
+  <button type="button" onclick="switchDashTab('elec')" id="tabBtnElec" role="tab" aria-selected="false" aria-controls="tabPanelElec"
   class="dash-tab-btn px-5 py-2.5 text-sm font-bold rounded-xl transition-all border-b-[3px] border-transparent text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50/40 dark:hover:bg-purple-900/10">
   ⚡ Electrónica
   </button>
   </div>
 
  {{-- ═══════════════ TAB: Mantenimientos ═══════════════ --}}
-  <div id="tabPanelMant">
+  <div id="tabPanelMant" role="tabpanel" aria-labelledby="tabBtnMant">
   <div class="overflow-x-auto pb-2">
  <table class="ts-table responsive-table w-full">
  <thead>
@@ -204,7 +204,7 @@
  </td>
  
  <td class="text-center {{ $dim }}">
- <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 group no-print-link" title="Ver en tabla de equipos">
+ <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex items-baseline justify-center gap-1 group no-print-link" title="Ver en tabla de equipos" aria-label="Ver en tabla de equipos">
  <span class="font-bold text-slate-800 dark:text-white whitespace-nowrap group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
  {{ $m->equipo->nombre ?? '-' }}
  </span>
@@ -265,7 +265,7 @@
  </div>
 
  {{-- ═══════════════ TAB: Electrónica ═══════════════ --}}
-  <div id="tabPanelElec" class="hidden">
+  <div id="tabPanelElec" class="hidden" role="tabpanel" aria-labelledby="tabBtnElec">
   <div class="overflow-x-auto pb-2">
  <table class="ts-table table-electronica responsive-table w-full">
  <thead>
@@ -299,7 +299,7 @@
  </td>
 
  <td class="text-center {{ $dim }}">
- <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="flex items-baseline justify-center gap-1 group no-print-link" title="Ver en tabla de equipos">
+ <a href="{{ route('equipos.index') }}#equipo-{{ $e->equipo_id }}" class="flex items-baseline justify-center gap-1 group no-print-link" title="Ver en tabla de equipos" aria-label="Ver en tabla de equipos">
  <span class="font-bold text-slate-800 dark:text-white whitespace-nowrap group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
  {{ $e->equipo->nombre ?? '-' }}
  </span>
@@ -364,6 +364,8 @@ function switchDashTab(tab) {
   // Botones
   const btnMant = document.getElementById('tabBtnMant');
   const btnElec = document.getElementById('tabBtnElec');
+  btnMant.setAttribute('aria-selected', tab === 'mant' ? 'true' : 'false');
+  btnElec.setAttribute('aria-selected', tab === 'elec' ? 'true' : 'false');
    const activeClasses = 'border-b-[3px] text-blue-700 dark:text-blue-300 bg-blue-50/60 dark:bg-blue-900/20 border-blue-600';
    const activeClassesPurple = 'border-b-[3px] text-purple-700 dark:text-purple-300 bg-purple-50/60 dark:bg-purple-900/20 border-purple-600';
    const inactiveClasses = 'border-b-[3px] border-transparent text-gray-500 dark:text-gray-400';
@@ -397,6 +399,8 @@ function switchDashTab(tab) {
  for (let i = 0; i < totalSlides; i++) {
             const ind = indicators[i];
             if(ind) {
+                // F-11: el indicador activo se anuncia
+                if (i === currentSlide) ind.setAttribute('aria-current', 'true'); else ind.removeAttribute('aria-current');
                 ind.classList.remove('w-8', 'w-2.5', 'h-3', 'h-2.5', 'bg-gradient-to-r', 'from-blue-500', 'to-cyan-400', 'shadow-md', 'bg-blue-600', 'dark:bg-blue-500', 'bg-gray-300', 'dark:bg-gray-600', 'bg-gray-300/60', 'bg-slate-400/75', 'dark:bg-gray-600/60', 'bg-blue-900', 'dark:bg-blue-400', 'bg-blue-900/30', 'dark:bg-blue-400/30', 'hover:bg-blue-900/60', 'dark:hover:bg-blue-400/60');
                 if (i === currentSlide) {
                     ind.classList.add('w-8', 'h-2.5', 'bg-gradient-to-r', 'from-blue-500', 'to-cyan-400', 'shadow-md');
@@ -417,13 +421,35 @@ function switchDashTab(tab) {
  updateSlide();
  }
 
+ // F-11 (WCAG 2.2.2): sin avance automático si el sistema pide menos movimiento, y en
+ // pausa mientras el puntero o el foco están sobre el carrusel.
+ const sinMovimiento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  function startAutoPlay() {
+ if (sinMovimiento) return;
+ clearInterval(autoPlayInterval);
  autoPlayInterval = setInterval(nextSlide, 15000); // Demora de 15 SEGUNDOS
  }
 
  function resetAutoPlay() {
  clearInterval(autoPlayInterval);
  startAutoPlay();
+ }
+
+ const zonaCarrusel = track.closest('.relative') || track.parentElement;
+ if (zonaCarrusel) {
+ zonaCarrusel.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+ zonaCarrusel.addEventListener('mouseleave', startAutoPlay);
+ zonaCarrusel.addEventListener('focusin', () => clearInterval(autoPlayInterval));
+ zonaCarrusel.addEventListener('focusout', startAutoPlay);
+ // Deslizar con el dedo en celulares y tabletas
+ let inicioX = null;
+ zonaCarrusel.addEventListener('pointerdown', e => { inicioX = e.clientX; });
+ zonaCarrusel.addEventListener('pointerup', e => {
+ if (inicioX === null) return;
+ const dx = e.clientX - inicioX;
+ inicioX = null;
+ if (Math.abs(dx) > 50) { dx < 0 ? nextSlide() : prevSlide(); resetAutoPlay(); }
+ });
  }
 
  if (btnNext) btnNext.addEventListener('click', () => { nextSlide(); resetAutoPlay(); });

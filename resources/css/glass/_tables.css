@@ -46,14 +46,6 @@ html.dark .glass-table {
 .table-dense thead,
 .table-compact thead,
 table thead {
-  z-index: 30 !important;
-}
-
-.ts-table thead,
-.glass-table thead,
-.table-dense thead,
-.table-compact thead,
-table thead {
   background-color: #E2E8F0 !important;
   position: sticky !important;
   top: 0 !important;
@@ -666,8 +658,9 @@ html.dark #tabla-electronicas .col-orden a:hover {
    Calibrada exactamente a 5 ítems antes de activar scroll vertical limpio y sin recortes
    ========================================================================== */
 .items-table-container {
-  max-height: 366px !important;
-  scroll-snap-type: y mandatory !important;
+  /* F-12: altura relativa a la pantalla y ajuste suave (con 'mandatory' saltaba al tabular). */
+  max-height: min(366px, 45dvh) !important;
+  scroll-snap-type: y proximity !important;
   scroll-padding-top: 36px !important;
   box-sizing: border-box !important;
 }
@@ -768,4 +761,15 @@ html.dark #factura-items-table thead th {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   box-sizing: border-box !important;
+}
+
+
+/* F-13: al imprimir, los encabezados no van fijos ni con fondo de pantalla. */
+@media print {
+  table thead,
+  table thead th {
+    position: static !important;
+    background: none !important;
+    box-shadow: none !important;
+  }
 }

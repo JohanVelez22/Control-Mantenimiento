@@ -24,31 +24,34 @@
                     <!-- Avatar de Usuario (Clickeable hacia Usuarios o Perfil propio con efecto escala interactivo sin tinte azul) -->
                     <a href="{{ auth()->check() && auth()->user()->isAdmin() ? route('usuarios.index') : (auth()->check() ? route('usuarios.edit', auth()->user()) : '#') }}" 
                        class="group flex items-center gap-2 pr-4 border-r border-gray-200 dark:border-white/10 hover:scale-105 transition-transform duration-300 mr-2 cursor-pointer"
-                       title="{{ auth()->check() && auth()->user()->isAdmin() ? 'Gestionar Usuarios' : 'Mi Perfil' }}">
+                       title="{{ auth()->check() && auth()->user()->isAdmin() ? 'Gestionar Usuarios' : 'Mi Perfil' }}" aria-label="{{ auth()->check() && auth()->user()->isAdmin() ? 'Gestionar Usuarios' : 'Mi Perfil' }}">
                         @if(auth()->check() && auth()->user()->photo)
                             <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Avatar" class="w-10 h-10 rounded-xl object-cover border-2 border-gray-200 dark:border-white/10 group-hover:shadow-md transition-all duration-300" onerror="this.style.display='none'; var fb=document.getElementById('topbar-avatar-fallback'); if(fb) fb.classList.remove('hidden');">
-                            <div id="topbar-avatar-fallback" class="hidden w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg transition-all duration-300">
-                                {{ substr(auth()->user()->name, 0, 1) }}
+                            <div id="topbar-avatar-fallback" class="hidden w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg transition-all duration-300" aria-hidden="true">
+                                {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
                             </div>
                         @elseif(auth()->check())
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg transition-all duration-300">
-                                {{ substr(auth()->user()->name, 0, 1) }}
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold shadow-lg transition-all duration-300" aria-hidden="true">
+                                {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
                             </div>
                         @endif
                         <div class="hidden md:flex flex-col text-left ml-2">
                             <span class="text-sm font-bold text-slate-800 dark:text-white leading-none">{{ auth()->check() ? auth()->user()->name : 'Invitado' }}</span>
-                            <span class="text-[10px] text-[#06B6D4] uppercase font-bold mt-1 tracking-wider">{{ auth()->check() ? auth()->user()->role ?? 'Admin' : 'Invitado' }}</span>
+                            <span class="text-[10px] text-[#06B6D4] uppercase font-bold mt-1 tracking-wider">{{ ['admin' => 'Administrador', 'tecnico' => 'Técnico', 'invitado' => 'Invitado'][auth()->user()?->role] ?? 'Invitado' }}</span>
                         </div>
                     </a>
 
                     <!-- Notification Bell -->
                     <div class="relative">
-                        <button class="notif-toggle-btn group relative" onclick="toggleNotifDropdown(); this.blur();" title="Notificaciones" aria-label="Notificaciones">
-                            <span class="inline-block transition-transform duration-200 group-hover:scale-110">🔔</span>
+                        {{-- F-37: número de pendientes; la animación solo cuando hay atrasados y si el sistema no pide menos movimiento. --}}
+                        <button type="button" class="notif-toggle-btn group relative" onclick="toggleNotifDropdown();" title="Notificaciones"
+                                aria-label="Notificaciones{{ ($totalPendientes ?? 0) > 0 ? ': '.$totalPendientes.' pendientes'.(($atrasadas ?? 0) > 0 ? ', '.$atrasadas.' atrasadas' : '') : '' }}"
+                                aria-haspopup="true" aria-expanded="false" aria-controls="notif-dropdown">
+                            <span class="inline-block transition-transform duration-200 group-hover:scale-110" aria-hidden="true">🔔</span>
                             @if(isset($totalPendientes) && $totalPendientes > 0)
-                                <span class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5 pointer-events-none">
-                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border border-white dark:border-slate-900 shadow-sm shadow-red-500/50"></span>
+                                <span class="absolute -top-1 -right-1 flex min-w-[1.1rem] h-[1.1rem] px-1 items-center justify-center rounded-full text-[10px] font-black text-white pointer-events-none {{ ($atrasadas ?? 0) > 0 ? 'bg-red-500' : 'bg-slate-500' }}" aria-hidden="true">
+                                    @if(($atrasadas ?? 0) > 0)<span class="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-60"></span>@endif
+                                    <span class="relative">{{ $totalPendientes > 99 ? '99+' : $totalPendientes }}</span>
                                 </span>
                             @endif
                         </button>

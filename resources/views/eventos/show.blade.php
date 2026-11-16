@@ -8,7 +8,7 @@
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
             <div class="flex items-center gap-3.5">
-                <a href="{{ route('eventos.index') }}" class="btn-ghost w-9 h-9 p-0 flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white" title="Volver a Eventos">
+                <a href="{{ route('eventos.index') }}" class="btn-ghost w-9 h-9 p-0 flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white" title="Volver a Eventos" aria-label="Volver a Eventos">
                     ←
                 </a>
                 <h1 class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white flex items-center gap-3.5">

@@ -14,7 +14,7 @@
         {{-- Encabezado unificado dentro de la tarjeta, tal como caja.show --}}
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 relative z-20">
             <div class="flex items-center gap-4">
-                <a href="{{ route('caja.index') }}" class="btn-ghost text-xl" title="Volver a la lista de caja">⬅️</a>
+                <a href="{{ route('caja.index') }}" class="btn-ghost text-xl" title="Volver a la lista de caja" aria-label="Volver a la lista de caja">⬅️</a>
                 <div>
                     <div class="flex flex-wrap items-center gap-3">
                         <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight whitespace-nowrap">
@@ -40,11 +40,11 @@
 
             <div class="flex flex-wrap items-center gap-3 shrink-0">
                 @if($facturaRel)
-                <a href="{{ route('inventario.facturas.show', $facturaRel->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30" title="Ver factura {{ $facturaRel->numero_factura }}">
+                <a href="{{ route('inventario.facturas.show', $facturaRel->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30" title="Ver factura {{ $facturaRel->numero_factura }}" aria-label="Ver factura {{ $facturaRel->numero_factura }}">
                     📄 Ver Factura #{{ $facturaRel->numero_factura }}
                 </a>
                 @endif
-                <a href="{{ route('caja.show', $movimiento->id) }}" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle completo">
+                <a href="{{ route('caja.show', $movimiento->id) }}" class="btn-ghost border-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" title="Ver detalle completo" aria-label="Ver detalle completo">
                     👁️ Ver Movimiento
                 </a>
             </div>
@@ -197,7 +197,7 @@
                                     </td>
                                     <td data-label="Acciones:" class="text-center whitespace-nowrap">
                                         <div class="actions-grid">
-                                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este abono">👁️</a>
+                                            <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este abono" aria-label="Ver detalle de este abono">👁️</a>
                                         </div>
                                     </td>
                                 </tr>

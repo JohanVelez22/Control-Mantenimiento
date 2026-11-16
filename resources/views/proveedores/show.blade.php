@@ -5,7 +5,7 @@
         {{-- Header --}}
         <div class="detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 w-full relative z-20">
             <div class="flex items-center gap-3">
-                <a href="{{ route('proveedores.index') }}" class="btn-ghost text-xl shrink-0" title="Volver">⬅️</a>
+                <a href="{{ route('proveedores.index') }}" class="btn-ghost text-xl shrink-0" title="Volver" aria-label="Volver">⬅️</a>
                 <div>
                     <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight flex items-center flex-wrap gap-2">
                         <span class="text-indigo-500 mr-1 align-middle inline-block">{{ $proveedor->tipo_entidad === 'empresa' ? '🏢' : '👤' }}</span>
@@ -203,7 +203,7 @@
                         </td>
                         <td class="text-center">
                             <div class="actions-grid justify-center">
-                                <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost btn-action-view" title="Ver Detalles">👁️</a>
+                                <a href="{{ route('inventario.facturas.show', $f->id) }}" class="btn-ghost btn-action-view" title="Ver Detalles" aria-label="Ver Detalles">👁️</a>
                             </div>
                         </td>
                     </tr>

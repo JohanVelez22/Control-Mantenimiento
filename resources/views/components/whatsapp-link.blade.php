@@ -16,7 +16,7 @@
        rel="noopener noreferrer" 
        class="inline-flex items-center align-middle gap-1 hover:text-emerald-500 dark:hover:text-emerald-400 group transition-colors cursor-pointer {{ $class }}" 
        style="gap: 3px;"
-       title="Abrir chat de WhatsApp ({{ $telefono }})">
+       title="Abrir chat de WhatsApp ({{ $telefono }})" aria-label="Abrir chat de WhatsApp ({{ $telefono }})">
         @if($showIcon)
             <svg width="16" height="16" viewBox="0 0 24 24" style="width: 16px; height: 16px; min-width: 16px; max-width: 16px; display: inline-block; vertical-align: middle;" class="shrink-0 group-hover:scale-110 transition-transform">
                 <path fill="#25D366" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>

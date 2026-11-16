@@ -72,9 +72,9 @@
   <div class="actions-grid">
   @if(!auth()->user()->isInvitado())
   @if($tecnico->active)
-  <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar">✏️</a>
+  <a href="{{ route('tecnicos.edit', $tecnico->id) }}" class="btn-ghost btn-action-edit w-8 h-8 flex items-center justify-center p-0 text-xs text-yellow-600 dark:text-yellow-400" title="Editar" aria-label="Editar">✏️</a>
   @endif
-                             <button type="button" onclick="openAnularModal('{{ route('tecnicos.anular', $tecnico->id) }}', {{ !$tecnico->active ? 'true' : 'false' }})" class="btn-ghost {{ !$tecnico->active ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $tecnico->active ? 'Anular Técnico' : 'Reactivar Técnico' }}">
+                             <button type="button" onclick="openAnularModal('{{ route('tecnicos.anular', $tecnico->id) }}', {{ !$tecnico->active ? 'true' : 'false' }})" class="btn-ghost {{ !$tecnico->active ? 'btn-action-reactivar text-emerald-600 dark:text-emerald-400' : 'btn-action-anular text-red-600 dark:text-red-400' }} w-8 h-8 flex items-center justify-center p-0 text-xs" title="{{ $tecnico->active ? 'Anular Técnico' : 'Reactivar Técnico' }}" aria-label="{{ $tecnico->active ? 'Anular Técnico' : 'Reactivar Técnico' }}">
   {{ $tecnico->active ? '🚫' : '✅' }}
   </button>
   @else

@@ -205,7 +205,7 @@
                             <td data-label="Detalles:" class="text-center col-acciones">
                                 @if($evento->valores_antiguos || $evento->valores_nuevos)
                                     <div class="actions-grid">
-                                        <button type="button" onclick="openDetalle({{ $evento->id }}, '{{ $evento->accion }}')" class="btn-ghost btn-action-view" title="Ver Detalles">👁️</button>
+                                        <button type="button" onclick="openDetalle({{ $evento->id }}, '{{ $evento->accion }}')" class="btn-ghost btn-action-view" title="Ver Detalles" aria-label="Ver Detalles">👁️</button>
                                     </div>
                                     
                                     {{-- Data escondida para el modal --}}
@@ -242,7 +242,7 @@
 
 @push('modals')
 {{-- Modal de Detalles de Cambios / Trazabilidad Liquid Glass --}}
-<div id="detalle-modal" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-[200]" onclick="if(event.target === this) closeDetalle()">
+<div id="detalle-modal" role="dialog" aria-modal="true" data-close-fn="closeDetalle" class="ts-modal-overlay hidden opacity-0 transition-opacity duration-300 z-[200]" onclick="if(event.target === this) closeDetalle()">
     <div class="event-modal-card scale-95 opacity-0 mx-auto shadow-2xl relative" id="detalle-card">
         {{-- Encabezado Fijo del Modal con Identidad Visual --}}
         <div class="event-modal-header">

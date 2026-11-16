@@ -31,19 +31,19 @@
    <button class="btn-primary py-2 px-5 text-sm">
    🔍 Ver Período
    </button>
-   <a href="{{ route('reportes.financiero.acumulado') }}" class="btn-clean text-sm" title="Reestablecer filtros">
+   <a href="{{ route('reportes.financiero.acumulado') }}" class="btn-clean text-sm" title="Reestablecer filtros" aria-label="Reestablecer filtros">
    <span>🧹</span> Limpiar
    </a>
   </div>
   
   <div class="reportes-filter-export flex items-center gap-2 ml-auto">
-      <button type="button" onclick="window.open('{{ request()->fullUrlWithQuery(['export' => 'pdf', 'page' => null]) }}', '_blank')" class="btn-print text-sm" title="Imprimir el reporte completo (abre el PDF con todos los registros)">
+      <button type="button" onclick="window.open('{{ request()->fullUrlWithQuery(['export' => 'pdf', 'page' => null]) }}', '_blank')" class="btn-print text-sm" title="Imprimir el reporte completo (abre el PDF con todos los registros)" aria-label="Imprimir el reporte completo (abre el PDF con todos los registros)">
       <span>🖨️</span> Imprimir
       </button>
-      <button type="button" onclick="exportarAcumulado('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">
+      <button type="button" onclick="exportarAcumulado('excel', this)" class="btn-excel text-sm" title="Exportar a Excel" aria-label="Exportar a Excel">
       <span>📊</span> Excel
       </button>
-      <button type="button" onclick="exportarAcumulado('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
+      <button type="button" onclick="exportarAcumulado('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF" aria-label="Exportar a PDF">
       <span>📄</span> PDF
       </button>
   </div>

@@ -4,7 +4,7 @@
    ================================================================ */
 
 /* --- FUENTE GOOGLE: INTER -------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+/* F-24: Inter se carga con <link> en los layouts (un @import dentro del CSS bloqueaba la primera pintura). */
 
 /* --- SCROLLBAR GLOBAL PERSONALIZADO -------------------------------------------------- */
 /* Estilo unificado con los desplegables TomSelect del proyecto */

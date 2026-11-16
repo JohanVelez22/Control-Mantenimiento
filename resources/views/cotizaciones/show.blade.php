@@ -15,7 +15,7 @@
 
         <div class="detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
             <div class="flex items-center gap-3">
-                <a href="{{ route('cotizaciones.index') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
+                <a href="{{ route('cotizaciones.index') }}" class="btn-ghost text-xl" title="Volver" aria-label="Volver">⬅️</a>
                 <div>
                     <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
                         📝 {{ $cotizacion->codigo }}
@@ -30,14 +30,14 @@
                 </a>
                 
                 @if($cotizacion->factura_creada)
-                    <a href="{{ route('inventario.facturas.show', $cotizacion->factura_creada->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 font-semibold" title="Ver {{ $cotizacion->factura_creada->tipo_movimiento === 'compra' ? 'Compra' : 'Venta' }} generada: {{ $cotizacion->factura_creada->numero_factura }}">
+                    <a href="{{ route('inventario.facturas.show', $cotizacion->factura_creada->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 font-semibold" title="Ver {{ $cotizacion->factura_creada->tipo_movimiento === 'compra' ? 'Compra' : 'Venta' }} generada: {{ $cotizacion->factura_creada->numero_factura }}" aria-label="Ver {{ $cotizacion->factura_creada->tipo_movimiento === 'compra' ? 'Compra' : 'Venta' }} generada: {{ $cotizacion->factura_creada->numero_factura }}">
                         {{ $cotizacion->factura_creada->tipo_movimiento === 'compra' ? '📦 Ver Compra' : '🛒 Ver Venta' }} ({{ $cotizacion->factura_creada->numero_factura }})
                     </a>
                 @endif
                 
                 @if(!$cotizacion->anulado)
                     @if($cotizacion->estado === 'pendiente')
-                    <form id="form-convertir-cotizacion" action="{{ route('cotizaciones.convertir', $cotizacion) }}" method="POST">
+                    <form id="form-convertir-cotizacion" data-confirm-type="success" action="{{ route('cotizaciones.convertir', $cotizacion) }}" method="POST">
                         @csrf
                         <button type="button" onclick="openAprobarCotizacionModal()" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                             ✅ Aprobar y Facturar

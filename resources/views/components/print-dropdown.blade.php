@@ -20,7 +20,7 @@
     {{-- Botón Principal: Formato predeterminado (idéntico en tamaño y padding a Editar/Anular) --}}
     <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" 
        class="print-main-btn no-underline hover:opacity-80 transition-opacity"
-       title="Imprimir en formato predeterminado ({{ $formatoActivo === 'pos' ? 'Ticket POS 80mm' : 'Estándar A4' }})">
+       title="Imprimir en formato predeterminado ({{ $formatoActivo === 'pos' ? 'Ticket POS 80mm' : 'Estándar A4' }})" aria-label="Imprimir en formato predeterminado ({{ $formatoActivo === 'pos' ? 'Ticket POS 80mm' : 'Estándar A4' }})">
         <span>🖨️ {{ $label }}</span>
     </a>
 
@@ -28,7 +28,7 @@
     <button type="button" 
             onclick="togglePrintMenu('{{ $id }}', event)" 
             class="print-arrow-btn hover:opacity-80 transition-opacity"
-            title="Elegir formato de impresión">
+            title="Elegir formato de impresión" aria-label="Elegir formato de impresión">
         <svg id="{{ $id }}-arrow" style="width: 8px; height: 8px; opacity: 0.7; pointer-events: none; transition: transform 0.2s ease;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
         </svg>

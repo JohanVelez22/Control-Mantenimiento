@@ -12,13 +12,13 @@
  </div>
  
  <div class="flex flex-wrap gap-2 no-print">
- <button type="button" onclick="window.open('{{ request()->fullUrlWithQuery(['export' => 'pdf', 'page' => null]) }}', '_blank')" class="btn-print text-sm" title="Imprimir el reporte completo (abre el PDF con todos los registros)">
+ <button type="button" onclick="window.open('{{ request()->fullUrlWithQuery(['export' => 'pdf', 'page' => null]) }}', '_blank')" class="btn-print text-sm" title="Imprimir el reporte completo (abre el PDF con todos los registros)" aria-label="Imprimir el reporte completo (abre el PDF con todos los registros)">
  <span>🖨️</span> Imprimir
  </button>
- <button type="button" onclick="exportarReporte('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">
+ <button type="button" onclick="exportarReporte('excel', this)" class="btn-excel text-sm" title="Exportar a Excel" aria-label="Exportar a Excel">
  <span>📊</span> Excel
  </button>
- <button type="button" onclick="exportarReporte('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF">
+ <button type="button" onclick="exportarReporte('pdf', this)" class="btn-pdf text-sm" title="Exportar a PDF" aria-label="Exportar a PDF">
  <span>📄</span> PDF
  </button>
  </div>
@@ -159,7 +159,7 @@
   
   <td class="{{ $dim }}">
    @if($m->equipo?->proveedor)
-   <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->equipo->proveedor_id }}" class="flex flex-col items-center gap-0 group no-print-link" title="Ver en tabla de proveedores">
+   <a href="{{ route('proveedores.index') }}#proveedor-{{ $m->equipo->proveedor_id }}" class="flex flex-col items-center gap-0 group no-print-link" title="Ver en tabla de proveedores" aria-label="Ver en tabla de proveedores">
    <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
    🏢 {{ $m->equipo->proveedor->nombre_razon_social }}
    </span>
@@ -168,7 +168,7 @@
    </span>
    </a>
    @elseif($m->equipo?->cliente)
-   <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id }}" class="flex flex-col items-center gap-0 group no-print-link" title="Ver en tabla de clientes">
+   <a href="{{ route('clientes.index') }}#cliente-{{ $m->equipo->cliente_id }}" class="flex flex-col items-center gap-0 group no-print-link" title="Ver en tabla de clientes" aria-label="Ver en tabla de clientes">
    <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
    👤 {{ $m->equipo->cliente->nombre }}
    </span>
@@ -182,7 +182,7 @@
   </td>
 
   <td class="{{ $dim }}">
-  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 group no-print-link" title="Ver en tabla de equipos">
+  <a href="{{ route('equipos.index') }}#equipo-{{ $m->equipo_id }}" class="flex flex-col items-center gap-0 group no-print-link" title="Ver en tabla de equipos" aria-label="Ver en tabla de equipos">
   <span class="text-slate-800 dark:text-white font-bold whitespace-nowrap group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{{ $m->equipo->nombre ?? 'N/A' }}</span>
   <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">({{ $m->equipo->marca ?? '' }} {{ $m->equipo->modelo ?? '' }}) - 
   <span class="text-[11px] font-semibold text-gray-500 tracking-wider uppercase mt-0.5">

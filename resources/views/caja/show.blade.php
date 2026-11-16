@@ -19,7 +19,7 @@
 
 
             <div class="flex items-center gap-4">
-                <a href="{{ route('caja.index') }}" class="btn-ghost text-xl" title="Volver a la lista de caja">⬅️</a>
+                <a href="{{ route('caja.index') }}" class="btn-ghost text-xl" title="Volver a la lista de caja" aria-label="Volver a la lista de caja">⬅️</a>
                 <div>
                     <div class="flex flex-wrap items-center gap-3">
                         <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight whitespace-nowrap">
@@ -44,7 +44,7 @@
                     $facturaRef = $movimiento->raiz()->factura;
                 @endphp
                 @if($facturaRef)
-                <a href="{{ route('inventario.facturas.show', $facturaRef->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-semibold" title="Ver factura {{ $facturaRef->numero_factura }}">
+                <a href="{{ route('inventario.facturas.show', $facturaRef->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-semibold" title="Ver factura {{ $facturaRef->numero_factura }}" aria-label="Ver factura {{ $facturaRef->numero_factura }}">
                     📄 Ver Factura ({{ $facturaRef->numero_factura }})
                 </a>
                 @endif
@@ -184,7 +184,7 @@
                         </td>
                         <td class="text-center whitespace-nowrap">
                             <div class="actions-grid">
-                                <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este pago">👁️</a>
+                                <a href="{{ route('caja.show', $child->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este pago" aria-label="Ver detalle de este pago">👁️</a>
                             </div>
                         </td>
 

@@ -41,7 +41,7 @@
  {{-- Encabezado --}}
  <div class="detail-header flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6 md:pb-8 relative z-20">
   <div class="flex items-center gap-3">
-  <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver">⬅️</a>
+  <a href="{{ route('inventario.facturas') }}" class="btn-ghost text-xl" title="Volver" aria-label="Volver">⬅️</a>
   <div>
   <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
   {{ $factura->numero_factura }}
@@ -55,13 +55,13 @@
  
  <div class="flex flex-wrap items-center gap-3 shrink-0">
  @if($factura->cotizacion_origen)
-  <a href="{{ route('cotizaciones.show', $factura->cotizacion_origen->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-semibold" title="Ver cotización de origen: {{ $factura->cotizacion_origen->codigo }}">
+  <a href="{{ route('cotizaciones.show', $factura->cotizacion_origen->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-semibold" title="Ver cotización de origen: {{ $factura->cotizacion_origen->codigo }}" aria-label="Ver cotización de origen: {{ $factura->cotizacion_origen->codigo }}">
       📝 Ver Cotización ({{ $factura->cotizacion_origen->codigo }})
   </a>
  @endif
 
  @if($factura->estado !== 'anulada' && !auth()->user()->isInvitado() && $movimientoPadre)
-  <a href="{{ route('caja.show', $movimientoPadre->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" title="Ver detalle del movimiento en el módulo de Caja">💵 Ver en Caja</a>
+  <a href="{{ route('caja.show', $movimientoPadre->id) }}" class="btn-ghost border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30" title="Ver detalle del movimiento en el módulo de Caja" aria-label="Ver detalle del movimiento en el módulo de Caja">💵 Ver en Caja</a>
  @endif
 
   <x-print-dropdown 
@@ -215,7 +215,7 @@
                      </td>
                      <td class="text-center whitespace-nowrap">
                          <div class="actions-grid">
-                             <a href="{{ route('caja.show', $abono->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este pago #{{ $abono->id }}">👁️</a>
+                             <a href="{{ route('caja.show', $abono->id) }}" class="btn-ghost btn-action-view" title="Ver detalle de este pago #{{ $abono->id }}" aria-label="Ver detalle de este pago #{{ $abono->id }}">👁️</a>
                          </div>
                      </td>
                  </tr>

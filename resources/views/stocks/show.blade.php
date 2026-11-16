@@ -352,7 +352,7 @@
                                     <button type="button" 
                                         onclick="openRevertirBajaModal('{{ route('stocks.bajas.revertir', $baja->id) }}', {{ $baja->cantidad }}, '{{ addslashes($stock->producto) }}')"
                                         class="btn-ghost btn-action-revertir w-8 h-8 flex items-center justify-center p-0 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:bg-emerald-500/10 rounded-lg transition" 
-                                        title="Revertir baja (reintegrar {{ $baja->cantidad }} unidad(es) al stock)">
+                                        title="Revertir baja (reintegrar {{ $baja->cantidad }} unidad(es) al stock)" aria-label="Revertir baja (reintegrar {{ $baja->cantidad }} unidad(es) al stock)">
                                         ↩️
                                     </button>
                                 </div>

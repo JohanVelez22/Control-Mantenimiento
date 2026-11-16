@@ -67,7 +67,7 @@ function agregarFila(itemData = null) {
         </td>
         <td class="col-subtotal text-right font-black text-blue-600 dark:text-blue-400 text-base subtotal-cell align-middle">$${formatNum(cant * precio)}</td>
         <td class="col-accion align-middle text-right">
-            <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem">
+            <button type="button" onclick="eliminarFila(this)" class="btn-danger btn-icon shadow-sm hover:scale-105 transition-all" title="Eliminar ítem" aria-label="Eliminar ítem">
                 🗑️
             </button>
         </td>
@@ -249,8 +249,6 @@ window.cambiarTipo = function(select, tr, val, itemData = null) {
     }
 };
 
-let _pendingRowToDelete = null;
-
 function eliminarFila(btn) {
     if (document.querySelectorAll('.item-row').length === 1) {
         if (typeof window.showToast === 'function') {
@@ -264,49 +262,9 @@ function eliminarFila(btn) {
     const tr = btn.closest('tr');
     if (!tr) return;
 
-    // Obtener descripción o nombre del producto para mensaje contextual
-    let itemNombre = '';
-    const descInput = tr.querySelector('.desc-input');
-    const stockSelect = tr.querySelector('.stock-select');
-    if (stockSelect && stockSelect.value) {
-        if (tr.tomselectObj && typeof tr.tomselectObj.getItem === 'function') {
-            const el = tr.tomselectObj.getItem(stockSelect.value);
-            if (el) itemNombre = el.textContent.trim().split('\n')[0].trim();
-        }
-        if (!itemNombre && stockSelect.selectedOptions && stockSelect.selectedOptions.length) {
-            itemNombre = stockSelect.selectedOptions[0].text.trim().split('(')[0].trim();
-        }
-    } else if (descInput && descInput.value.trim()) {
-        itemNombre = descInput.value.trim();
-    }
-
-    const modal = document.getElementById('ts-modal');
-    if (modal) {
-        const titleEl = document.getElementById('ts-modal-title');
-        const msgEl = document.getElementById('ts-modal-msg');
-        if (titleEl) titleEl.innerText = '¿Estás seguro?';
-        if (msgEl) {
-            msgEl.innerText = itemNombre
-                ? `¿Eliminar el ítem "${itemNombre}" de la cotización?`
-                : '¿Eliminar este ítem de la cotización?';
-        }
-
-        _pendingRowToDelete = tr;
-
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            const card = document.getElementById('ts-modal-card');
-            if (card) card.classList.remove('scale-95', 'opacity-0');
-        }, 10);
-    } else {
-        const msg = itemNombre 
-            ? `¿Eliminar el ítem "${itemNombre}" de la cotización?` 
-            : '¿Eliminar este ítem de la cotización?';
-        if (confirm(msg)) {
-            removerFila(tr);
-        }
-    }
+    // F-08: los ítems de la cotización solo se guardan al presionar Guardar; quitar una fila
+    // no necesita confirmación.
+    removerFila(tr);
 }
 
 function removerFila(tr) {
@@ -323,28 +281,6 @@ function removerFila(tr) {
         window.showToast('Ítem eliminado de la cotización.', 'info');
     }
 }
-
-// Hooks para el modal global de confirmación
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('ts-modal-confirm')?.addEventListener('click', () => {
-        if (_pendingRowToDelete) {
-            const tr = _pendingRowToDelete;
-            _pendingRowToDelete = null;
-            removerFila(tr);
-            if (typeof window.closeTsModal === 'function') {
-                window.closeTsModal();
-            }
-        }
-    });
-
-    if (typeof window.closeTsModal === 'function') {
-        const origCloseTsModal = window.closeTsModal;
-        window.closeTsModal = function() {
-            _pendingRowToDelete = null;
-            origCloseTsModal();
-        };
-    }
-});
 
 function bindInputs(tr) {
     if (!tr) return;

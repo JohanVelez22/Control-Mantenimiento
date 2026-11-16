@@ -8,7 +8,7 @@
         {{-- Encabezado --}}
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-gray-200/50 dark:border-white/10 pb-6">
             <div class="flex items-center gap-4">
-                <a href="{{ route('cierre.show', $cierre->id) }}" class="btn-ghost text-xl" title="Volver al detalle del cierre">⬅️</a>
+                <a href="{{ route('cierre.show', $cierre->id) }}" class="btn-ghost text-xl" title="Volver al detalle del cierre" aria-label="Volver al detalle del cierre">⬅️</a>
                 <div>
                     <h2 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight">
                         Editar Observaciones del Cierre <span class="text-blue-600 dark:text-blue-400">#{{ $cierre->id }}</span>

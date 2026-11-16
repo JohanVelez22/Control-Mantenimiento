@@ -27,7 +27,7 @@
     
     {{-- CSS Propio (Vite) --}}
     @vite('resources/css/glass/glass.css')
-    <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     {{-- Lógica de Tema Temprana --}}
     <script>
