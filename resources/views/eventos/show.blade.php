@@ -32,19 +32,23 @@
                     'logout' => '🚪',
                     'backup' => '💾',
                     'backup_restaurado' => '🔄',
+                    'repuesto_agregado' => '📦',
+                    'repuesto_quitado' => '↩️',
+                    'password_cambiada' => '🔐',
+                    'propietario_cambiado' => '🔁',
+                    'motivo_anulacion' => '📝',
+                    'datos_limpiados' => '🧹',
+                    'git_actualizado' => '⬆️',
                     default => '📌',
                 };
             @endphp
             <span class="badge-evento {{ $badgeClass }}">
                 <span class="badge-evento-icon">{{ $icon }}</span>
-                @if($evento->accion === 'backup_restaurado')
-                    <span class="inline-flex flex-col items-center leading-tight">
-                        <span>BACKUP</span>
-                        <span>RESTAURADO</span>
-                    </span>
-                @else
-                    <span>{{ $evento->accion }}</span>
-                @endif
+                <span class="inline-flex flex-col items-center leading-tight">
+                    @foreach(explode('_', (string) $evento->accion) as $palabra)
+                        <span>{{ mb_strtoupper($palabra) }}</span>
+                    @endforeach
+                </span>
             </span>
         </div>
     </div>

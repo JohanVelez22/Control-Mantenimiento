@@ -172,6 +172,17 @@
                                     $icon = '🔄';
                                     $textoAccion = 'backup_restaurado';
                                     break;
+                                default:
+                                    $icon = match($evento->accion) {
+                                        'repuesto_agregado' => '📦',
+                                        'repuesto_quitado' => '↩️',
+                                        'password_cambiada' => '🔐',
+                                        'propietario_cambiado' => '🔁',
+                                        'motivo_anulacion' => '📝',
+                                        'datos_limpiados' => '🧹',
+                                        'git_actualizado' => '⬆️',
+                                        default => '📌',
+                                    };
                             }
                         @endphp
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors">
@@ -181,14 +192,12 @@
                             <td data-label="Acción:" class="text-center">
                                 <span class="badge-evento {{ $badgeClass }}">
                                     <span class="text-base mb-0.5">{{ $icon }}</span>
-                                    @if($evento->accion === 'backup_restaurado')
-                                        <span class="inline-flex flex-col items-center leading-tight">
-                                            <span>BACKUP</span>
-                                            <span>RESTAURADO</span>
-                                        </span>
-                                    @else
-                                        <span>{{ $textoAccion }}</span>
-                                    @endif
+                                    {{-- Acciones de dos palabras (backup_restaurado, repuesto_agregado…): una palabra por renglón --}}
+                                    <span class="inline-flex flex-col items-center leading-tight">
+                                        @foreach(explode('_', (string) $textoAccion) as $palabra)
+                                            <span>{{ mb_strtoupper($palabra) }}</span>
+                                        @endforeach
+                                    </span>
                                 </span>
                             </td>
                             <td data-label="Descripción:" class="font-medium text-sm">
