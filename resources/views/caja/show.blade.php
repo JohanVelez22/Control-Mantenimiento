@@ -40,10 +40,8 @@
             
             <div class="flex flex-wrap items-center gap-3 shrink-0">
                 @php
-                    $facturaRef = $movimiento->factura;
-                    if (!$facturaRef && $movimiento->descripcion && preg_match('/#(VT-[A-Za-z0-9-]+|CP-[A-Za-z0-9-]+)/', $movimiento->descripcion, $mf)) {
-                        $facturaRef = \App\Models\Factura::where('numero_factura', $mf[1])->first();
-                    }
+                    // ARQ-03 / D-05: solo el vínculo por clave.
+                    $facturaRef = $movimiento->raiz()->factura;
                 @endphp
                 @if($facturaRef)
                 <a href="{{ route('inventario.facturas.show', $facturaRef->id) }}" class="btn-ghost border-indigo-500/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 font-semibold" title="Ver factura {{ $facturaRef->numero_factura }}">
@@ -147,13 +145,7 @@
         </div>
         @endif
 
-        @php
-            // Pagos del mismo documento, enlazados por clave (D-05 / M-02)
-            $relacionados = $movimiento->consultaPagosRelacionados()
-                ->where('id', '!=', $movimiento->id)
-                ->orderBy('created_at', 'asc')
-                ->get();
-        @endphp
+        {{-- $relacionados: pagos del mismo documento por clave (D-05), calculados en el controlador. --}}
 
         {{-- Historial de Abonos / Pagos Relacionados --}}
         @if($relacionados->isNotEmpty())

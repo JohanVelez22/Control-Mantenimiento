@@ -272,7 +272,8 @@ class CotizacionController extends Controller
         $cotizacion->load('cliente', 'proveedor', 'items.stock', 'user');
         $empresa = Configuracion::first() ?? new Configuracion;
         $pdf = Pdf::loadView('cotizaciones.pdf', compact('cotizacion', 'empresa'));
-        $pdf->setPaper('letter');
+        // X-17: el layout de impresión es A4; pedir carta no tenía efecto y confundía.
+        $pdf->setPaper('a4', 'portrait');
 
         return $pdf->stream('Cotizacion_'.$cotizacion->codigo.'.pdf');
     }

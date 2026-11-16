@@ -25,7 +25,7 @@
             color: #000000;
             background: #fff;
             line-height: 1.35;
-            margin: 20px 25px !important;
+            margin: 0; /* X-22: el margen lo define @page; repetirlo aquí lo duplicaba */
         }
 
         /* ─── HEADER ─── */

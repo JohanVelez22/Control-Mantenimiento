@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Exports\Concerns\FormatoHojaReporte;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -9,12 +10,13 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class StocksExport implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithMapping, WithStyles
 {
+    use FormatoHojaReporte;
+
     protected $stocks;
 
     public function __construct($stocks)
@@ -28,50 +30,17 @@ class StocksExport implements FromCollection, ShouldAutoSize, WithEvents, WithHe
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                // Configurar pie de página para impresión
-                $sheet->getHeaderFooter()->setOddFooter('&RPágina &P de &N');
+                // X-11: la combinación del título cubre las 11 columnas (antes A:J, sin Estado).
+                $lastRow = $this->formatearHoja($sheet, 'K');
+                $this->formatoColumnas($sheet, ['G', 'I', 'J'], self::FORMATO_MONEDA, $lastRow);
+                $footerRow = $lastRow + 2;
 
-                // Centrar y combinar título (Fila 1)
-                $sheet->mergeCells('A1:J1');
-                $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-                // Centrar y combinar fecha (Fila 2)
-                $sheet->mergeCells('A2:J2');
-                $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-                $lastRow = $sheet->getHighestRow();
-                $footerRow = $lastRow + 2; // Dejamos una fila de espacio
-
-                $totalRegistros = count($this->stocks);
-                $cantidadTotal = $this->stocks->sum('cantidad');
                 // Valor del inventario (cantidad × precio), no la suma de precios unitarios
-                $compraTotal = $this->stocks->sum(fn ($s) => (float) $s->cantidad * (float) $s->precio_compra);
-                $ventaTotal = $this->stocks->sum(fn ($s) => (float) $s->cantidad * (float) $s->precio_venta);
-                $tecnicoTotal = $this->stocks->sum(fn ($s) => (float) $s->cantidad * (float) $s->precio_tecnico);
-
-                // Aplicar formato de miles a las columnas G, I y J
-                $sheet->getStyle("G5:G{$lastRow}")->getNumberFormat()->setFormatCode('"$ "#,##0');
-                $sheet->getStyle("I5:I{$lastRow}")->getNumberFormat()->setFormatCode('"$ "#,##0');
-                $sheet->getStyle("J5:J{$lastRow}")->getNumberFormat()->setFormatCode('"$ "#,##0');
-
-                // Escribir totales
-                $sheet->setCellValue("A{$footerRow}", "Total Registros: {$totalRegistros}");
-                $sheet->setCellValue("F{$footerRow}", "Cant. Total: {$cantidadTotal}");
-                $sheet->setCellValue("G{$footerRow}", 'Valor Compra: $ '.number_format($compraTotal, 0, ',', '.'));
-                $sheet->setCellValue("I{$footerRow}", 'Valor Venta: $ '.number_format($ventaTotal, 0, ',', '.'));
-                $sheet->setCellValue("J{$footerRow}", 'Valor Técnico: $ '.number_format($tecnicoTotal, 0, ',', '.'));
-
-                // Estilo para los totales
-                $sheet->getStyle("A{$footerRow}:J{$footerRow}")->applyFromArray([
-                    'font' => [
-                        'bold' => true,
-                        'size' => 11,
-                    ],
-                ]);
-
-                $sheet->getStyle("G{$footerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-                $sheet->getStyle("I{$footerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-                $sheet->getStyle("J{$footerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                $this->total($sheet, $footerRow, 'A', 'Registros', 'B', count($this->stocks), '0');
+                $this->total($sheet, $footerRow, 'E', 'Unidades', 'F', (int) $this->stocks->sum('cantidad'), '#,##0');
+                $this->total($sheet, $footerRow + 1, 'F', 'Valor compra', 'G', (float) $this->stocks->sum(fn ($s) => (float) $s->cantidad * (float) $s->precio_compra));
+                $this->total($sheet, $footerRow + 2, 'F', 'Valor venta', 'G', (float) $this->stocks->sum(fn ($s) => (float) $s->cantidad * (float) $s->precio_venta));
+                $this->total($sheet, $footerRow + 3, 'F', 'Valor técnico', 'G', (float) $this->stocks->sum(fn ($s) => (float) $s->cantidad * (float) $s->precio_tecnico));
             },
         ];
     }
@@ -121,7 +90,7 @@ class StocksExport implements FromCollection, ShouldAutoSize, WithEvents, WithHe
     public function map($s): array
     {
         return [
-            $s->codigo ?? '-',
+            self::texto($s->codigo ?? '-'),
             $s->producto,
             $s->categoria ?? '-',
             $s->subcategoria ?? '-',

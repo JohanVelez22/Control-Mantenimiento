@@ -2,11 +2,11 @@
 
 namespace App\Exports;
 
+use App\Exports\Concerns\FormatoHojaReporte;
 use App\Models\Electronica;
 use App\Models\Factura;
 use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
-use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -20,6 +20,8 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ReportesFinancierosExport implements FromCollection, ShouldAutoSize, WithEvents, WithHeadings, WithMapping, WithStyles
 {
+    use FormatoHojaReporte;
+
     protected $transacciones;
 
     protected ?array $resumen;
@@ -37,19 +39,9 @@ class ReportesFinancierosExport implements FromCollection, ShouldAutoSize, WithE
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                // Configurar pie de página para impresión
-                $sheet->getHeaderFooter()->setOddFooter('&RPágina &P de &N');
-
-                // Centrar y combinar título (Fila 1)
-                $sheet->mergeCells('A1:G1');
-                $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-                // Centrar y combinar fecha (Fila 2)
-                $sheet->mergeCells('A2:G2');
-                $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-                $lastRow = $sheet->getHighestRow();
+                $lastRow = $this->formatearHoja($sheet, 'G', horizontal: false);
                 $footerRow = $lastRow + 2;
+                $this->fechasEn($sheet, ['B'], $lastRow);
 
                 if ($this->resumen && isset($this->resumen['balance_neto'])) {
                     $total = (float) $this->resumen['balance_neto'];
@@ -77,13 +69,8 @@ class ReportesFinancierosExport implements FromCollection, ShouldAutoSize, WithE
                 // Alinear columna A (Código) a la izquierda para consistencia
                 $sheet->getStyle("A5:A{$lastRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
-                $sheet->setCellValue("A{$footerRow}", 'Total registros: '.$this->transacciones->count());
-                $sheet->setCellValue("E{$footerRow}", 'Balance Neto: $ '.number_format($total, 0, ',', '.'));
-
-                $sheet->getStyle("A{$footerRow}:G{$footerRow}")->applyFromArray([
-                    'font' => ['bold' => true, 'size' => 11],
-                ]);
-                $sheet->getStyle("E{$footerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                $this->total($sheet, $footerRow, 'A', 'Registros', 'B', $this->transacciones->count(), '0');
+                $this->total($sheet, $footerRow, 'D', 'Balance neto', 'E', (float) $total);
             },
         ];
     }
@@ -158,8 +145,8 @@ class ReportesFinancierosExport implements FromCollection, ShouldAutoSize, WithE
         $anulado = $isArr ? (! empty($tx['anulado']) ? 'Sí' : 'No') : (($tx->anulado ?? (($tx->estado ?? null) === 'anulada')) ? 'Sí' : 'No');
 
         return [
-            $codigo,
-            $fecha ? Carbon::parse($fecha)->format('d/m/Y') : '—',
+            self::texto((string) $codigo),
+            self::fechaExcel($fecha ?: null),
             ucfirst($tipo),
             $desc,
             (float) $monto,

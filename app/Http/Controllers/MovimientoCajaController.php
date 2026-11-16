@@ -161,8 +161,13 @@ class MovimientoCajaController extends Controller
     public function show(MovimientoCaja $movimiento)
     {
         $movimiento->load('concepto', 'user', 'childPayments.user', 'parent');
+        // X-23 / ARQ-03: las consultas se hacen aquí, no en la vista.
+        $relacionados = $movimiento->consultaPagosRelacionados()
+            ->where('id', '!=', $movimiento->id)
+            ->orderBy('created_at', 'asc')
+            ->get();
 
-        return view('caja.show', compact('movimiento'));
+        return view('caja.show', compact('movimiento', 'relacionados'));
     }
 
     public function create()
@@ -403,6 +408,8 @@ class MovimientoCajaController extends Controller
 
         $empresa = Configuracion::first();
         $formato = request('formato', $empresa->formato_factura ?? 'estandar');
+        // X-23 / ARQ-03: pagos del documento calculados aquí, no en la plantilla.
+        $todosPagos = $movimiento->consultaPagosRelacionados()->orderBy('created_at', 'asc')->get();
 
         if ($formato === 'pos') {
             $historyCount = ($movimiento->childPayments ? $movimiento->childPayments->count() : 0) + ($movimiento->parent?->childPayments ? $movimiento->parent->childPayments->count() : 0);
@@ -412,13 +419,13 @@ class MovimientoCajaController extends Controller
 
             return PosTicketService::streamTicket(
                 'caja.print_pos',
-                compact('movimiento'),
+                compact('movimiento', 'todosPagos'),
                 'ticket_caja_'.$movimiento->id.'.pdf',
                 $fallbackHeight
             );
         }
 
-        $pdf = Pdf::loadView('caja.print', compact('movimiento'));
+        $pdf = Pdf::loadView('caja.print', compact('movimiento', 'todosPagos'));
         $pdf->setPaper('a4', 'portrait');
 
         return $pdf->stream('comprobante_caja_'.$movimiento->id.'.pdf');

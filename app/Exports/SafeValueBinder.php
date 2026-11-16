@@ -17,6 +17,13 @@ class SafeValueBinder extends DefaultValueBinder
 {
     public function bindValue(Cell $cell, $value)
     {
+        // X-10: documentos y códigos como texto (sin perder ceros ni dígitos).
+        if ($value instanceof TextoExcel) {
+            $cell->setValueExplicit($value->valor, DataType::TYPE_STRING);
+
+            return true;
+        }
+
         if (is_string($value) && $value !== '' && ! is_numeric($value)
             && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);

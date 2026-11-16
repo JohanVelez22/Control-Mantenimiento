@@ -16,7 +16,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @page { margin: 25px 30px; }
-        body { font-family: sans-serif; font-size: 9px; color: #1a202c; background: #fff; margin: 25px 30px !important; }
+        body { font-family: sans-serif; font-size: 9px; color: #1a202c; background: #fff; margin: 0; } /* X-22: margen solo en @page */
 
         .report-header {
             display: table;

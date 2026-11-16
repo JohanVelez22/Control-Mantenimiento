@@ -70,14 +70,11 @@
      
      $rawMontoTotal = old('monto_total', request('monto_total', $movimiento->monto_total ?? ''));
 
-     // Si monto_total esta vacio pero hay una descripcion con factura (#VT-X / #CP-X), obtener el total de la factura
-     if (($rawMontoTotal === '' || $rawMontoTotal === null || $rawMontoTotal == 0) && (isset($movimiento) || request('descripcion'))) {
-         $descToSearch = $movimiento->descripcion ?? request('descripcion', '');
-         if (preg_match('/#([A-Za-z0-9-]+)/', $descToSearch, $matches)) {
-             $facturaRel = \App\Models\Factura::where('numero_factura', $matches[1])->first();
-             if ($facturaRel) {
-                 $rawMontoTotal = $facturaRel->total_documento;
-             }
+     // Si el movimiento pertenece a una factura (vínculo por clave, no por el texto), su total.
+     if (($rawMontoTotal === '' || $rawMontoTotal === null || $rawMontoTotal == 0) && isset($movimiento) && $movimiento->exists) {
+         $facturaRel = $movimiento->raiz()->factura;
+         if ($facturaRel) {
+             $rawMontoTotal = $facturaRel->total_documento;
          }
      }
 

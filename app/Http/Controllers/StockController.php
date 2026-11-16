@@ -297,7 +297,7 @@ class StockController extends Controller
         }
 
         if ($request->has('export') && $request->export === 'pdf') {
-            $stocks = $query->get();
+            $stocks = (clone $query)->orderBy('id', 'desc')->get(); // X-20: mismo orden que la pantalla
             $pdf = Pdf::loadView('stocks.pdf_reportes', compact('stocks', 'totales'))
                 ->setPaper('a4', 'portrait');
 
@@ -306,7 +306,7 @@ class StockController extends Controller
 
         // Exportar Excel
         if ($request->has('export') && $request->export === 'excel') {
-            $stocks = $query->get();
+            $stocks = (clone $query)->orderBy('id', 'desc')->get(); // X-20: mismo orden que la pantalla
 
             return Excel::download(
                 new StocksExport($stocks),

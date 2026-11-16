@@ -242,14 +242,12 @@
                         <img src="{{ $logoBase64 }}" alt="Logo" class="header-logo">
                     </div>
                 @else
+                    {{-- X-19: sin logo se muestra el nombre de la empresa (antes un recuadro "SIN LOGO" en documentos de cliente). --}}
                     <div style="display: inline-block; width: 38%; vertical-align: top;">
-                        <div class="header-logo" style="width: 180px; height: 75px; line-height: 75px; text-align: center; background: #eee; font-size: 10pt; color: #666; font-weight: bold;">SIN LOGO</div>
+                        <h1 style="margin: 18px 0 0; font-size: 15pt;">{{ Str::upper($empresa->nombre) }}</h1>
                     </div>
                 @endif
                 <div class="header-info" style="display: inline-block; width: 60%; text-align: right; vertical-align: top;">
-                    @if(!$logoBase64)
-                        <h1>{{ Str::upper($empresa->nombre) }}</h1>
-                    @endif
                     @if($empresa->nit)<p><strong>NIT:</strong> {{ $empresa->nit }}</p>@endif
                     @if($empresa->telefono)<p><strong>Tel:</strong> {{ $empresa->telefono }}</p>@endif
                     @if($empresa->direccion)<p><strong>Dir:</strong> {{ $empresa->direccion }}</p>@endif

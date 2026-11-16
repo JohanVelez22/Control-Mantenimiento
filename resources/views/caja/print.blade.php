@@ -22,7 +22,6 @@
     // Total del documento y pagos relacionados: solo por clave (factura, orden o
     // movimiento raíz), nunca por referencias escritas en la descripción (D-05 / M-02).
     $effectiveMontoTotal = $movimiento->effective_monto_total;
-    $todosPagos = $movimiento->consultaPagosRelacionados()->orderBy('created_at', 'asc')->get();
 
     $totalAcumulado = $todosPagos->sum('monto');
     $saldoPendiente = $effectiveMontoTotal > 0 ? max(0, (float) $effectiveMontoTotal - $totalAcumulado) : 0;

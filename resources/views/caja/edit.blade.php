@@ -3,11 +3,9 @@
 
 @section('content')
 @php
-    $numFactura = null;
-    if (preg_match('/#([A-Za-z0-9-]+)/', $movimiento->descripcion ?? '', $matches)) {
-        $numFactura = $matches[1];
-    }
-    $facturaRel = $numFactura ? \App\Models\Factura::where('numero_factura', $numFactura)->first() : null;
+    // ARQ-03 / D-05: la factura se toma del vínculo por clave (del pago o de su movimiento raíz),
+    // nunca de un "#VT-n" escrito en la descripción.
+    $facturaRel = $movimiento->raiz()->factura;
 @endphp
 
 <div class="max-w-7xl mx-auto">

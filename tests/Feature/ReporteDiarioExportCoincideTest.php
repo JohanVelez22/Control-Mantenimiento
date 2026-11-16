@@ -91,8 +91,10 @@ class ReporteDiarioExportCoincideTest extends TestCase
         $anuladosExcel = count(array_filter($datos, fn ($f) => $f[6] === 'Sí'));
         $this->assertSame($movimientos->where('anulado', true)->count(), $anuladosExcel);
 
-        $pie = collect($filas)->flatten()->first(fn ($c) => is_string($c) && str_starts_with($c, 'Balance Neto:'));
-        $this->assertSame('Balance Neto: $ '.number_format($resumen['balance_neto'], 0, ',', '.'), $pie);
+        // X-11: el pie lleva la etiqueta en una celda y el valor numérico en la siguiente.
+        $filaPie = collect($filas)->first(fn ($f) => in_array('Balance neto', $f, true));
+        $this->assertNotNull($filaPie, 'El Excel debe tener el pie "Balance neto"');
+        $this->assertEqualsWithDelta((float) $resumen['balance_neto'], (float) $filaPie[array_search('Balance neto', $filaPie, true) + 1], 0.001);
 
         // ── PDF: capturar los datos que recibe la plantilla al exportar
         $capturado = null;

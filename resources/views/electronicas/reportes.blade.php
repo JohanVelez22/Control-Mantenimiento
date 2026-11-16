@@ -12,7 +12,7 @@
  </div>
  
  <div class="flex flex-wrap gap-2 no-print">
- <button type="button" onclick="window.print()" class="btn-print text-sm" title="Imprimir Reporte">
+ <button type="button" onclick="window.open('{{ request()->fullUrlWithQuery(['export' => 'pdf', 'page' => null]) }}', '_blank')" class="btn-print text-sm" title="Imprimir el reporte completo (abre el PDF con todos los registros)">
  <span>🖨️</span> Imprimir
  </button>
  <button type="button" onclick="exportarReporte('excel', this)" class="btn-excel text-sm" title="Exportar a Excel">

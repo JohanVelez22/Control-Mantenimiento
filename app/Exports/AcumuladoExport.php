@@ -8,7 +8,6 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -78,14 +77,7 @@ class AcumuladoExport implements FromArray, ShouldAutoSize, WithEvents, WithHead
                 // Format amount column (C)
                 $sheet->getStyle('C5:C11')->getNumberFormat()->setFormatCode('"$ "#,##0');
 
-                // Force B11 and C11 cell values to show "0" and "$ 0" as strings if they are 0
-                if (($this->acumulado['total_anulados'] ?? 0) == 0) {
-                    $sheet->setCellValueExplicit('B11', '0', DataType::TYPE_STRING);
-                }
-                if (($this->acumulado['total_costo_anulados'] ?? 0) == 0) {
-                    $sheet->setCellValueExplicit('C11', '$ 0', DataType::TYPE_STRING);
-                }
-                $sheet->getStyle('B11:C11')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                // X-09: los ceros ya se escriben como 0 (strict_null_comparison en config/excel.php).
 
                 // Black color for Movimientos Anulados (Row 11)
                 $sheet->getStyle('A11:C11')->applyFromArray([

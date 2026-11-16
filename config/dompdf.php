@@ -110,7 +110,8 @@ return [
         /**
          * Whether to enable font subsetting or not.
          */
-        'enable_font_subsetting' => false,
+        // X-18: incrusta solo los caracteres usados (los PDF pasaban de ~900 KB por las fuentes completas).
+        'enable_font_subsetting' => true,
 
         /**
          * The PDF rendering backend to use

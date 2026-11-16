@@ -12,7 +12,7 @@
 
 @section('content')
 <div class="info-pos">
-    <p><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($factura->fecha)->format('d/m/Y H:i') }}</p>
+    <p><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($factura->fecha)->format('d/m/Y') }}</p>
     <p><strong>{{ $factura->tipo_movimiento === 'compra' ? 'Proveedor' : 'Cliente' }}:</strong> {{ $factura->facturable->nombre_razon_social ?? $factura->facturable->nombre ?? 'N/A' }}</p>
     <p><strong>Doc/NIT:</strong> {{ $factura->facturable->identificacion ?? 'N/A' }}</p>
     @if(!empty($factura->facturable->telefono ?? $factura->facturable->movil))
