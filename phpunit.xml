@@ -23,6 +23,11 @@
     <php>
         <ini name="memory_limit" value="512M"/>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_KEY" value="base64:JAJcx+HsrY8ojD6fBpYdYYOAAaCIuewCLUrwCl23ISc=" force="true"/>
+        <env name="APP_DEBUG" value="false" force="true"/>
+        <env name="ADMIN_DEFAULT_PASSWORD" value="Admin123*" force="true"/>
+        <env name="TECNICO_DEFAULT_PASSWORD" value="Tecni123*" force="true"/>
+        <env name="INVITADO_DEFAULT_PASSWORD" value="Invit123*" force="true"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
