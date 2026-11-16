@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Electronica;
 use App\Models\Mantenimiento;
+use App\Support\CodigoConsulta;
+use App\Support\Esquema;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -42,7 +44,9 @@ class GuestController extends Controller
                 ->get();
         }
 
-        return view('guest.dashboard', compact('cliente', 'mantenimientos', 'electronicas'));
+        $usaCodigo = Esquema::tiene('mantenimientos', 'codigo_consulta');
+
+        return view('guest.dashboard', compact('cliente', 'mantenimientos', 'electronicas', 'usaCodigo'));
     }
 
     /**
@@ -53,6 +57,14 @@ class GuestController extends Controller
      */
     public function search(Request $request)
     {
+        // S-04: con el código de consulta (aleatorio, impreso en el recibo) la orden no se
+        // puede adivinar recorriendo números consecutivos. Mientras no se haya ejecutado la
+        // migración que crea los códigos, se mantiene la consulta por número de orden.
+        $tablaConsulta = $request->input('tipo') === 'electronica' ? 'electronicas' : 'mantenimientos';
+        if (Esquema::tiene($tablaConsulta, 'codigo_consulta')) {
+            return $this->buscarPorCodigo($request);
+        }
+
         $validated = $request->validate([
             'tipo' => 'required|in:mantenimiento,electronica',
             'identificacion' => 'required|string|min:3|max:30',
@@ -128,6 +140,56 @@ class GuestController extends Controller
         $cliente = null;
         $searched = true;
 
-        return view('guest.dashboard', compact('cliente', 'mantenimientos', 'electronicas', 'searched', 'identificacion', 'id_orden', 'tipo'));
+        $usaCodigo = false;
+
+        return view('guest.dashboard', compact('cliente', 'mantenimientos', 'electronicas', 'searched', 'identificacion', 'id_orden', 'tipo', 'usaCodigo'));
+    }
+
+    /** S-04: consulta con cédula o NIT del dueño y código de consulta de la orden. */
+    private function buscarPorCodigo(Request $request)
+    {
+        $validated = $request->validate([
+            'tipo' => 'required|in:mantenimiento,electronica',
+            'identificacion' => 'required|string|min:3|max:30',
+            'codigo' => 'required|string|min:4|max:20',
+        ], [
+            'identificacion.required' => 'Debes digitar Cédula / NIT',
+            'identificacion.min' => 'La identificación debe tener al menos 3 caracteres.',
+            'codigo.required' => 'Debes digitar el código de consulta que aparece en tu recibo',
+            'tipo.required' => 'El tipo de consulta es obligatorio.',
+        ]);
+
+        $tipo = $validated['tipo'];
+        $identificacion = trim($validated['identificacion']);
+        $cleanId = preg_replace('/[\s\-\.]/', '', $identificacion);
+        $codigo = CodigoConsulta::normalizar($validated['codigo']);
+
+        $duenoFilter = function ($equipo) use ($identificacion, $cleanId) {
+            $porIdentificacion = fn ($sub) => $sub->where('identificacion', $identificacion)
+                ->orWhereRaw("REPLACE(REPLACE(REPLACE(identificacion, ' ', ''), '-', ''), '.', '') = ?", [$cleanId]);
+            $equipo->whereHas('cliente', $porIdentificacion)->orWhereHas('proveedor', $porIdentificacion);
+        };
+
+        $modelo = $tipo === 'mantenimiento' ? Mantenimiento::class : Electronica::class;
+        $ordenes = $modelo::with(['equipo.cliente', 'equipo.proveedor', 'tecnico', 'stocks'])
+            ->where('anulado', false)
+            ->where('codigo_consulta', $codigo)
+            ->whereHas('equipo', $duenoFilter)
+            ->get();
+
+        $claveSesion = $tipo === 'mantenimiento' ? 'consultas_autorizadas' : 'consultas_autorizadas_elec';
+        if ($ordenes->isNotEmpty()) {
+            $existentes = session($claveSesion, []);
+            session([$claveSesion => array_values(array_unique(array_merge($existentes, $ordenes->pluck('id')->all())))]);
+        }
+
+        $mantenimientos = $tipo === 'mantenimiento' ? $ordenes : collect();
+        $electronicas = $tipo === 'electronica' ? $ordenes : collect();
+        $cliente = null;
+        $searched = true;
+        $id_orden = $ordenes->first()->id_orden ?? CodigoConsulta::formatear($codigo);
+        $usaCodigo = true;
+
+        return view('guest.dashboard', compact('cliente', 'mantenimientos', 'electronicas', 'searched', 'identificacion', 'id_orden', 'tipo', 'usaCodigo'));
     }
 }

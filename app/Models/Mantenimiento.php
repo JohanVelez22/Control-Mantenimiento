@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\CodigoConsulta;
+use App\Support\Esquema;
 use App\Traits\Auditable;
 use App\Traits\CalculaCostoOrden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -92,5 +94,23 @@ class Mantenimiento extends Model
     public function getSaldoPendienteAttribute(): float
     {
         return max(0, (float) $this->costo - $this->total_abonado);
+    }
+
+    /** S-04: cada orden nueva recibe su código de consulta aleatorio. */
+    protected static function booted(): void
+    {
+        static::creating(function (self $orden): void {
+            if (empty($orden->codigo_consulta) && Esquema::tiene('mantenimientos', 'codigo_consulta')) {
+                $orden->codigo_consulta = CodigoConsulta::nuevo('mantenimientos');
+            }
+        });
+    }
+
+    /** Código de consulta con formato legible (ABCD-EFGH). */
+    public function getCodigoConsultaFormateadoAttribute(): ?string
+    {
+        $codigo = $this->attributes['codigo_consulta'] ?? null;
+
+        return $codigo ? CodigoConsulta::formatear($codigo) : null;
     }
 }

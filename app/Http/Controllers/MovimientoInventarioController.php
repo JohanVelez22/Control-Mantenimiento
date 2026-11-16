@@ -15,6 +15,7 @@ use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
 use App\Services\OrdenService;
 use App\Services\PosTicketService;
+use App\Services\StockService;
 use App\Support\Monto;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
@@ -150,8 +151,8 @@ class MovimientoInventarioController extends Controller
                 if ($type === 'Proveedor') {
                     $stock->update(['proveedor_id' => $entity->id]);
                 }
-                // Incrementar stock de forma atómica
-                $stock->incrementarStock((int) $item['cantidad']);
+                // Incrementar stock de forma atómica y actualizar el costo promedio (M-11)
+                app(StockService::class)->entradaCompra($stock, (int) $item['cantidad'], (float) $item['precio_unitario']);
             }
 
             // 3. Si hay pago o saldo pendiente, registrar egreso en Caja con seguimiento de saldos

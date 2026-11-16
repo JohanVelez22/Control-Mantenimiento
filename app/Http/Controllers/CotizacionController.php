@@ -16,6 +16,7 @@ use App\Rules\Facturable;
 use App\Services\AnulacionService;
 use App\Services\CierreCajaGuard;
 use App\Services\OrdenService;
+use App\Services\StockService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -480,7 +481,8 @@ class CotizacionController extends Controller
                 if ($item->tipo === 'stock' && $item->item_id && isset($lockedStocks[$item->item_id])) {
                     $stock = $lockedStocks[$item->item_id];
                     if ($esProveedor) {
-                        $stock->incrementarStock((int) $item->cantidad);
+                        // M-11: una compra actualiza el costo promedio del artículo.
+                        app(StockService::class)->entradaCompra($stock, (int) $item->cantidad, (float) $item->precio_unitario);
                     } else {
                         $stock->decrementarStock((int) $item->cantidad);
                     }

@@ -49,7 +49,7 @@ class Abono extends Model
     {
         static::deleting(function ($abono) {
             if ($abono->movimientoCaja) {
-                $abono->movimientoCaja->update(['anulado' => true]);
+                $abono->movimientoCaja->update(['anulado' => true, 'estado' => 'anulado']);
             }
         });
     }

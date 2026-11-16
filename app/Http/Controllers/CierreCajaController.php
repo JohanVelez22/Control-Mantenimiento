@@ -6,6 +6,7 @@ use App\Models\CierreCaja;
 use App\Models\Evento;
 use App\Models\MovimientoCaja;
 use App\Services\AnulacionService;
+use App\Support\Esquema;
 use App\Support\Monto;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -119,9 +120,15 @@ class CierreCajaController extends Controller
                     'num_movimientos' => $datos['num_movimientos'],
                     'observaciones' => $request->observaciones,
                     'motivo_diferencia' => $request->motivo_diferencia,
-                ])->saveQuietly();
+                ]);
+                // M-06: foto del efectivo inicial y del esperado al contar; ya no se recalculan.
+                if (Esquema::tiene('cierre_cajas', 'saldo_inicial')) {
+                    $cierre->saldo_inicial = round((float) $datos['saldo_anterior'], 2);
+                    $cierre->efectivo_esperado = round($efectivoEsperado, 2);
+                }
+                $cierre->saveQuietly();
 
-                Evento::registrar('creado', $cierre, null, $cierre->getAttributes(), 'Creó un nuevo registro en CierreCaja');
+                Evento::registrar('creado', $cierre, null, $cierre->getAttributes(), 'Cerró la caja del '.Carbon::parse($fecha)->format('d/m/Y'));
 
                 return redirect()->route('cierre.index')
                     ->with('success', 'Cierre del '.Carbon::parse($fecha)->format('d/m/Y').' guardado y bloqueado.');

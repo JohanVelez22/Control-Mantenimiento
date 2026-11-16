@@ -18,7 +18,7 @@
     <div class="info-col">
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Ingreso:</strong> <strong>{{ $mantenimiento->fecha_entrada ? \Carbon\Carbon::parse($mantenimiento->fecha_entrada)->format('d/m/Y') : '—' }}</strong></p>
         <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Fecha Emisión:</strong> <strong>{{ now()->format('d/m/Y h:i A') }}</strong></p>
-        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $mantenimiento->estado }}</span></p>
+        <p style="font-size: 7.5pt; margin: 1px 0;"><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $mantenimiento->estado }}</span>@if($mantenimiento->codigo_consulta_formateado) · <strong>Código de consulta:</strong> {{ $mantenimiento->codigo_consulta_formateado }}@endif</p>
     </div>
 </div>
 

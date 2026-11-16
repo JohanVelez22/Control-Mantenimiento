@@ -5,7 +5,6 @@ namespace Tests;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\DB;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -43,14 +42,7 @@ abstract class TestCase extends BaseTestCase
         return $raiz;
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        if (DB::connection()->getDriverName() === 'sqlite') {
-            DB::connection()->getPdo()->sqliteCreateFunction('GREATEST', function (...$args) {
-                return max(...$args);
-            });
-        }
-    }
+    // GREATEST() para SQLite lo registra App\Database\SqliteConnector en cada conexión, como
+    // función determinista. Registrarla aquí otra vez sin esa marca hacía fallar cualquier
+    // ALTER TABLE en las pruebas ("non-deterministic functions prohibited in generated columns").
 }

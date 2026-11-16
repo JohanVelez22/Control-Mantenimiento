@@ -11,9 +11,11 @@ use App\Models\Electronica;
 use App\Models\Factura;
 use App\Models\Mantenimiento;
 use App\Models\MovimientoCaja;
+use App\Support\Esquema;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReporteFinancieroController extends Controller
@@ -448,6 +450,21 @@ class ReporteFinancieroController extends Controller
         $acumulado['total_facturado'] = $acumulado['ventas_inventario'] + $acumulado['facturado_mant'] + $acumulado['facturado_elec'];
         $acumulado['balance_operativo'] = $acumulado['total_facturado'] - $acumulado['compras_inventario'];
         $acumulado['facturado_total'] = $acumulado['total_facturado'];
+
+        // M-11: utilidad bruta de las ventas de inventario con el costo guardado en cada ítem
+        // al vender (no con el precio de compra de hoy). null si aún no existe la columna.
+        $acumulado['utilidad_ventas'] = null;
+        if (Esquema::tiene('factura_items', 'costo_unitario')) {
+            $items = DB::table('factura_items as i')
+                ->join('facturas as f', 'f.id', '=', 'i.factura_id')
+                ->where('f.tipo_movimiento', 'venta')
+                ->where('f.estado', '!=', 'anulada')
+                ->whereNull('f.deleted_at')
+                ->whereBetween('f.fecha', [$desde, $hasta]);
+            $acumulado['utilidad_ventas'] = (float) (clone $items)->whereNotNull('i.costo_unitario')
+                ->selectRaw('COALESCE(SUM(i.cantidad * (i.precio_unitario - i.costo_unitario)), 0) as u')->value('u');
+            $acumulado['items_sin_costo'] = (int) (clone $items)->whereNull('i.costo_unitario')->count();
+        }
 
         // — Mantenimientos en el rango
         $mantenimientosList = Mantenimiento::with(['equipo.cliente', 'tecnico'])

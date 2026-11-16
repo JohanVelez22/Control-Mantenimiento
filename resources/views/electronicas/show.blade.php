@@ -20,6 +20,9 @@
                     <h2 class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight flex flex-wrap items-center gap-2 sm:gap-3">
                         <span class="text-purple-500">⚡</span>
                         {{ $electronica->id_orden }}
+                        @if(!auth()->user()->isInvitado() && $electronica->codigo_consulta_formateado)
+                        <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wider" title="Código de consulta del cliente">Código: {{ $electronica->codigo_consulta_formateado }}</span>
+                        @endif
                         @if($electronica->anulado)
                             <span class="pill pill-anulado text-sm py-1 px-3 ml-2">🚫 Anulado</span>
                         @else
@@ -32,6 +35,9 @@
             </div>
             
             <div class="flex items-center gap-3 shrink-0">
+                @if(!auth()->user()->isInvitado() && !$electronica->anulado)
+                <a href="{{ route('electronicas.recepcion', $electronica) }}" target="_blank" rel="noopener" class="btn-ghost border-slate-500/20 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/40" title="Comprobante de recepción con el código de consulta del cliente">🧾 Recepción</a>
+                @endif
                 @if($electronica->estado === 'terminado' && $electronica->fecha_salida)
                 <x-print-dropdown 
                     :url="route('electronicas.factura', $electronica)"

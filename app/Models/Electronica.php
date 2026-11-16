@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\CodigoConsulta;
+use App\Support\Esquema;
 use App\Traits\Auditable;
 use App\Traits\CalculaCostoOrden;
 use Carbon\Carbon;
@@ -99,5 +101,23 @@ class Electronica extends Model
     public function abonos()
     {
         return $this->hasMany(Abono::class);
+    }
+
+    /** S-04: cada orden nueva recibe su código de consulta aleatorio. */
+    protected static function booted(): void
+    {
+        static::creating(function (self $orden): void {
+            if (empty($orden->codigo_consulta) && Esquema::tiene('electronicas', 'codigo_consulta')) {
+                $orden->codigo_consulta = CodigoConsulta::nuevo('electronicas');
+            }
+        });
+    }
+
+    /** Código de consulta con formato legible (ABCD-EFGH). */
+    public function getCodigoConsultaFormateadoAttribute(): ?string
+    {
+        $codigo = $this->attributes['codigo_consulta'] ?? null;
+
+        return $codigo ? CodigoConsulta::formatear($codigo) : null;
     }
 }

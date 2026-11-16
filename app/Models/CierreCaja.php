@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Esquema;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +13,7 @@ class CierreCaja extends Model
     protected $fillable = [
         'fecha', 'total_ingresos', 'total_egresos',
         'efectivo', 'efectivo_real_contado', 'diferencia',
-        'consignacion', 'saldo_final',
+        'consignacion', 'saldo_final', 'saldo_inicial', 'efectivo_esperado',
         'num_movimientos', 'bloqueado', 'observaciones', 'motivo_diferencia', 'user_id',
     ];
 
@@ -27,10 +28,15 @@ class CierreCaja extends Model
     }
 
     /**
-     * Saldo inicial acumulado en efectivo al inicio del día del cierre.
+     * Saldo inicial acumulado en efectivo al inicio del día del cierre. M-06: si el cierre
+     * guardó su foto, se usa esa; los cierres anteriores a la migración se recalculan.
      */
     public function getSaldoInicialDiaAttribute(): float
     {
+        if (($this->attributes['saldo_inicial'] ?? null) !== null) {
+            return (float) $this->attributes['saldo_inicial'];
+        }
+
         $fecha = $this->fecha ? $this->fecha->toDateString() : null;
         if (! $fecha) {
             return 0.0;
@@ -52,6 +58,18 @@ class CierreCaja extends Model
             ->where('tipo_pago', 'efectivo')
             ->where('fecha', '<', $fecha);
         $sumaNeta = "SUM(CASE WHEN tipo_movimiento = 'ingreso' THEN monto ELSE -monto END) as total";
+
+        // D-15 / M-06: con la foto del último cierre no hace falta recorrer la historia:
+        // se parte de lo contado (o, si no se contó, de lo esperado) ese día.
+        if (Esquema::tiene('cierre_cajas', 'efectivo_esperado')) {
+            $ultimo = static::where('fecha', '<', $fecha)->orderBy('fecha', 'desc')->first();
+            $base = $ultimo ? ($ultimo->efectivo_real_contado ?? $ultimo->getAttributes()['efectivo_esperado'] ?? null) : null;
+            if ($ultimo && $base !== null) {
+                $intermedio = (float) ($flujoEfectivo()->where('fecha', '>', $ultimo->fecha)->selectRaw($sumaNeta)->value('total') ?? 0);
+
+                return (float) $base + $intermedio;
+            }
+        }
 
         $ultimoConteo = static::where('fecha', '<', $fecha)
             ->whereNotNull('efectivo_real_contado')
@@ -78,8 +96,12 @@ class CierreCaja extends Model
     /**
      * Efectivo total esperado en caja al momento del arqueo (saldo inicial + flujo del día).
      */
-    public function getEfectivoEsperadoAttribute(): float
+    public function getEfectivoEsperadoAttribute($valor): float
     {
+        if ($valor !== null) {
+            return (float) $valor;
+        }
+
         return $this->saldo_inicial_dia + $this->flujo_dia;
     }
 

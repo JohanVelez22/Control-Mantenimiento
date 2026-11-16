@@ -266,6 +266,13 @@
                     <td class="p-3 text-center">{{ $acumulado['total_ventas'] }}</td>
                     <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">$ {{ number_format($acumulado['ventas_inventario'], 0, ',', '.') }}</td>
                 </tr>
+                @if(($acumulado['utilidad_ventas'] ?? null) !== null)
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td class="p-3 font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap" title="Precio de venta menos el costo guardado en cada ítem al momento de vender"><span class="mr-2">💹</span>Utilidad bruta de ventas</td>
+                    <td class="p-3 text-center text-xs text-gray-500">{{ ($acumulado['items_sin_costo'] ?? 0) > 0 ? $acumulado['items_sin_costo'].' ítem(s) sin costo' : 'costo histórico' }}</td>
+                    <td class="p-3 text-center font-bold text-gray-900 dark:text-gray-100">$ {{ number_format($acumulado['utilidad_ventas'], 0, ',', '.') }}</td>
+                </tr>
+                @endif
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
                     <td class="p-3 font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap"><span class="mr-2">📈</span>Ingresos (Caja)</td>
                     <td class="p-3 text-center">{{ $acumulado['total_ingresos'] ?? 0 }}</td>

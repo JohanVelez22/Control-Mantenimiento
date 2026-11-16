@@ -18,6 +18,9 @@
         <p><strong>Tel:</strong> {{ $mantenimiento->equipo->propietario_telefono }}</p>
     @endif
     <p><strong>Técnico:</strong> {{ $mantenimiento->tecnico->nombre ?? 'N/A' }}</p>
+    @if($mantenimiento->codigo_consulta_formateado)
+        <p><strong>Código de consulta:</strong> {{ $mantenimiento->codigo_consulta_formateado }}</p>
+    @endif
     <p><strong>Estado:</strong> <span style="text-transform: uppercase; font-weight: bold;">{{ $mantenimiento->estado }}</span></p>
 </div>
 

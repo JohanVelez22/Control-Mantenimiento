@@ -41,6 +41,39 @@ class StockService
     }
 
     /**
+     * M-11: entrada por compra. Además de sumar las unidades, actualiza el precio de compra
+     * del artículo con el costo promedio ponderado:
+     * (existencias × costo actual + unidades compradas × precio de compra) ÷ total.
+     * Si no había existencias, el costo pasa a ser el de esta compra. El precio de venta
+     * no se toca: lo decide el negocio.
+     */
+    public function entradaCompra(Stock|int $stock, int $cantidad, float $precioUnitario): Stock
+    {
+        if ($cantidad <= 0) {
+            throw new \DomainException('La cantidad de entrada debe ser mayor que cero.');
+        }
+
+        $id = $stock instanceof Stock ? $stock->id : $stock;
+
+        return DB::transaction(function () use ($id, $cantidad, $precioUnitario) {
+            $model = Stock::lockForUpdate()->findOrFail($id);
+            $existencias = max(0, (int) $model->cantidad);
+
+            if ($precioUnitario > 0) {
+                $costoActual = (float) $model->precio_compra;
+                $nuevoCosto = $existencias > 0 && $costoActual > 0
+                    ? ($existencias * $costoActual + $cantidad * $precioUnitario) / ($existencias + $cantidad)
+                    : $precioUnitario;
+                $model->precio_compra = round($nuevoCosto, 2);
+            }
+            $model->cantidad = (int) $model->cantidad + $cantidad;
+            $model->save();
+
+            return $model->refresh();
+        });
+    }
+
+    /**
      * Salida de stock (venta o repuesto). Lanza DomainException si no alcanza.
      *
      * @param  Stock|int  $stock  Modelo o ID del artículo.

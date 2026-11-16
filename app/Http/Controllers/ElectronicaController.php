@@ -262,6 +262,19 @@ class ElectronicaController extends Controller
         }
     }
 
+    /** S-04: comprobante de recepción (ticket POS) con el código de consulta del cliente. */
+    public function recepcion(Electronica $electronica)
+    {
+        Gate::authorize('view', $electronica);
+        abort_if($electronica->anulado, 404);
+        $electronica->load(['equipo.cliente', 'equipo.proveedor', 'tecnico']);
+
+        return PosTicketService::streamTicket('partials.recepcion_pos', [
+            'orden' => $electronica,
+            'descripcion' => $electronica->descripcion_problema,
+        ], 'recepcion_'.$electronica->id_orden.'.pdf', 620);
+    }
+
     public function factura(Electronica $electronica)
     {
         Gate::authorize('view', $electronica);

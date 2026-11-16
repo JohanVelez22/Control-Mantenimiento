@@ -21,6 +21,7 @@ class Stock extends Model
         'categoria',
         'subcategoria',
         'cantidad',
+        'stock_minimo',
         'proveedor_id',    // FK formal
         'precio_compra',
         'utilidad',

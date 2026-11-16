@@ -193,9 +193,11 @@ Route::middleware(['auth', 'prevent-back-history', 'password.cambio'])->group(fu
     Route::middleware('role:admin,tecnico,invitado')->group(function () {
         Route::get('mantenimientos/{mantenimiento}', [MantenimientoController::class, 'show'])->name('mantenimientos.show');
         Route::get('mantenimientos/{mantenimiento}/factura', [MantenimientoController::class, 'factura'])->name('mantenimientos.factura');
+        Route::get('mantenimientos/{mantenimiento}/recepcion', [MantenimientoController::class, 'recepcion'])->name('mantenimientos.recepcion');
 
         Route::get('electronicas/{electronica}', [ElectronicaController::class, 'show'])->name('electronicas.show');
         Route::get('electronicas/{electronica}/factura', [ElectronicaController::class, 'factura'])->name('electronicas.factura');
+        Route::get('electronicas/{electronica}/recepcion', [ElectronicaController::class, 'recepcion'])->name('electronicas.recepcion');
     });
 
     // ─── Admin y Técnico: anular y bajas (técnico requiere contraseña de admin) ─────

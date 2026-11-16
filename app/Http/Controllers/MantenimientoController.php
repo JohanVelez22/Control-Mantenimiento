@@ -95,7 +95,7 @@ class MantenimientoController extends Controller
 
         // La copia no hereda la anulación ni los repuestos (la pivot no se replica):
         // su costo excluye el valor de los repuestos de la orden original.
-        $nuevo = $mantenimiento->replicate(['anulado']);
+        $nuevo = $mantenimiento->replicate(['anulado', 'codigo_consulta']); // S-04: la copia recibe su propio código
         $nuevo->anulado = false;
         $nuevo->costo = max(0, (float) $mantenimiento->costo - $mantenimiento->valorRepuestos());
         $nuevo->id_orden = $siguiente;
@@ -362,6 +362,19 @@ class MantenimientoController extends Controller
 
             return redirect()->back()->with('error', 'Error al actualizar el mantenimiento. Intente nuevamente.')->withInput();
         }
+    }
+
+    /** S-04: comprobante de recepción (ticket POS) con el código de consulta del cliente. */
+    public function recepcion(Mantenimiento $mantenimiento)
+    {
+        Gate::authorize('view', $mantenimiento);
+        abort_if($mantenimiento->anulado, 404);
+        $mantenimiento->load(['equipo.cliente', 'equipo.proveedor', 'tecnico']);
+
+        return PosTicketService::streamTicket('partials.recepcion_pos', [
+            'orden' => $mantenimiento,
+            'descripcion' => $mantenimiento->descripcion,
+        ], 'recepcion_'.$mantenimiento->id_orden.'.pdf', 620);
     }
 
     public function factura(Mantenimiento $mantenimiento)

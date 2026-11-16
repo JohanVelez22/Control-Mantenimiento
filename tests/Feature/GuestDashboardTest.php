@@ -127,7 +127,7 @@ class GuestDashboardTest extends TestCase
             'anulado' => false,
         ]);
 
-        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&identificacion='.$cliente->identificacion.'&id_orden='.$mantenimiento->id_orden);
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&identificacion='.$cliente->identificacion.'&codigo='.$mantenimiento->codigo_consulta);
 
         $response->assertOk();
         $response->assertSessionHasNoErrors();
@@ -160,7 +160,7 @@ class GuestDashboardTest extends TestCase
             'anulado' => false,
         ]);
 
-        $response = $this->actingAs($guest)->get('/guest/search?tipo=electronica&identificacion='.$cliente->identificacion.'&id_orden='.$electronica->id_orden);
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=electronica&identificacion='.$cliente->identificacion.'&codigo='.$electronica->codigo_consulta);
 
         $response->assertOk();
         $response->assertSessionHasNoErrors();
@@ -223,7 +223,7 @@ class GuestDashboardTest extends TestCase
 
         $response = $this->actingAs($guest)->get('/guest/search', [
             'identificacion' => '123456789',
-            'id_orden' => 'ORD-001',
+            'codigo' => 'ABCD2345',
         ]);
 
         $response->assertSessionHasErrors('tipo');
@@ -238,7 +238,8 @@ class GuestDashboardTest extends TestCase
             'identificacion' => '123456789',
         ]);
 
-        $response->assertSessionHasErrors('id_orden');
+        // S-04: la consulta pide el código de consulta del recibo, no el número de orden.
+        $response->assertSessionHasErrors('codigo');
     }
 
     public function test_guest_cannot_view_order_with_mismatched_cedula(): void
@@ -270,10 +271,10 @@ class GuestDashboardTest extends TestCase
         ]);
 
         // Cédula diferente no debe ver la orden de otro cliente
-        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&identificacion=999999999&id_orden='.$mantenimiento->id_orden);
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&identificacion=999999999&codigo='.$mantenimiento->codigo_consulta);
         $response->assertOk();
         $response->assertDontSee('Confidencial');
-        $response->assertSee('No se encontró ningun resultado');
+        $response->assertSee('no se encontró ninguna orden con ese documento y código');
     }
 
     public function test_guest_dashboard_shows_repuestos_breakdown(): void
@@ -320,7 +321,7 @@ class GuestDashboardTest extends TestCase
             'precio_unitario' => 150000,
         ]);
 
-        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&identificacion='.$cliente->identificacion.'&id_orden='.$mantenimiento->id_orden);
+        $response = $this->actingAs($guest)->get('/guest/search?tipo=mantenimiento&identificacion='.$cliente->identificacion.'&codigo='.$mantenimiento->codigo_consulta);
 
         $response->assertOk();
         $response->assertSee('Disco SSD 1TB');

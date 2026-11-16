@@ -107,6 +107,15 @@ class AcumuladoExport implements FromArray, ShouldAutoSize, WithEvents, WithHead
                 ]);
 
                 $sheet->getStyle("B{$footerRow}:C{$footerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
+                // M-11: utilidad bruta de ventas con el costo histórico de cada ítem.
+                if (($this->acumulado['utilidad_ventas'] ?? null) !== null) {
+                    $filaUtilidad = $footerRow + 1;
+                    $sheet->setCellValue("B{$filaUtilidad}", 'Utilidad bruta de ventas (costo histórico):');
+                    $sheet->setCellValue("C{$filaUtilidad}", (float) $this->acumulado['utilidad_ventas']);
+                    $sheet->getStyle("C{$filaUtilidad}")->getNumberFormat()->setFormatCode('"$ "#,##0');
+                    $sheet->getStyle("B{$filaUtilidad}:C{$filaUtilidad}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+                }
             },
         ];
     }

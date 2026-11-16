@@ -252,18 +252,19 @@
                         </p>
                     </div>
 
-                    {{-- Campo Número de Orden --}}
+                    {{-- Campo Código de consulta (S-04) o, antes de migrar, Número de Orden --}}
+                    @php $campoOrden = ($usaCodigo ?? false) ? 'codigo' : 'id_orden'; @endphp
                     <div class="mb-3.5">
                         <label for="guestOrdenInput" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 ml-0.5">
-                            📋 Número de Orden <span class="text-red-500 font-bold">*</span>
+                            📋 {{ ($usaCodigo ?? false) ? 'Código de consulta (en su recibo)' : 'Número de Orden' }} <span class="text-red-500 font-bold">*</span>
                         </label>
-                        <input type="text" name="id_orden" id="guestOrdenInput" 
-                               value="{{ old('id_orden', $id_orden ?? '') }}" 
-                               class="glass-input w-full px-3.5 py-2.5 text-sm sm:text-base font-semibold rounded-xl focus:placeholder-transparent" 
-                               placeholder="{{ $isElec ? 'Ej: ELC-001 o 1' : 'Ej: ORD-001 o 1' }}" minlength="1" maxlength="30" autocomplete="off">
-                        <p id="error-orden" class="text-xs text-red-500 font-semibold mt-1.5 ml-0.5 flex items-start gap-1.5 leading-[18px] {{ ($hasNotFound || $errors->has('id_orden')) ? '' : 'hidden' }}">
+                        <input type="text" name="{{ $campoOrden }}" id="guestOrdenInput"
+                               value="{{ ($usaCodigo ?? false) ? old('codigo') : old('id_orden', $id_orden ?? '') }}"
+                               class="glass-input w-full px-3.5 py-2.5 text-sm sm:text-base font-semibold rounded-xl"
+                               placeholder="{{ ($usaCodigo ?? false) ? 'Ej: ABCD-EFGH' : ($isElec ? 'Ej: ELC-001 o 1' : 'Ej: ORD-001 o 1') }}" minlength="1" maxlength="30" autocomplete="off">
+                        <p id="error-orden" class="text-xs text-red-500 font-semibold mt-1.5 ml-0.5 flex items-start gap-1.5 leading-[18px] {{ ($hasNotFound || $errors->has($campoOrden)) ? '' : 'hidden' }}">
                             <span class="shrink-0 inline-flex items-center justify-center h-[18px] text-xs select-none">⚠️</span>
-                            <span id="error-orden-text" class="leading-[18px]">{{ $errors->first('id_orden') ?: 'No es correcto: No se encontró ningun resultado para este número de orden' }}</span>
+                            <span id="error-orden-text" class="leading-[18px]">{{ $errors->first($campoOrden) ?: (($usaCodigo ?? false) ? 'No es correcto: no se encontró ninguna orden con ese documento y código' : 'No es correcto: No se encontró ningun resultado para este número de orden') }}</span>
                         </p>
                     </div>
 

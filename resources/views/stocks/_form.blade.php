@@ -60,6 +60,17 @@
             @endif
         </div>
 
+        @if(\App\Support\Esquema::tiene('stocks', 'stock_minimo'))
+        <div>
+            <label for="stock_minimo" class="field-label">Stock mínimo</label>
+            <input type="number" name="stock_minimo" id="stock_minimo" min="0"
+                   value="{{ old('stock_minimo', $st?->stock_minimo) }}"
+                   placeholder="{{ \App\Models\Stock::STOCK_MINIMO_GLOBAL }} (por defecto)" class="glass-input dark:[color-scheme:dark]">
+            <p class="text-xs text-gray-400 mt-1">Con estas existencias o menos, el producto aparece como "stock bajo". Vacío = {{ \App\Models\Stock::STOCK_MINIMO_GLOBAL }}.</p>
+            @error('stock_minimo') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
+        </div>
+        @endif
+
         <div>
             <label for="proveedor_id" class="field-label">Proveedor <span class="text-red-500 font-bold">*</span></label>
             <select name="proveedor_id" id="proveedor_id" required class="glass-input" data-placeholder="Buscar proveedor...">

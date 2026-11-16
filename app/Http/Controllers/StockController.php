@@ -11,6 +11,7 @@ use App\Models\Proveedor;
 use App\Models\Stock;
 use App\Services\AnulacionService;
 use App\Services\StockService;
+use App\Support\Esquema;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -71,6 +72,7 @@ class StockController extends Controller
             'categoria' => 'required|string|max:50',
             'subcategoria' => 'required|string|max:50',
             'cantidad' => 'required|integer|min:0',
+            'stock_minimo' => 'nullable|integer|min:0|max:100000',
             'proveedor_id' => 'required|integer|exists:proveedores,id',
             'precio_compra' => 'required|numeric|min:0|decimal:0,2',
             'utilidad' => 'required|numeric|min:0|max:100',
@@ -85,6 +87,9 @@ class StockController extends Controller
         // Las columnas de precio son NOT NULL: sin estos valores el alta daba error 500.
         $validated['precio_venta'] ??= 0;
         $validated['precio_tecnico'] ??= 0;
+        if (! Esquema::tiene('stocks', 'stock_minimo')) {
+            unset($validated['stock_minimo']);
+        }
 
         if ($request->hasFile('photo')) {
             $validated['photo'] = $request->file('photo')->store('stocks', 'public');
@@ -126,6 +131,7 @@ class StockController extends Controller
             'categoria' => 'required|string|max:50',
             'subcategoria' => 'required|string|max:50',
             'cantidad' => 'required|integer|min:0',
+            'stock_minimo' => 'nullable|integer|min:0|max:100000',
             'proveedor_id' => 'required|integer|exists:proveedores,id',
             'precio_compra' => 'required|numeric|min:0|decimal:0,2',
             'utilidad' => 'required|numeric|min:0|max:100',
@@ -137,6 +143,10 @@ class StockController extends Controller
             'photo.mimes' => 'La imagen debe ser un archivo en formato PNG, JPG, JPEG o WEBP.',
             'photo.max' => 'La imagen no debe superar los 5 MB de tamaño.',
         ]);
+
+        if (! Esquema::tiene('stocks', 'stock_minimo')) {
+            unset($validated['stock_minimo']);
+        }
 
         // Regla del taller: las existencias cambian con compras, ventas o bajas. Un técnico
         // solo puede ajustarlas a mano con la contraseña de un administrador (evita ocultar faltantes).

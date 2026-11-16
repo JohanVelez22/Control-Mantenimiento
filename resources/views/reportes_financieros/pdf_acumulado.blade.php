@@ -212,6 +212,13 @@
                 <td style="text-align:center">{{ $acumulado['total_ventas'] ?? 0 }}</td>
                 <td class="monto" style="text-align:center">$ {{ number_format($acumulado['ventas_inventario'] ?? 0, 0, ',', '.') }}</td>
             </tr>
+            @if(($acumulado['utilidad_ventas'] ?? null) !== null)
+            <tr>
+                <td>Utilidad bruta de ventas (costo histórico)</td>
+                <td style="text-align:center">{{ ($acumulado['items_sin_costo'] ?? 0) > 0 ? $acumulado['items_sin_costo'].' sin costo' : '—' }}</td>
+                <td class="monto" style="text-align:center">$ {{ number_format($acumulado['utilidad_ventas'], 0, ',', '.') }}</td>
+            </tr>
+            @endif
             <tr>
                 <td>Ingresos Reales (Caja)</td>
                 <td style="text-align:center">{{ $acumulado['total_ingresos'] ?? 0 }}</td>
