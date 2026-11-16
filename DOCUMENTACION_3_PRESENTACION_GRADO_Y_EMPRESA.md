@@ -1,4 +1,7 @@
 # 📊 CUADERNO 3: ESTRUCTURA DE PRESENTACIÓN Y SUSTENTACIÓN DE GRADO
+
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
 ## Presentación Ejecutiva y Académica (Diapositiva por Diapositiva)
 ## Proyecto: Sistema de Control de Mantenimiento de Equipos
 

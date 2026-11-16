@@ -1,4 +1,7 @@
 # 📘 DOCUMENTACIÓN TÉCNICA Y FUNCIONAL DEL PROYECTO
+
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
 ## System Name: TECNI SYSTEMAS - Sistema de Control de Mantenimiento e Integridad Financiera
 ## Stack: Laravel 12 / PHP 8.3 / MySQL / Tailwind CSS & Liquid Glass UI (Glassmorphism)
 

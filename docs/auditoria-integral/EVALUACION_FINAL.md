@@ -1,6 +1,11 @@
 # Evaluación final
 
-Fecha: 2026-11-13.
+Fecha: 2026-11-13. **Actualizada el 2026-11-16 (cuarta ronda).**
+
+> **Actualización 2026-11-16.**
+> - **Código:** quedaron resueltos todos los hallazgos que afectan dinero, datos, seguridad o documentos. Lo que sigue abierto (`PENDIENTES.md`) es configuración del servidor, mejoras visuales y la prueba en impresora térmica.
+> - **Pruebas:** la suite pasó en SQLite (780 pruebas). También pasó completa en MySQL 8.4 sobre una base temporal, incluidos los bloqueos de concurrencia.
+> - **Veredicto:** se mantiene en **B. APTO CON RESTRICCIONES** hasta que el dueño complete los pasos P0. Con ellos y la semana en paralelo cumplida, pasa a A.
 
 **Base de la evaluación:** 9 informes especializados con evidencia (pruebas de demostración, `EXPLAIN` sobre la base real en solo lectura, documentos generados y leídos de verdad) y las correcciones de esta ronda, cada una con una prueba que falla con el código anterior.
 

@@ -126,3 +126,18 @@ Objetivo: tiempo de recuperación ~2 h. Necesita: último respaldo (`.zip` BD+mu
 
 ---
 
+
+
+## 7. Cambios de la cuarta ronda (2026-11-16)
+
+- **Cifrado (S-08).** Con `BACKUP_PASSWORD` en `.env`, cada respaldo se guarda como ZIP cifrado con AES-256. Restaurar y `app:verificar-respaldo` lo descifran solos. Para abrirlo a mano en otro equipo, use 7-Zip con esa clave.
+  - **Si la clave se pierde, el respaldo no se puede recuperar.** Escríbala en papel y guárdela fuera del local.
+  - Si cambia la clave, los respaldos anteriores siguen necesitando la clave anterior.
+- **Huella de cada respaldo (D-03).** `storage/app/backups/manifiesto.json` guarda el SHA-256 y el tamaño de cada archivo, y se copia a la carpeta externa. Un archivo que cambió desde que se creó no se verifica ni se restaura.
+- **Contraseña para operaciones sensibles.** Descargar, restaurar, borrar un respaldo o actualizar desde GitHub pide la contraseña de la sesión. Tras 5 intentos fallidos se bloquea 15 minutos. Cada descarga queda en el historial.
+- **Mantenimiento al restaurar (D-01).** Mientras se restaura, los demás equipos ven "Mantenimiento en curso".
+  - El aviso se quita al terminar.
+  - Si el proceso se interrumpe, vence solo a los 30 minutos. También se puede borrar `storage/framework/restaurando.json`.
+- **Historial conservado (D-16).** Los eventos posteriores al respaldo se reintegran con SQL, sin cargar todo en memoria.
+- **Credenciales (D-10).** `mysqldump` y `mysql` reciben la contraseña en un archivo temporal que se borra al terminar, ya no en la variable `MYSQL_PWD`.
+- **Programador de tareas.** `app:preflight` avisa si la tarea programada no se ha ejecutado en las últimas 2 horas (latido cada 10 minutos).

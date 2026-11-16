@@ -6,7 +6,7 @@
 [![PHP](https://img.shields.io/badge/PHP-8.3%20%7C%208.4-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
 [![MySQL](https://img.shields.io/badge/MySQL-8.4-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Liquid_Glass-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
-[![Tests](https://img.shields.io/badge/Tests-554_Passed_(1784_Assertions)-brightgreen?style=for-the-badge&logo=checkmarx)](tests)
+[![Tests](https://img.shields.io/badge/Tests-780_Passed_(SQLite_y_MySQL)-brightgreen?style=for-the-badge&logo=checkmarx)](tests)
 [![Audit](https://img.shields.io/badge/System_Audit-100%25_Passing-success?style=for-the-badge&logo=shield)](app/Console/Commands/SystemAuditCommand.php)
 
 Aplicación web empresarial de alto rendimiento diseñada para la gestión integral de talleres de servicio técnico, mantenimiento de equipos de cómputo, laboratorio de microelectrónica, inventario de repuestos con cálculo de utilidad, facturación POS, cotizaciones, control de caja chica y portal público de seguimiento para clientes.
@@ -124,7 +124,7 @@ El sistema implementa reglas de precisión decimal y consistencia contable:
 El proyecto cuenta con una cobertura integral de pruebas automatizadas:
 
 ```bash
-# Ejecutar la suite completa de pruebas automatizadas (554 tests / 1784 aserciones)
+# Ejecutar la suite completa de pruebas automatizadas (780 pruebas). Nunca en el servidor de producción con su .env.
 php artisan test
 
 # Ejecutar análisis de estilo de código PSR-12

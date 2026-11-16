@@ -1,5 +1,8 @@
 # 📖 Manual de Operaciones y Mantenimiento del Sistema — Tecni-Systemas
 
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
+
 Este manual describe los procedimientos operativos para administradores, operadores técnicos y personal de soporte del sistema **Tecni-Systemas**.
 
 ---

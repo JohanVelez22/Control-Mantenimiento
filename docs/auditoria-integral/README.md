@@ -1,6 +1,11 @@
 # Auditoría integral 2026-11-13: índice
 
-Esta carpeta es la **documentación técnica vigente** del sistema. Cuando un documento antiguo de `docs/` la contradiga, vale esta carpeta (ver DOC-01 en `ARQUITECTURA.md`).
+Esta carpeta es la **documentación técnica vigente** del sistema. Cuando un documento antiguo de `docs/` o de la raíz la contradiga, vale esta carpeta (ver DOC-01 en `ARQUITECTURA.md`). Los documentos antiguos llevan el aviso "Documento histórico".
+
+**Estado al 2026-11-16 (cuarta ronda):**
+- Correcciones: `CAMBIOS_REALIZADOS.md`.
+- Lo que queda abierto y los pasos del dueño: `PENDIENTES.md`.
+- Cómo probar antes de operar: `PLAN_PRUEBAS_OPERACION.md`.
 
 ## Cómo se hizo
 

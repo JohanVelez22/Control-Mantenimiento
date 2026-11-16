@@ -1,5 +1,8 @@
 # 📋 Registro de Certificación de Seguridad y Deuda Técnica — Tecni-Systemas
 
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
+
 Este documento certifica el estado de seguridad, mitigación de vulnerabilidades y hardening arquitectónico alcanzado tras la ejecución del plan integral de auditoría en 7 fases.
 
 ---

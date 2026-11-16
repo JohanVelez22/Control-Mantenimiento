@@ -1,4 +1,7 @@
 # 📜 CUADERNO 4: DOCUMENTACIÓN LEGAL, ACTA DE ENTREGA Y TÉRMINOS Y CONDICIONES
+
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
 ## Entrega Formal de Software a Empresa Cliente
 ## Proyecto: Sistema de Control de Mantenimiento de Equipos
 

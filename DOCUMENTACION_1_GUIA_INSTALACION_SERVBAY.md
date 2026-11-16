@@ -1,4 +1,7 @@
 # 🚀 GUÍA DEFINITIVA DE INSTALACIÓN Y DESPLIEGUE EN SERVBAY (DESDE CERO)
+
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
 ## Proyecto: TECNI SYSTEMAS - Sistema de Control de Mantenimiento, Taller e Integridad Financiera
 ## Diseñado para: Usuarios sin conocimientos previos de programación y despliegue en Producción
 

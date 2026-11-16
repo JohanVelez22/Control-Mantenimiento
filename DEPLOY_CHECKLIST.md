@@ -1,5 +1,8 @@
 # 🚀 Checklist y Guía de Despliegue a Producción — Tecni-Systemas
 
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
+
 Esta guía contiene el protocolo exhaustivo y seguro para el despliegue de **Tecni-Systemas** en servidores de producción (Linux VPS/Ubuntu, ServBay en Windows Server, Docker o Cloud Hosting).
 
 ---

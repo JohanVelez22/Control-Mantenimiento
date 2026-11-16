@@ -1,33 +1,38 @@
 # Plan de pruebas antes de operar con dinero real
 
-Estado al 2026-11-13: **listo para pruebas**, con condiciones.
+Estado al 2026-11-16: **listo para pruebas**, con las condiciones de la sección 1.
 - **Código:** las correcciones de la auditoría están hechas, salvo lo listado en la sección 4.
-- **Suite:** 708 pruebas en verde, unitarias, de funcionalidades e integración.
+- **Suite:** 780 pruebas en verde en SQLite, y la suite completa también en MySQL 8.4 (base temporal).
 - **Navegador:** cada bloque se revisó en una copia aislada con SQLite.
 
 Este plan reemplaza a la operación real durante la primera semana: se trabaja en paralelo con el método actual y se compara.
 
 ## 1. Antes de empezar (obligatorio, solo lo puede hacer el dueño)
 
+La lista completa, con el porqué de cada paso, está en `PENDIENTES.md` (P0). En orden:
+
 | # | Paso | Comando o lugar | Hecho |
 |---|---|---|---|
 | 1 | Contraseña propia para las 3 cuentas | `php artisan app:restablecer-password <correo>` | ☐ |
-| 2 | Respaldo y migración | `php artisan app:backup-db` y luego `php artisan migrate --force` | ☐ |
-| 3 | Verificar ese respaldo | `php artisan app:verificar-respaldo` (debe terminar en ✅) | ☐ |
-| 4 | Tarea programada de respaldos | `GUIA_RESPALDOS.md`, 5(a) | ☐ |
-| 5 | Copia fuera del disco C: | `GOOGLE_DRIVE_BACKUP_PATH` en `.env`, o un disco externo | ☐ |
-| 6 | Vaciar `*_DEFAULT_PASSWORD` en `.env` (respaldar el `.env` antes) | Editor | ☐ |
-| 7 | No usar `start-ngrok.bat` | — | ☐ |
-| 8 | Revisión final | `php artisan app:preflight` sin bloqueantes | ☐ |
+| 2 | Respaldo verificado | `php artisan app:backup-db` y `php artisan app:verificar-respaldo` (debe terminar en ✅) | ☐ |
+| 3 | Migraciones | `php artisan app:verificar-migraciones` y `php artisan migrate --force` | ☐ |
+| 4 | Compilar la interfaz | `npm run build` | ☐ |
+| 5 | Retirar los datos de demostración | `php artisan app:clean-data --produccion`; luego datos reales de la empresa en Configuración | ☐ |
+| 6 | Clave de cifrado de respaldos, escrita en papel y guardada aparte | `BACKUP_PASSWORD` en `.env` | ☐ |
+| 7 | Tarea programada de respaldos | `GUIA_RESPALDOS.md`, 5(a) | ☐ |
+| 8 | Copia fuera del disco C: | `GOOGLE_DRIVE_BACKUP_PATH` o disco externo | ☐ |
+| 9 | Vaciar `*_DEFAULT_PASSWORD` y sacar `.env.backup` del proyecto (respaldar el `.env` antes) | Editor / Explorador | ☐ |
+| 10 | No usar `start-ngrok.bat` | — | ☐ |
+| 11 | Revisión final | `php artisan app:preflight` sin bloqueantes | ☐ |
 
-Recomendado, no bloqueante: crear un usuario MySQL propio en lugar de `root` (D-07).
+Recomendado, no bloqueante: usuario MySQL propio en lugar de `root` (D-07).
 
 ## 2. Recorrido de prueba (un día, con datos de prueba)
 
 Cada flujo indica qué revisar. Si algo no cuadra, anotarlo con fecha, pantalla y número de documento.
 
 ### Órdenes de servicio (Mantenimiento y Electrónica)
-1. Crear una orden **Pendiente**, agregar un repuesto y verificar que el stock baja y el costo sube.
+1. Crear una orden **Pendiente**, imprimir el **comprobante de recepción** (botón "Recepción") y verificar que trae el código de consulta. Agregar un repuesto y verificar que el stock baja, el costo sube y el repuesto aparece en el historial de la orden.
 2. Registrar un abono parcial y verificar el saldo en la orden y el ingreso en Caja.
 3. Intentar terminarla con saldo. Debe pedir **"Entregar con saldo pendiente"** y un motivo.
 4. Pagar el resto y terminarla con fecha de salida. Debe aceptarla sin pedir nada más.
@@ -56,8 +61,9 @@ Cada flujo indica qué revisar. Si algo no cuadra, anotarlo con fecha, pantalla 
 
 ### Seguridad
 1. Entrar como técnico y editar una orden. Debe pedir la clave de administrador.
-2. Entrar como invitado y consultar una orden con cédula y número de orden. No debe ver montos de otras órdenes.
+2. Entrar como invitado y consultar una orden con la cédula y el **código de consulta** del comprobante. Con el número de orden ya no debe encontrarla.
 3. Cambiar la contraseña de un usuario desde Usuarios. Sus otras sesiones deben cerrarse.
+4. Como administrador, descargar o restaurar un respaldo: debe pedir la contraseña. Durante la restauración, otro equipo debe ver "Mantenimiento en curso".
 
 ## 3. Semana en paralelo (criterio para pasar a producción)
 
@@ -68,12 +74,11 @@ Cada flujo indica qué revisar. Si algo no cuadra, anotarlo con fecha, pantalla 
 
 ## 4. Lo que todavía no está resuelto (conocido)
 
-| Tema | Efecto en la operación | Qué hacer mientras tanto |
-|---|---|---|
-| M-06 (resto) y M-11: el saldo inicial del cierre y el costo histórico no se guardan como foto. Requieren columnas nuevas | Si se cambia el precio de compra de un producto, la utilidad de ventas pasadas cambia en los reportes. El cierre ya está protegido contra cambios retroactivos | Tomar la caja como fuente de verdad del dinero |
-| D-01 (resto): la restauración desde la web no activa el modo mantenimiento | Si alguien trabaja mientras se restaura, su operación se pierde | Restaurar solo fuera del horario de atención |
-| S-04: la consulta del invitado usa cédula + número de orden, no un código aleatorio | Quien conozca ambos datos ve el estado de esa orden | Aceptable para un local; no publicar los números de orden |
-| S-08: los respaldos no están cifrados | Quien tenga acceso al disco o a la carpeta de Drive puede leer la base | Carpeta de Drive privada; equipo con contraseña |
-| D-07: conexión como `root` | Un fallo de seguridad tendría más alcance | Crear un usuario propio (`GUIA_INSTALACION.md`, paso 4) |
-| D-04: filtros por fecha que no usan índices | Con muchos años de datos, los reportes se vuelven más lentos | Sin efecto con el volumen actual |
-| No probado | Impresión en impresora térmica real; concurrencia de la app completa en MySQL (solo se probaron los bloqueos del cierre); restaurar desde la web de punta a punta | Probarlo en el recorrido del punto 2 |
+Ver `PENDIENTES.md`, sección "Lo que queda abierto". En resumen:
+- configuración del servidor (usuario MySQL propio, OPcache, `composer install --no-dev`);
+- fuentes alojadas en el servidor (falta autorizar la descarga);
+- menú lateral en tabletas táctiles;
+- mejoras visuales del sistema de diseño;
+- impresión en impresora térmica real (probar en el recorrido).
+
+Ninguno afecta el dinero ni la integridad de los datos.

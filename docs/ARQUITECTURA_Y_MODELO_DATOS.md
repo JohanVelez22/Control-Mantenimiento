@@ -1,5 +1,8 @@
 # 🏛️ Arquitectura del Sistema y Modelo de Datos — Tecni-Systemas
 
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
+
 Este documento describe la arquitectura técnica, las decisiones de diseño y el modelo relacional del sistema **Tecni-Systemas**.
 
 ---

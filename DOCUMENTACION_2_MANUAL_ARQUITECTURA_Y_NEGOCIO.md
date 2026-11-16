@@ -1,4 +1,7 @@
 # 📘 CUADERNO 2: MANUAL DE ARQUITECTURA Y LÓGICA DE NEGOCIO
+
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
 ## Explicación Exhaustiva, Modular y de Fácil Comprensión
 ## Proyecto: TECNI SYSTEMAS - Sistema de Control de Mantenimiento y Gestión Empresarial
 

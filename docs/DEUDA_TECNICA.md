@@ -1,5 +1,8 @@
 # Deuda técnica — hoja de ruta
 
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
+
 Estado al 2026-11-05. Este documento lista lo que **queda pendiente** después de la auditoría de noviembre (ver `CHANGELOG.md` 1.1.0 y 1.2.0 para lo ya resuelto). Sirve como guía para este proyecto y para los proyectos que se deriven de él.
 
 ## Cómo se priorizó

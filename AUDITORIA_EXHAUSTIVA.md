@@ -1,5 +1,8 @@
 # AUDITORÍA EXHAUSTIVA — Sistema "Tecni-Systemas" (Mantenimiento de Equipos)
 
+> **Documento histórico.** Puede contener datos desactualizados (versiones, conteos de pruebas, comandos). La referencia vigente es la carpeta `docs/auditoria-integral/` (ver su `README.md`).
+
+
 **Proyecto:** `C:\ServBay\www\tecni-systemas`
 **Stack:** Laravel 13.19.0 · PHP 8.4.25 · MySQL 8.4.11 (ServBay, Windows) · Blade + Vite 8 + Tailwind 3.4 · dompdf 3.1.5 · maatwebsite/excel 3.1.69
 **Fecha de auditoría:** 21 de octubre de 2026

@@ -1,69 +1,70 @@
-# Pendientes priorizados
+# Pendientes
 
-Orden: primero lo que bloquea operar con dinero real, luego el riesgo financiero y de seguridad, y al final la calidad y la reutilización. Cada fila remite al informe donde están la evidencia, el archivo y la línea.
+Estado al 2026-11-16, después de la cuarta ronda ("robustez"). Cada fila remite al informe donde están la evidencia, el archivo y la línea. El detalle de lo corregido está en `CAMBIOS_REALIZADOS.md`.
 
 ## P0: acciones del dueño antes de operar (no las puede hacer el código)
 
 | # | Acción | Por qué | Cómo |
 |---|---|---|---|
-| 1 | Fijar las contraseñas de las 3 cuentas sembradas | S-01: mientras sean las publicadas, **quien entre primero por la web fija la nueva y se queda con la cuenta** | `php artisan app:restablecer-password administrador@tecnisystemas.com` (y lo mismo para `tecnico@` e `invitado@`) en la consola del servidor |
-| 2 | Aplicar la migración nueva | El código ya no vincula pagos por texto | `php artisan migrate --force` (no cambia filas en la base actual; es reversible) |
-| 3 | Crear la tarea programada de Windows | O-01: **hoy no se ejecuta ningún respaldo automático ni la verificación semanal** | Comando exacto en `GUIA_RESPALDOS.md`, 5(a) |
-| 4 | Copia fuera del disco C: | O-01: si falla el disco se pierde todo | Estrategia 3-2-1 en `GUIA_RESPALDOS.md`, 5(b) (`GOOGLE_DRIVE_BACKUP_PATH` o `D:\Respaldos`) |
-| 5 | No usar `start-ngrok.bat` en producción | S-03/O-05: publica en Internet el servidor de desarrollo | Decisión del dueño; el archivo no se borró |
-| 6 | Vaciar `*_DEFAULT_PASSWORD` del `.env` tras el paso 1 | S-01 | Editar `.env` (respaldarlo antes) |
+| 1 | Fijar las contraseñas de las 3 cuentas sembradas | S-01: mientras sean las publicadas, quien entre primero fija la nueva | `php artisan app:restablecer-password <correo>` para `administrador@`, `tecnico@` e `invitado@` |
+| 2 | Respaldo verificado y migraciones | Hay 6 migraciones nuevas (vínculos antiguos, foto del cierre, costo histórico, código de consulta, stock mínimo, precisión, llaves, índices y restricciones). El sistema funciona igual antes de aplicarlas | `php artisan app:backup-db`, `php artisan app:verificar-respaldo`, `php artisan app:verificar-migraciones` y `php artisan migrate --force` |
+| 3 | Compilar la interfaz | Esta ronda cambió estilos y clases | `npm run build` en la carpeta del proyecto |
+| 4 | Retirar los datos de demostración | D-26: la base real tiene los datos de prueba (5 por tabla) | `php artisan app:clean-data --produccion` (hace y verifica un respaldo antes; conserva usuarios, configuración e historial). Después, registrar los datos reales de la empresa en Configuración |
+| 5 | Crear la tarea programada de Windows | O-01: sin ella no hay respaldos automáticos ni verificación semanal. `app:preflight` lo detecta (latido del programador) | `GUIA_RESPALDOS.md`, 5(a) |
+| 6 | Copia fuera del disco C: | Si falla el disco se pierde todo | `GOOGLE_DRIVE_BACKUP_PATH` o `D:\Respaldos` (`GUIA_RESPALDOS.md`, 5(b)) |
+| 7 | Clave de cifrado de respaldos | S-08: con `BACKUP_PASSWORD` los respaldos se cifran (AES-256). **Sin la clave no se pueden restaurar**: escribirla en papel y guardarla aparte | `.env` → `BACKUP_PASSWORD=...` |
+| 8 | Vaciar `*_DEFAULT_PASSWORD` del `.env` tras el paso 1 | S-01 | Editar `.env` (respaldarlo antes) |
+| 9 | Mover `.env.backup` fuera del proyecto | S-14: contiene secretos y `APP_DEBUG=true` | Explorador de archivos |
+| 10 | Usuario MySQL propio en lugar de `root` | D-07 / S-07 / O-10 | `GUIA_INSTALACION.md`, paso 4 |
+| 11 | No usar `start-ngrok.bat` en producción | S-03 / O-05 | Decisión del dueño |
+| 12 | Revisión final | Debe terminar sin bloqueantes | `php artisan app:preflight` |
 
-## P1: riesgo financiero o de seguridad (siguiente iteración)
+## Resueltos en el código
 
-| ID | Pendiente | Esfuerzo |
-|---|---|---|
-| ~~B-01~~ | **Corregido** (`OrdenEstadoService`, prueba `OrdenCierreReglasTest`). Regla elegida para "entrega con saldo": se permite con casilla explícita y motivo, queda en `eventos`; un técnico que la registra al crear necesita la clave de admin | — |
-| ~~B-03~~ | **Corregido**: una orden terminada no recibe ni pierde repuestos hasta reabrirla | — |
-| M-06 (resto) | Guardar `saldo_inicial` y `efectivo_esperado` como snapshot en `cierre_cajas` | ½ día |
-| ~~M-09 / M-14~~ | **Corregido**: motivo obligatorio al anular órdenes, caja, facturas, cotizaciones y abonos (queda en `eventos`); el motivo de un descuadre no se puede vaciar | — |
-| M-11 | Congelar el costo histórico (`factura_items.costo_unitario`) para que la utilidad no cambie con el tiempo | 1 día |
-| ~~M-12 / M-13~~ | **Corregido**: "Flujo Neto de Caja" y leyenda "Documento interno de control. No es factura electrónica de venta (DIAN)" en A4 y POS | — |
-| ~~M-15, M-19 a M-22, M-24~~ | **Corregido**: duplicar sin guardar, comparación en centavos, venta en $0 en día cerrado, anulación de cotización con bloqueo e intención, cotizaciones vencidas, tope de costo | — |
-| ~~M-16 / M-23~~ | **Corregido**: `App\Support\Monto::parse`, una sola regla en todo el sistema | — |
-| D-01 (resto) | **Parcial**: ya se verifica en base temporal antes de restaurar y se avisa si el esquema es viejo. Falta el modo mantenimiento: restaurar fuera del horario de atención | ½ día |
-| D-07 / S-07 | Usuario MySQL propio con privilegios mínimos, en lugar de `root` | 1 h (+ prueba) |
-| ~~D-08~~ | **Corregido** y comprobado en MySQL 8.4 con dos conexiones | — |
-| S-04 | Código de consulta aleatorio por orden para el invitado | ½ día |
-| ~~S-06~~ | **Corregido**: cambiar la contraseña desde Usuarios cierra las demás sesiones | — |
-| S-08 | Respaldos cifrados y reautenticación para descargar, restaurar o actualizar | 1 día |
-| ~~X-02~~ | **Corregido**: con más de 8 renglones la plantilla pasa a hoja completa | — |
-| ~~X-04 a X-09, X-12, X-13~~ | **Corregido**: totales iguales en pantalla, PDF y Excel, anuladas aparte, ceros en Excel, datos reales del cliente | — |
-| ~~F-04~~ | **Corregido**: Enter busca en todos los registros | — |
-| Q-02 | `.env.testing` propio para que las pruebas no dependan de contraseñas del `.env` | 1 h |
-| ~~Q-03~~ | **Corregido**: suite `Integration` en `phpunit.xml` | — |
-| Q-04 | Pruebas de concurrencia reales con dos conexiones MySQL en una base de pruebas | 1 día |
+Todos estos hallazgos quedaron corregidos y con prueba:
+- **Backend:** B-01 a B-24.
+- **Finanzas:** M-01 a M-24.
+- **Base de datos:** D-01 a D-06, D-08 a D-13 y D-15 a D-26.
+- **Seguridad:** S-02, S-04 a S-06, S-08 a S-13, S-15 y S-16.
+- **Documentos:** X-01 a X-20, X-22 y X-23.
+- **Operación:** O-03, O-04, O-07, O-11, O-13, O-14, O-17 y O-19.
+- **Pruebas:** Q-01 a Q-04.
+- **Arquitectura:** ARQ-01, ARQ-03 y ARQ-06 a ARQ-12.
+- **Interfaz:** F-01 a F-13, F-15, F-16, F-19, F-21 a F-23, F-25 a F-28, F-35 y F-37, más parte de F-18 ("Cancelar" siempre neutro).
 
-## P2: calidad, rendimiento y reutilización
+## Lo que queda abierto (con su motivo)
 
-- **Base de datos y rendimiento:**
-  - D-04: los filtros `whereDate` impiden usar índices; deben pasar a rangos.
-  - ~~D-05~~: **corregido**, los pagos de caja se enlazan solo por clave.
-  - D-11 a D-26.
-- **Arquitectura:**
-  - ARQ-01: policies y gates en uso real, `@can` en las vistas y roles de las rutas iguales al comportamiento.
-  - ARQ-02: unificar Mantenimiento y Electrónica.
-  - ARQ-03 a ARQ-12: archivos gigantes, identidad fija, DDL en `AppServiceProvider`, código muerto y binarios triplicados.
-- **Interfaz:**
-  - F-05 a F-37.
-  - Sistema de diseño (≈2,5 semanas).
-  - Notificaciones con estado de lectura y prioridad (≈5 días).
-- **Documentación antigua:** marcar como históricos o corregir los 8 documentos contradictorios (DOC-01 en `ARQUITECTURA.md`). La referencia vigente es esta carpeta.
-- **Backend:** B-04 a B-11, B-13 a B-24.
-- **Seguridad:** S-09 a S-16.
-- **Despliegue:** O-08 a O-20.
+| ID | Qué falta | Motivo | Efecto en la operación |
+|---|---|---|---|
+| D-07, S-14 (Dusk), O-08, O-15, O-16, O-20 | Usuario MySQL propio, `composer install --no-dev`, OPcache y ajustes de PHP y del servidor, versión LTS de Node | Configuración del servidor (panel de ServBay o el dueño), no código | Ninguno funcional; el preflight los avisa |
+| F-24 | Fuentes alojadas en el propio servidor | Hay que descargar los archivos de fuente (Inter, Michroma, Orbitron); queda pendiente la autorización. Mientras tanto, ya no bloquean la primera pintura | Sin internet, los títulos usan la fuente de respaldo |
+| F-34 | Menú lateral en tabletas táctiles de 1024 px o más | Requiere probar en un equipo táctil real | En tabletas el menú se expande al tocar de forma irregular |
+| F-14, F-17, F-18 (resto), F-20, F-29 a F-33, F-36, X-21, ARQ-04, ARQ-05 | Sistema de diseño (ver detalle abajo) | Mejoras visuales y de mantenimiento, sin errores de funcionamiento. Conviene hacerlas después de la semana en paralelo, con revisión visual | Ninguno funcional |
+| ARQ-02 | Unir Mantenimiento y Electrónica en una sola tabla | Requiere migrar datos reales de dos tablas a una: alto riesgo sin beneficio para operar. Ya comparten reglas, validaciones, abonos, repuestos y exportación | Ninguno |
+| D-14 (booleanos) | Quitar índices de baja cardinalidad | Se decide tras un mes de uso real (`sys.schema_unused_indexes`) | Ninguno |
+| — | Impresión en impresora térmica real | Necesita la impresora | Probarlo en el recorrido del plan de pruebas |
 
-## Riesgos aceptados de forma explícita en esta versión
+Detalle del sistema de diseño pendiente:
+- alturas de controles;
+- tokens de color;
+- iconos SVG en lugar de emoji;
+- tarjetas en móvil;
+- títulos;
+- CSS por página;
+- nombres de marca.
 
-- **Reglas de cierre de órdenes (B-01).** Terminar una orden con saldo exige marcar "entrega con saldo" y escribir el motivo. Para cobrar en el momento: crear la orden Pendiente, registrar el abono y luego terminarla.
-- **Motivo al anular (M-09).** Anular una orden, movimiento de caja, factura, cotización o abono pide un motivo de al menos 5 caracteres.
-- **Duplicar en caja (M-15).** "Duplicar" ya no guarda el movimiento: abre el formulario precargado y hay que presionar Guardar.
-- **Cotizaciones vencidas (M-22).** No se convierten; hay que editarlas (fecha o validez) y revisar los precios.
+## Riesgos aceptados de forma explícita
 
-- **El pagado ya no se edita desde la factura (M-05).** Si el usuario solía corregir pagos así, ahora debe anular el abono o registrar uno nuevo en Caja. Es intencional: la otra forma reescribía arqueos pasados.
-- **Período monótono (M-06).** Nada se registra ni se anula con fecha anterior al último cierre. Para corregir un día pasado hay que eliminar los cierres posteriores (admin con clave).
-- **Idempotencia (M-07).** Reenviar un formulario idéntico sin modificar ningún campo, dentro de 10 minutos, se rechaza como duplicado. Si hace falta repetir una operación igual, basta con recargar la página.
+- **Reglas de cierre de órdenes (B-01).** Terminar una orden con saldo exige "entrega con saldo" y motivo.
+- **Motivo al anular (M-09).** Anular pide un motivo de al menos 5 caracteres.
+- **Duplicar en caja (M-15).** Abre el formulario precargado; hay que guardar.
+- **Cotizaciones vencidas (M-22).** No se convierten; hay que editarlas.
+- **El pagado no se edita desde la factura (M-05).** Los pagos se registran como abonos en Caja.
+- **Período monótono (M-06).** Nada se registra ni se anula con fecha anterior al último cierre.
+- **Idempotencia (M-07).** Un reenvío idéntico dentro de 10 minutos se rechaza. Para repetir la operación, recargar la página.
+- **Consulta del invitado (S-04).** Tras migrar, el cliente consulta con su documento y el **código de consulta** del comprobante de recepción, no con el número de orden.
+- **Respaldos con contraseña (S-08).** Descargar, restaurar o borrar respaldos y actualizar el sistema pide la contraseña de la sesión.
+- **Permisos (ARQ-01).** Configuración, auditoría y respaldos son solo del administrador. El técnico ve los reportes financieros porque opera la caja y el cierre.
+- **Costo promedio (M-11).** Cada compra actualiza el precio de compra del producto con el costo promedio ponderado. El precio de venta no cambia solo.
+- **Abonos (B-07).** La fecha de un abono debe estar entre el ingreso de la orden y hoy.
+- **Cambio de dueño de un equipo (B-06).** No se permite si el equipo tiene órdenes cobradas o entregadas: hay que registrar el equipo de nuevo.

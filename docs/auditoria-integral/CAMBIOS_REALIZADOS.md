@@ -143,6 +143,31 @@ Suite: 708 pruebas en verde.
 - **D-05.** Los pagos de caja se enlazan solo por clave: no hay LIKE sobre la descripción ni N+1. Prueba `CajaPagosPorClaveTest`.
 - **D-01 (parcial).** Antes de restaurar se verifica en una base temporal, y después se avisa si el esquema es viejo.
 
+### Cuarta ronda (2026-11-16, robustez)
+
+Se hizo en una copia aislada del código (rama `robustez-final`) y se integró al final. Suite: **780 pruebas en SQLite**, más la suite completa en una base MySQL 8.4 temporal (ver `RESULTADOS_TESTING.md`). Cada bloque tiene pruebas que fallan con el código anterior.
+
+| Commit | Bloque | Hallazgos |
+|---|---|---|
+| `55c9f11` | Validaciones de entrada (sin errores 500), reglas de órdenes y abonos, cotizaciones por clave, conceptos de sistema, numeración, notificaciones | B-04 a B-24, F-05, F-06, ARQ-06/07, D-17, D-18 |
+| `63510d9` | Repuestos en el historial, historial por orden, kardex completo, costo exacto | B-04, M-17, M-18, B-23, ARQ-10 |
+| `f4bdb78` | Foto del cierre, costo histórico y promedio, código de consulta y comprobante de recepción, stock mínimo, DECIMAL(12,2), llaves RESTRICT, índices y CHECK | M-06, M-11, S-04, ARQ-12, D-11 a D-15, D-21 |
+| `3c976e5` | Respaldos: contraseña para operaciones sensibles, mantenimiento al restaurar, cifrado AES-256, manifiesto SHA-256, credenciales temporales | S-08, D-01, D-03, D-10, D-16, ARQ-09 |
+| `5b0f9a8` | Seguridad y operación: bloqueo por cuenta, recordarme 7 días, cabeceras, permisos en rutas, comandos peligrosos, preflight | S-09 a S-15, ARQ-01, ARQ-08, ARQ-11, D-19, D-24, D-26, O-14, O-17, O-19 |
+| `eeb9d79` | Filtros por fecha con índice, tope de exportación | D-04, D-22, D-23 |
+| `a9ab330` | Excel tipado y usable, ticket POS, PDF más livianos, imprimir abre el PDF completo | X-10, X-11, X-14 a X-20, X-22, X-23, ARQ-03 |
+| `c372ef8` | Interfaz: accesibilidad, avisos, campana, modales, estilos | F-08 a F-28, F-35, F-37 |
+
+Puntos importantes:
+- **Compatibilidad antes de migrar.** El código usa una columna nueva solo si ya existe (`App\Support\Esquema`). `CompatibilidadSinMigrarTest` recorre los flujos principales con la base sin migrar.
+- **Migraciones nuevas (6):** todas son reversibles, salvo la conversión de precisión, que se detiene si hay valores que no caben. Las restricciones CHECK se omiten (y se registran) si hay datos que no las cumplen.
+- **Cambios visibles para el usuario:**
+  - el invitado consulta con el código de consulta;
+  - las operaciones de respaldo piden la contraseña;
+  - la descarga de respaldos es por formulario;
+  - "Imprimir" en los reportes abre el PDF completo;
+  - el menú usa "Compras y ventas", "Caja" y "Reportes".
+
 ## Archivos modificados en la ronda
 
 **Aplicación**
