@@ -5,6 +5,7 @@ namespace Tests;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\DB;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -45,4 +46,17 @@ abstract class TestCase extends BaseTestCase
     // GREATEST() para SQLite lo registra App\Database\SqliteConnector en cada conexión, como
     // función determinista. Registrarla aquí otra vez sin esa marca hacía fallar cualquier
     // ALTER TABLE en las pruebas ("non-deterministic functions prohibited in generated columns").
+
+    /**
+     * Para pruebas escritas sobre el comportamiento de SQLite (restauración con un SQL de
+     * ejemplo, verificación que no aplica). En MySQL la restauración primero exige un
+     * volcado completo verificado en una base temporal: eso lo cubre
+     * tests/Integration/RestauracionMysqlTest.
+     */
+    protected function soloSqlite(): void
+    {
+        if (DB::getDriverName() !== 'sqlite') {
+            $this->markTestSkipped('Prueba del flujo con SQLite; en MySQL la cubre RestauracionMysqlTest.');
+        }
+    }
 }

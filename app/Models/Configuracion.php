@@ -66,18 +66,18 @@ class Configuracion extends Model
 
         Cache::forget('configuracion_global');
 
-        $config = static::firstOrCreate(
-            ['id' => 1],
-            [
-                'nombre' => 'Tecni Systemas',
-                'nit' => '900.000.000-1',
-                'telefono' => '300 000 0000',
-                'direccion' => 'Calle Principal # 1-1',
-                'correo' => 'contacto@tecnisystemas.com',
-                'pie_pagina_factura' => 'Gracias por su preferencia.',
-                'formato_factura' => 'estandar',
-            ]
-        );
+        // La configuración es la primera fila (igual que Configuracion::first() en el resto del
+        // código). Antes se buscaba id = 1: si la fila tenía otro id se creaba una segunda con
+        // datos de ejemplo. Solo se crea si la tabla está vacía.
+        $config = static::query()->orderBy('id')->first() ?? static::create([
+            'nombre' => 'Tecni Systemas',
+            'nit' => '900.000.000-1',
+            'telefono' => '300 000 0000',
+            'direccion' => 'Calle Principal # 1-1',
+            'correo' => 'contacto@tecnisystemas.com',
+            'pie_pagina_factura' => 'Gracias por su preferencia.',
+            'formato_factura' => 'estandar',
+        ]);
 
         Cache::forever('configuracion_global', $config);
 

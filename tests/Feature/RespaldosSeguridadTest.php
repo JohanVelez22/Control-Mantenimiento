@@ -102,6 +102,7 @@ class RespaldosSeguridadTest extends TestCase
 
     public function test_restaurar_conserva_los_eventos_posteriores_al_respaldo_y_libera_el_bloqueo(): void
     {
+        $this->soloSqlite();
         Evento::registrar('evento_reciente', null, null, null, 'Ocurrió después del respaldo');
         // El "respaldo" vacía el historial, como haría un volcado anterior a estos eventos.
         $nombre = $this->archivo('db_prueba_2026-11-16_10-00-00.sql', "DELETE FROM eventos;\n");
@@ -135,7 +136,8 @@ class RespaldosSeguridadTest extends TestCase
         $conClave = new ZipArchive;
         $conClave->open($ruta);
         $conClave->setPassword('ClaveDeRespaldo2026');
-        $this->assertStringContainsString('Backup SQLite', (string) $conClave->getFromName('database.sql'));
+        // Con SQLite es un volcado de ejemplo; con MySQL, un volcado real de mysqldump.
+        $this->assertMatchesRegularExpression('/Backup SQLite|MySQL dump/', (string) $conClave->getFromName('database.sql'));
         $conClave->close();
 
         $this->assertTrue(ManifiestoRespaldos::verificar($ruta));

@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Support\Esquema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
@@ -28,6 +29,10 @@ class CompatibilidadSinMigrarTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        if (DB::getDriverName() !== 'sqlite') {
+            // En MySQL el DDL confirma la transacción de la prueba y dejaría la base sin columnas.
+            $this->markTestSkipped('Solo en SQLite (el DDL de MySQL no se puede revertir dentro de la prueba).');
+        }
         // Se quitan las columnas que agregan las migraciones 2026_11_16_*. (Revertirlas con
         // migrate:rollback reconstruye tablas en SQLite y choca con las columnas generadas
         // de facturas; los cambios de índices, precisión y llaves no afectan al código.)

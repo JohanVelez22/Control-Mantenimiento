@@ -143,6 +143,7 @@ class SecurityHardeningAuditTest extends TestCase
      */
     public function test_backup_zip_slip_is_blocked_safely(): void
     {
+        $this->soloSqlite();
         $zipFileName = 'sec_test_zipslip.zip';
         $zipFilePath = $this->backupDir.DIRECTORY_SEPARATOR.$zipFileName;
 

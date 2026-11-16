@@ -55,9 +55,11 @@ final class VerificadorEsquema
         }
 
         if (DB::getDriverName() === 'mysql' && self::migracionEjecutada('2026_11_16_110300_indices_y_restricciones_de_integridad')) {
-            $checks = DB::table('information_schema.check_constraints')
-                ->where('constraint_schema', DB::getDatabaseName())
-                ->pluck('constraint_name')->all();
+            // Alias explícito: MySQL devuelve las columnas de information_schema en mayúsculas.
+            $checks = array_column(DB::select(
+                'SELECT CONSTRAINT_NAME AS nombre FROM information_schema.CHECK_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = ?',
+                [DB::getDatabaseName()]
+            ), 'nombre');
             $esperados = (require database_path('migrations/2026_11_16_110300_indices_y_restricciones_de_integridad.php'))::CHECKS;
             foreach (array_keys($esperados) as $nombre) {
                 if (! in_array($nombre, $checks, true)) {

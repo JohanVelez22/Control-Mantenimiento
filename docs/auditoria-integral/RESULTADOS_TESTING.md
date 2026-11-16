@@ -2,6 +2,26 @@
 
 Fecha: 2026-11-13. Todas las cifras de esta página salen de ejecuciones reales en este equipo (PHP 8.4.27, PHPUnit 12.5.43, SQLite en memoria). No se declara nada que no se haya ejecutado.
 
+## 0. Cuarta ronda (2026-11-16): SQLite y MySQL 8.4
+
+| Corrida | Resultado | Cómo |
+|---|---|---|
+| Suite completa en SQLite (en memoria) | **780 pruebas en verde** | `vendor/bin/phpunit` |
+| Suite completa en **MySQL 8.4.11** | **771 en verde, 9 saltadas a propósito, 0 fallos** (1 min 55 s) | Base temporal `tecni_test_<pid>` creada y eliminada por un script de la carpeta de trabajo; credenciales leídas del `.env` sin imprimirlas. La base de producción no se tocó |
+| Restauración de punta a punta en MySQL | **OK (13 aserciones)** | `tests/Integration/RestauracionMysqlTest.php` (grupo `mysql-aislado`). Recorrido: respaldo real con mysqldump y cifrado AES-256; huella en el manifiesto; verificación en otra base temporal; cambios posteriores; restauración por la web con contraseña; comprobación de que el historial posterior se conservó y de que el modo mantenimiento se liberó |
+| Compatibilidad sin migrar | OK | `CompatibilidadSinMigrarTest`: flujos principales con la base sin las columnas nuevas (solo SQLite) |
+| Vista previa en navegador (SQLite con migraciones nuevas) | 41 pantallas respondieron 200 | Además se revisaron el código de consulta, el botón de recepción, el historial de la orden y la campana |
+
+**Las 9 pruebas saltadas en MySQL** prueban la restauración con un SQL de ejemplo. En MySQL ese archivo se rechaza con razón: la restauración exige antes un volcado completo verificado en una base temporal. Ese flujo real lo cubre `RestauracionMysqlTest`. También se salta `CompatibilidadSinMigrarTest`, porque el DDL de MySQL no se puede revertir dentro de una prueba.
+
+**Errores reales que solo aparecieron en MySQL** (corregidos antes de integrar):
+1. La migración de integridad intentaba una restricción CHECK sobre `equipos.proveedor_id`, que tiene una llave con `ON DELETE SET NULL` (error 3823). La migración habría fallado en producción. Se quitó esa restricción (la garantiza la validación del controlador) y cada CHECK quedó tolerante a rechazos.
+2. `VerificadorEsquema` leía `information_schema` con nombres en minúscula y MySQL los devuelve en mayúscula: `app:preflight` habría fallado.
+3. Datos de prueba con valores que el ENUM de MySQL rechaza (`reparacion`, `estado` de cotización), y un estado `convertida` que no existe en la base (se quitó del controlador).
+4. `Configuracion::getGlobal()` buscaba la fila con `id = 1`. Ahora usa la primera fila, igual que el resto del código. En producción la fila es la 1, así que hoy no había efecto.
+
+**No probado:** impresión en una impresora térmica física; tabletas táctiles reales.
+
 ## 1. Suite automática (resultado final de la ronda)
 
 | Momento | Pruebas | Aserciones | Resultado |

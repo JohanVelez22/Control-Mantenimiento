@@ -367,7 +367,7 @@ class SecurityBloque0AuditTest extends TestCase
             'cliente_id' => $cliente->id,
             'fecha' => now()->toDateString(),
             'total' => 150000,
-            'estado' => 'convertida',
+            'estado' => 'aprobada',
             'anulado' => false,
             'user_id' => $this->admin->id,
         ]);

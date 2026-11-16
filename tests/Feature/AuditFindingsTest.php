@@ -1383,7 +1383,7 @@ class AuditFindingsTest extends TestCase
             'id_orden' => 'MNT-'.time(),
             'fecha_entrada' => now()->toDateString(),
             'tipo' => 'correctivo',
-            'reparacion' => 'Repuesto de prueba',
+            'reparacion' => 'hardware',
             'descripcion' => 'Orden de prueba',
             'estado' => 'pendiente',
             'costo' => 20000,

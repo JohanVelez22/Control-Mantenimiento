@@ -83,7 +83,10 @@ class AuditoriaIntegralCorreccionesTest extends TestCase
 
         $this->actingAs($this->admin)->get(route('reportes.index', ['export' => 'excel']));
 
-        Excel::assertDownloaded('Reporte_Financiero_'.date('Y-m-d_His').'.xlsx', function ($export) {
+        // El nombre lleva la hora al segundo: se compara con una expresión regular para que la
+        // prueba no falle si el reloj cambia de segundo entre la petición y la comprobación.
+        Excel::matchByRegex();
+        Excel::assertDownloaded('/^Reporte_Financiero_\d{4}-\d{2}-\d{2}_\d{6}\.xlsx$/', function ($export) {
             return $export->collection()->count() === 14;
         });
     }

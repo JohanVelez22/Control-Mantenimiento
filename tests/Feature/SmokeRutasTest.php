@@ -178,6 +178,7 @@ class SmokeRutasTest extends TestCase
     /** La verificación de restauración está programada y, fuera de MySQL, se niega sin tocar nada. */
     public function test_verificacion_de_respaldo_programada_y_segura(): void
     {
+        $this->soloSqlite();
         $this->artisan('app:verificar-respaldo')
             ->expectsOutputToContain('solo está disponible con MySQL')
             ->assertExitCode(1);

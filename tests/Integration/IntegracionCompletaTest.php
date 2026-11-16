@@ -190,7 +190,7 @@ class IntegracionCompletaTest extends TestCase
         $equipo = Equipo::first();
         $mant = Mantenimiento::create([
             'id_orden' => 'MNT-TEST-'.time(), 'equipo_id' => $equipo->id, 'tecnico_id' => $tecnicoM->id, 'user_id' => $this->admin->id,
-            'fecha_entrada' => now(), 'tipo' => 'correctivo', 'reparacion' => 'laboratorio', 'descripcion' => 'Test', 'costo' => 100000, 'estado' => 'pendiente', 'anulado' => false,
+            'fecha_entrada' => now(), 'tipo' => 'correctivo', 'reparacion' => 'hardware', 'descripcion' => 'Test', 'costo' => 100000, 'estado' => 'pendiente', 'anulado' => false,
         ]);
         $abono = Abono::create(['mantenimiento_id' => $mant->id, 'monto' => 50000, 'fecha' => now()->toDateString(), 'tipo_pago' => 'efectivo', 'user_id' => $this->admin->id]);
         $concepto = ConceptoCaja::firstOrCreate(['nombre' => 'Abono Mantenimiento']);
@@ -317,8 +317,8 @@ class IntegracionCompletaTest extends TestCase
             'descripcion' => 'Abono hijo',
         ]);
 
-        $movPadre->update(['anulado' => true]);
-        $hijo->update(['anulado' => true]); // actualizar hijo manualmente
+        $movPadre->update(['anulado' => true, 'estado' => 'anulado']);
+        $hijo->update(['anulado' => true, 'estado' => 'anulado']); // actualizar hijo manualmente
 
         $movPadre->refresh();
         $hijo->refresh();
@@ -326,8 +326,8 @@ class IntegracionCompletaTest extends TestCase
         $this->assertTrue($hijo->anulado);
 
         /* Reactivar -> hijos también */
-        $movPadre->update(['anulado' => false]);
-        $hijo->update(['anulado' => false]);
+        $movPadre->update(['anulado' => false, 'estado' => 'activo']);
+        $hijo->update(['anulado' => false, 'estado' => 'activo']);
         $movPadre->refresh();
         $hijo->refresh();
         $this->assertFalse($movPadre->anulado);

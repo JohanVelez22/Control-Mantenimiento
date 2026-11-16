@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\QueryException;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -37,7 +38,9 @@ return new class extends Migration
         'chk_mov_estado' => ['movimiento_cajas', "(anulado = 1) = (estado = 'anulado')"],
         'chk_abono_monto' => ['abonos', 'monto > 0'],
         'chk_abono_orden' => ['abonos', '(mantenimiento_id IS NULL) <> (electronica_id IS NULL)'],
-        'chk_equipo_duenio' => ['equipos', '(cliente_id IS NULL) <> (proveedor_id IS NULL)'],
+        // "Equipo de exactamente un dueño" no se puede expresar como CHECK en MySQL:
+        // equipos.proveedor_id tiene ON DELETE SET NULL (error 3823). Lo garantiza la
+        // validación de EquipoController (propietario obligatorio, Cliente o Proveedor).
         'chk_stock_cantidad' => ['stocks', 'cantidad >= 0'],
         'chk_fact_montos' => ['facturas', 'total_documento >= 0 AND total_pagado >= 0'],
         'chk_mant_costo' => ['mantenimientos', 'costo >= 0'],
@@ -72,7 +75,13 @@ return new class extends Migration
 
                 continue;
             }
-            DB::statement("ALTER TABLE `{$tabla}` ADD CONSTRAINT `{$nombre}` CHECK ({$condicion})");
+            // Si MySQL rechaza la restricción (versión o llaves foráneas que lo impiden), la
+            // migración sigue: queda en el log y app:verificar-migraciones la informa.
+            try {
+                DB::statement("ALTER TABLE `{$tabla}` ADD CONSTRAINT `{$nombre}` CHECK ({$condicion})");
+            } catch (QueryException $e) {
+                Log::warning("Migración de integridad: MySQL no aceptó {$nombre}: ".$e->getMessage());
+            }
         }
     }
 

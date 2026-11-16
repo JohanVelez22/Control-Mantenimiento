@@ -292,7 +292,7 @@ class CotizacionController extends Controller
             $cotizacion = Cotizacion::whereKey($cotizacion->id)->lockForUpdate()->firstOrFail();
 
             // convertir() deja la cotización en estado 'aprobada' con factura_id
-            if (in_array($cotizacion->estado, ['convertida', 'aprobada'], true) || $cotizacion->factura_id) {
+            if ($cotizacion->estado === 'aprobada' || $cotizacion->factura_id) {
                 DB::rollBack();
 
                 return back()->with('error', 'No se puede anular una cotización que ya ha sido convertida en factura.')->withInput();

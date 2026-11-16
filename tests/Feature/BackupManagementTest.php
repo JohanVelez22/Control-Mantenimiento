@@ -263,6 +263,7 @@ class BackupManagementTest extends TestCase
 
     public function test_admin_can_restore_sql_backup_and_preserves_audit_events()
     {
+        $this->soloSqlite();
         // 1. Crear evento histórico antes de la restauración
         Evento::create([
             'user_id' => $this->admin->id,
@@ -304,6 +305,7 @@ class BackupManagementTest extends TestCase
 
     public function test_admin_can_restore_zip_multimedia_backup()
     {
+        $this->soloSqlite();
         $zipFile = 'backup_bd_multimedia_test.zip';
         $zipPath = $this->backupDir.DIRECTORY_SEPARATOR.$zipFile;
 
@@ -334,6 +336,7 @@ class BackupManagementTest extends TestCase
 
     public function test_admin_can_restore_integral_backup_safely()
     {
+        $this->soloSqlite();
         $zipFile = 'backup_integral_test_full.zip';
         $zipPath = $this->backupDir.DIRECTORY_SEPARATOR.$zipFile;
 
@@ -384,6 +387,7 @@ class BackupManagementTest extends TestCase
 
     public function test_zip_slip_inside_archive_is_blocked_on_restore(): void
     {
+        $this->soloSqlite();
         $zipFile = 'malicious_zip_slip.zip';
         $zipPath = $this->backupDir.DIRECTORY_SEPARATOR.$zipFile;
 
@@ -405,6 +409,7 @@ class BackupManagementTest extends TestCase
 
     public function test_executable_files_in_zip_are_not_copied_to_public_storage(): void
     {
+        $this->soloSqlite();
         $zipFile = 'test_executable_media.zip';
         $zipPath = $this->backupDir.DIRECTORY_SEPARATOR.$zipFile;
 
