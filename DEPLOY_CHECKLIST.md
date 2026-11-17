@@ -154,6 +154,7 @@ Agrega la siguiente línea al crontab del usuario del servidor (`crontab -e`):
 ```
 
 ### Windows (Programador de Tareas):
+Forma rápida: doble clic en `scripts\instalar-tarea-programada.bat` (pide Administrador). Si se prefiere hacerlo a mano:
 Crea una tarea programada repetida cada minuto que ejecute:
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -Command "cd C:\ServBay\www\tecnisystemas; C:\ServBay\packages\php\current\php.exe artisan schedule:run"

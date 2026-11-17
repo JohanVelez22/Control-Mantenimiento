@@ -12,6 +12,8 @@
 
 ### 5(a) Comando exacto para el Programador de tareas de Windows
 
+**Forma rápida:** doble clic en `scripts\instalar-tarea-programada.bat`, aceptar el aviso de Administrador. Crea la tarea con la configuración de abajo (cuenta SYSTEM, también con batería), la ejecuta una vez y muestra si funcionó. Se puede repetir sin problema: actualiza la tarea existente.
+
 Ejecutar en **PowerShell o CMD como Administrador** (no lo hizo la auditoría). Se usa la cuenta SYSTEM porque ServBay (y por tanto la web) también corre como LocalSystem: así los archivos de `storage` tienen el mismo propietario y la tarea corre sin sesión iniciada.
 
 ```bat
